@@ -373,11 +373,11 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  .ilike('search_text', `%${user?.email}%`);
  
  if (mems && mems.length > 0) {
- const matched = mems
- .filter(m => m.data.fact.toLowerCase().includes((action.query || '').toLowerCase()))
- .map(m => m.data.fact);
- results.push(matched.length ? `Memory results:\n${matched.join('\n')}` : `No memories found matching "${action.query}".`);
-} else {
+  const matched = mems
+  .filter(m => (m.data?.fact || '').toLowerCase().includes((action.query || '').toLowerCase()))
+  .map(m => m.data?.fact);
+  results.push(matched.length ? `Memory results:\n${matched.join('\n')}` : `No memories found matching "${action.query}".`);
+ } else {
  results.push(`Memory is empty.`);
 }
  break;

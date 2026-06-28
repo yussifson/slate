@@ -69,10 +69,18 @@ const PAGE_SUGGESTIONS = {
  '/claims': ['List pending claims', 'Create a new claim', 'Show high-value claims this month'],
  '/': ['Give me a summary of today\'s activity', 'Show key metrics', 'What needs my attention today?']};
 
+const generateId = () => {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
+
 // Session Storage (Fallback/Types)
 function newSession() {
  return {
- id: crypto.randomUUID(),
+ id: generateId(),
  title: 'New Chat',
  createdAt: new Date().toISOString(),
  messages: [{
@@ -295,10 +303,10 @@ export default function GlobalAIAssistant({ onClose}) {
   break;
  }
  case 'remember': {
- if (action.fact) {
- await mutateRecord.mutateAsync({
- id: crypto.randomUUID(),
- recordType: 'ai_memory',
+  if (action.fact) {
+  await mutateRecord.mutateAsync({
+  id: generateId(),
+  recordType: 'ai_memory',
  payload: { fact: action.fact, user: user?.email},
  status: 'active',
  searchText: `${user?.email} ${action.fact}`
@@ -317,8 +325,8 @@ export default function GlobalAIAssistant({ onClose}) {
  
  if (mems && mems.length > 0) {
  const matched = mems
- .filter(m => m.data.fact.toLowerCase().includes((action.query || '').toLowerCase()))
- .map(m => m.data.fact);
+ .filter(m => (m.data?.fact || '').toLowerCase().includes((action.query || '').toLowerCase()))
+ .map(m => m.data?.fact);
  results.push(matched.length ? `Memory results:\n${matched.join('\n')}` : `No memories found matching "${action.query}".`);
 } else {
  results.push(`Memory is empty.`);
