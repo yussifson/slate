@@ -62,7 +62,7 @@ export default function OptavelSales() {
     },
     onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
     onSuccess: () => {
-      queryClient.invalidateQueries(['optavel_deal_rooms']);
+      queryClient.invalidateQueries({ queryKey: [] });
       setNewDealName('');
       setNewDealValue('');
     }
@@ -74,7 +74,7 @@ export default function OptavelSales() {
     },
     onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
     onSuccess: () => {
-      queryClient.invalidateQueries(['optavel_deal_rooms']);
+      queryClient.invalidateQueries({ queryKey: [] });
     }
   });
 
@@ -89,7 +89,7 @@ export default function OptavelSales() {
     },
     onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
     onSuccess: () => {
-      queryClient.invalidateQueries(['optavel_deal_activities']);
+      queryClient.invalidateQueries({ queryKey: [] });
       setNewActivityNote('');
     }
   });

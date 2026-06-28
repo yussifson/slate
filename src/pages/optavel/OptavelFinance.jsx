@@ -52,7 +52,7 @@ export default function OptavelFinance() {
     },
     onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
     onSuccess: () => {
-      queryClient.invalidateQueries(['optavel_transactions']);
+      queryClient.invalidateQueries({ queryKey: [] });
       setNewTransactionAmt('');
       setNewTransactionDesc('');
     }

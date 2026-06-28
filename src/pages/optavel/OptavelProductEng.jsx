@@ -58,7 +58,7 @@ export default function OptavelProductEng() {
     },
     onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
     onSuccess: () => {
-      queryClient.invalidateQueries(['optavel_tasks']);
+      queryClient.invalidateQueries({ queryKey: [] });
       setNewTaskTitle('');
     }
   });
@@ -72,7 +72,7 @@ export default function OptavelProductEng() {
     },
     onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
     onSuccess: () => {
-      queryClient.invalidateQueries(['optavel_tasks']);
+      queryClient.invalidateQueries({ queryKey: [] });
     }
   });
 
