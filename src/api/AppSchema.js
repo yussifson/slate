@@ -6133,4 +6133,32 @@ export const AppSchema = new Schema({
         created_at: column.text,
         updated_at: column.text
     }),
+    optavel_tasks: new Table({
+        id: column.text,
+        company_id: column.text,
+        title: column.text,
+        description: column.text,
+        status: column.text,
+        priority: column.text,
+        assignee_id: column.text,
+        created_at: column.text
+    }),
+    optavel_transactions: new Table({
+        id: column.text,
+        company_id: column.text,
+        amount: column.real,
+        type: column.text,
+        category: column.text,
+        date: column.text,
+        description: column.text,
+        created_at: column.text
+    }),
+    optavel_deal_activities: new Table({
+        id: column.text,
+        company_id: column.text,
+        deal_id: column.text,
+        activity_type: column.text,
+        notes: column.text,
+        created_at: column.text
+    })
 });
