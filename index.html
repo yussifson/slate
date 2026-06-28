@@ -11,11 +11,33 @@
     <link rel="manifest" href="/manifest.json" />
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <style>
-      body { top: 0 !important; }
-      .skiptranslate iframe { display: none !important; visibility: hidden !important; }
+      body { top: 0px !important; }
+      .skiptranslate, .goog-te-banner-frame, .goog-te-balloon-frame { display: none !important; visibility: hidden !important; }
       #goog-gt-tt { display: none !important; visibility: hidden !important; }
       .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+      #google_translate_element { display: none !important; height: 0; width: 0; overflow: hidden; }
+      .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; }
+      .VIpgJd-ZVi9od-aZ2wEe-wOHMyf { display: none !important; }
     </style>
+    <script>
+      // Prevent React from crashing when Google Translate mutates the DOM
+      if (typeof Node === 'function' && Node.prototype) {
+        const originalRemoveChild = Node.prototype.removeChild;
+        Node.prototype.removeChild = function (child) {
+          if (child.parentNode !== this) {
+            return child;
+          }
+          return originalRemoveChild.apply(this, arguments);
+        };
+        const originalInsertBefore = Node.prototype.insertBefore;
+        Node.prototype.insertBefore = function (newNode, referenceNode) {
+          if (referenceNode && referenceNode.parentNode !== this) {
+            return newNode;
+          }
+          return originalInsertBefore.apply(this, arguments);
+        };
+      }
+    </script>
   </head>
   <body>
     <div id="google_translate_element" style="display:none;"></div>
