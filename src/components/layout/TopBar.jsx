@@ -134,6 +134,84 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
  const currentLang = LANGUAGES[i18n.language?.split('-')[0]] || LANGUAGES.en;
 
+ const isPanelOpen = isAIOpen || isBoltOpen;
+
+ const renderSecondaryOptions = (inPopover = false) => (
+    <div className={`flex items-center ${inPopover ? 'flex-wrap gap-3' : 'gap-2 sm:gap-2'}`}>
+      {/* Workspace Switcher */}
+      {user?.available_companies?.length > 1 && (
+        <DropdownMenu>
+          <DropdownMenuTrigger className={`hidden sm:flex items-center gap-1.5 text-xs font-medium text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1.5 hover:bg-muted/50 bg-card tracking-[0.02em] transition-colors focus:outline-none shadow-sm ${inPopover ? '!flex' : ''}`}>
+            <Layers className="w-3.5 h-3.5 text-primary shrink-0" />
+            <span className="max-w-[80px] truncate">{user.available_companies.find(c => c.id === user.company_id)?.name || "Workspace"}</span>
+            <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[200px]">
+            {user.available_companies.map(comp => (
+              <DropdownMenuItem key={comp.id} onClick={() => handleSwitchWorkspace(comp.id)}>
+                {comp.name}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+
+      {/* Language Switcher */}
+      <DropdownMenu>
+        <DropdownMenuTrigger className={`hidden lg:flex items-center gap-1.5 text-xs font-medium text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1.5 hover:bg-muted/50 bg-card tracking-[0.02em] transition-colors focus:outline-none shadow-sm ${inPopover ? '!flex' : ''}`}>
+          <Globe className="w-3.5 h-3.5 shrink-0" />
+          <span className="max-w-[80px] truncate">{currentLang.name}</span>
+          <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[150px]">
+          {Object.entries(LANGUAGES).map(([key, lang]) => (
+            <DropdownMenuItem key={key} onClick={() => i18n.changeLanguage(key)}>
+              <span className="mr-2">{lang.flag}</span>
+              {lang.name}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* Global Chat Toggle */}
+      <Button
+        onClick={toggleChat}
+        variant="ghost"
+        size="icon"
+        className={`relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-semibold rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${
+          isChatOpen
+            ? "bg-primary text-white border-primary -[0_0_15px_rgba(59,130,246,0.5)] scale-95"
+            : "bg-card text-foreground border-primary/40 hover:border-primary/40 hover:bg-slate-50 hover:text-primary dark:hover:bg-slate-100 -[0_0_10px_rgba(59,130,246,0.15)]"
+        }`}
+      >
+        <span className="absolute inset-0 bg-slate-100 opacity-0 hover:opacity-100 transition-opacity duration-300" />
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isChatOpen ? "text-white" : "text-primary"} sm:mr-1.5`}><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/></svg>
+        <span className="hidden sm:inline">Chat</span>
+      </Button>
+
+      {/* Global Time Tracker */}
+      <div className={`hidden sm:block ${inPopover ? '!block' : ''}`}>
+        {currentIndustry === 'law' && <TimeTracker />}
+      </div>
+
+      {/* Premium Theme Toggle & Notifications */}
+      <ThemeToggle />
+      <UnivNotificationCenter />
+
+      {/* Refresh */}
+      <Button
+        variant="ghost"
+        size="sm"
+        className={`hidden md:flex gap-2.5 text-xs text-[#71717a] dark:text-gray-400 hover:text-foreground tracking-[0.04em] ${inPopover ? '!flex' : ''}`}
+        onClick={handleRefresh}
+        disabled={isRefreshing}
+      >
+        {isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" />}
+        <span className="hidden sm:block">Refresh</span>
+      </Button>
+    </div>
+  );
+
  return (
  <>
  {/* ── NATIVE MOBILE TOP BAR ── */}
