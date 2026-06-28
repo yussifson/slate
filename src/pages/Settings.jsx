@@ -43,23 +43,23 @@ export default function Settings() {
  enabled: !!companyId});
 
  const updateCompany = async (data) => {
- if (!company) return;
- setSaving(true);
- try {
- await base44.entities.Company.update(company.id, data);
- queryClient.invalidateQueries({ queryKey: ["company", companyId]});
- await refreshUser();
- toast({ title: "Settings updated successfully"});
-} catch (err) {
- if (err.code === '23505' || err.message?.includes('unique constraint')) {
- toast({ title: "Subdomain already taken", description: "This subdomain is already in use by another firm.", variant: "destructive"});
- throw err;
-}
- toast({ title: "Failed to save settings", description: err.message, variant: "destructive"});
- throw err;
-} finally {
- setSaving(false);
-}
+  if (!company || !companyId) return;
+  setSaving(true);
+  try {
+  await base44.entities.Company.update(companyId, data);
+  queryClient.invalidateQueries({ queryKey: ["company", companyId]});
+  await refreshUser();
+  toast({ title: "Settings updated successfully"});
+ } catch (err) {
+  if (err.code === '23505' || err.message?.includes('unique constraint')) {
+  toast({ title: "Subdomain already taken", description: "This subdomain is already in use by another firm.", variant: "destructive"});
+  throw err;
+ }
+  toast({ title: "Failed to save settings", description: err.message, variant: "destructive"});
+  throw err;
+ } finally {
+  setSaving(false);
+ }
 };
 
  const fakeSuccess = async (data) => {
@@ -71,7 +71,19 @@ export default function Settings() {
 
  const renderActiveSection = () => {
  switch (activeSection) {
- case "system": return <SystemSettings activeIndustry={activeIndustry} company={company} onSave={fakeSuccess} saving={saving} />;
+  case "system": return <SystemSettings activeIndustry={activeIndustry} company={company} onSave={company ? async d => {
+    try {
+      await updateCompany({
+        language: d.language,
+        date_format: d.date_format,
+        time_format: d.time_format,
+        calendar_start: d.calendar_start,
+        timezone: d.timezone
+      });
+    } catch (err) {
+      console.error("Failed to save system settings", err);
+    }
+  } : fakeSuccess} saving={saving} />;
  case "brand": return <BrandSettings activeIndustry={activeIndustry} company={company} onSave={company ? async d => { 
  try {
  if (d.custom_domain && d.custom_domain !== company.custom_domain) {
@@ -102,9 +114,9 @@ export default function Settings() {
  // Force direct Supabase update to bypass any offline schema issues
  if (d.custom_domain !== undefined) {
    try {
-     const { supabase } = await import('@/api/supabaseClient');
-     await supabase.from('companies').update({ custom_domain: d.custom_domain }).eq('id', company.id);
-   } catch(e) {
+      const { supabase } = await import('@/api/supabaseClient');
+      await supabase.from('companies').update({ custom_domain: d.custom_domain }).eq('id', companyId);
+    } catch(e) {
      console.error("Direct Supabase Update Failed", e);
    }
  }
