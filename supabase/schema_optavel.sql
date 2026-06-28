@@ -167,7 +167,7 @@ BEGIN
         SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename LIKE 'optavel_%'
     LOOP
         BEGIN
-            EXECUTE format('ALTER PUBLICATION supabase_realtime ADD TABLE %I;', tbl_name);
+            EXECUTE format('ALTER PUBLICATION powersync ADD TABLE %I;', tbl_name);
         EXCEPTION WHEN duplicate_object THEN
             -- Table already in publication
         END;
