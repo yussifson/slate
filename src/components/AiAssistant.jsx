@@ -938,6 +938,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  </button>
  </div>
  </div>
+ </div>
 
  {/* Page Context Bar */}
  <div className="px-3 py-1.5 flex items-center gap-2.5 bg-primary/60 dark:bg-slate-100 border-b border-primary/40 dark:border-primary/20 shrink-0">
