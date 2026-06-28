@@ -286,7 +286,7 @@ export default function AppLayout() {
    <GlobalVideoOverlay />
  </div>
  </div>
- <div id="right-docked-panel-portal" className="flex shrink-0 h-[100dvh] empty:hidden z-[100] relative bg-white dark:bg-[#090E17] shadow-[-10px_0_30px_rgba(0,0,0,0.05)] dark:shadow-[-10px_0_30px_rgba(0,0,0,0.2)] border-l border-slate-100 dark:border-white/5 transition-all duration-300"></div>
+ <div id="right-docked-panel-portal" className="flex shrink-0 h-[100dvh] empty:hidden z-[100] relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10 transition-all duration-300"></div>
  <MobileBottomNav />
  <AiAssistant isOpen={isAIOpen} onClose={toggleAI} injectedContext={orbitContext} onContextConsumed={() => setOrbitContext(null)} />
  <GlobalChatPanel isOpen={isChatOpen} onClose={toggleChat} />
