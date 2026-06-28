@@ -690,6 +690,7 @@ export const AppSchema = new Schema({
         created_by: column.text,
         name: column.text,
         subdomain: column.text,
+        custom_domain: column.text,
         email: column.text,
         phone: column.text,
         country: column.text,
