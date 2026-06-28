@@ -166,10 +166,12 @@ BEGIN
     FOR tbl_name IN 
         SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename LIKE 'optavel_%'
     LOOP
-        EXECUTE format('ALTER PUBLICATION supabase_realtime ADD TABLE %I;', tbl_name);
-    EXCEPTION WHEN duplicate_object THEN
-        -- Table already in publication
-    END;
+        BEGIN
+            EXECUTE format('ALTER PUBLICATION supabase_realtime ADD TABLE %I;', tbl_name);
+        EXCEPTION WHEN duplicate_object THEN
+            -- Table already in publication
+        END;
+    END LOOP;
 END $$;
 
 -- 5. NEW FEATURES
