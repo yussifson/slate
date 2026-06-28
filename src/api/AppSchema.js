@@ -711,6 +711,11 @@ export const AppSchema = new Schema({
         status: column.text,
         custom_email_domain: column.text,
         custom_email_verified: column.text,
+        language: column.text,
+        date_format: column.text,
+        time_format: column.text,
+        calendar_start: column.text,
+        timezone: column.text,
         industry_type: column.text}),
     documents: new Table({
         id: column.text,

@@ -3,6 +3,7 @@ import { useTranslation} from "react-i18next";
 import { useTheme} from "@/lib/ThemeContext";
 import { Input} from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { Info} from "lucide-react";
 import { getSubdomainAndBase} from "@/lib/domainUtils";
 import {
@@ -20,11 +21,11 @@ export function SystemSettings({ activeIndustry, company, onSave, saving}) {
  const { t} = useTranslation();
  const { theme, changeTheme} = useTheme();
  const [form, setForm] = useState({
- language: "en",
- date_format: "Y-m-d",
- time_format: "H:i",
- calendar_start: "sunday",
- timezone: "Africa/Accra"});
+ language: company?.language || "en",
+ date_format: company?.date_format || "Y-m-d",
+ time_format: company?.time_format || "H:i",
+ calendar_start: company?.calendar_start || "sunday",
+ timezone: company?.timezone || "Africa/Accra"});
 
  return (
  <SectionCard title="System Configuration" subtitle="Define default date formats, time zones, application languages, and display mode settings" onSave={() => onSave(form)} saving={saving}>
@@ -40,14 +41,10 @@ export function SystemSettings({ activeIndustry, company, onSave, saving}) {
  </Select>
  </Field>
  <Field label="System Language">
- <Select value={form.language} onValueChange={v => setForm({ ...form, language: v})}>
- <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
- <SelectContent>
- <SelectItem value="en">{t("english", "🇬🇧 English")}</SelectItem>
- <SelectItem value="fr">{t("french", "🇫🇷 French")}</SelectItem>
- <SelectItem value="pt">{t("portuguese", "🇵🇹 Portuguese")}</SelectItem>
- </SelectContent>
- </Select>
+ <LanguageSwitcher 
+   currentLanguage={form.language} 
+   onChange={v => setForm({ ...form, language: v})} 
+ />
  </Field>
  <Field label="Date Format">
  <Select value={form.date_format} onValueChange={v => setForm({ ...form, date_format: v})}>

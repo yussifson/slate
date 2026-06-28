@@ -1,6 +1,7 @@
 import { powerSync} from '@/api/PowerSyncConnector';
 import { supabase} from '@/api/supabaseClient';
 import { useTranslation} from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
 import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate, Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -66,6 +67,66 @@ export default function AppLayout() {
 };
  fetchPrefs();
 }, [user, isPrefsLoaded]);
+
+  // Reactive Brand Identity & Settings
+  const { data: currentCompany } = useQuery({
+    queryKey: ["company", user?.company_id],
+    queryFn: async () => {
+      if (!user?.company_id) return null;
+      const { data } = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [user.company_id]).then(res => ({ data: res.rows._array[0] || null }));
+      return data;
+    },
+    enabled: !!user?.company_id
+  });
+
+  useEffect(() => {
+    if (currentCompany) {
+      if (currentCompany.favicon_url) {
+        let link = document.querySelector("link[rel~='icon']");
+        if (!link) {
+          link = document.createElement('link');
+          link.rel = 'icon';
+          document.head.appendChild(link);
+        }
+        link.href = currentCompany.favicon_url;
+      }
+      if (currentCompany.name) {
+        let suffix = "Workspace";
+        if (currentCompany.industry_type === 'law') suffix = "Law Management";
+        else if (currentCompany.industry_type === 'school' || currentCompany.industry_type === 'highschool') suffix = "Education Platform";
+        else if (currentCompany.industry_type === 'hospital') suffix = "Hospital System";
+        else if (currentCompany.industry_type === 'hotel') suffix = "Property Management";
+        else if (currentCompany.industry_type === 'orbit_build') suffix = "Digital Workspace";
+        document.title = `${currentCompany.name} - ${suffix}`;
+      }
+      if (currentCompany.primary_color) {
+        const hexToHSL = (hex) => {
+          let r = 0, g = 0, b = 0;
+          if (hex.length == 4) {
+            r = "0x" + hex[1] + hex[1];
+            g = "0x" + hex[2] + hex[2];
+            b = "0x" + hex[3] + hex[3];
+          } else if (hex.length == 7) {
+            r = "0x" + hex[1] + hex[2];
+            g = "0x" + hex[3] + hex[4];
+            b = "0x" + hex[5] + hex[6];
+          }
+          r /= 255; g /= 255; b /= 255;
+          let cmin = Math.min(r,g,b), cmax = Math.max(r,g,b), delta = cmax - cmin, h = 0, s = 0, l = 0;
+          if (delta == 0) h = 0;
+          else if (cmax == r) h = ((g - b) / delta) % 6;
+          else if (cmax == g) h = (b - r) / delta + 2;
+          else h = (r - g) / delta + 4;
+          h = Math.round(h * 60);
+          if (h < 0) h += 360;
+          l = (cmax + cmin) / 2;
+          s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+          return `${h} ${+(s * 100).toFixed(1)}% ${+(l * 100).toFixed(1)}%`;
+        };
+        document.documentElement.style.setProperty('--primary', hexToHSL(currentCompany.primary_color));
+      }
+    }
+  }, [currentCompany]);
 
  // Dynamic Industry Theming - Removed to enforce unified Optavel theme across all suites
  useEffect(() => {

@@ -2,6 +2,7 @@ import { OrbitLoader } from '@/components/ui/orbit-loader';
 import React, { useState} from "react";
 import { useLocation, useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { LayoutDashboard, RefreshCw, Globe, PanelLeft, Sparkles, Layers, Component, ChevronDown, MoreHorizontal} from "lucide-react";
 import {
  DropdownMenu,
@@ -36,23 +37,6 @@ const PAGE_TITLES = {
  "/subscriptions": "Subscriptions",
  "/settings": "Settings",
  "/client-portal": "Client Portal"};
-
-const LANGUAGES = {
- en: { name: "English", flag: "🇬🇧"},
- es: { name: "Español", flag: "🇪🇸"},
- fr: { name: "Français", flag: "🇫🇷"},
- de: { name: "Deutsch", flag: "🇩🇪"},
- it: { name: "Italiano", flag: "🇮🇹"},
- pt: { name: "Português", flag: "🇵🇹"},
- nl: { name: "Nederlands", flag: "🇳🇱"},
- ru: { name: "Русский", flag: "🇷🇺"},
- zh: { name: "中文", flag: "🇨🇳"},
- ja: { name: "日本語", flag: "🇯🇵"},
- ko: { name: "한국어", flag: "🇰🇷"},
- ar: { name: "العربية", flag: "🇸🇦"},
- he: { name: "עברית", flag: "🇮🇱"},
- hi: { name: "हिन्दी", flag: "🇮🇳"},
- tr: { name: "Türkçe", flag: "🇹🇷"}};
 
 export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOpen, toggleAI, isChatOpen, toggleChat, isBoltOpen, toggleBolt}) {
  const { t, i18n} = useTranslation();
@@ -132,8 +116,6 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
  const currentIndustry = sessionStorage.getItem('slate_industry_override') || company?.industry_type || 'law';
 
- const currentLang = LANGUAGES[i18n.language?.split('-')[0]] || LANGUAGES.en;
-
  const isPanelOpen = isAIOpen || isBoltOpen;
 
  const renderSecondaryOptions = (inPopover = false) => (
@@ -157,21 +139,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
       )}
 
       {/* Language Switcher */}
-      <DropdownMenu>
-        <DropdownMenuTrigger className={`hidden lg:flex items-center gap-1.5 text-xs font-medium text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1.5 hover:bg-muted/50 bg-card tracking-[0.02em] transition-colors focus:outline-none shadow-sm ${inPopover ? '!flex' : ''}`}>
-          <Globe className="w-3.5 h-3.5 shrink-0" />
-          <span className="max-w-[80px] truncate">{currentLang.name}</span>
-          <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[150px]">
-          {Object.entries(LANGUAGES).map(([key, lang]) => (
-            <DropdownMenuItem key={key} onClick={() => i18n.changeLanguage(key)}>
-              <span className="mr-2">{lang.flag}</span>
-              {lang.name}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <LanguageSwitcher className={`hidden lg:flex items-center gap-1.5 text-xs font-medium text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1.5 hover:bg-muted/50 bg-card tracking-[0.02em] transition-colors focus:outline-none shadow-sm ${inPopover ? '!flex' : ''} h-[28px] max-w-[110px]`} />
 
       {/* Global Chat Toggle */}
       <Button
