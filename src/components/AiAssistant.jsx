@@ -177,9 +177,17 @@ function FormatMessage({ content}) {
  );
 }
 // Session Storage (Fallback/Types)
+const generateId = () => {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
+
 function newSession() {
  return {
- id: crypto.randomUUID(),
+ id: generateId(),
  title: 'New Chat',
  createdAt: new Date().toISOString(),
  messages: [{
@@ -346,7 +354,7 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  case 'remember': {
  if (action.fact) {
  await mutateRecord.mutateAsync({
- id: crypto.randomUUID(),
+ id: generateId(),
  recordType: 'ai_memory',
  payload: { fact: action.fact, user: user?.email},
  status: 'active',
@@ -905,7 +913,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div className="flex-1 flex flex-col min-w-0">
 
  {/* Header */}
- <div className="flex items-center justify-between px-5 py-4 shrink-0 bg-gradient-to-b from-slate-50/90 to-white/90 dark:from-[#111827]/90 dark:to-[#0A0F1C]/90 backdrop-blur-2xl border-b border-black/[0.06] dark:border-white/[0.06] relative z-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+ <div className="flex items-center justify-between px-4 py-2.5 shrink-0 bg-gradient-to-b from-slate-50/90 to-white/90 dark:from-[#111827]/90 dark:to-[#0A0F1C]/90 backdrop-blur-2xl border-b border-black/[0.06] dark:border-white/[0.06] relative z-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
  <div className="flex items-center gap-3">
  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0 shadow-sm border border-emerald-100 dark:border-emerald-500/20">
  <OrbitIcon className="w-4 h-4" />
@@ -940,14 +948,6 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  </div>
  </div>
 
- {/* Page Context Bar */}
- <div className="px-3 py-1.5 flex items-center gap-2.5 bg-primary/60 dark:bg-slate-100 border-b border-primary/40 dark:border-primary/20 shrink-0">
- <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></div>
- <span className="text-[10px] text-primary dark:text-primary/70 font-semibold truncate">
- {ctx ? `${ctx.suite} ${ctx.title}` : location.pathname} {t("ai_has_full_context", "AI has full context")}
- </span>
- </div>
-
  {/* Messages */}
  <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 relative bg-slate-50/50 dark:bg-transparent">
  <div className="relative z-10 space-y-6">
@@ -956,14 +956,14 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div key={i} className={`flex gap-3 max-w-full ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm ${
  msg.role === 'user'
- ? 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10'
+ ? 'bg-primary/10 text-primary border border-primary/20'
  : 'bg-emerald-600 text-white shadow-emerald-500/20'
  }`}>
  {msg.role === 'user' ? <User className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
  </div>
  <div className={`px-4 py-3 rounded-2xl text-[13px] leading-relaxed max-w-[85%] shadow-sm ${
  msg.role === 'user'
- ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 rounded-tr-sm'
+ ? 'bg-primary text-primary-foreground rounded-tr-sm'
  : 'bg-white dark:bg-[#131A2B] border border-slate-100 dark:border-white/5 rounded-tl-sm text-slate-700 dark:text-slate-300'
  }`}>
  <FormatMessage content={msg.content} />

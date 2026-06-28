@@ -88,6 +88,14 @@ CRITICAL RULE: DO NOT mention the JSON schema, the <SCHEMA> tags, the <UNIVERSAL
 `;
 
 // OrbitBuild AI Panel
+const generateId = () => {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
+
 export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSchema }) {
  const { user} = useAuth();
  const companyId = useCompanyId();
@@ -137,7 +145,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
 
  const startNewSession = () => {
  const s = {
- id: crypto.randomUUID(),
+ id: generateId(),
  title: 'New WorkSlate',
  createdAt: new Date().toISOString(),
  messages: [{ role: 'assistant', content: "Hi there! I'm Orbit Build, your AI System Architect. Tell me what kind of module, app, or dashboard you want to build, and I'll generate the architecture for you instantly."}],
@@ -409,7 +417,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  <div className={clsx(
  "max-w-[85%] text-[13px] leading-relaxed shadow-sm",
  m.role === 'user'
- ? 'rounded-2xl rounded-tr-sm px-4 py-3 bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 '
+ ? 'rounded-2xl rounded-tr-sm px-4 py-3 bg-primary text-primary-foreground'
  : 'rounded-2xl rounded-tl-sm px-4 py-3 bg-white dark:bg-[#131A2B] border border-slate-100 dark:border-white/5 text-slate-700 dark:text-slate-300 prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-slate-50 dark:prose-pre:bg-slate-900/50 prose-pre:border prose-pre:border-slate-200 dark:prose-pre:border-white/10 prose-pre:rounded-xl prose-code:text-emerald-600 dark:prose-code:text-emerald-400 prose-code:before:content-none prose-code:after:content-none'
  )}>
  <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>

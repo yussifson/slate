@@ -98,6 +98,17 @@ export default function Settings() {
  logo_light_url: d.logo_light_url, favicon_url: d.favicon_url,
  tagline: d.tagline, primary_color: d.primary_color
 });
+
+ // Force direct Supabase update to bypass any offline schema issues
+ if (d.custom_domain !== undefined) {
+   try {
+     const { supabase } = await import('@/api/supabaseClient');
+     await supabase.from('companies').update({ custom_domain: d.custom_domain }).eq('id', company.id);
+   } catch(e) {
+     console.error("Direct Supabase Update Failed", e);
+   }
+ }
+
  if (d.subdomain && d.subdomain !== company.subdomain) {
  const { baseDomain} = getSubdomainAndBase();
  const port = window.location.port ? `:${window.location.port}` : '';
