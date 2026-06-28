@@ -59,14 +59,14 @@ export default function Login() {
  let brandData = null;
  const { data: rpcData, error: rpcError} = await supabase.rpc('get_company_by_subdomain', { p_subdomain: currentSubdomain});
  
- if (rpcError) {
+ if (rpcError || !rpcData) {
  console.log("RPC failed, trying direct table query...");
- const { data: directData} = await supabase.from('companies').select('name, logo_url').eq('subdomain', currentSubdomain).maybeSingle();
+ const { data: directData} = await supabase.from('companies').select('name, logo_url').or(`subdomain.eq.${currentSubdomain},custom_domain.eq.${currentSubdomain}`).maybeSingle();
  
  if (directData) {
  brandData = directData;
 } else {
- const { data: tableData} = await powerSync.execute('SELECT name, logo_url FROM companies WHERE subdomain = ? LIMIT 1', [currentSubdomain]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
+ const { data: tableData} = await powerSync.execute('SELECT name, logo_url FROM companies WHERE subdomain = ? OR custom_domain = ? LIMIT 1', [currentSubdomain, currentSubdomain]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
  brandData = tableData;
 }
 } else {

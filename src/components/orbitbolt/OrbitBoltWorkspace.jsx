@@ -301,7 +301,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  {/* Mobile Backdrop */}
  <div className="md:hidden fixed inset-0 z-[9998] bg-slate-900/50 backdrop-blur-[2px] transition-opacity" onClick={onClose} />
  
- <div className={`max-md:fixed z-[9999] bg-white dark:bg-[#0A0F1C] transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:relative md:h-full md:shrink-0 md:w-[420px] max-md:shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:max-md:shadow-[0_-10px_40px_rgba(0,0,0,0.5)]`}>
+  <div className={`max-md:fixed z-[9999] bg-white dark:bg-[#0A0F1C] transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:relative md:h-full md:shrink-0 md:w-[420px] max-md:shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:max-md:shadow-[0_-10px_40px_rgba(0,0,0,0.5)] md:border-l md:border-black/[0.08] dark:md:border-white/[0.08] shadow-[-12px_0_40px_rgba(0,0,0,0.04)] dark:shadow-[-12px_0_40px_rgba(0,0,0,0.3)]`}>
  
  {/* Mobile Drag Handle */}
  <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
@@ -364,7 +364,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  {/* Main Panel */}
  <div className="flex-1 flex flex-col min-w-0 md:w-[420px]">
  {/* Header */}
- <div className="flex items-center justify-between px-4 py-4 shrink-0 bg-white/80 dark:bg-[#0A0F1C]/80 backdrop-blur-xl border-b border-slate-100 dark:border-white/5 relative z-10">
+ <div className="flex items-center justify-between px-5 py-4 shrink-0 bg-gradient-to-b from-slate-50/90 to-white/90 dark:from-[#111827]/90 dark:to-[#0A0F1C]/90 backdrop-blur-2xl border-b border-black/[0.06] dark:border-white/[0.06] relative z-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
  <div className="flex items-center gap-3">
  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0 shadow-sm border border-emerald-100 dark:border-emerald-500/20">
  <Zap className="w-4 h-4 fill-current" />

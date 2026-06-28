@@ -106,6 +106,7 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  favicon_url: company?.favicon_url || "",
  name: company?.name || "",
  subdomain: company?.subdomain || "",
+ custom_domain: company?.custom_domain || "",
  tagline: company?.tagline || "",
  primary_color: company?.primary_color || "#16a34a"});
 
@@ -120,7 +121,7 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  return (
  <SectionCard title="Brand & Identity" subtitle="Manage your company logos, application favicon, custom subdomain address, and theme colors" onSave={handleSaveClick} saving={saving}>
  <div className="flex gap-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-muted/20 rounded-xl p-1 w-fit mb-6">
- {["logos", "text", "theme"].map(item => {
+ {["logos", "text", "theme", "domain"].map(item => {
  return (
  <button
  key={item}
@@ -178,6 +179,36 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  return (<button key={c} onClick={() => setForm({ ...form, primary_color: c})} className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 active:scale-95 ${form.primary_color === c ? "border-primary scale-110" : "border-background"}`} style={{ background: c}} />);
 })}
  </div>
+ </div>
+ </Field>
+ </div>
+ )}
+ {tab === "domain" && (
+ <div className="space-y-4">
+ <Field label="Custom Domain" full>
+ <div className="flex flex-col gap-2">
+ <Input placeholder="e.g. app.mycompany.com" value={form.custom_domain} onChange={e => setForm({ ...form, custom_domain: e.target.value.toLowerCase().replace(/[^a-z0-9.-]/g, '')})} className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" />
+ {form.custom_domain && (
+ <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+ <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">DNS Configuration Required</h4>
+ <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
+ To complete your custom domain setup, please add the following record to your DNS provider (e.g. GoDaddy, Namecheap, Route53).
+ </p>
+ {form.custom_domain.split('.').length > 2 ? (
+ <div className="bg-white dark:bg-slate-900 p-3 rounded-lg border border-blue-100 dark:border-blue-900 text-sm font-mono">
+ Type: <strong>CNAME</strong><br/>
+ Name: <strong>{form.custom_domain.split('.')[0]}</strong><br/>
+ Value: <strong>cname.vercel-dns.com</strong>
+ </div>
+ ) : (
+ <div className="bg-white dark:bg-slate-900 p-3 rounded-lg border border-blue-100 dark:border-blue-900 text-sm font-mono">
+ Type: <strong>A</strong><br/>
+ Name: <strong>@</strong><br/>
+ Value: <strong>76.76.21.21</strong>
+ </div>
+ )}
+ </div>
+ )}
  </div>
  </Field>
  </div>

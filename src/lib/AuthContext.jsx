@@ -338,16 +338,18 @@ export const AuthProvider = ({ children }) => {
                 targetCompanyId = tComp?.id;
              } else {
                 console.log("RPC failed for targetCompany, trying direct table query...");
-                const { data: directComp } = await supabase.from('companies').select('*').eq('subdomain', currentSubdomain).maybeSingle();
-                if (directComp) {
-                   tComp = directComp;
-                   targetCompanyId = directComp.id;
-                } else {
-                   const { data: tCompData } = await powerSync.execute('SELECT * FROM companies WHERE subdomain = ?', [currentSubdomain]).then(res => ({ data: res.rows._array[0] || null })).catch(()=>({data:null}));
-                   if (tCompData) {
-                      tComp = tCompData;
-                      targetCompanyId = tCompData.id;
-                   }
+                const { data: directComp } = await supabase.from('companies').select('*').or(`subdomain.eq.${currentSubdomain},custom_domain.eq.${currentSubdomain}`).maybeSingle();
+                let targetCompanyToUse = directComp;
+                
+                if (!directComp) {
+                   // 1.c Fallback to local powersync if completely offline
+                   const { data: tCompData } = await powerSync.execute('SELECT * FROM companies WHERE subdomain = ? OR custom_domain = ?', [currentSubdomain, currentSubdomain]).then(res => ({ data: res.rows._array[0] || null })).catch(()=>({data:null}));
+                   targetCompanyToUse = tCompData;
+                }
+                
+                if (targetCompanyToUse) {
+                   tComp = targetCompanyToUse;
+                   targetCompanyId = targetCompanyToUse.id;
                 }
              }
 

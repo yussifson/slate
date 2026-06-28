@@ -2,13 +2,14 @@ import { OrbitLoader } from '@/components/ui/orbit-loader';
 import React, { useState} from "react";
 import { useLocation, useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
-import { LayoutDashboard, RefreshCw, Globe, PanelLeft, Sparkles, Layers, Component, ChevronDown} from "lucide-react";
+import { LayoutDashboard, RefreshCw, Globe, PanelLeft, Sparkles, Layers, Component, ChevronDown, MoreHorizontal} from "lucide-react";
 import {
  DropdownMenu,
  DropdownMenuContent,
  DropdownMenuItem,
  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button} from "@/components/ui/button";
 import { isSuperAdmin} from "@/lib/constants";
 import { useQueryClient} from "@tanstack/react-query";
@@ -220,41 +221,6 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  </DropdownMenu>
  )}
 
- {/* Workspace Switcher */}
- {user?.available_companies?.length > 1 && (
- <DropdownMenu>
- <DropdownMenuTrigger className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1.5 hover:bg-muted/50 bg-card tracking-[0.02em] transition-colors focus:outline-none shadow-sm">
- <Layers className="w-3.5 h-3.5 text-primary shrink-0" />
- <span className="max-w-[80px] truncate">{user.available_companies.find(c => c.id === user.company_id)?.name || "Workspace"}</span>
- <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
- </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-[200px]">
- {user.available_companies.map(comp => (
- <DropdownMenuItem key={comp.id} onClick={() => handleSwitchWorkspace(comp.id)}>
- {comp.name}
- </DropdownMenuItem>
- ))}
- </DropdownMenuContent>
- </DropdownMenu>
- )}
-
- {/* Language Switcher */}
- <DropdownMenu>
- <DropdownMenuTrigger className="hidden lg:flex items-center gap-1.5 text-xs font-medium text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1.5 hover:bg-muted/50 bg-card tracking-[0.02em] transition-colors focus:outline-none shadow-sm">
- <Globe className="w-3.5 h-3.5 shrink-0" />
- <span className="max-w-[80px] truncate">{currentLang.name}</span>
- <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
- </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-[150px]">
-            {Object.entries(LANGUAGES).map(([key, lang]) => (
-              <DropdownMenuItem key={key} onClick={() => i18n.changeLanguage(key)}>
- <span className="mr-2">{lang.flag}</span>
- {lang.name}
- </DropdownMenuItem>
- ))}
- </DropdownMenuContent>
- </DropdownMenu>
-
  {/* Orbit Bolt Toggle */}
  <Button
  onClick={toggleBolt}
@@ -291,35 +257,29 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  </span>
  </Button>
 
- {/* Global Chat Toggle */}
- <Button
- onClick={toggleChat}
- variant="ghost"
- size="icon"
- className={`relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-semibold rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${
- isChatOpen
- ? "bg-primary text-white border-primary -[0_0_15px_rgba(59,130,246,0.5)] scale-95"
- : "bg-card text-foreground border-primary/40 hover:border-primary/40 hover:bg-slate-50 hover:text-primary dark:hover:bg-slate-100 -[0_0_10px_rgba(59,130,246,0.15)]"
-}`}
- >
- <span className="absolute inset-0 bg-slate-100 opacity-0 hover:opacity-100 transition-opacity duration-300" />
- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isChatOpen ? "text-white" : "text-primary"} sm:mr-1.5`}><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/></svg>
- <span className="hidden sm:inline">Chat</span>
+ {/* Secondary Options OR Popover */}
+ {isPanelOpen ? (
+ <Popover>
+ <PopoverTrigger asChild>
+ <Button variant="ghost" size="icon" className="w-8 h-8 rounded-xl bg-card border-[0.5px] border-black/9 dark:border-white/8">
+ <MoreHorizontal className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
  </Button>
-
- {/* Global Time Tracker */}
- <div className="hidden sm:block">
- {currentIndustry === 'law' && <TimeTracker />}
+ </PopoverTrigger>
+ <PopoverContent align="end" className="w-[300px] p-3 shadow-xl border-slate-200 dark:border-slate-800 rounded-2xl z-[150]">
+ <div className="mb-2 px-1">
+ <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Quick Actions</p>
  </div>
-
- {/* Premium Theme Toggle & Notifications */}
- <ThemeToggle />
- <UnivNotificationCenter />
+ {renderSecondaryOptions(true)}
+ </PopoverContent>
+ </Popover>
+ ) : (
+ renderSecondaryOptions(false)
+ )}
 
  {/* User */}
  <button onClick={() => setShowAvatarDialog(true)} className="flex items-center gap-2 sm:ml-1 hover:bg-muted/50 p-1 rounded-xl transition-colors">
  <span className="hidden sm:block text-sm font-medium text-foreground">{displayName}</span>
- <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary flex items-center justify-center hover:ring-2 hover:ring-primary transition-all overflow-hidden">
+ <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary flex items-center justify-center hover:ring-2 hover:ring-primary transition-all overflow-hidden border border-black/10 dark:border-white/10">
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
  ) : (
@@ -327,18 +287,6 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  )}
  </div>
  </button>
-
- {/* Refresh */}
- <Button
- variant="ghost"
- size="sm"
- className="hidden md:flex gap-2.5 text-xs text-[#71717a] dark:text-gray-400 hover:text-foreground tracking-[0.04em]"
- onClick={handleRefresh}
- disabled={isRefreshing}
- >
- { isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> }
- <span className="hidden sm:block">{isRefreshing ? "Refreshing..." : "Refresh"}</span>
- </Button>
  </div>
  </div>
  <ProfileAvatarDialog open={showAvatarDialog} onOpenChange={setShowAvatarDialog} />

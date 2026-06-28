@@ -846,7 +846,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  isOpen ? "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] max-md:translate-y-0 max-md:opacity-100 max-md:shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:max-md:shadow-[0_-10px_40px_rgba(0,0,0,0.5)]" : "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-0 max-md:translate-y-full max-md:opacity-0 max-md:pointer-events-none"
  } ${
  // Desktop: Side Panel
- isOpen ? (isExpanded ? "md:relative md:h-full md:shrink-0 md:w-[680px] md:opacity-100" : "md:relative md:h-full md:shrink-0 md:w-[420px] md:opacity-100") : "md:h-full md:w-0 md:opacity-0 md:border-none md:pointer-events-none"
+ isOpen ? (isExpanded ? "md:relative md:h-full md:shrink-0 md:w-[680px] md:opacity-100 md:border-l md:border-black/[0.08] dark:md:border-white/[0.08] shadow-[-12px_0_40px_rgba(0,0,0,0.04)] dark:shadow-[-12px_0_40px_rgba(0,0,0,0.3)]" : "md:relative md:h-full md:shrink-0 md:w-[420px] md:opacity-100 md:border-l md:border-black/[0.08] dark:md:border-white/[0.08] shadow-[-12px_0_40px_rgba(0,0,0,0.04)] dark:shadow-[-12px_0_40px_rgba(0,0,0,0.3)]") : "md:h-full md:w-0 md:opacity-0 md:border-none md:pointer-events-none"
  }`}
  >
  {/* Mobile Drag Handle */}
@@ -905,7 +905,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div className="flex-1 flex flex-col min-w-0">
 
  {/* Header */}
- <div className="flex items-center justify-between px-4 py-4 shrink-0 bg-white/80 dark:bg-[#0A0F1C]/80 backdrop-blur-xl border-b border-slate-100 dark:border-white/5 relative z-10">
+ <div className="flex items-center justify-between px-5 py-4 shrink-0 bg-gradient-to-b from-slate-50/90 to-white/90 dark:from-[#111827]/90 dark:to-[#0A0F1C]/90 backdrop-blur-2xl border-b border-black/[0.06] dark:border-white/[0.06] relative z-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
  <div className="flex items-center gap-3">
  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0 shadow-sm border border-emerald-100 dark:border-emerald-500/20">
  <OrbitIcon className="w-4 h-4" />

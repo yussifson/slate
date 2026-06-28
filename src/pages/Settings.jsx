@@ -74,8 +74,27 @@ export default function Settings() {
  case "system": return <SystemSettings activeIndustry={activeIndustry} company={company} onSave={fakeSuccess} saving={saving} />;
  case "brand": return <BrandSettings activeIndustry={activeIndustry} company={company} onSave={company ? async d => { 
  try {
+ if (d.custom_domain && d.custom_domain !== company.custom_domain) {
+   // Assuming Vercel API requires env variables to be set, we wrap it in a safe try-catch
+   // so that if Vercel API isn't configured, it still saves to Supabase.
+   try {
+     const { VercelAPI } = await import('@/api/VercelAPI');
+     await VercelAPI.addDomain(d.custom_domain);
+   } catch (vercelErr) {
+     console.error("Vercel Domain Sync Failed:", vercelErr);
+   }
+ } else if (!d.custom_domain && company.custom_domain) {
+   try {
+     const { VercelAPI } = await import('@/api/VercelAPI');
+     await VercelAPI.removeDomain(company.custom_domain);
+   } catch (vercelErr) {
+     console.error("Vercel Domain Sync Failed:", vercelErr);
+   }
+ }
+
  await updateCompany({ 
  name: d.name, logo_url: d.logo_url, subdomain: d.subdomain,
+ custom_domain: d.custom_domain,
  logo_light_url: d.logo_light_url, favicon_url: d.favicon_url,
  tagline: d.tagline, primary_color: d.primary_color
 });
