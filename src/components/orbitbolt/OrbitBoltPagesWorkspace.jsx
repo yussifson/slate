@@ -73,6 +73,13 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema}) {
  const [showHistory, setShowHistory] = useState(false);
  
  const messagesEndRef = useRef(null);
+ const inputRef = useRef(null);
+ 
+ useEffect(() => {
+   if (!isLoading && inputRef.current) {
+     inputRef.current.focus();
+   }
+ }, [isLoading]);
 
  useEffect(() => {
  const load = async () => {
@@ -377,6 +384,7 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema}) {
  <form onSubmit={handleSend}>
  <div className="relative rounded-xl overflow-hidden flex flex-col bg-background ring-1 ring-border-[0.5px] border-black/9 dark:border-white/8 focus-within:ring-2 focus-within:ring-amber-500/50 transition-all ">
  <textarea
+ ref={inputRef}
  value={input}
  onChange={e => setInput(e.target.value)}
  onKeyDown={e => {

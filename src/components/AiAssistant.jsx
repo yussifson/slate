@@ -224,6 +224,13 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  const [originalInputBeforeVoice, setOriginalInputBeforeVoice] = useState('');
  const messagesEndRef = useRef(null);
  const fileInputRef = useRef(null);
+ const inputRef = useRef(null);
+ 
+ useEffect(() => {
+   if (!isLoading && inputRef.current) {
+     inputRef.current.focus();
+   }
+ }, [isLoading]);
 
  const { isListening: isRecording, hasSupport, toggleListening, stopListening } = useSpeechRecognition({
    onTranscript: (transcript) => {
@@ -1041,6 +1048,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div className="p-4 bg-white/90 dark:bg-[#0A0F1C]/90 backdrop-blur-xl border-t border-slate-100 dark:border-white/5 shrink-0 relative z-10">
  <div className="relative rounded-2xl bg-slate-50 dark:bg-[#131A2B] border border-slate-200 dark:border-white/10 shadow-sm focus-within:shadow-md focus-within:border-emerald-500/50 focus-within:ring-4 focus-within:ring-emerald-500/10 transition-all duration-300 flex flex-col">
  <textarea
+ ref={inputRef}
  value={input}
  onChange={e => setInput(e.target.value)}
  placeholder={isRecording ? 'Listening... speak now' : (chatMode === 'flow' ? 'Design a workflow...' : chatMode === 'automation' ? 'Build an automation...' : 'Ask anything or give a command...')}
