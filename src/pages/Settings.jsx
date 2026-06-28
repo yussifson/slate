@@ -33,38 +33,73 @@ export default function Settings() {
  const [activeSection, setActiveSection] = useState("system");
  const [saving, setSaving] = useState(false);
 
- const { data: company} = useQuery({
- queryKey: ["company", companyId],
- queryFn: async () => {
- if (!companyId) return null;
- const { data} = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [companyId]).then(res => ({ data: res.rows._array[0] || null, error: null}));
- return data;
-},
- enabled: !!companyId});
+  const { data: company} = useQuery({
+  queryKey: ["company", companyId],
+  queryFn: async () => {
+    if (!companyId || companyId === 'undefined') return null;
+    const { supabase } = await import('@/api/supabaseClient');
+    const { data, error } = await supabase.from('companies').select('*').eq('id', companyId).single();
+    if (error) {
+      console.error("Supabase company fetch error:", error);
+      return null;
+    }
+    return data;
+  },
+  enabled: !!companyId && companyId !== 'undefined'
+ });
 
  const updateCompany = async (data) => {
-   if (!company || !companyId) return;
-   setSaving(true);
-   try {
-   const { supabase } = await import('@/api/supabaseClient');
-   await supabase.from('companies').update(data).eq('id', companyId);
-   try {
-     await base44.entities.Company.update(companyId, data);
-   } catch(e) { /* ignore base44 duplicate errors if supabase succeeded */ }
-   queryClient.invalidateQueries({ queryKey: ["company", companyId]});
-  await refreshUser();
-  toast({ title: "Settings updated successfully"});
- } catch (err) {
-  if (err.code === '23505' || err.message?.includes('unique constraint')) {
-  toast({ title: "Subdomain already taken", description: "This subdomain is already in use by another firm.", variant: "destructive"});
-  throw err;
- }
-  toast({ title: "Failed to save settings", description: err.message, variant: "destructive"});
-  throw err;
- } finally {
-  setSaving(false);
- }
-};
+    if (!company || !companyId || companyId === 'undefined') return;
+    setSaving(true);
+    try {
+      const { supabase } = await import('@/api/supabaseClient');
+      const payload = {};
+      
+      // Only include fields that were explicitly passed in 'data'
+      // This prevents errors if Supabase is missing certain columns that we try to preserve
+      const allowedFields = [
+        'name', 'logo_url', 'subdomain', 'custom_domain', 'logo_light_url',
+        'favicon_url', 'tagline', 'primary_color', 'currency', 'language',
+        'timezone', 'date_format', 'time_format', 'calendar_start'
+      ];
+      
+      for (const field of allowedFields) {
+        if (data[field] !== undefined) {
+          payload[field] = data[field];
+        }
+      }
+      
+      if (Object.keys(payload).length === 0) {
+        setSaving(false);
+        return;
+      }
+      
+      const { error } = await supabase.from('companies').update(payload).eq('id', companyId);
+      if (error) {
+        throw new Error(error.message || "Failed to update Supabase");
+      }
+      
+      // Update local powersync cache as a fallback just in case
+      try {
+        const keys = Object.keys(payload);
+        const vals = Object.values(payload);
+        await powerSync.execute(`UPDATE companies SET ${keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [...vals, companyId]);
+      } catch(e) {}
+      
+      queryClient.invalidateQueries({ queryKey: ["company", companyId]});
+      await refreshUser();
+      toast({ title: "Settings updated successfully"});
+    } catch (err) {
+      if (err.code === '23505' || err.message?.includes('unique constraint')) {
+        toast({ title: "Subdomain already taken", description: "This subdomain is already in use by another firm.", variant: "destructive"});
+        throw err;
+      }
+      toast({ title: "Failed to save settings", description: err.message, variant: "destructive"});
+      throw err;
+    } finally {
+      setSaving(false);
+    }
+  };
 
  const fakeSuccess = async (data) => {
  setSaving(true);
