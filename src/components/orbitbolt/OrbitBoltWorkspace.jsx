@@ -301,7 +301,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  {/* Mobile Backdrop */}
  <div className="md:hidden fixed inset-0 z-[9998] bg-slate-900/50 backdrop-blur-[2px] transition-opacity" onClick={onClose} />
  
- <div className={`max-md:fixed z-[9999] bg-card transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-md-t-[32px] max-md: max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:relative md:h-full md:shrink-0 md:border-l-2 md:border-l-primary/30 md:w-[400px]`}>
+ <div className={`max-md:fixed z-[9999] bg-white dark:bg-[#0A0F1C] transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:relative md:h-full md:shrink-0 md:w-[420px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.5)]`}>
  
  {/* Mobile Drag Handle */}
  <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
@@ -362,52 +362,55 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  </AnimatePresence>
 
  {/* Main Panel */}
- <div className="flex-1 flex flex-col min-w-0 w-[400px]">
+ <div className="flex-1 flex flex-col min-w-0 md:w-[420px]">
  {/* Header */}
- <div className="flex items-center gap-2 px-3 py-2.5 border-b border-primary/40 bg-gradient-to-r from-primary/10 to-primary/5 shrink-0">
+ <div className="flex items-center justify-between px-4 py-4 shrink-0 bg-white/80 dark:bg-[#0A0F1C]/80 backdrop-blur-xl border-b border-slate-100 dark:border-white/5 relative z-10">
+ <div className="flex items-center gap-3">
+ <div className="w-8 h-8 rounded-full flex items-center justify-center bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0 shadow-sm border border-emerald-100 dark:border-emerald-500/20">
+ <Zap className="w-4 h-4 fill-current" />
+ </div>
+ <div className="flex flex-col">
+  <div className="flex items-center gap-2">
+   <p className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 leading-none">Orbit Build</p>
+   <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 font-bold uppercase tracking-wider">Builder</span>
+  </div>
+  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium">Your AI System Architect</p>
+ </div>
+ </div>
+ <div className="flex items-center gap-1 shrink-0">
  <button
  onClick={() => setShowHistory(prev => !prev)}
- className={clsx(
- "p-1.5 rounded-lg transition-colors shrink-0",
- showHistory ? 'bg-primary/20 dark:bg-primary/30 text-primary/90 dark:text-primary' : 'text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground'
- )}
+ className={`p-2 rounded-full transition-all ${showHistory ? 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-600' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-600 dark:hover:text-slate-300'}`}
  title="Workslates History"
  >
  <Clock className="w-4 h-4" />
  </button>
- 
- <div className="flex-1 flex items-center gap-2 justify-center">
- <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-primary/80 to-primary/90 flex items-center justify-center text-white ring-1 ring-primary/20">
- <Zap className="w-3.5 h-3.5 fill-white" />
- </div>
- <span className="font-semibold text-sm tracking-tight text-foreground">Orbit Build</span>
- </div>
-
- <button onClick={onClose} className="p-1.5 rounded-lg text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground transition-colors shrink-0">
+ <button onClick={onClose} className="p-2 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-600 dark:hover:text-slate-300 transition-colors shrink-0">
  <X className="w-4 h-4" />
  </button>
  </div>
+ </div>
 
  {/* Chat Area */}
- <div className="flex-1 overflow-y-auto p-4 space-y-5 scrollbar-thin bg-card/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 scrollbar-thin bg-slate-50/50 dark:bg-transparent relative z-10">
  {activeSession?.messages?.map((m, i) => (
  <motion.div 
  initial={{ opacity: 0, y: 8}}
  animate={{ opacity: 1, y: 0}}
  transition={{ duration: 0.2}}
  key={i} 
- className={clsx("flex gap-3", m.role === 'user' ? 'flex-row-reverse' : 'flex-row')}
+ className={clsx("flex gap-3 max-w-full", m.role === 'user' ? 'flex-row-reverse' : 'flex-row')}
  >
  {m.role === 'assistant' && (
- <div className="shrink-0 w-7 h-7 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 text-primary/90 dark:text-primary/80 flex items-center justify-center ring-1 ring-primary/20 mt-0.5">
- <Zap className="w-3.5 h-3.5 fill-current" />
+ <div className="shrink-0 w-8 h-8 rounded-full bg-emerald-600 text-white shadow-sm shadow-emerald-500/20 flex items-center justify-center">
+ <Zap className="w-4 h-4 fill-current" />
  </div>
  )}
  <div className={clsx(
- "max-w-[88%] text-[13px] leading-relaxed",
+ "max-w-[85%] text-[13px] leading-relaxed shadow-sm",
  m.role === 'user'
- ? 'rounded-2xl rounded-tr-sm px-4 py-2.5 bg-primary text-white '
- : 'rounded-2xl rounded-tl-sm px-4 py-3 bg-muted ring-1 ring-border/50 text-foreground prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-card prose-pre:border-[0.5px] border-black/9 dark:border-white/8 prose-pre:border-primary/40 prose-pre:rounded-xl prose-code:text-primary/90 dark:prose-code:text-primary/80 prose-code:before:content-none prose-code:after:content-none'
+ ? 'rounded-2xl rounded-tr-sm px-4 py-3 bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 '
+ : 'rounded-2xl rounded-tl-sm px-4 py-3 bg-white dark:bg-[#131A2B] border border-slate-100 dark:border-white/5 text-slate-700 dark:text-slate-300 prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-slate-50 dark:prose-pre:bg-slate-900/50 prose-pre:border prose-pre:border-slate-200 dark:prose-pre:border-white/10 prose-pre:rounded-xl prose-code:text-emerald-600 dark:prose-code:text-emerald-400 prose-code:before:content-none prose-code:after:content-none'
  )}>
  <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
  </div>
@@ -428,9 +431,9 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  </div>
 
  {/* Input Area */}
- <div className="p-3 shrink-0 border-t border-primary/40 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-4 bg-white/90 dark:bg-[#0A0F1C]/90 backdrop-blur-xl border-t border-slate-100 dark:border-white/5 shrink-0 relative z-10">
  <form onSubmit={handleSend}>
- <div className="relative rounded-xl overflow-hidden flex flex-col bg-background ring-1 ring-border-[0.5px] border-black/9 dark:border-white/8 focus-within:ring-2 focus-within:ring-primary/50 transition-all ">
+ <div className="relative rounded-2xl bg-slate-50 dark:bg-[#131A2B] border border-slate-200 dark:border-white/10 shadow-sm focus-within:shadow-md focus-within:border-emerald-500/50 focus-within:ring-4 focus-within:ring-emerald-500/10 transition-all duration-300 flex flex-col">
  <textarea
  value={input}
  onChange={e => setInput(e.target.value)}
@@ -441,11 +444,11 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
 }
 }}
  placeholder="Describe the slate or app..."
- className="w-full bg-transparent border-none resize-none px-3 pt-3 pb-2 text-[13px] text-foreground placeholder:text-[#71717a] dark:text-gray-400 focus:outline-none min-h-[80px] max-h-[150px] scrollbar-thin"
+ className="w-full bg-transparent border-none focus:ring-0 resize-none px-4 pt-4 pb-2 text-[13px] text-slate-800 dark:text-slate-200 outline-none leading-relaxed min-h-[56px] max-h-[200px] overflow-y-auto placeholder:text-slate-400 dark:placeholder:text-slate-500 scrollbar-thin"
  disabled={isGenerating}
  />
- <div className="flex items-center justify-between px-2 pb-2 pt-1">
-   <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-medium px-1">Enter to send</span>
+ <div className="flex items-center justify-between px-3 pb-3">
+   <div className="flex items-center gap-0.5"></div>
    <div className="flex items-center gap-2">
      {hasSupport && (
        <Button
@@ -461,17 +464,13 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
          {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
        </Button>
      )}
-     <Button 
-       type="submit" 
-       size="icon"
+     <button
+       type="submit"
        disabled={!input.trim() || isGenerating}
-       onClick={() => {
-         if (isListening) stopListening();
-       }}
-       className="h-8 w-8 rounded-xl bg-primary hover:bg-primary/90 text-white disabled:opacity-40 transition-transform active:scale-95"
+       className="h-8 w-8 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 disabled:hover:bg-emerald-600 disabled:cursor-not-allowed text-white rounded-full flex items-center justify-center transition-all shadow-sm hover:shadow-md hover:shadow-emerald-500/20"
      >
-       <Send className="w-3.5 h-3.5" />
-     </Button>
+       <Send className="w-4 h-4 ml-0.5" />
+     </button>
    </div>
  </div>
  </div>

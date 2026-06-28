@@ -841,13 +841,13 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  )}
  
  <div 
- className={`flex bg-card z-[70] transition-all duration-300 overflow-hidden ${
+ className={`flex bg-white dark:bg-[#0A0F1C] z-[70] transition-all duration-300 overflow-hidden ${
  // Mobile: Bottom Sheet
- isOpen ? "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-md-t-[32px] max-md: max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] max-md:translate-y-0 max-md:opacity-100" : "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-0 max-md:translate-y-full max-md:opacity-0 max-md:pointer-events-none"
-} ${
+ isOpen ? "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] max-md:translate-y-0 max-md:opacity-100 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.5)]" : "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-0 max-md:translate-y-full max-md:opacity-0 max-md:pointer-events-none"
+ } ${
  // Desktop: Side Panel
- isOpen ? (isExpanded ? "md:relative md:h-full md:shrink-0 md:border-l-[3px] md:border-l-primary md:w-[680px] md:opacity-100" : "md:relative md:h-full md:shrink-0 md:border-l-[3px] md:border-l-primary md:w-[400px] md:opacity-100") : "md:h-full md:w-0 md:opacity-0 md:border-none md:pointer-events-none"
-}`}
+ isOpen ? (isExpanded ? "md:relative md:h-full md:shrink-0 md:w-[680px] md:opacity-100" : "md:relative md:h-full md:shrink-0 md:w-[420px] md:opacity-100") : "md:h-full md:w-0 md:opacity-0 md:border-none md:pointer-events-none"
+ }`}
  >
  {/* Mobile Drag Handle */}
  <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
@@ -905,23 +905,27 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div className="flex-1 flex flex-col min-w-0">
 
  {/* Header */}
- <div className="flex items-center gap-2 px-3 py-2.5 border-b border-primary/40 bg-gradient-to-r from-primary/8 to-primary/5 shrink-0">
+ <div className="flex items-center justify-between px-4 py-4 shrink-0 bg-white/80 dark:bg-[#0A0F1C]/80 backdrop-blur-xl border-b border-slate-100 dark:border-white/5 relative z-10">
+ <div className="flex items-center gap-3">
+ <div className="w-8 h-8 rounded-full flex items-center justify-center bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0 shadow-sm border border-emerald-100 dark:border-emerald-500/20">
+ <OrbitIcon className="w-4 h-4" />
+ </div>
+ <div className="flex flex-col">
+  <div className="flex items-center gap-2">
+   <p className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 leading-none">{t("orbit", "OrbitFlow AI")}</p>
+   {chatMode !== 'chat' && <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 font-bold uppercase tracking-wider">{chatMode}</span>}
+  </div>
+  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium">{t("your_intelligent_copilot", "Your intelligent copilot")}</p>
+ </div>
+ </div>
+ <div className="flex items-center gap-1 shrink-0">
  <button
  onClick={() => setShowHistory(prev => !prev)}
- className={`p-1.5 rounded-lg transition-colors shrink-0 ${showHistory ? 'bg-slate-100 dark:bg-primary/40 text-primary dark:text-primary/70' : 'text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground'}`}
+ className={`p-2 rounded-full transition-all ${showHistory ? 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-600' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-600 dark:hover:text-slate-300'}`}
  title="Chat history"
  >
  <Clock className="w-4 h-4" />
  </button>
- <div className="flex items-center gap-2 mb-2">
- <div className="w-5 h-5 rounded-md flex items-center justify-center bg-primary/20 text-primary shrink-0">
- <OrbitIcon className="w-3.5 h-3.5" />
- </div>
- <div className="flex items-center gap-2.5 flex-1">
-  <p className="text-[11px] font-semibold text-foreground leading-none">{t("orbit", "OrbitFlow")}</p>
-  {chatMode !== 'chat' && <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-primary/10 text-primary font-bold uppercase">{chatMode} Mode</span>}
- </div>
- </div>
  <div className="flex items-center gap-0.5 shrink-0">
  <button onClick={startNewChat} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors" title="New chat">
  <Plus className="w-4 h-4" />
@@ -944,24 +948,23 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  </div>
 
  {/* Messages */}
- <div className="flex-1 overflow-y-auto p-4 space-y-4 relative bg-[radial-gradient(circle,#e2e8f0_1px,transparent_1px)] dark:bg-[radial-gradient(circle,#1e293b_1px,transparent_1px)] [background-size:18px_18px]">
- <div className="absolute inset-0 bg-card/65 pointer-events-none z-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
- <div className="relative z-10 space-y-4">
+ <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 relative bg-slate-50/50 dark:bg-transparent">
+ <div className="relative z-10 space-y-6">
  {messages.filter(m => m.role !== 'system').map((msg, i) => {
  return (
- <div key={i} className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
- <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
+ <div key={i} className={`flex gap-3 max-w-full ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+ <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm ${
  msg.role === 'user'
- ? 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
- : 'bg-gradient-to-br from-primary to-primary text-white'
-}`}>
- {msg.role === 'user' ? <User className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
+ ? 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10'
+ : 'bg-emerald-600 text-white shadow-emerald-500/20'
+ }`}>
+ {msg.role === 'user' ? <User className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
  </div>
- <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed max-w-[88%] ${
+ <div className={`px-4 py-3 rounded-2xl text-[13px] leading-relaxed max-w-[85%] shadow-sm ${
  msg.role === 'user'
- ? 'bg-primary text-white rounded-tr-sm'
- : 'bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-tl-sm text-foreground'
-}`}>
+ ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 rounded-tr-sm'
+ : 'bg-white dark:bg-[#131A2B] border border-slate-100 dark:border-white/5 rounded-tl-sm text-slate-700 dark:text-slate-300'
+ }`}>
  <FormatMessage content={msg.content} />
  
  {msg.isConfirmation && msg.pendingAction && (
@@ -1034,20 +1037,20 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  )}
 
  {/* Input */}
- <div className="p-3 border-t border-primary/40 bg-card/80 backdrop-blur-sm shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus-within:border-primary/70 focus-within:ring-2 focus-within:ring-primary/15 rounded-xl bg-background transition-all overflow-hidden ">
+ <div className="p-4 bg-white/90 dark:bg-[#0A0F1C]/90 backdrop-blur-xl border-t border-slate-100 dark:border-white/5 shrink-0 relative z-10">
+ <div className="relative rounded-2xl bg-slate-50 dark:bg-[#131A2B] border border-slate-200 dark:border-white/10 shadow-sm focus-within:shadow-md focus-within:border-emerald-500/50 focus-within:ring-4 focus-within:ring-emerald-500/10 transition-all duration-300 flex flex-col">
  <textarea
  value={input}
  onChange={e => setInput(e.target.value)}
- placeholder={isRecording ? ' Listening speak now' : (chatMode === 'flow' ? 'Design a workflow...' : chatMode === 'automation' ? 'Build an automation...' : 'Ask anything or give a command')}
- rows={2}
- className={`w-full bg-transparent border-none focus:ring-0 resize-none px-3 pt-3 pb-1 text-sm text-foreground outline-none leading-relaxed ${
- isRecording ? 'placeholder:text-red-400 placeholder:animate-pulse' : 'placeholder:text-[#71717a] dark:text-gray-400/50'
-}`}
+ placeholder={isRecording ? 'Listening... speak now' : (chatMode === 'flow' ? 'Design a workflow...' : chatMode === 'automation' ? 'Build an automation...' : 'Ask anything or give a command...')}
+ rows={1}
+ className={`w-full bg-transparent border-none focus:ring-0 resize-none px-4 pt-4 pb-2 text-[13px] text-slate-800 dark:text-slate-200 outline-none leading-relaxed min-h-[56px] max-h-[200px] overflow-y-auto ${
+ isRecording ? 'placeholder:text-red-400 placeholder:animate-pulse' : 'placeholder:text-slate-400 dark:placeholder:text-slate-500'
+ }`}
  disabled={isLoading}
  onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend();}}}
  />
- <div className="flex items-center justify-between px-2 pb-2">
+ <div className="flex items-center justify-between px-3 pb-3">
  <div className="flex items-center gap-0.5">
  <DropdownMenu>
     <DropdownMenuTrigger asChild>
@@ -1089,9 +1092,9 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  type="button"
  disabled={(!input.trim() && !uploadedFile) || isLoading}
  onClick={() => handleSend()}
- className="h-8 w-8 bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl flex items-center justify-center transition-colors "
+ className="h-8 w-8 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 disabled:hover:bg-emerald-600 disabled:cursor-not-allowed text-white rounded-full flex items-center justify-center transition-all shadow-sm hover:shadow-md hover:shadow-emerald-500/20"
  >
- <Send className="w-3.5 h-3.5" />
+ <Send className="w-4 h-4 ml-0.5" />
  </button>
  </div>
  </div>

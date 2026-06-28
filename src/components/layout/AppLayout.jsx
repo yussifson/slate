@@ -283,10 +283,10 @@ export default function AppLayout() {
        </motion.div>
      </AnimatePresence>
    </main>
-  <div id="right-docked-panel-portal" className="flex shrink-0 h-full empty:hidden z-40 relative bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[-4px_0_24px_rgba(0,0,0,0.02)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
-  <GlobalVideoOverlay />
+   <GlobalVideoOverlay />
  </div>
  </div>
+ <div id="right-docked-panel-portal" className="flex shrink-0 h-[100dvh] empty:hidden z-[100] relative bg-white dark:bg-[#090E17] shadow-[-10px_0_30px_rgba(0,0,0,0.05)] dark:shadow-[-10px_0_30px_rgba(0,0,0,0.2)] border-l border-slate-100 dark:border-white/5 transition-all duration-300"></div>
  <MobileBottomNav />
  <AiAssistant isOpen={isAIOpen} onClose={toggleAI} injectedContext={orbitContext} onContextConsumed={() => setOrbitContext(null)} />
  <GlobalChatPanel isOpen={isChatOpen} onClose={toggleChat} />
