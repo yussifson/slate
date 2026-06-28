@@ -25,7 +25,7 @@ import {
  Network, AlertTriangle, Gift, Banknote, CalendarOff,
  HandCoins, Users2, Blocks, Map, Warehouse, Car, MapPin,
  FileSearch, LayoutGrid, BedDouble, BellRing, MoreHorizontal, Pencil, Trash2, Eye, Zap, Store
-, ShieldAlert, HeartPulse, FilePlus, FileCheck, Gavel, CalendarDays, CalendarCheck, UserCheck, PenTool, Target, Calculator, Home, Moon, CalendarSearch, Wallet, PieChart, ArrowUpRight, ArrowDownLeft, Laptop, Smartphone, MessageSquare, LineChart, Brain, PackageSearch, Globe
+, ShieldAlert, HeartPulse, FilePlus, FileCheck, Gavel, CalendarDays, CalendarCheck, UserCheck, PenTool, Target, Calculator, Home, Moon, CalendarSearch, Wallet, PieChart, ArrowUpRight, ArrowDownLeft, Laptop, Smartphone, MessageSquare, LineChart, Brain, PackageSearch, Globe, Archive
 } from "lucide-react";
 import { base44} from "@/api/base44Client";
 import { useImpersonation} from "@/lib/ImpersonationContext";
@@ -42,7 +42,7 @@ const ICON_MAP = {
  GraduationCap, BookMarked, ClipboardList, Bus, FileText, Stethoscope, Bed, Pill,
  FlaskConical, Activity, Sparkles, UtensilsCrossed, Star, ShoppingCart, Package, Truck,
  Tag, Layers, Bell, Award, Library, Building2, AlertCircle, Clock, Network, AlertTriangle,
- Gift, Banknote, CalendarOff, HandCoins, Users2, Blocks, Map, Warehouse, Car, MapPin,
+ Gift, Banknote, CalendarOff, HandCoins, Users2, Blocks, Map, Warehouse, Car, MapPin, Archive,
  FileSearch, LayoutGrid, BedDouble, BellRing, CheckSquare2: CheckSquare, Zap, Store
 , ShieldAlert, HeartPulse, FilePlus, FileCheck, Gavel, CalendarDays, CalendarCheck, UserCheck, PenTool, Target, Calculator, Home, Moon, CalendarSearch, Wallet, PieChart, ArrowUpRight, ArrowDownLeft, Laptop, Smartphone, MessageSquare, LineChart, Brain, PackageSearch, Globe};
 
@@ -333,6 +333,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  { label: "Inbox", path: "/email-inbox", icon: "Mail"},
  { label: "Chat", path: "/chat", icon: "MessageCircle"},
  { label: "Board", path: "/board", icon: "LayoutGrid"},
+ { label: "Feature Lab", path: "/feature-insider", icon: "FlaskConical"},
+ { label: "Feature Vault", path: "/feature-vault", icon: "Archive"},
  { label: "Settings", path: "/settings", icon: "Settings"}
  ];
 
@@ -348,7 +350,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     { label: "Security", path: "/admin/security", icon: "ShieldCheck"},
     { label: "Broadcasts", path: "/admin/broadcasts", icon: "Megaphone"},
     { label: "Enterprise Requests", path: "/admin/enterprise-requests", icon: "Building2"},
-    { label: "Partner Applications", path: "/admin/partners", icon: "Handshake"}
+    { label: "Partner Applications", path: "/admin/partners", icon: "Handshake"},
+    { label: "Feature Insider", path: "/admin/feature-insider", icon: "FlaskConical"}
  ];
 
  const isSuiteAdmin = ["super_admin", "admin"].includes(user?.role);

@@ -42,9 +42,9 @@ export default function OptavelSupport() {
   });
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] text-slate-200 p-8 font-sans">
+    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-200 p-8 font-sans">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
           <LifeBuoy className="w-8 h-8 text-cyan-500" />
           Customer Support
         </h1>
@@ -52,17 +52,17 @@ export default function OptavelSupport() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-[#111113] border border-white/5 rounded-2xl p-6 col-span-1 md:col-span-2">
+        <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-6 col-span-1 md:col-span-2">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-white flex items-center gap-2"><Inbox className="w-5 h-5 text-cyan-400" /> Ticket Queue</h2>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><Inbox className="w-5 h-5 text-cyan-400" /> Ticket Queue</h2>
             <div className="flex gap-2">
               <input 
                 type="text" placeholder="New ticket..." 
-                className="bg-black/50 border border-white/10 rounded-lg px-3 py-1 text-sm focus:outline-none focus:border-cyan-500"
+                className="bg-white dark:bg-black/50 border border-slate-300 dark:border-white/10 rounded-lg px-3 py-1 text-sm focus:outline-none focus:border-cyan-500"
                 value={newTicket} onChange={e => setNewTicket(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && createTicket.mutate()}
               />
-              <button onClick={() => createTicket.mutate()} className="p-1.5 bg-cyan-500 hover:bg-cyan-600 rounded-lg text-white">
+              <button onClick={() => createTicket.mutate()} className="p-1.5 bg-cyan-500 hover:bg-cyan-600 rounded-lg text-slate-900 dark:text-white">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
@@ -70,15 +70,15 @@ export default function OptavelSupport() {
           
           <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
             {tickets.length === 0 ? (
-              <p className="text-sm text-slate-500 text-center py-4 border border-dashed border-white/10 rounded-xl">Queue is empty.</p>
+              <p className="text-sm text-slate-500 text-center py-4 border border-dashed border-slate-300 dark:border-white/10 rounded-xl">Queue is empty.</p>
             ) : tickets.map(ticket => (
-              <div key={ticket.id} className="p-4 bg-white/5 border border-white/5 rounded-xl flex justify-between items-center hover:bg-white/10 transition-colors cursor-pointer">
+              <div key={ticket.id} className="p-4 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 rounded-xl flex justify-between items-center hover:bg-slate-200 dark:bg-white/10 transition-colors cursor-pointer">
                 <div>
                   <div className="text-xs text-slate-500 mb-1">T-{ticket.id.split('-')[0]}</div>
-                  <h3 className="font-semibold text-white text-sm">{ticket.title}</h3>
+                  <h3 className="font-semibold text-slate-900 dark:text-white text-sm">{ticket.title}</h3>
                 </div>
                 <div className="text-right">
-                  <div className={`text-xs font-bold ${ticket.severity === 'high' ? 'text-rose-400' : 'text-amber-400'}`}>{ticket.severity}</div>
+                  <div className={`text-xs font-bold ${ticket.severity === 'high' ? 'text-orange-400' : 'text-amber-400'}`}>{ticket.severity}</div>
                   <div className="text-xs text-slate-400">{ticket.status}</div>
                 </div>
               </div>
@@ -86,8 +86,8 @@ export default function OptavelSupport() {
           </div>
         </div>
 
-        <div className="bg-[#111113] border border-white/5 rounded-2xl p-6">
-          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><MessageCircle className="w-5 h-5 text-emerald-400" /> NPS Score</h2>
+        <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-6">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2"><MessageCircle className="w-5 h-5 text-emerald-400" /> NPS Score</h2>
           <div className="flex flex-col items-center justify-center py-8">
             <div className="text-6xl font-black text-emerald-400 mb-2">68</div>
             <p className="text-sm text-slate-400">Excellent • +2 this month</p>

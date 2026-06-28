@@ -5801,5 +5801,336 @@ export const AppSchema = new Schema({
         folder: column.text,
         uploaded_by: column.text,
         created_at: column.text
-    })
+    }),
+    univ_feature_requests: new Table({
+        id: column.text,
+        company_id: column.text,
+        user_id: column.text,
+        title: column.text,
+        description: column.text,
+        request_type: column.text,
+        status: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_feature_announcements: new Table({
+        id: column.text,
+        title: column.text,
+        description: column.text,
+        avatar_url: column.text,
+        bio: column.text,
+        license_number: column.text,
+        license_expiry: column.text,
+        commission_rate: column.real,
+        join_date: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+
+    // MLS Listings
+    univ_re_mls_listings: new Table({
+        id: column.text,
+        company_id: column.text,
+        mls_id: column.text,
+        property_address: column.text,
+        city: column.text,
+        state: column.text,
+        zip_code: column.text,
+        price: column.real,
+        list_date: column.text,
+        sold_date: column.text,
+        days_on_market: column.integer,
+        bedrooms: column.integer,
+        bathrooms: column.real,
+        square_feet: column.real,
+        lot_size: column.real,
+        property_type: column.text,
+        status: column.text,
+        agent_name: column.text,
+        brokerage: column.text,
+        description: column.text,
+        source: column.text,
+        last_updated: column.text,
+        created_at: column.text
+    }),
+
+    // Comparable Analysis
+    univ_re_comparable_analysis: new Table({
+        id: column.text,
+        company_id: column.text,
+        property_id: column.text,
+        analysis_date: column.text,
+        subject_address: column.text,
+        subject_price: column.real,
+        comparable_1_address: column.text,
+        comparable_1_price: column.real,
+        comparable_1_adjustment: column.real,
+        comparable_2_address: column.text,
+        comparable_2_price: column.real,
+        comparable_2_adjustment: column.real,
+        comparable_3_address: column.text,
+        comparable_3_price: column.real,
+        comparable_3_adjustment: column.real,
+        estimated_value: column.real,
+        confidence_level: column.integer,
+        notes: column.text,
+        created_by: column.text,
+        created_at: column.text
+    }),
+
+    // Market Trends
+    univ_re_market_trends: new Table({
+        id: column.text,
+        company_id: column.text,
+        city: column.text,
+        state: column.text,
+        metric_date: column.text,
+        avg_price: column.real,
+        median_price: column.real,
+        avg_days_on_market: column.integer,
+        total_listings: column.integer,
+        sold_listings: column.integer,
+        absorption_rate: column.real,
+        price_per_sqft: column.real,
+        yoy_price_change: column.real,
+        created_at: column.text
+    }),
+
+    // CRM Leads
+    univ_re_leads: new Table({
+        id: column.text,
+        company_id: column.text,
+        first_name: column.text,
+        last_name: column.text,
+        email: column.text,
+        phone: column.text,
+        source: column.text,
+        property_interest: column.text,
+        budget_min: column.real,
+        budget_max: column.real,
+        lead_type: column.text,
+        status: column.text,
+        stage: column.text,
+        assigned_agent_id: column.text,
+        lead_score: column.integer,
+        next_followup: column.text,
+        notes: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+
+    // Lead Activities
+    univ_re_lead_activities: new Table({
+        id: column.text,
+        company_id: column.text,
+        lead_id: column.text,
+        activity_type: column.text,
+        subject: column.text,
+        description: column.text,
+        outcome: column.text,
+        next_action: column.text,
+        next_action_date: column.text,
+        created_by: column.text,
+        created_at: column.text
+    }),
+
+    // Agentic Conversations
+    univ_re_agentic_conversations: new Table({
+        id: column.text,
+        company_id: column.text,
+        title: column.text,
+        messages: column.text,
+        status: column.text,
+        context: column.text,
+        created_by: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+
+    // Online Learning System
+    online_courses: new Table({
+        id: column.text,
+        company_id: column.text,
+        title: column.text,
+        description: column.text,
+        price: column.text,
+        level: column.text,
+        duration_hours: column.real,
+        status: column.text,
+        thumbnail_url: column.text,
+        total_students: column.integer,
+        rating: column.real,
+        total_reviews: column.integer,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    online_lessons: new Table({
+        id: column.text,
+        company_id: column.text,
+        course_id: column.text,
+        title: column.text,
+        order_index: column.integer,
+        video_url: column.text,
+        duration_minutes: column.integer,
+        created_at: column.text
+    }),
+    online_enrollments: new Table({
+        id: column.text,
+        company_id: column.text,
+        course_id: column.text,
+        student_id: column.text,
+        student_name: column.text,
+        student_email: column.text,
+        enrollment_date: column.text,
+        progress_percent: column.real,
+        last_accessed: column.text,
+        status: column.text
+    }),
+    online_media: new Table({
+        id: column.text,
+        company_id: column.text,
+        name: column.text,
+        type: column.text,
+        size: column.text,
+        url: column.text,
+        folder: column.text,
+        uploaded_by: column.text,
+        created_at: column.text
+    }),
+    univ_feature_requests: new Table({
+        id: column.text,
+        company_id: column.text,
+        user_id: column.text,
+        title: column.text,
+        description: column.text,
+        request_type: column.text,
+        status: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_feature_announcements: new Table({
+        id: column.text,
+        title: column.text,
+        description: column.text,
+        announcement_type: column.text,
+        target_company_id: column.text,
+        module_identifier: column.text,
+        created_at: column.text
+    }),
+    univ_company_feature_decisions: new Table({
+        id: column.text,
+        company_id: column.text,
+        announcement_id: column.text,
+        decision: column.text,
+        created_at: column.text
+    }),
+
+    // Optavel OS Internal Tables
+    optavel_deal_rooms: new Table({
+        id: column.text,
+        company_id: column.text,
+        lead_name: column.text,
+        value: column.real,
+        stage: column.text,
+        probability: column.integer,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    optavel_okrs: new Table({
+        id: column.text,
+        company_id: column.text,
+        objective: column.text,
+        key_result: column.text,
+        progress: column.real,
+        status: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    optavel_decisions: new Table({
+        id: column.text,
+        company_id: column.text,
+        title: column.text,
+        status: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    optavel_commissions: new Table({
+        id: column.text,
+        company_id: column.text,
+        partner_id: column.text,
+        amount: column.real,
+        status: column.text,
+        month: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    optavel_cap_table: new Table({
+        id: column.text,
+        company_id: column.text,
+        user_id: column.text,
+        equity_percentage: column.real,
+        shares: column.integer,
+        vesting_schedule: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    optavel_campaigns: new Table({
+        id: column.text,
+        company_id: column.text,
+        title: column.text,
+        status: column.text,
+        budget: column.real,
+        spent: column.real,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    optavel_marketing_reports: new Table({
+        id: column.text,
+        company_id: column.text,
+        campaign_id: column.text,
+        file_url: column.text,
+        file_name: column.text,
+        uploaded_by: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    optavel_seo_tracking: new Table({
+        id: column.text,
+        company_id: column.text,
+        keyword: column.text,
+        rank: column.integer,
+        search_volume: column.integer,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    optavel_summit_registrations: new Table({
+        id: column.text,
+        company_id: column.text,
+        name: column.text,
+        company: column.text,
+        ticket_type: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    optavel_bugs: new Table({
+        id: column.text,
+        company_id: column.text,
+        title: column.text,
+        severity: column.text,
+        status: column.text,
+        product: column.text,
+        reporter_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    optavel_sprints: new Table({
+        id: column.text,
+        company_id: column.text,
+        title: column.text,
+        status: column.text,
+        start_date: column.text,
+        end_date: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
 });

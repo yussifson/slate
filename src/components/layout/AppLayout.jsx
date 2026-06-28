@@ -17,6 +17,7 @@ import GlobalChatPanel from "@/components/chat/GlobalChatPanel";
 import SpotlightSearch from "./SpotlightSearch";
 import GlobalVideoOverlay from "@/components/video/GlobalVideoOverlay";
 import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
+import FeatureAnnouncementModal from "./FeatureAnnouncementModal";
 
 export default function AppLayout() {
  const { t} = useTranslation();
@@ -291,6 +292,7 @@ export default function AppLayout() {
  <GlobalChatPanel isOpen={isChatOpen} onClose={toggleChat} />
  {isBoltOpen && <OrbitBoltWorkspace onClose={toggleBolt} />}
  <SpotlightSearch />
+ <FeatureAnnouncementModal />
  </div>
  );
 }

@@ -252,3 +252,9 @@ bucket_definitions:
   - SELECT * FROM optavel_cap_table WHERE company_id = bucket.company_id
   - SELECT * FROM optavel_summit_registrations WHERE company_id = bucket.company_id
 
+  # -------------------------------------------------------------
+  # FEATURE INSIDER MODULE
+  # -------------------------------------------------------------
+  - SELECT * FROM univ_feature_requests WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_feature_announcements WHERE announcement_type = 'general' OR target_company_id = bucket.company_id
+  - SELECT * FROM univ_company_feature_decisions WHERE company_id = bucket.company_id

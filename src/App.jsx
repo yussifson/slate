@@ -516,6 +516,9 @@ import AdminQuotas from './pages/admin/AdminQuotas';
 import AdminEnterpriseRequests from './pages/admin/AdminEnterpriseRequests';
 import AdminPartners from './pages/admin/AdminPartners';
 import NotificationsInbox from './pages/NotificationsInbox';
+import FeatureLab from './pages/FeatureLab';
+import FeatureVault from './pages/FeatureVault';
+import AdminFeatureInsider from './pages/admin/AdminFeatureInsider';
 
 function PlatformRoutes() {
   return (
@@ -537,6 +540,8 @@ function PlatformRoutes() {
 
       <Route path="/super-admin" element={<GlobalAnalyticsDashboard />} />
       <Route path="/enterprise-admin" element={<EnterpriseDashboard />} />
+      <Route path="/feature-insider" element={<FeatureLab />} />
+      <Route path="/feature-vault" element={<FeatureVault />} />
       <Route path="/intelligence" element={<Intelligence />} />
       <Route path="/cases" element={<UnivProject />} />
       <Route path="/clients" element={<Clients />} />
@@ -1136,6 +1141,7 @@ function App() {
                             <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
                             <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
                             <Route path="/admin/partners" element={<AdminPartners />} />
+                            <Route path="/admin/feature-insider" element={<AdminFeatureInsider />} />
                           </Route>
 
                           {PlatformRoutes()}
@@ -1168,6 +1174,7 @@ function App() {
                             <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
                             <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
                             <Route path="/admin/partners" element={<AdminPartners />} />
+                            <Route path="/admin/feature-insider" element={<AdminFeatureInsider />} />
                           </Route>
 
                           {PlatformRoutes()}
