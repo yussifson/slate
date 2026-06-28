@@ -1,23 +1,45 @@
 import React, { useState } from 'react';
-import { Code, GitPullRequest, Bug, Activity, Plus } from 'lucide-react';
+import { Code, GitPullRequest, Bug, Activity, Plus, MoreVertical, Calendar } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useAuth } from '@/lib/AuthContext';
 import { v4 as uuidv4 } from 'uuid';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+
+const COLUMNS = {
+  todo: 'To Do',
+  in_progress: 'In Progress',
+  review: 'Review',
+  done: 'Done'
+};
 
 export default function OptavelProductEng() {
   const { user } = useAuth();
   const companyId = user?.profile?.company_id || user?.company_id;
   const queryClient = useQueryClient();
 
-  const [newBugTitle, setNewBugTitle] = useState('');
+  const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [activeColumn, setActiveColumn] = useState('todo');
+
+  const { data: tasks = [] } = useQuery({
+    queryKey: ['optavel_tasks', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute(
+        `SELECT * FROM optavel_tasks WHERE company_id = ? ORDER BY created_at DESC`,
+        [companyId]
+      );
+      return res.rows._array;
+    },
+    enabled: !!companyId
+  });
 
   const { data: bugs = [] } = useQuery({
     queryKey: ['optavel_bugs', companyId],
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute(
-        `SELECT * FROM optavel_bugs WHERE company_id = ? ORDER BY created_at DESC`,
+        `SELECT * FROM optavel_bugs WHERE company_id = ? AND status = 'open'`,
         [companyId]
       );
       return res.rows._array;
@@ -25,38 +47,48 @@ export default function OptavelProductEng() {
     enabled: !!companyId
   });
 
-  const { data: sprints = [] } = useQuery({
-    queryKey: ['optavel_sprints', companyId],
-    queryFn: async () => {
-      if (!companyId) return [];
-      const res = await powerSync.execute(
-        `SELECT * FROM optavel_sprints WHERE company_id = ? AND status = 'active'`,
-        [companyId]
-      );
-      return res.rows._array;
-    },
-    enabled: !!companyId
-  });
-
-  const reportBug = useMutation({
+  const createTask = useMutation({
     mutationFn: async () => {
-      if (!newBugTitle) return;
+      if (!newTaskTitle.trim()) return;
       const id = uuidv4();
       await powerSync.execute(
-        `INSERT INTO optavel_bugs (id, company_id, title, severity, status, reporter_id) VALUES (?, ?, ?, ?, ?, ?)`,
-        [id, companyId, newBugTitle, 'high', 'open', user.id]
+        `INSERT INTO optavel_tasks (id, company_id, title, status, priority, assignee_id) VALUES (?, ?, ?, ?, ?, ?)`,
+        [id, companyId, newTaskTitle, activeColumn, 'medium', user.id]
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['optavel_bugs']);
-      setNewBugTitle('');
+      queryClient.invalidateQueries(['optavel_tasks']);
+      setNewTaskTitle('');
     }
   });
 
-  const resolveBug = async (id) => {
-    await powerSync.execute(`UPDATE optavel_bugs SET status = 'resolved' WHERE id = ?`, [id]);
-    queryClient.invalidateQueries(['optavel_bugs']);
+  const updateTaskStatus = useMutation({
+    mutationFn: async ({ id, status }) => {
+      await powerSync.execute(
+        `UPDATE optavel_tasks SET status = ? WHERE id = ?`,
+        [status, id]
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['optavel_tasks']);
+    }
+  });
+
+  const onDragEnd = (result) => {
+    const { destination, source, draggableId } = result;
+
+    if (!destination) return;
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
+
+    // Optimistically update UI
+    const newStatus = destination.droppableId;
+    updateTaskStatus.mutate({ id: draggableId, status: newStatus });
   };
+
+  const tasksByColumn = Object.keys(COLUMNS).reduce((acc, colId) => {
+    acc[colId] = tasks.filter(t => t.status === colId);
+    return acc;
+  }, {});
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-200 p-8 font-sans">
@@ -65,17 +97,17 @@ export default function OptavelProductEng() {
           <Code className="w-8 h-8 text-emerald-500" />
           Product & Engineering
         </h1>
-        <p className="text-slate-400 mt-1">Roadmap, Sprint Management, Bug Tracker, and Deployments.</p>
+        <p className="text-slate-400 mt-1">Sprint Kanban Board and Active Engineering Metrics.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Active Sprints', val: sprints.length.toString(), icon: Activity, color: 'text-emerald-400' },
-          { label: 'Open Bugs', val: bugs.filter(b => b.status === 'open').length.toString(), icon: Bug, color: 'text-orange-400' },
-          { label: 'Open PRs', val: '8', icon: GitPullRequest, color: 'text-emerald-400' },
-          { label: 'Deployments (7d)', val: '24', icon: Code, color: 'text-emerald-400' },
+          { label: 'Total Tasks', val: tasks.length.toString(), icon: Activity, color: 'text-emerald-400' },
+          { label: 'Open Bugs', val: bugs.length.toString(), icon: Bug, color: 'text-orange-400' },
+          { label: 'Completed (7d)', val: tasksByColumn.done?.length.toString() || '0', icon: GitPullRequest, color: 'text-emerald-400' },
+          { label: 'In Progress', val: tasksByColumn.in_progress?.length.toString() || '0', icon: Code, color: 'text-emerald-400' },
         ].map((stat, i) => (
-          <div key={i} className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-xl p-5">
+          <div key={i} className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-xl p-5 shadow-sm">
             <div className="flex justify-between items-start mb-2">
               <span className="text-sm font-medium text-slate-400">{stat.label}</span>
               <stat.icon className={`w-5 h-5 ${stat.color}`} />
@@ -85,41 +117,102 @@ export default function OptavelProductEng() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-6 min-h-[400px]">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Bug Tracker</h2>
-            <div className="flex gap-2">
-              <input 
-                type="text" placeholder="Bug summary..." 
-                className="bg-white dark:bg-black/50 border border-slate-300 dark:border-white/10 rounded-lg px-3 py-1 text-sm focus:outline-none focus:border-orange-500"
-                value={newBugTitle} onChange={e => setNewBugTitle(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && reportBug.mutate()}
-              />
-              <button onClick={() => reportBug.mutate()} className="p-1.5 bg-orange-500 hover:bg-orange-600 rounded-lg text-slate-900 dark:text-white">
-                <Plus className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-          <div className="space-y-3">
-            {bugs.length === 0 ? <p className="text-slate-500 text-sm">No bugs reported.</p> : bugs.map(bug => (
-              <div key={bug.id} className="p-3 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 rounded-lg flex justify-between items-center">
-                <div>
-                  <h4 className={`font-semibold text-slate-900 dark:text-white ${bug.status === 'resolved' ? 'line-through text-slate-500' : ''}`}>{bug.title}</h4>
-                  <p className="text-xs text-slate-400">{new Date(bug.created_at).toLocaleString()}</p>
-                </div>
-                {bug.status === 'open' && (
-                  <button onClick={() => resolveBug(bug.id)} className="text-xs px-2 py-1 bg-slate-200 dark:bg-white/10 hover:bg-emerald-500 hover:text-slate-900 dark:text-white rounded">Resolve</button>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-6 min-h-[400px] flex items-center justify-center">
-          <p className="text-slate-500">Advanced Roadmap and Sprint Board loaded here.</p>
-        </div>
+      <div className="mb-6 flex gap-3">
+        <input 
+          type="text" 
+          placeholder="New task title..." 
+          className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+          value={newTaskTitle} 
+          onChange={e => setNewTaskTitle(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && createTask.mutate()}
+        />
+        <select 
+          className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-sm"
+          value={activeColumn}
+          onChange={e => setActiveColumn(e.target.value)}
+        >
+          {Object.entries(COLUMNS).map(([key, label]) => (
+            <option key={key} value={key}>Add to: {label}</option>
+          ))}
+        </select>
+        <button 
+          onClick={() => createTask.mutate()} 
+          className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 transition-colors rounded-lg text-white font-medium flex items-center gap-2 shadow-sm shadow-emerald-500/20"
+        >
+          <Plus className="w-4 h-4" /> Add Task
+        </button>
       </div>
+
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
+          {Object.entries(COLUMNS).map(([columnId, columnTitle]) => (
+            <div key={columnId} className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-4 flex flex-col h-[600px]">
+              <div className="flex justify-between items-center mb-4 px-1">
+                <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                  {columnTitle}
+                  <span className="bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs px-2 py-0.5 rounded-full">
+                    {tasksByColumn[columnId]?.length || 0}
+                  </span>
+                </h3>
+              </div>
+              
+              <Droppable droppableId={columnId}>
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className={`flex-1 overflow-y-auto rounded-xl p-1 transition-colors ${
+                      snapshot.isDraggingOver ? 'bg-slate-200/50 dark:bg-slate-800/50' : ''
+                    }`}
+                  >
+                    {tasksByColumn[columnId]?.map((task, index) => (
+                      <Draggable key={task.id} draggableId={task.id} index={index}>
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className={`mb-3 bg-white dark:bg-slate-950 p-4 rounded-xl shadow-sm border ${
+                              snapshot.isDragging ? 'border-emerald-500 shadow-lg scale-[1.02]' : 'border-slate-200 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/10'
+                            } transition-all`}
+                          >
+                            <div className="flex justify-between items-start mb-2">
+                              <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                                task.priority === 'high' ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400' :
+                                'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+                              }`}>
+                                {task.priority || 'Medium'}
+                              </span>
+                              <button className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                                <MoreVertical className="w-4 h-4" />
+                              </button>
+                            </div>
+                            <h4 className="font-medium text-slate-800 dark:text-slate-100 mb-3 text-sm leading-snug">
+                              {task.title}
+                            </h4>
+                            <div className="flex items-center justify-between text-xs text-slate-400">
+                              <div className="flex items-center gap-1">
+                                <Calendar className="w-3 h-3" />
+                                {new Date(task.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                              </div>
+                              {task.assignee_id && (
+                                <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-500 border border-white dark:border-slate-950">
+                                  {user?.email?.charAt(0).toUpperCase() || 'U'}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </div>
+          ))}
+        </div>
+      </DragDropContext>
     </div>
   );
 }

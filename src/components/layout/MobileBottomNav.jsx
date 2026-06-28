@@ -31,7 +31,8 @@ export default function MobileBottomNav() {
  <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[60] bg-background/95 backdrop-blur-xl border-t border-primary/40 -[0_-4px_20px_rgba(0,0,0,0.06)] pb-[env(safe-area-inset-bottom)]">
  <div className="flex items-center justify-around h-16 px-1">
  {bottomNavItems.map((item) => {
- const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
+   const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin", "/optavel", "/logistics", "/real-estate", "/retail", "/hotel", "/pharmacy", "/religion"].includes(item.path);
+   const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
  const IconComp = typeof item.icon === 'string' ? (ICON_MAP[item.icon] || LayoutDashboard) : (item.icon || LayoutDashboard);
  
  return (
@@ -99,7 +100,8 @@ export default function MobileBottomNav() {
  <div className="flex-1 overflow-y-auto px-4 py-4 pb-[env(safe-area-inset-bottom)]">
  <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 divide-y divide-slate-100 dark:divide-slate-800/50 ">
  {overflowItems.map((item, index) => {
- const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
+   const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin", "/optavel", "/logistics", "/real-estate", "/retail", "/hotel", "/pharmacy", "/religion"].includes(item.path);
+   const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
  const IconComp = typeof item.icon === 'string' ? (ICON_MAP[item.icon] || LayoutDashboard) : (item.icon || LayoutDashboard);
  
  return (

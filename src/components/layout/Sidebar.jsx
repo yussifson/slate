@@ -588,7 +588,7 @@ if (user?.role === "super_admin") {
  </div>
  )}
  {navItems.map((item, idx) => {
- const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin"].includes(item.path);
+ const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin", "/optavel", "/logistics", "/real-estate", "/retail", "/hotel", "/pharmacy", "/religion"].includes(item.path);
  const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
  const IconComp = typeof item.icon === 'string' ? (ICON_MAP[item.icon] || LayoutDashboard) : (item.icon || LayoutDashboard);
  const showSection = item.section && !collapsed;

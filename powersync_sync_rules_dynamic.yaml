@@ -258,3 +258,7 @@ bucket_definitions:
   - SELECT * FROM univ_feature_requests WHERE company_id = bucket.company_id
   - SELECT * FROM univ_feature_announcements WHERE announcement_type = 'general' OR target_company_id = bucket.company_id
   - SELECT * FROM univ_company_feature_decisions WHERE company_id = bucket.company_id
+
+  - SELECT * FROM optavel_tasks WHERE company_id = bucket.company_id
+  - SELECT * FROM optavel_transactions WHERE company_id = bucket.company_id
+  - SELECT * FROM optavel_deal_activities WHERE company_id = bucket.company_id

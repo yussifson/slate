@@ -6,7 +6,7 @@
 -- 1. EXECUTIVE & CORE
 CREATE TABLE IF NOT EXISTS public.optavel_okrs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL REFERENCES public.profiles(company_id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
     status TEXT DEFAULT 'on_track',
     progress INTEGER DEFAULT 0,
@@ -20,7 +20,7 @@ CREATE POLICY "optavel_okrs_policy" ON public.optavel_okrs FOR ALL USING (compan
 
 CREATE TABLE IF NOT EXISTS public.optavel_decisions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL REFERENCES public.profiles(company_id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
     context TEXT,
     outcome TEXT,
@@ -34,7 +34,7 @@ CREATE POLICY "optavel_decisions_policy" ON public.optavel_decisions FOR ALL USI
 -- 2. MARKETING
 CREATE TABLE IF NOT EXISTS public.optavel_campaigns (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL REFERENCES public.profiles(company_id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
     type TEXT,
     budget NUMERIC DEFAULT 0,
@@ -48,7 +48,7 @@ CREATE POLICY "optavel_campaigns_policy" ON public.optavel_campaigns FOR ALL USI
 
 CREATE TABLE IF NOT EXISTS public.optavel_marketing_reports (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL REFERENCES public.profiles(company_id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
     campaign_id UUID REFERENCES public.optavel_campaigns(id) ON DELETE CASCADE,
     file_url TEXT NOT NULL,
     file_name TEXT,
@@ -60,7 +60,7 @@ CREATE POLICY "optavel_marketing_reports_policy" ON public.optavel_marketing_rep
 
 CREATE TABLE IF NOT EXISTS public.optavel_seo_tracking (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL REFERENCES public.profiles(company_id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
     keyword TEXT NOT NULL,
     rank INTEGER,
     volume INTEGER,
@@ -72,7 +72,7 @@ CREATE POLICY "optavel_seo_tracking_policy" ON public.optavel_seo_tracking FOR A
 -- 3. PRODUCT & ENGINEERING
 CREATE TABLE IF NOT EXISTS public.optavel_sprints (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL REFERENCES public.profiles(company_id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     start_date DATE,
     end_date DATE,
@@ -84,7 +84,7 @@ CREATE POLICY "optavel_sprints_policy" ON public.optavel_sprints FOR ALL USING (
 
 CREATE TABLE IF NOT EXISTS public.optavel_bugs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL REFERENCES public.profiles(company_id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
     severity TEXT DEFAULT 'low',
     status TEXT DEFAULT 'open',
@@ -98,7 +98,7 @@ CREATE POLICY "optavel_bugs_policy" ON public.optavel_bugs FOR ALL USING (compan
 -- 4. SALES & FINANCE
 CREATE TABLE IF NOT EXISTS public.optavel_deal_rooms (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL REFERENCES public.profiles(company_id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
     lead_name TEXT NOT NULL,
     value NUMERIC DEFAULT 0,
     stage TEXT DEFAULT 'lead',
@@ -110,7 +110,7 @@ CREATE POLICY "optavel_deal_rooms_policy" ON public.optavel_deal_rooms FOR ALL U
 
 CREATE TABLE IF NOT EXISTS public.optavel_commissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL REFERENCES public.profiles(company_id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
     partner_id UUID REFERENCES public.profiles(id),
     amount NUMERIC DEFAULT 0,
     status TEXT DEFAULT 'unpaid',
@@ -123,7 +123,7 @@ CREATE POLICY "optavel_commissions_policy" ON public.optavel_commissions FOR ALL
 -- 5. PARTNERSHIPS & HR
 CREATE TABLE IF NOT EXISTS public.optavel_cap_table (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL REFERENCES public.profiles(company_id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
     user_id UUID REFERENCES public.profiles(id),
     equity_percentage NUMERIC DEFAULT 0,
     vested_percentage NUMERIC DEFAULT 0,
@@ -134,7 +134,7 @@ CREATE POLICY "optavel_cap_table_policy" ON public.optavel_cap_table FOR ALL USI
 
 CREATE TABLE IF NOT EXISTS public.optavel_summit_registrations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL REFERENCES public.profiles(company_id) ON DELETE CASCADE,
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     company TEXT,
     ticket_type TEXT,
@@ -171,3 +171,41 @@ BEGIN
         -- Table already in publication
     END;
 END $$;
+
+-- 5. NEW FEATURES
+CREATE TABLE IF NOT EXISTS public.optavel_tasks (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    description TEXT,
+    status TEXT DEFAULT 'todo',
+    priority TEXT DEFAULT 'medium',
+    assignee_id UUID REFERENCES public.profiles(id),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+ALTER TABLE public.optavel_tasks ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "optavel_tasks_policy" ON public.optavel_tasks FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+
+CREATE TABLE IF NOT EXISTS public.optavel_transactions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+    amount NUMERIC NOT NULL,
+    type TEXT NOT NULL,
+    category TEXT,
+    date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    description TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+ALTER TABLE public.optavel_transactions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "optavel_transactions_policy" ON public.optavel_transactions FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+
+CREATE TABLE IF NOT EXISTS public.optavel_deal_activities (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+    deal_id UUID REFERENCES public.optavel_deal_rooms(id) ON DELETE CASCADE,
+    activity_type TEXT NOT NULL,
+    notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+ALTER TABLE public.optavel_deal_activities ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "optavel_deal_activities_policy" ON public.optavel_deal_activities FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
