@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS public.optavel_okrs (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ALTER TABLE public.optavel_okrs ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "optavel_okrs_policy" ON public.optavel_okrs FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+CREATE POLICY "optavel_okrs_policy" ON public.optavel_okrs FOR ALL USING (company_id = (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()));
 
 CREATE TABLE IF NOT EXISTS public.optavel_decisions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS public.optavel_decisions (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ALTER TABLE public.optavel_decisions ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "optavel_decisions_policy" ON public.optavel_decisions FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+CREATE POLICY "optavel_decisions_policy" ON public.optavel_decisions FOR ALL USING (company_id = (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()));
 
 -- 2. MARKETING
 CREATE TABLE IF NOT EXISTS public.optavel_campaigns (
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS public.optavel_campaigns (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ALTER TABLE public.optavel_campaigns ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "optavel_campaigns_policy" ON public.optavel_campaigns FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+CREATE POLICY "optavel_campaigns_policy" ON public.optavel_campaigns FOR ALL USING (company_id = (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()));
 
 CREATE TABLE IF NOT EXISTS public.optavel_marketing_reports (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS public.optavel_marketing_reports (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ALTER TABLE public.optavel_marketing_reports ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "optavel_marketing_reports_policy" ON public.optavel_marketing_reports FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+CREATE POLICY "optavel_marketing_reports_policy" ON public.optavel_marketing_reports FOR ALL USING (company_id = (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()));
 
 CREATE TABLE IF NOT EXISTS public.optavel_seo_tracking (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS public.optavel_seo_tracking (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ALTER TABLE public.optavel_seo_tracking ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "optavel_seo_tracking_policy" ON public.optavel_seo_tracking FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+CREATE POLICY "optavel_seo_tracking_policy" ON public.optavel_seo_tracking FOR ALL USING (company_id = (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()));
 
 -- 3. PRODUCT & ENGINEERING
 CREATE TABLE IF NOT EXISTS public.optavel_sprints (
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS public.optavel_sprints (
     status TEXT DEFAULT 'active'
 );
 ALTER TABLE public.optavel_sprints ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "optavel_sprints_policy" ON public.optavel_sprints FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+CREATE POLICY "optavel_sprints_policy" ON public.optavel_sprints FOR ALL USING (company_id = (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()));
 
 CREATE TABLE IF NOT EXISTS public.optavel_bugs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS public.optavel_bugs (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ALTER TABLE public.optavel_bugs ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "optavel_bugs_policy" ON public.optavel_bugs FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+CREATE POLICY "optavel_bugs_policy" ON public.optavel_bugs FOR ALL USING (company_id = (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()));
 
 -- 4. SALES & FINANCE
 CREATE TABLE IF NOT EXISTS public.optavel_deal_rooms (
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS public.optavel_deal_rooms (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ALTER TABLE public.optavel_deal_rooms ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "optavel_deal_rooms_policy" ON public.optavel_deal_rooms FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+CREATE POLICY "optavel_deal_rooms_policy" ON public.optavel_deal_rooms FOR ALL USING (company_id = (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()));
 
 CREATE TABLE IF NOT EXISTS public.optavel_commissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS public.optavel_commissions (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ALTER TABLE public.optavel_commissions ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "optavel_commissions_policy" ON public.optavel_commissions FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+CREATE POLICY "optavel_commissions_policy" ON public.optavel_commissions FOR ALL USING (company_id = (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()));
 
 -- 5. PARTNERSHIPS & HR
 CREATE TABLE IF NOT EXISTS public.optavel_cap_table (
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS public.optavel_cap_table (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ALTER TABLE public.optavel_cap_table ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "optavel_cap_table_policy" ON public.optavel_cap_table FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+CREATE POLICY "optavel_cap_table_policy" ON public.optavel_cap_table FOR ALL USING (company_id = (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()));
 
 CREATE TABLE IF NOT EXISTS public.optavel_summit_registrations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS public.optavel_summit_registrations (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ALTER TABLE public.optavel_summit_registrations ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "optavel_summit_registrations_policy" ON public.optavel_summit_registrations FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+CREATE POLICY "optavel_summit_registrations_policy" ON public.optavel_summit_registrations FOR ALL USING (company_id = (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()));
 
 -- ==========================================
 -- STORAGE BUCKETS
@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS public.optavel_tasks (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ALTER TABLE public.optavel_tasks ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "optavel_tasks_policy" ON public.optavel_tasks FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+CREATE POLICY "optavel_tasks_policy" ON public.optavel_tasks FOR ALL USING (company_id = (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()));
 
 CREATE TABLE IF NOT EXISTS public.optavel_transactions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS public.optavel_transactions (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ALTER TABLE public.optavel_transactions ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "optavel_transactions_policy" ON public.optavel_transactions FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+CREATE POLICY "optavel_transactions_policy" ON public.optavel_transactions FOR ALL USING (company_id = (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()));
 
 CREATE TABLE IF NOT EXISTS public.optavel_deal_activities (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -208,4 +208,4 @@ CREATE TABLE IF NOT EXISTS public.optavel_deal_activities (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ALTER TABLE public.optavel_deal_activities ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "optavel_deal_activities_policy" ON public.optavel_deal_activities FOR ALL USING (company_id = (SELECT company_id FROM profiles WHERE id = auth.uid()));
+CREATE POLICY "optavel_deal_activities_policy" ON public.optavel_deal_activities FOR ALL USING (company_id = (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()));
