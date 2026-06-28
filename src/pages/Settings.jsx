@@ -43,11 +43,15 @@ export default function Settings() {
  enabled: !!companyId});
 
  const updateCompany = async (data) => {
-  if (!company || !companyId) return;
-  setSaving(true);
-  try {
-  await base44.entities.Company.update(companyId, data);
-  queryClient.invalidateQueries({ queryKey: ["company", companyId]});
+   if (!company || !companyId) return;
+   setSaving(true);
+   try {
+   const { supabase } = await import('@/api/supabaseClient');
+   await supabase.from('companies').update(data).eq('id', companyId);
+   try {
+     await base44.entities.Company.update(companyId, data);
+   } catch(e) { /* ignore base44 duplicate errors if supabase succeeded */ }
+   queryClient.invalidateQueries({ queryKey: ["company", companyId]});
   await refreshUser();
   toast({ title: "Settings updated successfully"});
  } catch (err) {

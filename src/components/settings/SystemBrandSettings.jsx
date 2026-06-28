@@ -27,6 +27,19 @@ export function SystemSettings({ activeIndustry, company, onSave, saving}) {
  calendar_start: company?.calendar_start || "sunday",
  timezone: company?.timezone || "Africa/Accra"});
 
+ useEffect(() => {
+   if (company) {
+     setForm(prev => ({
+       ...prev,
+       language: company.language || prev.language,
+       date_format: company.date_format || prev.date_format,
+       time_format: company.time_format || prev.time_format,
+       calendar_start: company.calendar_start || prev.calendar_start,
+       timezone: company.timezone || prev.timezone
+     }));
+   }
+ }, [company]);
+
  return (
  <SectionCard title="System Configuration" subtitle="Define default date formats, time zones, application languages, and display mode settings" onSave={() => onSave(form)} saving={saving}>
  <FormRow>
@@ -106,6 +119,21 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  custom_domain: company?.custom_domain || "",
  tagline: company?.tagline || "",
  primary_color: company?.primary_color || "#16a34a"});
+
+ useEffect(() => {
+   if (company) {
+     setForm({
+       logo_url: company.logo_url || "",
+       logo_light_url: company.logo_light_url || "",
+       favicon_url: company.favicon_url || "",
+       name: company.name || "",
+       subdomain: company.subdomain || "",
+       custom_domain: company.custom_domain || "",
+       tagline: company.tagline || "",
+       primary_color: company.primary_color || "#16a34a"
+     });
+   }
+ }, [company]);
 
  const handleSaveClick = () => {
  if (form.subdomain && form.subdomain !== company?.subdomain) {

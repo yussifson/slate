@@ -49,8 +49,11 @@ export const ThemeProvider = ({ children }) => {
   }, [theme]);
 
   // Sync with user database theme once user session resolves
+  // Sync with user database theme once user session resolves
   useEffect(() => {
-    if (user && user.user_metadata?.theme) {
+    // Only sync from user_metadata if we don't have a local storage preference yet
+    // Otherwise, this overrides the user's active theme choice upon refresh
+    if (!localStorage.getItem('theme') && user && user.user_metadata?.theme) {
       const userTheme = user.user_metadata.theme;
       if (userTheme !== theme) {
         setThemeState(userTheme);
