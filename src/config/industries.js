@@ -940,7 +940,7 @@ export const INDUSTRIES = {
     ],
     nav: [
 
-      { label: 'Command Center', path: '/optavel', icon: 'LayoutDashboard' },
+      { label: 'Dashboard', path: '/optavel', icon: 'LayoutDashboard' },
       { label: 'Executive', path: '/optavel/executive', icon: 'BarChart2' },
       { label: 'Product & Eng', path: '/optavel/product', icon: 'Code' },
       { label: 'Marketing', path: '/optavel/marketing', icon: 'Megaphone' },
