@@ -50,6 +50,7 @@ export default function OptavelFinance() {
         [id, companyId, parseFloat(newTransactionAmt), transactionType, newTransactionDesc, new Date().toISOString()]
       );
     },
+    onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
     onSuccess: () => {
       queryClient.invalidateQueries(['optavel_transactions']);
       setNewTransactionAmt('');

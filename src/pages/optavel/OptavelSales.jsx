@@ -60,6 +60,7 @@ export default function OptavelSales() {
         [id, companyId, newDealName, parseFloat(newDealValue), 'lead', 10]
       );
     },
+    onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
     onSuccess: () => {
       queryClient.invalidateQueries(['optavel_deal_rooms']);
       setNewDealName('');
@@ -71,6 +72,7 @@ export default function OptavelSales() {
     mutationFn: async ({ id, stage }) => {
       await powerSync.execute(`UPDATE optavel_deal_rooms SET stage = ? WHERE id = ?`, [stage, id]);
     },
+    onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
     onSuccess: () => {
       queryClient.invalidateQueries(['optavel_deal_rooms']);
     }
@@ -85,6 +87,7 @@ export default function OptavelSales() {
         [id, companyId, selectedDealId, newActivityType, newActivityNote]
       );
     },
+    onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
     onSuccess: () => {
       queryClient.invalidateQueries(['optavel_deal_activities']);
       setNewActivityNote('');

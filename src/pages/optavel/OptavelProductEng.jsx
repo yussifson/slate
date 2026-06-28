@@ -56,6 +56,7 @@ export default function OptavelProductEng() {
         [id, companyId, newTaskTitle, activeColumn, 'medium', user.id]
       );
     },
+    onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
     onSuccess: () => {
       queryClient.invalidateQueries(['optavel_tasks']);
       setNewTaskTitle('');
@@ -69,6 +70,7 @@ export default function OptavelProductEng() {
         [status, id]
       );
     },
+    onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
     onSuccess: () => {
       queryClient.invalidateQueries(['optavel_tasks']);
     }
