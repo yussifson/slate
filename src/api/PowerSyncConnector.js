@@ -70,6 +70,19 @@ class SupabaseConnector {
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
               
+              if (op.table === 'companies') {
+                // Strip out columns that might not exist in Supabase to prevent 400 Bad Request errors
+                // This guarantees the offline-first sync succeeds for the standard columns
+                const safeColumns = [
+                  'id', 'created_at', 'updated_at', 'created_by', 'name', 'subdomain',
+                  'custom_domain', 'email', 'phone', 'country', 'city', 'address',
+                  'logo_url', 'logo_light_url', 'favicon_url', 'tagline', 'primary_color',
+                  'subscription_plan', 'subscription_status', 'max_users', 'max_cases',
+                  'max_storage_gb', 'admin_email', 'status'
+                ];
+                payload = Object.fromEntries(Object.entries(payload).filter(([k]) => safeColumns.includes(k)));
+              }
+              
               // Cast text id to UUID for tables that use UUID primary keys
               if (op.table === 'invoices' && payload.id && typeof payload.id === 'string') {
                 try { payload.id = payload.id; } catch(e) { /* keep as-is */ }
@@ -87,6 +100,16 @@ class SupabaseConnector {
               if (op.table === 'automation_logs') {
                 const allowed = ['id', 'company_id', 'created_at', 'status', 'rule_id'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
+              }
+              if (op.table === 'companies') {
+                const safeColumns = [
+                  'id', 'created_at', 'updated_at', 'created_by', 'name', 'subdomain',
+                  'custom_domain', 'email', 'phone', 'country', 'city', 'address',
+                  'logo_url', 'logo_light_url', 'favicon_url', 'tagline', 'primary_color',
+                  'subscription_plan', 'subscription_status', 'max_users', 'max_cases',
+                  'max_storage_gb', 'admin_email', 'status'
+                ];
+                payload = Object.fromEntries(Object.entries(payload).filter(([k]) => safeColumns.includes(k)));
               }
               // Real Estate tables - allow all fields for PATCH
               const realtEstateTablesForPatch = ['univ_re_properties', 'univ_re_clients', 'univ_re_viewings', 

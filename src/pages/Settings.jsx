@@ -36,58 +36,56 @@ export default function Settings() {
   const { data: company} = useQuery({
   queryKey: ["company", companyId],
   queryFn: async () => {
-    if (!companyId || companyId === 'undefined') return null;
+    if (!companyId) return null;
     const { supabase } = await import('@/api/supabaseClient');
-    const { data, error } = await supabase.from('companies').select('*').eq('id', companyId).single();
-    if (error) {
-      console.error("Supabase company fetch error:", error);
-      return null;
-    }
-    return data;
+    const { data } = await supabase.from('companies').select('*').eq('id', companyId).single();
+    return data || null;
   },
-  enabled: !!companyId && companyId !== 'undefined'
+  enabled: !!companyId
  });
 
- const updateCompany = async (data) => {
-    if (!company || !companyId || companyId === 'undefined') return;
+  const updateCompany = async (data) => {
+    if (!company || !companyId) return;
     setSaving(true);
+    
     try {
       const { supabase } = await import('@/api/supabaseClient');
+      
+      // Build a clean payload of ONLY what was passed to avoid schema mismatch errors
       const payload = {};
-      
-      // Only include fields that were explicitly passed in 'data'
-      // This prevents errors if Supabase is missing certain columns that we try to preserve
       const allowedFields = [
-        'name', 'logo_url', 'subdomain', 'custom_domain', 'logo_light_url',
-        'favicon_url', 'tagline', 'primary_color', 'currency', 'language',
-        'timezone', 'date_format', 'time_format', 'calendar_start'
+        'name', 'subdomain', 'custom_domain', 'tagline', 'primary_color', 
+        'logo_url', 'logo_light_url', 'favicon_url', 
+        'currency', 'language', 'timezone', 'date_format', 'time_format', 'calendar_start'
       ];
-      
       for (const field of allowedFields) {
-        if (data[field] !== undefined) {
-          payload[field] = data[field];
+        if (data[field] !== undefined) payload[field] = data[field];
+      }
+
+      if (Object.keys(payload).length > 0) {
+        const { error: supabaseErr } = await supabase
+          .from('companies')
+          .update(payload)
+          .eq('id', companyId);
+          
+        if (supabaseErr) {
+           console.error("Direct Supabase update failed:", supabaseErr);
+           throw new Error(supabaseErr.message || "Failed to update Supabase. Schema mismatch or permissions issue.");
         }
       }
+
+      // Force React Query to re-fetch from Supabase immediately so it NEVER reverts to old local cache
+      await queryClient.invalidateQueries({ queryKey: ["company", companyId]});
       
-      if (Object.keys(payload).length === 0) {
-        setSaving(false);
-        return;
-      }
-      
-      const { error } = await supabase.from('companies').update(payload).eq('id', companyId);
-      if (error) {
-        throw new Error(error.message || "Failed to update Supabase");
-      }
-      
-      // Update local powersync cache as a fallback just in case
+      // Attempt to sync local DB silently, but don't rely on it
       try {
         const keys = Object.keys(payload);
         const vals = Object.values(payload);
-        await powerSync.execute(`UPDATE companies SET ${keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [...vals, companyId]);
+        if (keys.length > 0) {
+          await powerSync.execute(`UPDATE companies SET ${keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [...vals, companyId]);
+        }
       } catch(e) {}
-      
-      queryClient.invalidateQueries({ queryKey: ["company", companyId]});
-      await refreshUser();
+
       toast({ title: "Settings updated successfully"});
     } catch (err) {
       if (err.code === '23505' || err.message?.includes('unique constraint')) {
