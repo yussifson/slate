@@ -544,7 +544,7 @@ if (user?.role === "super_admin") {
     const key = item.label?.toLowerCase() || '';
     if (!seenLabels.has(key)) {
       seenLabels.add(key);
-      const override = navOverridesData?.[item.path] || {};
+      const override = navOverridesData?.overrides?.[item.path] || {};
       if (override.hidden) continue;
       if (override.customName) {
         navItems.push({ ...item, label: override.customName });
@@ -900,10 +900,10 @@ if (user?.role === "super_admin") {
         </DialogDescription>
       </DialogHeader>
       <div className="py-4 space-y-2 max-h-[300px] overflow-y-auto">
-        {Object.entries(navOverridesData || {}).filter(([_, data]) => data.hidden).length === 0 ? (
+        {Object.entries(navOverridesData?.overrides || {}).filter(([_, data]) => data.hidden).length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">No hidden pages.</p>
         ) : (
-          Object.entries(navOverridesData || {}).filter(([_, data]) => data.hidden).map(([path, data]) => {
+          Object.entries(navOverridesData?.overrides || {}).filter(([_, data]) => data.hidden).map(([path, data]) => {
             // Find original label by matching path across rawNavItems or just using path
             const originalItem = rawNavItems.find(i => i.path === path);
             const label = data.customName || originalItem?.label || path;

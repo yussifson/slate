@@ -29,8 +29,10 @@ export default function FeatureLab() {
   // Determine limits based on plan
   const plan = user?.subscription_plan?.toLowerCase() || 'starter';
   const getLimit = () => {
+    if (user?.role === 'super_admin') return 999999; // Unlimited for super admins
     if (['business', 'enterprise'].includes(plan)) return 3;
     if (plan === 'professional') return 1;
+    if (plan !== 'starter' && plan !== 'free') return 1; // Any other paid plan gets 1
     return 0; // starter/free
   };
   
@@ -153,7 +155,7 @@ Keep it concise but detailed enough for a software engineering team to understan
         <div className="bg-white dark:bg-slate-800 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-3 shadow-sm">
           <div className="text-sm font-medium">Monthly Requests:</div>
           <Badge variant={remaining > 0 ? 'default' : 'secondary'} className={remaining > 0 ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200' : ''}>
-            {used} / {limit} Used
+            {limit >= 999999 ? 'Unlimited' : `${used} / ${limit} Used`}
           </Badge>
         </div>
       </div>
