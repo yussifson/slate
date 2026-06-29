@@ -57,6 +57,10 @@ export default function Settings() {
       ];
       for (const field of allowedFields) {
         if (data[field] !== undefined) {
+          // Never save an empty name — it would erase the company name in Supabase
+          if (field === 'name' && (data[field] === '' || data[field] == null)) {
+            continue; // skip — don't overwrite existing name with blank
+          }
           // Convert empty strings to null for unique fields to avoid 409 constraint violations
           if ((field === 'subdomain' || field === 'custom_domain') && data[field] === "") {
             payload[field] = null;

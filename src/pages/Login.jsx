@@ -59,36 +59,40 @@ export default function Login() {
  let brandData = null;
  const { data: rpcData, error: rpcError} = await supabase.rpc('get_company_by_subdomain', { p_subdomain: currentSubdomain});
  
- if (rpcError || !rpcData) {
- console.log("RPC failed, trying direct table query...");
- const { data: directData} = await supabase.from('companies').select('name, logo_url').or(`subdomain.eq.${currentSubdomain},custom_domain.eq.${currentSubdomain}`).maybeSingle();
+ if (!rpcError && rpcData) {
+   const row = Array.isArray(rpcData) ? rpcData[0] : rpcData;
+   if (row?.id) brandData = row;
+ }
+
+ if (!brandData) {
+ console.log("RPC missed, trying direct table query...");
+ const { data: directData} = await supabase.from('companies').select('id, name, logo_url').or(`subdomain.eq.${currentSubdomain},custom_domain.eq.${currentSubdomain}`).maybeSingle();
  
  if (directData) {
  brandData = directData;
-} else {
- const { data: tableData} = await powerSync.execute('SELECT name, logo_url FROM companies WHERE subdomain = ? OR custom_domain = ? LIMIT 1', [currentSubdomain, currentSubdomain]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
+ } else {
+ const { data: tableData} = await powerSync.execute('SELECT id, name, logo_url FROM companies WHERE subdomain = ? OR custom_domain = ? LIMIT 1', [currentSubdomain, currentSubdomain]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
  brandData = tableData;
-}
-} else {
- brandData = Array.isArray(rpcData) ? rpcData[0] : rpcData;
-}
+ }
+ }
 
- if (brandData && brandData.name) {
+ // Company exists → always show login. Only show "Not Found" if company is truly missing.
+ if (brandData?.id) {
  setBranding({
- name: brandData.name || 'Slate',
+ name: brandData.name || 'Your Workslate',
  logo_url: brandData.logo_url,
  tagline: `Sign in to ${brandData.name || 'your workslate'}`
-});
-} else {
+ });
+ } else {
  setInvalidSubdomain(true);
-}
-} catch (err) {
+ }
+ } catch (err) {
  console.error("Could not fetch branding", err);
-} finally {
+ } finally {
  setCheckingSubdomain(false);
-}
-}
-};
+ }
+ }
+ };
  fetchBranding();
 }, [currentSubdomain]);
 
@@ -188,8 +192,17 @@ export default function Login() {
     }
 
     if (profile?.company_id) {
-      const { data: company } = await supabase.from('companies').select('name, subdomain').eq('id', profile.company_id).single();
-      const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
+      const { data: company } = await supabase.from('companies').select('name, subdomain, custom_domain').eq('id', profile.company_id).single();
+      // Use subdomain first, then custom_domain, then derive from name as final fallback
+      const companySubdomain = company?.subdomain || company?.custom_domain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
+      
+      // If user is on a custom domain that matches their company, don't redirect — just let them in
+      const { isCustomDomain } = getSubdomainAndBase();
+      if (isCustomDomain) {
+        // They're already on their custom domain, proceed to dashboard
+        window.location.href = '/';
+        return;
+      }
       
       if (companySubdomain && companySubdomain !== currentSubdomain && !workspace) {
         const port = window.location.port ? `:${window.location.port}` : '';
@@ -245,8 +258,8 @@ export default function Login() {
 
     // 2. Intelligent Routing to Subdomain
     if (profile?.company_id) {
-      const { data: company } = await supabase.from('companies').select('name, subdomain').eq('id', profile.company_id).single();
-      const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
+      const { data: company } = await supabase.from('companies').select('name, subdomain, custom_domain').eq('id', profile.company_id).single();
+      const companySubdomain = company?.subdomain || company?.custom_domain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
       
       if (companySubdomain) {
  const port = window.location.port ? `:${window.location.port}` : '';
