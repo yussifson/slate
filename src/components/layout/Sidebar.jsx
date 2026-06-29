@@ -1,5 +1,6 @@
 import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect} from "react";
+import toast from "react-hot-toast";
 import { Link, useLocation, useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
 import ProfileAvatarDialog from "@/components/shared/ProfileAvatarDialog";
@@ -412,8 +413,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
       };
       
       await powerSync.execute(
-        `INSERT OR REPLACE INTO industry_records (id, company_id, record_type, industry, data, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [payload.id, payload.company_id, payload.record_type, payload.industry, payload.data, payload.created_by, payload.created_at]
+        `INSERT OR REPLACE INTO industry_records (id, company_id, record_type, industry, data, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
+        [payload.id, payload.company_id, payload.record_type, payload.industry, payload.data, payload.created_at]
       );
       
       queryClient.invalidateQueries({ queryKey: ['nav_overrides', companyId] });
@@ -577,8 +578,8 @@ if (user?.role === "super_admin") {
       const newOverrides = { ...currentOverrides, [renameData.path]: { ...(currentOverrides[renameData.path] || {}), customName: renameData.newName } };
       const recordId = `${companyId}_nav_overrides`;
       await powerSync.execute(
-        `INSERT OR REPLACE INTO industry_records (id, company_id, record_type, industry, data, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [recordId, companyId, 'nav_overrides', activeIndustry || 'orbit_build', JSON.stringify(newOverrides), user?.id, new Date().toISOString()]
+        `INSERT OR REPLACE INTO industry_records (id, company_id, record_type, industry, data, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
+        [recordId, companyId, 'nav_overrides', activeIndustry || 'orbit_build', JSON.stringify(newOverrides), new Date().toISOString()]
       );
       queryClient.invalidateQueries({ queryKey: ['nav_overrides', companyId] });
       toast.success("Page renamed");
@@ -915,8 +916,8 @@ if (user?.role === "super_admin") {
                     const newOverrides = { ...currentOverrides, [path]: { ...currentOverrides[path], hidden: false } };
                     const recordId = `${companyId}_nav_overrides`;
                     await powerSync.execute(
-                      `INSERT OR REPLACE INTO industry_records (id, company_id, record_type, industry, data, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                      [recordId, companyId, 'nav_overrides', activeIndustry || 'orbit_build', JSON.stringify(newOverrides), user?.id, new Date().toISOString()]
+                      `INSERT OR REPLACE INTO industry_records (id, company_id, record_type, industry, data, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
+                      [recordId, companyId, 'nav_overrides', activeIndustry || 'orbit_build', JSON.stringify(newOverrides), new Date().toISOString()]
                     );
                     queryClient.invalidateQueries({ queryKey: ['nav_overrides', companyId] });
                     toast.success("Page restored");
