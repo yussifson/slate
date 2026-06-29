@@ -56,7 +56,14 @@ export default function Settings() {
         'currency', 'language', 'timezone', 'date_format', 'time_format', 'calendar_start'
       ];
       for (const field of allowedFields) {
-        if (data[field] !== undefined) payload[field] = data[field];
+        if (data[field] !== undefined) {
+          // Convert empty strings to null for unique fields to avoid 409 constraint violations
+          if ((field === 'subdomain' || field === 'custom_domain') && data[field] === "") {
+            payload[field] = null;
+          } else {
+            payload[field] = data[field];
+          }
+        }
       }
 
       if (Object.keys(payload).length > 0) {
