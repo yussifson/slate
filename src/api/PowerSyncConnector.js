@@ -88,8 +88,15 @@ class SupabaseConnector {
               if (op.table === 'invoices' && payload.id && typeof payload.id === 'string') {
                 try { payload.id = payload.id; } catch(e) { /* keep as-is */ }
               }
-              const { error } = await table.upsert(payload, { onConflict: 'id' });
-              if (error) throw error;
+              
+              if (op.table === 'companies') {
+                // Companies require update instead of upsert due to RLS INSERT restrictions for standard users
+                const { error } = await table.update(payload).eq('id', op.id);
+                if (error) throw error;
+              } else {
+                const { error } = await table.upsert(payload, { onConflict: 'id' });
+                if (error) throw error;
+              }
               break;
             }
             case 'PATCH': {
@@ -113,9 +120,8 @@ class SupabaseConnector {
                 ];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => safeColumns.includes(k)));
                 
-                // RLS on companies might block update without upsert. We use upsert for PATCH.
-                payload.id = op.id;
-                const { error } = await table.upsert(payload, { onConflict: 'id' });
+                // Use update instead of upsert because upsert requires INSERT privileges which might fail due to RLS
+                const { error } = await table.update(payload).eq('id', op.id);
                 if (error) throw error;
                 break;
               }
