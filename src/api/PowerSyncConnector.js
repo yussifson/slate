@@ -103,6 +103,16 @@ class SupabaseConnector {
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
               if (op.table === 'companies') {
+                const safeColumns = [
+                  'id', 'created_at', 'updated_at', 'created_by', 'name', 'subdomain',
+                  'custom_domain', 'email', 'phone', 'country', 'city', 'address',
+                  'logo_url', 'logo_light_url', 'favicon_url', 'tagline', 'primary_color',
+                  'subscription_plan', 'subscription_status', 'max_users', 'max_cases',
+                  'max_storage_gb', 'admin_email', 'status', 'language', 'date_format',
+                  'time_format', 'calendar_start', 'timezone', 'currency'
+                ];
+                payload = Object.fromEntries(Object.entries(payload).filter(([k]) => safeColumns.includes(k)));
+                
                 // RLS on companies might block update without upsert. We use upsert for PATCH.
                 payload.id = op.id;
                 const { error } = await table.upsert(payload, { onConflict: 'id' });

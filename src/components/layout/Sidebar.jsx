@@ -24,7 +24,7 @@ import {
  Award, Library, Building2, AlertCircle, Clock,
  Network, AlertTriangle, Gift, Banknote, CalendarOff,
  HandCoins, Users2, Blocks, Map, Warehouse, Car, MapPin,
- FileSearch, LayoutGrid, BedDouble, BellRing, MoreHorizontal, Pencil, Trash2, Eye, Zap, Store
+ FileSearch, LayoutGrid, BedDouble, BellRing, MoreHorizontal, Pencil, Trash2, Eye, EyeOff, Zap, Store
 , ShieldAlert, HeartPulse, FilePlus, FileCheck, Gavel, CalendarDays, CalendarCheck, UserCheck, PenTool, Target, Calculator, Home, Moon, CalendarSearch, Wallet, PieChart, ArrowUpRight, ArrowDownLeft, Laptop, Smartphone, MessageSquare, LineChart, Brain, PackageSearch, Globe, Archive
 } from "lucide-react";
 import { base44} from "@/api/base44Client";
@@ -68,6 +68,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const [renameData, setRenameData] = useState(null);
  const [deleteData, setDeleteData] = useState(null);
  const [showAvatarDialog, setShowAvatarDialog] = useState(false);
+ const [showRestoreDialog, setShowRestoreDialog] = useState(false);
 
  const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
   const [rolePermissions, setRolePermissions] = useState(isAdmin ? null : undefined);
@@ -379,6 +380,50 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  enabled: !!companyId
 });
 
+  const { data: navOverridesData } = useQuery({
+    queryKey: ['nav_overrides', companyId],
+    queryFn: async () => {
+      if (!companyId) return {};
+      const res = await powerSync.execute(`SELECT data FROM industry_records WHERE company_id = ? AND record_type = 'nav_overrides'`, [companyId]);
+      if (res.rows?._array?.length > 0) {
+        let raw = res.rows._array[0].data;
+        if (typeof raw === 'string') return JSON.parse(raw);
+        return raw;
+      }
+      return {};
+    },
+    enabled: !!companyId
+  });
+
+  const handleHideStaticModule = async (path) => {
+    try {
+      const currentOverrides = navOverridesData || {};
+      const newOverrides = { ...currentOverrides, [path]: { ...(currentOverrides[path] || {}), hidden: true } };
+      
+      const recordId = `${companyId}_nav_overrides`;
+      const payload = {
+        id: recordId,
+        company_id: companyId,
+        record_type: 'nav_overrides',
+        industry: activeIndustry || 'orbit_build',
+        data: JSON.stringify(newOverrides),
+        created_by: user?.id,
+        created_at: new Date().toISOString()
+      };
+      
+      await powerSync.execute(
+        `INSERT OR REPLACE INTO industry_records (id, company_id, record_type, industry, data, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [payload.id, payload.company_id, payload.record_type, payload.industry, payload.data, payload.created_by, payload.created_at]
+      );
+      
+      queryClient.invalidateQueries({ queryKey: ['nav_overrides', companyId] });
+      toast.success("Page hidden");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to hide page");
+    }
+  };
+
  const rawDynamicNavItems = dynamicModules.map(m => ({
  id: m.id,
  label: m.name,
@@ -487,24 +532,34 @@ if (user?.role === "super_admin") {
     rawNavItems.push({ label: "Enterprise Admin", icon: "Building2", path: "/enterprise-admin" });
 }
 
- // Deduplicate by label to prevent double Dashboards
- const seenLabels = new Set();
- let navItems = [];
- for (const item of rawNavItems) {
- const key = item.label?.toLowerCase() || '';
- if (!seenLabels.has(key)) {
- seenLabels.add(key);
- navItems.push(item);
-}
-}
+  if (!rawNavItems.some(n => n.path === '/feature-insider')) {
+    rawNavItems.push({ label: "Feature Lab", path: "/feature-insider", icon: "FlaskConical" });
+  }
+
+  // Deduplicate by label to prevent double Dashboards, and apply static nav overrides
+  const seenLabels = new Set();
+  let navItems = [];
+  for (const item of rawNavItems) {
+    const key = item.label?.toLowerCase() || '';
+    if (!seenLabels.has(key)) {
+      seenLabels.add(key);
+      const override = navOverridesData?.[item.path] || {};
+      if (override.hidden) continue;
+      if (override.customName) {
+        navItems.push({ ...item, label: override.customName });
+      } else {
+        navItems.push(item);
+      }
+    }
+  }
 
  const handleDeleteModule = (id, name) => {
  setDeleteData({ id, name});
 };
 
- const handleRenameModule = (id, currentName, isOrbitBuild = false) => {
- setRenameData({ id, currentName, newName: currentName, isOrbitBuild});
-};
+  const handleRenameModule = (id, currentName, isOrbitBuild = false, isStatic = false, path = '') => {
+  setRenameData({ id, currentName, newName: currentName, isOrbitBuild, isStatic, path });
+ };
 
  const confirmDelete = async () => {
  if (deleteData) {
@@ -514,9 +569,23 @@ if (user?.role === "super_admin") {
 }
 };
 
- const confirmRename = async () => {
- if (renameData && renameData.newName.trim() !== "" && renameData.newName !== renameData.currentName) {
- if (renameData.isOrbitBuild) {
+  const confirmRename = async () => {
+  if (renameData && renameData.newName.trim() !== "" && renameData.newName !== renameData.currentName) {
+  if (renameData.isStatic) {
+    try {
+      const currentOverrides = navOverridesData || {};
+      const newOverrides = { ...currentOverrides, [renameData.path]: { ...(currentOverrides[renameData.path] || {}), customName: renameData.newName } };
+      const recordId = `${companyId}_nav_overrides`;
+      await powerSync.execute(
+        `INSERT OR REPLACE INTO industry_records (id, company_id, record_type, industry, data, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [recordId, companyId, 'nav_overrides', activeIndustry || 'orbit_build', JSON.stringify(newOverrides), user?.id, new Date().toISOString()]
+      );
+      queryClient.invalidateQueries({ queryKey: ['nav_overrides', companyId] });
+      toast.success("Page renamed");
+    } catch (err) {
+      toast.error("Failed to rename page");
+    }
+  } else if (renameData.isOrbitBuild) {
  // OrbitBuild components are stored in industry_records
  if (orbitBuildData && orbitBuildData.pages) {
  const updatedPages = orbitBuildData.pages.map(p => 
@@ -633,41 +702,54 @@ if (user?.role === "super_admin") {
  )}
  </Link>
  
- {!collapsed && item.isDynamic && (
- <div className={cn("absolute right-2 top-1/2 -translate-y-1/2 transition-opacity", openMenuId === item.id ? "opacity-100 z-50" : "opacity-0 group-hover:opacity-100 z-10")}>
- <button 
- onClick={(e) => { e.preventDefault(); setOpenMenuId(openMenuId === item.id ? null : item.id);}}
- className="p-1 rounded-md hover:bg-sidebar-accent text-sidebar-foreground/50 hover:text-sidebar-foreground"
- >
- <MoreHorizontal className="w-4 h-4" />
- </button>
- 
- {openMenuId === item.id && (
- <div className="absolute right-0 mt-1 w-36 bg-sidebar border-[0.5px] border-black/9 dark:border-white/8 border-sidebar-border-[0.5px] border-black/9 dark:border-white/8 rounded-lg overflow-hidden">
- <div className="py-1">
- {!item.component_id && (
- <button onClick={(e) => { e.preventDefault(); handleTogglePublish(item.id, item.status); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
- <Eye className="w-3 h-3" /> {item.status === 'published' ? 'Unpublish' : 'Publish'}
- </button>
- )}
- <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label, !!item.component_id); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
- <Pencil className="w-3 h-3" /> Rename
- </button>
- {!item.component_id && (
- <>
- <button onClick={(e) => { e.preventDefault(); navigate(`/slate/edit/${item.id}`); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
- <Settings className="w-3 h-3" /> Customize
- </button>
- <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10/10 flex items-center gap-2 transition-colors tracking-[0.04em]">
- <Trash2 className="w-3 h-3" /> Delete
- </button>
- </>
- )}
- </div>
- </div>
- )}
- </div>
- )}
+  {!collapsed && (
+  <div className={cn("absolute right-2 top-1/2 -translate-y-1/2 transition-opacity", openMenuId === (item.id || item.path) ? "opacity-100 z-50" : "opacity-0 group-hover:opacity-100 z-10")}>
+  <button 
+  onClick={(e) => { e.preventDefault(); setOpenMenuId(openMenuId === (item.id || item.path) ? null : (item.id || item.path));}}
+  className="p-1 rounded-md hover:bg-sidebar-accent text-sidebar-foreground/50 hover:text-sidebar-foreground"
+  >
+  <MoreHorizontal className="w-4 h-4" />
+  </button>
+  
+  {openMenuId === (item.id || item.path) && (
+  <div className="absolute right-0 mt-1 w-36 bg-sidebar border-[0.5px] border-black/9 dark:border-white/8 border-sidebar-border-[0.5px] border-black/9 dark:border-white/8 rounded-lg overflow-hidden shadow-md">
+  <div className="py-1">
+  {item.isDynamic ? (
+    <>
+      {!item.component_id && (
+      <button onClick={(e) => { e.preventDefault(); handleTogglePublish(item.id, item.status); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
+      <Eye className="w-3 h-3" /> {item.status === 'published' ? 'Unpublish' : 'Publish'}
+      </button>
+      )}
+      <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label, !!item.component_id); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
+      <Pencil className="w-3 h-3" /> Rename
+      </button>
+      {!item.component_id && (
+      <>
+      <button onClick={(e) => { e.preventDefault(); navigate(`/slate/edit/${item.id}`); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
+      <Settings className="w-3 h-3" /> Customize
+      </button>
+      <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10/10 flex items-center gap-2 transition-colors tracking-[0.04em]">
+      <Trash2 className="w-3 h-3" /> Delete
+      </button>
+      </>
+      )}
+    </>
+  ) : (
+    <>
+      <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label, false, true, item.path); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
+      <Pencil className="w-3 h-3" /> Rename
+      </button>
+      <button onClick={(e) => { e.preventDefault(); handleHideStaticModule(item.path); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10/10 flex items-center gap-2 transition-colors tracking-[0.04em]">
+      <EyeOff className="w-3 h-3" /> Hide Page
+      </button>
+    </>
+  )}
+  </div>
+  </div>
+  )}
+  </div>
+  )}
  </div>
  </div>
  );
@@ -742,6 +824,10 @@ if (user?.role === "super_admin") {
  Settings
  </DropdownMenuItem>
  )}
+ <DropdownMenuItem onClick={() => setShowRestoreDialog(true)} className="cursor-pointer">
+ <Eye className="w-4 h-4 mr-2" />
+ Restore Pages
+ </DropdownMenuItem>
  <DropdownMenuSeparator />
  <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer">
  <LogOut className="w-4 h-4 mr-2" />
@@ -803,9 +889,55 @@ if (user?.role === "super_admin") {
  </DialogFooter>
  </DialogContent>
  </Dialog>
+
+ <Dialog open={showRestoreDialog} onOpenChange={setShowRestoreDialog}>
+    <DialogContent className="sm:max-w-[425px]">
+      <DialogHeader>
+        <DialogTitle>Restore Hidden Pages</DialogTitle>
+        <DialogDescription>
+          Click on a hidden page to restore it to your sidebar.
+        </DialogDescription>
+      </DialogHeader>
+      <div className="py-4 space-y-2 max-h-[300px] overflow-y-auto">
+        {Object.entries(navOverridesData || {}).filter(([_, data]) => data.hidden).length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-4">No hidden pages.</p>
+        ) : (
+          Object.entries(navOverridesData || {}).filter(([_, data]) => data.hidden).map(([path, data]) => {
+            // Find original label by matching path across rawNavItems or just using path
+            const originalItem = rawNavItems.find(i => i.path === path);
+            const label = data.customName || originalItem?.label || path;
+            return (
+              <div key={path} className="flex items-center justify-between p-2 rounded-lg border">
+                <span className="text-sm font-medium">{label}</span>
+                <Button size="sm" variant="outline" onClick={async () => {
+                  try {
+                    const currentOverrides = navOverridesData || {};
+                    const newOverrides = { ...currentOverrides, [path]: { ...currentOverrides[path], hidden: false } };
+                    const recordId = `${companyId}_nav_overrides`;
+                    await powerSync.execute(
+                      `INSERT OR REPLACE INTO industry_records (id, company_id, record_type, industry, data, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                      [recordId, companyId, 'nav_overrides', activeIndustry || 'orbit_build', JSON.stringify(newOverrides), user?.id, new Date().toISOString()]
+                    );
+                    queryClient.invalidateQueries({ queryKey: ['nav_overrides', companyId] });
+                    toast.success("Page restored");
+                  } catch (err) {
+                    toast.error("Failed to restore page");
+                  }
+                }}>
+                  Restore
+                </Button>
+              </div>
+            );
+          })
+        )}
+      </div>
+      <DialogFooter>
+        <Button variant="outline" onClick={() => setShowRestoreDialog(false)}>Close</Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
  
  <ProfileAvatarDialog open={showAvatarDialog} onOpenChange={setShowAvatarDialog} />
  </>
  );
 }
-
