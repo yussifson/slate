@@ -420,11 +420,11 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema}) {
   </div>
   </div>
   </form>
-  </div></div>
+  </div>
 
- </div>
- </div>
- );
+  </div>
+  </div>
+  );
 
  return createPortal(workspaceContent, document.getElementById('right-docked-panel-portal') || document.body);
 }
