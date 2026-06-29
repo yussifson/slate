@@ -837,35 +837,32 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div className="flex-1 flex flex-col min-w-0">
 
  {/* Header */}
- <div className="flex items-center gap-2 px-3 py-2.5 border-b border-primary/40 bg-gradient-to-r from-primary/8 to-primary/5 shrink-0">
- <button
- onClick={() => setShowHistory(prev => !prev)}
- className={`p-1.5 rounded-lg transition-colors shrink-0 ${showHistory ? 'bg-slate-100 dark:bg-primary/40 text-primary dark:text-primary/70' : 'text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground'}`}
- title="Chat history"
- >
- <Clock className="w-4 h-4" />
- </button>
- <div className="flex items-center gap-2 mb-2">
- <div className="w-5 h-5 rounded-md flex items-center justify-center bg-primary/20 text-primary shrink-0">
- <OrbitIcon className="w-3.5 h-3.5" />
- </div>
- <div className="flex items-center gap-2.5 flex-1">
- <p className="text-[11px] font-semibold text-foreground leading-none">{t("orbit", "OrbitFlow")}</p>
- {chatMode !== 'chat' && <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-primary/10 text-primary font-bold uppercase">{chatMode} Mode</span>}
- </div>
- </div>
- <div className="flex items-center gap-0.5 shrink-0">
- <button onClick={startNewChat} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors" title="New chat">
- <Plus className="w-4 h-4" />
- </button>
- <button onClick={() => setIsExpanded(!isExpanded)} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors">
- {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
- </button>
- <button onClick={onClose} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors">
- <X className="w-4 h-4" />
- </button>
- </div>
- </div>
+ <div className="px-5 py-3.5 flex items-center justify-between border-b border-primary/20 bg-white/80 dark:bg-[#0A0F1C]/80 backdrop-blur-2xl shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_24px_-8px_rgba(0,0,0,0.4)] relative z-20 shrink-0">
+  <div className="flex items-center gap-3.5">
+  <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-primary to-primary/80 text-white shrink-0 shadow-md shadow-primary/20 ring-1 ring-white/20 relative overflow-hidden">
+  <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:250%_250%] animate-shimmer" />
+  <OrbitIcon className="w-4.5 h-4.5 fill-current relative z-10" />
+  </div>
+  <div className="flex flex-col">
+  <div className="flex items-center gap-2.5 flex-1">
+  <p className="text-sm font-bold tracking-tight text-slate-900 dark:text-white leading-none">{t("orbit", "OrbitFlow")}</p>
+  {chatMode !== 'chat' && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-extrabold uppercase tracking-widest ring-1 ring-primary/20">{chatMode} Mode</span>}
+  </div>
+  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium tracking-wide">Enterprise Workflow AI</p>
+  </div>
+  </div>
+  <div className="flex items-center gap-1.5 shrink-0">
+  <button onClick={startNewChat} className="p-2 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white rounded-xl transition-all shadow-sm" title="New chat">
+  <Plus className="w-4 h-4" />
+  </button>
+  <button onClick={() => setIsExpanded(!isExpanded)} className="p-2 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white rounded-xl transition-all shadow-sm hidden md:flex">
+  {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+  </button>
+  <button onClick={onClose} className="p-2 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white rounded-xl transition-all shadow-sm">
+  <X className="w-4 h-4" />
+  </button>
+  </div>
+  </div>
 
  {/* Page Context Bar */}
  <div className="px-3 py-1.5 flex items-center gap-2.5 bg-primary/60 dark:bg-slate-100 border-b border-primary/40 dark:border-primary/20 shrink-0">
@@ -876,25 +873,27 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  </div>
 
  {/* Messages */}
- <div className="flex-1 overflow-y-auto p-4 space-y-4 relative bg-[radial-gradient(circle,#e2e8f0_1px,transparent_1px)] dark:bg-[radial-gradient(circle,#1e293b_1px,transparent_1px)] [background-size:18px_18px]">
- <div className="absolute inset-0 bg-card/65 pointer-events-none z-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
- <div className="relative z-10 space-y-4">
- {messages.filter(m => m.role !== 'system').map((msg, i) => {
- return (
- <div key={i} className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
- <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
- msg.role === 'user'
- ? 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
- : 'bg-gradient-to-br from-primary to-primary text-white'
-}`}>
- {msg.role === 'user' ? <User className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
- </div>
- <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed max-w-[88%] ${
- msg.role === 'user'
- ? 'bg-primary text-white rounded-tr-sm'
- : 'bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-tl-sm text-foreground'
-}`}>
- <FormatMessage content={msg.content} />
+  <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6 relative bg-[radial-gradient(circle,#e2e8f0_1px,transparent_1px)] dark:bg-[radial-gradient(circle,#1e293b_1px,transparent_1px)] [background-size:24px_24px] bg-slate-50/30 dark:bg-transparent">
+  <div className="absolute inset-0 bg-white/60 dark:bg-[#0A0F1C]/60 pointer-events-none z-0"></div>
+  <div className="relative z-10 space-y-6">
+  {messages.filter(m => m.role !== 'system').map((msg, i) => {
+  return (
+  <div key={i} className={`flex gap-3.5 group max-w-full ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 ring-2 ring-white dark:ring-[#0A0F1C] ${
+  msg.role === 'user'
+  ? 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+  : 'bg-gradient-to-br from-primary to-primary/80 text-white shadow-md shadow-primary/20'
+ }`}>
+  {msg.role === 'user' ? <User className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
+  </div>
+  <div className={`px-4.5 py-3.5 rounded-2xl text-[13px] leading-relaxed max-w-[85%] shadow-sm transition-all duration-200 relative ${
+  msg.role === 'user'
+  ? 'bg-gradient-to-br from-primary to-primary/90 text-white rounded-tr-sm'
+  : 'bg-white dark:bg-[#131A2B] border border-slate-200/60 dark:border-white/5 rounded-tl-sm text-slate-700 dark:text-slate-300 hover:shadow-md'
+ }`}>
+  <div className={msg.role !== 'user' ? "prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-slate-50 dark:prose-pre:bg-[#0A0F1C] prose-pre:border prose-pre:border-slate-200 dark:prose-pre:border-white/5 prose-pre:rounded-xl prose-code:text-primary dark:prose-code:text-primary prose-code:before:content-none prose-code:after:content-none prose-headings:font-semibold" : ""}>
+    <FormatMessage content={msg.content} />
+  </div>
  
  {msg.isConfirmation && msg.pendingAction && (
  <div className="mt-3 flex gap-2 pt-3 border-t border-primary/40">
@@ -966,68 +965,6 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  )}
 
  {/* Input */}
- <div className="p-3 border-t border-primary/40 bg-card/80 backdrop-blur-sm shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus-within:border-primary/70 focus-within:ring-2 focus-within:ring-primary/15 rounded-xl bg-background transition-all overflow-hidden ">
- <textarea
- value={input}
- onChange={e => setInput(e.target.value)}
- placeholder={isRecording ? ' Listening speak now' : (chatMode === 'flow' ? 'Design a workflow...' : chatMode === 'automation' ? 'Build an automation...' : 'Ask anything or give a command')}
- rows={2}
- className={`w-full bg-transparent border-none focus:ring-0 resize-none px-3 pt-3 pb-1 text-sm text-foreground outline-none leading-relaxed ${
- isRecording ? 'placeholder:text-red-400 placeholder:animate-pulse' : 'placeholder:text-[#71717a] dark:text-gray-400/50'
-}`}
- disabled={isLoading}
- onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend();}}}
- />
- <div className="flex items-center justify-between px-2 pb-2">
- <div className="flex items-center gap-0.5">
- <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <button type="button" className="p-1.5 text-[#71717a] hover:bg-slate-50 hover:text-primary rounded-lg transition-colors" title="Change Mode">
-        <Plus className="w-4 h-4" />
-      </button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="start" side="top" className="w-48 z-[100]">
-      <DropdownMenuItem onClick={() => setChatMode('chat')} className="cursor-pointer font-medium"><MessageSquare className="w-4 h-4 mr-2 text-[#71717a]"/> Chat Mode</DropdownMenuItem>
-      <DropdownMenuItem onClick={() => setChatMode('flow')} className="cursor-pointer font-medium"><OrbitIcon className="w-4 h-4 mr-2 text-[#71717a]"/> Flow Builder Mode</DropdownMenuItem>
-      <DropdownMenuItem onClick={() => setChatMode('automation')} className="cursor-pointer font-medium"><Bot className="w-4 h-4 mr-2 text-[#71717a]"/> Automation Mode</DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
- <input ref={fileInputRef} type="file" className="hidden" accept="image/*,.pdf,.txt,.csv,.docx,.xlsx,.json,.md" onChange={handleFileUpload} />
- <button
- type="button"
- onClick={() => fileInputRef.current?.click()}
- className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/30 rounded-lg transition-colors"
- title="Attach file or image"
- >
- <Paperclip className="w-4 h-4" />
- </button>
- <button
- type="button"
- onClick={handleMicToggle}
- className={`p-1.5 rounded-lg transition-colors ${
- isRecording
- ? 'text-red-500 bg-red-50 dark:bg-red-950/30 animate-pulse'
- : 'text-[#71717a] dark:text-gray-400 hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/30'
-}`}
- title={isRecording ? 'Stop recording' : 'Voice input'}
- >
- {isRecording ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
- </button>
- </div>
- <div className="flex items-center gap-2">
- <span className="text-[9px] text-[#71717a] dark:text-gray-400/40 uppercase tracking-wider hidden sm:block tracking-[0.04em]"> {t("send_shift_newline", "Send Shift+ Newline")}</span>
- <button
- type="button"
- disabled={(!input.trim() && !uploadedFile) || isLoading}
- onClick={() => handleSend()}
- className="h-8 w-8 bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl flex items-center justify-center transition-colors "
- >
- <Send className="w-3.5 h-3.5" />
- </button>
- </div>
- </div>
- </div>
  </div>
  </div>
  </div>
