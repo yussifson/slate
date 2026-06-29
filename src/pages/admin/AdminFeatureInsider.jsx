@@ -27,12 +27,31 @@ export default function AdminFeatureInsider() {
 
   const fetchRequests = async () => {
     try {
+      // Fetch requests without join (no FK exists between univ_feature_requests and companies)
       const { data, error } = await supabase
         .from('univ_feature_requests')
-        .select('*, company:companies(name)');
+        .select('*')
+        .order('created_at', { ascending: false });
         
       if (error) throw error;
-      setRequests(data || []);
+
+      // Separately fetch company names for all unique company_ids and merge
+      const companyIds = [...new Set((data || []).map(r => r.company_id).filter(Boolean))];
+      let companyMap = {};
+      if (companyIds.length > 0) {
+        const { data: companies } = await supabase
+          .from('companies')
+          .select('id, name')
+          .in('id', companyIds);
+        (companies || []).forEach(c => { companyMap[c.id] = c.name; });
+      }
+
+      const enriched = (data || []).map(r => ({
+        ...r,
+        company: { name: companyMap[r.company_id] || 'Unknown Company' }
+      }));
+
+      setRequests(enriched);
     } catch (err) {
       console.error(err);
       toast.error('Failed to load feature requests');
