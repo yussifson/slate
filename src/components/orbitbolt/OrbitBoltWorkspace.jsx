@@ -125,10 +125,10 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  const inputRef = useRef(null);
  
  useEffect(() => {
-   if (!isLoading && inputRef.current) {
+   if (!isGenerating && inputRef.current) {
      inputRef.current.focus();
    }
- }, [isLoading]);
+ }, [isGenerating]);
 
  useEffect(() => {
  const load = async () => {
