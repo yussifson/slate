@@ -11,6 +11,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { generateText } from '@/lib/cloudflareAI';
 
 
 export default function FeatureLab() {
@@ -77,13 +78,38 @@ export default function FeatureLab() {
     }
     
     setIsGeneratingAI(true);
-    // Simulate AI API call formatting the request
-    setTimeout(() => {
-      const formatted = `### Problem Statement\n${description}\n\n### Proposed Solution\nWe suggest building a dedicated module or component that streamlines this workflow.\n\n### Business Value\nThis will save time, reduce manual errors, and improve team efficiency.`;
-      setDescription(formatted);
+    try {
+      const prompt = `You are an expert product manager for an enterprise SaaS platform. A user wants to request a new feature.
+They wrote this draft description:
+"${description}"
+${title ? `The title they provided is: "${title}"` : ''}
+
+Please rewrite their description into a highly professional, well-formatted feature request. 
+Use Markdown with the following headers:
+### Problem Statement
+[Analyze their description and identify the core problem they are facing]
+
+### Proposed Solution
+[Flesh out their idea into a concrete software solution or module]
+
+### Business Value
+[Explain how this saves time, reduces errors, or improves efficiency for their business]
+
+Keep it concise but detailed enough for a software engineering team to understand. DO NOT wrap the output in markdown code blocks (\`\`\`). Output the raw text directly.`;
+      
+      const formatted = await generateText(prompt);
+      if (formatted) {
+        setDescription(formatted.trim());
+        toast.success('Description formatted with AI Sparkles!');
+      } else {
+        toast.error('AI response was empty. Please try again.');
+      }
+    } catch (err) {
+      console.error('AI Format Error:', err);
+      toast.error('Failed to generate AI format.');
+    } finally {
       setIsGeneratingAI(false);
-      toast.success('Description formatted with AI Sparkles!');
-    }, 1500);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -97,16 +123,10 @@ export default function FeatureLab() {
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from('univ_feature_requests').insert({
-        company_id: user.company_id,
-        user_id: user.id,
-        title,
-        description,
-        request_type: requestType,
-        status: 'pending'
-      });
-
-      if (error) throw error;
+      await powerSync.execute(
+        `INSERT INTO univ_feature_requests (id, company_id, user_id, title, description, request_type, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [crypto.randomUUID(), user.company_id, user.id, title, description, requestType, 'pending', new Date().toISOString(), new Date().toISOString()]
+      );
 
       toast.success('Feature request submitted successfully!');
       setTitle('');

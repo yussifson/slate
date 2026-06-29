@@ -384,31 +384,31 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
   const { data: navOverridesData } = useQuery({
     queryKey: ['nav_overrides', companyId],
     queryFn: async () => {
-      if (!companyId) return {};
-      const res = await powerSync.execute(`SELECT data FROM industry_records WHERE company_id = ? AND record_type = 'nav_overrides'`, [companyId]);
+      if (!companyId) return { id: null, overrides: {} };
+      const res = await powerSync.execute(`SELECT id, data FROM industry_records WHERE company_id = ? AND record_type = 'nav_overrides'`, [companyId]);
       if (res.rows?._array?.length > 0) {
         let raw = res.rows._array[0].data;
-        if (typeof raw === 'string') return JSON.parse(raw);
-        return raw;
+        let parsed = typeof raw === 'string' ? JSON.parse(raw) : (raw || {});
+        return { id: res.rows._array[0].id, overrides: parsed };
       }
-      return {};
+      return { id: crypto.randomUUID(), overrides: {} };
     },
     enabled: !!companyId
   });
 
   const handleHideStaticModule = async (path) => {
     try {
-      const currentOverrides = navOverridesData || {};
-      const newOverrides = { ...currentOverrides, [path]: { ...(currentOverrides[path] || {}), hidden: true } };
+      const currentOverrides = navOverridesData?.overrides || {};
+      const newOverrides = { ...currentOverrides, [path]: { ...currentOverrides[path], hidden: true } };
       
-      const recordId = `${companyId}_nav_overrides`;
+      const recordId = navOverridesData?.id || crypto.randomUUID();
+      
       const payload = {
         id: recordId,
         company_id: companyId,
         record_type: 'nav_overrides',
         industry: activeIndustry || 'orbit_build',
         data: JSON.stringify(newOverrides),
-        created_by: user?.id,
         created_at: new Date().toISOString()
       };
       
@@ -574,9 +574,9 @@ if (user?.role === "super_admin") {
   if (renameData && renameData.newName.trim() !== "" && renameData.newName !== renameData.currentName) {
   if (renameData.isStatic) {
     try {
-      const currentOverrides = navOverridesData || {};
+      const currentOverrides = navOverridesData?.overrides || {};
       const newOverrides = { ...currentOverrides, [renameData.path]: { ...(currentOverrides[renameData.path] || {}), customName: renameData.newName } };
-      const recordId = `${companyId}_nav_overrides`;
+      const recordId = navOverridesData?.id || crypto.randomUUID();
       await powerSync.execute(
         `INSERT OR REPLACE INTO industry_records (id, company_id, record_type, industry, data, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
         [recordId, companyId, 'nav_overrides', activeIndustry || 'orbit_build', JSON.stringify(newOverrides), new Date().toISOString()]
@@ -912,9 +912,9 @@ if (user?.role === "super_admin") {
                 <span className="text-sm font-medium">{label}</span>
                 <Button size="sm" variant="outline" onClick={async () => {
                   try {
-                    const currentOverrides = navOverridesData || {};
+                    const currentOverrides = navOverridesData?.overrides || {};
                     const newOverrides = { ...currentOverrides, [path]: { ...currentOverrides[path], hidden: false } };
-                    const recordId = `${companyId}_nav_overrides`;
+                    const recordId = navOverridesData?.id || crypto.randomUUID();
                     await powerSync.execute(
                       `INSERT OR REPLACE INTO industry_records (id, company_id, record_type, industry, data, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
                       [recordId, companyId, 'nav_overrides', activeIndustry || 'orbit_build', JSON.stringify(newOverrides), new Date().toISOString()]

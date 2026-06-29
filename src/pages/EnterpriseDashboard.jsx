@@ -30,7 +30,7 @@ export default function EnterpriseDashboard() {
       if (!uniqueIds.length) { setPortfolio([]); setLoading(false); return; }
       const { data, error } = await supabase
         .from('companies')
-        .select('id, name, industry, industry_type, subdomain, status, active_modules, logo_url, subscription_plan')
+        .select('id, name, industry, industry_type, subdomain, status, logo_url, subscription_plan')
         .in('id', uniqueIds);
       if (error) throw error;
       const companies = data || [];
