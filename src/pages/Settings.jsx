@@ -37,8 +37,8 @@ export default function Settings() {
   queryKey: ["company", companyId],
   queryFn: async () => {
     if (!companyId) return null;
-    const { supabase } = await import('@/api/supabaseClient');
-    const { data } = await supabase.from('companies').select('*').eq('id', companyId).single();
+    const res = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [companyId]);
+    const data = res.rows ? (res.rows._array ? res.rows._array[0] : Array.from(res.rows)[0]) : null;
     return data || null;
   },
   enabled: !!companyId
@@ -49,9 +49,6 @@ export default function Settings() {
     setSaving(true);
     
     try {
-      const { supabase } = await import('@/api/supabaseClient');
-      
-      // Build a clean payload of ONLY what was passed to avoid schema mismatch errors
       const payload = {};
       const allowedFields = [
         'name', 'subdomain', 'custom_domain', 'tagline', 'primary_color', 
@@ -63,29 +60,16 @@ export default function Settings() {
       }
 
       if (Object.keys(payload).length > 0) {
-        const { error: supabaseErr } = await supabase
-          .from('companies')
-          .update(payload)
-          .eq('id', companyId);
-          
-        if (supabaseErr) {
-           console.error("Direct Supabase update failed:", supabaseErr);
-           throw new Error(supabaseErr.message || "Failed to update Supabase. Schema mismatch or permissions issue.");
-        }
-      }
-
-      // Force React Query to re-fetch from Supabase immediately so it NEVER reverts to old local cache
-      await queryClient.invalidateQueries({ queryKey: ["company", companyId]});
-      
-      // Attempt to sync local DB silently, but don't rely on it
-      try {
         const keys = Object.keys(payload);
         const vals = Object.values(payload);
-        if (keys.length > 0) {
-          await powerSync.execute(`UPDATE companies SET ${keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [...vals, companyId]);
-        }
-      } catch(e) {}
+        await powerSync.execute(
+          `UPDATE companies SET ${keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, 
+          [...vals, companyId]
+        );
+      }
 
+      await queryClient.invalidateQueries({ queryKey: ["company", companyId]});
+      await refreshUser();
       toast({ title: "Settings updated successfully"});
     } catch (err) {
       if (err.code === '23505' || err.message?.includes('unique constraint')) {
