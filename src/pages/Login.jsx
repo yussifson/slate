@@ -178,76 +178,77 @@ export default function Login() {
 }
  
  if (targetSubdomain) {
- // Check if user belongs to this subdomain
- const { data: profile} = await powerSync.execute('SELECT company_id, role, onboarding_completed FROM profiles WHERE id = ? LIMIT 1', [authData.user.id]).then(res => ({ data: res.rows._array[0]}));
- 
- if (profile && !profile.onboarding_completed) {
- window.location.href = '/onboarding';
- return;
-}
+    // Check if user belongs to this subdomain via Supabase directly (local DB might not be synced yet)
+    const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).single();
+    
+    // Only go to onboarding if they explicitly have no company_id
+    if (!profile?.company_id) {
+      window.location.href = '/onboarding';
+      return;
+    }
 
- if (profile?.company_id) {
- const { data: company} = await powerSync.execute('SELECT name, subdomain FROM companies WHERE id = ? LIMIT 1', [profile.company_id]).then(res => ({ data: res.rows._array[0]}));
- const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
- 
- if (companySubdomain && companySubdomain !== currentSubdomain && !workspace) {
- const port = window.location.port ? `:${window.location.port}` : '';
- let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
- if (authData?.session?.access_token && authData?.session?.refresh_token) {
- url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
-}
- window.location.href = url;
- return;
-} else if (companySubdomain && workspace && !currentSubdomain) {
- // We are on root, redirecting to the workspace
- const port = window.location.port ? `:${window.location.port}` : '';
- let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
- if (authData?.session?.access_token && authData?.session?.refresh_token) {
- url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
-}
- if (profile?.role === 'student') url += 'student-portal';
- else if (profile?.role === 'parent') url += 'parent-portal';
- else if (['client', 'patient', 'guest', 'customer', 'member', 'policyholder'].includes(profile?.role)) url += 'portal';
- window.location.href = url;
- return;
-}
-}
- 
- // Route based on role
- if (profile?.role === 'student') {
- window.location.href = '/student-portal';
- return;
-} else if (profile?.role === 'parent') {
- window.location.href = '/parent-portal';
- return;
-} else if (['client', 'patient', 'guest', 'customer', 'member', 'policyholder'].includes(profile?.role)) {
- window.location.href = '/portal';
- return;
-}
+    if (profile?.company_id) {
+      const { data: company } = await supabase.from('companies').select('name, subdomain').eq('id', profile.company_id).single();
+      const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
+      
+      if (companySubdomain && companySubdomain !== currentSubdomain && !workspace) {
+        const port = window.location.port ? `:${window.location.port}` : '';
+        let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
+        if (authData?.session?.access_token && authData?.session?.refresh_token) {
+          url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
+        }
+        window.location.href = url;
+        return;
+      } else if (companySubdomain && workspace && !currentSubdomain) {
+        // We are on root, redirecting to the workspace
+        const port = window.location.port ? `:${window.location.port}` : '';
+        let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
+        if (authData?.session?.access_token && authData?.session?.refresh_token) {
+          url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
+        }
+        if (profile?.role === 'student') url += 'student-portal';
+        else if (profile?.role === 'parent') url += 'parent-portal';
+        else if (['client', 'patient', 'guest', 'customer', 'member', 'policyholder'].includes(profile?.role)) url += 'portal';
+        window.location.href = url;
+        return;
+      }
+    }
+    
+    // Route based on role
+    if (profile?.role === 'student') {
+      window.location.href = '/student-portal';
+      return;
+    } else if (profile?.role === 'parent') {
+      window.location.href = '/parent-portal';
+      return;
+    } else if (['client', 'patient', 'guest', 'customer', 'member', 'policyholder'].includes(profile?.role)) {
+      window.location.href = '/portal';
+      return;
+    }
 
- window.location.href = '/';
+    window.location.href = '/';
 } else {
- // Base domain login
- const { data: profile} = await powerSync.execute('SELECT company_id, role, onboarding_completed FROM profiles WHERE id = ? LIMIT 1', [authData.user.id]).then(res => ({ data: res.rows._array[0]}));
- 
- // 1. Strict Onboarding Check: If missing, null, false, or 0, ALWAYS send to onboarding.
- if (!profile || !profile.onboarding_completed) {
- window.location.href = '/onboarding';
- return;
- }
- 
- // If Super Admin logs into the Base Domain, route directly to the admin command center
- if (profile?.role === 'super_admin') {
- window.location.href = '/admin';
- return;
-}
+    // Base domain login
+    const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).single();
+    
+    // Only go to onboarding if they explicitly have no company_id
+    if (!profile?.company_id) {
+      window.location.href = '/onboarding';
+      return;
+    }
+    
+    // If Super Admin logs into the Base Domain, route directly to the admin command center
+    if (profile?.role === 'super_admin') {
+      window.location.href = '/admin';
+      return;
+    }
 
- // 2. Intelligent Routing to Subdomain
- if (profile?.company_id) {
- const { data: company} = await powerSync.execute('SELECT name, subdomain FROM companies WHERE id = ? LIMIT 1', [profile.company_id]).then(res => ({ data: res.rows._array[0]}));
- const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
- 
- if (companySubdomain) {
+    // 2. Intelligent Routing to Subdomain
+    if (profile?.company_id) {
+      const { data: company } = await supabase.from('companies').select('name, subdomain').eq('id', profile.company_id).single();
+      const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
+      
+      if (companySubdomain) {
  const port = window.location.port ? `:${window.location.port}` : '';
  let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
  if (authData?.session?.access_token && authData?.session?.refresh_token) {
