@@ -42,7 +42,7 @@ export default defineConfig({
         icons: []
       },
       workbox: {
-        maximumFileSizeToCacheInBytes: 10000000,
+        maximumFileSizeToCacheInBytes: 30000000,
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,wasm}'],
