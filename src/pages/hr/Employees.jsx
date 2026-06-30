@@ -331,8 +331,8 @@ export default function Employees() {
  </div>
  </div>
  </div>
-  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 flex flex-col">
-  <div className="p-4 border-b border-primary/40 bg-muted/50 shrink-0">
+  <div className="flex flex-col gap-4 mt-6">
+  <div className="p-4 bg-transparent shrink-0">
   <div className="relative max-w-md">
   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
   <Input placeholder="Search employee name or department..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
