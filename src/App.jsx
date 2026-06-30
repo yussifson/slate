@@ -419,7 +419,9 @@ import LearnerProfile from './pages/online/LearnerProfile';
 import NotesCenter from './pages/online/NotesCenter';
 import OnlineAssessments from './pages/online/OnlineAssessments';
 import OnlineCertificates from './pages/online/OnlineCertificates';
-import OnlineLive from './pages/online/OnlineLive';
+import UnivTimeline from './pages/optavel/UnivTimeline';
+import UnifiedInbox from './pages/UnifiedInbox';
+import WhatsAppMessenger from './pages/WhatsAppMessenger';
 import Checkout from './pages/online/Checkout';
 import OnlineSubscriptions from './pages/online/OnlineSubscriptions';
 import OnlineAffiliates from './pages/online/OnlineAffiliates';
@@ -632,6 +634,7 @@ function PlatformRoutes() {
       <Route path="/univ-wards" element={<UnivWard />} />
       <Route path="/univ-warehouses" element={<UnivWarehouse />} />
       <Route path="/firm-setup" element={<OnboardingWizard />} />
+      <Route path="/unified-inbox" element={<UnifiedInbox />} />
       <Route path="/chat" element={<Chat />} />
       <Route path="/board" element={<Board />} />
                           <Route path="/join/:roomId" element={<JoinMeeting />} />

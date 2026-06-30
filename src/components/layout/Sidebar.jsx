@@ -687,6 +687,11 @@ if (user?.role === "super_admin") {
     rawNavItems.push({ label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: "Wallet" });
   }
 
+  // Inject Unified Inbox
+  if (!rawNavItems.some(n => n.path === '/unified-inbox')) {
+    rawNavItems.push({ label: "Unified Inbox", path: "/unified-inbox", icon: "Inbox" });
+  }
+
   // Deduplicate by label to prevent double Dashboards, and apply static nav overrides
   const seenLabels = new Set();
   let navItems = [];
@@ -720,7 +725,7 @@ if (user?.role === "super_admin") {
     }
     
     // 2. Notification system added to Communications
-    if (['/chat', '/email-inbox', '/board', '/whatsapp', '/messages', '/notifications'].includes(p)) {
+    if (['/chat', '/email-inbox', '/board', '/whatsapp', '/messages', '/notifications', '/unified-inbox'].includes(p)) {
       return "Communications";
     }
     
