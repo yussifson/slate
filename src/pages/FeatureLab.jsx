@@ -126,16 +126,30 @@ Do NOT wrap the output in markdown code blocks. Output the raw text directly.`;
     setIsSubmitting(true);
     try {
       if (isEditing && activeRequest) {
-        await powerSync.execute(
-          `UPDATE univ_feature_requests SET title = ?, description = ?, request_type = ?, updated_at = ? WHERE id = ?`,
-          [title, description, requestType, new Date().toISOString(), activeRequest.id]
-        );
+        const { error } = await supabase.from('univ_feature_requests').update({
+          title, 
+          description, 
+          request_type: requestType, 
+          updated_at: new Date().toISOString()
+        }).eq('id', activeRequest.id);
+        
+        if (error) throw error;
         toast.success('Feature request updated successfully!');
       } else {
-        await powerSync.execute(
-          `INSERT INTO univ_feature_requests (id, company_id, user_id, title, description, request_type, status, created_at, updated_at, progress) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [crypto.randomUUID(), user.company_id, user.id, title, description, requestType, 'pending', new Date().toISOString(), new Date().toISOString(), 0]
-        );
+        const { error } = await supabase.from('univ_feature_requests').insert({
+          id: crypto.randomUUID(),
+          company_id: user.company_id,
+          user_id: user.id,
+          title,
+          description,
+          request_type: requestType,
+          status: 'pending',
+          progress: 0,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+        
+        if (error) throw error;
         toast.success('Feature request submitted successfully!');
       }
 
