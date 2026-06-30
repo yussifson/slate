@@ -594,10 +594,10 @@ return (
  <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-transparent to-primary/20 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
  
  {/* Inner White Container */}
- <div className="relative bg-white dark:bg-slate-900 backdrop-blur-xl rounded-2xl p-8 sm:p-10 text-center flex flex-col h-full w-full z-10 border border-primary/10">
- <div className="mb-8 flex flex-col items-center">
- <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 border border-primary/20">
-   <Sparkles className="w-6 h-6 text-primary" />
+ <div className="relative bg-white dark:bg-slate-900 backdrop-blur-xl rounded-2xl p-6 sm:p-8 text-center flex flex-col h-full w-full z-10 border border-primary/10">
+ <div className="mb-6 flex flex-col items-center">
+ <div className="w-10 h-10 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 border border-primary/20">
+   <Sparkles className="w-5 h-5 text-primary" />
  </div>
  <h2 className="font-bold text-slate-900 dark:text-white text-3xl sm:text-4xl tracking-tight leading-tight">
  Can't find your preferred workslate? <br/><span className="text-primary font-black mt-2 inline-block">Build it with Orbit Build</span>
@@ -612,7 +612,7 @@ return (
    setShowFirmAlert(false);
    }}
    placeholder="e.g. I need a CRM for my logistics company to manage delivery drivers and track client invoices..."
-   className="w-full h-36 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-5 text-slate-900 dark:text-white placeholder-slate-400 font-medium text-base sm:text-lg border border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none resize-none transition-all"
+   className="w-full h-24 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 text-slate-900 dark:text-white placeholder-slate-400 font-medium text-base border border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none resize-none transition-all"
    />
  </div>
  <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -621,7 +621,7 @@ return (
      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary/60 opacity-75"></span>
      <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
    </span>
-   <span className="text-xs font-semibold text-slate-500 uppercase tracking-widest tracking-[0.04em]">Powered by Optavel Engine</span>
+   <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest tracking-[0.04em]">Powered by Orbit Intelligence</span>
  </div>
  <button
  type="submit"
