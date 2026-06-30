@@ -6011,6 +6011,8 @@ export const AppSchema = new Schema({
         description: column.text,
         request_type: column.text,
         status: column.text,
+        progress: column.integer,
+        admin_feedback: column.text,
         created_at: column.text,
         updated_at: column.text
     }),

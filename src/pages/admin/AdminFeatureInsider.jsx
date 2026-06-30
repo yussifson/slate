@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
 import { REPageHeader } from '@/components/real-estate/RealEstateViewKit'; // Reusing nicely designed header
 
 export default function AdminFeatureInsider() {
@@ -24,6 +25,12 @@ export default function AdminFeatureInsider() {
   const [announcementTitle, setAnnouncementTitle] = useState('');
   const [announcementDesc, setAnnouncementDesc] = useState('');
   const [moduleIdentifier, setModuleIdentifier] = useState('');
+
+  // Update Status Modal State
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState('pending');
+  const [updateProgress, setUpdateProgress] = useState(0);
+  const [adminFeedback, setAdminFeedback] = useState('');
 
   const fetchRequests = async () => {
     try {
@@ -70,6 +77,32 @@ export default function AdminFeatureInsider() {
     setAnnouncementDesc(req.description);
     setModuleIdentifier(req.title.toLowerCase().replace(/[^a-z0-9]/g, '_'));
     setIsModalOpen(true);
+  };
+
+  const openUpdateModal = (req) => {
+    setSelectedRequest(req);
+    setUpdateStatus(req.status || 'pending');
+    setUpdateProgress(req.progress || 0);
+    setAdminFeedback(req.admin_feedback || '');
+    setIsUpdateModalOpen(true);
+  };
+
+  const handleUpdateStatus = async () => {
+    try {
+      await supabase.from('univ_feature_requests').update({ 
+        status: updateStatus,
+        progress: updateProgress,
+        admin_feedback: adminFeedback,
+        updated_at: new Date().toISOString()
+      }).eq('id', selectedRequest.id);
+
+      toast.success('Feature status updated successfully!');
+      setIsUpdateModalOpen(false);
+      fetchRequests();
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to update feature');
+    }
   };
 
   const handleDeployFeature = async () => {
@@ -154,20 +187,34 @@ export default function AdminFeatureInsider() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge className={
-                      req.status === 'built' ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-100' :
-                      req.status === 'pending' ? 'bg-amber-100 text-amber-800 hover:bg-amber-100' : ''
-                    }>
-                      {req.status}
-                    </Badge>
+                    <div className="space-y-2">
+                      <Badge className={
+                        req.status === 'built' || req.status === 'accepted' ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-100' :
+                        req.status === 'rejected' ? 'bg-red-100 text-red-800 hover:bg-red-100' :
+                        'bg-amber-100 text-amber-800 hover:bg-amber-100'
+                      }>
+                        {req.status}
+                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${Math.max(req.progress || 0, 0)}%` }} />
+                        </div>
+                        <span className="text-[10px] text-slate-500 font-medium">{req.progress || 0}%</span>
+                      </div>
+                    </div>
                   </TableCell>
                   <TableCell className="text-sm text-slate-500">{new Date(req.created_at).toLocaleDateString()}</TableCell>
                   <TableCell className="text-right">
-                    {req.status === 'pending' && (
-                      <Button onClick={() => openAnnouncementModal(req)} size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2">
-                        <Send className="w-3 h-3" /> Deploy
+                    <div className="flex justify-end gap-2">
+                      <Button onClick={() => openUpdateModal(req)} size="sm" variant="outline" className="gap-2">
+                        <Activity className="w-3 h-3" /> Update Status
                       </Button>
-                    )}
+                      {(req.status === 'pending' || req.status === 'accepted') && (
+                        <Button onClick={() => openAnnouncementModal(req)} size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2">
+                          <Send className="w-3 h-3" /> Deploy
+                        </Button>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
@@ -203,6 +250,64 @@ export default function AdminFeatureInsider() {
             <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
             <Button onClick={handleDeployFeature} className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2">
               <Send className="w-4 h-4" /> Push Announcement
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Update Status Modal */}
+      <Dialog open={isUpdateModalOpen} onOpenChange={setIsUpdateModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Update Feature Status</DialogTitle>
+            <DialogDescription>
+              Manage the progress and status of this feature request. Companies will see these updates.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-6 py-4">
+            <div className="space-y-3">
+              <Label>Request Status</Label>
+              <Select value={updateStatus} onValueChange={setUpdateStatus}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="accepted">Accepted</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
+                  <SelectItem value="built">Built (Completed)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label>Development Progress</Label>
+                <span className="text-sm font-medium text-indigo-600">{updateProgress}%</span>
+              </div>
+              <Slider 
+                value={[updateProgress]} 
+                onValueChange={(val) => setUpdateProgress(val[0])} 
+                max={100} 
+                step={5}
+                className="w-full"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Admin Feedback (Visible to Company)</Label>
+              <Textarea 
+                value={adminFeedback} 
+                onChange={e => setAdminFeedback(e.target.value)} 
+                className="h-24 resize-none" 
+                placeholder="Explain why this was accepted/rejected, or provide a status update..."
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsUpdateModalOpen(false)}>Cancel</Button>
+            <Button onClick={handleUpdateStatus} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+              Save Updates
             </Button>
           </DialogFooter>
         </DialogContent>

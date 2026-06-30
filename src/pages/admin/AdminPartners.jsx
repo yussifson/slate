@@ -12,6 +12,19 @@ export default function AdminPartners() {
 
   useEffect(() => {
     fetchApplications();
+
+    // Set up realtime subscription
+    const subscription = supabase
+      .channel('partner_applications_changes')
+      .on('postgres', { event: 'INSERT', schema: 'public', table: 'partner_applications' }, (payload) => {
+        toast({ title: "New Partner Application", description: `From ${payload.new.company_name}` });
+        setApplications(prev => [payload.new, ...prev]);
+      })
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const fetchApplications = async () => {

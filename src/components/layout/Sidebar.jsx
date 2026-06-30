@@ -335,7 +335,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  { label: "Inbox", path: "/email-inbox", icon: "Mail"},
  { label: "Chat", path: "/chat", icon: "MessageCircle"},
  { label: "Board", path: "/board", icon: "LayoutGrid"},
- { label: "Feature Lab", path: "/feature-insider", icon: "FlaskConical"},
+ { label: "Feature Insider", path: "/feature-insider", icon: "FlaskConical"},
  { label: "Feature Vault", path: "/feature-vault", icon: "Archive"},
  { label: "Settings", path: "/settings", icon: "Settings"}
  ];
@@ -534,7 +534,7 @@ if (user?.role === "super_admin") {
 }
 
   if (!rawNavItems.some(n => n.path === '/feature-insider')) {
-    rawNavItems.push({ label: "Feature Lab", path: "/feature-insider", icon: "FlaskConical" });
+    rawNavItems.push({ label: "Feature Insider", path: "/feature-insider", icon: "FlaskConical" });
   }
 
   // Deduplicate by label to prevent double Dashboards, and apply static nav overrides

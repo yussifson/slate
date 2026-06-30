@@ -4,7 +4,7 @@ import { Handshake, ArrowRight, ShieldCheck, Globe, Rocket, Check, Loader2, User
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import confetti from "canvas-confetti";
-import { base44 } from "@/api/base44Client";
+import { supabase } from "@/api/supabaseClient";
 import { toast } from "@/components/ui/use-toast";
 
 export default function Partners() {
@@ -29,11 +29,13 @@ export default function Partners() {
    e.preventDefault();
    setIsSubmitting(true);
    try {
-     await base44.entities.PartnerApplication.create({
+     const { error } = await supabase.from('partner_applications').insert({
        ...formData,
        partner_type: dialogType === 'find' ? 'Find a Partner' : formData.partner_type,
        status: 'pending'
      });
+     
+     if (error) throw error;
      
      confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 } });
      toast({ title: "Application Submitted", description: "We will review your details and get back to you shortly." });
