@@ -3,7 +3,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { usePowerSync } from '@powersync/react';
 import { supabase } from '@/api/supabaseClient';
 import { toast } from 'react-hot-toast';
-import { Sparkles, PlusCircle, CheckCircle2, FlaskConical, LayoutDashboard, Send, Activity, Info, Edit, Trash2, X, MessageSquare, Lightbulb, User } from 'lucide-react';
+import { Sparkles, PlusCircle, CheckCircle2, FlaskConical, LayoutDashboard, Send, Activity, Info, Edit, Trash2, X, MessageSquare, Lightbulb, User, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
