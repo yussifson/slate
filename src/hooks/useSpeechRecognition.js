@@ -4,6 +4,11 @@ export function useSpeechRecognition({ onTranscript }) {
   const [isListening, setIsListening] = useState(false);
   const [hasSupport, setHasSupport] = useState(false);
   const recognitionRef = useRef(null);
+  const onTranscriptRef = useRef(onTranscript);
+
+  useEffect(() => {
+    onTranscriptRef.current = onTranscript;
+  }, [onTranscript]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -19,8 +24,8 @@ export function useSpeechRecognition({ onTranscript }) {
           for (let i = event.resultIndex; i < event.results.length; ++i) {
             currentTranscript += event.results[i][0].transcript;
           }
-          if (onTranscript) {
-            onTranscript(currentTranscript);
+          if (onTranscriptRef.current) {
+            onTranscriptRef.current(currentTranscript);
           }
         };
 
@@ -39,7 +44,7 @@ export function useSpeechRecognition({ onTranscript }) {
         recognitionRef.current.stop();
       }
     };
-  }, [onTranscript]);
+  }, []);
 
   const toggleListening = () => {
     if (!recognitionRef.current) return;

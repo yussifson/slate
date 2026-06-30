@@ -419,6 +419,7 @@ import LearnerProfile from './pages/online/LearnerProfile';
 import NotesCenter from './pages/online/NotesCenter';
 import OnlineAssessments from './pages/online/OnlineAssessments';
 import OnlineCertificates from './pages/online/OnlineCertificates';
+import UnifiedInbox from './pages/UnifiedInbox';
 import OnlineLive from './pages/online/OnlineLive';
 import Checkout from './pages/online/Checkout';
 import OnlineSubscriptions from './pages/online/OnlineSubscriptions';
