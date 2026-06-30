@@ -392,7 +392,7 @@ export default function GlobalAIAssistant({ onClose}) {
  results.push(`Success: ${action.tool} for ${rt}. Record ID is ${res.id}`);
 } else {
  const res = await mutateRecord.mutateAsync({
- id: action.id,
+ id: action.id || generateId(),
  recordType: rt,
  payload: action.payload,
  status: action.payload.status || 'active',

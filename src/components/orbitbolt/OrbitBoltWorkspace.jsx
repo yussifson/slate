@@ -430,7 +430,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
   <div className={clsx(
   "max-w-[85%] text-[13px] leading-relaxed shadow-sm transition-all duration-200 relative",
   m.role === 'user'
-  ? 'rounded-2xl rounded-tr-sm px-4 py-3 bg-gradient-to-br from-slate-800 to-slate-900 text-white dark:from-slate-200 dark:to-white dark:text-slate-900'
+  ? 'rounded-2xl rounded-tr-sm px-4 py-3 bg-primary text-primary-foreground shadow-md shadow-primary/20'
   : 'rounded-2xl rounded-tl-sm px-4.5 py-3.5 bg-white dark:bg-[#131A2B] border border-slate-200/60 dark:border-white/5 text-slate-700 dark:text-slate-300 prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-slate-50 dark:prose-pre:bg-[#0A0F1C] prose-pre:border prose-pre:border-slate-200 dark:prose-pre:border-white/5 prose-pre:rounded-xl prose-code:text-emerald-600 dark:prose-code:text-emerald-400 prose-code:before:content-none prose-code:after:content-none prose-headings:font-semibold hover:shadow-md'
   )}>
   <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
