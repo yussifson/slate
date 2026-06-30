@@ -67,12 +67,12 @@ export default function Login() {
 
        if (!brandData) {
        console.log("RPC missed, trying direct table query...");
-        const { data: directData} = await supabase.from('companies').select('id, name, logo_url, tagline').or(`subdomain.eq.${currentSubdomain},custom_domain.eq.${currentSubdomain}`).maybeSingle();
+        const { data: directData} = await supabase.from('companies').select('id, name, logo_url, logo_light_url, tagline').or(`subdomain.eq.${currentSubdomain},custom_domain.eq.${currentSubdomain}`).maybeSingle();
         
         if (directData) {
         brandData = directData;
         } else {
-        const { data: tableData} = await powerSync.execute('SELECT id, name, logo_url, tagline FROM companies WHERE subdomain = ? OR custom_domain = ? LIMIT 1', [currentSubdomain, currentSubdomain]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
+        const { data: tableData} = await powerSync.execute('SELECT id, name, logo_url, logo_light_url, tagline FROM companies WHERE subdomain = ? OR custom_domain = ? LIMIT 1', [currentSubdomain, currentSubdomain]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
         brandData = tableData;
         }
        }
@@ -81,7 +81,7 @@ export default function Login() {
        if (brandData?.id) {
         setBranding({
         name: brandData.name || 'Your Workslate',
-        logo_url: brandData.logo_url,
+        logo_url: brandData.logo_url || brandData.logo_light_url,
         tagline: brandData.tagline || `Sign in to ${brandData.name || 'your workslate'}`
         });
        } else {
