@@ -47,6 +47,7 @@ const ICON_MAP = {
  FileSearch, LayoutGrid, BedDouble, BellRing, CheckSquare2: CheckSquare, Zap, Store
 , ShieldAlert, HeartPulse, FilePlus, FileCheck, Gavel, CalendarDays, CalendarCheck, UserCheck, PenTool, Target, Calculator, Home, Moon, CalendarSearch, Wallet, PieChart, ArrowUpRight, ArrowDownLeft, Laptop, Smartphone, MessageSquare, LineChart, Brain, PackageSearch, Globe};
 
+import { generateText } from '@/lib/cloudflareAI';
 import { powerSync} from "@/api/PowerSyncConnector";
 import { useAuth} from "@/lib/AuthContext";
 import { useCompanyId} from "@/hooks/useCompanyId";
@@ -68,10 +69,21 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const [openMenuId, setOpenMenuId] = useState(null);
  const [renameData, setRenameData] = useState(null);
  const [deleteData, setDeleteData] = useState(null);
- const [showAvatarDialog, setShowAvatarDialog] = useState(false);
- const [showRestoreDialog, setShowRestoreDialog] = useState(false);
+  const [showAvatarDialog, setShowAvatarDialog] = useState(false);
+  const [showRestoreDialog, setShowRestoreDialog] = useState(false);
+  const [isAiSorting, setIsAiSorting] = useState(false);
 
- const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
+  useEffect(() => {
+    if (!companyId || !location.pathname) return;
+    const key = `slate_page_clicks_${companyId}`;
+    try {
+      const clicks = JSON.parse(localStorage.getItem(key) || '{}');
+      clicks[location.pathname] = (clicks[location.pathname] || 0) + 1;
+      localStorage.setItem(key, JSON.stringify(clicks));
+    } catch(e) {}
+  }, [location.pathname, companyId]);
+
+  const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
   const [rolePermissions, setRolePermissions] = useState(isAdmin ? null : undefined);
 
   useEffect(() => {
@@ -396,28 +408,117 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     enabled: !!companyId
   });
 
+  const saveNavOverrides = async (newOverrides) => {
+    const recordId = navOverridesData?.id || crypto.randomUUID();
+    const payload = {
+      id: recordId,
+      company_id: companyId,
+      record_type: 'nav_overrides',
+      industry: activeIndustry || 'orbit_build',
+      data: newOverrides,
+      created_at: new Date().toISOString()
+    };
+    const _keys = Object.keys(payload);
+    const _vals = Object.values(payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+    const existing = await powerSync.getOptional('SELECT id FROM industry_records WHERE id = ?', [payload.id]);
+    if (existing) {
+      await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, payload.id]);
+    } else {
+      await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+    }
+    queryClient.invalidateQueries({ queryKey: ['nav_overrides', companyId] });
+  };
+
+  const handleAiSmartSort = async () => {
+    if (isAiSorting) return;
+    setIsAiSorting(true);
+    const toastId = toast.loading("AI is analyzing your usage and rearranging the sidebar...");
+    try {
+      const key = `slate_page_clicks_${companyId}`;
+      const clicks = JSON.parse(localStorage.getItem(key) || '{}');
+      const itemsToSort = navItems.map(n => ({ path: n.path, label: n.label, clicks: clicks[n.path] || 0 }));
+      
+      const prompt = `You are an expert UX designer. Rearrange these sidebar navigation items based on the user's click frequency and logical grouping. Output a raw JSON array of strings, where each string is the path of the item, ordered from most important (top) to least important (bottom). 
+      Items: ${JSON.stringify(itemsToSort)}
+      ONLY output the raw JSON array (e.g. ["/path1", "/path2"]), nothing else.`;
+
+      const response = await generateText(prompt);
+      let parsedOrder = [];
+      try {
+        const text = typeof response === 'string' ? response : JSON.stringify(response);
+        const match = text.match(/\[.*\]/s);
+        if (match) {
+          parsedOrder = JSON.parse(match[0]);
+        }
+      } catch(e) {
+        console.error("Parse failed", e);
+      }
+
+      if (parsedOrder && parsedOrder.length > 0) {
+        const currentOverrides = navOverridesData?.overrides || {};
+        const newOverrides = { ...currentOverrides };
+        parsedOrder.forEach((path, idx) => {
+          newOverrides[path] = { ...(newOverrides[path] || {}), order: idx + 1 };
+        });
+        await saveNavOverrides(newOverrides);
+        toast.success("Sidebar smartly arranged!", { id: toastId });
+      } else {
+        toast.error("AI couldn't arrange right now.", { id: toastId });
+      }
+    } catch(err) {
+      console.error(err);
+      toast.error("AI Sorting failed", { id: toastId });
+    } finally {
+      setIsAiSorting(false);
+    }
+  };
+
+  const handleDeleteStaticModule = async (path) => {
+    try {
+      const currentOverrides = navOverridesData?.overrides || {};
+      const newOverrides = { ...currentOverrides, [path]: { ...(currentOverrides[path] || {}), deleted: true } };
+      await saveNavOverrides(newOverrides);
+      toast.success("Page deleted permanently");
+    } catch(err) {
+      toast.error("Failed to delete page");
+    }
+  };
+
+  const handleMoveOrder = async (path, direction) => {
+    try {
+      const currentOverrides = navOverridesData?.overrides || {};
+      const allPaths = navItems.map(i => i.path);
+      const currentIndex = allPaths.indexOf(path);
+      if (currentIndex === -1) return;
+      
+      const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+      if (targetIndex < 0 || targetIndex >= allPaths.length) return;
+
+      const newOverrides = { ...currentOverrides };
+      allPaths.forEach((p, i) => {
+        if (!newOverrides[p]) newOverrides[p] = {};
+        newOverrides[p].order = newOverrides[p].order || (i + 1) * 10;
+      });
+
+      const currentOrder = newOverrides[path].order;
+      const targetPath = allPaths[targetIndex];
+      const targetOrder = newOverrides[targetPath].order;
+      
+      newOverrides[path].order = targetOrder;
+      newOverrides[targetPath].order = currentOrder;
+
+      await saveNavOverrides(newOverrides);
+      toast.success("Order updated");
+    } catch(err) {
+      toast.error("Failed to reorder");
+    }
+  };
+
   const handleHideStaticModule = async (path) => {
     try {
       const currentOverrides = navOverridesData?.overrides || {};
-      const newOverrides = { ...currentOverrides, [path]: { ...currentOverrides[path], hidden: true } };
-      
-      const recordId = navOverridesData?.id || crypto.randomUUID();
-      
-      const payload = {
-        id: recordId,
-        company_id: companyId,
-        record_type: 'nav_overrides',
-        industry: activeIndustry || 'orbit_build',
-        data: JSON.stringify(newOverrides),
-        created_at: new Date().toISOString()
-      };
-      
-      await powerSync.execute(
-        `INSERT OR REPLACE INTO industry_records (id, company_id, record_type, industry, data, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
-        [payload.id, payload.company_id, payload.record_type, payload.industry, payload.data, payload.created_at]
-      );
-      
-      queryClient.invalidateQueries({ queryKey: ['nav_overrides', companyId] });
+      const newOverrides = { ...currentOverrides, [path]: { ...(currentOverrides[path] || {}), hidden: true } };
+      await saveNavOverrides(newOverrides);
       toast.success("Page hidden");
     } catch (err) {
       console.error(err);
@@ -545,7 +646,7 @@ if (user?.role === "super_admin") {
     if (!seenLabels.has(key)) {
       seenLabels.add(key);
       const override = navOverridesData?.overrides?.[item.path] || {};
-      if (override.hidden) continue;
+      if (override.hidden || override.deleted) continue;
       if (override.customName) {
         navItems.push({ ...item, label: override.customName });
       } else {
@@ -553,6 +654,12 @@ if (user?.role === "super_admin") {
       }
     }
   }
+
+  navItems.sort((a, b) => {
+    const aOrder = navOverridesData?.overrides?.[a.path]?.order || 9999;
+    const bOrder = navOverridesData?.overrides?.[b.path]?.order || 9999;
+    return aOrder - bOrder;
+  });
 
  const handleDeleteModule = (id, name) => {
  setDeleteData({ id, name});
