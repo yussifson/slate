@@ -92,12 +92,12 @@ ${title ? `Title: "${title}"` : ''}
 ${description ? `Description: "${description}"` : ''}
 
 Brainstorm and expand this idea. Instead of just rewriting it, provide 3 innovative variations or expansions of their idea that would add immense business value. 
-Format your response using Markdown with clear headers for each idea variation, including:
-- The Core Concept
-- Why it's valuable
-- Potential implementation details
+Format your response as PLAIN TEXT only. DO NOT use any markdown characters like hashtags (#) or asterisks (*). Use ALL CAPS for headers. Include:
+- THE CORE CONCEPT
+- WHY IT IS VALUABLE
+- POTENTIAL IMPLEMENTATION DETAILS
 
-Do NOT wrap the output in markdown code blocks (\`\`\`). Output the raw text directly.`;
+Do NOT wrap the output in markdown code blocks. Output the raw text directly.`;
       
       const formatted = await generateText(prompt);
       if (formatted) {
@@ -171,9 +171,9 @@ Do NOT wrap the output in markdown code blocks (\`\`\`). Output the raw text dir
   return (
     <div className="p-6 max-w-screen-xl mx-auto space-y-8 animate-in fade-in zoom-in-95 duration-300 relative z-10">
       {/* Premium Background Elements */}
-      <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
-        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-indigo-500/10 blur-[100px]" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] rounded-full bg-purple-500/10 blur-[120px]" />
+      <div className="absolute inset-0 pointer-events-none z-[-1] overflow-hidden rounded-3xl">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-indigo-500/10 blur-[100px]" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full bg-purple-500/10 blur-[120px]" />
       </div>
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
