@@ -692,6 +692,13 @@ if (user?.role === "super_admin") {
     rawNavItems.push({ label: "Unified Inbox", path: "/unified-inbox", icon: "Inbox" });
   }
 
+  // Inject Documents & Signatures
+  if (!rawNavItems.some(n => n.path === '/documents')) {
+    rawNavItems.push({ label: "Documents & Signatures", path: "/documents", icon: "FileSignature" });
+  } else {
+    rawNavItems = rawNavItems.map(n => n.path === '/documents' ? { ...n, label: "Documents & Signatures", icon: "FileSignature" } : n);
+  }
+
   // Deduplicate by label to prevent double Dashboards, and apply static nav overrides
   const seenLabels = new Set();
   let navItems = [];

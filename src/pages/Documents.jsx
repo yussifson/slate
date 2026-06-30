@@ -37,6 +37,7 @@ export default function Documents() {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [previewDoc, setPreviewDoc] = useState(null);
   const [showDrafter, setShowDrafter] = useState(false);
+  const [activeTab, setActiveTab] = useState("documents");
 
   const isAdmin = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
   const industry = sessionStorage.getItem("slate_industry_override") || user?.company_industry || "law";
@@ -143,6 +144,31 @@ export default function Documents() {
           </div>
         }
       />
+      
+      <div className="flex space-x-1 bg-muted/50 p-1 rounded-xl w-fit">
+        <button
+          onClick={() => setActiveTab("documents")}
+          className={activeTab === "documents" ? "bg-background text-foreground shadow-sm px-4 py-2 rounded-lg text-sm font-medium transition-all" : "px-4 py-2 text-muted-foreground hover:text-foreground text-sm font-medium transition-all"}
+        >
+          {t("my_documents", "My Documents")}
+        </button>
+        <button
+          onClick={() => setActiveTab("templates")}
+          className={activeTab === "templates" ? "bg-background text-foreground shadow-sm px-4 py-2 rounded-lg text-sm font-medium transition-all" : "px-4 py-2 text-muted-foreground hover:text-foreground text-sm font-medium transition-all"}
+        >
+          {t("templates", "Templates")}
+        </button>
+        <button
+          onClick={() => setActiveTab("signatures")}
+          className={activeTab === "signatures" ? "bg-background text-foreground shadow-sm px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2" : "px-4 py-2 text-muted-foreground hover:text-foreground text-sm font-medium transition-all flex items-center gap-2"}
+        >
+          <FileSignature className="w-4 h-4" />
+          {t("e_signatures", "E-Signatures")}
+        </button>
+      </div>
+
+      {activeTab === "documents" && (
+        <div className="space-y-4 animate-in fade-in">
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -169,6 +195,26 @@ export default function Documents() {
         emptyTitle={companyId ? "No documents yet" : "Sign in to a workspace to view documents"}
         emptyIcon={FolderOpen}
       />
+      </div>
+      )}
+
+      {activeTab === "templates" && (
+        <div className="p-12 text-center text-muted-foreground bg-card rounded-xl border border-dashed animate-in fade-in mt-4">
+          <FileSignature className="w-12 h-12 mx-auto mb-4 opacity-20 text-primary" />
+          <h3 className="text-xl font-semibold text-foreground mb-2">Smart Templates</h3>
+          <p className="max-w-md mx-auto mb-6">Upload word documents with {'{{merge_tags}}'} to automatically generate filled contracts from client and case data.</p>
+          <Button variant="outline" className="gap-2"><Plus className="w-4 h-4" /> Create Template</Button>
+        </div>
+      )}
+
+      {activeTab === "signatures" && (
+        <div className="p-12 text-center text-muted-foreground bg-card rounded-xl border border-dashed animate-in fade-in mt-4">
+          <FileSignature className="w-12 h-12 mx-auto mb-4 opacity-20 text-primary" />
+          <h3 className="text-xl font-semibold text-foreground mb-2">Native E-Signatures</h3>
+          <p className="max-w-md mx-auto mb-6">Send documents for secure digital signing. Track signatures, IP addresses, and generate legally binding audit certificates.</p>
+          <Button variant="outline" className="gap-2"><Plus className="w-4 h-4" /> Request Signature</Button>
+        </div>
+      )}
       <DocumentUploadDialog
         open={showForm}
         onClose={() => setShowForm(false)}
