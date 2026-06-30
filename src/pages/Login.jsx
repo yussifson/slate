@@ -67,23 +67,23 @@ export default function Login() {
 
        if (!brandData) {
        console.log("RPC missed, trying direct table query...");
-       const { data: directData} = await supabase.from('companies').select('id, name, logo_url').or(`subdomain.eq.${currentSubdomain},custom_domain.eq.${currentSubdomain}`).maybeSingle();
-       
-       if (directData) {
-       brandData = directData;
-       } else {
-       const { data: tableData} = await powerSync.execute('SELECT id, name, logo_url FROM companies WHERE subdomain = ? OR custom_domain = ? LIMIT 1', [currentSubdomain, currentSubdomain]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
-       brandData = tableData;
-       }
+        const { data: directData} = await supabase.from('companies').select('id, name, logo_url, tagline').or(`subdomain.eq.${currentSubdomain},custom_domain.eq.${currentSubdomain}`).maybeSingle();
+        
+        if (directData) {
+        brandData = directData;
+        } else {
+        const { data: tableData} = await powerSync.execute('SELECT id, name, logo_url, tagline FROM companies WHERE subdomain = ? OR custom_domain = ? LIMIT 1', [currentSubdomain, currentSubdomain]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
+        brandData = tableData;
+        }
        }
 
        // Company exists → always show login. Only show "Not Found" if company is truly missing.
        if (brandData?.id) {
-       setBranding({
-       name: brandData.name || 'Your Workslate',
-       logo_url: brandData.logo_url,
-       tagline: `Sign in to ${brandData.name || 'your workslate'}`
-       });
+        setBranding({
+        name: brandData.name || 'Your Workslate',
+        logo_url: brandData.logo_url,
+        tagline: brandData.tagline || `Sign in to ${brandData.name || 'your workslate'}`
+        });
        } else {
        setInvalidSubdomain(true);
        }
@@ -98,11 +98,11 @@ export default function Login() {
          if (cached) {
            const parsed = JSON.parse(cached);
            if (parsed.company_name || parsed.company_logo_url) {
-             setBranding({
-               name: parsed.company_name || 'Your Workslate',
-               logo_url: parsed.company_logo_url || null,
-               tagline: `Sign in to ${parsed.company_name || 'your workslate'}`
-             });
+              setBranding({
+                name: parsed.company_name || 'Your Workslate',
+                logo_url: parsed.company_logo_url || null,
+                tagline: parsed.company_tagline || `Sign in to ${parsed.company_name || 'your workslate'}`
+              });
            }
          }
        } catch(e) {}
@@ -336,9 +336,11 @@ export default function Login() {
  {branding.logo_url ? (
    <img src={branding.logo_url} alt="Logo" className="h-10 object-contain w-fit" />
  ) : (
-   <Logo className="w-10 h-10" />
+   <>
+     <Logo className="w-10 h-10" />
+     <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>
+   </>
  )}
- <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>
  </div>
  
  <div className="mb-8">

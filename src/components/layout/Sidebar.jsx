@@ -875,13 +875,13 @@ if (user?.role === "super_admin") {
        {!collapsed && (
           <button 
             onClick={() => toggleCat(cat)}
-            className="w-full flex items-center justify-between px-1 py-2 mb-1 group transition-all"
+            className="w-full flex items-center justify-between px-3 py-2.5 mb-1.5 group transition-all rounded-xl hover:bg-sidebar-accent/50 border border-transparent hover:border-sidebar-border"
           >
-            <div className="flex items-center gap-2">
-              <div className={cn("w-1 h-3 rounded-full transition-all duration-300", isExpanded ? "bg-primary" : "bg-primary/20 group-hover:bg-primary/50")} />
-              <p className="text-[10px] font-bold text-sidebar-foreground/60 group-hover:text-sidebar-foreground/90 uppercase tracking-[0.15em]">{cat}</p>
+            <div className="flex items-center gap-2.5">
+              <div className={cn("w-1 h-3.5 rounded-full transition-all duration-300 shadow-sm", isExpanded ? "bg-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]" : "bg-primary/30 group-hover:bg-primary/60")} />
+              <p className="text-[11px] font-bold text-sidebar-foreground/70 group-hover:text-sidebar-foreground uppercase tracking-[0.15em]">{cat}</p>
             </div>
-            <ChevronRight className={cn("w-3.5 h-3.5 text-sidebar-foreground/30 transition-transform duration-300", isExpanded && "rotate-90")} />
+            <ChevronRight className={cn("w-3.5 h-3.5 text-sidebar-foreground/40 group-hover:text-sidebar-foreground/70 transition-transform duration-300", isExpanded && "rotate-90")} />
           </button>
        )}
        

@@ -26,8 +26,13 @@ export default function SpotlightSearch() {
  setIsOpen(false);
 }
 };
+ const handleCustomOpen = () => setIsOpen(true);
  window.addEventListener("keydown", handleKeyDown);
- return () => window.removeEventListener("keydown", handleKeyDown);
+ window.addEventListener("open-spotlight", handleCustomOpen);
+ return () => {
+   window.removeEventListener("keydown", handleKeyDown);
+   window.removeEventListener("open-spotlight", handleCustomOpen);
+ };
 }, []);
 
  // Autofocus & reset on open/close

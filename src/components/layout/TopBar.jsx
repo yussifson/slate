@@ -3,7 +3,7 @@ import React, { useState} from "react";
 import { useLocation, useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
-import { LayoutDashboard, RefreshCw, Globe, PanelLeft, Sparkles, Layers, Component, ChevronDown, MoreHorizontal} from "lucide-react";
+import { LayoutDashboard, RefreshCw, Globe, PanelLeft, Sparkles, Layers, Component, ChevronDown, MoreHorizontal, Search} from "lucide-react";
 import {
  DropdownMenu,
  DropdownMenuContent,
@@ -163,6 +163,16 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
       </div>
 
       {/* Premium Theme Toggle & Notifications */}
+      {/* Spotlight Search Toggle */}
+      <Button
+        onClick={() => window.dispatchEvent(new CustomEvent('open-spotlight'))}
+        variant="ghost"
+        size="icon"
+        className="w-8 h-8 rounded-xl bg-card border-[0.5px] border-black/9 dark:border-white/8 text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors"
+        title="Spotlight Search (⌘K)"
+      >
+        <Search className="w-4 h-4" />
+      </Button>
       <ThemeToggle />
       <UnivNotificationCenter />
 
@@ -279,9 +289,11 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 }`}
  >
  <span className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isBoltOpen ? "text-white fill-current" : "text-primary fill-current"} sm:mr-1.5`}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
- <span className="hidden sm:inline">{t("orbit_build", "Orbit Build")}</span>
- </Button>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isBoltOpen ? "text-white fill-current" : "text-primary fill-current"} sm:mr-1.5`}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+  <span className="hidden sm:inline">{t("orbit_build", "Orbit Build")}</span>
+  </Button>
+
+
 
  {/* Orbit AI Toggle */}
  <Button

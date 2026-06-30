@@ -31,10 +31,7 @@ export function useSpeechRecognition({ onTranscript }) {
         };
 
         recognitionRef.current.onerror = (event) => {
-          console.error("Speech recognition error:", event.error);
-          if (event.error === 'not-allowed') {
-            toast.error("Microphone access denied. Please allow microphone permissions in your browser.");
-          }
+          // console.error("Speech recognition error:", event.error);
           setIsListening(false);
         };
 
@@ -50,12 +47,24 @@ export function useSpeechRecognition({ onTranscript }) {
     };
   }, []);
 
-  const toggleListening = () => {
+  const toggleListening = async () => {
     if (!recognitionRef.current) return;
     if (isListening) {
       try { recognitionRef.current.stop(); } catch(e) {}
       setIsListening(false);
     } else {
+      // Explicitly request microphone permission to trigger the browser popup
+      try {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          // Stop the stream tracks immediately since SpeechRecognition manages its own stream
+          stream.getTracks().forEach(track => track.stop());
+        }
+      } catch (err) {
+        toast.error("Microphone access is blocked. Please click the site settings icon in your browser address bar to allow it.");
+        return;
+      }
+
       try { recognitionRef.current.start(); } catch(e) {}
       setIsListening(true);
     }

@@ -179,9 +179,11 @@ export default function UnivHREmployee() {
  </div>
 
  <div className="flex-1 overflow-auto min-h-0 custom-scrollbar">
- {loading ? <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary"/></div>
- : viewMode==='grid' ? (
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-8">
+ {loading ? (
+  <div className="flex-1 min-h-0 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary/50"/></div>
+  ) : viewMode === 'grid' ? (
+  <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-6">
  {filtered.map(emp=>(
  <div key={emp.id} onClick={()=>setSelected(emp)} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 transition-all group cursor-pointer hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex flex-col items-center text-center">
@@ -201,8 +203,9 @@ export default function UnivHREmployee() {
  ))}
  {filtered.length===0&&<div className="col-span-full py-20 text-center text-[#71717a] dark:text-gray-400 border-2 border-dashed border-primary/40 rounded-2xl"><Users className="w-12 h-12 mx-auto text-[#71717a] dark:text-gray-400/30 mb-3"/><p className="font-medium">No employees found.</p></div>}
  </div>
+ </div>
  ) : viewMode === 'list' ? (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 min-h-0 overflow-auto custom-scrollbar bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm">
  <thead className="bg-muted/50 border-b border-primary/40"><tr>{['Employee','Role/Dept','Contact','Type','Status','Actions'].map(h=><th key={h} className="p-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">{h}</th>)}</tr></thead>
  <tbody className="divide-y divide-border">
@@ -221,7 +224,7 @@ export default function UnivHREmployee() {
  </table>
  </div>
  ) : viewMode === 'orgchart' ? (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-8 overflow-auto text-center min-h-[500px] flex justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 min-h-0 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-8 overflow-auto text-center flex justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 custom-scrollbar">
  <div className="inline-flex flex-col items-center">
  <div className="px-6 py-3 bg-primary text-white rounded-2xl font-black text-lg relative z-10 mb-8">
  CEO / Founder
