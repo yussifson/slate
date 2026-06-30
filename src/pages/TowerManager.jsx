@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Building2, Plus, ArrowRight, Activity, 
-  Users, DollarSign, LayoutGrid, Check, Loader2
+  Users, DollarSign, LayoutGrid, Check, Loader2, ChevronDown
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { TowerMutations } from '@/api/TowerMutations';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function TowerManager() {
@@ -61,6 +63,25 @@ export default function TowerManager() {
     }
   };
 
+  const handleSwitchBranch = async (targetCompanyId, targetCompanyName) => {
+    if (!targetCompanyId || targetCompanyId === user?.company_id) return;
+    try {
+      toast({ title: "Switching Branch...", description: targetCompanyName });
+      
+      const keys = Object.keys({ company_id: targetCompanyId });
+      const values = Object.values({ company_id: targetCompanyId });
+      const setClause = keys.map(k => `${k} = ?`).join(', ');
+      
+      await powerSync.execute(`UPDATE profiles SET ${setClause} WHERE id = ?`, [...values, user.id]);
+      
+      // Redirect to home which triggers AuthContext bucket refresh
+      window.location.href = '/';
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "Failed to switch branch.", variant: "destructive" });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F4F6F8] dark:bg-[#0A101D] text-slate-900 dark:text-slate-100 p-6 md:p-10 font-sans">
       {/* Enterprise Header */}
@@ -77,34 +98,62 @@ export default function TowerManager() {
           <p className="text-lg text-slate-600 dark:text-slate-400 font-medium">Govern and monitor all your <span className="font-bold text-emerald-600 dark:text-emerald-400 capitalize">{industry}</span> branches from a unified command center.</p>
         </div>
 
-        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger asChild>
-            <Button className="h-12 px-6 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20 font-semibold gap-2 transition-all relative z-10 border-0">
-              <Plus className="w-5 h-5" /> Deploy New Branch
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl rounded-2xl overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
-            <DialogHeader className="pt-4">
-              <DialogTitle className="text-2xl font-bold dark:text-white">New {industry.charAt(0).toUpperCase() + industry.slice(1)} Branch</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleCreateTower} className="space-y-6 py-4">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Branch Name</label>
-                <Input 
-                  value={newTowerName}
-                  onChange={(e) => setNewTowerName(e.target.value)}
-                  placeholder="e.g. Downtown Store, North Campus..."
-                  className="h-12 bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 rounded-lg focus-visible:ring-emerald-500"
-                  autoFocus
-                />
-              </div>
-              <Button type="submit" disabled={isCreating || !newTowerName.trim()} className="w-full h-12 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md shadow-emerald-500/20">
-                {isCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : "Deploy Branch"}
+        <div className="flex flex-col sm:flex-row items-center gap-3 z-10 relative mt-4 md:mt-0">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="h-12 px-6 rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-[#111827] text-slate-700 dark:text-slate-200 font-semibold gap-2 w-full sm:w-auto hover:bg-slate-50 dark:hover:bg-slate-800">
+                <Building2 className="w-4 h-4 text-emerald-600" /> 
+                Switch Branch
+                <ChevronDown className="w-4 h-4 opacity-50" />
               </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[240px] rounded-xl shadow-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0A101D]">
+              {towers.length === 0 ? (
+                <div className="p-3 text-sm text-slate-500 text-center">No branches available</div>
+              ) : (
+                towers.map(comp => (
+                  <DropdownMenuItem 
+                    key={comp.id} 
+                    onClick={() => handleSwitchBranch(comp.id, comp.name)}
+                    className={`cursor-pointer px-3 py-2.5 m-1 rounded-lg flex items-center justify-between ${user.company_id === comp.id ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 font-bold' : ''}`}
+                  >
+                    <span className="truncate">{comp.name}</span>
+                    {user.company_id === comp.id && <Check className="w-4 h-4" />}
+                  </DropdownMenuItem>
+                ))
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+            <DialogTrigger asChild>
+              <Button className="h-12 px-6 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20 font-semibold gap-2 transition-all w-full sm:w-auto border-0">
+                <Plus className="w-5 h-5" /> Deploy New Branch
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl rounded-2xl overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
+              <DialogHeader className="pt-4">
+                <DialogTitle className="text-2xl font-bold dark:text-white">New {industry.charAt(0).toUpperCase() + industry.slice(1)} Branch</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleCreateTower} className="space-y-6 py-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Branch Name</label>
+                  <Input 
+                    value={newTowerName}
+                    onChange={(e) => setNewTowerName(e.target.value)}
+                    placeholder="e.g. Downtown Store, North Campus..."
+                    className="h-12 bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 rounded-lg focus-visible:ring-emerald-500"
+                    autoFocus
+                  />
+                </div>
+                <Button type="submit" disabled={isCreating || !newTowerName.trim()} className="w-full h-12 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md shadow-emerald-500/20">
+                  {isCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : "Deploy Branch"}
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Enterprise Metrics */}
@@ -159,7 +208,15 @@ export default function TowerManager() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {towers.map(tower => (
-              <div key={tower.id} className="group relative bg-slate-50 dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 hover:shadow-md transition-all flex flex-col justify-between">
+              <div 
+                key={tower.id} 
+                onClick={() => handleSwitchBranch(tower.id, tower.name)}
+                className={`group relative rounded-xl p-6 border transition-all flex flex-col justify-between cursor-pointer ${
+                  user.company_id === tower.id 
+                    ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-500 shadow-md shadow-emerald-500/10' 
+                    : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 hover:shadow-md'
+                }`}
+              >
                 <div>
                   <div className="flex items-start justify-between mb-5">
                     <div className="w-12 h-12 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-black text-xl shadow-sm">
@@ -182,8 +239,8 @@ export default function TowerManager() {
                       <Check className="w-3.5 h-3.5" /> CURRENT
                     </div>
                   ) : (
-                    <div className="flex items-center gap-1 text-xs font-bold text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                      Use Switcher <ArrowRight className="w-3.5 h-3.5" />
+                    <div className="flex items-center gap-1 text-xs font-bold text-slate-500 group-hover:text-emerald-600 transition-colors">
+                      Switch to Branch <ArrowRight className="w-3.5 h-3.5" />
                     </div>
                   )}
                 </div>
