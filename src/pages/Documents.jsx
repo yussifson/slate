@@ -18,6 +18,8 @@ import DataTable from "@/components/shared/DataTable";
 import AddOptionInline from "@/components/shared/AddOptionInline";
 import DocumentPreviewModal from "@/components/shared/DocumentPreviewModal";
 import AIDocumentDrafterModal from "@/components/shared/AIDocumentDrafterModal";
+import SignatureCanvas from "@/components/documents/SignatureCanvas";
+import DocumentGenerator from "@/components/documents/DocumentGenerator";
 import { format } from "date-fns";
 
 import { useToast } from "@/components/ui/use-toast";
@@ -199,20 +201,20 @@ export default function Documents() {
       )}
 
       {activeTab === "templates" && (
-        <div className="p-12 text-center text-muted-foreground bg-card rounded-xl border border-dashed animate-in fade-in mt-4">
-          <FileSignature className="w-12 h-12 mx-auto mb-4 opacity-20 text-primary" />
-          <h3 className="text-xl font-semibold text-foreground mb-2">Smart Templates</h3>
-          <p className="max-w-md mx-auto mb-6">Upload word documents with {'{{merge_tags}}'} to automatically generate filled contracts from client and case data.</p>
-          <Button variant="outline" className="gap-2"><Plus className="w-4 h-4" /> Create Template</Button>
+        <div className="animate-in fade-in mt-4">
+          <DocumentGenerator onGenerate={() => setActiveTab("documents")} />
         </div>
       )}
 
       {activeTab === "signatures" && (
-        <div className="p-12 text-center text-muted-foreground bg-card rounded-xl border border-dashed animate-in fade-in mt-4">
-          <FileSignature className="w-12 h-12 mx-auto mb-4 opacity-20 text-primary" />
-          <h3 className="text-xl font-semibold text-foreground mb-2">Native E-Signatures</h3>
-          <p className="max-w-md mx-auto mb-6">Send documents for secure digital signing. Track signatures, IP addresses, and generate legally binding audit certificates.</p>
-          <Button variant="outline" className="gap-2"><Plus className="w-4 h-4" /> Request Signature</Button>
+        <div className="animate-in fade-in mt-4 bg-card p-6 rounded-xl border border-border shadow-sm max-w-2xl mx-auto">
+          <SignatureCanvas 
+            onSave={(dataUrl) => {
+               toast({ title: "Signature Saved Successfully!" });
+               setActiveTab("documents");
+            }}
+            onCancel={() => setActiveTab("documents")}
+          />
         </div>
       )}
       <DocumentUploadDialog

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 
 export function useSpeechRecognition({ onTranscript }) {
   const [isListening, setIsListening] = useState(false);
@@ -31,6 +32,9 @@ export function useSpeechRecognition({ onTranscript }) {
 
         recognitionRef.current.onerror = (event) => {
           console.error("Speech recognition error:", event.error);
+          if (event.error === 'not-allowed') {
+            toast.error("Microphone access denied. Please allow microphone permissions in your browser.");
+          }
           setIsListening(false);
         };
 

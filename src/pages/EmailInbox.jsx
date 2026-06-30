@@ -146,7 +146,7 @@ export default function EmailInbox() {
   ];
 
  return (
- <div className="flex h-[calc(100vh-100px)] overflow-hidden rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex h-full w-full overflow-hidden bg-card transition-shadow duration-200">
 
  {/* ── Left Sidebar ── */}
  <aside className={cn("shrink-0 flex flex-col border-r border-primary/40 bg-muted/30 dark:bg-slate-900/60 transition-all duration-300 relative", isSidebarCollapsed ? "w-16" : "w-56")}>

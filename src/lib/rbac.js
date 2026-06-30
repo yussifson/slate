@@ -1,0 +1,81 @@
+/**
+ * Granular Role-Based Access Control (RBAC) Engine
+ */
+
+export const ROLES = {
+  SUPER_ADMIN: "super_admin",
+  COMPANY_ADMIN: "company_admin",
+  MANAGING_PARTNER: "managing_partner",
+  MANAGER: "manager",
+  USER: "user",
+  GUEST: "guest",
+};
+
+// Define default permissions matrix for each role across modules
+// Permissions: create, read, update, delete
+export const ROLE_PERMISSIONS = {
+  [ROLES.SUPER_ADMIN]: {
+    all: ["create", "read", "update", "delete"] // Implicit all access
+  },
+  [ROLES.COMPANY_ADMIN]: {
+    all: ["create", "read", "update", "delete"]
+  },
+  [ROLES.MANAGING_PARTNER]: {
+    all: ["create", "read", "update", "delete"]
+  },
+  [ROLES.MANAGER]: {
+    cases: ["create", "read", "update"],
+    clients: ["create", "read", "update"],
+    documents: ["create", "read", "update", "delete"],
+    billing: ["create", "read", "update"],
+    team: ["read"],
+    settings: ["read"]
+  },
+  [ROLES.USER]: {
+    cases: ["read", "update"],
+    clients: ["read", "update"],
+    documents: ["create", "read", "update"], // Users generally can't delete globally
+    billing: ["read"],
+    team: ["read"],
+    settings: []
+  },
+  [ROLES.GUEST]: {
+    cases: ["read"],
+    clients: [],
+    documents: ["read"],
+    billing: [],
+    team: [],
+    settings: []
+  }
+};
+
+/**
+ * Check if a user role has permission to perform an action on a module
+ * @param {string} role - The user's role (e.g., 'user', 'manager')
+ * @param {string} module - The module name (e.g., 'documents', 'cases')
+ * @param {string} action - The action to perform ('create', 'read', 'update', 'delete')
+ * @returns {boolean} True if permitted, false otherwise
+ */
+export function hasPermission(role, module, action) {
+  if (!role || !ROLE_PERMISSIONS[role]) return false;
+  
+  const permissions = ROLE_PERMISSIONS[role];
+  
+  // Super admins/admins have 'all' wildcard access
+  if (permissions.all && permissions.all.includes(action)) {
+    return true;
+  }
+  
+  // Check specific module
+  const modulePerms = permissions[module] || [];
+  return modulePerms.includes(action);
+}
+
+/**
+ * Higher order function to enforce RBAC in API layers or Components
+ */
+export function enforcePermission(role, module, action) {
+  if (!hasPermission(role, module, action)) {
+    throw new Error(`RBAC Error: Role '${role}' does not have permission to '${action}' on module '${module}'.`);
+  }
+}

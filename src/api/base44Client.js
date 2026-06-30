@@ -5,6 +5,7 @@ import { powerSync } from './PowerSyncConnector';
 import { syncQueue } from '../services/syncQueue';
 import { ActivityLogger } from '../lib/activityLogger';
 import { toast } from '../components/ui/use-toast';
+import { enforcePermission } from '../lib/rbac';
 
 const TABLE_MAP = {
     Company: 'companies',
@@ -354,6 +355,10 @@ export const base44 = {
                 },
                 create: async (payload) => {
                     try {
+                        const profs = await powerSync.getAll('SELECT role FROM profiles LIMIT 1');
+                        const role = profs[0]?.role || 'user';
+                        enforcePermission(role, tableName, 'create');
+
                         const validCols = getValidCols(tableName);
                         let cleanedPayload = Object.fromEntries(Object.entries(payload).map(([k, v]) => [k, v === "" ? null : v]));
                         if (validCols) {
@@ -425,6 +430,10 @@ export const base44 = {
                 },
                 update: async (id, payload) => {
                     try {
+                        const profs = await powerSync.getAll('SELECT role FROM profiles LIMIT 1');
+                        const role = profs[0]?.role || 'user';
+                        enforcePermission(role, tableName, 'update');
+
                         const validCols = getValidCols(tableName);
                         let cleanedPayload = Object.fromEntries(Object.entries(payload).map(([k, v]) => [k, v === "" ? null : v]));
                         if (validCols) {
@@ -477,6 +486,10 @@ export const base44 = {
                 },
                 delete: async (id) => {
                     try {
+                        const profs = await powerSync.getAll('SELECT role FROM profiles LIMIT 1');
+                        const role = profs[0]?.role || 'user';
+                        enforcePermission(role, tableName, 'delete');
+
                         await powerSync.execute(`DELETE FROM ${tableName} WHERE id = ?`, [id]);
                         await mirrorToSupabase(tableName, id, 'delete');
                         

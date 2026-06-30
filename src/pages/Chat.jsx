@@ -265,7 +265,7 @@ export default function Chat() {
  const activeRoom = rooms.find(r => r.id === activeRoomId);
 
  return (
- <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] -mt-4 -mb-6 md:-mb-0 md:-mt-0 md:rounded-xl overflow-hidden bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col md:flex-row">
+ <div className="h-full w-full overflow-hidden bg-background flex flex-col md:flex-row">
  <AddChatDialog 
  open={isAddChatOpen} 
  onOpenChange={setIsAddChatOpen} 
