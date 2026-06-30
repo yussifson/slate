@@ -85,6 +85,7 @@ function PipelineCard({ pipeline, onEdit, onDelete, caseStates}) {
 }
 
 function PipelineEditor({ pipeline, onClose, onSave}) {
+ const { t } = useTranslation();
  const [form, setForm] = useState(pipeline || { name: "", case_type: "civil", stages: [], is_default: false});
  const [newStageName, setNewStageName] = useState("");
 
