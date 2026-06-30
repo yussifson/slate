@@ -424,14 +424,27 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
       data: newOverrides,
       created_at: new Date().toISOString()
     };
-    const _keys = Object.keys(payload);
-    const _vals = Object.values(payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-    const existing = await powerSync.getOptional('SELECT id FROM industry_records WHERE id = ?', [payload.id]);
-    if (existing) {
-      await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, payload.id]);
-    } else {
-      await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+    
+    // Save to Supabase to ensure permanent persistence across page reloads
+    const { error } = await supabase.from('industry_records').upsert(payload, { onConflict: 'id' });
+    if (error) {
+      console.error("Failed to save sidebar config to server:", error);
     }
+    
+    // Also save locally to PowerSync for immediate UI update
+    try {
+      const _keys = Object.keys(payload);
+      const _vals = Object.values(payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+      const existing = await powerSync.getOptional('SELECT id FROM industry_records WHERE id = ?', [payload.id]);
+      if (existing) {
+        await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, payload.id]);
+      } else {
+        await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+      }
+    } catch (e) {
+      console.error("Local sync update failed:", e);
+    }
+    
     queryClient.invalidateQueries({ queryKey: ['nav_overrides', companyId] });
   };
 
