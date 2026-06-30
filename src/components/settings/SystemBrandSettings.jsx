@@ -266,28 +266,28 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  </div>
  )}
  <AlertDialog open={showSubdomainAlert || saving} onOpenChange={setShowSubdomainAlert}>
- <AlertDialogContent className={`rounded-2xl max-w-md ${saving ? 'p-0 overflow-hidden border-0 shadow-2xl bg-slate-900' : ''}`}>
+ <AlertDialogContent className={`rounded-2xl max-w-md ${saving ? 'p-0 overflow-hidden shadow-2xl bg-background border border-border' : ''}`}>
  {saving ? (
- <div className="p-10 flex flex-col items-center justify-center text-center text-white">
+ <div className="p-10 flex flex-col items-center justify-center text-center text-foreground">
  <div className="relative mb-8 mt-4">
- <div className="w-20 h-20 rounded-full border-[3px] border-slate-800 border-t-emerald-500 animate-spin"></div>
+ <div className="w-20 h-20 rounded-full border-[3px] border-primary/20 border-t-primary animate-spin"></div>
  <div className="absolute inset-0 flex items-center justify-center">
- <div className="w-8 h-8 bg-emerald-500 rounded-full animate-pulse blur-[2px]"></div>
+ <div className="w-8 h-8 bg-primary rounded-full animate-pulse blur-[2px]"></div>
  </div>
  </div>
  <h3 className="text-2xl font-bold mb-2 tracking-tight">Provisioning Infrastructure</h3>
- <p className="text-sm text-slate-400 font-medium leading-relaxed max-w-[280px]">Configuring enterprise routing and synchronizing edge network settings...</p>
+ <p className="text-sm text-muted-foreground font-medium leading-relaxed max-w-[280px]">Configuring enterprise routing and synchronizing edge network settings...</p>
  
- <div className="w-full mt-10 mb-4 space-y-4 bg-slate-950/50 p-5 rounded-xl border border-white/5">
- <div className="flex items-center gap-3 text-xs font-semibold text-slate-300">
- <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center"><div className="w-2 h-2 bg-emerald-500 rounded-full"></div></div>
+ <div className="w-full mt-10 mb-4 space-y-4 bg-muted/50 p-5 rounded-xl border border-border">
+ <div className="flex items-center gap-3 text-xs font-semibold text-foreground/80">
+ <div className="w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center"><div className="w-2 h-2 bg-primary rounded-full"></div></div>
  Updating tenant registry
  </div>
- <div className="flex items-center gap-3 text-xs font-semibold text-slate-300">
- <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center"><div className="w-2 h-2 bg-emerald-500 rounded-full"></div></div>
+ <div className="flex items-center gap-3 text-xs font-semibold text-foreground/80">
+ <div className="w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center"><div className="w-2 h-2 bg-primary rounded-full"></div></div>
  Synchronizing Vercel Edge Network
  </div>
- <div className="flex items-center gap-3 text-xs font-bold text-emerald-400 animate-pulse">
+ <div className="flex items-center gap-3 text-xs font-bold text-primary animate-pulse">
  <Loader2 className="w-4 h-4 animate-spin" /> Finalizing deployment...
  </div>
  </div>
