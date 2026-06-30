@@ -713,18 +713,31 @@ if (user?.role === "super_admin") {
   const getCategory = (item) => {
     const p = item.path || '';
     if (item.isDynamic) return "Workspace";
-    if (['/', '/intelligence', '/settings', '/feature-insider', '/feature-vault', '/notifications', '/marketplace', '/firm-setup', '/super-admin', '/enterprise-admin', '/branch-manager', '/client-portal', '/slate/create'].includes(p) || p.startsWith('/admin')) {
+    
+    // 1. Platform should ONLY have dashboard and intelligence
+    if (['/', '/intelligence'].includes(p)) {
       return "Platform";
     }
-    if (['/chat', '/email-inbox', '/board', '/whatsapp', '/messages'].includes(p)) {
+    
+    // 2. Notification system added to Communications
+    if (['/chat', '/email-inbox', '/board', '/whatsapp', '/messages', '/notifications'].includes(p)) {
       return "Communications";
     }
+    
     if (['/billing', '/invoices', '/payroll', '/expenses', '/fees', '/donations', '/orders', '/pos'].includes(p)) {
       return "Finance";
     }
+    
     if (['/hr', '/employees', '/team', '/recruitment', '/roles', '/departments', '/attendance', '/performance'].includes(p)) {
       return "Team & HR";
     }
+    
+    // 3. New Category for settings, admin, marketplace, etc.
+    if (['/settings', '/feature-insider', '/feature-vault', '/marketplace', '/firm-setup', '/super-admin', '/enterprise-admin', '/branch-manager', '/client-portal', '/slate/create'].includes(p) || p.startsWith('/admin')) {
+      return "System Administration";
+    }
+    
+    // Default remaining to Operations
     return "Operations";
   };
 
@@ -735,7 +748,7 @@ if (user?.role === "super_admin") {
     return acc;
   }, {});
 
-  const categoryOrder = ["Platform", "Communications", "Operations", "Finance", "Team & HR", "Workspace"];
+  const categoryOrder = ["Platform", "Operations", "Communications", "Finance", "Team & HR", "Workspace", "System Administration"];
 
  const handleDeleteModule = (id, name) => {
  setDeleteData({ id, name});
