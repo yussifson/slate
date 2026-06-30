@@ -584,40 +584,51 @@ return (
  
  {/* AI Input Box */}
  <FadeIn delay="delay-250">
- <div className="max-w-3xl mx-auto mb-10 relative z-20">
+ <div className="max-w-4xl mx-auto mb-10 relative z-20">
  
  {orbitStage === "idle" && (
  <form onSubmit={handleAiSubmit} className="flex flex-col items-center group w-full">
- <div className="w-full relative p-[2px] rounded-md-[1.6rem] overflow-hidden transition-all duration-300">
- {/* Spinning Gradient Glow */}
- <div 
- className="absolute -inset-[150%] animate-[spin_25s_linear_infinite] opacity-70 group-hover:opacity-100 transition-opacity duration-500"
- style={{ background: 'conic-gradient(from 0deg, transparent 0%, #10b981 25%, #f97316 50%, transparent 75%)'}}
- />
+ <div className="w-full relative p-[1px] rounded-2xl overflow-hidden transition-all duration-300 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.15)]">
+ 
+ {/* Elegant Gradient Border */}
+ <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-transparent to-primary/20 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
  
  {/* Inner White Container */}
- <div className="relative bg-white/90 backdrop-blur-3xl rounded-[1.5rem] p-6 sm:p-8 text-center flex flex-col h-full w-full z-10 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] transition-shadow duration-300">
- <div className="mb-6">
- <h2 className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-orange-500 text-2xl sm:text-3xl tracking-tighter leading-snug">
- Can't find your preferred workslate?<br/><span className="font-black text-emerald-700">Build it with Orbit Build</span>
- </h2>
+ <div className="relative bg-white dark:bg-slate-900 backdrop-blur-xl rounded-2xl p-8 sm:p-10 text-center flex flex-col h-full w-full z-10 border border-primary/10">
+ <div className="mb-8 flex flex-col items-center">
+ <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 border border-primary/20">
+   <Sparkles className="w-6 h-6 text-primary" />
  </div>
- <textarea
- value={aiPrompt}
- onChange={(e) => {
- setAiPrompt(e.target.value);
- setShowFirmAlert(false);
-}}
- placeholder="Can't find your industry template? Describe your dream workspace... (e.g. I need a CRM for my logistics company to manage delivery drivers and track client invoices.)"
- className="w-full h-32 bg-slate-50/50 rounded-2xl p-4 text-slate-800 placeholder-slate-400 font-medium text-lg border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:bg-white focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 outline-none resize-none transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
- />
+ <h2 className="font-bold text-slate-900 dark:text-white text-3xl sm:text-4xl tracking-tight leading-tight">
+ Can't find your preferred workslate? <br/><span className="text-primary font-black mt-2 inline-block">Build it with Orbit Build</span>
+ </h2>
+ <p className="text-slate-500 dark:text-slate-400 mt-4 text-sm max-w-2xl mx-auto">Describe your dream workspace in plain english, and our AI will build a custom enterprise system tailored exactly to your needs.</p>
+ </div>
+ <div className="relative w-full text-left">
+   <textarea
+   value={aiPrompt}
+   onChange={(e) => {
+   setAiPrompt(e.target.value);
+   setShowFirmAlert(false);
+   }}
+   placeholder="e.g. I need a CRM for my logistics company to manage delivery drivers and track client invoices..."
+   className="w-full h-36 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-5 text-slate-900 dark:text-white placeholder-slate-400 font-medium text-base sm:text-lg border border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none resize-none transition-all"
+   />
+ </div>
  <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
- <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest hidden sm:block tracking-[0.04em]">Powered by Optavel Engine</span>
+ <div className="flex items-center gap-2">
+   <span className="flex h-2 w-2 relative">
+     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary/60 opacity-75"></span>
+     <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+   </span>
+   <span className="text-xs font-semibold text-slate-500 uppercase tracking-widest tracking-[0.04em]">Powered by Optavel Engine</span>
+ </div>
  <button
  type="submit"
  disabled={!aiPrompt.trim()}
- className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white px-10 py-4 rounded-xl font-bold tracking-tight shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgb(0,0,0,0.16)] disabled:opacity-50 disabled:hover:translate-y-0"
+ className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white px-8 py-3.5 rounded-xl font-semibold tracking-wide shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/30 disabled:opacity-50 disabled:hover:translate-y-0 flex items-center justify-center gap-2"
  >
+ <Sparkles className="w-4 h-4" />
  Build with Orbit
  </button>
  </div>
