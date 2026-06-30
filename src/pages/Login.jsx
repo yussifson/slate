@@ -53,45 +53,61 @@ export default function Login() {
 
  useEffect(() => {
  const fetchBranding = async () => {
- if (currentSubdomain) {
- try {
- // Use RPC to bypass RLS securely for public branding info
- let brandData = null;
- const { data: rpcData, error: rpcError} = await supabase.rpc('get_company_by_subdomain', { p_subdomain: currentSubdomain});
- 
- if (!rpcError && rpcData) {
-   const row = Array.isArray(rpcData) ? rpcData[0] : rpcData;
-   if (row?.id) brandData = row;
- }
+     if (currentSubdomain) {
+     // ... existing code for subdomain ...
+     try {
+       // Use RPC to bypass RLS securely for public branding info
+       let brandData = null;
+       const { data: rpcData, error: rpcError} = await supabase.rpc('get_company_by_subdomain', { p_subdomain: currentSubdomain});
+       
+       if (!rpcError && rpcData) {
+         const row = Array.isArray(rpcData) ? rpcData[0] : rpcData;
+         if (row?.id) brandData = row;
+       }
 
- if (!brandData) {
- console.log("RPC missed, trying direct table query...");
- const { data: directData} = await supabase.from('companies').select('id, name, logo_url').or(`subdomain.eq.${currentSubdomain},custom_domain.eq.${currentSubdomain}`).maybeSingle();
- 
- if (directData) {
- brandData = directData;
- } else {
- const { data: tableData} = await powerSync.execute('SELECT id, name, logo_url FROM companies WHERE subdomain = ? OR custom_domain = ? LIMIT 1', [currentSubdomain, currentSubdomain]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
- brandData = tableData;
- }
- }
+       if (!brandData) {
+       console.log("RPC missed, trying direct table query...");
+       const { data: directData} = await supabase.from('companies').select('id, name, logo_url').or(`subdomain.eq.${currentSubdomain},custom_domain.eq.${currentSubdomain}`).maybeSingle();
+       
+       if (directData) {
+       brandData = directData;
+       } else {
+       const { data: tableData} = await powerSync.execute('SELECT id, name, logo_url FROM companies WHERE subdomain = ? OR custom_domain = ? LIMIT 1', [currentSubdomain, currentSubdomain]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
+       brandData = tableData;
+       }
+       }
 
- // Company exists → always show login. Only show "Not Found" if company is truly missing.
- if (brandData?.id) {
- setBranding({
- name: brandData.name || 'Your Workslate',
- logo_url: brandData.logo_url,
- tagline: `Sign in to ${brandData.name || 'your workslate'}`
- });
- } else {
- setInvalidSubdomain(true);
- }
- } catch (err) {
- console.error("Could not fetch branding", err);
- } finally {
- setCheckingSubdomain(false);
- }
- }
+       // Company exists → always show login. Only show "Not Found" if company is truly missing.
+       if (brandData?.id) {
+       setBranding({
+       name: brandData.name || 'Your Workslate',
+       logo_url: brandData.logo_url,
+       tagline: `Sign in to ${brandData.name || 'your workslate'}`
+       });
+       } else {
+       setInvalidSubdomain(true);
+       }
+     } catch (err) {
+       console.error("Could not fetch branding", err);
+     } finally {
+       setCheckingSubdomain(false);
+     }
+     } else {
+       try {
+         const cached = localStorage.getItem('slate_cached_user');
+         if (cached) {
+           const parsed = JSON.parse(cached);
+           if (parsed.company_name || parsed.company_logo_url) {
+             setBranding({
+               name: parsed.company_name || 'Your Workslate',
+               logo_url: parsed.company_logo_url || null,
+               tagline: `Sign in to ${parsed.company_name || 'your workslate'}`
+             });
+           }
+         }
+       } catch(e) {}
+       setCheckingSubdomain(false);
+     }
  };
  fetchBranding();
 }, [currentSubdomain]);
@@ -317,13 +333,17 @@ export default function Login() {
  <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12">
  <div className="max-w-md w-full mx-auto">
  <div className="flex flex-col mb-8">
- <Logo className="w-10 h-10" />
+ {branding.logo_url ? (
+   <img src={branding.logo_url} alt="Logo" className="h-10 object-contain w-fit" />
+ ) : (
+   <Logo className="w-10 h-10" />
+ )}
  <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>
  </div>
  
  <div className="mb-8">
- <h1 className="text-2xl font-semibold text-slate-900 tracking-[-0.02em]">{t("welcome_back", "Welcome back")}</h1>
- <p className="text-xs text-slate-500 font-medium mt-1 tracking-[0.04em]">{t("enter_your_credentials_to_acce", "Enter your credentials to access your workslate")}</p>
+ <h1 className="text-2xl font-semibold text-slate-900 tracking-[-0.02em]">{branding.name !== 'Slate' ? `Sign in to ${branding.name}` : t("welcome_back", "Welcome back")}</h1>
+ <p className="text-xs text-slate-500 font-medium mt-1 tracking-[0.04em]">{branding.tagline}</p>
  </div>
  
  <form className="space-y-4" onSubmit={handleLogin}>

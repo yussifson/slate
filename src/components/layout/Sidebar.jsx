@@ -171,14 +171,15 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  queryKey: ['company', user?.company_id],
  queryFn: async () => {
  if (!user?.company_id) return null;
- const { data} = await powerSync.execute('SELECT industry_type FROM companies WHERE id = ? LIMIT 1', [user.company_id]).then(res => ({ data: res.rows._array[0]}));
+ const { data} = await powerSync.execute('SELECT * FROM companies WHERE id = ? LIMIT 1', [user.company_id]).then(res => ({ data: res.rows._array[0]}));
  return data;
 },
  enabled: !!user?.company_id
 });
 
- const activeCompanyLogo = impersonatedCompany?.logo_url || impersonatedCompany?.logo_light_url || user?.company_logo_url;
- const activeCompanyName = impersonatedCompany?.name || user?.company_name || "Slate";
+ const activeCompanyLogoDark = companyData?.logo_url || impersonatedCompany?.logo_url || user?.company_logo_url;
+ const activeCompanyLogoLight = companyData?.logo_light_url || impersonatedCompany?.logo_light_url || activeCompanyLogoDark;
+ const activeCompanyName = companyData?.name || impersonatedCompany?.name || user?.company_name || "Slate";
  const activeEducationLevel = impersonatedCompany?.industry || impersonatedCompany?.industry_type || companyData?.industry_type || 'primary';
 
  const industryData = INDUSTRIES[activeIndustry] || INDUSTRIES.law;
@@ -727,8 +728,11 @@ if (user?.role === "super_admin") {
  const renderNavContent = (collapsed) => (
  <div className="flex flex-col h-full bg-sidebar overflow-x-hidden">
  <div className={cn("py-5 border-b border-sidebar-border-[0.5px] border-black/9 dark:border-white/8 flex items-center transition-all", collapsed ? "px-4 justify-center" : "px-5 gap-3")}>
- {activeCompanyLogo ? (
- <img src={activeCompanyLogo} alt="Logo" className={cn("object-contain", collapsed ? "w-8 h-8" : "w-9 h-9")} />
+ {activeCompanyLogoDark || activeCompanyLogoLight ? (
+   <>
+     <img src={activeCompanyLogoDark || activeCompanyLogoLight} alt="Logo" className={cn("object-contain hidden dark:block", collapsed ? "w-8 h-8" : "w-9 h-9")} />
+     <img src={activeCompanyLogoLight || activeCompanyLogoDark} alt="Logo" className={cn("object-contain block dark:hidden", collapsed ? "w-8 h-8" : "w-9 h-9")} />
+   </>
  ) : (
  <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center flex-shrink-0 text-lg">
  {industryData.icon}
@@ -737,9 +741,9 @@ if (user?.role === "super_admin") {
  {!collapsed && (
  <div className="animate-in fade-in zoom-in duration-200">
  <div className="flex flex-col">
- <span className="font-semibold text-foreground leading-tight tracking-tight mt-0.5">orbtal</span>
+ <span className="font-semibold text-foreground leading-tight tracking-tight mt-0.5">{activeCompanyName}</span>
  <span className="text-[9px] font-extrabold text-[#71717a] dark:text-gray-400 uppercase tracking-widest leading-none mt-1 tracking-[0.04em]">
- {companyData?.name || (activeIndustry === 'orbit_build' ? (orbitBuildData?.industry_name || 'Custom Wixlate') : industryData.name)}
+ {companyData?.tagline || (activeIndustry === 'orbit_build' ? (orbitBuildData?.industry_name || 'Custom Wixlate') : industryData.name)}
  </span>
  </div>
  </div>
@@ -1019,20 +1023,23 @@ if (user?.role === "super_admin") {
         </DialogDescription>
       </DialogHeader>
       <div className="py-4 space-y-2 max-h-[300px] overflow-y-auto">
-        {Object.entries(navOverridesData?.overrides || {}).filter(([_, data]) => data.hidden && !data.deleted).length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-4">No hidden pages.</p>
+        {Object.entries(navOverridesData?.overrides || {}).filter(([_, data]) => data.hidden || (isAdmin && data.deleted)).length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-4">No hidden or deleted pages.</p>
         ) : (
-          Object.entries(navOverridesData?.overrides || {}).filter(([_, data]) => data.hidden && !data.deleted).map(([path, data]) => {
+          Object.entries(navOverridesData?.overrides || {}).filter(([_, data]) => data.hidden || (isAdmin && data.deleted)).map(([path, data]) => {
             // Find original label by matching path across rawNavItems or just using path
             const originalItem = rawNavItems.find(i => i.path === path);
             const label = data.customName || originalItem?.label || path;
             return (
               <div key={path} className="flex items-center justify-between p-2 rounded-lg border">
-                <span className="text-sm font-medium">{label}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">{label}</span>
+                  {data.deleted && <span className="text-[9px] bg-red-500/10 text-red-500 px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-semibold">Deleted</span>}
+                </div>
                 <Button size="sm" variant="outline" onClick={async () => {
                   try {
                     const currentOverrides = navOverridesData?.overrides || {};
-                    const newOverrides = { ...currentOverrides, [path]: { ...currentOverrides[path], hidden: false } };
+                    const newOverrides = { ...currentOverrides, [path]: { ...currentOverrides[path], hidden: false, deleted: false } };
                     await saveNavOverrides(newOverrides);
                     toast.success("Page restored");
                   } catch (err) {
