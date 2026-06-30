@@ -151,7 +151,7 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  <button
  key={item}
  onClick={() => setTab(item)}
- className={`px-4 py-2 rounded-xl text-sm font-semibold capitalize transition-all duration-200 ${tab === item ? "bg-foreground text-background " : "text-[#71717a] dark:text-gray-400 hover:text-foreground"}`}
+ className={`px-4 py-2 rounded-xl text-sm font-semibold capitalize transition-all duration-200 ${tab === item ? "bg-primary text-primary-foreground " : "text-[#71717a] dark:text-gray-400 hover:text-foreground"}`}
  >
  {item}
  </button>
