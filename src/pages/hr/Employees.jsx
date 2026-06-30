@@ -130,9 +130,11 @@ export default function Employees() {
  const [password, setPassword] = useState('');
  const [isSubmitting, setIsSubmitting] = useState(false);
 
+ const [createAccount, setCreateAccount] = useState(true);
+
  const handleCreateOrUpdateEmployee = async () => {
  if (!formData.name.trim()) return toast.error("Please enter a name");
- if (!editTargetId && !password) return toast.error("Please provide a temporary password");
+ if (!editTargetId && createAccount && !password) return toast.error("Please provide a temporary password for the account");
  
  setIsSubmitting(true);
  try {
@@ -154,17 +156,6 @@ export default function Employees() {
    } else {
      const employeeId = `EMP-${Math.floor(1000 + Math.random() * 9000)}`;
      
-     // Register Auth
-     const reg = await base44.auth.register({
-       email: formData.email,
-       password: password,
-       company_id: user?.company_id,
-       role: finalRole});
-     
-     
-     const authUserId = reg?.user?.id;
-     
-     // Auto-save custom role
      let finalRole = formData.role || 'staff';
      if (useCustomRole && formData.role && !roleRecords.find(r => r.name === formData.role)) {
          await powerSync.execute('INSERT INTO platform_roles (id, company_id, name, description) VALUES (uuid(), ?, ?, ?)', [user?.company_id, formData.role, formData.role]);
@@ -178,25 +169,39 @@ export default function Employees() {
          finalDeptId = newDeptId;
      }
 
+     let authUserId = null;
+     if (createAccount) {
+       try {
+         const reg = await base44.auth.register({
+           email: formData.email,
+           password: password,
+           company_id: user?.company_id,
+           role: finalRole
+         });
+         authUserId = reg?.user?.id;
+       } catch (err) {
+         throw new Error("Failed to create user account: " + err.message);
+       }
+     }
      
-     const payload = { ...formData, employeeId, user_id: authUserId || null};
+     const newId = crypto.randomUUID();
+     const payload = { id: newId, company_id: user?.company_id, ...formData, role: finalRole, departmentId: finalDeptId, employeeId, user_id: authUserId || null, created_at: new Date().toISOString() };
     
-     
-        const _k = Object.keys(payload);
-        const _v = Object.values(payload);
-        await powerSync.execute(`UPDATE univ_hr_employees SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editTargetId]);
-        
+     const _k = Object.keys(payload);
+     const _v = Object.values(payload);
+     await powerSync.execute(`INSERT INTO univ_hr_employees (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
      
      if (authUserId) {
        await supabase.from("staff_records").update({ user_id: authUserId }).eq("company_id", user?.company_id).ilike("user_email", formData.email);
      }
      
-     toast.success('Employee added and account created successfully!');
+     toast.success(createAccount ? 'Employee added and account created successfully!' : 'Employee added successfully!');
      notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `New employee onboarded: ${formData.name} as ${formData.role}`, channel: '#general'}).catch(console.error);
      powerSync.execute(`INSERT INTO univ_notifications (id, company_id, created_at, title, message, type, read) VALUES (?, ?, ?, ?, ?, ?, ?)`, [crypto.randomUUID(), user?.company_id, new Date().toISOString(), "New Hire", `${formData.name} was onboarded as ${formData.role}`, "info", 0]).catch(console.error);
      setShowModal(false);
      setFormData({ name: '', departmentId: '', reportsTo: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0] });
      setPassword('');
+     setCreateAccount(true);
    }
  } catch (err) {
    toast.error(err.message || 'An error occurred');
@@ -326,14 +331,14 @@ export default function Employees() {
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-4 border-b border-primary/40 bg-muted/50">
- <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
- <Input placeholder="Search employee name or department..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
- </div>
- </div>
- <div className="overflow-x-auto">
+  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 flex flex-col h-[65vh]">
+  <div className="p-4 border-b border-primary/40 bg-muted/50 shrink-0">
+  <div className="relative max-w-md">
+  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+  <Input placeholder="Search employee name or department..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+  </div>
+  </div>
+  <div className="overflow-x-auto overflow-y-auto custom-scrollbar flex-1">
  {isDbLoading ? (
  <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_employees", "Loading employees...")}</div>
  ) : filtered.length === 0 ? (
@@ -440,12 +445,26 @@ export default function Employees() {
  <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("email", "Email")}</label>
  <Input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="alice@example.com" className="mt-1" disabled={!!editTargetId} />
  </div>
- {!editTargetId && (
-   <div>
-     <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("temporary_password", "Temporary Password *")}</label>
-     <Input type="text" value={password} onChange={e => setPassword(e.target.value)} placeholder="Min 6 characters" className="mt-1" />
-   </div>
- )}
+  {!editTargetId && (
+    <div className="space-y-3 p-3 bg-muted/30 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20">
+      <label className="flex items-center gap-2 text-sm font-medium text-foreground cursor-pointer">
+        <input 
+          type="checkbox" 
+          checked={createAccount} 
+          onChange={e => setCreateAccount(e.target.checked)}
+          className="w-4 h-4 rounded text-primary focus:ring-primary border-primary/50"
+        />
+        Create User Login Account
+      </label>
+      
+      {createAccount && (
+        <div className="animate-in fade-in slide-in-from-top-2 duration-200">
+          <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Temporary Password *</label>
+          <Input type="text" value={password} onChange={e => setPassword(e.target.value)} placeholder="Min 6 characters" className="mt-1 bg-background" />
+        </div>
+      )}
+    </div>
+  )}
  <div>
  <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("phone", "Phone")}</label>
  <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="+1 234 567 8900" className="mt-1" />
