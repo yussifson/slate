@@ -370,7 +370,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
  const isSuiteAdmin = ["super_admin", "admin"].includes(user?.role);
 
- const filteredCompanyNav = (isSuiteAdmin && location.pathname.startsWith('/admin')) ? adminNav : (isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
+  let filteredCompanyNav = (isSuiteAdmin && location.pathname.startsWith('/admin')) ? adminNav : (isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
  // If activeModules is explicitly set (Custom Selection mode)
  if (activeModules && !['/', '/settings', '/integrations', '/admin', '/email-inbox', '/chat', '/board', '/hr', '/roles', '/departments'].includes(item.path)) {
  // If it's not in the active modules, completely hide it
@@ -383,6 +383,11 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  if (!allowedPaths) return true;
  return allowedPaths.includes(item.path);
 }));
+
+  // Inject Tower Manager
+  if (user?.role === 'company_admin' || user?.available_companies?.length >= 1) {
+    filteredCompanyNav = [...filteredCompanyNav, { label: "Tower Manager", path: "/tower-manager", icon: "LayoutGrid" }];
+  }
 
  const { data: customPages = []} = useQuery({
  queryKey: ['custom_pages', companyId],
@@ -683,12 +688,7 @@ if (user?.role === "super_admin") {
     try {
       const currentOverrides = navOverridesData?.overrides || {};
       const newOverrides = { ...currentOverrides, [renameData.path]: { ...(currentOverrides[renameData.path] || {}), customName: renameData.newName } };
-      const recordId = navOverridesData?.id || crypto.randomUUID();
-      await powerSync.execute(
-        `INSERT OR REPLACE INTO industry_records (id, company_id, record_type, industry, data, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
-        [recordId, companyId, 'nav_overrides', activeIndustry || 'orbit_build', JSON.stringify(newOverrides), new Date().toISOString()]
-      );
-      queryClient.invalidateQueries({ queryKey: ['nav_overrides', companyId] });
+      await saveNavOverrides(newOverrides);
       toast.success("Page renamed");
     } catch (err) {
       toast.error("Failed to rename page");
@@ -748,8 +748,11 @@ if (user?.role === "super_admin") {
 
  {/* Section label */}
  {!collapsed ? (
- <div className="px-4 pt-5 pb-1.5 animate-in fade-in duration-200">
+ <div className="px-4 pt-5 pb-1.5 animate-in fade-in duration-200 flex justify-between items-center">
  <p className="text-[10px] font-semibold text-sidebar-foreground/40 uppercase tracking-[0.08em] whitespace-nowrap">{t('platform', 'Platform')}</p>
+ <button onClick={handleAiSmartSort} disabled={isAiSorting} className="flex items-center gap-1 text-[9px] font-semibold bg-primary/10 text-primary px-1.5 py-0.5 rounded-full hover:bg-primary/20 transition-colors">
+   <Sparkles className={cn("w-2.5 h-2.5", isAiSorting && "animate-spin")} /> {isAiSorting ? 'Sorting...' : 'AI Sort'}
+ </button>
  </div>
  ) : (
  <div className="pt-5" />
@@ -845,11 +848,20 @@ if (user?.role === "super_admin") {
     </>
   ) : (
     <>
+      <button onClick={(e) => { e.preventDefault(); handleMoveOrder(item.path, 'up'); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
+      <ArrowUpRight className="w-3 h-3" /> Move Up
+      </button>
+      <button onClick={(e) => { e.preventDefault(); handleMoveOrder(item.path, 'down'); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
+      <ArrowDownLeft className="w-3 h-3" /> Move Down
+      </button>
       <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label, false, true, item.path); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
       <Pencil className="w-3 h-3" /> Rename
       </button>
-      <button onClick={(e) => { e.preventDefault(); handleHideStaticModule(item.path); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10/10 flex items-center gap-2 transition-colors tracking-[0.04em]">
+      <button onClick={(e) => { e.preventDefault(); handleHideStaticModule(item.path); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-amber-500 hover:bg-amber-500/10 flex items-center gap-2 transition-colors tracking-[0.04em]">
       <EyeOff className="w-3 h-3" /> Hide Page
+      </button>
+      <button onClick={(e) => { e.preventDefault(); handleDeleteStaticModule(item.path); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10 flex items-center gap-2 transition-colors tracking-[0.04em]">
+      <Trash2 className="w-3 h-3" /> Delete Page
       </button>
     </>
   )}
@@ -1007,10 +1019,10 @@ if (user?.role === "super_admin") {
         </DialogDescription>
       </DialogHeader>
       <div className="py-4 space-y-2 max-h-[300px] overflow-y-auto">
-        {Object.entries(navOverridesData?.overrides || {}).filter(([_, data]) => data.hidden).length === 0 ? (
+        {Object.entries(navOverridesData?.overrides || {}).filter(([_, data]) => data.hidden && !data.deleted).length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">No hidden pages.</p>
         ) : (
-          Object.entries(navOverridesData?.overrides || {}).filter(([_, data]) => data.hidden).map(([path, data]) => {
+          Object.entries(navOverridesData?.overrides || {}).filter(([_, data]) => data.hidden && !data.deleted).map(([path, data]) => {
             // Find original label by matching path across rawNavItems or just using path
             const originalItem = rawNavItems.find(i => i.path === path);
             const label = data.customName || originalItem?.label || path;
@@ -1021,12 +1033,7 @@ if (user?.role === "super_admin") {
                   try {
                     const currentOverrides = navOverridesData?.overrides || {};
                     const newOverrides = { ...currentOverrides, [path]: { ...currentOverrides[path], hidden: false } };
-                    const recordId = navOverridesData?.id || crypto.randomUUID();
-                    await powerSync.execute(
-                      `INSERT OR REPLACE INTO industry_records (id, company_id, record_type, industry, data, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
-                      [recordId, companyId, 'nav_overrides', activeIndustry || 'orbit_build', JSON.stringify(newOverrides), new Date().toISOString()]
-                    );
-                    queryClient.invalidateQueries({ queryKey: ['nav_overrides', companyId] });
+                    await saveNavOverrides(newOverrides);
                     toast.success("Page restored");
                   } catch (err) {
                     toast.error("Failed to restore page");

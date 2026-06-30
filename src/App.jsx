@@ -158,6 +158,7 @@ import Chat from './pages/Chat';
 import Board from './pages/Board';
 import CustomPageViewer from './pages/CustomPageViewer';
 import OrbitComponentTester from './pages/admin/OrbitComponentTester';
+import TowerManager from './pages/TowerManager';
 const MasterPortalRouter = React.lazy(() => import('./components/portal/MasterPortalRouter'));
 
 import PortalManagement from './pages/settings/PortalManagement';
@@ -748,6 +749,9 @@ function PlatformRoutes() {
       <Route path="/canteen-pos" element={<SchoolCanteenPOS />} />
       <Route path="/complaints" element={<SchoolComplaints />} />
       <Route path="/support-center" element={<SchoolSupportCenter />} />
+
+      {/* Global Tower / Multi-Tenant Manager */}
+      <Route path="/tower-manager" element={<TowerManager />} />
 
       <Route path="/campus-marketplace" element={<SchoolCampusMarketplace />} />
       <Route path="/institution-settings" element={<SchoolInstitutionSettings />} />
