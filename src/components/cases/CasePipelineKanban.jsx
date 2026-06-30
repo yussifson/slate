@@ -45,7 +45,7 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
 },
  onSuccess: () => {
  queryClient.invalidateQueries({ queryKey: ["pipeline-states"]});
- toast({ title: "Case moved"});
+ toast({ title: "Item moved successfully"});
 }});
 
  if (!activePipeline || !activePipeline.stages?.length) return null;
@@ -89,11 +89,11 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
  return (
  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Header */}
- <div className="p-4 border-b border-primary/40 flex items-center justify-between gap-3 flex-wrap">
+ <div className="p-4 border-b border-primary/40 flex items-center justify-between gap-3 flex-wrap bg-muted/30">
  <div className="flex items-center gap-2">
  <CheckCircle className="w-4 h-4 text-primary" />
- <span className="text-sm font-semibold">{t("case_board", "Case Board")}</span>
- <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("drag_cards_between_stages", "· drag cards between stages")}</span>
+ <span className="text-sm font-semibold">{t("pipeline_board", "Pipeline Board")}</span>
+ <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("drag_cards_between_stages", "· drag items between stages")}</span>
  </div>
  {pipelines.length > 1 && (
  <Select value={selectedPipelineId || pipelines[0]?.id} onValueChange={setSelectedPipelineId}>

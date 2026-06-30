@@ -672,6 +672,11 @@ if (user?.role === "super_admin") {
     rawNavItems.push({ label: "Feature Insider", path: "/feature-insider", icon: "FlaskConical" });
   }
 
+  // Inject Pipeline system for all industries
+  if (!rawNavItems.some(n => n.path === '/pipeline')) {
+    rawNavItems.push({ label: "Pipelines", path: "/pipeline", icon: "GitBranch" });
+  }
+
   // Deduplicate by label to prevent double Dashboards, and apply static nav overrides
   const seenLabels = new Set();
   let navItems = [];

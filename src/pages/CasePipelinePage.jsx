@@ -251,10 +251,10 @@ export default function CasePipelinePage() {
 };
 
  return (
- <div className="space-y-6 school-page-enter font-dmsans">
- <PageHeader
- title="Case Pipelines"
- subtitle="Define custom stages for each case type and track progress"
+ <div className="space-y-6">
+ <PageHeader 
+ title="Pipelines"
+ subtitle="Manage your leads, projects, and custom workflows"
  actions={
  ["super_admin", "company_admin", "managing_partner"].includes(user?.role) && (
  <Button size="sm" onClick={() => setShowNew(true)} className="gap-2.5">
@@ -272,14 +272,14 @@ export default function CasePipelinePage() {
  {isLoading ? (
  <div className="text-center text-sm text-[#71717a] dark:text-gray-400 py-8">{t("loading_pipelines", "Loading pipelines...")}</div>
  ) : pipelines.length === 0 ? (
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 p-12 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <GitBranch className="w-10 h-10 text-[#71717a] dark:text-gray-400 mx-auto mb-3" />
- <p className="text-sm font-medium">{t("no_pipelines_yet", "No pipelines yet")}</p>
+ <div className="text-center py-12 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <GitBranch className="w-12 h-12 mx-auto text-[#71717a] dark:text-gray-400 opacity-20 mb-3" />
+ <p className="text-sm font-semibold">{t("no_pipelines_yet", "No pipelines found")}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 mb-4 tracking-[0.04em]">{t(
  "create_your_first_pipeline_to_",
- "Create your first pipeline to track case stages"
+ "Create your first pipeline to track your workflows"
  )}</p>
- <Button size="sm" onClick={() => setShowNew(true)}>{t("create_pipeline", "Create Pipeline")}</Button>
+ <Button size="sm" onClick={() => setShowNew(true)} className="bg-primary text-primary-foreground hover:bg-primary/90">{t("create_pipeline", "Create Pipeline")}</Button>
  </div>
  ) : (
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
