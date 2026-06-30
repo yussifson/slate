@@ -421,7 +421,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
       company_id: companyId,
       record_type: 'nav_overrides',
       industry: activeIndustry || 'orbit_build',
-      data: newOverrides,
+      data: JSON.stringify(newOverrides), // MUST BE STRINGIFIED FOR TEXT COLUMN
       created_at: new Date().toISOString()
     };
     
@@ -434,7 +434,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     // Also save locally to PowerSync for immediate UI update
     try {
       const _keys = Object.keys(payload);
-      const _vals = Object.values(payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+      const _vals = Object.values(payload);
       const existing = await powerSync.getOptional('SELECT id FROM industry_records WHERE id = ?', [payload.id]);
       if (existing) {
         await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, payload.id]);
