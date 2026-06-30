@@ -945,7 +945,6 @@ if (user?.role === "super_admin") {
   </div>
   )}
  </div>
- </div>
  );
 })}
  </div>
