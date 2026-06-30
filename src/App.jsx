@@ -496,7 +496,7 @@ import Contact from './pages/marketing/Contact';
 import EnterpriseContact from './pages/marketing/EnterpriseContact';
 import Integrations from './pages/marketing/Integrations';
 import Changelog from './pages/marketing/Changelog';
-import Careers from './pages/marketing/Careers';
+
 import Partners from './pages/marketing/Partners';
 import LegalDocs from './pages/marketing/LegalDocs';
 import OnboardingWizard from './pages/OnboardingWizard';
@@ -1120,7 +1120,7 @@ function App() {
                         <Route path="/enterprise-contact" element={<EnterpriseContact />} />
                         <Route path="/integrations" element={<Integrations />} />
                         <Route path="/changelog" element={<Changelog />} />
-                        <Route path="/careers" element={<Careers />} />
+
                         <Route path="/partners" element={<Partners />} />
                         <Route path="/legal" element={<LegalDocs />} />
                       </Route>

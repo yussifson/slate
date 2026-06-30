@@ -375,7 +375,7 @@ export default function MarketingLayout({ children}) {
  <h4 className="text-slate-900 font-semibold text-sm uppercase tracking-wider tracking-[0.04em]">{t("company", "Company")}</h4>
  <ul className="flex flex-col gap-3.5">
  <li><Link to="/about" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("about_us", "About Us")}</Link></li>
- <li><Link to="/careers" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("careers", "Careers")} <span className="ml-1 inline-block px-1.5 py-0.5 rounded-full bg-slate-100 text-primary border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-[9px] font-semibold">{t("hiring", "HIRING")}</span></Link></li>
+ <li><a href="https://career.optavel.com/" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("careers", "Careers")} <span className="ml-1 inline-block px-1.5 py-0.5 rounded-full bg-slate-100 text-primary border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-[9px] font-semibold">{t("hiring", "HIRING")}</span></a></li>
  <li><Link to="/contact" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("contact_sales", "Contact Sales")}</Link></li>
  <li><Link to="/partners" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("partner_program", "Partner Program")}</Link></li>
  </ul>
