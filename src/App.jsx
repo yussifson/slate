@@ -751,7 +751,7 @@ function PlatformRoutes() {
       <Route path="/support-center" element={<SchoolSupportCenter />} />
 
       {/* Global Tower / Multi-Tenant Manager */}
-      <Route path="/tower-manager" element={<TowerManager />} />
+      <Route path="/branch-manager" element={<TowerManager />} />
 
       <Route path="/campus-marketplace" element={<SchoolCampusMarketplace />} />
       <Route path="/institution-settings" element={<SchoolInstitutionSettings />} />

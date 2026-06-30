@@ -59,11 +59,15 @@ export const TowerMutations = {
       
       // Query companies that match these IDs or where admin_email is this user
       // Also filter by the specific industry so they only see the relevant verticals
+      const orClause = accessIds.length 
+        ? `admin_email.eq.${userEmail},id.in.(${accessIds.join(',')})`
+        : `admin_email.eq.${userEmail}`;
+
       const { data: companies, error } = await supabase
         .from('companies')
         .select('*')
         .eq('industry_type', industry)
-        .or(`admin_email.eq.${userEmail},id.in.(${accessIds.length ? accessIds.join(',') : 'none'})`);
+        .or(orClause);
         
       if (error) throw error;
       return { success: true, towers: companies || [] };

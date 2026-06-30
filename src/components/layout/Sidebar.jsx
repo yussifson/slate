@@ -384,9 +384,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  return allowedPaths.includes(item.path);
 }));
 
-  // Inject Tower Manager
+  // Inject Branch Manager
   if (user?.role === 'company_admin' || user?.available_companies?.length >= 1) {
-    filteredCompanyNav = [...filteredCompanyNav, { label: "Tower Manager", path: "/tower-manager", icon: "LayoutGrid" }];
+    filteredCompanyNav = [...filteredCompanyNav, { label: "Branch Manager", path: "/branch-manager", icon: "LayoutGrid" }];
   }
 
  const { data: customPages = []} = useQuery({
