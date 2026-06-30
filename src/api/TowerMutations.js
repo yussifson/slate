@@ -1,5 +1,5 @@
 import { powerSync } from '@/api/PowerSyncConnector';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/api/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 
 export const TowerMutations = {
