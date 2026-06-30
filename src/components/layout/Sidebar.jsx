@@ -682,6 +682,11 @@ if (user?.role === "super_admin") {
     rawNavItems.push({ label: "Tasks", path: "/tasks", icon: "CheckSquare" });
   }
 
+  // Inject Trust Accounting system for all industries
+  if (!rawNavItems.some(n => n.path === '/real-estate/trust-accounting')) {
+    rawNavItems.push({ label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: "Wallet" });
+  }
+
   // Deduplicate by label to prevent double Dashboards, and apply static nav overrides
   const seenLabels = new Set();
   let navItems = [];

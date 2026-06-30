@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
 import { getTerm } from "@/config/industries";
@@ -248,7 +249,18 @@ export default function Tasks() {
 
   const { data: staff = [] } = useQuery({
     queryKey: ["staff-list", companyId],
-    queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }),
+    queryFn: async () => {
+      try {
+        const res = await powerSync.execute('SELECT * FROM univ_hr_employees WHERE company_id = ?', [companyId]);
+        const records = res.rows._array || Array.from(res.rows);
+        return records.map(r => ({
+           id: r.id,
+           full_name: r.name,
+           user_email: r.email,
+           role: r.role
+        }));
+      } catch(e) { return []; }
+    },
     enabled: !!companyId});
 
   const updateMutation = useMutation({
