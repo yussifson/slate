@@ -548,7 +548,7 @@ function PlatformRoutes() {
       <Route path="/clients" element={<Clients />} />
       <Route path="/calendar" element={<CalendarPage />} />
       <Route path="/invoices" element={<UnivInvoice />} />
-      <Route path="/tasks" element={<UnivKanban />} />
+      <Route path="/tasks" element={<Tasks />} />
       <Route path="/documents" element={<UnivDocument />} />
       <Route path="/team" element={<UnivHREmployee />} />
       <Route path="/settings" element={<Settings />} />

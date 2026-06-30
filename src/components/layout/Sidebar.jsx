@@ -677,6 +677,11 @@ if (user?.role === "super_admin") {
     rawNavItems.push({ label: "Pipelines", path: "/pipeline", icon: "GitBranch" });
   }
 
+  // Inject Task management system for all industries
+  if (!rawNavItems.some(n => n.path === '/tasks')) {
+    rawNavItems.push({ label: "Tasks", path: "/tasks", icon: "CheckSquare" });
+  }
+
   // Deduplicate by label to prevent double Dashboards, and apply static nav overrides
   const seenLabels = new Set();
   let navItems = [];
