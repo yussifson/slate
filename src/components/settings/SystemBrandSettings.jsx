@@ -4,7 +4,7 @@ import { useTheme} from "@/lib/ThemeContext";
 import { Input} from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
-import { Info} from "lucide-react";
+import { Info, CheckCircle2, Loader2 } from "lucide-react";
 import { getSubdomainAndBase} from "@/lib/domainUtils";
 import {
  AlertDialog,
@@ -209,53 +209,109 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  </div>
  )}
  {tab === "domain" && (
- <div className="space-y-4">
+ <div className="space-y-6">
  <Field label="Custom Domain" full>
- <div className="flex flex-col gap-2">
- <Input placeholder="e.g. app.mycompany.com" value={form.custom_domain} onChange={e => setForm({ ...form, custom_domain: e.target.value.toLowerCase().replace(/[^a-z0-9.-]/g, '')})} className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" />
- {form.custom_domain && (
- <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
- <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">DNS Configuration Required</h4>
- <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
- To complete your custom domain setup, please add the following record to your DNS provider (e.g. GoDaddy, Namecheap, Route53).
+ {(!company?.custom_domain || form.custom_domain !== company.custom_domain) ? (
+ <div className="flex flex-col gap-3">
+ <div className="flex gap-2">
+ <Input placeholder="e.g. app.mycompany.com" value={form.custom_domain} onChange={e => setForm({ ...form, custom_domain: e.target.value.toLowerCase().replace(/[^a-z0-9.-]/g, '')})} className="h-12 flex-1 bg-muted/20 border-primary/40 focus:border-primary transition-colors text-lg" />
+ {(form.custom_domain && form.custom_domain !== company?.custom_domain) && (
+ <button onClick={handleSaveClick} className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 font-bold rounded-xl transition-all shadow-lg shadow-primary/20">
+ Connect Domain
+ </button>
+ )}
+ </div>
+ {form.custom_domain && form.custom_domain !== company?.custom_domain && (
+ <div className="p-5 rounded-xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 mt-2">
+ <h4 className="font-bold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
+ <Info className="w-4 h-4" /> DNS Configuration Required
+ </h4>
+ <p className="text-sm text-blue-800 dark:text-blue-200 mb-4 font-medium">
+ To complete your custom domain setup, add the following record to your DNS provider (e.g. GoDaddy, Namecheap, Route53).
  </p>
  {form.custom_domain.split('.').length > 2 ? (
- <div className="bg-white dark:bg-slate-900 p-3 rounded-lg border border-blue-100 dark:border-blue-900 text-sm font-mono">
- Type: <strong>CNAME</strong><br/>
- Name: <strong>{form.custom_domain.split('.')[0]}</strong><br/>
- Value: <strong>cname.vercel-dns.com</strong>
+ <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-blue-100 dark:border-blue-900 text-sm font-mono flex flex-col gap-2 shadow-sm">
+ <div className="flex justify-between border-b pb-2"><span className="text-slate-500">Type</span><strong className="text-slate-900 dark:text-white">CNAME</strong></div>
+ <div className="flex justify-between border-b pb-2"><span className="text-slate-500">Name</span><strong className="text-slate-900 dark:text-white">{form.custom_domain.split('.')[0]}</strong></div>
+ <div className="flex justify-between"><span className="text-slate-500">Value</span><strong className="text-slate-900 dark:text-white">cname.vercel-dns.com</strong></div>
  </div>
  ) : (
- <div className="bg-white dark:bg-slate-900 p-3 rounded-lg border border-blue-100 dark:border-blue-900 text-sm font-mono">
- Type: <strong>A</strong><br/>
- Name: <strong>@</strong><br/>
- Value: <strong>76.76.21.21</strong>
+ <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-blue-100 dark:border-blue-900 text-sm font-mono flex flex-col gap-2 shadow-sm">
+ <div className="flex justify-between border-b pb-2"><span className="text-slate-500">Type</span><strong className="text-slate-900 dark:text-white">A</strong></div>
+ <div className="flex justify-between border-b pb-2"><span className="text-slate-500">Name</span><strong className="text-slate-900 dark:text-white">@</strong></div>
+ <div className="flex justify-between"><span className="text-slate-500">Value</span><strong className="text-slate-900 dark:text-white">76.76.21.21</strong></div>
  </div>
  )}
  </div>
  )}
  </div>
+ ) : (
+ <div className="border border-slate-200 dark:border-slate-800 rounded-xl p-6 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden group">
+ <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
+ <div className="flex items-center justify-between">
+ <div>
+ <h4 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-3 mb-1">
+ {company.custom_domain}
+ <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-200 dark:border-emerald-500/30">Active</span>
+ </h4>
+ <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Your custom domain is configured and routing traffic.</p>
+ </div>
+ <button onClick={() => { setForm({ ...form, custom_domain: '' }); onSave({ ...form, custom_domain: '' }); }} className="text-red-500 hover:text-red-700 font-bold text-sm px-5 py-2.5 bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/30 border border-slate-200 dark:border-slate-700 rounded-lg transition-colors">
+ Remove
+ </button>
+ </div>
+ </div>
+ )}
  </Field>
  </div>
  )}
- <AlertDialog open={showSubdomainAlert} onOpenChange={setShowSubdomainAlert}>
- <AlertDialogContent className="rounded-2xl max-w-md">
+ <AlertDialog open={showSubdomainAlert || saving} onOpenChange={setShowSubdomainAlert}>
+ <AlertDialogContent className={`rounded-2xl max-w-md ${saving ? 'p-0 overflow-hidden border-0 shadow-2xl bg-slate-900' : ''}`}>
+ {saving ? (
+ <div className="p-10 flex flex-col items-center justify-center text-center text-white">
+ <div className="relative mb-8 mt-4">
+ <div className="w-20 h-20 rounded-full border-[3px] border-slate-800 border-t-emerald-500 animate-spin"></div>
+ <div className="absolute inset-0 flex items-center justify-center">
+ <div className="w-8 h-8 bg-emerald-500 rounded-full animate-pulse blur-[2px]"></div>
+ </div>
+ </div>
+ <h3 className="text-2xl font-bold mb-2 tracking-tight">Provisioning Infrastructure</h3>
+ <p className="text-sm text-slate-400 font-medium leading-relaxed max-w-[280px]">Configuring enterprise routing and synchronizing edge network settings...</p>
+ 
+ <div className="w-full mt-10 mb-4 space-y-4 bg-slate-950/50 p-5 rounded-xl border border-white/5">
+ <div className="flex items-center gap-3 text-xs font-semibold text-slate-300">
+ <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center"><div className="w-2 h-2 bg-emerald-500 rounded-full"></div></div>
+ Updating tenant registry
+ </div>
+ <div className="flex items-center gap-3 text-xs font-semibold text-slate-300">
+ <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center"><div className="w-2 h-2 bg-emerald-500 rounded-full"></div></div>
+ Synchronizing Vercel Edge Network
+ </div>
+ <div className="flex items-center gap-3 text-xs font-bold text-emerald-400 animate-pulse">
+ <Loader2 className="w-4 h-4 animate-spin" /> Finalizing deployment...
+ </div>
+ </div>
+ </div>
+ ) : (
+ <>
  <AlertDialogHeader>
- <AlertDialogTitle className="text-lg font-semibold">{t("change_firm_subdomain", "Change firm subdomain?")}</AlertDialogTitle>
- <AlertDialogDescription className="text-sm leading-relaxed">
+ <AlertDialogTitle className="text-xl font-bold tracking-tight">{t("change_firm_subdomain", "Change routing architecture?")}</AlertDialogTitle>
+ <AlertDialogDescription className="text-sm font-medium leading-relaxed mt-2 text-slate-500">
  {t(
  "modifying_your_subdomain_trigg",
- "Modifying your subdomain triggers a system-wide redirect. Ensure your team members are aware, as their current browser tabs will require re-authentication."
+ "Modifying your subdomain triggers a system-wide edge redirect. Ensure your team members are aware, as their current browser tabs will require re-authentication to the new zone."
  )}
  </AlertDialogDescription>
  </AlertDialogHeader>
- <AlertDialogFooter className="gap-2">
- <AlertDialogCancel className="rounded-xl">{t("cancel", "Cancel")}</AlertDialogCancel>
+ <AlertDialogFooter className="gap-3 mt-6">
+ <AlertDialogCancel className="rounded-xl font-bold border-slate-200">{t("cancel", "Cancel")}</AlertDialogCancel>
  <AlertDialogAction onClick={() => {
  setShowSubdomainAlert(false);
  onSave(form);
-}} className="bg-primary hover:bg-primary/90 text-white rounded-xl">{t("continue_relocate", "Continue & Relocate")}</AlertDialogAction>
+}} className="bg-primary hover:bg-primary/90 text-white rounded-xl font-bold shadow-lg shadow-primary/20">{t("continue_relocate", "Execute Relocation")}</AlertDialogAction>
  </AlertDialogFooter>
+ </>
+ )}
  </AlertDialogContent>
  </AlertDialog>
  </SectionCard>
