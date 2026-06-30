@@ -861,13 +861,16 @@ if (user?.role === "super_admin") {
    return (
      <div key={cat} className="space-y-0.5">
        {!collapsed && (
-         <button 
-           onClick={() => toggleCat(cat)}
-           className="w-full flex items-center justify-between px-2 py-1.5 mb-1 group transition-colors"
-         >
-           <p className="text-[10px] font-extrabold text-sidebar-foreground/40 group-hover:text-sidebar-foreground/60 uppercase tracking-[0.1em]">{cat}</p>
-           <ChevronRight className={cn("w-3 h-3 text-sidebar-foreground/30 transition-transform duration-200", isExpanded && "rotate-90")} />
-         </button>
+          <button 
+            onClick={() => toggleCat(cat)}
+            className="w-full flex items-center justify-between px-1 py-2 mb-1 group transition-all"
+          >
+            <div className="flex items-center gap-2">
+              <div className={cn("w-1 h-3 rounded-full transition-all duration-300", isExpanded ? "bg-primary" : "bg-primary/20 group-hover:bg-primary/50")} />
+              <p className="text-[10px] font-bold text-sidebar-foreground/60 group-hover:text-sidebar-foreground/90 uppercase tracking-[0.15em]">{cat}</p>
+            </div>
+            <ChevronRight className={cn("w-3.5 h-3.5 text-sidebar-foreground/30 transition-transform duration-300", isExpanded && "rotate-90")} />
+          </button>
        )}
        
        <div className={cn("space-y-0.5 transition-all duration-300 overflow-hidden", (!isExpanded && !collapsed) ? "max-h-0 opacity-0" : "max-h-[2000px] opacity-100")}>
