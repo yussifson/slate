@@ -30,7 +30,7 @@ export default function EnterpriseDashboard() {
       if (!uniqueIds.length) { setPortfolio([]); setLoading(false); return; }
       const { data, error } = await supabase
         .from('companies')
-        .select('id, name, industry, industry_type, subdomain, status, logo_url, subscription_plan')
+        .select('id, name, industry_type, subdomain, status, logo_url, subscription_plan')
         .in('id', uniqueIds);
       if (error) throw error;
       const companies = data || [];
@@ -67,11 +67,11 @@ export default function EnterpriseDashboard() {
     let newCompany = {
       id: crypto.randomUUID(),
       name: 'New ' + indConfig.name + ' Vertical',
-      industry: industryKey, industry_type: industryKey, subdomain: industryKey, status: 'active',
+      industry_type: industryKey, subdomain: industryKey, status: 'active',
     };
     try {
       const { data, error } = await supabase.from('companies')
-        .insert({ name: newCompany.name, industry_type: industryKey, industry: industryKey, status: 'active', created_by: user?.id })
+        .insert({ name: newCompany.name, industry_type: industryKey, status: 'active', created_by: user?.id })
         .select().single();
       if (!error && data) newCompany = data;
     } catch (e) { console.warn('Supabase insert failed, using local state:', e); }
@@ -99,22 +99,22 @@ export default function EnterpriseDashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
-            <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
-              <Globe className="text-emerald-600 dark:text-emerald-400 w-5 h-5" />
+            <div className="p-2 bg-primary/10 dark:bg-primary/20 rounded-lg">
+              <Globe className="text-primary dark:text-primary w-5 h-5" />
             </div>
             Enterprise Command Center
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">Monitor and switch between all your deployed vertical workspaces.</p>
         </div>
-        <Button onClick={() => setShowDeployModal(true)} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-5 py-2.5 flex items-center gap-2 text-sm font-semibold">
+        <Button onClick={() => setShowDeployModal(true)} className="bg-primary hover:bg-primary/90 text-white rounded-lg px-5 py-2.5 flex items-center gap-2 text-sm font-semibold">
           <Plus size={16} /> Deploy New Vertical
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex items-center gap-4">
-          <div className="w-11 h-11 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
-            <Building2 className="text-emerald-600 dark:text-emerald-400 w-5 h-5" />
+          <div className="w-11 h-11 rounded-lg bg-primary/5 dark:bg-primary/10 flex items-center justify-center">
+            <Building2 className="text-primary dark:text-primary w-5 h-5" />
           </div>
           <div>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Portfolio Companies</p>
@@ -130,10 +130,10 @@ export default function EnterpriseDashboard() {
             <p className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">{activeCount}</p>
           </div>
         </div>
-        <div className="bg-emerald-600 rounded-xl p-5 flex flex-col justify-center text-white relative overflow-hidden">
-          <p className="text-xs font-semibold text-emerald-100 flex items-center gap-1.5 mb-1"><Activity className="w-3.5 h-3.5" /> Current Workspace</p>
+        <div className="bg-primary rounded-xl p-5 flex flex-col justify-center text-white relative overflow-hidden">
+          <p className="text-xs font-semibold text-primary-foreground flex items-center gap-1.5 mb-1"><Activity className="w-3.5 h-3.5" /> Current Workspace</p>
           <p className="text-lg font-bold truncate">{selectedVertical?.name || 'None selected'}</p>
-          <p className="text-emerald-200 text-xs mt-0.5 capitalize">{currentInd || '--'}</p>
+          <p className="text-primary-foreground/80 text-xs mt-0.5 capitalize">{currentInd || '--'}</p>
           <TrendingUp className="absolute right-2 bottom-2 text-white/10 w-24 h-24" />
         </div>
       </div>
@@ -142,7 +142,7 @@ export default function EnterpriseDashboard() {
         <div className="lg:col-span-4 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Your Verticals</h2>
-            <span className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold px-2 py-0.5 rounded-full">{portfolio.length}</span>
+            <span className="bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary text-xs font-bold px-2 py-0.5 rounded-full">{portfolio.length}</span>
           </div>
 
           {loading ? (
@@ -161,7 +161,7 @@ export default function EnterpriseDashboard() {
                 return (
                   <motion.div key={company.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}
                     onClick={() => setSelectedVertical(company)}
-                    className={'p-4 cursor-pointer rounded-xl border transition-all ' + (isSelected ? 'bg-emerald-600 border-emerald-600' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-emerald-300 hover:bg-slate-50')}
+                    className={'p-4 cursor-pointer rounded-xl border transition-all ' + (isSelected ? 'bg-primary border-primary' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-primary/50 hover:bg-slate-50')}
                   >
                     <div className="flex items-center gap-3">
                       <div className={'p-2 rounded-lg ' + (isSelected ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-800')}>
@@ -169,9 +169,9 @@ export default function EnterpriseDashboard() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <h3 className={'font-semibold text-sm truncate ' + (isSelected ? 'text-white' : 'text-slate-900 dark:text-white')}>{company.name}</h3>
-                        <p className={'text-xs mt-0.5 capitalize ' + (isSelected ? 'text-emerald-100' : 'text-slate-400')}>{ind}</p>
+                        <p className={'text-xs mt-0.5 capitalize ' + (isSelected ? 'text-primary-foreground' : 'text-slate-400')}>{ind}</p>
                       </div>
-                      {company.status === 'active' && <span className={'w-1.5 h-1.5 rounded-full flex-shrink-0 ' + (isSelected ? 'bg-white' : 'bg-emerald-500')} />}
+                      {company.status === 'active' && <span className={'w-1.5 h-1.5 rounded-full flex-shrink-0 ' + (isSelected ? 'bg-white' : 'bg-primary')} />}
                     </div>
                   </motion.div>
                 );
@@ -189,18 +189,18 @@ export default function EnterpriseDashboard() {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-5 border-b border-slate-100 dark:border-slate-800">
                   <div>
                     <div className="flex items-center gap-2 mb-1.5">
-                      <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider rounded capitalize">
+                      <span className="px-2 py-0.5 bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary text-xs font-bold uppercase tracking-wider rounded capitalize">
                         {(selectedVertical.industry_type || selectedVertical.industry || 'core').replace(/_/g, ' ')}
                       </span>
                       {selectedVertical.status === 'active' && (
-                        <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-semibold"><ShieldCheck className="w-3.5 h-3.5" /> Active</span>
+                        <span className="flex items-center gap-1 text-primary dark:text-primary text-xs font-semibold"><ShieldCheck className="w-3.5 h-3.5" /> Active</span>
                       )}
                     </div>
                     <h2 className="text-xl font-bold text-slate-900 dark:text-white">{selectedVertical.name}</h2>
                     <p className="text-slate-400 text-xs mt-0.5">{selectedVertical.subdomain ? selectedVertical.subdomain + '.optavel.com' : selectedVertical.id}</p>
                   </div>
                   <Button onClick={() => handleVerticalSwitch(selectedVertical)}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-5 py-2.5 text-sm font-semibold flex items-center gap-2 shrink-0">
+                    className="bg-primary hover:bg-primary/90 text-white rounded-lg px-5 py-2.5 text-sm font-semibold flex items-center gap-2 shrink-0">
                     Switch to this Vertical <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
@@ -215,7 +215,7 @@ export default function EnterpriseDashboard() {
                       { icon: ShieldCheck, label: 'Status', value: String(s.status) },
                     ].map(({ icon: Icon, label, value }) => (
                       <div key={label} className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700/50">
-                        <Icon className="w-4 h-4 text-emerald-500 mb-2" />
+                        <Icon className="w-4 h-4 text-primary mb-2" />
                         <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">{label}</p>
                         <p className="text-base font-bold text-slate-900 dark:text-white mt-1 capitalize truncate">{value}</p>
                       </div>
@@ -263,26 +263,26 @@ export default function EnterpriseDashboard() {
                 <div key={key}
                   onClick={() => !deployingVertical && !alreadyDeployed && handleDeployVertical(key)}
                   className={'border rounded-lg p-4 transition-all relative overflow-hidden ' + (
-                    alreadyDeployed ? 'border-emerald-200 dark:border-emerald-800/50 bg-emerald-50/50 cursor-default' :
-                    isDeploying ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20' :
+                    alreadyDeployed ? 'border-primary/20 dark:border-primary/20 bg-primary/5 cursor-default' :
+                    isDeploying ? 'border-primary/40 bg-primary/5 dark:bg-primary/10' :
                     deployingVertical ? 'opacity-40 pointer-events-none border-slate-200 bg-white dark:bg-slate-900' :
-                    'border-slate-200 dark:border-slate-800 hover:border-emerald-300 hover:bg-slate-50 cursor-pointer bg-white dark:bg-slate-900'
+                    'border-slate-200 dark:border-slate-800 hover:border-primary/50 hover:bg-slate-50 cursor-pointer bg-white dark:bg-slate-900'
                   )}
                 >
                   {isDeploying && (
                     <div className="absolute inset-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-2">
-                      <Loader2 className="w-6 h-6 text-emerald-600 animate-spin" />
-                      <span className="text-xs font-bold text-emerald-700">Deploying {ind.name}...</span>
-                      <div className="w-32 h-1.5 bg-slate-200 rounded-full overflow-hidden mt-1"><div className="h-full bg-emerald-500 rounded-full" style={{width: '70%'}} /></div>
+                      <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                      <span className="text-xs font-bold text-primary">Deploying {ind.name}...</span>
+                      <div className="w-32 h-1.5 bg-slate-200 rounded-full overflow-hidden mt-1"><div className="h-full bg-primary rounded-full" style={{width: '70%'}} /></div>
                     </div>
                   )}
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-base">{ind.icon || '🏢'}</div>
                     <h3 className="font-semibold text-slate-900 dark:text-white text-sm flex-1 truncate">{ind.name}</h3>
-                    {alreadyDeployed && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
+                    {alreadyDeployed && <CheckCircle2 className="w-4 h-4 text-primary" />}
                   </div>
                   <p className="text-xs text-slate-500 line-clamp-2">Complete OS for {ind.name?.toLowerCase()} management.</p>
-                  {alreadyDeployed && <p className="text-xs font-bold text-emerald-600 mt-2">Already deployed</p>}
+                  {alreadyDeployed && <p className="text-xs font-bold text-primary mt-2">Already deployed</p>}
                 </div>
               );
             })}
