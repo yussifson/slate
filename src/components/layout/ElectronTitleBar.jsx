@@ -34,34 +34,29 @@ export default function ElectronTitleBar() {
         alignItems: 'center',
         justifyContent: 'space-between',
         height: '40px',
-        // Slate primary emerald green gradient
-        background: 'linear-gradient(135deg, #059669 0%, #10B981 50%, #047857 100%)',
-        borderBottom: '1px solid rgba(0,0,0,0.15)',
+        // Slate primary deep forest green
+        background: 'linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%)',
+        borderBottom: '1px solid rgba(0,0,0,0.2)',
         flexShrink: 0,
         userSelect: 'none',
         position: 'relative',
         zIndex: 9999,
-        boxShadow: '0 1px 8px rgba(5,150,105,0.35)',
+        boxShadow: '0 1px 6px rgba(6,78,59,0.5)',
       }}
     >
-      {/* Left: Exact Slate SVG Icon + App Name */}
+      {/* Left: Exact Slate PNG Icon + App Name */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '9px', paddingLeft: '14px' }}>
-        {/* This exactly matches the slate-logo.svg — two overlapping slates */}
-        <svg width="22" height="22" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <filter id="tb-shadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="4" stdDeviation="5" floodColor="#0F172A" floodOpacity="0.25" />
-            </filter>
-          </defs>
-          <g transform="translate(128, 128) scale(1.45) rotate(-15) translate(-128, -128)">
-            {/* Back slate — dark */}
-            <rect x="64" y="72" width="96" height="128" rx="24" fill="rgba(0,0,0,0.35)" />
-            {/* Front slate — white */}
-            <rect x="96" y="56" width="96" height="128" rx="24" fill="white" filter="url(#tb-shadow)" />
-            {/* Highlight */}
-            <rect x="98" y="58" width="92" height="124" rx="22" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" />
-          </g>
-        </svg>
+        <img 
+          src="/slate-logo.png" 
+          alt="Slate" 
+          style={{ 
+            width: '24px', 
+            height: '24px', 
+            objectFit: 'contain',
+            filter: 'brightness(0) invert(1)',
+            opacity: 0.95
+          }} 
+        />
 
         <span style={{
           color: 'white',

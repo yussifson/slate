@@ -82,7 +82,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
   const toggleCat = (cat) => {
     setExpandedCats(prev => {
-      const next = { ...prev, [cat]: prev[cat] === false ? true : false }; // defaults to true, so false means collapsed
+      const isCurrentlyExpanded = prev[cat] !== undefined ? prev[cat] : (cat === 'Platform' || cat === 'Operations');
+      const next = { ...prev, [cat]: !isCurrentlyExpanded };
       localStorage.setItem('sidebar_expanded_cats', JSON.stringify(next));
       return next;
     });
@@ -875,7 +876,7 @@ if (user?.role === "super_admin") {
  {categoryOrder.map(cat => {
    const items = groupedNav[cat];
    if (!items || items.length === 0) return null;
-   const isExpanded = expandedCats[cat] !== false; // defaults to true
+   const isExpanded = expandedCats[cat] !== undefined ? expandedCats[cat] : (cat === 'Platform' || cat === 'Operations');
    
    return (
      <div key={cat} className="space-y-0.5">
@@ -1086,7 +1087,7 @@ if (user?.role === "super_admin") {
  <>
  {/* Desktop sidebar - Strictly hidden on mobile */}
  <aside className={cn(
- "hidden md:flex flex-col h-screen sticky top-0 border-r-2 border-r-primary/30 transition-all duration-300 relative z-[1] bg-sidebar",
+ "hidden md:flex flex-col h-full sticky top-0 border-r-2 border-r-primary/30 transition-all duration-300 relative z-[1] bg-sidebar",
  isCollapsed ? "w-[80px] min-w-[80px] max-w-[80px]" : "w-[256px] min-w-[256px] max-w-[256px]"
  )}>
  {renderNavContent(isCollapsed)}
