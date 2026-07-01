@@ -182,64 +182,73 @@ export default function Login() {
  let signInError = null;
 
  if (targetSubdomain) {
- // Fetch company_id for this subdomain to generate the salted email
- const { data: brandData, error: brandErr} = await supabase.rpc('get_company_by_subdomain', { p_subdomain: targetSubdomain});
- let compId = null;
- if (!brandErr && brandData) {
- const d = Array.isArray(brandData) ? brandData[0] : brandData;
- compId = d?.id;
-} 
- 
- if (compId) {
- const [localPart, domain] = loginEmail.split('@');
- 
- // 1. Try the primary UUID salt strategy
- let proxyEmail = `${localPart}+firm${compId.replace(/-/g, '')}@${domain}`;
- 
- const primaryAuth = await supabase.auth.signInWithPassword({
- email: proxyEmail,
- password
-});
- 
- authData = primaryAuth.data;
- signInError = primaryAuth.error;
- 
- // 2. If it fails with Invalid Credentials, try the legacy Subdomain salt strategy
- if (signInError && signInError.message === "Invalid login credentials") {
- proxyEmail = `${localPart}+firm_${targetSubdomain}@${domain}`;
- const retry = await supabase.auth.signInWithPassword({
- email: proxyEmail,
- password
-});
- 
- if (!retry.error) {
- authData = retry.data;
- signInError = null;
-}
-}
- 
- // 3. If that STILL fails, try the RAW unsalted email (because Super Admins sign up without a salt!)
- if (signInError && signInError.message === "Invalid login credentials") {
- proxyEmail = loginEmail; // The original raw email
- const rawRetry = await supabase.auth.signInWithPassword({
- email: proxyEmail,
- password
-});
- 
- if (!rawRetry.error) {
- authData = rawRetry.data;
- signInError = null;
-}
-}
- 
- if (!signInError) {
- loginEmail = proxyEmail;
-}
-} else {
- setError(`Workspace '${targetSubdomain}' not found.`);
- setLoading(false);
- return;
-}
+  // Fetch company_id for this subdomain to generate the salted email
+  const { data: brandData, error: brandErr} = await supabase.rpc('get_company_by_subdomain', { p_subdomain: targetSubdomain});
+  let compId = null;
+  if (!brandErr && brandData) {
+    const d = Array.isArray(brandData) ? brandData[0] : brandData;
+    compId = d?.id;
+  } 
+  
+  if (!compId) {
+    try {
+      const cached = localStorage.getItem('slate_cached_user');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed.company_id) compId = parsed.company_id;
+      }
+    } catch(e) {}
+  }
+  
+  const rawLoginEmail = loginEmail;
+  const [localPart, domain] = rawLoginEmail.split('@');
+  
+  signInError = { message: "Invalid login credentials" }; // Initial state to trigger fallback chain
+  
+  // 1. Try the primary UUID salt strategy
+  if (compId) {
+    const proxyEmail = `${localPart}+firm${compId.replace(/-/g, '')}@${domain}`;
+    const primaryAuth = await supabase.auth.signInWithPassword({ email: proxyEmail, password });
+    if (!primaryAuth.error) {
+      authData = primaryAuth.data;
+      signInError = null;
+      loginEmail = proxyEmail;
+    } else {
+      signInError = primaryAuth.error;
+    }
+  }
+  
+  // 2. If it fails with Invalid Credentials (or compId was null), try the legacy Subdomain salt strategy
+  if (signInError && signInError.message === "Invalid login credentials") {
+    const proxyEmail = `${localPart}+firm_${targetSubdomain}@${domain}`;
+    const retry = await supabase.auth.signInWithPassword({ email: proxyEmail, password });
+    if (!retry.error) {
+      authData = retry.data;
+      signInError = null;
+      loginEmail = proxyEmail;
+    } else {
+      signInError = retry.error;
+    }
+  }
+  
+  // 3. If that STILL fails, try the RAW unsalted email
+  if (signInError && signInError.message === "Invalid login credentials") {
+    const rawRetry = await supabase.auth.signInWithPassword({ email: rawLoginEmail, password });
+    if (!rawRetry.error) {
+      authData = rawRetry.data;
+      signInError = null;
+      loginEmail = rawLoginEmail;
+    } else {
+      signInError = rawRetry.error;
+    }
+  }
+  
+  if (signInError && signInError.message === "Invalid login credentials" && !compId) {
+     // If everything failed and we didn't even have a compId, show the workspace error
+     setError(`Workspace '${targetSubdomain}' not found.`);
+     setLoading(false);
+     return;
+  }
 } else {
  // Base domain login
  const baseAuth = await supabase.auth.signInWithPassword({
