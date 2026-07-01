@@ -119,7 +119,7 @@
     "appId": "com.optavel.slate",
     "productName": "Slate",
     "directories": {
-      "output": "dist-electron-bin"
+      "output": "C:/temp-slate-dist"
     },
     "win": {
       "target": "nsis",

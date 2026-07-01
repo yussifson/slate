@@ -1,4 +1,5 @@
-import { useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect, useMemo } from 'react';
 import { powerSync} from "@/api/PowerSyncConnector";
 import { supabase} from "@/api/supabaseClient";
@@ -35,6 +36,8 @@ const LOGIN_QUOTES = [
 ];
 
 export default function Login() {
+  const navigate = useNavigate();
+  const isElectron = window.location.protocol === 'file:';
  const { t} = useTranslation();
  const [email, setEmail] = useState('');
  const [password, setPassword] = useState('');
@@ -269,8 +272,9 @@ export default function Login() {
     const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).single();
     
     // Only go to onboarding if they explicitly have no company_id
+    // Only go to onboarding if they explicitly have no company_id
     if (!profile?.company_id) {
-      window.location.href = '/onboarding';
+      if (isElectron) { navigate('/onboarding'); } else { window.location.href = '/onboarding'; }
       return;
     }
 
@@ -283,7 +287,7 @@ export default function Login() {
       const { isCustomDomain } = getSubdomainAndBase();
       if (isCustomDomain) {
         // They're already on their custom domain, proceed to dashboard
-        window.location.href = '/';
+        if (isElectron) { navigate('/'); } else { window.location.href = '/'; }
         return;
       }
       
@@ -293,7 +297,7 @@ export default function Login() {
         if (authData?.session?.access_token && authData?.session?.refresh_token) {
           url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
         }
-        window.location.href = url;
+        if (isElectron) { navigate('/'); } else { window.location.href = url; }
         return;
       } else if (companySubdomain && workspace && !currentSubdomain) {
         // We are on root, redirecting to the workspace
@@ -305,37 +309,37 @@ export default function Login() {
         if (profile?.role === 'student') url += 'student-portal';
         else if (profile?.role === 'parent') url += 'parent-portal';
         else if (['client', 'patient', 'guest', 'customer', 'member', 'policyholder'].includes(profile?.role)) url += 'portal';
-        window.location.href = url;
+        if (isElectron) { navigate(url.substring(url.indexOf(port) + port.length) || '/'); } else { window.location.href = url; }
         return;
       }
     }
     
     // Route based on role
     if (profile?.role === 'student') {
-      window.location.href = '/student-portal';
+      if (isElectron) { navigate('/student-portal'); } else { window.location.href = '/student-portal'; }
       return;
     } else if (profile?.role === 'parent') {
-      window.location.href = '/parent-portal';
+      if (isElectron) { navigate('/parent-portal'); } else { window.location.href = '/parent-portal'; }
       return;
     } else if (['client', 'patient', 'guest', 'customer', 'member', 'policyholder'].includes(profile?.role)) {
-      window.location.href = '/portal';
+      if (isElectron) { navigate('/portal'); } else { window.location.href = '/portal'; }
       return;
     }
 
-    window.location.href = '/';
+    if (isElectron) { navigate('/'); } else { window.location.href = '/'; }
 } else {
     // Base domain login
     const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).single();
     
     // Only go to onboarding if they explicitly have no company_id
     if (!profile?.company_id) {
-      window.location.href = '/onboarding';
+      if (isElectron) { navigate('/onboarding'); } else { window.location.href = '/onboarding'; }
       return;
     }
     
     // If Super Admin logs into the Base Domain, route directly to the admin command center
     if (profile?.role === 'super_admin') {
-      window.location.href = '/admin';
+      if (isElectron) { navigate('/admin'); } else { window.location.href = '/admin'; }
       return;
     }
 
@@ -361,7 +365,7 @@ export default function Login() {
 }
  
  // 3. Fallback if they somehow have no company but ARE onboarded
- window.location.href = '/';
+ if (isElectron) { navigate('/'); } else { window.location.href = '/'; }
 }
 };
 

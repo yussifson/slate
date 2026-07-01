@@ -297,24 +297,32 @@ export default function SignUp() {
  </div>
  </div>
  {/* Right Side: Marketing Visual */}
- <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-50 overflow-hidden">
+ <div className="hidden lg:flex flex-1 relative items-center justify-center bg-primary/[0.03] overflow-hidden">
  {/* Abstract Pattern Background */}
- <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
+ <div 
+ className="absolute -inset-[100%] animate-[spin_60s_linear_infinite] opacity-40"
+ style={{ background: 'conic-gradient(from 0deg, transparent 0%, rgba(16,185,129,0.15) 25%, transparent 50%, rgba(16,185,129,0.05) 75%, transparent 100%)'}}
+ />
+ <div className="absolute inset-0 bg-white/60 backdrop-blur-3xl"></div>
 
- <div className="relative z-10 w-full max-w-2xl bg-white rounded-md-[2rem] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 -[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="relative z-10 w-full max-w-2xl bg-white/80 backdrop-blur-xl rounded-[2rem] border-[0.5px] border-primary/20 shadow-[0_20px_80px_-20px_rgba(16,185,129,0.15)] p-12 lg:p-16 flex flex-col justify-between group hover:shadow-[0_20px_80px_-15px_rgba(16,185,129,0.2)] hover:bg-white/90 transition-all duration-500">
+ 
  <div>
- <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-xs font-semibold text-primary/90 mb-8 uppercase tracking-[0.2em] tracking-[0.04em]">
- <span className="flex h-1.5 w-1.5 rounded-full bg-primary" />
+ <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary mb-8 uppercase tracking-widest">
+ <span className="flex h-2 w-2 relative">
+   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+   <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+ </span>
  {t("universal_os", "Universal Operating System")}
  </div>
  
- <h3 className="text-4xl 2xl:text-6xl font-black text-slate-900 mb-6 leading-[1.1] tracking-tight tracking-[-0.02em]" style={{ fontFamily: 'Inter, sans-serif'}}>
+ <h3 className="text-4xl 2xl:text-5xl font-extrabold text-slate-900 mb-6 leading-[1.1] tracking-tight">
  {t(
  "a_workspace_that_grows_with_yo",
  "The foundation for modern institutions."
  )}
  </h3>
- <p className="text-lg text-slate-600 font-light max-w-lg leading-relaxed">
+ <p className="text-lg text-slate-600 font-medium max-w-lg leading-relaxed">
  {t(
  "slate_unifies_your_team_s_",
  "Slate unifies your entire organization's workflow, operations, and billing into one beautifully orchestrated platform."
@@ -322,24 +330,24 @@ export default function SignUp() {
  </p>
  </div>
 
- <div className="grid grid-cols-2 gap-8 mt-16 border-t border-primary/40 pt-10">
- <div>
- <div className="w-10 h-10 rounded-xl bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center text-primary mb-5 ">
- <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+ <div className="grid grid-cols-2 gap-8 mt-16 border-t border-primary/10 pt-10">
+ <div className="group/feature">
+ <div className="w-12 h-12 rounded-2xl bg-primary/5 border border-primary/10 flex items-center justify-center text-primary mb-5 group-hover/feature:bg-primary/10 transition-colors duration-300">
+ <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
  </div>
- <h4 className="text-lg font-semibold text-slate-900 mb-2 tracking-wide">{t("set_up_in_seconds", "Instant Provisioning")}</h4>
- <p className="text-sm text-slate-500 font-light leading-relaxed">{t(
+ <h4 className="text-lg font-bold text-slate-900 mb-2 tracking-wide">{t("set_up_in_seconds", "Instant Provisioning")}</h4>
+ <p className="text-sm text-slate-500 font-medium leading-relaxed">{t(
  "no_engineering_required_just_i",
  "Subdomain, databases, and core infrastructure deployed seamlessly."
  )}</p>
  </div>
  
- <div>
- <div className="w-10 h-10 rounded-xl bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center text-primary mb-5 ">
- <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+ <div className="group/feature">
+ <div className="w-12 h-12 rounded-2xl bg-primary/5 border border-primary/10 flex items-center justify-center text-primary mb-5 group-hover/feature:bg-primary/10 transition-colors duration-300">
+ <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
  </div>
- <h4 className="text-lg font-semibold text-slate-900 mb-2 tracking-wide">{t("bank_grade_security", "Enterprise Security")}</h4>
- <p className="text-sm text-slate-500 font-light leading-relaxed">{t(
+ <h4 className="text-lg font-bold text-slate-900 mb-2 tracking-wide">{t("bank_grade_security", "Enterprise Security")}</h4>
+ <p className="text-sm text-slate-500 font-medium leading-relaxed">{t(
  "soc2_compliant_infrastructure_",
  "Isolated sub-tenants with Row-Level Security ensuring absolute data privacy."
  )}</p>
