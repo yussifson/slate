@@ -194,7 +194,7 @@ export default function MarketingLayout({ children}) {
  {/* Desktop CTA Buttons */}
  <div className="hidden lg:flex items-center gap-3">
   {/* Download App Button */}
-  <a href="https://github.com/optavel/slate-desktop-releases/releases/download/v1.0.0/Slate.Setup.0.0.0.exe" className="group relative hidden xl:flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-full font-semibold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
+  <a href="https://github.com/optavel/slate-desktop-releases/releases/download/v1.0.1/Slate%20Setup%201.0.1.exe" className="group relative hidden xl:flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-full font-semibold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
     <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
     <span className="text-[13px]">Download App</span>
   </a>

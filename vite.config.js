@@ -27,6 +27,7 @@ export default defineConfig({
   build: {
     sourcemap: false,
     chunkSizeWarningLimit: 2000,
+    reportCompressedSize: false
   },
   plugins: [
     react(),
@@ -123,7 +124,4 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['@journeyapps/wa-sqlite', '@powersync/web']
   },
-  build: {
-    reportCompressedSize: false
-  }
 });
