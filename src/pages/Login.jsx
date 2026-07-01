@@ -455,6 +455,20 @@ export default function Login() {
  {t("create_workspace", "Create Workslate")}
  </a>
  </div>
+
+ {/* Download Desktop App Button */}
+ <div className="mt-8 pt-6 border-t border-slate-200/60 dark:border-slate-800/60">
+  <a href="/Slate-Setup.exe" download className="group flex items-center justify-center gap-3 w-full p-4 rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 text-white font-medium shadow-lg shadow-slate-900/10 hover:shadow-xl hover:shadow-slate-900/20 hover:-translate-y-0.5 transition-all duration-300">
+    <div className="bg-white/10 p-2 rounded-lg group-hover:scale-110 transition-transform duration-300">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-monitor-down"><path d="M21 12v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"/><line x1="12" x2="12" y1="22" y2="17"/><line x1="7" x2="17" y1="22" y2="22"/><path d="M19 5v6"/><path d="m16 8 3 3 3-3"/></svg>
+    </div>
+    <div className="flex flex-col items-start text-left">
+      <span className="text-[13px] font-semibold tracking-wide">Download Desktop App</span>
+      <span className="text-[10px] text-white/70 font-medium">Faster • Smoother • Offline Ready</span>
+    </div>
+  </a>
+ </div>
+
  </form>
  </div>
  </div>
