@@ -13,7 +13,7 @@
     "preview": "vite preview",
     "cap:sync": "npm run build && npx cap sync",
     "cap:build": "npm run build && npx cap copy",
-    "desktop:dev": "vite",
+    "desktop:dev": "vite --mode electron",
     "desktop:build": "npm run build && electron-builder"
   },
   "dependencies": {

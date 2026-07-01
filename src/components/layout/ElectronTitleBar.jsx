@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Minus, Maximize2, Minimize2, X } from 'lucide-react';
 
-// Only renders when running inside Electron
-const isElectron = typeof window !== 'undefined' && !!window.electronWindow;
+// Show when actually inside Electron app OR when running in electron dev mode
+const isElectron = (typeof window !== 'undefined' && !!window.electronWindow)
+  || import.meta.env.MODE === 'electron';
 
 export default function ElectronTitleBar() {
   const [isMaximized, setIsMaximized] = useState(false);
