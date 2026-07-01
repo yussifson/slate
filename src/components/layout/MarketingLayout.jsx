@@ -146,7 +146,7 @@ export default function MarketingLayout({ children}) {
   ];
 
  return (
- <div className="light min-h-screen bg-background text-foreground font-sans overflow-x-hidden selection:bg-primary/20 selection:text-primary relative">
+ <div className="light h-screen overflow-y-auto bg-background text-foreground font-sans overflow-x-hidden selection:bg-primary/20 selection:text-primary relative">
  {/* ========== NAVIGATION HEADER ========== */}
  <div className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'py-3 bg-white/95 backdrop-blur-lg border-b-2 border-primary/80 ' : 'py-5 bg-white/50 backdrop-blur-sm border-b-2 border-transparent'}`}>
  <header className="max-w-6xl mx-auto">
@@ -187,7 +187,7 @@ export default function MarketingLayout({ children}) {
  {/* Desktop CTA Buttons */}
  <div className="hidden lg:flex items-center gap-3">
   {/* Download App Button */}
-  <a href="https://github.com/optavel/slate/releases/latest/download/Slate%20Setup%200.0.0.exe" className="group relative hidden xl:flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-full font-semibold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
+  <a href="https://github.com/optavel/slate/releases/download/v1.0.0/Slate.Setup.0.0.0.exe" className="group relative hidden xl:flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-full font-semibold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
     <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
     <span className="text-[13px]">Download App</span>
   </a>

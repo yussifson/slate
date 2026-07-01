@@ -458,7 +458,7 @@ export default function Login() {
 
  {/* Download Desktop App Button */}
  <div className="mt-8 pt-6 border-t border-slate-200/60 dark:border-slate-800/60">
-  <a href="https://github.com/optavel/slate/releases/latest/download/Slate%20Setup%200.0.0.exe" className="group flex items-center justify-center gap-3 w-full p-4 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300">
+  <a href="https://github.com/optavel/slate/releases/download/v1.0.0/Slate.Setup.0.0.0.exe" className="group flex items-center justify-center gap-3 w-full p-4 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300">
     <div className="bg-white/10 p-2 rounded-lg group-hover:scale-110 transition-transform duration-300">
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-monitor-down"><path d="M21 12v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"/><line x1="12" x2="12" y1="22" y2="17"/><line x1="7" x2="17" y1="22" y2="22"/><path d="M19 5v6"/><path d="m16 8 3 3 3-3"/></svg>
     </div>
