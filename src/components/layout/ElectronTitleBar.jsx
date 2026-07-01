@@ -53,8 +53,7 @@ export default function ElectronTitleBar() {
             width: '20px', 
             height: '20px', 
             objectFit: 'contain',
-            filter: 'brightness(0) invert(1)',
-            opacity: 0.95
+            opacity: 1
           }} 
         />
 
@@ -67,9 +66,9 @@ export default function ElectronTitleBar() {
         }}>Slate</span>
 
         <span style={{
-          color: 'rgba(255,255,255,0.55)',
+          color: 'rgba(255,255,255,0.9)',
           fontSize: '11px',
-          fontWeight: '400',
+          fontWeight: '500',
           letterSpacing: '0.04em',
         }}>by Optavel</span>
       </div>
@@ -79,10 +78,11 @@ export default function ElectronTitleBar() {
         position: 'absolute',
         left: '50%',
         transform: 'translateX(-50%)',
-        color: 'rgba(255,255,255,0.5)',
+        color: '#ffffff',
         fontSize: '11px',
-        fontWeight: '500',
+        fontWeight: '600',
         letterSpacing: '0.04em',
+        textShadow: '0 1px 2px rgba(0,0,0,0.1)',
         pointerEvents: 'none',
       }}>
         Work made effortlessly
@@ -98,10 +98,10 @@ export default function ElectronTitleBar() {
             width: '46px', height: '32px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             background: 'transparent', border: 'none', cursor: 'pointer',
-            color: 'rgba(255,255,255,0.7)', transition: 'background 0.15s, color 0.15s',
+            color: '#ffffff', transition: 'background 0.15s, color 0.15s',
           }}
           onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,0,0,0.15)'; e.currentTarget.style.color = 'white'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#ffffff'; }}
         >
           <Minus size={14} />
         </button>
@@ -114,10 +114,10 @@ export default function ElectronTitleBar() {
             width: '46px', height: '32px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             background: 'transparent', border: 'none', cursor: 'pointer',
-            color: 'rgba(255,255,255,0.7)', transition: 'background 0.15s, color 0.15s',
+            color: '#ffffff', transition: 'background 0.15s, color 0.15s',
           }}
           onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,0,0,0.15)'; e.currentTarget.style.color = 'white'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#ffffff'; }}
         >
           {isMaximized ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
         </button>
@@ -130,10 +130,10 @@ export default function ElectronTitleBar() {
             width: '46px', height: '32px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             background: 'transparent', border: 'none', cursor: 'pointer',
-            color: 'rgba(255,255,255,0.7)', transition: 'background 0.15s, color 0.15s',
+            color: '#ffffff', transition: 'background 0.15s, color 0.15s',
           }}
           onMouseEnter={e => { e.currentTarget.style.background = '#dc2626'; e.currentTarget.style.color = 'white'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#ffffff'; }}
         >
           <X size={14} />
         </button>
