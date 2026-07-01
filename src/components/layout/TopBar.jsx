@@ -146,7 +146,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
         onClick={toggleChat}
         variant="ghost"
         size="icon"
-        className={`relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-semibold rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${
+        className={`shrink-0 relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-semibold rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${
           isChatOpen
             ? "bg-primary text-white border-primary -[0_0_15px_rgba(59,130,246,0.5)] scale-95"
             : "bg-card text-foreground border-primary/40 hover:border-primary/40 hover:bg-slate-50 hover:text-primary dark:hover:bg-slate-100 -[0_0_10px_rgba(59,130,246,0.15)]"
@@ -163,16 +163,6 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
       </div>
 
       {/* Premium Theme Toggle & Notifications */}
-      {/* Spotlight Search Toggle */}
-      <Button
-        onClick={() => window.dispatchEvent(new CustomEvent('open-spotlight'))}
-        variant="ghost"
-        size="icon"
-        className="w-8 h-8 rounded-xl bg-card border-[0.5px] border-black/9 dark:border-white/8 text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors"
-        title="Spotlight Search (⌘K)"
-      >
-        <Search className="w-4 h-4" />
-      </Button>
       <ThemeToggle />
       <UnivNotificationCenter />
 
@@ -282,7 +272,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  onClick={toggleBolt}
  variant="ghost"
  size="icon"
- className={`relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-semibold rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${
+ className={`shrink-0 relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-semibold rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${
  isBoltOpen
  ? "bg-gradient-to-r from-primary/80 to-primary text-white border-primary -[0_0_15px_rgba(var(--primary),0.5)] scale-95"
  : "bg-card text-foreground border-primary/40 hover:border-primary/50 hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/10 hover:text-primary -[0_0_10px_rgba(var(--primary),0.15)]"
@@ -293,14 +283,25 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   <span className="hidden sm:inline">{t("orbit_build", "Orbit Build")}</span>
   </Button>
 
-
+ {/* Spotlight Search Toggle */}
+ <Button
+  onClick={() => window.dispatchEvent(new CustomEvent('open-spotlight'))}
+  variant="ghost"
+  size="icon"
+  className="shrink-0 group relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-semibold rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 bg-card text-foreground border-primary/40 hover:border-primary/40 hover:bg-slate-50 hover:text-primary dark:hover:bg-slate-100"
+  title="Spotlight Search (⌘K)"
+ >
+  <Search className="w-4 h-4 sm:mr-1.5 text-slate-500 group-hover:text-primary transition-colors" />
+  <span className="hidden sm:inline">Search</span>
+  <kbd className="hidden lg:inline-flex items-center gap-1 ml-2 px-1 py-0.5 rounded border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-[10px] font-medium text-slate-500 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]">⌘K</kbd>
+ </Button>
 
  {/* Orbit AI Toggle */}
  <Button
  onClick={toggleAI}
  variant="ghost"
  size="icon"
- className={`relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-semibold rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${
+ className={`shrink-0 relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-semibold rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${
  isAIOpen
  ? "bg-gradient-to-r from-primary to-primary text-white border-primary -[0_0_15px_rgba(59,130,246,0.5)] scale-95"
  : "bg-card text-foreground border-primary/40 hover:border-primary/40 hover:bg-gradient-to-r hover:from-primary/50 hover:to-primary/50 hover:text-primary -[0_0_10px_rgba(59,130,246,0.15)]"
