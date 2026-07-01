@@ -127,11 +127,17 @@
     "win": {
       "target": [
         "nsis"
-      ]
+      ],
+      "icon": "public/slate-logo.ico"
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "forceCodeExecution": true,
+      "warningsAsErrors": false
     },
     "directories": {
       "buildResources": "public",

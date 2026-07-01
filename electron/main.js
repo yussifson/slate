@@ -16,7 +16,7 @@ let win;
 
 function createWindow() {
   win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, 'slate-logo.png'),
+    icon: path.join(process.env.VITE_PUBLIC, 'slate-logo.ico'),
     width: 1200,
     height: 800,
     minWidth: 900,
