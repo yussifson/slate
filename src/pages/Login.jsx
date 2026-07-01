@@ -104,11 +104,19 @@ export default function Login() {
         }
        }
 
+       // Clean up accidentally duplicated URLs
+       const cleanLogo = (url) => {
+         if (!url) return url;
+         const httpPos = url.indexOf('http', 4);
+         if (httpPos > 0) return url.substring(0, httpPos);
+         return url;
+       };
+
        // Company exists → always show login. Only show "Not Found" if company is truly missing.
        if (brandData?.id) {
         setBranding({
         name: brandData.name || 'Your Workslate',
-        logo_url: brandData.logo_url || brandData.logo_light_url,
+        logo_url: cleanLogo(brandData.logo_url || brandData.logo_light_url),
         tagline: brandData.tagline || `Sign in to ${brandData.name || 'your workslate'}`
         });
        } else {
@@ -124,10 +132,16 @@ export default function Login() {
          const cached = localStorage.getItem('slate_cached_user');
          if (cached) {
            const parsed = JSON.parse(cached);
+           const cleanLogo = (url) => {
+             if (!url) return url;
+             const httpPos = url.indexOf('http', 4);
+             if (httpPos > 0) return url.substring(0, httpPos);
+             return url;
+           };
            if (parsed.company_name || parsed.company_logo_url) {
               setBranding({
                 name: parsed.company_name || 'Your Workslate',
-                logo_url: parsed.company_logo_url || null,
+                logo_url: cleanLogo(parsed.company_logo_url || null),
                 tagline: parsed.company_tagline || `Sign in to ${parsed.company_name || 'your workslate'}`
               });
            }
