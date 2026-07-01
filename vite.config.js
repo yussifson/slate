@@ -6,7 +6,7 @@ import electron from 'vite-plugin-electron/simple'
 
 // https://vite.dev/config/
 export default defineConfig({
-  logLevel: 'error', // Suppress warnings, only show errors
+  logLevel: 'info', // Show progress so it doesn't look frozen
   server: {
     port: 3000,
     strictPort: true,
