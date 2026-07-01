@@ -348,18 +348,20 @@ export default function AppLayout() {
        </motion.div>
      </AnimatePresence>
    </main>
-   <GlobalVideoOverlay />
- </div>
- </div>
- </div>
- <div id="right-docked-panel-portal" className="flex shrink-0 h-[100dvh] empty:hidden z-[100] relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10 transition-all duration-300"></div>
-  <MobileBottomNav />
-  <AiAssistant isOpen={isAIOpen} onClose={toggleAI} injectedContext={orbitContext} onContextConsumed={() => setOrbitContext(null)} />
-  <GlobalChatPanel isOpen={isChatOpen} onClose={toggleChat} />
-  {isBoltOpen && <OrbitBoltWorkspace onClose={toggleBolt} />}
-  <SpotlightSearch />
-  <FeatureAnnouncementModal />
-  </div>
-  </div>
-  );
+     <GlobalVideoOverlay />
+   </div>{/* closes flex-1 relative flex (336) */}
+   </div>{/* closes flex-1 flex flex-col h-screen (251) */}
+   <div id="right-docked-panel-portal" className="flex shrink-0 h-[100dvh] empty:hidden z-[100] relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10 transition-all duration-300"></div>
+   </div>{/* closes flex flex-1 overflow-hidden relative (237) */}
+   <MobileBottomNav />
+   <AiAssistant isOpen={isAIOpen} onClose={toggleAI} injectedContext={orbitContext} onContextConsumed={() => setOrbitContext(null)} />
+   <GlobalChatPanel isOpen={isChatOpen} onClose={toggleChat} />
+   {isBoltOpen && <OrbitBoltWorkspace onClose={toggleBolt} />}
+   <SpotlightSearch />
+   <FeatureAnnouncementModal />
+   </div>
+   </div>
+   </div>
+   </div>
+   );
 }
