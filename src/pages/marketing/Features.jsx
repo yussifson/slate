@@ -192,7 +192,7 @@ export default function Features() {
     <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
       
       {/* Left Column: Tabs */}
-      <div className="lg:w-1/3 flex flex-col gap-2">
+      <div className="lg:w-1/3 flex flex-col gap-1">
         {deepDives.map((feature, index) => {
           const isActive = activeTab === index;
           const Icon = feature.icon;
@@ -200,25 +200,25 @@ export default function Features() {
             <button
               key={index}
               onClick={() => setActiveTab(index)}
-              className={`text-left px-6 py-5 rounded-2xl transition-all duration-300 flex items-center justify-between group ${
+              className={`text-left px-5 py-3.5 rounded-xl transition-all duration-200 flex items-center justify-between group ${
                 isActive 
-                  ? 'bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-200/50 scale-[1.02]' 
-                  : 'hover:bg-slate-100 border border-transparent'
+                  ? 'bg-white shadow-sm ring-1 ring-slate-200/60' 
+                  : 'hover:bg-white/50 border border-transparent'
               }`}
             >
-              <div className="flex items-center gap-4">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-                  isActive ? 'bg-primary/10 text-primary' : 'bg-slate-200 text-slate-500 group-hover:bg-slate-300 group-hover:text-slate-700'
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
+                  isActive ? 'bg-primary/10 text-primary' : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200 group-hover:text-slate-600'
                 }`}>
-                  <Icon className="w-5 h-5" />
+                  <Icon className="w-4 h-4" />
                 </div>
-                <span className={`font-bold text-lg transition-colors ${
-                  isActive ? 'text-slate-900' : 'text-slate-500 group-hover:text-slate-700'
+                <span className={`font-semibold text-base transition-colors ${
+                  isActive ? 'text-slate-900' : 'text-slate-500 group-hover:text-slate-800'
                 }`}>
                   {feature.badge}
                 </span>
               </div>
-              <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${isActive ? 'text-primary translate-x-1' : 'text-slate-300 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0'}`} />
+              <ChevronRight className={`w-4 h-4 transition-all duration-200 ${isActive ? 'text-primary translate-x-0.5' : 'text-slate-300 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0'}`} />
             </button>
           );
         })}

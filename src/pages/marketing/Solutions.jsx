@@ -89,15 +89,15 @@ export default function Solutions() {
       </section>
 
       {/* Custom Solution CTA */}
-      <section className="py-24 bg-slate-900 text-white text-center">
+      <section className="py-24 bg-slate-50 border-t border-primary/40 text-center">
         <div className="max-w-3xl mx-auto px-4">
-          <Globe2 className="w-16 h-16 text-emerald-400 mx-auto mb-8 opacity-80" />
-          <h2 className="text-4xl font-black mb-6 tracking-tight">Don't see your industry?</h2>
-          <p className="text-lg text-slate-300 mb-10 font-medium">
+          <Globe2 className="w-16 h-16 text-primary mx-auto mb-8 opacity-80" />
+          <h2 className="text-4xl font-black text-slate-900 mb-6 tracking-tight">Don't see your industry?</h2>
+          <p className="text-lg text-slate-600 mb-10 font-medium">
             Slate's Universal Operating System is completely modular. Our enterprise solutions team can architect a custom deployment specifically for your niche.
           </p>
           <Link to="/contact">
-            <Button className="h-12 px-8 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-base transition-all">
+            <Button className="h-12 px-8 rounded-full bg-primary hover:bg-emerald-700 text-white font-black text-base transition-all">
               Request Custom Architecture
             </Button>
           </Link>
