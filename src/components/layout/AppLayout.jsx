@@ -248,7 +248,7 @@ export default function AppLayout() {
  <div className="z-10 flex">
  <Sidebar user={user} isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
  </div>
- <div className="flex-1 flex flex-col overflow-hidden h-screen z-30 relative">
+ <div className="flex-1 flex flex-col overflow-hidden h-full z-30 relative">
  {/* Offline Banner */}
  {isOffline && !hideOfflineBanner && (
  <div className="bg-red-600 text-white px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 font-sans z-50 tracking-[0.04em]">
