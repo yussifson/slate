@@ -18,6 +18,12 @@ export default function TimeTracker() {
   const [description, setDescription] = useState("");
   const [selectedCase, setSelectedCase] = useState("general");
   const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("timer");
+  
+  // Reminder State
+  const [reminderText, setReminderText] = useState("");
+  const [reminderMinutes, setReminderMinutes] = useState("15");
+  const [activeReminder, setActiveReminder] = useState(null);
 
   const timerRef = useRef(null);
   const { toast } = useToast();
@@ -126,71 +132,174 @@ export default function TimeTracker() {
     return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   };
 
+  const setReminder = () => {
+    if (!reminderText || !reminderMinutes) return;
+    const minutes = parseInt(reminderMinutes);
+    if (isNaN(minutes) || minutes <= 0) return;
+    
+    if (activeReminder?.timeoutId) clearTimeout(activeReminder.timeoutId);
+    
+    const timeout = setTimeout(() => {
+        toast({ title: "⏰ Reminder", description: reminderText, duration: 15000 });
+        setActiveReminder(null);
+    }, minutes * 60 * 1000);
+    
+    setActiveReminder({ text: reminderText, endTime: Date.now() + (minutes * 60 * 1000), timeoutId: timeout });
+    toast({ title: "Reminder Set", description: `We'll remind you in ${minutes} minutes.` });
+    setReminderText("");
+  };
+
+  const clearReminder = () => {
+    if (activeReminder?.timeoutId) clearTimeout(activeReminder.timeoutId);
+    setActiveReminder(null);
+  };
+
+  useEffect(() => {
+    return () => {
+        if (activeReminder?.timeoutId) clearTimeout(activeReminder.timeoutId);
+    };
+  }, [activeReminder]);
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button 
-          variant={isRunning ? "default" : "outline"} 
-          size="sm" 
-          className={`gap-2.5 h-8 px-2 font-mono text-xs ${isRunning ? 'bg-primary text-white animate-pulse' : 'text-[#71717a] dark:text-gray-400'}`}
+          variant="ghost"
+          size="icon" 
+          className={`shrink-0 relative overflow-hidden w-8 h-8 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${isRunning || activeReminder ? 'bg-primary text-white border-primary' : 'bg-card text-foreground border-primary/40 hover:bg-slate-50 dark:hover:bg-slate-100'}`}
+          title="Time & Reminders"
         >
-          <Clock className="w-3.5 h-3.5" />
-          {formatTime(seconds)}
+          <Clock className={`w-4 h-4 ${isRunning ? 'animate-pulse' : (activeReminder ? '' : 'text-[#71717a] dark:text-gray-400')}`} />
+          {(isRunning || activeReminder) && (
+            <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse shadow-[0_0_4px_rgba(248,113,113,0.8)]" />
+          )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-4" align="end">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-sm flex items-center gap-2">
-              <Clock className="w-4 h-4 text-primary" /> {t("time_tracker", "Time Tracker")}
-            </h4>
-            <div className="text-2xl font-mono font-semibold tracking-tight text-primary tracking-[-0.02em]">
-              {formatTime(seconds)}
-            </div>
-          </div>
-          
-          <div className="space-y-3">
-            <Input 
-              placeholder="What are you working on?" 
-              value={description} 
-              onChange={(e) => setDescription(e.target.value)}
-              className="text-sm"
-            />
-            
-            <Select value={selectedCase} onValueChange={setSelectedCase}>
-              <SelectTrigger className="h-9">
-                <SelectValue placeholder="Select Case" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="general">{t("no_case_general", "No Case (General)")}</SelectItem>
-                {cases.map(c => {
-                  return (<SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>);
-                })}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex items-center gap-2 pt-2 border-t">
-            <Button 
-              onClick={toggleTimer} 
-              className={`flex-1 gap-2 ${isRunning ? 'bg-amber-500 hover:bg-amber-600' : 'bg-primary'}`}
+      <PopoverContent className="w-80 p-4 rounded-2xl shadow-xl border-slate-200 dark:border-slate-800" align="end">
+        
+        {/* Custom Tabs */}
+        <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl mb-4">
+            <button 
+                onClick={() => setActiveTab('timer')}
+                className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${activeTab === 'timer' ? 'bg-white dark:bg-slate-700 shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
             >
-              {isRunning ? <><Square className="w-4 h-4" /> {t("pause", "Pause")}</> : <><Play className="w-4 h-4" /> {t("start", "Start")}</>}
-            </Button>
-            
-            {seconds > 0 && (
-              <Button onClick={handleSave} variant="secondary" className="flex-1">
-                {t("save_time", "Save Time")}
-              </Button>
-            )}
-            
-            {seconds > 0 && (
-              <Button onClick={resetTimer} variant="ghost" size="icon" className="shrink-0 text-[#71717a] dark:text-gray-400 hover:text-destructive">
-                <X className="w-4 h-4" />
-              </Button>
-            )}
-          </div>
+                Timer
+            </button>
+            <button 
+                onClick={() => setActiveTab('reminder')}
+                className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${activeTab === 'reminder' ? 'bg-white dark:bg-slate-700 shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+                Reminder
+            </button>
         </div>
+
+        {activeTab === 'timer' && (
+            <div className="space-y-4">
+            <div className="flex items-center justify-between">
+                <h4 className="font-semibold text-sm flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <Clock className="w-4 h-4 text-primary" /> Track Time
+                </h4>
+                <div className="text-2xl font-mono font-semibold tracking-tight text-primary">
+                {formatTime(seconds)}
+                </div>
+            </div>
+            
+            <div className="space-y-3">
+                <Input 
+                placeholder="What are you working on?" 
+                value={description} 
+                onChange={(e) => setDescription(e.target.value)}
+                className="text-sm rounded-xl"
+                />
+                
+                <Select value={selectedCase} onValueChange={setSelectedCase}>
+                <SelectTrigger className="h-9 rounded-xl">
+                    <SelectValue placeholder="Select Case" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="general">{t("no_case_general", "No Case (General)")}</SelectItem>
+                    {cases.map(c => {
+                    return (<SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>);
+                    })}
+                </SelectContent>
+                </Select>
+            </div>
+
+            <div className="flex items-center gap-2 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <Button 
+                onClick={toggleTimer} 
+                className={`flex-1 gap-2 rounded-xl font-semibold ${isRunning ? 'bg-amber-500 hover:bg-amber-600' : 'bg-primary'}`}
+                >
+                {isRunning ? <><Square className="w-4 h-4 fill-current" /> Pause</> : <><Play className="w-4 h-4 fill-current" /> Start</>}
+                </Button>
+                
+                {seconds > 0 && (
+                <Button onClick={handleSave} variant="secondary" className="flex-1 rounded-xl font-semibold bg-primary/10 text-primary hover:bg-primary/20">
+                    Save Time
+                </Button>
+                )}
+                
+                {seconds > 0 && (
+                <Button onClick={resetTimer} variant="ghost" size="icon" className="shrink-0 text-[#71717a] hover:bg-red-50 hover:text-red-500 rounded-xl">
+                    <X className="w-4 h-4" />
+                </Button>
+                )}
+            </div>
+            </div>
+        )}
+
+        {activeTab === 'reminder' && (
+            <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <h4 className="font-semibold text-sm flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                    <Clock className="w-4 h-4 text-amber-500" /> Set Reminder
+                    </h4>
+                </div>
+
+                {activeReminder ? (
+                    <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 rounded-xl p-4 text-center space-y-3">
+                        <div className="text-4xl">⏰</div>
+                        <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
+                            Reminder active for: <br/> <span className="font-bold">"{activeReminder.text}"</span>
+                        </p>
+                        <Button onClick={clearReminder} variant="outline" size="sm" className="rounded-lg text-red-500 border-red-200 hover:bg-red-50 w-full mt-2">
+                            Cancel Reminder
+                        </Button>
+                    </div>
+                ) : (
+                    <>
+                        <div className="space-y-3">
+                            <Input 
+                                placeholder="Remind me to..." 
+                                value={reminderText} 
+                                onChange={(e) => setReminderText(e.target.value)}
+                                className="text-sm rounded-xl"
+                            />
+                            <div className="flex gap-2 items-center">
+                                <Input 
+                                    type="number" 
+                                    min="1"
+                                    value={reminderMinutes} 
+                                    onChange={(e) => setReminderMinutes(e.target.value)}
+                                    className="text-sm rounded-xl w-24"
+                                />
+                                <span className="text-sm text-slate-500 font-medium">minutes</span>
+                            </div>
+                        </div>
+
+                        <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+                            <Button 
+                                onClick={setReminder} 
+                                className="w-full gap-2 rounded-xl font-semibold bg-amber-500 hover:bg-amber-600 text-white"
+                            >
+                                Start Reminder
+                            </Button>
+                        </div>
+                    </>
+                )}
+            </div>
+        )}
+
       </PopoverContent>
     </Popover>
   );
