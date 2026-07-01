@@ -71,17 +71,13 @@ export function PageLoader({ label = 'Loading Slate' }) {
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
         gap: '0',
-        background: 'linear-gradient(135deg, #0a0f1c 0%, #0f1f14 50%, #0a0f1c 100%)',
+        background: '#ffffff',
         zIndex: 9999,
         overflow: 'hidden',
         animation: 'overlay-fade-in 200ms ease',
       }}
     >
-      {/* Ambient glow background */}
-      <div style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(16,185,129,0.12) 0%, transparent 70%)',
-      }} />
+      {/* Ambient glow removed for cleaner look on white background */}
 
       {/* Animated rings */}
       <div style={{ position: 'relative', width: '120px', height: '120px', marginBottom: '32px' }}>
@@ -103,17 +99,16 @@ export function PageLoader({ label = 'Loading Slate' }) {
         <div style={{
           width: '120px', height: '120px',
           borderRadius: '28px',
-          background: 'linear-gradient(135deg, #059669 0%, #10B981 50%, #047857 100%)',
+          background: 'transparent',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 8px 40px rgba(16,185,129,0.45), 0 0 0 1px rgba(255,255,255,0.08) inset',
           animation: 'logo-breathe 3s ease-in-out infinite',
         }}>
           {/* Exact Slate SVG icon — two overlapping slates */}
           <svg width="72" height="72" viewBox="0 0 256 256" fill="none">
             <g transform="translate(128, 128) scale(1.45) rotate(-15) translate(-128, -128)">
-              <rect x="64" y="72" width="96" height="128" rx="24" fill="rgba(0,0,0,0.3)" />
-              <rect x="96" y="56" width="96" height="128" rx="24" fill="white" />
-              <rect x="98" y="58" width="92" height="124" rx="22" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
+              <rect x="64" y="72" width="96" height="128" rx="24" fill="rgba(16,185,129,0.2)" />
+              <rect x="96" y="56" width="96" height="128" rx="24" fill="#10B981" />
+              <rect x="98" y="58" width="92" height="124" rx="22" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" />
             </g>
           </svg>
         </div>
@@ -122,7 +117,7 @@ export function PageLoader({ label = 'Loading Slate' }) {
       {/* App name */}
       <div style={{
         fontSize: '28px', fontWeight: '800',
-        color: 'white',
+        color: '#0f172a',
         letterSpacing: '-0.03em',
         marginBottom: '8px',
         animation: 'fade-up 500ms ease 200ms both',
@@ -133,7 +128,7 @@ export function PageLoader({ label = 'Loading Slate' }) {
       {/* Subtitle */}
       <div style={{
         fontSize: '12px', fontWeight: '500',
-        color: 'rgba(255,255,255,0.4)',
+        color: '#64748b',
         letterSpacing: '0.12em',
         textTransform: 'uppercase',
         marginBottom: '40px',
@@ -145,7 +140,7 @@ export function PageLoader({ label = 'Loading Slate' }) {
       {/* Animated progress bar */}
       <div style={{
         width: '180px', height: '3px',
-        background: 'rgba(255,255,255,0.08)',
+        background: 'rgba(0,0,0,0.08)',
         borderRadius: '99px',
         overflow: 'hidden',
         animation: 'fade-up 500ms ease 450ms both',
@@ -162,7 +157,7 @@ export function PageLoader({ label = 'Loading Slate' }) {
       <div style={{
         marginTop: '16px',
         fontSize: '11px', fontWeight: '500',
-        color: 'rgba(255,255,255,0.3)',
+        color: 'rgba(0,0,0,0.4)',
         letterSpacing: '0.06em',
         textTransform: 'uppercase',
         animation: 'fade-up 500ms ease 500ms both',
@@ -177,8 +172,8 @@ export function PageLoader({ label = 'Loading Slate' }) {
           50% { transform: scale(1.08); opacity: 0; }
         }
         @keyframes logo-breathe {
-          0%, 100% { transform: scale(1); box-shadow: 0 8px 40px rgba(16,185,129,0.45), 0 0 0 1px rgba(255,255,255,0.08) inset; }
-          50% { transform: scale(1.03); box-shadow: 0 12px 56px rgba(16,185,129,0.6), 0 0 0 1px rgba(255,255,255,0.12) inset; }
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.03); }
         }
         @keyframes progress-slide {
           0% { width: 0%; margin-left: 0%; }
