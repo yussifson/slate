@@ -47,14 +47,9 @@ export default function ElectronTitleBar() {
       {/* Left: Exact Slate PNG Icon + App Name */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '9px', paddingLeft: '14px' }}>
         <img 
-          src="/slate-logo.png" 
-          alt="Slate" 
-          style={{ 
-            width: '20px', 
-            height: '20px', 
-            objectFit: 'contain',
-            opacity: 1
-          }} 
+          src="./slate-logo.png" 
+          alt="Slate Icon" 
+          style={{ width: '16px', height: '16px', objectFit: 'contain' }}
         />
 
         <span style={{

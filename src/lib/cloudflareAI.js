@@ -56,8 +56,11 @@ const MODELS = {
 async function runAI(model, payload, retryCount = 0) {
   const accountConfig = API_ACCOUNTS[currentAccountIndex];
   
-  // /api/ai is proxied by Vite, passing the account ID as the first path segment
-  const url = `/api/ai/${accountConfig.accountId}/${model}`;
+  // /api/ai is proxied by Vite for web, but Electron must hit Cloudflare directly
+  const isElectron = typeof window !== 'undefined' && window.location.protocol === 'file:';
+  const url = isElectron
+    ? `https://api.cloudflare.com/client/v4/accounts/${accountConfig.accountId}/ai/run/${model}`
+    : `/api/ai/${accountConfig.accountId}/${model}`;
 
   const response = await fetch(url, {
     method: "POST",
