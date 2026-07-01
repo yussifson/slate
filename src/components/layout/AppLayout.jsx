@@ -19,6 +19,7 @@ import SpotlightSearch from "./SpotlightSearch";
 import GlobalVideoOverlay from "@/components/video/GlobalVideoOverlay";
 import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
 import FeatureAnnouncementModal from "./FeatureAnnouncementModal";
+import ElectronTitleBar from "./ElectronTitleBar";
 
 export default function AppLayout() {
  const { t} = useTranslation();
@@ -230,7 +231,10 @@ export default function AppLayout() {
 }
 
  return (
- <div className="flex h-[100dvh] bg-slate-50/50 dark:bg-background overflow-hidden relative selection:bg-primary/20 w-full">
+ <div className="flex flex-col h-[100dvh] bg-slate-50/50 dark:bg-background overflow-hidden relative selection:bg-primary/20 w-full">
+  {/* Custom Electron Title Bar - only renders in the desktop app */}
+  <ElectronTitleBar />
+  <div className="flex flex-1 overflow-hidden relative">
  {/* Global Ambient Orbit Background - Unified Optavel Theme */}
  <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-white dark:bg-[#0A0F1C] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Clean White Background with subtle Emerald Green accents */}
@@ -347,13 +351,15 @@ export default function AppLayout() {
    <GlobalVideoOverlay />
  </div>
  </div>
- <div id="right-docked-panel-portal" className="flex shrink-0 h-[100dvh] empty:hidden z-[100] relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10 transition-all duration-300"></div>
- <MobileBottomNav />
- <AiAssistant isOpen={isAIOpen} onClose={toggleAI} injectedContext={orbitContext} onContextConsumed={() => setOrbitContext(null)} />
- <GlobalChatPanel isOpen={isChatOpen} onClose={toggleChat} />
- {isBoltOpen && <OrbitBoltWorkspace onClose={toggleBolt} />}
- <SpotlightSearch />
- <FeatureAnnouncementModal />
  </div>
- );
+ <div id="right-docked-panel-portal" className="flex shrink-0 h-[100dvh] empty:hidden z-[100] relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10 transition-all duration-300"></div>
+  <MobileBottomNav />
+  <AiAssistant isOpen={isAIOpen} onClose={toggleAI} injectedContext={orbitContext} onContextConsumed={() => setOrbitContext(null)} />
+  <GlobalChatPanel isOpen={isChatOpen} onClose={toggleChat} />
+  {isBoltOpen && <OrbitBoltWorkspace onClose={toggleBolt} />}
+  <SpotlightSearch />
+  <FeatureAnnouncementModal />
+  </div>
+  </div>
+  );
 }

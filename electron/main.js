@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu } from 'electron';
+import { app, BrowserWindow, Menu, ipcMain } from 'electron';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -18,6 +18,10 @@ function createWindow() {
     icon: path.join(process.env.VITE_PUBLIC, 'slate-logo.png'),
     width: 1200,
     height: 800,
+    minWidth: 900,
+    minHeight: 600,
+    frame: false,           // Remove native OS title bar
+    titleBarStyle: 'hidden', // Mac: hides title bar but keeps native traffic lights
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
       nodeIntegration: false,
@@ -27,7 +31,7 @@ function createWindow() {
 
   // Remove the default "File, Edit, View, Window" menu
   Menu.setApplicationMenu(null);
-  
+
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', (new Date).toLocaleString());
   });
@@ -35,10 +39,21 @@ function createWindow() {
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
   } else {
-    // win.loadFile('dist/index.html')
     win.loadFile(path.join(RENDERER_DIST, 'index.html'));
   }
 }
+
+// ── Window Control IPC Handlers ──
+ipcMain.on('window-minimize', () => win?.minimize());
+ipcMain.on('window-maximize', () => {
+  if (win?.isMaximized()) {
+    win.unmaximize();
+  } else {
+    win?.maximize();
+  }
+});
+ipcMain.on('window-close', () => win?.close());
+ipcMain.handle('window-is-maximized', () => win?.isMaximized() ?? false);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
