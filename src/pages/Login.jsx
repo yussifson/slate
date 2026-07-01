@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import React, { useState, useEffect, useMemo } from 'react';
 import { powerSync} from "@/api/PowerSyncConnector";
 import { supabase} from "@/api/supabaseClient";

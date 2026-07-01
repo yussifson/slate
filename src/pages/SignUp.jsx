@@ -1,8 +1,9 @@
 import { supabase} from '@/api/supabaseClient';
 import { useTranslation} from "react-i18next";
 import React, { useState, useEffect} from 'react';
-import { powerSync} from "@/api/PowerSyncConnector";
-import { Button} from '@/components/ui/button';
+import { powerSync } from "@/api/PowerSyncConnector";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import ThemeToggle from '@/components/layout/ThemeToggle';
@@ -12,6 +13,9 @@ import { useAuth} from '@/lib/AuthContext';
 
 export default function SignUp() {
  const { t} = useTranslation();
+ const navigate = useNavigate();
+ const location = useLocation();
+ const isElectron = typeof window !== 'undefined' && window.location.protocol === 'file:';
  const { isAuthenticated, user, isLoadingAuth} = useAuth();
  
  const [username, setUsername] = useState('');
