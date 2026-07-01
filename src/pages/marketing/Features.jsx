@@ -202,23 +202,23 @@ export default function Features() {
               onClick={() => setActiveTab(index)}
               className={`text-left px-5 py-3.5 rounded-xl transition-all duration-200 flex items-center justify-between group ${
                 isActive 
-                  ? 'bg-white shadow-sm ring-1 ring-slate-200/60' 
-                  : 'hover:bg-white/50 border border-transparent'
+                  ? 'bg-primary text-white shadow-sm' 
+                  : 'hover:bg-slate-100 border border-transparent'
               }`}
             >
               <div className="flex items-center gap-3">
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
-                  isActive ? 'bg-primary/10 text-primary' : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200 group-hover:text-slate-600'
+                  isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200 group-hover:text-slate-600'
                 }`}>
                   <Icon className="w-4 h-4" />
                 </div>
                 <span className={`font-semibold text-base transition-colors ${
-                  isActive ? 'text-slate-900' : 'text-slate-500 group-hover:text-slate-800'
+                  isActive ? 'text-white' : 'text-slate-600 group-hover:text-slate-900'
                 }`}>
                   {feature.badge}
                 </span>
               </div>
-              <ChevronRight className={`w-4 h-4 transition-all duration-200 ${isActive ? 'text-primary translate-x-0.5' : 'text-slate-300 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0'}`} />
+              <ChevronRight className={`w-4 h-4 transition-all duration-200 ${isActive ? 'text-white translate-x-0.5' : 'text-slate-300 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0'}`} />
             </button>
           );
         })}
@@ -226,7 +226,7 @@ export default function Features() {
 
       {/* Right Column: Active Content */}
       <div className="lg:w-2/3">
-        <div className="bg-white rounded-[2.5rem] p-8 md:p-12 border-[0.5px] border-black/9 dark:border-white/8 shadow-2xl relative overflow-hidden min-h-[600px] flex flex-col">
+        <div className="bg-white rounded-[2.5rem] p-8 md:p-12 border-[0.5px] border-slate-200 shadow-sm relative overflow-hidden min-h-[600px] flex flex-col">
           
           {/* Spotlight Effect */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3 pointer-events-none transition-all duration-1000"></div>
