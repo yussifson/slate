@@ -351,7 +351,7 @@ export default function AppLayout() {
      <GlobalVideoOverlay />
     </div>
     </div>
-    <div id="right-docked-panel-portal" className="flex shrink-0 h-[100dvh] empty:hidden z-[100] relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10 transition-all duration-300"></div>
+    <div id="right-docked-panel-portal" className="flex shrink-0 h-full empty:hidden z-[100] relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10 transition-all duration-300"></div>
     </div>
    <MobileBottomNav />
    <AiAssistant isOpen={isAIOpen} onClose={toggleAI} injectedContext={orbitContext} onContextConsumed={() => setOrbitContext(null)} />

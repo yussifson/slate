@@ -290,13 +290,16 @@ Keep it under 3 sentences and be encouraging but realistic.`;
  <option>{t("visitor", "Visitor")}</option>
  </select>
  </div>
- <div>
- onChange={e => setFormData({ ...formData, group: e.target.value})}
- className="mt-1"
- placeholder="e.g. Grace Cell"
- />
- </div>
- </div>
+  <div>
+  <Label className="text-sm font-medium">{t("group_cell", "Group / Cell")}</Label>
+  <Input
+  value={formData.group || ''}
+  onChange={e => setFormData({ ...formData, group: e.target.value})}
+  className="mt-1"
+  placeholder="e.g. Grace Cell"
+  />
+  </div>
+  </div>
  <div className="flex gap-3 pt-4">
  <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditRecord(null);}}>{t("cancel", "Cancel")}</Button>
  <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateMember}>{editRecord ? 'Update' : 'Save Member'}</Button>

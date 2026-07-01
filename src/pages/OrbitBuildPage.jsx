@@ -647,7 +647,6 @@ export default function OrbitBuildPage() {
  return <UnivContactManagement />;
  case 'payment':
  case 'payments':
- case 'billing':
  return <UnivPayment />;
  case 'subscription':
  case 'purchasing':
@@ -656,7 +655,6 @@ export default function OrbitBuildPage() {
  case 'pointofsale':
  return <UnivPOS />;
  case 'attendance':
- case 'timetracking':
  return <UnivAttendance />;
  case 'payroll':
  case 'salaries':
@@ -721,11 +719,6 @@ export default function OrbitBuildPage() {
  case 'videoconsult':
  case 'virtualvisit':
  return <UnivTelemedicine />;
- case 'booking':
- case 'bookings':
- case 'reservation':
- case 'reservations':
- return <UnivBooking />;
  case 'room':
  case 'rooms':
  case 'roominventory':
@@ -788,9 +781,6 @@ export default function OrbitBuildPage() {
  case 'court':
  case 'hearings':
  return <UnivCourtCalendar />;
- case 'clientportal':
- case 'clientaccess':
- return <UnivClientPortal />;
  case 'production':
  case 'manufacturing':
  case 'productionruns':
@@ -835,7 +825,7 @@ export default function OrbitBuildPage() {
  case 'orderregistry': case 'orders': return <UnivOrderRegistry />;
  case 'discount': case 'coupons': return <UnivDiscount />;
  case 'customerreview': case 'reviews': return <UnivCustomerReview />;
- case 'supplierdirectory': case 'suppliers': return <UnivSupplierDirectory />;
+ case 'supplierdirectory': return <UnivSupplierDirectory />;
  case 'returnrefund': case 'returns': return <UnivReturnRefund />;
  case 'giftcard': case 'giftcards': return <UnivGiftCard />;
  case 'wishlist': case 'wishlists': return <UnivWishlist />;
@@ -845,15 +835,15 @@ export default function OrbitBuildPage() {
  case 'generalledger': case 'ledger': return <UnivGeneralLedger />;
  case 'expensereport': case 'expenses': return <UnivExpenseReport />;
  case 'taxfiling': case 'tax': return <UnivTaxFiling />;
- case 'audittrail': case 'audit': return <UnivAuditTrail />;
+ case 'audittrail': return <UnivAuditTrail />;
 
  // Events, Travel & Hospitality Extended
- case 'eventplanner': case 'events': return <UnivEventPlanner />;
- case 'ticketsales': case 'tickets': return <UnivTicketSales />;
+ case 'eventplanner': return <UnivEventPlanner />;
+ case 'ticketsales': return <UnivTicketSales />;
  case 'carrental': case 'cars': return <UnivCarRental />;
  case 'tourpackage': case 'tours': return <UnivTourPackage />;
  case 'luggageclaim': return <UnivLuggageClaim />;
- case 'feedbacksurvey': case 'surveys': return <UnivFeedbackSurvey />;
+ case 'feedbacksurvey': return <UnivFeedbackSurvey />;
  case 'tablereservation': return <UnivTableReservation />;
  case 'hotelreview': return <UnivHotelReview />;
 
@@ -887,9 +877,9 @@ export default function OrbitBuildPage() {
  case 'leadmagnet': return <UnivLeadMagnet />;
 
  // Customer Success & Support Suite
- case 'supportticket': case 'helpdesk': return <UnivSupportTicket />;
- case 'kbarticle': case 'knowledgebase': return <UnivKbArticle />;
- case 'slaagreement': case 'sla': return <UnivSlaAgreement />;
+ case 'supportticket': return <UnivSupportTicket />;
+ case 'kbarticle': return <UnivKbArticle />;
+ case 'slaagreement': return <UnivSlaAgreement />;
  case 'churnrisk': return <UnivChurnRisk />;
  case 'featurerequest': return <UnivFeatureRequest />;
  case 'chattranscript': return <UnivChatTranscript />;
@@ -908,20 +898,20 @@ export default function OrbitBuildPage() {
  case 'databackup': case 'backups': return <UnivDataBackup />;
 
  // Final 15 Extended Enterprise Suite
- case 'riskregister': case 'risks': return <UnivRiskRegister />;
- case 'contractmanagement': case 'contracts': return <UnivContractManagement />;
- case 'meetingminutes': case 'meetings': return <UnivMeetingMinutes />;
+ case 'riskregister': return <UnivRiskRegister />;
+ case 'contractmanagement': return <UnivContractManagement />;
+ case 'meetingminutes': return <UnivMeetingMinutes />;
  case 'kpitracker': case 'kpis': return <UnivKpiTracker />;
- case 'budgetforecast': case 'budgets': return <UnivBudgetForecast />;
+ case 'budgetforecast': return <UnivBudgetForecast />;
  case 'changerequest': case 'changes': return <UnivChangeRequest />;
  case 'projectmilestone': case 'milestones': return <UnivProjectMilestone />;
  case 'employeeperformance': case 'performance': return <UnivEmployeePerformance />;
  case 'trainingrecord': case 'training': return <UnivTrainingRecord />;
- case 'healthsafety': case 'safety': return <UnivHealthSafety />;
+ case 'healthsafety': return <UnivHealthSafety />;
  case 'salestarget': case 'targets': return <UnivSalesTarget />;
- case 'productionschedule': case 'production': return <UnivProductionSchedule />;
+ case 'productionschedule': return <UnivProductionSchedule />;
  case 'customersegment': case 'segments': return <UnivCustomerSegment />;
- case 'digitalasset': case 'assets': return <UnivDigitalAsset />;
+ case 'digitalasset': return <UnivDigitalAsset />;
  case 'apiintegration': case 'integrations': return <UnivApiIntegration />;
  
  // Batch 1 Specialized

@@ -146,10 +146,10 @@ export default function Commissions() {
           {stats.agents.map((agent) => {
             const agentStats = getAgentStats(agent);
             return (
-              <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700"
+              <Card 
                 key={agent}
                 onClick={() => setSelectedAgent(selectedAgent === agent ? 'all' : agent)}
-                className={`border-2 cursor-pointer transition-all ${selectedAgent === agent ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'}`}
+                className={`bg-white dark:bg-slate-950 rounded-xl shadow-sm hover:shadow-md overflow-hidden flex flex-col border-2 cursor-pointer transition-all ${selectedAgent === agent ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'}`}
               >
                 <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                   <div className="flex items-center justify-between mb-3">
