@@ -24,6 +24,7 @@ export default function Pricing() {
  const { t} = useTranslation();
  const [billingCycle, setBillingCycle] = useState('monthly');
  const [marketTier, setMarketTier] = useState('global');
+ const [teamSize, setTeamSize] = useState(15);
  const [showOffCloudDialog, setShowOffCloudDialog] = useState(false);
  const [openFaq, setOpenFaq] = useState(null);
 
@@ -83,7 +84,7 @@ export default function Pricing() {
  </p>
 
  {/* Billing Toggle */}
- <div className="flex items-center justify-center gap-2 text-sm md:text-base font-semibold text-slate-700 bg-slate-100/80 backdrop-blur-md inline-flex mx-auto p-1.5 rounded-full ring-1 ring-slate-900/5 shadow-inner">
+ <div className="flex items-center justify-center gap-2 text-sm md:text-base font-semibold text-slate-700 bg-slate-100/80 backdrop-blur-md inline-flex mx-auto p-1.5 rounded-full ring-1 ring-slate-900/5 shadow-inner mb-12">
  <button
  onClick={() => setBillingCycle('monthly')}
  className={`px-6 py-2.5 rounded-full transition-all duration-300 ${billingCycle === 'monthly' ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
@@ -102,6 +103,29 @@ export default function Pricing() {
  )}
  </button>
  </div>
+
+ {/* Team Size Slider */}
+ <div className="max-w-2xl mx-auto bg-white rounded-3xl p-8 border-[0.5px] border-black/9 dark:border-white/8 shadow-xl relative overflow-hidden mb-12">
+ <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] -translate-y-1/2 translate-x-1/2"></div>
+ <h3 className="text-xl font-bold text-slate-900 mb-6 text-left">How many people are on your team?</h3>
+ <div className="flex justify-between items-end mb-4">
+ <span className="text-4xl font-black text-primary">{teamSize} <span className="text-xl text-slate-400 font-semibold">users</span></span>
+ <span className="text-sm font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+ {teamSize <= 5 ? 'Starter Plan Recommended' : teamSize <= 50 ? 'Professional Plan Recommended' : 'Business Plan Recommended'}
+ </span>
+ </div>
+ <input 
+ type="range" 
+ min="1" max="250" step="1" 
+ value={teamSize} 
+ onChange={(e) => setTeamSize(parseInt(e.target.value))}
+ className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary relative z-10"
+ />
+ <div className="flex justify-between text-xs font-semibold text-slate-400 mt-2 px-1">
+ <span>1</span>
+ <span>250+</span>
+ </div>
+ </div>
  </div>
  </section>
 
@@ -113,19 +137,29 @@ export default function Pricing() {
  const meta = PLAN_META[planKey];
  const price = getPrice(planKey, marketTier, billingCycle);
  const isEnterprise = planKey === 'enterprise';
+
+ // Highlight logic based on slider
+ let isRecommended = false;
+ if (teamSize <= 5 && planKey === 'starter') isRecommended = true;
+ else if (teamSize > 5 && teamSize <= 50 && planKey === 'professional') isRecommended = true;
+ else if (teamSize > 50 && teamSize < 250 && planKey === 'business') isRecommended = true;
+ else if (teamSize >= 250 && planKey === 'enterprise') isRecommended = true;
+
+ const isHighlighted = isRecommended || (teamSize === 15 && meta.highlight);
+
  return (
  <div
  key={planKey}
  id={`plan-card-${planKey}`}
  className={`relative flex flex-col bg-white rounded-3xl transition-all duration-300 p-8 ${
- meta.highlight
- ? 'ring-2 ring-primary md:-translate-y-2 shadow-[0_20px_40px_-15px_rgba(var(--primary),0.3)]'
- : 'ring-1 ring-slate-900/5 hover:ring-slate-900/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)]'
+ isHighlighted
+ ? 'ring-2 ring-primary md:-translate-y-4 shadow-[0_20px_40px_-15px_rgba(16,185,129,0.3)] scale-[1.02] z-10'
+ : 'ring-1 ring-slate-900/5 hover:ring-slate-900/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] opacity-70 hover:opacity-100 scale-100'
  }`}
  >
- {meta.popular && (
- <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest whitespace-nowrap tracking-[0.04em]">
- {t('most_popular', 'Most popular')}
+ {isHighlighted && (
+ <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest whitespace-nowrap tracking-[0.04em] shadow-md animate-in slide-in-from-bottom-2">
+ {t('recommended', 'Recommended')}
  </div>
  )}
 

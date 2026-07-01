@@ -139,6 +139,14 @@ module.exports = {
 					opacity: '1',
 					transform: 'translateX(0)'
 				}
+			},
+			'marquee': {
+				'0%': { transform: 'translateX(0%)' },
+				'100%': { transform: 'translateX(-100%)' }
+			},
+			'marquee2': {
+				'0%': { transform: 'translateX(100%)' },
+				'100%': { transform: 'translateX(0%)' }
 			}
   		},
   		animation: {
@@ -147,7 +155,9 @@ module.exports = {
 			'shimmer': 'shimmer 2.5s infinite',
 			'page-enter': 'page-enter 300ms ease-out',
 			'card-enter': 'card-enter 300ms ease-out',
-			'list-item-enter': 'list-item-enter 300ms ease-out'
+			'list-item-enter': 'list-item-enter 300ms ease-out',
+			'marquee': 'marquee 30s linear infinite',
+			'marquee2': 'marquee2 30s linear infinite'
   		}
   	}
   },

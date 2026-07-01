@@ -1,11 +1,13 @@
+import React, { useState } from 'react';
 import { useTranslation} from "react-i18next";
 import { Link} from 'react-router-dom';
 import { Helmet} from 'react-helmet-async';
-import { Briefcase, Users, CreditCard, Mail, Shield, Clock, Check, ArrowRight, Globe, Sparkles} from 'lucide-react';
+import { Briefcase, Users, CreditCard, Mail, Shield, Clock, Check, ArrowRight, Globe, Sparkles, ChevronRight} from 'lucide-react';
 import { Button} from '@/components/ui/button';
 
 export default function Features() {
  const { t} = useTranslation();
+ const [activeTab, setActiveTab] = useState(0);
  const deepDives = [
  {
  badge: "Project Management",
@@ -184,66 +186,92 @@ export default function Features() {
  </p>
  </div>
  </section>
- {/* ── Feature Deep Dives ── */}
- <section className="py-20 md:py-28 bg-slate-50">
- <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-28 lg:space-y-32">
- {deepDives.map((feature, index) => {
- const Icon = feature.icon;
- const isReversed = feature.align === "right";
+ {/* ── Feature Deep Dives (Interactive Tabs) ── */}
+ <section className="py-20 md:py-32 bg-slate-50 overflow-hidden">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
+      
+      {/* Left Column: Tabs */}
+      <div className="lg:w-1/3 flex flex-col gap-2">
+        {deepDives.map((feature, index) => {
+          const isActive = activeTab === index;
+          const Icon = feature.icon;
+          return (
+            <button
+              key={index}
+              onClick={() => setActiveTab(index)}
+              className={`text-left px-6 py-5 rounded-2xl transition-all duration-300 flex items-center justify-between group ${
+                isActive 
+                  ? 'bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-200/50 scale-[1.02]' 
+                  : 'hover:bg-slate-100 border border-transparent'
+              }`}
+            >
+              <div className="flex items-center gap-4">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                  isActive ? 'bg-primary/10 text-primary' : 'bg-slate-200 text-slate-500 group-hover:bg-slate-300 group-hover:text-slate-700'
+                }`}>
+                  <Icon className="w-5 h-5" />
+                </div>
+                <span className={`font-bold text-lg transition-colors ${
+                  isActive ? 'text-slate-900' : 'text-slate-500 group-hover:text-slate-700'
+                }`}>
+                  {feature.badge}
+                </span>
+              </div>
+              <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${isActive ? 'text-primary translate-x-1' : 'text-slate-300 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0'}`} />
+            </button>
+          );
+        })}
+      </div>
 
- return (
- <div
- key={index}
- className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-16 ${
- isReversed ? "lg:flex-row-reverse" : ""
-}`}
- >
- {/* Text content */}
- <div className="flex-1 space-y-6">
- <span className="inline-flex px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest ring-1 ring-primary/20">
- {feature.badge}
- </span>
+      {/* Right Column: Active Content */}
+      <div className="lg:w-2/3">
+        <div className="bg-white rounded-[2.5rem] p-8 md:p-12 border-[0.5px] border-black/9 dark:border-white/8 shadow-2xl relative overflow-hidden min-h-[600px] flex flex-col">
+          
+          {/* Spotlight Effect */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3 pointer-events-none transition-all duration-1000"></div>
 
- <h2 className="text-3xl md:text-5xl font-bold text-slate-900 tracking-tighter leading-[1.1]">
- {feature.title}
- </h2>
+          {deepDives.map((feature, index) => {
+            const isActive = activeTab === index;
+            if (!isActive) return null;
+            return (
+              <div key={index} className="flex flex-col h-full animate-in fade-in slide-in-from-right-8 duration-500 fill-mode-forwards">
+                
+                <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight leading-[1.1] mb-6 relative z-10">
+                  {feature.title}
+                </h2>
+                <p className="text-lg text-slate-600 leading-relaxed font-medium mb-10 relative z-10">
+                  {feature.description}
+                </p>
 
- <p className="text-lg text-slate-600 leading-relaxed font-medium">
- {feature.description}
- </p>
+                <div className="grid sm:grid-cols-2 gap-x-6 gap-y-4 mb-12 relative z-10">
+                  {feature.bullets.map((bullet, idx) => (
+                    <div key={idx} className="flex items-start gap-3">
+                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary mt-0.5 shrink-0">
+                        <Check className="w-3.5 h-3.5" strokeWidth={3} />
+                      </div>
+                      <span className="text-slate-700 font-semibold text-sm leading-snug">{bullet}</span>
+                    </div>
+                  ))}
+                </div>
 
- <ul className="space-y-4 pt-4">
- {feature.bullets.map((bullet, idx) => {
- return (
- <li
- key={idx}
- className="flex items-start gap-3 text-base text-slate-700 font-medium"
- >
- <div className="w-5 h-5 rounded-full bg-slate-50 flex items-center justify-center text-primary mt-0.5 shrink-0">
- <Check className="w-3.5 h-3.5" strokeWidth={3} />
- </div>
- <span>{bullet}</span>
- </li>
- );
-})}
- </ul>
- </div>
- {/* Stylized UI Mockup */}
- <div className="flex-1 w-full">
- <div className="w-full aspect-[4/3] rounded-[2rem] border border-slate-200/60 p-2 bg-white/50 backdrop-blur-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden relative group">
- <div className="absolute inset-2 rounded-[1.5rem] overflow-hidden bg-slate-100">
- <img 
- src={feature.image} 
- alt={`${feature.badge} Interface`} 
- className="w-full h-full object-cover object-center transform scale-[1.02] group-hover:scale-105 transition-transform duration-700"
- />
- </div>
- </div>
- </div>
- </div>
- );
-})}
- </div>
+                <div className="mt-auto w-full aspect-[16/9] rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 relative z-10 group">
+                  <img 
+                    src={feature.image} 
+                    alt={`${feature.badge} Interface`} 
+                    className="w-full h-full object-cover object-center transform transition-transform duration-700 group-hover:scale-105"
+                  />
+                  {/* Subtle inner shadow for depth */}
+                  <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.05)] pointer-events-none"></div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      
+    </div>
+  </div>
  </section>
  {/* ── Additional Capabilities Grid ── */}
  <section className="py-20 md:py-28 bg-slate-50 border-t border-primary/40">
