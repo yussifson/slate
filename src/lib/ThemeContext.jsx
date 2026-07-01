@@ -2,8 +2,6 @@ import { supabase } from '@/api/supabaseClient';
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useAuth } from './AuthContext';
-import { useLocation } from 'react-router-dom';
-
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
@@ -42,13 +40,11 @@ export const ThemeProvider = ({ children }) => {
     }
   };
 
-  const location = useLocation();
-
-  // Run on mount and whenever theme changes or location changes
+  // Run on mount and whenever theme changes
   useEffect(() => {
     applyTheme(theme);
     localStorage.setItem('theme', theme);
-  }, [theme, location.pathname]);
+  }, [theme]);
 
   // Handle system theme updates dynamically
   useEffect(() => {

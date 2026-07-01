@@ -1,52 +1,73 @@
-import { ipcMain as t, app as i, BrowserWindow as s, Menu as c } from "electron";
-import { autoUpdater as m } from "electron-updater";
-import { fileURLToPath as p } from "node:url";
-import o from "node:path";
-const a = o.dirname(p(import.meta.url));
-process.env.APP_ROOT = o.join(a, "..");
-const n = process.env.VITE_DEV_SERVER_URL, u = o.join(process.env.APP_ROOT, "dist-electron"), r = o.join(process.env.APP_ROOT, "dist");
-process.env.VITE_PUBLIC = n ? o.join(process.env.APP_ROOT, "public") : r;
-let e;
-function l() {
-  e = new s({
-    icon: o.join(process.env.VITE_PUBLIC, "slate-logo.png"),
+import { ipcMain, app, BrowserWindow, Menu } from "electron";
+import { autoUpdater } from "electron-updater";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+const __dirname$1 = path.dirname(fileURLToPath(import.meta.url));
+process.env.APP_ROOT = path.join(__dirname$1, "..");
+const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
+const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
+const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
+process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
+let win;
+function createWindow() {
+  win = new BrowserWindow({
+    icon: path.join(process.env.VITE_PUBLIC, "slate-logo.png"),
     width: 1200,
     height: 800,
     minWidth: 900,
     minHeight: 600,
-    frame: !1,
+    frame: false,
     // Remove native OS title bar
     titleBarStyle: "hidden",
     // Mac: hides title bar but keeps native traffic lights
     webPreferences: {
-      preload: o.join(a, "preload.mjs"),
-      nodeIntegration: !1,
-      contextIsolation: !0,
-      webSecurity: !1
+      preload: path.join(__dirname$1, "preload.mjs"),
+      nodeIntegration: false,
+      contextIsolation: true,
+      webSecurity: false
     }
-  }), c.setApplicationMenu(null), e.webContents.on("did-finish-load", () => {
-    e == null || e.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
-  }), n ? e.loadURL(n) : e.loadFile(o.join(r, "index.html"));
-}
-t.on("window-minimize", () => e == null ? void 0 : e.minimize());
-t.on("window-maximize", () => {
-  e != null && e.isMaximized() ? e.unmaximize() : e == null || e.maximize();
-});
-t.on("window-close", () => e == null ? void 0 : e.close());
-t.handle("window-is-maximized", () => (e == null ? void 0 : e.isMaximized()) ?? !1);
-i.on("window-all-closed", () => {
-  process.platform !== "darwin" && (i.quit(), e = null);
-});
-i.on("activate", () => {
-  s.getAllWindows().length === 0 && l();
-});
-i.whenReady().then(() => {
-  l(), n || m.checkForUpdatesAndNotify().catch((d) => {
-    console.error("Failed to check for updates:", d);
   });
+  Menu.setApplicationMenu(null);
+  win.webContents.on("did-finish-load", () => {
+    win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
+  });
+  if (VITE_DEV_SERVER_URL) {
+    win.loadURL(VITE_DEV_SERVER_URL);
+  } else {
+    win.loadFile(path.join(RENDERER_DIST, "index.html"));
+  }
+}
+ipcMain.on("window-minimize", () => win == null ? void 0 : win.minimize());
+ipcMain.on("window-maximize", () => {
+  if (win == null ? void 0 : win.isMaximized()) {
+    win.unmaximize();
+  } else {
+    win == null ? void 0 : win.maximize();
+  }
+});
+ipcMain.on("window-close", () => win == null ? void 0 : win.close());
+ipcMain.handle("window-is-maximized", () => (win == null ? void 0 : win.isMaximized()) ?? false);
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+    win = null;
+  }
+});
+app.on("activate", () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+app.whenReady().then(() => {
+  createWindow();
+  if (!VITE_DEV_SERVER_URL) {
+    autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+      console.error("Failed to check for updates:", err);
+    });
+  }
 });
 export {
-  u as MAIN_DIST,
-  r as RENDERER_DIST,
-  n as VITE_DEV_SERVER_URL
+  MAIN_DIST,
+  RENDERER_DIST,
+  VITE_DEV_SERVER_URL
 };
