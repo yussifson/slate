@@ -359,7 +359,7 @@ export default function Login() {
  else if (profile?.role === 'parent') url += 'parent-portal';
  else if (['client', 'patient', 'guest', 'customer', 'member', 'policyholder'].includes(profile?.role)) url += 'portal';
  
- window.location.href = url;
+ if (isElectron) { navigate(url.substring(url.indexOf(port) + port.length) || '/'); } else { window.location.href = url; }
  return;
 }
 }
