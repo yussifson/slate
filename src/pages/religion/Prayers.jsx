@@ -1,5 +1,5 @@
 import { useTranslation} from "react-i18next";
-import { useState} from 'react';
+import { useState, useEffect } from 'react';
 import { Heart, HandHeart, CheckCircle, Search, Trash2, Plus, Sparkles, AlertTriangle} from 'lucide-react';
 import { generateText } from '@/lib/cloudflareAI';
 import { Button} from '@/components/ui/button';

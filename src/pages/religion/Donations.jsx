@@ -1,5 +1,5 @@
 import { useTranslation} from "react-i18next";
-import { useState} from 'react';
+import { useState, useEffect } from 'react';
 import { DollarSign, Search, Plus, Trash2, Download, TrendingUp, AlertTriangle, Sparkles, Bot} from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import { generateText } from '@/lib/cloudflareAI';

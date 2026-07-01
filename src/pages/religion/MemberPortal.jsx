@@ -1,5 +1,5 @@
 import { useTranslation} from "react-i18next";
-import { useState} from 'react';
+import { useState, useEffect } from 'react';
 import { Heart, Calendar, DollarSign, Search, Plus, MapPin} from 'lucide-react';
 import { useIndustryRecords, useMutateIndustryRecord} from '@/hooks/useIndustryData';
 import { Button} from "@/components/ui/button";
