@@ -27,10 +27,17 @@ export default function SignUp() {
  // Auto-redirect if already authenticated and NOT currently registering
  useEffect(() => {
  if (!isLoadingAuth && isAuthenticated && user && !loading && !success) {
- if (user.role === 'student') window.location.href = '/student-portal';
- else if (user.role === 'parent') window.location.href = '/parent-portal';
- else if (user.role === 'super_admin') window.location.href = '/admin';
- else window.location.href = '/';
+        if (isElectron) {
+          if (user.role === 'student') navigate('/student-portal');
+          else if (user.role === 'parent') navigate('/parent-portal');
+          else if (user.role === 'super_admin') navigate('/admin');
+          else navigate('/');
+        } else {
+          if (user.role === 'student') window.location.href = '/student-portal';
+          else if (user.role === 'parent') window.location.href = '/parent-portal';
+          else if (user.role === 'super_admin') window.location.href = '/admin';
+          else window.location.href = '/';
+        }
 }
 }, [isAuthenticated, isLoadingAuth, user, loading, success]);
 
@@ -169,7 +176,11 @@ export default function SignUp() {
    finalUrl.searchParams.set('orbit_prompt', pendingPrompt);
  }
  
- window.location.href = finalUrl.toString();
+      if (isElectron) {
+        navigate('/onboarding');
+      } else {
+        window.location.href = finalUrl.toString();
+      }
 }, 2000);
 
 } catch (err) {

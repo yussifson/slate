@@ -59,10 +59,17 @@ export default function Login() {
  // Auto-redirect if already authenticated
  useEffect(() => {
  if (!isLoadingAuth && isAuthenticated && user) {
- if (user.role === 'student') window.location.href = '/student-portal';
- else if (user.role === 'parent') window.location.href = '/parent-portal';
- else if (user.role === 'super_admin' && !currentSubdomain) window.location.href = '/admin';
- else window.location.href = '/';
+      if (isElectron) {
+        if (user.role === 'student') navigate('/student-portal');
+        else if (user.role === 'parent') navigate('/parent-portal');
+        else if (user.role === 'super_admin' && !currentSubdomain) navigate('/admin');
+        else navigate('/');
+      } else {
+        if (user.role === 'student') window.location.href = '/student-portal';
+        else if (user.role === 'parent') window.location.href = '/parent-portal';
+        else if (user.role === 'super_admin' && !currentSubdomain) window.location.href = '/admin';
+        else window.location.href = '/';
+      }
 }
 }, [isAuthenticated, isLoadingAuth, user, currentSubdomain]);
 
@@ -455,10 +462,16 @@ export default function Login() {
 
  <div className="text-center mt-6">
  <span className="text-xs text-slate-500 font-medium tracking-[0.04em]">{t("don_t_have_an_account", "Don't have an account?")} </span>
- <a href={`${getMainAppUrl()}/signup`} className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
- {t("create_workspace", "Create Workslate")}
- </a>
- </div>
+        {isElectron ? (
+          <Link to="/signup" className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
+            {t("create_workspace", "Create Workslate")}
+          </Link>
+        ) : (
+          <a href={`${getMainAppUrl()}/signup`} className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
+            {t("create_workspace", "Create Workslate")}
+          </a>
+        )}
+      </div>
 
  </form>
  </div>

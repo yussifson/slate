@@ -583,12 +583,20 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
     
     if (shouldRedirect) {
-      window.location.href = '/login';
+      if (typeof window !== 'undefined' && window.location.protocol === 'file:') {
+        window.location.hash = '/login';
+      } else {
+        window.location.href = '/login';
+      }
     }
   }, []);
 
   const navigateToLogin = useCallback(() => {
-    window.location.href = '/login';
+    if (typeof window !== 'undefined' && window.location.protocol === 'file:') {
+      window.location.hash = '/login';
+    } else {
+      window.location.href = '/login';
+    }
   }, []);
 
   const contextValue = useMemo(() => ({

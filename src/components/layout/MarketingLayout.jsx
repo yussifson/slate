@@ -55,12 +55,19 @@ export default function MarketingLayout({ children}) {
  root.classList.remove('dark');
  root.classList.add('light');
  root.style.colorScheme = 'light';
+ 
+ // Enable scrolling on body for marketing pages (overrides index.css overflow: hidden)
+ window.document.body.style.overflow = 'auto';
 
  return () => {
  // Restore the dashboard theme when leaving marketing pages
  root.className = originalClass;
- root.style.colorScheme = '';
-};
+ if (originalClass.includes('dark')) {
+     root.style.colorScheme = 'dark';
+ }
+ // Restore body overflow
+ window.document.body.style.overflow = '';
+ };
 }, []);
 
  // Close mobile menu on route change
@@ -146,7 +153,7 @@ export default function MarketingLayout({ children}) {
   ];
 
  return (
- <div className="light h-screen overflow-y-auto bg-background text-foreground font-sans overflow-x-hidden selection:bg-primary/20 selection:text-primary relative">
+ <div className="light bg-background text-foreground font-sans overflow-x-hidden selection:bg-primary/20 selection:text-primary relative">
  {/* ========== NAVIGATION HEADER ========== */}
  <div className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'py-3 bg-white/95 backdrop-blur-lg border-b-2 border-primary/80 ' : 'py-5 bg-white/50 backdrop-blur-sm border-b-2 border-transparent'}`}>
  <header className="max-w-6xl mx-auto">
