@@ -404,10 +404,17 @@ export const AuthProvider = ({ children }) => {
         };
       }
 
+      const cleanLogo = (url) => {
+        if (!url) return url;
+        const httpPos = url.indexOf('http', 4);
+        if (httpPos > 0) return url.substring(0, httpPos);
+        return url;
+      };
+
       newUser = { 
         ...newUser,
         role: ['super_admin', 'admin'].includes(newUser?.role) ? newUser.role : (staffRecord?.role || newUser?.role || 'lawyer'),
-        company_logo_url: companyData?.logo_url || null,
+        company_logo_url: cleanLogo(companyData?.logo_url || null),
         company_name: companyData?.name || newUser?.company_name || sessionUser.user_metadata?.company_name || "Slate",
         company_industry: companyData?.industry_type || newUser?.industry_type || localStorage.getItem('slate_onboarding_industry') || 'law',
         company_currency: companyData?.currency || null,

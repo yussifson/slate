@@ -192,8 +192,15 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  enabled: !!user?.company_id
 });
 
- const activeCompanyLogoDark = companyData?.logo_url || impersonatedCompany?.logo_url || user?.company_logo_url;
- const activeCompanyLogoLight = companyData?.logo_light_url || impersonatedCompany?.logo_light_url || activeCompanyLogoDark;
+ const cleanLogo = (url) => {
+   if (!url) return url;
+   const httpPos = url.indexOf('http', 4);
+   if (httpPos > 0) return url.substring(0, httpPos);
+   return url;
+ };
+
+ const activeCompanyLogoDark = cleanLogo(companyData?.logo_url || impersonatedCompany?.logo_url || user?.company_logo_url);
+ const activeCompanyLogoLight = cleanLogo(companyData?.logo_light_url || impersonatedCompany?.logo_light_url || activeCompanyLogoDark);
  const activeCompanyName = companyData?.name || impersonatedCompany?.name || user?.company_name || "Slate";
  const activeEducationLevel = impersonatedCompany?.industry || impersonatedCompany?.industry_type || companyData?.industry_type || 'primary';
 
