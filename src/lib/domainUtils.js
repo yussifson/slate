@@ -2,7 +2,12 @@
 
 export function getSubdomainAndBase() {
   const host = window.location.hostname;
-  const customBaseDomain = import.meta.env.VITE_BASE_DOMAIN || 'slate.optavel.com';
+  
+  const envBase = import.meta.env.VITE_BASE_DOMAIN;
+  const knownBaseDomains = ['slate.optavel.com', 'slated.optavel.com', 'oatstack.com'];
+  if (envBase && !knownBaseDomains.includes(envBase)) {
+    knownBaseDomains.push(envBase);
+  }
 
   // Handle localhost scenarios
   if (host === 'localhost' || host.startsWith('127.0.0.1')) {
@@ -20,13 +25,15 @@ export function getSubdomainAndBase() {
     return { currentSubdomain: null, baseDomain: host, isCustomDomain: false };
   }
   
-  if (host === customBaseDomain) {
-    return { currentSubdomain: null, baseDomain: host, isCustomDomain: false };
-  }
-
-  if (host.endsWith(`.${customBaseDomain}`)) {
-    const currentSubdomain = host.replace(`.${customBaseDomain}`, '');
-    return { currentSubdomain, baseDomain: customBaseDomain, isCustomDomain: false };
+  // Check against known base domains
+  for (const base of knownBaseDomains) {
+    if (host === base) {
+      return { currentSubdomain: null, baseDomain: base, isCustomDomain: false };
+    }
+    if (host.endsWith(`.${base}`)) {
+      const currentSubdomain = host.replace(`.${base}`, '');
+      return { currentSubdomain, baseDomain: base, isCustomDomain: false };
+    }
   }
 
   // Handle custom domains (e.g. app.firmz.com or firmz.com)
