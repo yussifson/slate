@@ -145,7 +145,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
       {/* Global Time Tracker */}
       <div className={`hidden sm:block ${inPopover ? '!block' : ''}`}>
-        {currentIndustry === 'law' && <TimeTracker />}
+        <TimeTracker />
       </div>
 
       {/* Premium Theme Toggle & Notifications */}
