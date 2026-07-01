@@ -998,9 +998,6 @@ return (
  <p className="text-base font-semibold text-slate-900">
  {item.author}
  </p>
- <p className="text-sm font-medium text-slate-500">
- {item.role}, {item.firm}
- </p>
  </div>
  </div>
  </div>
