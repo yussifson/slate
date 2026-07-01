@@ -5,7 +5,8 @@ import { Toaster as HotToaster } from "react-hot-toast"
 import { useToast } from "@/components/ui/use-toast"
 import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Outlet, Navigate } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Route, Routes, Outlet, Navigate } from 'react-router-dom';
+const Router = window.location.protocol === 'file:' || window.navigator.userAgent.includes('Electron') ? HashRouter : BrowserRouter;
 import PageNotFound from './lib/PageNotFound';
 const JoinMeeting = React.lazy(() => import('@/pages/JoinMeeting'));
 import { AuthProvider, useAuth } from '@/lib/AuthContext';

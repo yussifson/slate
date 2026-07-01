@@ -1,7 +1,7 @@
 import { useTranslation} from "react-i18next";
 import { Link, useLocation} from 'react-router-dom';
 import { useState, useEffect} from 'react';
-import { Menu, X, Scale, ArrowRight, Building, Home, Layers, CreditCard, Info, Mail, Shield, Clock, Globe} from 'lucide-react';
+import { Menu, X, Scale, ArrowRight, Building, Home, Layers, CreditCard, Info, Mail, Shield, Clock, Globe, Download } from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { useAuth} from '@/lib/AuthContext';
 import { getSubdomainAndBase} from '@/lib/domainUtils';
@@ -186,6 +186,12 @@ export default function MarketingLayout({ children}) {
 
  {/* Desktop CTA Buttons */}
  <div className="hidden lg:flex items-center gap-3">
+  {/* Download App Button */}
+  <a href="/Slate-Setup.exe" download className="group relative hidden xl:flex items-center gap-2 bg-slate-900 dark:bg-white hover:bg-slate-800 dark:hover:bg-slate-100 text-white dark:text-slate-900 px-4 py-2 rounded-full font-semibold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
+    <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+    <span className="text-[13px]">Download App</span>
+  </a>
+
   {/* Language Selector Dropdown */}
   <LanguageSwitcher className="h-10 w-[140px] bg-white/80 border-[0.5px] border-black/9 border-primary/40 text-slate-700 font-semibold rounded-xl" />
 
