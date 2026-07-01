@@ -403,7 +403,6 @@ export default function Login() {
  
  <div className="mb-8">
  <h1 className="text-2xl font-semibold text-slate-900 tracking-[-0.02em]">{branding.name !== 'Slate' ? `Sign in to ${branding.name}` : t("welcome_back", "Welcome back")}</h1>
- <p className="text-xs text-slate-500 font-medium mt-1 tracking-[0.04em]">{branding.tagline}</p>
  </div>
  
  <form className="space-y-4" onSubmit={handleLogin}>
