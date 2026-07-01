@@ -858,17 +858,17 @@ return (
   {/* ============================================================ */}
   {/* BENTO BOX FEATURES GRID */}
   {/* ============================================================ */}
-  <section className="py-20 md:py-24 lg:py-32 bg-slate-900 overflow-hidden relative">
-    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3"></div>
-    <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-500/20 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/3"></div>
+  <section className="py-20 md:py-24 lg:py-32 bg-slate-50 overflow-hidden relative border-t border-primary/40">
+    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3"></div>
+    <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/3"></div>
     
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <FadeIn>
         <div className="text-center max-w-3xl mx-auto mb-16 md:mb-24">
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-6">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest mb-6">
             Enterprise Capabilities
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white mb-6">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 mb-6">
             Everything you need. <br/> <span className="text-slate-400">Nothing you don't.</span>
           </h2>
         </div>
@@ -877,26 +877,26 @@ return (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Large Feature 1 */}
         <FadeIn delay="delay-100" className="md:col-span-2">
-          <div className="bg-white/5 border border-white/10 rounded-[2rem] p-8 h-full flex flex-col justify-between group hover:bg-white/10 transition-colors duration-300">
+          <div className="bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-[2rem] p-8 h-full flex flex-col justify-between group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-300">
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Scale className="w-6 h-6" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-3">Customer & Pipeline Tracking</h3>
-              <p className="text-slate-400 font-medium max-w-md">Manage business operations from intake to resolution. Customize stages, set reminders, and track client documents in one central view.</p>
+              <h3 className="text-2xl font-bold text-slate-900 mb-3">Customer & Pipeline Tracking</h3>
+              <p className="text-slate-600 font-medium max-w-md">Manage business operations from intake to resolution. Customize stages, set reminders, and track client documents in one central view.</p>
             </div>
-            <div className="mt-8 rounded-xl overflow-hidden border border-white/10 relative h-48 bg-slate-800">
+            <div className="mt-8 rounded-xl overflow-hidden border border-slate-200 relative h-48 bg-slate-100 shadow-inner">
                {/* Decorative Abstract UI */}
-               <div className="absolute inset-x-4 bottom-0 h-3/4 bg-slate-900 rounded-t-xl border-t border-x border-white/10 shadow-2xl p-4">
+               <div className="absolute inset-x-4 bottom-0 h-3/4 bg-white rounded-t-xl border-t border-x border-slate-200 shadow-xl p-4">
                  <div className="flex gap-2 mb-4">
-                   <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                   <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-                   <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                   <div className="w-2 h-2 rounded-full bg-red-400"></div>
+                   <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+                   <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
                  </div>
-                 <div className="h-4 w-1/3 bg-slate-700 rounded mb-4"></div>
+                 <div className="h-4 w-1/3 bg-slate-200 rounded mb-4"></div>
                  <div className="space-y-2">
-                   <div className="h-2 w-full bg-slate-800 rounded"></div>
-                   <div className="h-2 w-5/6 bg-slate-800 rounded"></div>
+                   <div className="h-2 w-full bg-slate-100 rounded"></div>
+                   <div className="h-2 w-5/6 bg-slate-100 rounded"></div>
                  </div>
                </div>
             </div>
@@ -905,38 +905,38 @@ return (
 
         {/* Small Feature 1 */}
         <FadeIn delay="delay-200">
-          <div className="bg-white/5 border border-white/10 rounded-[2rem] p-8 h-full group hover:bg-white/10 transition-colors duration-300">
-            <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <div className="bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-[2rem] p-8 h-full group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-300">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
               <Users className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-3">Smart Client Portal</h3>
-            <p className="text-slate-400 font-medium">Give clients a secure, branded environment to sign documents, review milestones, and communicate directly with your team.</p>
+            <h3 className="text-xl font-bold text-slate-900 mb-3">Smart Client Portal</h3>
+            <p className="text-slate-600 font-medium">Give clients a secure, branded environment to sign documents, review milestones, and communicate directly with your team.</p>
           </div>
         </FadeIn>
 
         {/* Small Feature 2 */}
         <FadeIn delay="delay-100">
-          <div className="bg-white/5 border border-white/10 rounded-[2rem] p-8 h-full group hover:bg-white/10 transition-colors duration-300">
-            <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <div className="bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-[2rem] p-8 h-full group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-300">
+            <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
               <Clock className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-3">Integrated Time Tracking</h3>
-            <p className="text-slate-400 font-medium">Bill accurately with live timers for consultations, research, meetings, and project delivery — then convert hours to invoices.</p>
+            <h3 className="text-xl font-bold text-slate-900 mb-3">Integrated Time Tracking</h3>
+            <p className="text-slate-600 font-medium">Bill accurately with live timers for consultations, research, meetings, and project delivery — then convert hours to invoices.</p>
           </div>
         </FadeIn>
 
         {/* Large Feature 2 */}
         <FadeIn delay="delay-200" className="md:col-span-2">
-          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-[2rem] p-8 h-full flex flex-col sm:flex-row items-center justify-between gap-8 group transition-colors duration-300">
+          <div className="bg-emerald-50/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-[2rem] p-8 h-full flex flex-col sm:flex-row items-center justify-between gap-8 group transition-shadow duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)]">
             <div className="flex-1">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Sparkles className="w-6 h-6" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-3">Orbit AI Assistant</h3>
-              <p className="text-emerald-100/70 font-medium max-w-sm">Your built-in enterprise AI. Orbit can search records, navigate the app, create tasks, and automate workflows via simple chat commands.</p>
+              <h3 className="text-2xl font-bold text-slate-900 mb-3">Orbit AI Assistant</h3>
+              <p className="text-slate-600 font-medium max-w-sm">Your built-in enterprise AI. Orbit can search records, navigate the app, create tasks, and automate workflows via simple chat commands.</p>
             </div>
-            <div className="w-full sm:w-1/2 h-48 bg-slate-900 rounded-xl border border-emerald-500/20 relative overflow-hidden flex items-center justify-center">
-               <Sparkles className="w-20 h-20 text-emerald-500/30 animate-pulse" />
+            <div className="w-full sm:w-1/2 h-48 bg-white rounded-xl border border-primary/20 relative overflow-hidden flex items-center justify-center shadow-inner">
+               <Sparkles className="w-20 h-20 text-emerald-500/20 animate-pulse" />
             </div>
           </div>
         </FadeIn>

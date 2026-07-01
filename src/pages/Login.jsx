@@ -120,7 +120,24 @@ export default function Login() {
         tagline: brandData.tagline || `Sign in to ${brandData.name || 'your workslate'}`
         });
        } else {
-       setInvalidSubdomain(true);
+         // Fallback to local storage if DB misses entirely
+         try {
+           const cached = localStorage.getItem('slate_cached_user');
+           if (cached) {
+             const parsed = JSON.parse(cached);
+             if (parsed.company_name) {
+               setBranding({
+                 name: parsed.company_name || 'Your Workslate',
+                 logo_url: cleanLogo(parsed.company_logo_url || null),
+                 tagline: parsed.company_tagline || `Sign in to ${parsed.company_name || 'your workslate'}`
+               });
+               setCheckingSubdomain(false);
+               return; // Skip invalid subdomain
+             }
+           }
+         } catch(e) {}
+         
+         setInvalidSubdomain(true);
        }
      } catch (err) {
        console.error("Could not fetch branding", err);
