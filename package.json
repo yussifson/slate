@@ -122,10 +122,12 @@
       "output": "dist-electron-bin"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "public/logo.png"
     },
     "mac": {
-      "target": "dmg"
+      "target": "dmg",
+      "icon": "public/logo.png"
     }
   },
   "devDependencies": {

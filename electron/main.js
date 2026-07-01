@@ -15,7 +15,7 @@ let win;
 
 function createWindow() {
   win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),
+    icon: path.join(process.env.VITE_PUBLIC, 'logo.png'),
     width: 1200,
     height: 800,
     webPreferences: {
