@@ -33,15 +33,15 @@ export default function ElectronTitleBar() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        height: '40px',
-        // Slate primary deep forest green
-        background: 'linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%)',
+        height: '32px',
+        // Slate primary vibrant orange
+        background: 'linear-gradient(135deg, #ea580c 0%, #f97316 50%, #c2410c 100%)',
         borderBottom: '1px solid rgba(0,0,0,0.2)',
         flexShrink: 0,
         userSelect: 'none',
         position: 'relative',
         zIndex: 9999,
-        boxShadow: '0 1px 6px rgba(6,78,59,0.5)',
+        boxShadow: '0 1px 6px rgba(234,88,12,0.5)',
       }}
     >
       {/* Left: Exact Slate PNG Icon + App Name */}
@@ -50,8 +50,8 @@ export default function ElectronTitleBar() {
           src="/slate-logo.png" 
           alt="Slate" 
           style={{ 
-            width: '24px', 
-            height: '24px', 
+            width: '20px', 
+            height: '20px', 
             objectFit: 'contain',
             filter: 'brightness(0) invert(1)',
             opacity: 0.95
@@ -85,7 +85,7 @@ export default function ElectronTitleBar() {
         letterSpacing: '0.04em',
         pointerEvents: 'none',
       }}>
-        The AI-Powered Workspace
+        Work made effortlessly
       </div>
 
       {/* Right: Window Controls */}
@@ -95,7 +95,7 @@ export default function ElectronTitleBar() {
           onClick={safeCall(() => window.electronWindow.minimize())}
           title="Minimize"
           style={{
-            width: '46px', height: '40px',
+            width: '46px', height: '32px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             background: 'transparent', border: 'none', cursor: 'pointer',
             color: 'rgba(255,255,255,0.7)', transition: 'background 0.15s, color 0.15s',
@@ -111,7 +111,7 @@ export default function ElectronTitleBar() {
           onClick={() => { safeCall(() => window.electronWindow.maximize())(); setTimeout(checkMaximized, 100); }}
           title={isMaximized ? 'Restore' : 'Maximize'}
           style={{
-            width: '46px', height: '40px',
+            width: '46px', height: '32px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             background: 'transparent', border: 'none', cursor: 'pointer',
             color: 'rgba(255,255,255,0.7)', transition: 'background 0.15s, color 0.15s',
@@ -127,7 +127,7 @@ export default function ElectronTitleBar() {
           onClick={safeCall(() => window.electronWindow.close())}
           title="Close"
           style={{
-            width: '46px', height: '40px',
+            width: '46px', height: '32px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             background: 'transparent', border: 'none', cursor: 'pointer',
             color: 'rgba(255,255,255,0.7)', transition: 'background 0.15s, color 0.15s',
