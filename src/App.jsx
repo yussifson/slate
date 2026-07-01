@@ -496,6 +496,10 @@ import Contact from './pages/marketing/Contact';
 import EnterpriseContact from './pages/marketing/EnterpriseContact';
 import Integrations from './pages/marketing/Integrations';
 import Changelog from './pages/marketing/Changelog';
+import Customers from './pages/marketing/Customers';
+import Security from './pages/marketing/Security';
+import Solutions from './pages/marketing/Solutions';
+import RoiCalculator from './pages/marketing/RoiCalculator';
 
 import Partners from './pages/marketing/Partners';
 import LegalDocs from './pages/marketing/LegalDocs';
@@ -1120,6 +1124,10 @@ function App() {
                         <Route path="/enterprise-contact" element={<EnterpriseContact />} />
                         <Route path="/integrations" element={<Integrations />} />
                         <Route path="/changelog" element={<Changelog />} />
+                        <Route path="/customers" element={<Customers />} />
+                        <Route path="/security" element={<Security />} />
+                        <Route path="/solutions" element={<Solutions />} />
+                        <Route path="/roi-calculator" element={<RoiCalculator />} />
 
                         <Route path="/partners" element={<Partners />} />
                         <Route path="/legal" element={<LegalDocs />} />

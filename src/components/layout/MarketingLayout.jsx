@@ -139,10 +139,11 @@ export default function MarketingLayout({ children}) {
 };
 
  const navItems = [
- { name: 'Home', path: '/', icon: Home},
- { name: 'Features', path: '/features', icon: Layers},
- { name: 'Pricing', path: '/pricing', icon: CreditCard}
- ];
+  { name: 'Home', path: '/', icon: Home},
+  { name: 'Features', path: '/features', icon: Layers},
+  { name: 'Solutions', path: '/solutions', icon: Building},
+  { name: 'Pricing', path: '/pricing', icon: CreditCard}
+  ];
 
  return (
  <div className="light min-h-screen bg-background text-foreground font-sans overflow-x-hidden selection:bg-primary/20 selection:text-primary relative">
@@ -364,7 +365,9 @@ export default function MarketingLayout({ children}) {
  <h4 className="text-slate-900 font-semibold text-sm uppercase tracking-wider tracking-[0.04em]">{t("product", "Product")}</h4>
  <ul className="flex flex-col gap-3.5">
  <li><Link to="/features" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("core_features", "Core Features")}</Link></li>
+ <li><Link to="/solutions" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("solutions", "Solutions")}</Link></li>
  <li><Link to="/pricing" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("pricing_plans", "Pricing Plans")}</Link></li>
+ <li><Link to="/roi-calculator" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("roi_calculator", "ROI Calculator")}</Link></li>
  <li><Link to="/integrations" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("integrations", "Integrations")}</Link></li>
  <li><Link to="/changelog" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("changelog", "Changelog")}</Link></li>
  </ul>
@@ -375,6 +378,7 @@ export default function MarketingLayout({ children}) {
  <h4 className="text-slate-900 font-semibold text-sm uppercase tracking-wider tracking-[0.04em]">{t("company", "Company")}</h4>
  <ul className="flex flex-col gap-3.5">
  <li><Link to="/about" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("about_us", "About Us")}</Link></li>
+ <li><Link to="/customers" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("customers", "Customers")}</Link></li>
  <li><a href="https://career.optavel.com/" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("careers", "Careers")} <span className="ml-1 inline-block px-1.5 py-0.5 rounded-full bg-slate-100 text-primary border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-[9px] font-semibold">{t("hiring", "HIRING")}</span></a></li>
  <li><Link to="/contact" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("contact_sales", "Contact Sales")}</Link></li>
  <li><Link to="/partners" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("partner_program", "Partner Program")}</Link></li>
@@ -419,6 +423,7 @@ export default function MarketingLayout({ children}) {
  </div>
 
  <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm font-medium text-slate-600">
+ <Link to="/security" className="hover:text-primary transition-colors">{t("trust_center", "Trust & Security")}</Link>
  <Link to="/legal#terms" className="hover:text-primary transition-colors">{t("terms_of_service", "Terms of Service")}</Link>
  <Link to="/legal#privacy" className="hover:text-primary transition-colors">{t("privacy_policy", "Privacy Policy")}</Link>
  <Link to="/legal#security" className="hover:text-primary transition-colors">{t("security", "Security")}</Link>
