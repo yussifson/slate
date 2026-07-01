@@ -1,7 +1,7 @@
 {
   "name": "slate",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.1",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
@@ -131,12 +131,7 @@
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "forceMachineLevel": false,
-      "perMachine": false,
-      "deleteAppDataOnUninstall": false,
-      "runAfterFinish": true,
-      "warningsAsErrors": false
+      "allowToChangeInstallationDirectory": true
     },
     "directories": {
       "buildResources": "public",
