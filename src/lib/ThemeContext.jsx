@@ -2,6 +2,7 @@ import { supabase } from '@/api/supabaseClient';
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useAuth } from './AuthContext';
+import { useLocation } from 'react-router-dom';
 
 const ThemeContext = createContext();
 
@@ -21,19 +22,33 @@ export const ThemeProvider = ({ children }) => {
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
 
+    // Force light mode on marketing pages regardless of user setting
+    const path = window.location.pathname;
+    const isMarketingPage = path === '/' || path === '/features' || path === '/solutions' || path === '/pricing';
+
+    if (isMarketingPage) {
+      root.classList.add('light');
+      root.style.colorScheme = 'light';
+      return;
+    }
+
     if (themeName === 'system') {
       const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       root.classList.add(systemTheme);
+      root.style.colorScheme = systemTheme;
     } else {
       root.classList.add(themeName);
+      root.style.colorScheme = themeName;
     }
   };
 
-  // Run on mount and whenever theme changes
+  const location = useLocation();
+
+  // Run on mount and whenever theme changes or location changes
   useEffect(() => {
     applyTheme(theme);
     localStorage.setItem('theme', theme);
-  }, [theme]);
+  }, [theme, location.pathname]);
 
   // Handle system theme updates dynamically
   useEffect(() => {
