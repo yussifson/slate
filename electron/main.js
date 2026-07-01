@@ -1,4 +1,5 @@
 import { app, BrowserWindow, Menu, ipcMain } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -69,4 +70,13 @@ app.on('activate', () => {
   }
 });
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+
+  // Check for updates automatically in the background
+  if (!VITE_DEV_SERVER_URL) {
+    autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+      console.error('Failed to check for updates:', err);
+    });
+  }
+});
