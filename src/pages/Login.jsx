@@ -11,6 +11,29 @@ import { Logo} from '@/components/ui/Logo';
 import { getSubdomainAndBase, getMainAppUrl} from '@/lib/domainUtils';
 import { toast} from 'react-hot-toast';
 
+const LOGIN_QUOTES = [
+  { quote: "\"Slate completely transformed how our firm operates. We reduced administrative time by 40% in the very first month.\"", name: "Mariama Kamara", initials: "MK" },
+  { quote: "\"The level of automation is unprecedented. I can finally focus on strategic growth rather than day-to-day operations.\"", name: "David Chen", initials: "DC" },
+  { quote: "\"An incredibly intuitive platform. It felt like it was custom-built for our exact workflow needs from day one.\"", name: "Sarah Jenkins", initials: "SJ" },
+  { quote: "\"We migrated our entire team in less than a week. The adoption rate was 100% because the interface is so seamless.\"", name: "Michael Rossi", initials: "MR" },
+  { quote: "\"Finally, an enterprise solution that doesn't feel like a legacy dinosaur. It's fast, modern, and genuinely a joy to use.\"", name: "Elena Rostova", initials: "ER" },
+  { quote: "\"The analytics dashboard alone saved us dozens of hours in reporting each month. The ROI was immediate.\"", name: "James Thorne", initials: "JT" },
+  { quote: "\"Everything we need is unified in one place. No more jumping between five different tabs to close a single deal.\"", name: "Aisha Patel", initials: "AP" },
+  { quote: "\"The customizable workflows adapt perfectly to our unconventional processes. We didn't have to change how we work.\"", name: "Liam O'Connor", initials: "LO" },
+  { quote: "\"Security and speed were our top priorities. This platform delivered on both without compromising on design.\"", name: "Nina Matsumoto", initials: "NM" },
+  { quote: "\"Customer support is practically unnecessary because the UI is so straightforward. But when we do reach out, they are stellar.\"", name: "Omar Farooq", initials: "OF" },
+  { quote: "\"I've used every tool on the market over the last decade. This is the first one that actually feels built for the future.\"", name: "Rachel Green", initials: "RG" },
+  { quote: "\"The seamless integrations mean we didn't have to rip and replace our existing tech stack. It just orchestrates everything better.\"", name: "Thomas Wright", initials: "TW" },
+  { quote: "\"We scaled from 10 to 100 employees in a year, and the platform handled the growth effortlessly without any hiccups.\"", name: "Chloe Dubois", initials: "CD" },
+  { quote: "\"The design is absolutely gorgeous. It proves that enterprise software doesn't have to be ugly and clunky.\"", name: "Marcus Johnson", initials: "MJ" },
+  { quote: "\"The AI features are actually useful, not just gimmicks. They actively predict what I need to do next.\"", name: "Sophie Taylor", initials: "ST" },
+  { quote: "\"A masterclass in user experience. Even our least tech-savvy team members picked it up in an afternoon.\"", name: "William Davies", initials: "WD" },
+  { quote: "\"The mobile experience is just as powerful as the desktop app. I can manage my entire business from my phone.\"", name: "Isabella Martinez", initials: "IM" },
+  { quote: "\"Data visibility across departments improved by 100%. We finally have a single source of truth for the entire company.\"", name: "Lucas Silva", initials: "LS" },
+  { quote: "\"The best software investment we've made this year. It paid for itself in saved labor costs within the first quarter.\"", name: "Emily Watson", initials: "EW" },
+  { quote: "\"It's rare to find a platform that balances deep functionality with such a clean, minimalist interface. Truly exceptional.\"", name: "Alexander Kim", initials: "AK" }
+];
+
 export default function Login() {
  const { t} = useTranslation();
  const [email, setEmail] = useState('');
@@ -19,6 +42,10 @@ export default function Login() {
  const [error, setError] = useState('');
  const [loading, setLoading] = useState(false);
  const [branding, setBranding] = useState({ name: 'Slate', logo_url: null, tagline: 'Enter your credentials to access your account'});
+
+ const randomQuote = useMemo(() => {
+    return LOGIN_QUOTES[Math.floor(Math.random() * LOGIN_QUOTES.length)];
+ }, []);
 
  const { currentSubdomain, baseDomain} = getSubdomainAndBase();
  const { isAuthenticated, user, isLoadingAuth} = useAuth();
@@ -408,19 +435,15 @@ export default function Login() {
  </div>
  
  <p className="text-slate-800 font-medium text-2xl md:text-3xl mb-12 relative z-10 leading-relaxed tracking-tight tracking-[-0.02em]">
- {t(
- "slate_completely_transform",
- "\"Slate completely transformed how our firm operates. We reduced administrative time by 40% in the very first month, allowing us to focus entirely on our clients.\""
- )}
+ {randomQuote.quote}
  </p>
  
  <div className="flex items-center gap-5 pt-8 relative z-10">
  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/5 to-primary/10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex items-center justify-center text-primary/90 font-semibold text-xl ">
- {t("mk", "MK")}
+ {randomQuote.initials}
  </div>
  <div>
- <p className="text-xl font-semibold text-slate-900 tracking-tight">{t("mariama_kamara", "Mariama Kamara")}</p>
- <p className="text-base font-medium text-slate-500">{t("managing_partner_kamara_group", "Managing Partner, Kamara Group")}</p>
+ <p className="text-xl font-semibold text-slate-900 tracking-tight">{randomQuote.name}</p>
  </div>
  </div>
  </div>
