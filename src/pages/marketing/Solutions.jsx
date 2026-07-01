@@ -88,6 +88,20 @@ export default function Solutions() {
         </div>
       </section>
 
+      {/* And Many More Section */}
+      <section className="py-20 bg-white border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h3 className="text-2xl font-bold text-slate-900 mb-10 tracking-tight">And rapidly expanding into...</h3>
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+            {['Education & Schools', 'Legal Practices', 'Retail & E-Commerce', 'Non-Profits', 'Manufacturing & Logistics', 'Consulting Firms'].map((niche, i) => (
+              <div key={i} className="bg-slate-50 border-[0.5px] border-primary/20 text-slate-700 font-semibold px-6 py-3 rounded-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
+                {niche}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Custom Solution CTA */}
       <section className="py-24 bg-slate-50 border-t border-primary/40 text-center">
         <div className="max-w-3xl mx-auto px-4">
