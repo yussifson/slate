@@ -27,7 +27,8 @@ export default defineConfig({
   build: {
     sourcemap: false,
     chunkSizeWarningLimit: 2000,
-    reportCompressedSize: false
+    reportCompressedSize: false,
+    minify: false
   },
   plugins: [
     react(),
