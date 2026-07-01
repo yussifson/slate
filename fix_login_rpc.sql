@@ -1,4 +1,4 @@
--- Update the get_company_by_subdomain RPC to return logo_light_url and tagline
+-- Update the get_company_by_subdomain RPC to return logo_light_url and tagline, and get the latest one
 DROP FUNCTION IF EXISTS public.get_company_by_subdomain(text);
 
 CREATE OR REPLACE FUNCTION public.get_company_by_subdomain(p_subdomain text)
@@ -26,6 +26,8 @@ BEGIN
     c.custom_domain
   FROM public.companies c
   WHERE c.subdomain = p_subdomain 
-     OR c.custom_domain = p_subdomain;
+     OR c.custom_domain = p_subdomain
+  ORDER BY c.created_at DESC
+  LIMIT 1;
 END;
 $$;
