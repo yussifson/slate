@@ -85,7 +85,7 @@ export default function ElectronTitleBar() {
         textShadow: '0 1px 2px rgba(0,0,0,0.1)',
         pointerEvents: 'none',
       }}>
-        Work made effortlessly
+        Work Made Effortlessly with Agentic AI
       </div>
 
       {/* Right: Window Controls */}
