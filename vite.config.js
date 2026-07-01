@@ -111,5 +111,8 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ['@journeyapps/wa-sqlite', '@powersync/web']
+  },
+  build: {
+    reportCompressedSize: false
   }
 });
