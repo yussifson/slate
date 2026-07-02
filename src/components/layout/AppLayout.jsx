@@ -338,9 +338,9 @@ export default function AppLayout() {
   <div className="flex-1 relative flex overflow-hidden">
    <main className={cn(
           "flex-1 w-full mx-auto pb-[calc(52px+env(safe-area-inset-bottom)+1rem)] md:pb-6 overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto",
-          ['/chat', '/email-inbox', '/board'].includes(location.pathname) 
+          ['/chat', '/email-inbox'].includes(location.pathname) 
             ? "p-0" 
-            : "px-4 md:px-8 lg:px-10 pt-4 md:pt-6"
+            : "px-3 md:px-5 lg:px-6 pt-4 md:pt-5"
         )}>
      <AnimatePresence mode="wait">
        <motion.div
