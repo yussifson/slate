@@ -81,14 +81,16 @@ function InviteDialog({ industry, companyId, onSuccess }) {
         status: 'pending',
         expires_at: expiresAt,
         invited_by: (await supabase.auth.getUser()).data.user?.id || '',
-        created_at: new Date().toISOString(),
         default_password: password
       };
       
-      await powerSync.execute(
-        `INSERT INTO portal_invitations (id, company_id, email, full_name, role, token, status, expires_at, invited_by, created_at, default_password) VALUES (uuid(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [invitePayload.company_id, invitePayload.email, invitePayload.full_name, invitePayload.role, invitePayload.token, invitePayload.status, invitePayload.expires_at, invitePayload.invited_by, invitePayload.created_at, invitePayload.default_password]
-      );
+      const { error: inviteError } = await supabase
+        .from('portal_invitations')
+        .insert([invitePayload]);
+        
+      if (inviteError) {
+        throw inviteError;
+      }
 
         const { data: existingProfile } = await supabase.from('profiles').select('id').ilike('email', email.toLowerCase().trim()).maybeSingle();
         let isExistingUser = !!existingProfile?.id;
@@ -202,11 +204,13 @@ export default function PortalManagement() {
   const { data: invitations = [], isLoading: loadingInvites, refetch: refetchInvites } = useQuery({
     queryKey: ['portal-invitations', companyId],
     queryFn: async () => {
-      const result = await powerSync.execute(
-        'SELECT * FROM portal_invitations WHERE company_id = ? ORDER BY created_at DESC',
-        [companyId]
-      );
-      return result.rows._array || [];
+      const { data, error } = await supabase
+        .from('portal_invitations')
+        .select('*')
+        .eq('company_id', companyId)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
     },
     enabled: !!companyId,
   });
@@ -214,21 +218,24 @@ export default function PortalManagement() {
   const { data: portalUsers = [], isLoading: loadingUsers } = useQuery({
     queryKey: ['portal-users', companyId],
     queryFn: async () => {
-      const result = await powerSync.execute(
-        'SELECT * FROM portal_users WHERE company_id = ? ORDER BY created_at DESC',
-        [companyId]
-      );
-      return result.rows._array || [];
+      const { data, error } = await supabase
+        .from('portal_users')
+        .select('*')
+        .eq('company_id', companyId)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
     },
     enabled: !!companyId,
   });
 
   const revokeInvite = useMutation({
     mutationFn: async (inviteId) => {
-      await powerSync.execute(
-        'UPDATE portal_invitations SET status = ? WHERE id = ?',
-        ['revoked', inviteId]
-      );
+      const { error } = await supabase
+        .from('portal_invitations')
+        .update({ status: 'revoked' })
+        .eq('id', inviteId);
+      if (error) throw error;
     },
     onSuccess: () => {
       refetchInvites();

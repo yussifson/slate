@@ -201,6 +201,8 @@ function newSession() {
 export default function GlobalAIAssistant({ isOpen = false, onClose, injectedContext = null, onContextConsumed}) {
  const { t} = useTranslation();
  const { user} = useAuth();
+ const PORTAL_ROLES = ['client', 'patient', 'guest', 'parent', 'student', 'learner', 'trainee', 'customer', 'policyholder', 'member', 'tenant', 'landlord', 'employee'];
+ const isPortalUser = PORTAL_ROLES.includes(user?.role?.toLowerCase());
  const location = useLocation();
  const navigate = useNavigate();
  const mutateRecord = useMutateIndustryRecord();
@@ -1061,18 +1063,20 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  />
  <div className="flex items-center justify-between px-3 pb-3">
  <div className="flex items-center gap-0.5">
- <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <button type="button" className="p-1.5 text-[#71717a] hover:bg-slate-50 hover:text-primary rounded-lg transition-colors" title="Change Mode">
-        <Plus className="w-4 h-4" />
-      </button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="start" side="top" className="w-48 z-[100]">
-      <DropdownMenuItem onClick={() => setChatMode('chat')} className="cursor-pointer font-medium"><MessageSquare className="w-4 h-4 mr-2 text-[#71717a]"/> Chat Mode</DropdownMenuItem>
-      <DropdownMenuItem onClick={() => setChatMode('flow')} className="cursor-pointer font-medium"><OrbitIcon className="w-4 h-4 mr-2 text-[#71717a]"/> Flow Builder Mode</DropdownMenuItem>
-      <DropdownMenuItem onClick={() => setChatMode('automation')} className="cursor-pointer font-medium"><Bot className="w-4 h-4 mr-2 text-[#71717a]"/> Automation Mode</DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
+ {!isPortalUser && (
+   <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button type="button" className="p-1.5 text-[#71717a] hover:bg-slate-50 hover:text-primary rounded-lg transition-colors" title="Change Mode">
+          <Plus className="w-4 h-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" side="top" className="w-48 z-[100]">
+        <DropdownMenuItem onClick={() => setChatMode('chat')} className="cursor-pointer font-medium"><MessageSquare className="w-4 h-4 mr-2 text-[#71717a]"/> Chat Mode</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setChatMode('flow')} className="cursor-pointer font-medium"><OrbitIcon className="w-4 h-4 mr-2 text-[#71717a]"/> Flow Builder Mode</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setChatMode('automation')} className="cursor-pointer font-medium"><Bot className="w-4 h-4 mr-2 text-[#71717a]"/> Automation Mode</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+   )}
  <input ref={fileInputRef} type="file" className="hidden" accept="image/*,.pdf,.txt,.csv,.docx,.xlsx,.json,.md" onChange={handleFileUpload} />
  <button
  type="button"

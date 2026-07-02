@@ -34,6 +34,9 @@ import { INDUSTRIES, getIndustryNav} from "@/config/industries";
 
 const clientNav = [
  { label: "My Portal", icon: "LayoutDashboard", path: "/client-portal"},
+ { label: "Intelligence", icon: "Brain", path: "/intelligence"},
+ { label: "Chat", icon: "MessageCircle", path: "/chat"},
+ { label: "Video Meets", icon: "LayoutGrid", path: "/board"},
 ];
 
 const ICON_MAP = {
@@ -868,7 +871,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  </div>
 
  {/* Header controls for AI Sort */}
- {!collapsed ? (
+ {(!collapsed && !isPortalUser) ? (
  <div className="px-5 pt-4 pb-2 animate-in fade-in duration-200 flex justify-end">
  <button onClick={handleAiSmartSort} disabled={isAiSorting} className="flex items-center gap-1 text-[9px] font-bold bg-primary/10 text-primary px-2 py-1 rounded-md hover:bg-primary/20 transition-all shadow-sm tracking-widest uppercase">
    <Sparkles className={cn("w-3 h-3", isAiSorting && "animate-spin")} /> {isAiSorting ? 'Sorting...' : 'AI Sort'}
@@ -876,9 +879,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  </div>
  ) : (
  <div className="pt-4" />
- )}
-
- <nav className="flex-1 px-3 pb-6 space-y-4 overflow-y-auto overflow-x-hidden scrollbar-primary">
+<nav className="flex-1 px-3 pb-6 space-y-4 overflow-y-auto overflow-x-hidden scrollbar-primary">
  {isOrbitMode && !collapsed && dynamicNavItems.length === 0 && orbitBuildNavItems.length === 0 && (
  <div className="mx-1 my-3 p-3 rounded-xl bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-center">
  <div className="text-2xl mb-1 tracking-[-0.02em]">⚡</div>
@@ -887,130 +888,142 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  </div>
  )}
  
- {categoryOrder.map(cat => {
-   const items = groupedNav[cat];
-   if (!items || items.length === 0) return null;
-   const isExpanded = expandedCats[cat] !== undefined ? expandedCats[cat] : (cat === 'Platform' || cat === 'Operations');
-   
-   return (
-     <div key={cat} className="space-y-0.5">
-       {!collapsed && (
-          <button 
-            onClick={() => toggleCat(cat)}
-            className="w-full flex items-center justify-between px-3 py-2.5 mb-1.5 group transition-all rounded-xl hover:bg-sidebar-accent/50 border border-transparent hover:border-sidebar-border"
-          >
-            <div className="flex items-center gap-2.5">
-              <div className={cn("w-1 h-3.5 rounded-full transition-all duration-300 shadow-sm", isExpanded ? "bg-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]" : "bg-primary/30 group-hover:bg-primary/60")} />
-              <p className="text-[11px] font-bold text-sidebar-foreground/70 group-hover:text-sidebar-foreground uppercase tracking-[0.15em]">{cat}</p>
-            </div>
-            <ChevronRight className={cn("w-3.5 h-3.5 text-sidebar-foreground/40 group-hover:text-sidebar-foreground/70 transition-transform duration-300", isExpanded && "rotate-90")} />
-          </button>
-       )}
-       
-       <div className={cn("space-y-0.5 transition-all duration-300 overflow-hidden", (!isExpanded && !collapsed) ? "max-h-0 opacity-0" : "max-h-[2000px] opacity-100")}>
-       {items.map((item) => {
-         const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin", "/optavel", "/logistics", "/real-estate", "/retail", "/hotel", "/pharmacy", "/religion"].includes(item.path);
-         const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
-         const IconComp = typeof item.icon === 'string' ? (ICON_MAP[item.icon] || LayoutDashboard) : (item.icon || LayoutDashboard);
-         const isVideoCallItem = item.path === '/board' || item.label?.toLowerCase().includes('video');
-         const showLiveDot = isVideoCallItem && !!activeRoomUrl;
-         return (
-         <div key={item.path} className="relative group">
+ {(() => {
+   const renderItem = (item) => {
+     const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin", "/optavel", "/logistics", "/real-estate", "/retail", "/hotel", "/pharmacy", "/religion"].includes(item.path);
+     const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
+     const IconComp = typeof item.icon === 'string' ? (ICON_MAP[item.icon] || LayoutDashboard) : (item.icon || LayoutDashboard);
+     const isVideoCallItem = item.path === '/board' || item.label?.toLowerCase().includes('video');
+     const showLiveDot = isVideoCallItem && !!activeRoomUrl;
+     return (
+       <div key={item.path} className="relative group">
          <Link
-         to={item.path}
-         title={collapsed ? t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
-         className={cn(
-         "flex items-center rounded-xl text-sm transition-all duration-200 relative",
-         collapsed ? "justify-center p-2.5 mx-auto w-10 h-10 hover:bg-sidebar-accent hover:shadow-sm" : "gap-3 px-3 py-2 pr-8",
-         isActive
-         ? "bg-primary text-primary-foreground font-semibold shadow-md shadow-primary/20 scale-[0.98]"
-         : "text-sidebar-foreground/70 font-medium hover:text-sidebar-foreground hover:bg-sidebar-accent"
-         )}
+           to={item.path}
+           title={collapsed ? t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
+           className={cn(
+             "flex items-center rounded-xl text-sm transition-all duration-200 relative",
+             collapsed ? "justify-center p-2.5 mx-auto w-10 h-10 hover:bg-sidebar-accent hover:shadow-sm" : "gap-3 px-3 py-2 pr-8",
+             isActive
+               ? "bg-primary text-primary-foreground font-semibold shadow-md shadow-primary/20 scale-[0.98]"
+               : "text-sidebar-foreground/70 font-medium hover:text-sidebar-foreground hover:bg-sidebar-accent"
+           )}
          >
-
-         <span className="relative flex-shrink-0">
-         <IconComp className={cn("transition-all", collapsed ? "w-5 h-5" : "w-4 h-4", isActive && "text-primary-foreground")} />
-         {showLiveDot && (
-         <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-         <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
-         </span>
-         )}
-         </span>
-         {!collapsed && (
-         <div className="flex items-center gap-2 overflow-hidden flex-1 animate-in fade-in duration-200">
-         <span className="whitespace-nowrap truncate">{t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label)}</span>
-         {item.status === 'draft' && (
-         <span className="text-[9px] font-bold uppercase tracking-[0.05em] bg-amber-500/20 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-md ml-auto">Draft</span>
-         )}
-         </div>
-         )}
+           <span className="relative flex-shrink-0">
+             <IconComp className={cn("transition-all", collapsed ? "w-5 h-5" : "w-4 h-4", isActive && "text-primary-foreground")} />
+             {showLiveDot && (
+               <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
+               </span>
+             )}
+           </span>
+           {!collapsed && (
+             <div className="flex items-center gap-2 overflow-hidden flex-1 animate-in fade-in duration-200">
+               <span className="whitespace-nowrap truncate">{t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label)}</span>
+               {item.status === 'draft' && (
+                 <span className="text-[9px] font-bold uppercase tracking-[0.05em] bg-amber-500/20 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-md ml-auto">Draft</span>
+               )}
+             </div>
+           )}
          </Link>
          
-          {!collapsed && (
-  <div className={cn("absolute right-2 top-1/2 -translate-y-1/2 transition-opacity", openMenuId === (item.id || item.path) ? "opacity-100 z-50" : "opacity-0 group-hover:opacity-100 z-10")}>
-  <button 
-  onClick={(e) => { e.preventDefault(); setOpenMenuId(openMenuId === (item.id || item.path) ? null : (item.id || item.path));}}
-  className="p-1 rounded-md hover:bg-sidebar-accent text-sidebar-foreground/50 hover:text-sidebar-foreground"
-  >
-  <MoreHorizontal className="w-4 h-4" />
-  </button>
-  
-  {openMenuId === (item.id || item.path) && (
-  <div className="absolute right-0 mt-1 w-36 bg-sidebar border-[0.5px] border-black/9 dark:border-white/8 border-sidebar-border-[0.5px] border-black/9 dark:border-white/8 rounded-lg overflow-hidden shadow-md">
-  <div className="py-1">
-  {item.isDynamic ? (
-    <>
-      {!item.component_id && (
-      <button onClick={(e) => { e.preventDefault(); handleTogglePublish(item.id, item.status); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
-      <Eye className="w-3 h-3" /> {item.status === 'published' ? 'Unpublish' : 'Publish'}
-      </button>
-      )}
-      <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label, !!item.component_id); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
-      <Pencil className="w-3 h-3" /> Rename
-      </button>
-      {!item.component_id && (
-      <>
-      <button onClick={(e) => { e.preventDefault(); navigate(`/slate/edit/${item.id}`); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
-      <Settings className="w-3 h-3" /> Customize
-      </button>
-      <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10/10 flex items-center gap-2 transition-colors tracking-[0.04em]">
-      <Trash2 className="w-3 h-3" /> Delete
-      </button>
-      </>
-      )}
-    </>
-  ) : (
-    <>
-      <button onClick={(e) => { e.preventDefault(); handleMoveOrder(item.path, 'up'); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
-      <ArrowUpRight className="w-3 h-3" /> Move Up
-      </button>
-      <button onClick={(e) => { e.preventDefault(); handleMoveOrder(item.path, 'down'); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
-      <ArrowDownLeft className="w-3 h-3" /> Move Down
-      </button>
-      <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label, false, true, item.path); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
-      <Pencil className="w-3 h-3" /> Rename
-      </button>
-      <button onClick={(e) => { e.preventDefault(); handleHideStaticModule(item.path); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-amber-500 hover:bg-amber-500/10 flex items-center gap-2 transition-colors tracking-[0.04em]">
-      <EyeOff className="w-3 h-3" /> Hide Page
-      </button>
-      <button onClick={(e) => { e.preventDefault(); handleDeleteStaticModule(item.path); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10 flex items-center gap-2 transition-colors tracking-[0.04em]">
-      <Trash2 className="w-3 h-3" /> Delete Page
-      </button>
-    </>
-  )}
-  </div>
-  </div>
-  )}
-  </div>
-  )}
- </div>
- );
-})}
- </div>
- </div>
- );
- })}
+         {!collapsed && (
+           <div className={cn("absolute right-2 top-1/2 -translate-y-1/2 transition-opacity", openMenuId === (item.id || item.path) ? "opacity-100 z-50" : "opacity-0 group-hover:opacity-100 z-10")}>
+             <button 
+               onClick={(e) => { e.preventDefault(); setOpenMenuId(openMenuId === (item.id || item.path) ? null : (item.id || item.path));}}
+               className="p-1 rounded-md hover:bg-sidebar-accent text-sidebar-foreground/50 hover:text-sidebar-foreground"
+             >
+               <MoreHorizontal className="w-4 h-4" />
+             </button>
+             
+             {openMenuId === (item.id || item.path) && (
+               <div className="absolute right-0 mt-1 w-36 bg-sidebar border-[0.5px] border-black/9 dark:border-white/8 rounded-lg overflow-hidden shadow-md">
+                 <div className="py-1">
+                   {item.isDynamic ? (
+                     <>
+                       {isAdmin && (
+                         <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-4 py-2 text-xs hover:bg-sidebar-accent text-sidebar-foreground/80 flex items-center gap-2">
+                           <Edit3 className="w-3.5 h-3.5" /> Rename
+                         </button>
+                       )}
+                       {isAdmin && (
+                         <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-4 py-2 text-xs hover:bg-sidebar-accent text-red-600 flex items-center gap-2">
+                           <Trash2 className="w-3.5 h-3.5" /> Delete
+                         </button>
+                       )}
+                     </>
+                   ) : item.path.startsWith('/ob/') ? (
+                     <>
+                       {isAdmin && (
+                         <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label, true); setOpenMenuId(null); }} className="w-full text-left px-4 py-2 text-xs hover:bg-sidebar-accent text-sidebar-foreground/80 flex items-center gap-2">
+                           <Edit3 className="w-3.5 h-3.5" /> Rename
+                         </button>
+                       )}
+                     </>
+                   ) : (
+                     <>
+                       {isAdmin && (
+                         <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.path, item.label, false, true, item.path); setOpenMenuId(null); }} className="w-full text-left px-4 py-2 text-xs hover:bg-sidebar-accent text-sidebar-foreground/80 flex items-center gap-2">
+                           <Edit3 className="w-3.5 h-3.5" /> Rename
+                         </button>
+                       )}
+                       {isAdmin && (
+                         <button onClick={(e) => {
+                           e.preventDefault();
+                           const currentOverrides = navOverridesData?.overrides || {};
+                           saveNavOverrides({ ...currentOverrides, [item.path]: { ...(currentOverrides[item.path] || {}), hidden: !(currentOverrides[item.path]?.hidden) } });
+                           setOpenMenuId(null);
+                         }} className="w-full text-left px-4 py-2 text-xs hover:bg-sidebar-accent text-sidebar-foreground/80 flex items-center gap-2">
+                           {navOverridesData?.overrides?.[item.path]?.hidden ? <Eye className="w-3.5 h-3.5"/> : <EyeOff className="w-3.5 h-3.5" />} 
+                           {navOverridesData?.overrides?.[item.path]?.hidden ? 'Unhide' : 'Hide'}
+                         </button>
+                       )}
+                     </>
+                   )}
+                 </div>
+               </div>
+             )}
+           </div>
+         )}
+       </div>
+     );
+   };
+
+   if (isPortalUser) {
+     return (
+       <div className="space-y-0.5 mt-2">
+         {navItems.map(item => renderItem(item))}
+       </div>
+     );
+   }
+
+   return categoryOrder.map(cat => {
+     const items = groupedNav[cat];
+     if (!items || items.length === 0) return null;
+     const isExpanded = expandedCats[cat] !== undefined ? expandedCats[cat] : (cat === 'Platform' || cat === 'Operations');
+     
+     return (
+       <div key={cat} className="space-y-0.5">
+         {!collapsed && (
+            <button 
+              onClick={() => toggleCat(cat)}
+              className="w-full flex items-center justify-between px-3 py-2.5 mb-1.5 group transition-all rounded-xl hover:bg-sidebar-accent/50 border border-transparent hover:border-sidebar-border"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className={cn("w-1 h-3.5 rounded-full transition-all duration-300 shadow-sm", isExpanded ? "bg-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]" : "bg-primary/30 group-hover:bg-primary/60")} />
+                <p className="text-[11px] font-bold text-sidebar-foreground/70 group-hover:text-sidebar-foreground uppercase tracking-[0.15em]">{cat}</p>
+              </div>
+              <ChevronRight className={cn("w-3.5 h-3.5 text-sidebar-foreground/40 group-hover:text-sidebar-foreground/70 transition-transform duration-300", isExpanded && "rotate-90")} />
+            </button>
+         )}
+         
+         <div className={cn("space-y-0.5 transition-all duration-300 overflow-hidden", (!isExpanded && !collapsed) ? "max-h-0 opacity-0" : "max-h-[2000px] opacity-100")}>
+           {items.map(item => renderItem(item))}
+         </div>
+       </div>
+     );
+   });
+ })()}
  </nav>
 
  {/* Ongoing Call Banner */}
@@ -1081,11 +1094,13 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  Settings
  </DropdownMenuItem>
  )}
- <DropdownMenuItem onClick={() => setShowRestoreDialog(true)} className="cursor-pointer">
- <Eye className="w-4 h-4 mr-2" />
- Restore Pages
- </DropdownMenuItem>
- <DropdownMenuSeparator />
+          {(!isPortalUser || isAdmin) && (
+            <DropdownMenuItem onClick={() => setShowRestoreDialog(true)} className="cursor-pointer">
+            <Eye className="w-4 h-4 mr-2" />
+            Restore Pages
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuSeparator />
  <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer">
  <LogOut className="w-4 h-4 mr-2" />
  Log out
