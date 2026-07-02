@@ -16,7 +16,7 @@ import { OrbitLoader } from "@/components/ui/orbit-loader";
 export default function Board() {
  const { t} = useTranslation();
  const { toast} = useToast();
- const { user} = useAuth();
+ const { user, isPortalUser } = useAuth();
  const companyId = useCompanyId();
  const { activeRoomUrl, joinRoom} = useVideo();
  
@@ -66,21 +66,35 @@ export default function Board() {
 };
 }, [companyId]);
 
- const loadRooms = async () => {
- setIsLoading(true);
- try {
- const { data} = await supabase
- .from('video_rooms')
- .select('*')
- .eq('company_id', companyId)
- .order('created_at', { ascending: false});
- setRooms(data || []);
-} catch (err) {
- console.error(err);
-} finally {
- setIsLoading(false);
-}
-};
+  const loadRooms = async () => {
+   setIsLoading(true);
+   try {
+   const { data} = await supabase
+   .from('video_rooms')
+   .select('*')
+   .eq('company_id', companyId)
+   .order('created_at', { ascending: false});
+   
+   let visibleRooms = data || [];
+   if (isPortalUser) {
+     visibleRooms = visibleRooms.filter(room => {
+       if (!room.participants) return false;
+       try {
+         const participants = JSON.parse(room.participants);
+         return participants.some(p => p.id === user?.id || p.email === user?.email);
+       } catch (e) {
+         return false;
+       }
+     });
+   }
+   
+   setRooms(visibleRooms);
+  } catch (err) {
+   console.error(err);
+  } finally {
+   setIsLoading(false);
+  }
+  };
 
  const handleStartCall = async () => {
  setIsCreating(true);
@@ -172,18 +186,18 @@ export default function Board() {
  
  {/* Left Column: Active / Scheduled */}
  <div className="lg:col-span-2 space-y-6">
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
- <Clock className="w-5 h-5 text-[#71717a] dark:text-gray-400" /> Recent & Active Meetings
+ <div className="bg-card/60 backdrop-blur-md border border-white/10 shadow-lg rounded-2xl p-6 transition-all duration-300">
+ <h2 className="text-lg font-semibold mb-5 flex items-center gap-2 text-foreground">
+ <Clock className="w-5 h-5 text-primary" /> Recent & Active Meetings
  </h2>
- <div className="space-y-3">
+ <div className="space-y-4">
  {isLoading ? (
  <div className="flex justify-center p-8"><OrbitLoader size="md" /></div>
  ) : rooms.length > 0 ? (
  rooms.map(room => (
- <div key={room.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background hover:border-primary/30 transition-colors">
- <div className="flex items-start gap-3">
- <div className="mt-0.5">
+ <div key={room.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-border/50 bg-background/50 backdrop-blur-sm hover:border-primary/50 hover:shadow-md transition-all duration-200">
+ <div className="flex items-start gap-4">
+ <div className="mt-1">
  {room.status === 'active' ? (
  <span className="flex h-3 w-3 relative">
  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>

@@ -146,90 +146,70 @@ export default function EmailInbox() {
   ];
 
  return (
- <div className="flex h-full w-full overflow-hidden bg-card transition-shadow duration-200">
+ <div className="flex h-full w-full overflow-hidden bg-gradient-to-br from-background via-muted/20 to-primary/5 transition-all duration-300">
 
  {/* ── Left Sidebar ── */}
- <aside className={cn("shrink-0 flex flex-col border-r border-primary/40 bg-muted/30 dark:bg-slate-900/60 transition-all duration-300 relative", isSidebarCollapsed ? "w-16" : "w-56")}>
- {/* Collapse Toggle */}
- <button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className="absolute -right-3 top-4 w-6 h-6 rounded-full bg-card border border-primary/40 flex items-center justify-center text-primary hover:bg-primary/10 z-10 shadow-sm transition-transform hover:scale-105">
-   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={cn("transition-transform duration-300", isSidebarCollapsed ? "rotate-180" : "")}><path d="m15 18-6-6 6-6"/></svg>
- </button>
-
- {/* Compose Button */}
- <div className="p-4 flex justify-center">
- <Button
- className={cn("rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold transition-all duration-300", isSidebarCollapsed ? "w-10 h-10 p-0 rounded-full shadow-md" : "w-full h-10 gap-2 text-sm")}
- onClick={() => { setComposeInitialData(null); setShowCompose(true); setIsComposeMinimized(false);}}
- title={t("compose", "Compose")}
+ <div className="w-64 border-r border-black/5 dark:border-white/5 flex flex-col bg-card/40 backdrop-blur-xl shrink-0">
+ <div className="p-4 border-b border-black/5 dark:border-white/5">
+ <Button 
+ onClick={() => {
+ setComposeInitialData(null);
+ setShowCompose(true);
+ setIsComposeMinimized(false);
+ }} 
+ className="w-full gap-2 font-medium tracking-wide shadow-md shadow-primary/20 hover:shadow-primary/30 transition-all"
  >
- <Plus className={cn("w-4 h-4", isSidebarCollapsed ? "w-5 h-5" : "")} />
- {!isSidebarCollapsed && t("compose", "Compose")}
+ <Plus className="w-4 h-4" /> Compose
  </Button>
  </div>
-
- {/* Nav Items */}
- <nav className="px-2 space-y-1 flex-1 overflow-hidden">
- {NAV_ITEMS.map(({ id, label, icon: Icon, count}) => (
+ 
+ <div className="flex-1 overflow-y-auto p-3 space-y-1 scrollbar-hide">
+ {NAV_ITEMS.map(item => {
+ const isActive = activeTab === item.id;
+ const Icon = item.icon;
+ return (
  <button
- key={id}
- onClick={() => setActiveTab(id)}
- title={isSidebarCollapsed ? label : undefined}
+ key={item.id}
+ onClick={() => { setActiveTab(item.id); setSelectedEmail(null); }}
  className={cn(
- "w-full flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-all group",
- activeTab === id
- ? "bg-primary/10 text-primary"
- : "text-[#71717a] dark:text-gray-400 hover:bg-accent hover:text-foreground",
- isSidebarCollapsed ? "justify-center" : "justify-between"
+ "w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium",
+ isActive 
+ ? "bg-primary text-primary-foreground shadow-sm" 
+ : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
  )}
  >
  <div className="flex items-center gap-3">
- <Icon className={cn("w-4 h-4", activeTab === id ? "text-primary" : "text-[#71717a] dark:text-gray-400 group-hover:text-foreground")} />
- {!isSidebarCollapsed && label}
+ <Icon className="w-4 h-4" />
+ {item.label}
  </div>
- {!isSidebarCollapsed && count > 0 && (
- <span className={cn(
- "text-[10px] font-semibold px-1.5 py-0.5 rounded-full min-w-[20px] text-center",
- activeTab === id ? "bg-primary/20 text-primary" : "bg-muted text-[#71717a] dark:text-gray-400"
- )}>
- {count}
- </span>
+ {item.count > 0 && (
+ <span className="text-[10px] bg-muted px-2 py-0.5 rounded-full">{item.count}</span>
  )}
  </button>
- ))}
- </nav>
-
- {/* Storage indicator */}
- {!isSidebarCollapsed && (
- <div className="p-4 border-t border-primary/40">
- <p className="text-[11px] text-[#71717a] dark:text-gray-400 font-medium mb-1.5">Storage</p>
- <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
- <div className="h-full w-1/4 bg-primary rounded-full" />
+ );
+ })}
  </div>
- <p className="text-[11px] text-[#71717a] dark:text-gray-400 mt-1">1.2 GB of 15 GB used</p>
  </div>
- )}
- </aside>
 
  {/* ── Middle Pane: Email List ── */}
- <div className={cn(
- "flex flex-col border-r border-primary/40 bg-background transition-all duration-300",
- selectedEmail ? "hidden md:flex w-[280px] shrink-0" : "flex-1"
- )}>
- {/* Search Header */}
- <div className="h-[57px] border-b border-primary/40 flex items-center px-4 gap-3 shrink-0 bg-background">
- <div className="relative flex-1">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
- <input
- placeholder="Search mail..."
- className="w-full pl-9 pr-3 h-9 rounded-xl bg-muted/50 border-0 text-sm text-foreground placeholder:text-[#71717a] dark:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary/30 transition"
+ <div className="w-80 border-r border-black/5 dark:border-white/5 flex flex-col bg-card/60 backdrop-blur-md shrink-0">
+ <div className="p-4 border-b border-black/5 dark:border-white/5 space-y-4">
+ <h2 className="font-semibold text-lg text-foreground tracking-tight flex items-center gap-2">
+ {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+ </h2>
+ <div className="relative group">
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
+ <Input 
+ placeholder="Search emails..." 
  value={search}
  onChange={e => setSearch(e.target.value)}
+ className="pl-9 bg-background/50 backdrop-blur-sm border-transparent focus-visible:ring-1 focus-visible:ring-primary/50 transition-all rounded-xl"
  />
  </div>
  </div>
 
  {/* Email list */}
- <div className="flex-1 overflow-y-auto divide-y divide-border">
+ <div className="flex-1 overflow-y-auto divide-y divide-border/50">
  {isLoading ? (
  <div className="flex flex-col items-center justify-center h-full gap-3 text-[#71717a] dark:text-gray-400">
  <OrbitLoader size="md" />
@@ -260,7 +240,7 @@ export default function EmailInbox() {
 
  {/* ── Right Pane: Email Reader ── */}
  <div className={cn(
- "flex-1 flex-col min-w-0 bg-background",
+ "flex-1 flex-col min-w-0 bg-background/50 backdrop-blur-md",
  selectedEmail ? "flex" : "hidden md:flex"
  )}>
  {selectedEmail ? (
@@ -444,7 +424,7 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
  };
 
  return (
- <div className="flex flex-col h-full bg-background">
+ <div className="flex flex-col h-full bg-background/50">
  {/* Toolbar */}
  <div className="h-[57px] border-b border-primary/40 flex items-center px-4 gap-2 shrink-0">
  <button onClick={onBack} className="lg:hidden p-2 hover:bg-muted rounded-xl text-[#71717a] dark:text-gray-400 mr-1">
@@ -662,8 +642,7 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
  });
  if (error) throw error;
  } catch (err) {
- alert("Failed to send external email: " + err.message);
- return;
+ toast.error("Failed to send external email: " + err.message);
  }
  }
 

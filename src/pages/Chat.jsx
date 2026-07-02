@@ -16,7 +16,7 @@ import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function Chat() {
  const { t} = useTranslation();
- const { user} = useAuth();
+ const { user, isPortalUser } = useAuth();
  const { toast} = useToast();
  
  const [activeRoomId, setActiveRoomId] = useState(null);
@@ -282,9 +282,11 @@ export default function Chat() {
  {user?.avatar_url ? <img src={user.avatar_url} className="w-full h-full object-cover"/> : <MessageSquare className="w-5 h-5 text-primary" />}
  </div>
  <div className="flex items-center gap-2 text-[#54656f] dark:text-[#aebac1]">
+ { !isPortalUser && (
  <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-primary/20" onClick={() => setIsAddChatOpen(true)}>
  <Plus className="w-5 h-5" />
  </Button>
+ )}
  <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-primary/20">
  <MoreVertical className="w-5 h-5" />
  </Button>
@@ -337,7 +339,9 @@ export default function Chat() {
  {!loadingRooms && rooms.length === 0 && (
  <div className="flex flex-col items-center justify-center p-8 h-full text-center text-[#71717a] dark:text-gray-400">
  <p>No chats found.</p>
+ { !isPortalUser && (
  <Button variant="link" onClick={() => setIsAddChatOpen(true)}>Start a new chat</Button>
+ )}
  </div>
  )}
  </div>

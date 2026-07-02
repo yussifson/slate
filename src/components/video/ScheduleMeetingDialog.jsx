@@ -8,10 +8,11 @@ import { supabase } from '@/api/supabaseClient';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { Users, Lock, Globe, Clock, CalendarIcon } from 'lucide-react';
+import { Users, Lock, Globe, Clock, CalendarIcon, Briefcase } from 'lucide-react';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { Switch } from '@/components/ui/switch';
 import { NotificationService } from '@/services/NotificationService';
+import { base44 } from '@/api/base44Client';
 
 export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled }) {
   const { user } = useAuth();
@@ -34,14 +35,15 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
 
   const loadEmployees = async () => {
     try {
-      const { data } = await supabase
-        .from('platform_users')
-        .select('id, full_name, email, role')
-        .eq('company_id', companyId)
-        .neq('id', user.id);
-      setEmployees(data || []);
+      const [staffData, clientsData] = await Promise.all([
+        base44.entities.StaffRecord.filter({ company_id: companyId }),
+        base44.entities.Client.filter({ company_id: companyId }),
+      ]);
+      const staffMembers = (staffData || []).map(s => ({ ...s, id: s.id || s.user_id, full_name: s.first_name + ' ' + s.last_name, type: 'team' }));
+      const clientMembers = (clientsData || []).map(c => ({ ...c, id: c.id, full_name: c.first_name + ' ' + c.last_name || c.name, type: 'client' }));
+      setEmployees([...staffMembers, ...clientMembers]);
     } catch (err) {
-      console.error('Failed to load employees:', err);
+      console.error('Failed to load participants:', err);
     }
   };
 
@@ -177,19 +179,22 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
                   const isSelected = selectedParticipants.find((p) => p.id === emp.id);
                   return (
                     <div
-                      key={emp.id}
+                      key={emp.id || emp.email}
                       onClick={() => handleToggleParticipant(emp)}
-                      className={`flex items-center justify-between p-2 text-sm rounded-md cursor-pointer transition-colors ${
-                        isSelected ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted text-foreground'
+                      className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
+                        isSelected ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
                       }`}
                     >
-                      <div className="flex items-center gap-2">
-                        <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px]">
-                          {emp.full_name?.charAt(0) || 'U'}
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-500'}`}>
+                          {emp.type === 'client' ? <Briefcase className="w-4 h-4" /> : <Users className="w-4 h-4" />}
                         </div>
-                        {emp.full_name}
+                        <div>
+                          <p className="text-sm font-medium">{emp.full_name || emp.name}</p>
+                          <p className="text-xs text-gray-500">{emp.email}</p>
+                        </div>
                       </div>
-                      <span className="text-xs opacity-60">{emp.role}</span>
+                      {isSelected && <div className="w-2 h-2 rounded-full bg-primary" />}
                     </div>
                   );
                 })
