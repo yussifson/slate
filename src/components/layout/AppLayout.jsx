@@ -334,7 +334,12 @@ export default function AppLayout() {
  toggleBolt={toggleBolt}
  />
   <div className="flex-1 relative flex overflow-hidden">
-   <main className="flex-1 w-full mx-auto px-4 md:px-8 lg:px-10 pt-4 md:pt-6 pb-[calc(52px+env(safe-area-inset-bottom)+1rem)] md:pb-6 overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto">
+   <main className={cn(
+          "flex-1 w-full mx-auto pb-[calc(52px+env(safe-area-inset-bottom)+1rem)] md:pb-6 overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto",
+          ['/chat', '/email-inbox', '/board'].includes(location.pathname) 
+            ? "p-0" 
+            : "px-4 md:px-8 lg:px-10 pt-4 md:pt-6"
+        )}>
      <AnimatePresence mode="wait">
        <motion.div
          key={location.pathname}

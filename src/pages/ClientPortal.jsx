@@ -147,25 +147,28 @@ export default function ClientPortal() {
   }
 
   return (
-    <div className="space-y-6 school-page-enter font-dmsans">
+    <div className="space-y-6 school-page-enter font-dmsans max-w-7xl mx-auto">
       {/* Welcome banner */}
-      <div className="bg-gradient-to-r from-primary to-primary/80 rounded-xl p-5 text-white">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-900/40/20 flex items-center justify-center text-lg font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary/90 via-primary to-primary/80 rounded-2xl p-8 text-white shadow-lg border border-white/10">
+        <div className="absolute top-0 right-0 -mt-16 -mr-16 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl mix-blend-overlay pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 -mb-16 -ml-16 w-48 h-48 bg-white opacity-10 rounded-full blur-2xl mix-blend-overlay pointer-events-none"></div>
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-6">
+          <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl font-bold shadow-[0_4px_12px_rgba(0,0,0,0.1)] border border-white/30">
             {client.name?.[0]?.toUpperCase()}
           </div>
           <div>
-            <h1 className="text-xl font-semibold">{t("welcome", "Welcome,")} {client.name}</h1>
-            <p className="text-sm text-white/80">{t("your_secure_portal_view", "Your secure portal — view")} {getTerm(user?.company_industry, 'cases').toLowerCase()}{t("documents_invoices", ", documents & invoices")}</p>
+            <h1 className="text-3xl font-bold tracking-tight">{t("welcome", "Welcome,")} {client.name}</h1>
+            <p className="text-sm md:text-base text-white/90 mt-1 font-medium">{t("your_secure_portal_view", "Your secure portal — view")} {getTerm(user?.company_industry, 'cases').toLowerCase()}{t("documents_invoices", ", documents & invoices")}</p>
           </div>
         </div>
       </div>
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <StatCard icon={Briefcase} label={`My ${getTerm(user?.company_industry, 'cases')}`} value={cases.length} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
-        <StatCard icon={Calendar} label="Upcoming Appointments" value={upcomingHearings.length} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
-        <StatCard icon={Receipt} label="Invoices Paid" value={invoices.filter(i => i.status === "paid").length} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
-        <StatCard icon={FolderOpen} label="Documents" value={sharedDocs.length} color="bg-amber-50 text-amber-600" />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <StatCard icon={Briefcase} label={`My ${getTerm(user?.company_industry, 'cases')}`} value={cases.length} color="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/80 dark:to-slate-800/40 text-primary border border-primary/10 shadow-sm" />
+        <StatCard icon={Calendar} label="Upcoming Appointments" value={upcomingHearings.length} color="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/80 dark:to-slate-800/40 text-primary border border-primary/10 shadow-sm" />
+        <StatCard icon={Receipt} label="Invoices Paid" value={invoices.filter(i => i.status === "paid").length} color="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/80 dark:to-slate-800/40 text-emerald-600 border border-emerald-500/10 shadow-sm" />
+        <StatCard icon={FolderOpen} label="Documents" value={sharedDocs.length} color="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-900/10 text-amber-600 border border-amber-500/10 shadow-sm" />
       </div>
       {/* At a Glance */}
       <ClientAtAGlance

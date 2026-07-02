@@ -605,8 +605,12 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  const PORTAL_ROLES = ['client', 'patient', 'guest', 'parent', 'student', 'learner', 'trainee', 'customer', 'policyholder', 'member', 'tenant', 'landlord', 'employee'];
+  const isPortalUser = user?.role ? PORTAL_ROLES.includes(user.role.toLowerCase()) : false;
+
   const contextValue = useMemo(() => ({
     user, 
+    isPortalUser,
     isAuthenticated, 
     isLoadingAuth,
     authStep,
@@ -621,6 +625,7 @@ export const AuthProvider = ({ children }) => {
     refreshUser
   }), [
     user,
+    isPortalUser,
     isAuthenticated,
     isLoadingAuth,
     authStep,

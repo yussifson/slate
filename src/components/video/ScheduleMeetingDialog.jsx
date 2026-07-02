@@ -11,6 +11,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { Users, Lock, Globe, Clock, CalendarIcon, Briefcase } from 'lucide-react';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { NotificationService } from '@/services/NotificationService';
 import { base44 } from '@/api/base44Client';
 
@@ -169,38 +170,81 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
             <Switch checked={isPrivate} onCheckedChange={setIsPrivate} />
           </div>
 
-          <div className="space-y-2 pt-2">
-            <Label>Invite Participants ({selectedParticipants.length})</Label>
-            <div className="max-h-[150px] overflow-y-auto border rounded-md p-2 space-y-1">
-              {employees.length === 0 ? (
-                <p className="text-sm text-muted-foreground p-2">No other employees found in your company.</p>
-              ) : (
-                employees.map((emp) => {
-                  const isSelected = selectedParticipants.find((p) => p.id === emp.id);
-                  return (
-                    <div
-                      key={emp.id || emp.email}
-                      onClick={() => handleToggleParticipant(emp)}
-                      className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
-                        isSelected ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-500'}`}>
-                          {emp.type === 'client' ? <Briefcase className="w-4 h-4" /> : <Users className="w-4 h-4" />}
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium">{emp.full_name || emp.name}</p>
-                          <p className="text-xs text-gray-500">{emp.email}</p>
-                        </div>
-                      </div>
-                      {isSelected && <div className="w-2 h-2 rounded-full bg-primary" />}
-                    </div>
-                  );
-                })
-              )}
+          {isPrivate && (
+            <div className="space-y-2 pt-2">
+              <Label>Invite Participants ({selectedParticipants.length})</Label>
+              <Tabs defaultValue="staff" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="staff">Internal Staff</TabsTrigger>
+                  <TabsTrigger value="clients">Clients</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="staff" className="mt-2">
+                  <div className="max-h-[150px] overflow-y-auto border rounded-md p-2 space-y-1">
+                    {employees.filter(e => e.type === 'team').length === 0 ? (
+                      <p className="text-sm text-muted-foreground p-2">No internal staff found.</p>
+                    ) : (
+                      employees.filter(e => e.type === 'team').map((emp) => {
+                        const isSelected = selectedParticipants.find((p) => p.id === emp.id);
+                        return (
+                          <div
+                            key={emp.id || emp.email}
+                            onClick={() => handleToggleParticipant(emp)}
+                            className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
+                              isSelected ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-500'}`}>
+                                <Users className="w-4 h-4" />
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium">{emp.full_name || emp.name}</p>
+                                <p className="text-xs text-gray-500">{emp.email}</p>
+                              </div>
+                            </div>
+                            {isSelected && <div className="w-2 h-2 rounded-full bg-primary" />}
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="clients" className="mt-2">
+                  <div className="max-h-[150px] overflow-y-auto border rounded-md p-2 space-y-1">
+                    {employees.filter(e => e.type === 'client').length === 0 ? (
+                      <p className="text-sm text-muted-foreground p-2">No clients found.</p>
+                    ) : (
+                      employees.filter(e => e.type === 'client').map((emp) => {
+                        const isSelected = selectedParticipants.find((p) => p.id === emp.id);
+                        return (
+                          <div
+                            key={emp.id || emp.email}
+                            onClick={() => handleToggleParticipant(emp)}
+                            className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
+                              isSelected ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-500'}`}>
+                                <Briefcase className="w-4 h-4" />
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium">{emp.full_name || emp.name}</p>
+                                <p className="text-xs text-gray-500">{emp.email}</p>
+                              </div>
+                            </div>
+                            {isSelected && <div className="w-2 h-2 rounded-full bg-primary" />}
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </TabsContent>
+              </Tabs>
             </div>
-          </div>
+          )}
         </div>
 
         <DialogFooter>
