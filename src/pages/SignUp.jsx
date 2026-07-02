@@ -8,14 +8,14 @@ import { Input} from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Logo} from '@/components/ui/Logo';
-import { getSubdomainAndBase} from '@/lib/domainUtils';
+import { getSubdomainAndBase, isDesktopApp } from '@/lib/domainUtils';
 import { useAuth} from '@/lib/AuthContext';
 
 export default function SignUp() {
  const { t} = useTranslation();
  const navigate = useNavigate();
  const location = useLocation();
- const isElectron = typeof window !== 'undefined' && (window.location.protocol === 'file:' || !!window.Capacitor);
+ const isElectron = isDesktopApp();
  const { isAuthenticated, user, isLoadingAuth} = useAuth();
  
  const [username, setUsername] = useState('');
@@ -30,7 +30,7 @@ export default function SignUp() {
 
  // Auto-redirect if already authenticated and NOT currently registering
  useEffect(() => {
-  const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && window.Capacitor?.isNative === true);
+  const isNativeApp = isDesktopApp();
   if (isNativeApp && !localStorage.getItem('slate_has_seen_onboarding')) {
     navigate('/welcome', { replace: true });
     return;

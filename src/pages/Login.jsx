@@ -9,7 +9,7 @@ import { useAuth} from '@/lib/AuthContext';
 import { AlertCircle} from 'lucide-react';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Logo} from '@/components/ui/Logo';
-import { getSubdomainAndBase, getMainAppUrl} from '@/lib/domainUtils';
+import { getSubdomainAndBase, getMainAppUrl, isDesktopApp } from '@/lib/domainUtils';
 import { toast} from 'react-hot-toast';
 
 const LOGIN_QUOTES = [
@@ -37,7 +37,7 @@ const LOGIN_QUOTES = [
 
 export default function Login() {
   const navigate = useNavigate();
-  const isElectron = window.location.protocol === 'file:' || (typeof window !== 'undefined' && !!window.Capacitor);
+  const isElectron = isDesktopApp() || (typeof window !== 'undefined' && !!window.Capacitor);
  const { t} = useTranslation();
  const [email, setEmail] = useState('');
  const [password, setPassword] = useState('');
@@ -58,7 +58,7 @@ export default function Login() {
 
  // Auto-redirect if already authenticated or if native app needs onboarding
  useEffect(() => {
-  const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && window.Capacitor?.isNative === true);
+  const isNativeApp = isDesktopApp();
   if (isNativeApp && !localStorage.getItem('slate_has_seen_onboarding')) {
     navigate('/welcome', { replace: true });
     return;
@@ -405,7 +405,7 @@ export default function Login() {
 }
 
  if (invalidSubdomain) {
- const mainUrl = isNativeApp ? '/login' : `${getMainAppUrl()}/login`;
+  const mainUrl = isDesktopApp() ? '/login' : `${getMainAppUrl()}/login`;
 
  return (
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-50/50 dark:bg-slate-900 p-4 font-sans backdrop-blur-sm">
@@ -417,7 +417,7 @@ export default function Login() {
       <p className="mb-8 text-sm font-medium text-slate-500 dark:text-slate-400 leading-relaxed">
         {t("we_couldn_t_find_an_organizati", "We couldn't find an organization matching the web address")} <span className="font-semibold text-slate-900 dark:text-white">"{currentSubdomain}"</span>.
       </p>
-      <button onClick={() => isNativeApp ? navigate('/login') : (window.location.href = mainUrl)} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3.5 px-6 rounded-xl transition-all">
+      <button onClick={() => isDesktopApp() ? navigate('/login') : (window.location.href = mainUrl)} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3.5 px-6 rounded-xl transition-all">
         {t("go_to_main_login_portal", "Go to Main Login Portal")}
       </button>
     </div>

@@ -6,7 +6,8 @@ import { useToast } from "@/components/ui/use-toast"
 import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter, HashRouter, Route, Routes, Outlet, Navigate } from 'react-router-dom';
-const Router = window.location.protocol === 'file:' || window.navigator.userAgent.includes('Electron') ? HashRouter : BrowserRouter;
+import { isDesktopApp } from '@/lib/domainUtils';
+const Router = isDesktopApp() ? HashRouter : BrowserRouter;
 import PageNotFound from './lib/PageNotFound';
 const JoinMeeting = React.lazy(() => import('@/pages/JoinMeeting'));
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -1096,7 +1097,7 @@ function SuperAdminRoute() {
 
 function App() {
   const { currentSubdomain } = getSubdomainAndBase();
-  const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && window.Capacitor?.isNative === true);
+  const isNativeApp = isDesktopApp();
   const isBaseDomain = currentSubdomain === null && !isNativeApp;
 
   useEffect(() => {

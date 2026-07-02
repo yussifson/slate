@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect, useRef, useCallback, useMemo } from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
 import { supabase } from "@/api/supabaseClient";
+import { isDesktopApp } from '@/lib/domainUtils';
 import { getSubdomainAndBase } from './domainUtils';
 import { useImpersonation } from './ImpersonationContext';
 
@@ -583,7 +584,7 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
     
     if (shouldRedirect) {
-      if (typeof window !== 'undefined' && (window.location.protocol === 'file:' || !!window.Capacitor)) {
+      if (isDesktopApp()) {
         window.location.hash = '/login';
       } else {
         window.location.href = '/login';
@@ -592,7 +593,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const navigateToLogin = useCallback(() => {
-    if (typeof window !== 'undefined' && (window.location.protocol === 'file:' || !!window.Capacitor)) {
+    if (isDesktopApp()) {
       window.location.hash = '/login';
     } else {
       window.location.href = '/login';

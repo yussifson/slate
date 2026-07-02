@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button} from "@/components/ui/button";
+import { getSubdomainAndBase, isDesktopApp } from '@/lib/domainUtils';
 import { isSuperAdmin} from "@/lib/constants";
 import { useQueryClient} from "@tanstack/react-query";
 import { useToast} from "@/components/ui/use-toast";
@@ -89,7 +90,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  const targetCompany = user?.available_companies?.find(c => c.id === targetCompanyId);
  toast({ title: t('switching_workspace', "Switching Workspace..."), description: targetCompany?.name || "Loading..."});
  
-  const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && !!window.Capacitor);
+  const isNativeApp = isDesktopApp();
   if (targetCompany?.subdomain && !isNativeApp) {
     let targetBase = window.location.hostname.split('.').slice(-2).join('.');
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {

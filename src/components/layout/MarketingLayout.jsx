@@ -4,7 +4,7 @@ import { useState, useEffect} from 'react';
 import { Menu, X, Scale, ArrowRight, Building, Home, Layers, CreditCard, Info, Mail, Shield, Clock, Globe, Download } from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { useAuth} from '@/lib/AuthContext';
-import { getSubdomainAndBase} from '@/lib/domainUtils';
+import { getSubdomainAndBase, isDesktopApp } from '@/lib/domainUtils';
 import { Logo} from '@/components/ui/Logo';
 import { LanguageSwitcher, GOOGLE_LANGUAGES } from "@/components/ui/LanguageSwitcher";
 
@@ -24,7 +24,7 @@ export default function MarketingLayout({ children}) {
  const { baseDomain} = getSubdomainAndBase();
  const companySubdomain = user?.subdomain || user?.company_name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
  const port = window.location.port ? `:${window.location.port}` : '';
- const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && window.Capacitor?.isNative === true);
+ const isNativeApp = isDesktopApp();
  const workspaceUrl = (companySubdomain && !isNativeApp) ? `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/` : '/';
 
  useEffect(() => {

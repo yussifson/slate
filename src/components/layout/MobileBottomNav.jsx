@@ -1,6 +1,7 @@
 import React, { useState} from "react";
 import { Link, useLocation, useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
+import { getSubdomainAndBase, isDesktopApp } from '@/lib/domainUtils';
 import { cn} from "@/lib/utils";
 import { useNavigation} from "@/hooks/useNavigation";
 import { useAuth} from "@/lib/AuthContext";
@@ -165,7 +166,7 @@ export default function MobileBottomNav() {
                       if (!targetId || targetId === user.company_id) return;
                       // Update profiles directly via API
                       await base44.auth.updateProfile({ company_id: targetId });
-                      const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && window.Capacitor?.isNative === true);
+                      const isNativeApp = isDesktopApp();
                       if (isNativeApp) {
                         navigate('/');
                         setTimeout(() => window.location.reload(), 100);
@@ -191,7 +192,7 @@ export default function MobileBottomNav() {
                       value={sessionStorage.getItem('slate_industry_override') || 'law'}
                       onChange={(e) => {
                         sessionStorage.setItem('slate_industry_override', e.target.value);
-                        const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && window.Capacitor?.isNative === true);
+                        const isNativeApp = isDesktopApp();
                         if (isNativeApp) {
                           navigate('/');
                           setTimeout(() => window.location.reload(), 100);

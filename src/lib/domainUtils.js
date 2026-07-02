@@ -46,3 +46,13 @@ export function getMainAppUrl() {
   const port = window.location.port ? `:${window.location.port}` : '';
   return `${window.location.protocol}//${baseDomain}${port}`;
 }
+
+export function isDesktopApp() {
+  if (typeof window === 'undefined') return false;
+  const ua = window.navigator.userAgent.toLowerCase();
+  const isElectronEnv = ua.includes('electron');
+  const isTauri = !!window.__TAURI__;
+  const isCapacitor = !!window.Capacitor && window.Capacitor.isNative === true;
+  const isFileProtocol = window.location.protocol === 'file:' || window.location.protocol.startsWith('app') || window.location.protocol.startsWith('tauri');
+  return isElectronEnv || isTauri || isCapacitor || isFileProtocol;
+}
