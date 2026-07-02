@@ -42,12 +42,18 @@ export default function ClientPortal() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: clients = [] } = useQuery({
+  const { data: clients = [], isLoading: loadingClients } = useQuery({
     queryKey: ["my-client", user?.email],
     queryFn: () => base44.entities.Client.filter({ email: user?.email }),
     enabled: !!user?.email});
 
-  const client = clients[0];
+  const client = clients[0] || (user ? {
+    id: user.id,
+    company_id: user.company_id,
+    name: user.user_metadata?.full_name || user.email,
+    email: user.email,
+    isVirtual: true
+  } : null);
 
   const { data: cases = [] } = useQuery({
     queryKey: ["client-cases", client?.id],
