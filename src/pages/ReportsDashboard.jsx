@@ -44,37 +44,41 @@ import { toast } from "react-hot-toast";
 import { formatCurrency} from "@/lib/constants";
 import { startOfMonth, subMonths, format, isWithinInterval, endOfMonth} from "date-fns";
 import { RETAIL_BRAND} from "@/components/retail/RetailViewKit";
+import { cn } from "@/lib/utils";
 
 // Use professional enterprise colors instead of potentially playful brand colors
 const CHART_COLORS = ["#1e3a8a", "#2563eb", "#3b82f6", "#60a5fa", "#0f172a", "#334155"];
 const THEME_BLUE = "text-primary/90 dark:text-primary/70";
 const BG_BLUE_LIGHT = "bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20";
 
-function ReportMetricCard({ title, value, sub, icon: Icon, trend}) {
+function ReportMetricCard({ title, value, sub, icon: Icon, trend, className }) {
  return (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-6 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-start justify-between gap-3">
- <div className="min-w-0">
- <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider tracking-[0.04em]">{title}</p>
- <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-tight tracking-[-0.02em]">{value}</p>
- <div className="flex items-center gap-2 mt-2 flex-wrap">
- {trend !== undefined && (
- <span
- className={`text-xs font-semibold px-2 py-0.5 rounded-lg ${
- trend >= 0 ? "bg-slate-50 dark:bg-slate-800/50 text-primary/90 dark:bg-primary/30 dark:text-primary/70" : "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-}`}
- >
- {trend > 0 ? "+" : ""}
- {trend}% vs prior period
- </span>
- )}
- {sub && <span className="text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">{sub}</span>}
- </div>
- </div>
- <div className={`w-12 h-12 rounded-xl ${BG_BLUE_LIGHT} flex items-center justify-center shrink-0`}>
- <Icon className={`w-6 h-6 ${THEME_BLUE}`} />
- </div>
- </div>
+ <div className={cn("bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden", className)}>
+   <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+     <Icon className="w-24 h-24 text-primary" />
+   </div>
+   <div className="flex items-start justify-between gap-3 relative z-10">
+   <div className="min-w-0 flex-1">
+   <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{title}</p>
+   <p className="text-3xl font-extrabold text-slate-900 dark:text-white mt-3 tracking-tight">{value}</p>
+   <div className="flex items-center gap-2 mt-3 flex-wrap">
+   {trend !== undefined && (
+   <span
+   className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${
+   trend >= 0 ? "bg-emerald-100/50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400" : "bg-rose-100/50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400"
+   }`}
+   >
+   {trend > 0 ? "+" : ""}
+   {trend}% {t("vs_prior_period", "vs prior period")}
+   </span>
+   )}
+   {sub && <span className="text-xs font-medium text-slate-500 dark:text-slate-400 tracking-wide">{sub}</span>}
+   </div>
+   </div>
+   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 shadow-inner">
+   <Icon className="w-5 h-5 text-primary" />
+   </div>
+   </div>
  </div>
  );
 }
@@ -332,16 +336,20 @@ export default function ReportsDashboard() {
 
  return (
  <div className="space-y-8 pb-12 max-w-[1600px]">
- <header className="border-b border-primary/40 pb-6">
- <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+ <header className="relative border-b border-border/50 pb-8 mb-8">
+ <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none rounded-tr-3xl" />
+ <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10">
  <div>
- <p className={`text-xs font-semibold ${THEME_BLUE} uppercase tracking-widest mb-2`}>
- {t("business_intelligence", "Business Intelligence")}
- </p>
- <h1 className={`text-4xl md:text-5xl font-extrabold ${THEME_BLUE} tracking-tight`}>
+ <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary mb-4">
+   <BarChart2 className="w-4 h-4" />
+   <p className="text-[11px] font-bold uppercase tracking-wider">
+   {t("business_intelligence", "Business Intelligence")}
+   </p>
+ </div>
+ <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
  {t("enterprise_analytics", "Enterprise Analytics")}
  </h1>
- <p className="text-base text-slate-500 dark:text-slate-400 mt-3 max-w-2xl">
+ <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 mt-3 max-w-2xl leading-relaxed">
  {t(
  "comprehensive_performance_report",
  "Comprehensive performance report with revenue, operations, and workforce metrics for executive review."
@@ -352,15 +360,15 @@ export default function ReportsDashboard() {
     <button
       onClick={handleGenerateInsights}
       disabled={isGeneratingInsights}
-      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-md transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed group"
     >
-      <Sparkles className={`w-4 h-4 ${isGeneratingInsights ? 'animate-spin' : ''}`} />
+      <Sparkles className={`w-4 h-4 transition-transform group-hover:scale-110 ${isGeneratingInsights ? 'animate-spin' : ''}`} />
       {isGeneratingInsights ? 'Analyzing...' : 'AI Insights'}
     </button>
-    <div className="flex items-center gap-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl px-3 py-2  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="flex items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full px-4 py-2 shadow-sm hover:shadow-md transition-shadow duration-300">
     <Clock className="w-4 h-4 text-primary shrink-0" />
     <Select value={period} onValueChange={setPeriod}>
-    <SelectTrigger className="w-40 border-0 focus:ring-0 font-medium text-foreground">
+    <SelectTrigger className="w-36 h-auto p-0 border-0 focus:ring-0 font-medium text-slate-700 dark:text-slate-200 bg-transparent">
     <SelectValue />
     </SelectTrigger>
     <SelectContent>
@@ -394,31 +402,35 @@ export default function ReportsDashboard() {
     </div>
   )}
 
- <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+ <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
  <ReportMetricCard
  title={t("revenue_mtd", "Revenue (current month)")}
  value={formatCurrency(currentMonthRevenue, currency)}
  icon={DollarSign}
  trend={revenueTrend}
  sub={t("from_paid_invoices", "From paid invoices")}
+ className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-shadow rounded-2xl"
  />
  <ReportMetricCard
  title={t("revenue_period", "Revenue (selected period)")}
  value={formatCurrency(totalRevenue, currency)}
  icon={TrendingUp}
  sub={`${months} ${t("months", "months")}`}
+ className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-shadow rounded-2xl"
  />
  <ReportMetricCard
  title={isRetail ? t("active_customers", "Active customers") : isSchool ? t("active_students", "Active students") : t("active_clients", "Active clients")}
  value={isRetail ? retailCustomers.length : clients.filter((c) => c.status === "active").length}
  icon={Users}
  sub={`${isRetail ? retailCustomers.length : clients.length} ${t("total_records", "total records")}`}
+ className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-shadow rounded-2xl"
  />
  <ReportMetricCard
  title={t("collection_rate", "Collection rate")}
  value={`${collectionRate}%`}
  icon={Percent}
  sub={`${overdueCount} ${t("overdue", "overdue")}`}
+ className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-shadow rounded-2xl"
  />
  </div>
 

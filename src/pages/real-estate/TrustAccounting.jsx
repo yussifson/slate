@@ -312,10 +312,15 @@ export default function TrustAccounting() {
       {activeTab === 'overview' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {accounts.length === 0 ? (
-            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-              <Wallet className="w-16 h-16 mx-auto text-muted-foreground mb-4 opacity-30" />
-              <p className="text-muted-foreground text-lg font-medium">No trust accounts configured</p>
-              <Button onClick={() => setShowAccountForm(true)} variant="outline" className="mt-6 gap-2 rounded-full">
+            <Card className="col-span-full md:col-span-2 lg:col-span-3 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border border-slate-200/60 dark:border-slate-800/60 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center p-12 text-center group">
+              <div className="w-20 h-20 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Wallet className="w-10 h-10 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2 tracking-tight">No Trust Accounts Yet</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mb-8 leading-relaxed">
+                Start managing your trust accounts, escrow funds, and ledger transactions in one secure place.
+              </p>
+              <Button onClick={() => setShowAccountForm(true)} className="gap-2 rounded-full px-6 py-5 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-shadow">
                 <Plus className="w-4 h-4" /> Add Your First Account
               </Button>
             </Card>

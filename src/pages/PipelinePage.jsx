@@ -635,8 +635,13 @@ export default function PipelinePage() {
   });
 
   const handleSave = (form) => {
-    if (editing) updateMutation.mutate({ id: editing.id, data: form });
-    else createMutation.mutate(form);
+    // Stringify stages array before saving to database
+    const payload = {
+      ...form,
+      stages: Array.isArray(form.stages) ? JSON.stringify(form.stages) : form.stages
+    };
+    if (editing) updateMutation.mutate({ id: editing.id, data: payload });
+    else createMutation.mutate(payload);
   };
 
   const activePipeline = activePipelineId
