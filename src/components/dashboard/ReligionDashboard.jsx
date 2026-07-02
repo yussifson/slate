@@ -98,10 +98,10 @@ export default function ReligionDashboard({ companyId, company, isAdmin }) {
   }
 
   const kpis = [
-    { label: 'Active Members', value: activeMembers.length, sub: `${members.length} total registered`, icon: Users, alt: false, trend: '+5%' },
+    { label: 'Active Members', value: activeMembers, sub: 'total registered', icon: Users, alt: false, trend: '+5%' },
     { label: 'Upcoming Events', value: upcomingEvents.length, sub: 'scheduled services', icon: Calendar, alt: true, trend: '' },
     { label: 'Total Donations', value: formatCurrency(totalDonations, currency), sub: 'tithes & offerings', icon: DollarSign, alt: false, trend: '+12%' },
-    { label: 'Volunteers', value: staff.length, sub: 'serving this month', icon: HandHeart, alt: true, trend: '+3%' },
+    { label: 'Volunteers', value: activeVolunteers, sub: 'serving this month', icon: HandHeart, alt: true, trend: '+3%' },
   ];
 
   // Correct routes from App.jsx religion suite
