@@ -69,7 +69,7 @@ function ReportMetricCard({ title, value, sub, icon: Icon, trend, className }) {
    }`}
    >
    {trend > 0 ? "+" : ""}
-   {trend}% {t("vs_prior_period", "vs prior period")}
+   {trend}% vs prior period
    </span>
    )}
    {sub && <span className="text-xs font-medium text-slate-500 dark:text-slate-400 tracking-wide">{sub}</span>}
