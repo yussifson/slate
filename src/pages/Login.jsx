@@ -56,10 +56,10 @@ export default function Login() {
  const [checkingSubdomain, setCheckingSubdomain] = useState(!!currentSubdomain);
  const [invalidSubdomain, setInvalidSubdomain] = useState(false);
 
- // Auto-redirect if already authenticated or if native app needs onboarding
+ // Auto-redirect if already authenticated or if mobile user needs onboarding
  useEffect(() => {
-  const isNativeApp = isDesktopApp();
-  if (isNativeApp && !localStorage.getItem('slate_has_seen_onboarding')) {
+  const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 768;
+  if (isMobileDevice && !localStorage.getItem('slate_has_seen_onboarding')) {
     navigate('/welcome', { replace: true });
     return;
   }

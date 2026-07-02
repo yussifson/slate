@@ -30,8 +30,8 @@ export default function SignUp() {
 
  // Auto-redirect if already authenticated and NOT currently registering
  useEffect(() => {
-  const isNativeApp = isDesktopApp();
-  if (isNativeApp && !localStorage.getItem('slate_has_seen_onboarding')) {
+  const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 768;
+  if (isMobileDevice && !localStorage.getItem('slate_has_seen_onboarding')) {
     navigate('/welcome', { replace: true });
     return;
   }

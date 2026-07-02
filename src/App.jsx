@@ -1100,7 +1100,8 @@ import { CapacitorUpdater } from '@capgo/capacitor-updater';
 function App() {
   const { currentSubdomain } = getSubdomainAndBase();
   const isNativeApp = isDesktopApp();
-  const isBaseDomain = currentSubdomain === null && !isNativeApp;
+  // We want ALL users (even on Native apps) to see the Marketing layout initially
+  const isBaseDomain = currentSubdomain === null;
 
   useEffect(() => {
     initPowerSync().catch(console.error);
