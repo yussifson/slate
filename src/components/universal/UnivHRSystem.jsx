@@ -24,21 +24,15 @@ export default function UnivHRSystem() {
         </Tabs>
       </div>
 
-      <div className="flex-1 overflow-hidden relative min-h-0">
-        <div className={`absolute inset-0 transition-opacity duration-300 ${activeTab === 'employees' ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none -z-10'}`}>
-          <Suspense fallback={<div className="flex items-center justify-center h-full text-[#71717a] dark:text-gray-400">Loading Employees...</div>}>
+      <div className="flex-1 w-full pb-8">
+        {activeTab === 'employees' && (
+          <Suspense fallback={<div className="flex items-center justify-center py-20 text-[#71717a] dark:text-gray-400">Loading Employees...</div>}>
             <UnivHREmployee />
           </Suspense>
-        </div>
-        <div className={`absolute inset-0 transition-opacity duration-300 ${activeTab === 'departments' ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none -z-10'}`}>
-          <UnivDepartments />
-        </div>
-        <div className={`absolute inset-0 transition-opacity duration-300 ${activeTab === 'roles' ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none -z-10'}`}>
-          <UnivAccessControl />
-        </div>
-        <div className={`absolute inset-0 transition-opacity duration-300 ${activeTab === 'leave' ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none -z-10'}`}>
-          <UnivLeaveManagement />
-        </div>
+        )}
+        {activeTab === 'departments' && <UnivDepartments />}
+        {activeTab === 'roles' && <UnivAccessControl />}
+        {activeTab === 'leave' && <UnivLeaveManagement />}
       </div>
     </div>
   );

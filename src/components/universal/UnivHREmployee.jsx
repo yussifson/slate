@@ -159,7 +159,7 @@ export default function UnivHREmployee() {
  const filtered = employees.filter(e => `${e.name} ${e.email} ${e.department_id} ${e.role}`.toLowerCase().includes(search.toLowerCase()));
 
  return (
- <div className={`h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}`}>
+ <div className={`flex flex-col gap-6 w-full px-4 sm:px-6 lg:px-8 ${view !== 'Default' ? 'hide-default' : ''}`}>
  <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
  <div><h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2 tracking-[-0.02em]"><Users className="w-7 h-7 text-primary"/>Employees</h1><p className="text-[#71717a] dark:text-gray-400 text-sm font-medium mt-1">{employees.length} total • {employees.filter(e=>e.status==='Active').length} active</p></div>
  <FeatureGate limitName="users" fallbackType="disable"><button onClick={()=>openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 "><UserPlus className="w-4 h-4"/>Add Employee</button></FeatureGate>
@@ -178,11 +178,11 @@ export default function UnivHREmployee() {
  </div>
  </div>
 
- <div className="flex-1 overflow-auto min-h-0 custom-scrollbar">
+ <div className="w-full">
  {loading ? (
-  <div className="flex-1 min-h-0 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary/50"/></div>
+  <div className="flex-1 py-20 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary/50"/></div>
   ) : viewMode === 'grid' ? (
-  <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
+  <div className="w-full">
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-6">
  {filtered.map(emp=>(
  <div key={emp.id} onClick={()=>setSelected(emp)} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 transition-all group cursor-pointer hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -205,7 +205,7 @@ export default function UnivHREmployee() {
  </div>
  </div>
  ) : viewMode === 'list' ? (
- <div className="flex-1 min-h-0 overflow-auto custom-scrollbar bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-full bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 mb-6">
  <table className="w-full text-sm">
  <thead className="bg-muted/50 border-b border-primary/40"><tr>{['Employee','Role/Dept','Contact','Type','Status','Actions'].map(h=><th key={h} className="p-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">{h}</th>)}</tr></thead>
  <tbody className="divide-y divide-border">
@@ -224,7 +224,7 @@ export default function UnivHREmployee() {
  </table>
  </div>
  ) : viewMode === 'orgchart' ? (
- <div className="flex-1 min-h-0 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-8 overflow-auto text-center flex justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 custom-scrollbar">
+ <div className="w-full bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-8 text-center flex justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 mb-6">
  <div className="inline-flex flex-col items-center">
  <div className="px-6 py-3 bg-primary text-white rounded-2xl font-black text-lg relative z-10 mb-8">
  CEO / Founder

@@ -61,128 +61,79 @@ export function LoadingOverlay({ visible, size = 'md', label = 'Loading', blur =
   )
 }
 
-export function PageLoader({ label = 'Loading Slate' }) {
+export function PageLoader({ label = 'Loading...' }) {
   return (
     <div
       role="status"
       aria-label={label}
+      className="bg-background text-foreground"
       style={{
         position: 'fixed', inset: 0,
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
-        gap: '0',
-        background: '#ffffff',
         zIndex: 9999,
         overflow: 'hidden',
         animation: 'overlay-fade-in 200ms ease',
       }}
     >
-      {/* Ambient glow removed for cleaner look on white background */}
-
-      {/* Animated rings */}
-      <div style={{ position: 'relative', width: '120px', height: '120px', marginBottom: '32px' }}>
-        {/* Outer pulse ring */}
+      <div style={{
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
+        animation: 'fade-up 500ms ease 100ms both',
+      }}>
+        {/* Exact Logo */}
         <div style={{
-          position: 'absolute', inset: '-16px',
-          borderRadius: '50%',
-          border: '1px solid rgba(16,185,129,0.15)',
-          animation: 'pulse-ring 2.4s ease-in-out infinite',
-        }} />
-        {/* Middle ring */}
-        <div style={{
-          position: 'absolute', inset: '-6px',
-          borderRadius: '50%',
-          border: '1px solid rgba(16,185,129,0.25)',
-          animation: 'pulse-ring 2.4s ease-in-out 0.4s infinite',
-        }} />
-        {/* Logo container */}
-        <div style={{
-          width: '120px', height: '120px',
-          borderRadius: '28px',
-          background: 'transparent',
+          width: '64px', height: '64px',
+          marginBottom: '24px',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          animation: 'logo-breathe 3s ease-in-out infinite',
         }}>
-          {/* Exact Slate SVG icon — two overlapping slates */}
-          <svg width="72" height="72" viewBox="0 0 256 256" fill="none">
-            <g transform="translate(128, 128) scale(1.45) rotate(-15) translate(-128, -128)">
-              <rect x="64" y="72" width="96" height="128" rx="24" fill="rgba(16,185,129,0.2)" />
-              <rect x="96" y="56" width="96" height="128" rx="24" fill="#10B981" />
-              <rect x="98" y="58" width="92" height="124" rx="22" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" />
-            </g>
-          </svg>
+          <img 
+            src="/slate-logo.png" 
+            alt="Slate Logo" 
+            style={{ 
+              width: '100%', height: '100%', objectFit: 'contain',
+              animation: 'logo-breathe 2.5s ease-in-out infinite' 
+            }} 
+          />
         </div>
-      </div>
 
-      {/* App name */}
-      <div style={{
-        fontSize: '28px', fontWeight: '800',
-        color: '#0f172a',
-        letterSpacing: '-0.03em',
-        marginBottom: '8px',
-        animation: 'fade-up 500ms ease 200ms both',
-      }}>
-        Slate
-      </div>
-
-      {/* Subtitle */}
-      <div style={{
-        fontSize: '12px', fontWeight: '500',
-        color: '#64748b',
-        letterSpacing: '0.12em',
-        textTransform: 'uppercase',
-        marginBottom: '40px',
-        animation: 'fade-up 500ms ease 350ms both',
-      }}>
-        by Optavel
-      </div>
-
-      {/* Animated progress bar */}
-      <div style={{
-        width: '180px', height: '3px',
-        background: 'rgba(0,0,0,0.08)',
-        borderRadius: '99px',
-        overflow: 'hidden',
-        animation: 'fade-up 500ms ease 450ms both',
-      }}>
+        {/* Minimalist Spinner */}
         <div style={{
-          height: '100%',
-          background: 'linear-gradient(90deg, #34D399, #10B981)',
-          borderRadius: '99px',
-          animation: 'progress-slide 1.8s ease-in-out infinite',
+          width: '24px', height: '24px',
+          border: '2px solid rgba(16,185,129,0.15)',
+          borderTopColor: '#10B981',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite',
+          marginBottom: '16px'
         }} />
-      </div>
 
-      {/* Loading text */}
-      <div style={{
-        marginTop: '16px',
-        fontSize: '11px', fontWeight: '500',
-        color: 'rgba(0,0,0,0.4)',
-        letterSpacing: '0.06em',
-        textTransform: 'uppercase',
-        animation: 'fade-up 500ms ease 500ms both',
-      }}>
-        {label}
+        {/* Loading text */}
+        <div style={{
+          fontSize: '12px', fontWeight: '500',
+          color: '#71717a',
+          letterSpacing: '0.04em',
+        }}>
+          {label}
+        </div>
       </div>
 
       {/* Inline keyframes */}
       <style>{`
-        @keyframes pulse-ring {
-          0%, 100% { transform: scale(1); opacity: 0.6; }
-          50% { transform: scale(1.08); opacity: 0; }
-        }
         @keyframes logo-breathe {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.03); }
+          0%, 100% { transform: scale(1); opacity: 0.9; }
+          50% { transform: scale(1.05); opacity: 1; }
         }
-        @keyframes progress-slide {
-          0% { width: 0%; margin-left: 0%; }
-          50% { width: 75%; margin-left: 0%; }
-          100% { width: 0%; margin-left: 100%; }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
         @keyframes fade-up {
-          from { opacity: 0; transform: translateY(12px); }
+          from { opacity: 0; transform: translateY(8px); }
           to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes overlay-fade-in {
+          from { opacity: 0; }
+          to   { opacity: 1; }
         }
       `}</style>
     </div>
