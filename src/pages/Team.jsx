@@ -168,12 +168,19 @@ export default function Team() {
             toast({ title: "Staff updated" });
             return;
           }
-          const reg = await base44.auth.register({
-            email: data.user_email,
-            password,
-            company_id: companyId,
-            role: data.role});
-          const authUserId = reg?.user?.id;
+          const { data: existingProfile } = await supabase.from('profiles').select('id').ilike('email', data.user_email).maybeSingle();
+          let authUserId = existingProfile?.id;
+          let isExistingUser = !!authUserId;
+
+          if (!authUserId) {
+            const reg = await base44.auth.register({
+              email: data.user_email,
+              password,
+              company_id: companyId,
+              role: data.role});
+            authUserId = reg?.user?.id;
+          }
+
           await createMutation.mutateAsync({
             ...data,
             user_id: authUserId || null});
@@ -186,15 +193,22 @@ export default function Team() {
               .ilike("user_email", data.user_email);
           }
 
-          notify({
-            recipientEmail: data.user_email,
-            title: "Welcome to Slate!",
-            message: `Your account has been created by ${user?.full_name || "an Admin"}. Log in with this email and the temporary password you were given.`,
-            type: "WELCOME"}).catch(() => {});
+          if (isExistingUser) {
+             toast({
+               title: `Added existing user ${data.full_name}`,
+               description: `They have been added to your company and can log in with their existing password.`,
+             });
+          } else {
+            notify({
+              recipientEmail: data.user_email,
+              title: "Welcome to Slate!",
+              message: `Your account has been created by ${user?.full_name || "an Admin"}. Log in with this email and the temporary password you were given.`,
+              type: "WELCOME"}).catch(() => {});
 
-          toast({
-            title: `Account created for ${data.full_name}`,
-            description: "They can log in and change their password anytime."});
+            toast({
+              title: `Account created for ${data.full_name}`,
+              description: "They can log in and change their password anytime."});
+          }
           setShowCreate(false);
           setEditingStaff(null);
         }}

@@ -345,12 +345,15 @@ export const AuthProvider = ({ children }) => {
         const uAccess = __resUA.rows ? (__resUA.rows._array || Array.from(__resUA.rows)) : [];
         const __resSA = await powerSync.execute(`SELECT company_id FROM staff_records WHERE user_email LIKE ?`, [sessionUser.email]);
         const sAccess = __resSA.rows ? (__resSA.rows._array || Array.from(__resSA.rows)) : [];
+        const __resPU = await powerSync.execute(`SELECT company_id FROM portal_users WHERE user_id = ?`, [sessionUser.id]);
+        const pAccess = __resPU.rows ? (__resPU.rows._array || Array.from(__resPU.rows)) : [];
         
         const cIds = new Set();
         if (profile?.company_id) cIds.add(profile.company_id);
         if (companyData?.id) cIds.add(companyData.id);
         (uAccess || []).forEach(r => r.company_id && cIds.add(r.company_id));
         (sAccess || []).forEach(r => r.company_id && cIds.add(r.company_id));
+        (pAccess || []).forEach(r => r.company_id && cIds.add(r.company_id));
         
         if (cIds.size > 0) {
           const _cIdsArr = Array.from(cIds);

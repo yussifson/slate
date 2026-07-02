@@ -656,7 +656,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  isDynamic: true
 }));
  
- const PORTAL_ROLES = ['client', 'patient', 'guest', 'parent', 'student', 'learner', 'trainee', 'customer'];
+ const PORTAL_ROLES = ['client', 'patient', 'guest', 'parent', 'student', 'learner', 'trainee', 'customer', 'policyholder', 'member', 'tenant', 'landlord', 'employee'];
  const isPortalUser = PORTAL_ROLES.includes(user?.role?.toLowerCase());
 
  const baseNav = activeIndustry === 'orbit_build' ? coreOrbitNav : filteredCompanyNav;

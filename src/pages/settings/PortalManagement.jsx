@@ -90,33 +90,42 @@ function InviteDialog({ industry, companyId, onSuccess }) {
         [invitePayload.company_id, invitePayload.email, invitePayload.full_name, invitePayload.role, invitePayload.token, invitePayload.status, invitePayload.expires_at, invitePayload.invited_by, invitePayload.created_at, invitePayload.default_password]
       );
 
-      // Step 2: Use Supabase REST API to sign up user without logging out admin
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-      if (supabaseUrl && anonKey) {
-        const res = await fetch(`${supabaseUrl}/auth/v1/signup`, {
-          method: 'POST',
-          headers: {
-            'apikey': anonKey,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: email.toLowerCase().trim(),
-            password,
-            data: { role, company_id: companyId, full_name: name, portal_token: token }
-          })
-        });
-        if (!res.ok) {
-          const errData = await res.json();
-          console.warn('REST signup issue:', errData);
-        }
-      }
+        const { data: existingProfile } = await supabase.from('profiles').select('id').ilike('email', email.toLowerCase().trim()).maybeSingle();
+        let isExistingUser = !!existingProfile?.id;
 
-      toast({
-        title: '✅ Client Created',
-        description: `${email} has been created as a ${roles.find(r => r.value === role)?.label || role}.`,
-      });
-      setOpen(false);
+        if (isExistingUser) {
+          await supabase.rpc('portal_accept_invitation', { p_token: token, p_user_id: existingProfile.id });
+          toast({
+            title: `Added existing user ${email}`,
+            description: `They have been added to your client portal and can log in with their existing password.`,
+          });
+        } else {
+          const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+          const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+          if (supabaseUrl && anonKey) {
+            const res = await fetch(`${supabaseUrl}/auth/v1/signup`, {
+              method: 'POST',
+              headers: {
+                'apikey': anonKey,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                email: email.toLowerCase().trim(),
+                password,
+                data: { role, company_id: companyId, full_name: name, portal_token: token }
+              })
+            });
+            if (!res.ok) {
+              const errData = await res.json();
+              console.warn('REST signup issue:', errData);
+            }
+          }
+          toast({
+            title: 'Client Created',
+            description: `${email} has been created as a ${roles.find(r => r.value === role)?.label || role}.`,
+          });
+        }
+        setOpen(false);
       setEmail(''); setName(''); setRole(''); setPassword('');
       onSuccess?.();
     } catch (err) {
