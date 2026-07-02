@@ -145,7 +145,7 @@ import AppIntegrations from './pages/Integrations';
 import Automations from './pages/Automations';
 import Leads from './pages/Leads';
 import BillingDashboard from './pages/BillingDashboard';
-import CasePipelinePage from './pages/CasePipelinePage';
+import PipelinePage from './pages/PipelinePage';
 import LegalResearch from './pages/LegalResearch';
 import AuditLog from './pages/AuditLog';
 import LeaveManagement from './pages/LeaveManagement';
@@ -572,7 +572,7 @@ function PlatformRoutes() {
       <Route path="/my-dashboard" element={<StaffDashboard />} />
       <Route path="/leads" element={<UnivCRM />} />
       <Route path="/billing" element={<BillingDashboard />} />
-      <Route path="/pipeline" element={<CasePipelinePage />} />
+      <Route path="/pipeline" element={<PipelinePage />} />
       <Route path="/research" element={<LegalResearch />} />
       <Route path="/audit" element={<AuditLog />} />
       <Route path="/leave" element={<UnivLeaveManagement />} />
