@@ -24,6 +24,7 @@ import { INDUSTRIES} from "@/config/industries";
 import ProfileAvatarDialog from "@/components/shared/ProfileAvatarDialog";
 import { ORBIT_COMPONENTS_LIST} from "@/pages/admin/OrbitComponentTester";
 import { powerSync} from "@/api/PowerSyncConnector";
+import { cn } from "@/lib/utils";
 
 const PAGE_TITLES = {
  "/": "Dashboard",
@@ -173,9 +174,10 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  return (
  <>
  {/* ── NATIVE MOBILE TOP BAR ── */}
- <div className="md:hidden sticky top-0 z-[60] h-[52px] bg-background/80 backdrop-blur-xl border-b border-primary/40 flex items-center justify-between px-4 w-full pt-[env(safe-area-inset-top)]">
+ <div className="md:hidden sticky top-0 z-[60] w-full bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl border-b border-black/5 dark:border-white/5 pt-[env(safe-area-inset-top)] shadow-sm">
+ <div className="flex items-center justify-between px-4 h-[44px]">
  {/* Left: Avatar */}
- <button onClick={() => setShowAvatarDialog(true)} className="relative w-8 h-8 rounded-full bg-primary/10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex items-center justify-center overflow-hidden active:scale-95 transition-transform">
+ <button onClick={() => setShowAvatarDialog(true)} className="relative w-[30px] h-[30px] rounded-full bg-[#F2F2F7] dark:bg-[#2C2C2E] flex items-center justify-center overflow-hidden active:scale-95 transition-transform">
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
  ) : (
@@ -183,21 +185,28 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  )}
  </button>
 
- {/* Center: Slate Logo */}
- <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex items-center gap-2.5 pointer-events-none">
- <div className="w-5 h-5 bg-primary rounded-lg flex items-center justify-center ">
- <div className="w-2.5 h-2.5 bg-white rounded-sm transform rotate-45 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
- </div>
- <span className="font-extrabold text-lg tracking-tight text-foreground">Slate</span>
+ {/* Center: Page Title / Logo */}
+ <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 pointer-events-none">
+ {location.pathname === '/' ? (
+   <>
+    <div className="w-[18px] h-[18px] bg-primary rounded-[5px] flex items-center justify-center">
+      <div className="w-2 h-2 bg-white rounded-sm transform rotate-45" />
+    </div>
+    <span className="font-semibold text-[17px] tracking-[-0.41px] text-black dark:text-white">Slate</span>
+   </>
+ ) : (
+   <span className="font-semibold text-[17px] tracking-[-0.41px] text-black dark:text-white truncate max-w-[150px]">{title}</span>
+ )}
  </div>
 
  {/* Right: AI & Notifications */}
- <div className="flex items-center gap-2">
- <Button onClick={toggleAI} variant="ghost" size="icon" className={`w-8 h-8 rounded-full ${isAIOpen ? "bg-primary/10 text-primary" : "text-[#71717a] dark:text-gray-400"}`}>
- <Sparkles className="w-4 h-4" />
- </Button>
+ <div className="flex items-center gap-1">
+ <button onClick={toggleAI} className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors active:scale-95", isAIOpen ? "bg-primary/10 text-primary" : "text-[#8E8E93]")}>
+ <Sparkles className="w-[18px] h-[18px]" strokeWidth={2.5} />
+ </button>
  <div className="scale-90 origin-right">
                 <UnivNotificationCenter />
+              </div>
  </div>
  </div>
  </div>

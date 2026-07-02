@@ -30,8 +30,8 @@ export default function MobileBottomNav() {
 
  return (
  <>
- <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[60] bg-background/95 backdrop-blur-xl border-t border-primary/40 -[0_-4px_20px_rgba(0,0,0,0.06)] pb-[env(safe-area-inset-bottom)]">
- <div className="flex items-center justify-around h-16 px-1">
+ <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[60] bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl border-t border-black/5 dark:border-white/5 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.04)]">
+ <div className="flex items-center justify-around h-[52px] px-2 pt-1">
  {bottomNavItems.map((item) => {
    const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin", "/optavel", "/logistics", "/real-estate", "/retail", "/hotel", "/pharmacy", "/religion"].includes(item.path);
    const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
@@ -42,15 +42,12 @@ export default function MobileBottomNav() {
  key={item.path}
  to={item.path}
  onClick={() => setMobileMenuOpen(false)}
- className={cn(
- "flex flex-col items-center justify-center gap-2 py-1 px-2 rounded-xl min-w-[64px] transition-all",
- isActive ? "text-primary" : "text-[#71717a] dark:text-gray-400 hover:text-foreground"
- )}
+ className="relative flex flex-col items-center justify-center w-full h-full min-w-[64px] active:scale-95 transition-transform duration-100 ease-in-out"
  >
- <div className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors", isActive ? "bg-slate-100" : "")}>
- <IconComp className={cn("w-5 h-5 transition-transform", isActive ? "scale-110" : "")} />
+ <div className={cn("relative flex items-center justify-center mb-0.5 transition-colors duration-200", isActive ? "text-primary" : "text-[#8E8E93] dark:text-[#98989D]")}>
+ <IconComp className={cn("w-[22px] h-[22px] transition-transform duration-200", isActive ? "scale-110 drop-shadow-sm" : "")} strokeWidth={isActive ? 2.5 : 2} />
  </div>
- <span className={cn("text-[10px] font-semibold leading-none", isActive ? "text-primary" : "")}>
+ <span className={cn("text-[10px] font-medium leading-none tracking-tight transition-colors duration-200", isActive ? "text-primary" : "text-[#8E8E93] dark:text-[#98989D]")}>
  {t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label)}
  </span>
  </Link>
@@ -60,15 +57,12 @@ export default function MobileBottomNav() {
  {/* More Tab */}
  <button
  onClick={() => setMobileMenuOpen(true)}
- className={cn(
- "flex flex-col items-center justify-center gap-2 py-1 px-2 rounded-xl min-w-[64px] transition-all",
- mobileMenuOpen ? "text-primary" : "text-[#71717a] dark:text-gray-400 hover:text-foreground"
- )}
+ className="relative flex flex-col items-center justify-center w-full h-full min-w-[64px] active:scale-95 transition-transform duration-100 ease-in-out"
  >
- <div className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors", mobileMenuOpen ? "bg-slate-100" : "")}>
- <MoreHorizontal className={cn("w-5 h-5 transition-transform", mobileMenuOpen ? "scale-110" : "")} />
+ <div className={cn("relative flex items-center justify-center mb-0.5 transition-colors duration-200", mobileMenuOpen ? "text-primary" : "text-[#8E8E93] dark:text-[#98989D]")}>
+ <MoreHorizontal className={cn("w-[22px] h-[22px] transition-transform duration-200", mobileMenuOpen ? "scale-110 drop-shadow-sm" : "")} strokeWidth={mobileMenuOpen ? 2.5 : 2} />
  </div>
- <span className={cn("text-[10px] font-semibold leading-none", mobileMenuOpen ? "text-primary" : "")}>
+ <span className={cn("text-[10px] font-medium leading-none tracking-tight transition-colors duration-200", mobileMenuOpen ? "text-primary" : "text-[#8E8E93] dark:text-[#98989D]")}>
  {t("more", "More")}
  </span>
  </button>
@@ -79,19 +73,19 @@ export default function MobileBottomNav() {
  {mobileMenuOpen && (
  <div className="md:hidden fixed inset-0 z-[70] flex flex-col justify-end">
  {/* Backdrop */}
- <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-[2px] transition-opacity duration-300" onClick={() => setMobileMenuOpen(false)} />
+ <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300" onClick={() => setMobileMenuOpen(false)} />
  
  {/* Sheet */}
- <div className="relative w-full rounded-md-t-[32px] max-h-[85vh] bg-white dark:bg-slate-950 transition-transform animate-in slide-in-from-bottom-full overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="relative w-full rounded-t-[20px] max-h-[88vh] bg-[#F2F2F7] dark:bg-[#1C1C1E] transition-transform animate-in slide-in-from-bottom-full overflow-hidden flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
  
  {/* Drag Handle & Header */}
- <div className="flex flex-col items-center pt-3 pb-2 border-b border-primary/40 dark:border-primary/40">
- <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 mb-4" />
- <div className="w-full flex items-center justify-between px-6">
- <h2 className="text-xl font-semibold text-slate-900 dark:text-white tracking-tight">{t('menu', 'Menu')}</h2>
+ <div className="flex flex-col items-center pt-3 pb-2 bg-white dark:bg-[#1C1C1E] border-b border-black/5 dark:border-white/5">
+ <div className="w-10 h-1 rounded-full bg-[#E5E5EA] dark:bg-[#3A3A3C] mb-3" />
+ <div className="w-full flex items-center justify-between px-4 pb-1">
+ <h2 className="text-[17px] font-semibold text-black dark:text-white tracking-[-0.41px]">{t('menu', 'Menu')}</h2>
  <button 
  onClick={() => setMobileMenuOpen(false)} 
- className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+ className="w-7 h-7 rounded-full bg-[#E5E5EA] dark:bg-[#3A3A3C] flex items-center justify-center text-[#8E8E93] hover:opacity-80 active:scale-95 transition-all"
  >
  <X className="w-4 h-4" />
  </button>
@@ -99,8 +93,8 @@ export default function MobileBottomNav() {
  </div>
 
  {/* Native Scrollable List */}
- <div className="flex-1 overflow-y-auto px-4 py-4 pb-[env(safe-area-inset-bottom)]">
- <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 divide-y divide-slate-100 dark:divide-slate-800/50 ">
+ <div className="flex-1 overflow-y-auto px-4 py-4 pb-[env(safe-area-inset-bottom)] -webkit-overflow-scrolling-touch">
+ <div className="bg-white dark:bg-[#2C2C2E] rounded-[10px] overflow-hidden divide-y divide-[#E5E5EA] dark:divide-[#3A3A3C]">
  {overflowItems.map((item, index) => {
    const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin", "/optavel", "/logistics", "/real-estate", "/retail", "/hotel", "/pharmacy", "/religion"].includes(item.path);
    const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
@@ -112,42 +106,44 @@ export default function MobileBottomNav() {
  to={item.path}
  onClick={() => setMobileMenuOpen(false)}
  className={cn(
- "flex items-center gap-4 px-5 py-4 transition-colors active:bg-slate-200/50 dark:active:bg-slate-800/50",
- isActive ? "bg-white dark:bg-slate-950" : "bg-transparent hover:bg-white/50 dark:hover:bg-slate-900"
+ "flex items-center gap-3.5 px-4 py-3 transition-colors active:bg-[#E5E5EA] dark:active:bg-[#3A3A3C]",
+ isActive ? "bg-[#F2F2F7]/50 dark:bg-[#1C1C1E]/50" : "bg-transparent"
  )}
  >
  <div className={cn(
- "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
- isActive ? "bg-primary/10 text-primary" : "bg-slate-200/50 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+ "w-[30px] h-[30px] rounded-[7px] flex items-center justify-center transition-colors",
+ isActive ? "bg-primary text-white drop-shadow-md" : "bg-white dark:bg-[#1C1C1E] text-primary"
  )}>
  <IconComp className="w-4 h-4" strokeWidth={isActive ? 2.5 : 2} />
  </div>
  <span className={cn(
- "text-[16px] font-semibold tracking-tight flex-1",
- isActive ? "text-primary" : "text-slate-700 dark:text-slate-300"
+ "text-[17px] tracking-[-0.41px] flex-1",
+ isActive ? "text-primary font-semibold" : "text-black dark:text-white font-normal"
  )}>
  {t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label)}
  </span>
  {/* Chevron for native feel */}
- <ChevronRight className="w-5 h-5 text-slate-300 dark:text-slate-600" />
+ <ChevronRight className="w-[18px] h-[18px] text-[#C7C7CC] dark:text-[#5A5A5F]" strokeWidth={2.5} />
  </Link>
  );
 })}
-          <div className="border-t border-primary/40 dark:border-primary/40 mt-4 pt-2">
-            <div className="px-5 py-4 flex flex-col gap-4">
-              <div className="flex items-center justify-between">
-                <span className="text-[16px] font-semibold tracking-tight text-slate-700 dark:text-slate-300">
+ </div>
+          <div className="mt-5 bg-white dark:bg-[#2C2C2E] rounded-[10px] overflow-hidden divide-y divide-[#E5E5EA] dark:divide-[#3A3A3C]">
+            <div className="flex flex-col">
+              <div className="flex items-center justify-between px-4 py-3">
+                <span className="text-[17px] tracking-[-0.41px] text-black dark:text-white font-normal">
                   {t('theme', 'Theme')}
                 </span>
                 <ThemeToggle />
               </div>
 
               {/* Language Switcher */}
-              <div className="flex items-center justify-between">
-                <span className="text-[16px] font-semibold tracking-tight text-slate-700 dark:text-slate-300">Language</span>
+              <div className="flex items-center justify-between px-4 py-3 border-t border-[#E5E5EA] dark:border-[#3A3A3C]">
+                <span className="text-[17px] tracking-[-0.41px] text-black dark:text-white font-normal">Language</span>
                 <select 
                   onChange={(e) => window.location.reload()} // Simplified for mobile
-                  className="bg-transparent border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1 text-sm text-foreground outline-none"
+                  className="bg-transparent border-0 pr-0 text-[#8E8E93] text-[17px] outline-none"
+                  style={{ direction: 'rtl' }}
                 >
                   <option value="en">English 🇬🇧</option>
                   <option value="es">Español 🇪🇸</option>
@@ -157,8 +153,8 @@ export default function MobileBottomNav() {
 
               {/* Workspace Switcher */}
               {user?.available_companies?.length > 1 && (
-                <div className="flex items-center justify-between">
-                  <span className="text-[16px] font-semibold tracking-tight text-slate-700 dark:text-slate-300">Workspace</span>
+                <div className="flex items-center justify-between px-4 py-3 border-t border-[#E5E5EA] dark:border-[#3A3A3C]">
+                  <span className="text-[17px] tracking-[-0.41px] text-black dark:text-white font-normal">Workspace</span>
                   <select
                     value={user.company_id}
                     onChange={async (e) => {
@@ -174,7 +170,8 @@ export default function MobileBottomNav() {
                         window.location.href = '/';
                       }
                     }}
-                    className="bg-transparent border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1 text-sm text-foreground outline-none max-w-[150px] truncate"
+                    className="bg-transparent border-0 pr-0 text-[#8E8E93] text-[17px] outline-none max-w-[150px] truncate"
+                    style={{ direction: 'rtl' }}
                   >
                     {user.available_companies.map(comp => (
                       <option key={comp.id} value={comp.id}>{comp.name}</option>
@@ -186,8 +183,8 @@ export default function MobileBottomNav() {
               {/* Super Admin Switchers */}
               {user?.role === 'super_admin' && (
                 <>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[16px] font-semibold tracking-tight text-amber-600 dark:text-amber-500">Industry</span>
+                  <div className="flex items-center justify-between px-4 py-3 border-t border-[#E5E5EA] dark:border-[#3A3A3C]">
+                    <span className="text-[17px] tracking-[-0.41px] text-amber-600 dark:text-amber-500 font-normal">Industry</span>
                     <select
                       value={sessionStorage.getItem('slate_industry_override') || 'law'}
                       onChange={(e) => {
@@ -200,7 +197,8 @@ export default function MobileBottomNav() {
                           window.location.href = '/';
                         }
                       }}
-                      className="bg-amber-50 dark:bg-amber-950/20 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 dark:border-amber-900 rounded-lg px-2 py-1 text-sm text-amber-700 dark:text-amber-400 outline-none"
+                      className="bg-transparent border-0 pr-0 text-[#8E8E93] text-[17px] outline-none"
+                      style={{ direction: 'rtl' }}
                     >
                       <option value="law">Law Firm</option>
                       <option value="accounting">Accounting</option>
@@ -213,14 +211,15 @@ export default function MobileBottomNav() {
                     </select>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <span className="text-[16px] font-semibold tracking-tight text-indigo-600 dark:text-indigo-500">Components</span>
+                  <div className="flex items-center justify-between px-4 py-3 border-t border-[#E5E5EA] dark:border-[#3A3A3C]">
+                    <span className="text-[17px] tracking-[-0.41px] text-indigo-600 dark:text-indigo-500 font-normal">Components</span>
                     <select
                       value=""
                       onChange={(e) => {
                         if (e.target.value) window.location.href = `/orbit-test/${e.target.value}`;
                       }}
-                      className="bg-indigo-50 dark:bg-indigo-950/20 border-[0.5px] border-black/9 dark:border-white/8 border-indigo-200 dark:border-indigo-900 rounded-lg px-2 py-1 text-sm text-indigo-700 dark:text-indigo-400 outline-none max-w-[140px]"
+                      className="bg-transparent border-0 pr-0 text-[#8E8E93] text-[17px] outline-none max-w-[140px]"
+                      style={{ direction: 'rtl' }}
                     >
                       <option value="" disabled>View Component...</option>
                       <option value="AdminDashboard">Admin Dashboard</option>
@@ -235,26 +234,27 @@ export default function MobileBottomNav() {
                 </>
               )}
             </div>
+          </div>
+            
+            <div className="mt-5 mb-8 bg-white dark:bg-[#2C2C2E] rounded-[10px] overflow-hidden">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
                 base44.auth.logout();
               }}
-              className="w-full flex items-center gap-4 px-5 py-4 transition-colors active:bg-red-50 dark:active:bg-red-950/30 text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3.5 transition-colors active:bg-[#E5E5EA] dark:active:bg-[#3A3A3C] text-[#FF3B30] dark:text-[#FF453A]"
             >
-              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-500">
-                <LogOut className="w-4 h-4" strokeWidth={2} />
-              </div>
-              <span className="text-[16px] font-semibold tracking-tight flex-1 text-left">
+              <LogOut className="w-[18px] h-[18px]" strokeWidth={2} />
+              <span className="text-[17px] font-normal tracking-[-0.41px]">
                 {t('log_out', 'Log out')}
               </span>
             </button>
-          </div>
+            </div>
+            </div>
         </div>
- </div>
- </div>
  </div>
  )}
  </>
  );
 }
+

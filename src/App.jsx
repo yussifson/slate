@@ -1095,6 +1095,8 @@ function SuperAdminRoute() {
   return <Outlet />;
 }
 
+import { CapacitorUpdater } from '@capgo/capacitor-updater';
+
 function App() {
   const { currentSubdomain } = getSubdomainAndBase();
   const isNativeApp = isDesktopApp();
@@ -1102,7 +1104,10 @@ function App() {
 
   useEffect(() => {
     initPowerSync().catch(console.error);
-  }, []);
+    if (isNativeApp) {
+      CapacitorUpdater.notifyAppReady().catch(console.error);
+    }
+  }, [isNativeApp]);
 
   return (
     <PowerSyncContext.Provider value={powerSync}>

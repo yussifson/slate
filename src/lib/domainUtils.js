@@ -52,7 +52,11 @@ export function isDesktopApp() {
   const ua = window.navigator.userAgent.toLowerCase();
   const isElectronEnv = ua.includes('electron');
   const isTauri = !!window.__TAURI__;
-  const isCapacitor = !!window.Capacitor && window.Capacitor.isNative === true;
-  const isFileProtocol = window.location.protocol === 'file:' || window.location.protocol.startsWith('app') || window.location.protocol.startsWith('tauri');
-  return isElectronEnv || isTauri || isCapacitor || isFileProtocol;
+  const isCapacitor = !!window.Capacitor || ua.includes('capacitor');
+  const isFileProtocol = window.location.protocol === 'file:' || window.location.protocol.startsWith('app') || window.location.protocol.startsWith('tauri') || window.location.protocol === 'capacitor:';
+  
+  // Fallback: If we are on Android/iOS and the host is localhost, it's definitely a native app wrapper (like Capacitor)
+  const isMobileLocalhost = (ua.includes('android') || ua.includes('iphone') || ua.includes('ipad')) && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  
+  return isElectronEnv || isTauri || isCapacitor || isFileProtocol || isMobileLocalhost;
 }

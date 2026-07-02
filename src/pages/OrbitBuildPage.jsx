@@ -573,13 +573,11 @@ export default function OrbitBuildPage() {
  case 'bookings':
  case 'reservations':
  return <UnivBooking title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
- case 'appointments':
  case 'scheduling':
  case 'schedule':
  return <UnivAppointments title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
  case 'assetmanagement':
  case 'assets':
- case 'inventory':
  case 'equipment':
  return <UnivAssetManagement title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
  case 'supportticket':
@@ -648,7 +646,7 @@ export default function OrbitBuildPage() {
  case 'payment':
  case 'payments':
  return <UnivPayment />;
- case 'subscription':
+ case 'procurement':
  case 'purchasing':
  return <UnivProcurement />;
  case 'pos':
@@ -877,7 +875,6 @@ export default function OrbitBuildPage() {
  case 'leadmagnet': return <UnivLeadMagnet />;
 
  // Customer Success & Support Suite
- case 'supportticket': return <UnivSupportTicket />;
  case 'kbarticle': return <UnivKbArticle />;
  case 'slaagreement': return <UnivSlaAgreement />;
  case 'churnrisk': return <UnivChurnRisk />;

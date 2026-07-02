@@ -231,10 +231,10 @@ export default function AppLayout() {
 }
 
  return (
- <div className="flex flex-col h-[100dvh] bg-slate-50/50 dark:bg-background overflow-hidden relative selection:bg-primary/20 w-full max-w-full">
+ <div className="flex flex-col h-[100dvh] bg-[#F2F2F7] dark:bg-background overflow-hidden relative selection:bg-primary/20 w-full max-w-full md:bg-slate-50/50 overscroll-y-none">
   {/* Custom Electron Title Bar - only renders in the desktop app */}
   <ElectronTitleBar />
-  <div className="flex flex-1 overflow-hidden relative">
+  <div className="flex flex-1 overflow-hidden relative overscroll-y-none">
  {/* Global Ambient Orbit Background - Unified Optavel Theme */}
  <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-white dark:bg-[#0A0F1C] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Clean White Background with subtle Emerald Green accents */}
@@ -334,7 +334,7 @@ export default function AppLayout() {
  toggleBolt={toggleBolt}
  />
   <div className="flex-1 relative flex overflow-hidden">
-   <main className="flex-1 w-full mx-auto px-6 md:px-8 lg:px-10 pt-6 pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-6 overflow-y-auto">
+   <main className="flex-1 w-full mx-auto px-4 md:px-8 lg:px-10 pt-4 md:pt-6 pb-[calc(52px+env(safe-area-inset-bottom)+1rem)] md:pb-6 overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto">
      <AnimatePresence mode="wait">
        <motion.div
          key={location.pathname}
