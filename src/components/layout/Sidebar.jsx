@@ -879,6 +879,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  </div>
  ) : (
  <div className="pt-4" />
+ )}
 <nav className="flex-1 px-3 pb-6 space-y-4 overflow-y-auto overflow-x-hidden scrollbar-primary">
  {isOrbitMode && !collapsed && dynamicNavItems.length === 0 && orbitBuildNavItems.length === 0 && (
  <div className="mx-1 my-3 p-3 rounded-xl bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-center">
