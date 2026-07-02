@@ -46,7 +46,9 @@ export default function DataTable({ columns, data, isLoading, onRowClick, emptyT
 
   return (
     <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-      <div className="overflow-x-auto">
+      
+      {/* Desktop Table */}
+      <div className="hidden md:block overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
@@ -74,6 +76,40 @@ export default function DataTable({ columns, data, isLoading, onRowClick, emptyT
           </TableBody>
         </Table>
       </div>
+
+      {/* Mobile Stacked Cards */}
+      <div className="md:hidden flex flex-col divide-y divide-border">
+        {data.map((row, i) => (
+          <div 
+            key={row.id || i} 
+            className={"flex flex-col p-4 gap-2 " + (onRowClick ? "cursor-pointer active:bg-muted/50" : "")}
+            onClick={() => onRowClick?.(row)}
+          >
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-sm truncate pr-2">
+                {columns[0] ? (columns[0].render ? columns[0].render(row) : row[columns[0].accessor]) : ''}
+              </span>
+              {columns.length > 1 && (
+                <span className="text-xs font-medium text-[#71717a] dark:text-gray-400 whitespace-nowrap">
+                  {columns[1].render ? columns[1].render(row) : row[columns[1].accessor]}
+                </span>
+              )}
+            </div>
+            
+            {columns.length > 2 && (
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                {columns.slice(2, 6).map((col, j) => (
+                  <div key={j} className="flex flex-col">
+                    <span className="text-[10px] font-medium uppercase text-[#71717a] dark:text-gray-400 truncate">{col.header}</span>
+                    <span className="text-xs truncate">{col.render ? col.render(row) : row[col.accessor]}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
     </div>
   );
 }

@@ -192,7 +192,9 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
       </div>
 
       <div className="rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-        <div className="overflow-x-auto">
+        
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="text-[11px] text-[#71717a] dark:text-gray-400 bg-muted/50 border-b border-primary/40 uppercase tracking-[0.06em]">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -244,6 +246,49 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
             </tbody>
           </table>
         </div>
+
+        {/* Mobile Stacked Cards */}
+        <div className="md:hidden flex flex-col divide-y divide-border">
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <div key={row.id} className="flex flex-col p-4 gap-2">
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-sm truncate pr-2">
+                    {row.getVisibleCells()[0] ? flexRender(row.getVisibleCells()[0].column.columnDef.cell, row.getVisibleCells()[0].getContext()) : ''}
+                  </span>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-[#71717a] dark:text-gray-400" onClick={() => openEdit(row.original)}>
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-[#71717a] dark:text-gray-400" onClick={() => setDeleteRecord(row.original)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                {row.getVisibleCells().length > 1 && (
+                  <div className="grid grid-cols-2 gap-2 mt-1">
+                    {row.getVisibleCells().slice(1, 5).map((cell) => (
+                      <div key={cell.id} className="flex flex-col">
+                        <span className="text-[10px] font-medium uppercase text-[#71717a] dark:text-gray-400 truncate">
+                          {cell.column.id.replace(/_/g, ' ')}
+                        </span>
+                        <div className="text-xs truncate">
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <div className="p-8 text-center flex flex-col items-center justify-center gap-2">
+              <Search className="w-8 h-8 text-[#71717a] dark:text-gray-400 opacity-30" />
+              <p className="text-sm font-medium text-foreground">No records found</p>
+            </div>
+          )}
+        </div>
+
       </div>
 
       <div className="flex items-center justify-end space-x-2 py-4">
