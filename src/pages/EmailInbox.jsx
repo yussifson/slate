@@ -486,31 +486,43 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
  </div>
 
  {/* Content */}
- <div className="flex-1 overflow-y-auto px-8 py-8">
+ <div className="flex-1 overflow-y-auto px-6 md:px-10 py-6 md:py-8 bg-background">
  {/* Subject */}
- <div className="flex items-start justify-between gap-4 mb-6">
- <h1 className="text-xl font-semibold text-foreground leading-snug">{email.subject || "(No subject)"}</h1>
- <button
- onClick={onToggleStar}
- className={cn("p-1.5 rounded-full transition-colors shrink-0 mt-0.5", isStarred ? "text-amber-400" : "text-[#71717a] dark:text-gray-400 hover:text-amber-400")}
- >
- <Star className="w-5 h-5" fill={isStarred ? "currentColor" : "none"} />
- </button>
+ <div className="flex items-center gap-3 mb-8">
+ <h1 className="text-[1.375rem] font-normal text-foreground leading-snug">{email.subject || "(No subject)"}</h1>
+ <span className="text-[10px] bg-muted/80 text-muted-foreground px-1.5 py-0.5 rounded-sm uppercase tracking-wider">Inbox</span>
  </div>
 
- {/* Sender card */}
- <div className="flex items-start gap-3 p-4 rounded-xl bg-muted/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-7">
- <img src={avatarUrl} alt={senderName} className="w-10 h-10 rounded-full shrink-0 object-cover border-[0.5px] border-black/9 dark:border-white/8 border-primary/40" />
- <div className="flex-1 min-w-0">
- <div className="flex items-start justify-between gap-4">
- <div>
- <p className="text-sm font-semibold text-foreground">{senderName}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{email.sender_email}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">To: {email.recipient_email || "me"}</p>
+ {/* Sender Row */}
+ <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
+ <div className="flex items-center gap-3.5">
+ <img src={avatarUrl} alt={senderName} className="w-10 h-10 rounded-full shrink-0 object-cover bg-muted" />
+ <div className="flex flex-col">
+ <div className="flex items-baseline gap-1.5 flex-wrap">
+ <span className="text-sm font-bold text-foreground">{senderName}</span>
+ <span className="text-xs text-muted-foreground">&lt;{email.sender_email}&gt;</span>
  </div>
- <p className="text-xs text-[#71717a] dark:text-gray-400 shrink-0 tracking-[0.04em]">
+ <div className="flex items-center gap-1 mt-0.5 text-xs text-muted-foreground cursor-pointer hover:underline decoration-muted-foreground/30 underline-offset-2">
+ <span>to {email.recipient_email || "me"}</span>
+ <svg className="w-3 h-3 opacity-60 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+ </div>
+ </div>
+ </div>
+ 
+ <div className="flex items-center gap-3.5 sm:mt-1 self-start sm:self-auto ml-13 sm:ml-0">
+ <span className="text-xs text-muted-foreground font-medium">
  {email.created_date ? format(new Date(email.created_date), "MMM d, yyyy, h:mm a") : ""}
- </p>
+ </span>
+ <div className="flex items-center gap-3 ml-2">
+ <button onClick={onToggleStar} className={cn("transition-colors hover:bg-muted/50 p-1.5 rounded-full -m-1.5", isStarred ? "text-amber-400" : "text-muted-foreground hover:text-amber-400")}>
+ <Star className="w-4 h-4" fill={isStarred ? "currentColor" : "none"} />
+ </button>
+ <button onClick={onReply} className="text-muted-foreground hover:text-foreground hover:bg-muted/50 p-1.5 rounded-full -m-1.5 transition-colors">
+ <Reply className="w-4 h-4" />
+ </button>
+ <button className="text-muted-foreground hover:text-foreground hover:bg-muted/50 p-1.5 rounded-full -m-1.5 transition-colors">
+ <MoreVertical className="w-4 h-4" />
+ </button>
  </div>
  </div>
  </div>
