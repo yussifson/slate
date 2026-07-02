@@ -11,8 +11,8 @@ export default function UnivHRSystem() {
   const [activeTab, setActiveTab] = useState("employees");
 
   return (
-    <div className="h-full flex flex-col w-full bg-background relative overflow-hidden custom-scrollbar">
-      <div className="px-4 sm:px-6 lg:px-8 pt-8 pb-4 shrink-0">
+    <div className="w-full">
+      <div className="pb-6 shrink-0">
         <PageHeader title="HR & Leave" subtitle="Manage your staff, departments, roles, and leave policies in one place." />
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6 w-full">
           <TabsList className="bg-muted p-1 rounded-xl grid w-full max-w-[500px] grid-cols-4">

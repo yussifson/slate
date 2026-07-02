@@ -349,7 +349,7 @@ export default function AppLayout() {
          animate={{ opacity: 1, y: 0 }}
          exit={{ opacity: 0, y: -10 }}
          transition={{ duration: 0.15, ease: "easeOut" }}
-         className="h-full"
+         className="min-h-full w-full flex flex-col"
        >
          <Outlet />
        </motion.div>
