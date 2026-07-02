@@ -46,7 +46,7 @@ export default function NotificationsInbox() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] })});
 
   const filteredNotifications = notifications.filter(n => {
-    const isRead = n.is_read === 'true';
+    const isRead = String(n.is_read) === 'true';
     if (activeTab === 'unread' && isRead) return false;
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
@@ -57,14 +57,14 @@ export default function NotificationsInbox() {
     return true;
   });
 
-  const unreadCount = notifications.filter(n => n.is_read !== 'true').length;
+  const unreadCount = notifications.filter(n => String(n.is_read) !== 'true').length;
 
   const handleAiTriage = async () => {
     if (aiBriefing) {
       setAiBriefing(null);
       return;
     }
-    const unread = notifications.filter(n => n.is_read !== 'true');
+    const unread = notifications.filter(n => String(n.is_read) !== 'true');
     if (unread.length === 0) {
       toast({ title: 'Inbox Zero', description: 'You have no unread notifications to triage.' });
       return;
@@ -85,7 +85,7 @@ export default function NotificationsInbox() {
   };
 
   const markAllAsRead = async () => {
-    const unread = notifications.filter(n => n.is_read !== 'true');
+    const unread = notifications.filter(n => String(n.is_read) !== 'true');
     try {
       await Promise.all(unread.map(n => base44.entities.Notification.update(n.id, { is_read: 'true' })));
       queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] });
@@ -213,8 +213,8 @@ export default function NotificationsInbox() {
               Unread
             </button>
           </div>
-          <div className="w-full sm:w-72 mt-2 sm:mt-0 p-1 relative">
-            <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
+          <div className="w-full sm:w-72 mt-2 sm:mt-0 p-1 relative flex items-center">
+            <Search className="w-4 h-4 absolute left-3.5 text-muted-foreground z-10" />
             <Input 
               placeholder="Search notifications..."
               value={searchQuery}
@@ -246,7 +246,7 @@ export default function NotificationsInbox() {
               </motion.div>
             ) : (
               filteredNotifications.map(notification => {
-                const isRead = notification.is_read === 'true';
+                const isRead = String(notification.is_read) === 'true';
                 return (
                   <motion.div 
                     key={notification.id}
@@ -255,12 +255,16 @@ export default function NotificationsInbox() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     onClick={() => {
-                      if (!isRead) markReadMutation.mutate(notification.id);
-                      if (notification.related_id) window.location.href = notification.related_id;
+                      if (!isRead) {
+                         markReadMutation.mutate(notification.id);
+                      }
+                      if (notification.related_id) {
+                         window.location.href = notification.related_id;
+                      }
                     }}
                     className={cn(
                       "group flex gap-4 p-5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all cursor-pointer",
-                      isRead ? "bg-card border-[0.5px] border-black/9 dark:border-white/8 hover:border-primary/30 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm" : "bg-primary/5 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] ring-1 ring-primary/10 hover:bg-primary/10"
+                      isRead ? "bg-card border-[0.5px] border-black/9 dark:border-white/8 hover:border-primary/30 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm" : "bg-primary/5 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] ring-1 ring-primary/10 hover:bg-primary/10"
                     )}
                   >
                     <div className="shrink-0">

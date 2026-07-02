@@ -37,7 +37,8 @@ export const NotificationService = {
         type,
         created_by: createdBy,
         is_read: 'false',
-        email_sent: 'false'
+        email_sent: 'false',
+        created_at: new Date().toISOString()
       };
       
       if (relatedId) payload.related_id = relatedId;
