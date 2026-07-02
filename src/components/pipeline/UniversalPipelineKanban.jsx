@@ -32,7 +32,7 @@ function AddItemDialog({ open, onClose, onAdd, pipeline, targetStageId }) {
     assignee: "",
     priority: "medium",
     due_date: "",
-    notes: "",
+    description: "",
     tags: ""
   });
   const [isAISuggesting, setIsAISuggesting] = useState(false);
@@ -52,7 +52,7 @@ function AddItemDialog({ open, onClose, onAdd, pipeline, targetStageId }) {
           content: `Generate brief notes for a pipeline item titled: "${form.title}" in a "${pipeline?.name || "general"}" pipeline.`
         }
       ]);
-      setForm(prev => ({ ...prev, notes: response.trim() }));
+      setForm(prev => ({ ...prev, description: response.trim() }));
     } catch (e) {
       console.error("AI suggestion failed:", e);
     } finally {
@@ -66,7 +66,7 @@ function AddItemDialog({ open, onClose, onAdd, pipeline, targetStageId }) {
       ...form,
       tags: form.tags ? form.tags.split(",").map(t => t.trim()).filter(Boolean) : []
     });
-    setForm({ title: "", assignee: "", priority: "medium", due_date: "", notes: "", tags: "" });
+    setForm({ title: "", assignee: "", priority: "medium", due_date: "", description: "", tags: "" });
     onClose();
   };
 
@@ -130,7 +130,7 @@ function AddItemDialog({ open, onClose, onAdd, pipeline, targetStageId }) {
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <Label>Notes</Label>
+              <Label>Description (Notes)</Label>
               <Button
                 size="sm"
                 variant="ghost"
@@ -143,8 +143,8 @@ function AddItemDialog({ open, onClose, onAdd, pipeline, targetStageId }) {
               </Button>
             </div>
             <Textarea
-              value={form.notes}
-              onChange={e => setForm(p => ({ ...p, notes: e.target.value }))}
+              value={form.description}
+              onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
               placeholder="Additional notes..."
               rows={3}
               className="resize-none text-sm"
@@ -171,19 +171,19 @@ function PipelineItemCard({ item, provided, snapshot, itemLabel }) {
     <div
       ref={provided.innerRef}
       {...provided.draggableProps}
-      className={`bg-card border rounded-2xl p-4 text-xs space-y-3 group cursor-pointer transition-all ${
+      className={`relative bg-card/80 backdrop-blur-md border border-white/10 dark:border-white/5 rounded-2xl p-4 text-xs space-y-3 group cursor-pointer transition-all duration-200 ${
         snapshot.isDragging
-          ? "border-primary/50 shadow-2xl rotate-2 scale-105"
-          : "border-black/5 dark:border-white/5 hover:border-primary/30 hover:shadow-lg shadow-sm"
+          ? "border-primary/50 shadow-2xl shadow-primary/10 rotate-2 scale-105 z-50 bg-card"
+          : "hover:border-primary/30 hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-white/5 shadow-sm hover:-translate-y-0.5"
       }`}
     >
       <div className="flex items-start gap-2">
-        <span {...provided.dragHandleProps} className="mt-0.5 cursor-grab active:cursor-grabbing shrink-0">
-          <GripVertical className="w-3 h-3 text-muted-foreground" />
+        <span {...provided.dragHandleProps} className="mt-0.5 cursor-grab active:cursor-grabbing shrink-0 opacity-0 group-hover:opacity-100 transition-opacity absolute top-4 left-2 -translate-x-full">
+          <GripVertical className="w-4 h-4 text-muted-foreground/50 hover:text-muted-foreground" />
         </span>
-        <p className="font-medium leading-tight line-clamp-2 flex-1">{item.title}</p>
+        <p className="font-semibold text-[13px] leading-snug line-clamp-2 flex-1 text-foreground/90">{item.title}</p>
         {item.priority && (
-          <span className={`shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-md uppercase ${PRIORITY_COLORS[item.priority] || ""}`}>
+          <span className={`shrink-0 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${PRIORITY_COLORS[item.priority] || ""}`}>
             {item.priority}
           </span>
         )}
@@ -203,9 +203,9 @@ function PipelineItemCard({ item, provided, snapshot, itemLabel }) {
           </div>
         )}
         {Array.isArray(item.tags) && item.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-1">
+          <div className="flex flex-wrap gap-1.5 mt-2">
             {item.tags.slice(0, 3).map(tag => (
-              <span key={tag} className="text-[9px] bg-muted text-muted-foreground rounded-full px-1.5 py-0.5">
+              <span key={tag} className="text-[9px] font-medium bg-secondary/50 text-secondary-foreground border border-black/5 dark:border-white/5 rounded-full px-2 py-0.5">
                 {tag}
               </span>
             ))}
@@ -234,13 +234,13 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
   }, [pipeline]);
 
   const stageItems = React.useMemo(() => {
-    const items = pipelineStates.filter(s => s.pipeline_id === pipeline?.id);
+    const items = pipelineStates.filter(s => s.category === pipeline?.id);
     const map = {};
     stages.forEach(s => {
-      map[s.id] = items.filter(it => it.current_stage_id === s.id);
+      map[s.id] = items.filter(it => it.status === s.id);
     });
     // Untracked: items with no stage match
-    const trackedIds = new Set(items.filter(it => stages.some(s => s.id === it.current_stage_id)).map(it => it.id));
+    const trackedIds = new Set(items.filter(it => stages.some(s => s.id === it.status)).map(it => it.id));
     map["__untracked__"] = items.filter(it => !trackedIds.has(it.id));
     return map;
   }, [pipelineStates, pipeline, stages]);
@@ -248,20 +248,16 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
   const moveMutation = useMutation({
     mutationFn: ({ stateId, itemData, stage }) => {
       if (stateId) {
-        return base44.entities.CasePipelineState.update(stateId, {
-          current_stage_id: stage.id,
-          current_stage_name: stage.name,
-          stage_entered_at: new Date().toISOString()
+        return base44.entities.Task.update(stateId, {
+          status: stage.id,
+          updated_at: new Date().toISOString()
         });
       }
-      return base44.entities.CasePipelineState.create({
+      return base44.entities.Task.create({
         company_id: companyId,
-        pipeline_id: pipeline.id,
-        current_stage_id: stage.id,
-        current_stage_name: stage.name,
-        stage_entered_at: new Date().toISOString(),
-        ...itemData,
-        stage_history: []
+        category: pipeline.id,
+        status: stage.id,
+        ...itemData
       });
     },
     onSuccess: () => {
@@ -270,13 +266,10 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
   });
 
   const createItemMutation = useMutation({
-    mutationFn: (itemData) => base44.entities.CasePipelineState.create({
+    mutationFn: (itemData) => base44.entities.Task.create({
       company_id: companyId,
-      pipeline_id: pipeline.id,
-      current_stage_id: addingToStage,
-      current_stage_name: stages.find(s => s.id === addingToStage)?.name || "",
-      stage_entered_at: new Date().toISOString(),
-      stage_history: [],
+      category: pipeline.id,
+      status: addingToStage,
       ...itemData
     }),
     onSuccess: () => {
@@ -298,47 +291,65 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
     });
   };
 
-  if (!pipeline || stages.length === 0) return null;
+  const [isDndReady, setIsDndReady] = useState(false);
 
-  const totalItems = pipelineStates.filter(s => s.pipeline_id === pipeline.id).length;
+  React.useEffect(() => {
+    const animation = requestAnimationFrame(() => setIsDndReady(true));
+    return () => {
+      cancelAnimationFrame(animation);
+      setIsDndReady(false);
+    };
+  }, []);
+
+  if (!pipeline || stages.length === 0 || !isDndReady) return null;
+
+  const totalItems = pipelineStates.filter(s => s.category === pipeline.id).length;
 
   return (
-    <div className="bg-card rounded-2xl border border-border overflow-hidden">
+    <div className="bg-card/50 backdrop-blur-3xl rounded-[2rem] border border-white/20 dark:border-white/10 shadow-xl overflow-hidden flex flex-col h-full relative">
+      {/* Background decoration */}
+      <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-primary/5 rounded-full blur-3xl pointer-events-none translate-x-1/3 -translate-y-1/2" />
+      <div className="absolute bottom-0 left-0 w-[30rem] h-[30rem] bg-blue-500/5 rounded-full blur-3xl pointer-events-none -translate-x-1/2 translate-y-1/3" />
+
       {/* Header bar */}
-      <div className="px-4 py-3 border-b border-border bg-muted/30 flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-2.5">
-          <CheckCircle className="w-4 h-4 text-primary" />
-          <span className="text-sm font-semibold">{pipeline.name}</span>
-          <span className="text-xs text-muted-foreground">· drag {pipeline.item_label || "items"} between stages</span>
+      <div className="px-6 py-4 border-b border-white/10 dark:border-white/5 bg-background/40 backdrop-blur-xl flex items-center justify-between gap-4 flex-wrap relative z-10">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+            <CheckCircle className="w-4 h-4 text-primary" />
+          </div>
+          <div>
+            <span className="text-base font-bold tracking-tight text-foreground/90 block">{pipeline.name}</span>
+            <span className="text-[11px] text-muted-foreground font-medium">Drag {pipeline.item_label || "items"} between stages to update status</span>
+          </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground bg-muted rounded-full px-2.5 py-1">
+          <span className="text-[11px] font-semibold text-primary bg-primary/10 border border-primary/20 rounded-full px-3 py-1 shadow-sm">
             {totalItems} {pipeline.item_label || "items"}
           </span>
         </div>
       </div>
 
-      {/* Kanban */}
-      <div className="p-4 overflow-x-auto">
+      {/* Kanban Container */}
+      <div className="flex-1 overflow-x-auto overflow-y-hidden p-6 relative z-10 scrollbar-thin scrollbar-thumb-primary/10 hover:scrollbar-thumb-primary/20">
         <DragDropContext onDragEnd={onDragEnd}>
-          <div
-            className="flex gap-4 pb-4"
-            style={{ minWidth: `${stages.length * 280}px` }}
-          >
+          <div className="flex flex-nowrap gap-6 h-full items-start">
             {stages.map(stage => {
               const cards = stageItems[stage.id] || [];
               return (
-                <div key={stage.id} className="w-[280px] shrink-0 flex flex-col gap-3 bg-muted/30 p-3 rounded-2xl border-[0.5px] border-black/5 dark:border-white/5">
+                <div key={stage.id} className="w-[320px] shrink-0 flex flex-col gap-4 bg-background/40 backdrop-blur-2xl p-4 rounded-3xl border border-white/20 dark:border-white/5 shadow-2xl shadow-black/5 max-h-full">
                   {/* Stage header */}
-                  <div className="flex items-center gap-2 px-1">
-                    <div className="w-3 h-3 rounded-full shrink-0 shadow-sm" style={{ backgroundColor: stage.color }} />
-                    <span className="text-sm font-bold tracking-tight flex-1 truncate">{stage.name}</span>
-                    <span className="text-[11px] font-semibold bg-background border border-border px-2 py-0.5 rounded-full shrink-0 shadow-sm">
+                  <div className="flex items-center gap-3 px-2">
+                    <div className="relative flex items-center justify-center w-5 h-5">
+                      <div className="absolute inset-0 rounded-full opacity-20" style={{ backgroundColor: stage.color }} />
+                      <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: stage.color }} />
+                    </div>
+                    <span className="text-sm font-bold tracking-tight flex-1 truncate text-foreground/80">{stage.name}</span>
+                    <span className="text-[11px] font-bold bg-secondary text-secondary-foreground px-2.5 py-0.5 rounded-full shadow-inner">
                       {cards.length}
                     </span>
                     <button
                       onClick={() => setAddingToStage(stage.id)}
-                      className="text-muted-foreground hover:text-primary transition-colors bg-background border border-border p-1 rounded-full shadow-sm hover:shadow-md ml-1"
+                      className="text-muted-foreground hover:text-primary transition-all bg-card/50 hover:bg-card border border-white/10 dark:border-white/5 p-1.5 rounded-full shadow-sm hover:shadow-md hover:-translate-y-0.5 ml-1"
                       title={`Add ${pipeline.item_label || "item"} to ${stage.name}`}
                     >
                       <Plus className="w-3.5 h-3.5" />
@@ -351,9 +362,9 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
                       <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        className={`flex-1 space-y-3 min-h-[200px] rounded-xl p-1 transition-all ${
+                        className={`flex-1 overflow-y-auto overflow-x-hidden space-y-3 min-h-[200px] rounded-2xl p-1.5 transition-all duration-300 scrollbar-thin scrollbar-thumb-black/5 dark:scrollbar-thumb-white/5 ${
                           snapshot.isDraggingOver
-                            ? "bg-primary/5 border-2 border-primary/20 border-dashed"
+                            ? "bg-primary/5 ring-1 ring-primary/20 ring-inset"
                             : ""
                         }`}
                       >
@@ -372,13 +383,13 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
                         {provided.placeholder}
                         {cards.length === 0 && !snapshot.isDraggingOver && (
                           <div
-                            className="h-20 rounded-2xl border-2 border-dashed border-black/5 dark:border-white/5 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-primary/30 hover:bg-primary/5 transition-all"
+                            className="h-24 mx-1 rounded-2xl border border-dashed border-black/10 dark:border-white/10 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-primary/30 hover:bg-primary/5 hover:shadow-sm transition-all group"
                             onClick={() => setAddingToStage(stage.id)}
                           >
-                            <div className="w-6 h-6 rounded-full bg-background border border-border shadow-sm flex items-center justify-center">
-                              <Plus className="w-3.5 h-3.5 text-muted-foreground" />
+                            <div className="w-8 h-8 rounded-full bg-card border border-white/10 shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+                              <Plus className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                             </div>
-                            <span className="text-[11px] font-medium text-muted-foreground">Add {pipeline.item_label || "item"}</span>
+                            <span className="text-[11px] font-semibold text-muted-foreground group-hover:text-primary transition-colors">Add {pipeline.item_label || "item"}</span>
                           </div>
                         )}
                       </div>
