@@ -655,10 +655,10 @@ export default function Automations() {
   return (
     <div className="h-full bg-slate-50 dark:bg-background overflow-hidden flex flex-col">
       {/* Header */}
-      <div className="flex-none p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-3 tracking-[-0.02em]">
-            <Wand2 className="w-8 h-8 text-primary" />
+      <div className="flex-none p-6 md:p-8 flex flex-wrap justify-between items-start md:items-center gap-4">
+        <div className="min-w-0">
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-3 tracking-[-0.02em] flex-wrap">
+            <Wand2 className="w-8 h-8 text-primary flex-shrink-0" />
             Slate Flow Builder
           </h1>
           <p className="text-[#71717a] dark:text-gray-400 mt-1">
@@ -679,23 +679,23 @@ export default function Automations() {
             </>
           )}
             {mode === 'list' && (
-              <div className="flex gap-2 items-center">
+              <div className="flex flex-wrap gap-2 items-center">
                 <Button 
                   onClick={() => setMode('logs')} 
                   variant="outline"
-                  className="gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]"
+                  className="gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]"
                 >
                   View Logs
                 </Button>
                 <Button 
                   onClick={() => window.dispatchEvent(new CustomEvent("orbit:inject", { detail: { label: "OrbitFlow Automation Builder", query: "Help me build an automation flow." } }))} 
                   variant="secondary"
-                  className="gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-900"
+                  className="gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-900"
                 >
-                  <OrbitIcon className="w-4 h-4 fill-current" /> Automate with OrbitFlow
+                  <OrbitIcon className="w-4 h-4 fill-current flex-shrink-0" /> Automate with OrbitFlow
                 </Button>
-                <Button onClick={startNewFlow} className="gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]">
-                  <Plus className="w-4 h-4" /> Create New Flow
+                <Button onClick={startNewFlow} className="gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]">
+                  <Plus className="w-4 h-4 flex-shrink-0" /> Create New Flow
                 </Button>
               </div>
             )}
