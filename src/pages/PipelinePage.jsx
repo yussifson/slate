@@ -231,8 +231,11 @@ Make stages practical and industry-appropriate.`
         }
       ]);
 
+      // Ensure response is a string
+      const responseText = typeof response === 'string' ? response : (response ? JSON.stringify(response) : "");
+
       // Parse JSON from response
-      const jsonMatch = response.match(/\[[\s\S]*\]/);
+      const jsonMatch = responseText.match(/\[[\s\S]*\]/);
       if (jsonMatch) {
         const stages = JSON.parse(jsonMatch[0]);
         setSuggested(stages.map((s, i) => ({
@@ -369,7 +372,7 @@ function PipelineEditor({ pipeline, onClose, onSave }) {
             </div>
             <div className="space-y-1.5">
               <Label>Category</Label>
-              <Select value={form.category} onValueChange={v => setForm(p => ({ ...p, category: v }))}>
+              <Select value={form.category || "sales"} onValueChange={v => setForm(p => ({ ...p, category: v }))}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {PIPELINE_CATEGORIES.map(c => (
