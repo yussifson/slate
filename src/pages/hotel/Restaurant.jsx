@@ -181,7 +181,7 @@ Provide your response in a short, easy to read Markdown format with two sections
 });
 
  return (
- <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
+ <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
  <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("restaurant_room_service", "Restaurant & Room Service")}</h1>

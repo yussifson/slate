@@ -128,7 +128,7 @@ export default function OperationTheater() {
   if (isLoading) return <div className="p-8 flex justify-center text-[#71717a]">Loading OT Data...</div>;
 
   return (
-    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(236,72,153,0.04) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-card-foreground tracking-[-0.02em]">{t("operation_theater", "Operation Theater")}</h1>

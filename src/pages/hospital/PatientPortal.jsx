@@ -110,7 +110,7 @@ Recent Labs: ${labResults.map(l => l.test_name + '('+l.result_value+')').join(',
   }
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
+    <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header */}
       <div className="bg-gradient-to-r from-primary to-primary/90 rounded-2xl p-6 md:p-8 text-white relative overflow-hidden">
         <div className="relative z-10">

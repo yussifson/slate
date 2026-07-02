@@ -143,7 +143,7 @@ export default function HospitalClaims() {
   if (isLoading) return <div className="flex justify-center p-8">Loading claims data...</div>;
 
   return (
-    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">{t("insurance_claims", "Insurance Claims")}</h1>

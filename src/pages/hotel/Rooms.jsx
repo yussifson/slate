@@ -170,7 +170,7 @@ export default function Rooms() {
   if (isDbLoading) return <div className="flex items-center justify-center h-64 text-[#71717a] dark:text-gray-400">{t("loading_room_data", "Loading room data...")}</div>;
 
   return (
-    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
+    <div className="space-y-6">
       <div className="flex items-end justify-between gap-4">
         <div className="flex-1">
           <h1 className="text-3xl font-bold text-card-foreground tracking-tight mb-1">{t("room_management", "Room Management")}</h1>

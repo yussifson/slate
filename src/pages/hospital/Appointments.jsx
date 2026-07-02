@@ -205,7 +205,7 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
   if (isDbLoading) return <div className="flex items-center justify-center h-64 text-[#71717a] dark:text-gray-400">{t("loading_appointments", "Loading appointments...")}</div>;
 
   return (
-    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
+    <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">{t("appointments", "Appointments")}</h1>

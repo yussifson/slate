@@ -290,7 +290,7 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
  const floors = [1, 2, 3];
 
  return (
- <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
+ <div className="space-y-6">
   {/* Header */}
   <div className="flex justify-between items-end gap-4">
   <div className="flex-1">

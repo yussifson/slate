@@ -56,9 +56,6 @@ export default function ShipmentsTrackingNew() {
   return (
     <motion.div 
       className="min-h-screen pb-12"
-      style={{ 
-        background: "linear-gradient(135deg, rgba(2, 132, 199, 0.03) 0%, rgba(255, 255, 255, 0) 100%)" 
-      }}
       variants={containerVariants}
       initial="hidden"
       animate="visible"
