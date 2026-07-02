@@ -364,11 +364,6 @@ export const base44 = {
                         if (validCols) {
                             cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).filter(([k]) => validCols.includes(k)));
                         }
-                        // Serialize objects/arrays for SQLite text columns
-                        cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).map(([k, v]) => {
-                            if (v !== null && typeof v === 'object') return [k, JSON.stringify(v)];
-                            return [k, v];
-                        }));
 
                         const securedPayload = await securePayload(cleanedPayload);
                         const tempId = crypto.randomUUID();
@@ -377,13 +372,19 @@ export const base44 = {
                             securedPayload.created_at = new Date().toISOString();
                         }
 
-                        const keys = Object.keys(securedPayload);
+                        // Serialize objects/arrays for SQLite text columns
+                        const sqlitePayload = Object.fromEntries(Object.entries(securedPayload).map(([k, v]) => {
+                            if (v !== null && typeof v === 'object') return [k, JSON.stringify(v)];
+                            return [k, v];
+                        }));
+
+                        const keys = Object.keys(sqlitePayload);
                         const placeholders = keys.map(() => '?').join(', ');
-                        const values = Object.values(securedPayload);
+                        const values = Object.values(sqlitePayload);
 
                         await powerSync.execute(`INSERT INTO ${tableName} (${keys.join(', ')}) VALUES (${placeholders})`, values);
 
-                        await mirrorToSupabase(tableName, securedPayload, 'upsert');
+                        mirrorToSupabase(tableName, securedPayload, 'upsert');
                         
                         // Fire-and-forget activity log
                         (async () => {
@@ -439,25 +440,25 @@ export const base44 = {
                         if (validCols) {
                             cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).filter(([k]) => validCols.includes(k)));
                         }
-                        // Serialize objects/arrays for SQLite text columns
-                        cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).map(([k, v]) => {
-                            if (v !== null && typeof v === 'object') return [k, JSON.stringify(v)];
-                            return [k, v];
-                        }));
 
                         const securedPayload = await securePayload(cleanedPayload);
                         securedPayload.updated_at = new Date().toISOString();
 
-                        const keys = Object.keys(securedPayload);
+                        // Serialize objects/arrays for SQLite text columns
+                        const sqlitePayload = Object.fromEntries(Object.entries(securedPayload).map(([k, v]) => {
+                            if (v !== null && typeof v === 'object') return [k, JSON.stringify(v)];
+                            return [k, v];
+                        }));
+
+                        const keys = Object.keys(sqlitePayload);
                         const assignments = keys.map(k => `${k} = ?`).join(', ');
-                        const values = [...Object.values(securedPayload), id];
+                        const values = [...Object.values(sqlitePayload), id];
 
                         await powerSync.execute(`UPDATE ${tableName} SET ${assignments} WHERE id = ?`, values);
 
-                        const updatedData = await powerSync.getOptional(`SELECT * FROM ${tableName} WHERE id = ?`, [id]);
-                        if (updatedData) {
-                            await mirrorToSupabase(tableName, updatedData, 'upsert');
-                        }
+                        // mirrorToSupabase needs the actual objects, not strings. Since we don't want to parse the whole DB row,
+                        // and upsert only updates provided keys, we can just pass securedPayload (along with id).
+                        mirrorToSupabase(tableName, { ...securedPayload, id }, 'upsert');
                         
                         // Fire-and-forget activity log
                         (async () => {
