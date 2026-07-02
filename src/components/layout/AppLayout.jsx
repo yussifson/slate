@@ -21,6 +21,8 @@ import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
 import FeatureAnnouncementModal from "./FeatureAnnouncementModal";
 import ElectronTitleBar from "./ElectronTitleBar";
 
+import { cn } from "@/lib/utils";
+
 export default function AppLayout() {
  const { t} = useTranslation();
   const { user } = useAuth();
