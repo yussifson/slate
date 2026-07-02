@@ -656,7 +656,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  isDynamic: true
 }));
  
- const baseNav = user?.role === "client" ? clientNav : (activeIndustry === 'orbit_build' ? coreOrbitNav : filteredCompanyNav);
+ const PORTAL_ROLES = ['client', 'patient', 'guest', 'parent', 'student', 'learner', 'trainee', 'customer'];
+ const isPortalUser = PORTAL_ROLES.includes(user?.role?.toLowerCase());
+
+ const baseNav = activeIndustry === 'orbit_build' ? coreOrbitNav : filteredCompanyNav;
  const createSlateItem = { label: "Create Slate", icon: "PlusCircle", path: "/slate/create"};
  const marketplaceItem = { label: "Marketplace", icon: "Store", path: "/marketplace"};
  const notificationsItem = { label: "Notifications", icon: "Bell", path: "/notifications"};
@@ -667,46 +670,54 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const intelligenceNav = [{ label: "Intelligence", icon: "Brain", path: "/intelligence"}];
  const remainingBaseNav = baseNav.filter(item => item.label !== "Dashboard" && item.path !== "/");
  
- let rawNavItems = isAdmin
- ? [...dashboardNav, ...intelligenceNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, notificationsItem, createSlateItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup"}]
- : [...dashboardNav, ...intelligenceNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, notificationsItem, marketplaceItem];
+ let rawNavItems = [];
 
-if (user?.role === "super_admin") {
-    rawNavItems.push({ label: "Global Admin", icon: "Globe", path: "/super-admin" });
-    rawNavItems.push({ label: "Enterprise Admin", icon: "Building2", path: "/enterprise-admin" });
-} else if (user?.role === "enterprise_admin" || isAdmin) {
-    rawNavItems.push({ label: "Enterprise Admin", icon: "Building2", path: "/enterprise-admin" });
-}
+ if (isPortalUser) {
+   rawNavItems = clientNav;
+ } else {
+   rawNavItems = isAdmin
+   ? [...dashboardNav, ...intelligenceNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, notificationsItem, createSlateItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup"}]
+   : [...dashboardNav, ...intelligenceNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, notificationsItem, marketplaceItem];
 
-  if (!rawNavItems.some(n => n.path === '/feature-insider')) {
-    rawNavItems.push({ label: "Feature Insider", path: "/feature-insider", icon: "FlaskConical" });
+  if (user?.role === "super_admin") {
+      rawNavItems.push({ label: "Global Admin", icon: "Globe", path: "/super-admin" });
+      rawNavItems.push({ label: "Enterprise Admin", icon: "Building2", path: "/enterprise-admin" });
+  } else if (user?.role === "enterprise_admin" || isAdmin) {
+      rawNavItems.push({ label: "Enterprise Admin", icon: "Building2", path: "/enterprise-admin" });
   }
 
-  // Inject Pipeline system for all industries
-  if (!rawNavItems.some(n => n.path === '/pipeline')) {
-    rawNavItems.push({ label: "Pipelines", path: "/pipeline", icon: "GitBranch" });
+    if (!rawNavItems.some(n => n.path === '/feature-insider')) {
+      rawNavItems.push({ label: "Feature Insider", path: "/feature-insider", icon: "FlaskConical" });
+    }
   }
 
-  // Inject Task management system for all industries
-  if (!rawNavItems.some(n => n.path === '/tasks')) {
-    rawNavItems.push({ label: "Tasks", path: "/tasks", icon: "CheckSquare" });
-  }
+  if (!isPortalUser) {
+    // Inject Pipeline system for all industries
+    if (!rawNavItems.some(n => n.path === '/pipeline')) {
+      rawNavItems.push({ label: "Pipelines", path: "/pipeline", icon: "GitBranch" });
+    }
 
-  // Inject Trust Accounting system for all industries
-  if (!rawNavItems.some(n => n.path === '/real-estate/trust-accounting')) {
-    rawNavItems.push({ label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: "Wallet" });
-  }
+    // Inject Task management system for all industries
+    if (!rawNavItems.some(n => n.path === '/tasks')) {
+      rawNavItems.push({ label: "Tasks", path: "/tasks", icon: "CheckSquare" });
+    }
 
-  // Inject Unified Inbox
-  if (!rawNavItems.some(n => n.path === '/unified-inbox')) {
-    rawNavItems.push({ label: "Unified Inbox", path: "/unified-inbox", icon: "Inbox" });
-  }
+    // Inject Trust Accounting system for all industries
+    if (!rawNavItems.some(n => n.path === '/real-estate/trust-accounting')) {
+      rawNavItems.push({ label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: "Wallet" });
+    }
 
-  // Inject Documents & Signatures
-  if (!rawNavItems.some(n => n.path === '/documents')) {
-    rawNavItems.push({ label: "Documents & Signatures", path: "/documents", icon: "FileSignature" });
-  } else {
-    rawNavItems = rawNavItems.map(n => n.path === '/documents' ? { ...n, label: "Documents & Signatures", icon: "FileSignature" } : n);
+    // Inject Unified Inbox
+    if (!rawNavItems.some(n => n.path === '/unified-inbox')) {
+      rawNavItems.push({ label: "Unified Inbox", path: "/unified-inbox", icon: "Inbox" });
+    }
+
+    // Inject Documents & Signatures
+    if (!rawNavItems.some(n => n.path === '/documents')) {
+      rawNavItems.push({ label: "Documents & Signatures", path: "/documents", icon: "FileSignature" });
+    } else {
+      rawNavItems = rawNavItems.map(n => n.path === '/documents' ? { ...n, label: "Documents & Signatures", icon: "FileSignature" } : n);
+    }
   }
 
   // Deduplicate by label to prevent double Dashboards, and apply static nav overrides

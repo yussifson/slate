@@ -412,9 +412,11 @@ export const AuthProvider = ({ children }) => {
         return url;
       };
 
+      let baseRole = profile?.role || sessionUser.user_metadata?.role;
+        
       newUser = { 
         ...newUser,
-        role: ['super_admin', 'admin'].includes(newUser?.role) ? newUser.role : (staffRecord?.role || newUser?.role || 'lawyer'),
+        role: ['super_admin', 'admin'].includes(baseRole) ? baseRole : (staffRecord?.role || baseRole || 'lawyer'),
         company_logo_url: cleanLogo(companyData?.logo_url || null),
         company_name: companyData?.name || newUser?.company_name || sessionUser.user_metadata?.company_name || "Slate",
         company_industry: companyData?.industry_type || newUser?.industry_type || localStorage.getItem('slate_onboarding_industry') || 'law',
