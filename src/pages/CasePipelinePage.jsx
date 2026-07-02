@@ -54,7 +54,7 @@ function PipelineCard({ pipeline, onEdit, onDelete, caseStates}) {
  {pipeline.stages?.length > 0 && (
  <div className="p-3">
  <div className="flex items-center gap-2 overflow-x-auto pb-1">
- {pipeline.stages.sort((a, b) => a.order - b.order).map((stage, idx) => {
+ {Array.isArray(pipeline.stages) && [...pipeline.stages].sort((a, b) => a.order - b.order).map((stage, idx) => {
 
  return (
  <React.Fragment key={stage.id}>
@@ -160,7 +160,7 @@ function PipelineEditor({ pipeline, onClose, onSave}) {
  </div>
 
  <div className="space-y-2">
- {form.stages.sort((a, b) => a.order - b.order).map((stage, idx) => {
+ {Array.isArray(form.stages) && [...form.stages].sort((a, b) => a.order - b.order).map((stage, idx) => {
 
  return (
  <div key={stage.id} className="flex items-center gap-2 p-2.5 bg-muted/30 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
