@@ -62,8 +62,10 @@ function AddItemDialog({ open, onClose, onAdd, pipeline, targetStageId }) {
 
   const handleSubmit = () => {
     if (!form.title.trim()) return;
+    const stageId = addingToStage; // capture before close
     onAdd({
       ...form,
+      targetStageId: stageId,
       tags: form.tags ? form.tags.split(",").map(t => t.trim()).filter(Boolean) : []
     });
     setForm({ title: "", assignee: "", priority: "medium", due_date: "", description: "", tags: "" });
@@ -283,15 +285,18 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
   });
 
   const createItemMutation = useMutation({
-    mutationFn: (itemData) => base44.entities.CasePipelineState.create({
-      company_id: companyId,
-      pipeline_id: pipeline.id,
-      current_stage_id: addingToStage,
-      current_stage_name: stages.find(s => s.id === addingToStage)?.name || "",
-      stage_entered_at: new Date().toISOString(),
-      case_title: itemData.title,
-      stage_history: JSON.stringify(itemData)
-    }),
+    mutationFn: (itemData) => {
+      const { targetStageId, ...extraData } = itemData;
+      return base44.entities.CasePipelineState.create({
+        company_id: companyId,
+        pipeline_id: pipeline.id,
+        current_stage_id: targetStageId,
+        current_stage_name: stages.find(s => s.id === targetStageId)?.name || "",
+        stage_entered_at: new Date().toISOString(),
+        case_title: itemData.title,
+        stage_history: JSON.stringify(extraData)
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pipeline-states"] });
       toast({ title: `${pipeline?.item_label || "Item"} added!` });
@@ -388,8 +393,10 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
                             : ""
                         }`}
                       >
-                        {cards.map((item, index) => (
-                          <Draggable key={item.id} draggableId={item.id} index={index}>
+                        {cards.map((item, index) => {
+                          const safeId = item.id || `temp-${index}`;
+                          return (
+                          <Draggable key={safeId} draggableId={safeId} index={index}>
                             {(provided, snapshot) => (
                               <PipelineItemCard
                                 item={item}
@@ -399,7 +406,7 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
                               />
                             )}
                           </Draggable>
-                        ))}
+                        )})}
                         {provided.placeholder}
                         {cards.length === 0 && !snapshot.isDraggingOver && (
                           <div
