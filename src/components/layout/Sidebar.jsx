@@ -373,6 +373,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
  const coreOrbitNav = [
  { label: "Dashboard", path: "/", icon: "Sparkles"},
+ { label: "Time Tracking", path: "/time-tracking", icon: "Clock"},
  { label: "Inbox", path: "/email-inbox", icon: "Mail"},
  { label: "Chat", path: "/chat", icon: "MessageCircle"},
  { label: "Board", path: "/board", icon: "LayoutGrid"},
@@ -414,8 +415,13 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 }));
 
   // Inject Branch Manager
-  if (user?.role === 'company_admin' || user?.available_companies?.length >= 1) {
-    filteredCompanyNav = [...filteredCompanyNav, { label: "Branch Manager", path: "/branch-manager", icon: "LayoutGrid" }];
+  if (['admin', 'enterprise_admin', 'super_admin'].includes(user?.role)) {
+    filteredCompanyNav = [...filteredCompanyNav, { label: "Branch Manager", path: "/branch-manager", icon: "Network" }];
+  }
+
+  // Inject Time Tracking default feature
+  if (!filteredCompanyNav.find(n => n.path === '/time-tracking')) {
+    filteredCompanyNav = [...filteredCompanyNav, { label: "Time Tracking", path: "/time-tracking", icon: "Clock" }];
   }
 
  const { data: customPages = []} = useQuery({
@@ -663,9 +669,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const isPortalUser = PORTAL_ROLES.includes(user?.role?.toLowerCase());
 
  const baseNav = activeIndustry === 'orbit_build' ? coreOrbitNav : filteredCompanyNav;
- const createSlateItem = { label: "Create Slate", icon: "PlusCircle", path: "/slate/create"};
- const marketplaceItem = { label: "Marketplace", icon: "Store", path: "/marketplace"};
- const notificationsItem = { label: "Notifications", icon: "Bell", path: "/notifications"};
+  const createSlateItem = { label: "Create Slate", icon: "Zap", path: "/slate/create"};
+  const marketplaceItem = { label: "Marketplace", icon: "Store", path: "/marketplace"};
+  const notificationsItem = { label: "Notifications", icon: "Bell", path: "/notifications"};
  
  // Put AI pages FIRST, then dynamic modules, custom pages, and FINALLY the baseNav (Chat, Board, Settings)
  // Extract dashboard from baseNav to put it at the very top
@@ -675,15 +681,20 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  
  let rawNavItems = [];
 
+ const isSuperAdmin = user?.role === "super_admin";
+
  if (isPortalUser) {
    rawNavItems = clientNav;
  } else {
    rawNavItems = isAdmin
-   ? [...dashboardNav, ...intelligenceNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, notificationsItem, createSlateItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup"}]
+   ? [...dashboardNav, ...intelligenceNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, notificationsItem, createSlateItem, marketplaceItem]
    : [...dashboardNav, ...intelligenceNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, notificationsItem, marketplaceItem];
 
-  if (user?.role === "super_admin") {
-      rawNavItems.push({ label: "Global Admin", icon: "Globe", path: "/super-admin" });
+    if (isAdmin && !isSuperAdmin) {
+      rawNavItems.push({ label: "Firm Setup", icon: "Settings", path: "/admin" });
+    }
+    if (isSuperAdmin) {
+      rawNavItems.push({ label: "Global Admin", icon: "ShieldAlert", path: "/super-admin" });
       rawNavItems.push({ label: "Enterprise Admin", icon: "Building2", path: "/enterprise-admin" });
   } else if (user?.role === "enterprise_admin" || isAdmin) {
       rawNavItems.push({ label: "Enterprise Admin", icon: "Building2", path: "/enterprise-admin" });

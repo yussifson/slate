@@ -6169,5 +6169,25 @@ export const AppSchema = new Schema({
         activity_type: column.text,
         notes: column.text,
         created_at: column.text
+    }),
+    univ_time_tracking: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        user_id: column.text,
+        user_name: column.text,
+        project_id: column.text,
+        task_id: column.text,
+        description: column.text,
+        date: column.text,
+        start_time: column.text,
+        end_time: column.text,
+        duration_minutes: column.integer,
+        is_billable: column.integer,
+        hourly_rate: column.real,
+        total_amount: column.real,
+        status: column.text,
+        ai_summary: column.text,
+        ai_tags: column.text
     })
 });

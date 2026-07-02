@@ -165,6 +165,7 @@ import TowerManager from './pages/TowerManager';
 const MasterPortalRouter = React.lazy(() => import('./components/portal/MasterPortalRouter'));
 
 import PortalManagement from './pages/settings/PortalManagement';
+import TimeTracking from './pages/TimeTracking';
 
 // School Pages
 import SchoolStudents from './pages/school/Students';
@@ -928,6 +929,7 @@ function PlatformRoutes() {
       <Route path="/loyalty" element={<Loyalty />} />
       <Route path="/pickups" element={<GenericModulePage />} />
       <Route path="/orders" element={<Orders />} />
+      <Route path="/time-tracking" element={<TimeTracking />} />
       {/* High School (SHS) Routes */}
       <Route path="/s/" element={<SHSDashboard />} />
       <Route path="/s/students" element={<SHSStudents />} />
