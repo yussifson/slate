@@ -63,7 +63,15 @@ function AIPipelineAssistant({ pipeline, items, onClose }) {
   const [isThinking, setIsThinking] = useState(false);
   const bottomRef = useRef(null);
 
-  const stages = Array.isArray(pipeline.stages) ? [...pipeline.stages].sort((a, b) => a.order - b.order) : [];
+  const stages = React.useMemo(() => {
+    if (!pipeline?.stages) return [];
+    try {
+      const parsed = typeof pipeline.stages === 'string' ? JSON.parse(pipeline.stages) : pipeline.stages;
+      return Array.isArray(parsed) ? [...parsed].sort((a, b) => a.order - b.order) : [];
+    } catch (e) {
+      return [];
+    }
+  }, [pipeline]);
 
   const stageStats = stages.map(stage => {
     const stageItems = items.filter(it => it.current_stage_id === stage.id);
@@ -328,7 +336,15 @@ function PipelineEditor({ pipeline, onClose, onSave }) {
     setShowAISuggester(false);
   };
 
-  const sortedStages = Array.isArray(form.stages) ? [...form.stages].sort((a, b) => a.order - b.order) : [];
+  const sortedStages = React.useMemo(() => {
+    if (!form.stages) return [];
+    try {
+      const parsed = typeof form.stages === 'string' ? JSON.parse(form.stages) : form.stages;
+      return Array.isArray(parsed) ? [...parsed].sort((a, b) => a.order - b.order) : [];
+    } catch (e) {
+      return [];
+    }
+  }, [form.stages]);
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -495,7 +511,15 @@ function PipelineEditor({ pipeline, onClose, onSave }) {
 
 // Pipeline card for admin list
 function PipelineCard({ pipeline, onEdit, onDelete, itemCount }) {
-  const stages = Array.isArray(pipeline.stages) ? [...pipeline.stages].sort((a, b) => a.order - b.order) : [];
+  const stages = React.useMemo(() => {
+    if (!pipeline?.stages) return [];
+    try {
+      const parsed = typeof pipeline.stages === 'string' ? JSON.parse(pipeline.stages) : pipeline.stages;
+      return Array.isArray(parsed) ? [...parsed].sort((a, b) => a.order - b.order) : [];
+    } catch (e) {
+      return [];
+    }
+  }, [pipeline]);
 
   return (
     <motion.div

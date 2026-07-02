@@ -171,10 +171,10 @@ function PipelineItemCard({ item, provided, snapshot, itemLabel }) {
     <div
       ref={provided.innerRef}
       {...provided.draggableProps}
-      className={`bg-card border rounded-xl p-3 text-xs space-y-2 group cursor-pointer transition-all ${
+      className={`bg-card border rounded-2xl p-4 text-xs space-y-3 group cursor-pointer transition-all ${
         snapshot.isDragging
-          ? "border-primary/50 shadow-lg rotate-1 scale-105"
-          : "border-border hover:border-primary/30 hover:shadow-md"
+          ? "border-primary/50 shadow-2xl rotate-2 scale-105"
+          : "border-black/5 dark:border-white/5 hover:border-primary/30 hover:shadow-lg shadow-sm"
       }`}
     >
       <div className="flex items-start gap-2">
@@ -225,7 +225,12 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
 
   const stages = React.useMemo(() => {
     if (!pipeline?.stages) return [];
-    return [...pipeline.stages].sort((a, b) => a.order - b.order);
+    try {
+      const parsed = typeof pipeline.stages === 'string' ? JSON.parse(pipeline.stages) : pipeline.stages;
+      return Array.isArray(parsed) ? [...parsed].sort((a, b) => a.order - b.order) : [];
+    } catch (e) {
+      return [];
+    }
   }, [pipeline]);
 
   const stageItems = React.useMemo(() => {
@@ -317,23 +322,23 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
       <div className="p-4 overflow-x-auto">
         <DragDropContext onDragEnd={onDragEnd}>
           <div
-            className="flex gap-3"
-            style={{ minWidth: `${stages.length * 220}px` }}
+            className="flex gap-4 pb-4"
+            style={{ minWidth: `${stages.length * 280}px` }}
           >
             {stages.map(stage => {
               const cards = stageItems[stage.id] || [];
               return (
-                <div key={stage.id} className="w-52 shrink-0 flex flex-col gap-2">
+                <div key={stage.id} className="w-[280px] shrink-0 flex flex-col gap-3 bg-muted/30 p-3 rounded-2xl border-[0.5px] border-black/5 dark:border-white/5">
                   {/* Stage header */}
                   <div className="flex items-center gap-2 px-1">
-                    <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: stage.color }} />
-                    <span className="text-xs font-semibold flex-1 truncate">{stage.name}</span>
-                    <span className="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full shrink-0">
+                    <div className="w-3 h-3 rounded-full shrink-0 shadow-sm" style={{ backgroundColor: stage.color }} />
+                    <span className="text-sm font-bold tracking-tight flex-1 truncate">{stage.name}</span>
+                    <span className="text-[11px] font-semibold bg-background border border-border px-2 py-0.5 rounded-full shrink-0 shadow-sm">
                       {cards.length}
                     </span>
                     <button
                       onClick={() => setAddingToStage(stage.id)}
-                      className="text-muted-foreground hover:text-primary transition-colors"
+                      className="text-muted-foreground hover:text-primary transition-colors bg-background border border-border p-1 rounded-full shadow-sm hover:shadow-md ml-1"
                       title={`Add ${pipeline.item_label || "item"} to ${stage.name}`}
                     >
                       <Plus className="w-3.5 h-3.5" />
@@ -346,10 +351,10 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
                       <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        className={`flex-1 space-y-2 min-h-[140px] rounded-xl p-2 transition-all ${
+                        className={`flex-1 space-y-3 min-h-[200px] rounded-xl p-1 transition-all ${
                           snapshot.isDraggingOver
-                            ? "bg-primary/5 border border-primary/20 border-dashed"
-                            : "bg-muted/20"
+                            ? "bg-primary/5 border-2 border-primary/20 border-dashed"
+                            : ""
                         }`}
                       >
                         {cards.map((item, index) => (
@@ -367,11 +372,13 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
                         {provided.placeholder}
                         {cards.length === 0 && !snapshot.isDraggingOver && (
                           <div
-                            className="h-14 rounded-xl border border-dashed border-border flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-all"
+                            className="h-20 rounded-2xl border-2 border-dashed border-black/5 dark:border-white/5 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-primary/30 hover:bg-primary/5 transition-all"
                             onClick={() => setAddingToStage(stage.id)}
                           >
-                            <Plus className="w-3.5 h-3.5 text-muted-foreground" />
-                            <span className="text-[10px] text-muted-foreground">Add {pipeline.item_label || "item"}</span>
+                            <div className="w-6 h-6 rounded-full bg-background border border-border shadow-sm flex items-center justify-center">
+                              <Plus className="w-3.5 h-3.5 text-muted-foreground" />
+                            </div>
+                            <span className="text-[11px] font-medium text-muted-foreground">Add {pipeline.item_label || "item"}</span>
                           </div>
                         )}
                       </div>
