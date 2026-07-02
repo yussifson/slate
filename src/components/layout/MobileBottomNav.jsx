@@ -6,13 +6,34 @@ import { cn} from "@/lib/utils";
 import { useNavigation} from "@/hooks/useNavigation";
 import { useAuth} from "@/lib/AuthContext";
 import { useImpersonation} from "@/lib/ImpersonationContext";
-import { X, MoreHorizontal, LayoutDashboard, Briefcase, Users, Calendar, Inbox, Blocks, ShoppingCart, Settings, Shield, PanelLeft, ChevronRight, LogOut} from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 import { base44 } from "@/api/base44Client";
 
-// Mapping string icons to components
-const ICON_MAP = {
- LayoutDashboard, Briefcase, Users, Calendar, Inbox, Blocks, ShoppingCart, Settings, Shield
+const SHORT_NAMES = {
+  "Dashboard": "Home",
+  "Parents & Guardians": "Parents",
+  "Teachers & Staff": "Teachers",
+  "Classes & Subjects": "Classes",
+  "Legal Research": "Research",
+  "Conflict Check": "Conflicts",
+  "Documents": "Docs",
+  "Document Management": "Docs",
+  "Case Outcomes": "Outcomes",
+  "Email Inbox": "Inbox",
+  "HR & Leave": "HR",
+  "Institution Settings": "Settings",
+  "Student Portal": "Portal",
+  "Parent Portal": "Portal",
+  "Teacher Evaluations": "Evals",
+  "Support Center": "Support",
+  "Fee Management": "Fees",
+  "Canteen POS": "POS",
+  "Asset Management": "Assets",
+  "Inventory": "Inventory",
+  "Maintenance": "Maintenance",
+  "Procurement": "Procurement",
+  "Human Resources": "HR"
 };
 
 export default function MobileBottomNav() {
@@ -35,7 +56,8 @@ export default function MobileBottomNav() {
  {bottomNavItems.map((item) => {
    const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin", "/optavel", "/logistics", "/real-estate", "/retail", "/hotel", "/pharmacy", "/religion"].includes(item.path);
    const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
- const IconComp = typeof item.icon === 'string' ? (ICON_MAP[item.icon] || LayoutDashboard) : (item.icon || LayoutDashboard);
+   const IconComp = typeof item.icon === 'string' ? (LucideIcons[item.icon] || LucideIcons.LayoutDashboard) : (item.icon || LucideIcons.LayoutDashboard);
+   const shortLabel = SHORT_NAMES[item.label] || item.label;
  
  return (
  <Link
@@ -47,8 +69,8 @@ export default function MobileBottomNav() {
  <div className={cn("relative flex items-center justify-center mb-0.5 transition-colors duration-200", isActive ? "text-primary" : "text-[#8E8E93] dark:text-[#98989D]")}>
  <IconComp className={cn("w-[22px] h-[22px] transition-transform duration-200", isActive ? "scale-110 drop-shadow-sm" : "")} strokeWidth={isActive ? 2.5 : 2} />
  </div>
- <span className={cn("text-[10px] font-medium leading-none tracking-tight transition-colors duration-200", isActive ? "text-primary" : "text-[#8E8E93] dark:text-[#98989D]")}>
- {t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label)}
+ <span className={cn("text-[10px] font-medium leading-none tracking-tight transition-colors duration-200 truncate px-1 text-center w-full", isActive ? "text-primary" : "text-[#8E8E93] dark:text-[#98989D]")}>
+ {t((shortLabel || '').toLowerCase().replace(/\s+/g, '_'), shortLabel)}
  </span>
  </Link>
  );
@@ -60,7 +82,7 @@ export default function MobileBottomNav() {
  className="relative flex flex-col items-center justify-center w-full h-full min-w-[64px] active:scale-95 transition-transform duration-100 ease-in-out"
  >
  <div className={cn("relative flex items-center justify-center mb-0.5 transition-colors duration-200", mobileMenuOpen ? "text-primary" : "text-[#8E8E93] dark:text-[#98989D]")}>
- <MoreHorizontal className={cn("w-[22px] h-[22px] transition-transform duration-200", mobileMenuOpen ? "scale-110 drop-shadow-sm" : "")} strokeWidth={mobileMenuOpen ? 2.5 : 2} />
+ <LucideIcons.MoreHorizontal className={cn("w-[22px] h-[22px] transition-transform duration-200", mobileMenuOpen ? "scale-110 drop-shadow-sm" : "")} strokeWidth={mobileMenuOpen ? 2.5 : 2} />
  </div>
  <span className={cn("text-[10px] font-medium leading-none tracking-tight transition-colors duration-200", mobileMenuOpen ? "text-primary" : "text-[#8E8E93] dark:text-[#98989D]")}>
  {t("more", "More")}
@@ -81,61 +103,62 @@ export default function MobileBottomNav() {
  {/* Drag Handle & Header */}
  <div className="flex flex-col items-center pt-3 pb-2 bg-white dark:bg-[#1C1C1E] border-b border-black/5 dark:border-white/5">
  <div className="w-10 h-1 rounded-full bg-[#E5E5EA] dark:bg-[#3A3A3C] mb-3" />
- <div className="w-full flex items-center justify-between px-4 pb-1">
- <h2 className="text-[17px] font-semibold text-black dark:text-white tracking-[-0.41px]">{t('menu', 'Menu')}</h2>
- <button 
- onClick={() => setMobileMenuOpen(false)} 
- className="w-7 h-7 rounded-full bg-[#E5E5EA] dark:bg-[#3A3A3C] flex items-center justify-center text-[#8E8E93] hover:opacity-80 active:scale-95 transition-all"
- >
- <X className="w-4 h-4" />
- </button>
- </div>
- </div>
-
- {/* Native Scrollable List */}
- <div className="flex-1 overflow-y-auto px-4 py-4 pb-[env(safe-area-inset-bottom)] -webkit-overflow-scrolling-touch">
- <div className="bg-white dark:bg-[#2C2C2E] rounded-[10px] overflow-hidden divide-y divide-[#E5E5EA] dark:divide-[#3A3A3C]">
- {overflowItems.map((item, index) => {
-   const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin", "/optavel", "/logistics", "/real-estate", "/retail", "/hotel", "/pharmacy", "/religion"].includes(item.path);
-   const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
- const IconComp = typeof item.icon === 'string' ? (ICON_MAP[item.icon] || LayoutDashboard) : (item.icon || LayoutDashboard);
- 
- return (
- <Link
- key={item.path}
- to={item.path}
- onClick={() => setMobileMenuOpen(false)}
- className={cn(
- "flex items-center gap-3.5 px-4 py-3 transition-colors active:bg-[#E5E5EA] dark:active:bg-[#3A3A3C]",
- isActive ? "bg-[#F2F2F7]/50 dark:bg-[#1C1C1E]/50" : "bg-transparent"
- )}
- >
- <div className={cn(
- "w-[30px] h-[30px] rounded-[7px] flex items-center justify-center transition-colors",
- isActive ? "bg-primary text-white drop-shadow-md" : "bg-white dark:bg-[#1C1C1E] text-primary"
- )}>
- <IconComp className="w-4 h-4" strokeWidth={isActive ? 2.5 : 2} />
- </div>
- <span className={cn(
- "text-[17px] tracking-[-0.41px] flex-1",
- isActive ? "text-primary font-semibold" : "text-black dark:text-white font-normal"
- )}>
- {t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label)}
- </span>
- {/* Chevron for native feel */}
- <ChevronRight className="w-[18px] h-[18px] text-[#C7C7CC] dark:text-[#5A5A5F]" strokeWidth={2.5} />
- </Link>
- );
-})}
- </div>
-          <div className="mt-5 bg-white dark:bg-[#2C2C2E] rounded-[10px] overflow-hidden divide-y divide-[#E5E5EA] dark:divide-[#3A3A3C]">
-            <div className="flex flex-col">
-              <div className="flex items-center justify-between px-4 py-3">
-                <span className="text-[17px] tracking-[-0.41px] text-black dark:text-white font-normal">
-                  {t('theme', 'Theme')}
-                </span>
-                <ThemeToggle />
-              </div>
+           <div className="w-full flex items-center justify-between px-4 pb-1">
+           <h2 className="text-[17px] font-semibold text-black dark:text-white tracking-[-0.41px]">{t('menu', 'Menu')}</h2>
+           <button 
+           onClick={() => setMobileMenuOpen(false)} 
+           className="w-7 h-7 rounded-full bg-[#E5E5EA] dark:bg-[#3A3A3C] flex items-center justify-center text-[#8E8E93] hover:opacity-80 active:scale-95 transition-all"
+           >
+           <LucideIcons.X className="w-4 h-4" />
+           </button>
+           </div>
+           </div>
+          
+           {/* Native Scrollable List */}
+           <div className="flex-1 overflow-y-auto px-4 py-4 pb-[env(safe-area-inset-bottom)] -webkit-overflow-scrolling-touch">
+           <div className="bg-white dark:bg-[#2C2C2E] rounded-[10px] overflow-hidden divide-y divide-[#E5E5EA] dark:divide-[#3A3A3C]">
+           {overflowItems.map((item, index) => {
+             const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin", "/optavel", "/logistics", "/real-estate", "/retail", "/hotel", "/pharmacy", "/religion"].includes(item.path);
+             const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
+             const IconComp = typeof item.icon === 'string' ? (LucideIcons[item.icon] || LucideIcons.LayoutDashboard) : (item.icon || LucideIcons.LayoutDashboard);
+             const shortLabel = SHORT_NAMES[item.label] || item.label;
+           
+           return (
+           <Link
+           key={item.path}
+           to={item.path}
+           onClick={() => setMobileMenuOpen(false)}
+           className={cn(
+           "flex items-center gap-3.5 px-4 py-3 transition-colors active:bg-[#E5E5EA] dark:active:bg-[#3A3A3C]",
+           isActive ? "bg-[#F2F2F7]/50 dark:bg-[#1C1C1E]/50" : "bg-transparent"
+           )}
+           >
+           <div className={cn(
+           "w-[30px] h-[30px] rounded-[7px] flex items-center justify-center transition-colors",
+           isActive ? "bg-primary text-white drop-shadow-md" : "bg-white dark:bg-[#1C1C1E] text-primary"
+           )}>
+           <IconComp className="w-4 h-4" strokeWidth={isActive ? 2.5 : 2} />
+           </div>
+           <span className={cn(
+           "text-[17px] tracking-[-0.41px] flex-1",
+           isActive ? "text-primary font-semibold" : "text-black dark:text-white font-normal"
+           )}>
+           {t((shortLabel || '').toLowerCase().replace(/\s+/g, '_'), shortLabel)}
+           </span>
+           {/* Chevron for native feel */}
+           <LucideIcons.ChevronRight className="w-[18px] h-[18px] text-[#C7C7CC] dark:text-[#5A5A5F]" strokeWidth={2.5} />
+           </Link>
+           );
+          })}
+           </div>
+                    <div className="mt-5 bg-white dark:bg-[#2C2C2E] rounded-[10px] overflow-hidden divide-y divide-[#E5E5EA] dark:divide-[#3A3A3C]">
+                      <div className="flex flex-col">
+                        <div className="flex items-center justify-between px-4 py-3">
+                          <span className="text-[17px] tracking-[-0.41px] text-black dark:text-white font-normal">
+                            {t('theme', 'Theme')}
+                          </span>
+                          <ThemeToggle />
+                        </div>
 
               {/* Language Switcher */}
               <div className="flex items-center justify-between px-4 py-3 border-t border-[#E5E5EA] dark:border-[#3A3A3C]">
