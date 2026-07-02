@@ -5,6 +5,8 @@ import { isDesktopApp } from '@/lib/domainUtils';
 import { getSubdomainAndBase } from './domainUtils';
 import { useImpersonation } from './ImpersonationContext';
 
+export const PORTAL_ROLES = ['client', 'patient', 'guest', 'parent', 'student', 'learner', 'trainee', 'customer', 'policyholder', 'member', 'tenant', 'landlord', 'employee'];
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -257,25 +259,27 @@ export const AuthProvider = ({ children }) => {
           }
         }
 
-                const _payload = {
-          id: sessionUser.id,
-          role: invitedRole || 'lawyer', // Default role for net-new independent signups
-          company_id: invitedCompanyId,
-          company_name: null,
-          email: sessionUser.email?.toLowerCase() || null
-        };
-        const _keys = Object.keys(_payload);
-        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        await powerSync.execute(`INSERT INTO profiles (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
-        const __resNew = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
-        const newProfile = __resNew.rows && __resNew.rows.length > 0 ? __resNew.rows.item(0) : null;
-        const insertError = null;
-        
-        if (!insertError) {
-          profile = newProfile;
-          profileError = null;
-        } else {
-          console.error("Failed to insert profile on login:", insertError);
+        if (!PORTAL_ROLES.includes(invitedRole)) {
+            const _payload = {
+              id: sessionUser.id,
+              role: invitedRole || 'lawyer', // Default role for net-new independent signups
+              company_id: invitedCompanyId,
+              company_name: null,
+              email: sessionUser.email?.toLowerCase() || null
+            };
+            const _keys = Object.keys(_payload);
+            const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+            await powerSync.execute(`INSERT INTO profiles (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+            const __resNew = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
+            const newProfile = __resNew.rows && __resNew.rows.length > 0 ? __resNew.rows.item(0) : null;
+            const insertError = null;
+            
+            if (!insertError) {
+              profile = newProfile;
+              profileError = null;
+            } else {
+              console.error("Failed to insert profile on login:", insertError);
+            }
         }
       } else if (profile && !profile.company_id && sessionUser.user_metadata?.company_id) {
         const { data: updatedProfile, error: updateError } = await supabase
@@ -345,7 +349,7 @@ export const AuthProvider = ({ children }) => {
         const uAccess = __resUA.rows ? (__resUA.rows._array || Array.from(__resUA.rows)) : [];
         const __resSA = await powerSync.execute(`SELECT company_id FROM staff_records WHERE user_email LIKE ?`, [sessionUser.email]);
         const sAccess = __resSA.rows ? (__resSA.rows._array || Array.from(__resSA.rows)) : [];
-        const __resPU = await powerSync.execute(`SELECT company_id FROM portal_users WHERE user_id = ?`, [sessionUser.id]);
+        const __resPU = await powerSync.execute(`SELECT company_id FROM portal_users WHERE email LIKE ?`, [sessionUser.email]);
         const pAccess = __resPU.rows ? (__resPU.rows._array || Array.from(__resPU.rows)) : [];
         
         const cIds = new Set();
@@ -605,7 +609,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const PORTAL_ROLES = ['client', 'patient', 'guest', 'parent', 'student', 'learner', 'trainee', 'customer', 'policyholder', 'member', 'tenant', 'landlord', 'employee'];
   const isPortalUser = user?.role ? PORTAL_ROLES.includes(user.role.toLowerCase()) : false;
 
   const contextValue = useMemo(() => ({
