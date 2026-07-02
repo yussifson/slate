@@ -234,13 +234,24 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
   }, [pipeline]);
 
   const stageItems = React.useMemo(() => {
-    const items = pipelineStates.filter(s => s.category === pipeline?.id);
+    const items = pipelineStates.filter(s => s.pipeline_id === pipeline?.id).map(s => {
+      let extraData = {};
+      try {
+        extraData = typeof s.stage_history === 'string' ? JSON.parse(s.stage_history) : s.stage_history;
+      } catch (e) { }
+      return {
+        ...s,
+        ...extraData,
+        title: s.case_title || extraData?.title || "Untitled"
+      };
+    });
+
     const map = {};
     stages.forEach(s => {
-      map[s.id] = items.filter(it => it.status === s.id);
+      map[s.id] = items.filter(it => it.current_stage_id === s.id);
     });
     // Untracked: items with no stage match
-    const trackedIds = new Set(items.filter(it => stages.some(s => s.id === it.status)).map(it => it.id));
+    const trackedIds = new Set(items.filter(it => stages.some(s => s.id === it.current_stage_id)).map(it => it.id));
     map["__untracked__"] = items.filter(it => !trackedIds.has(it.id));
     return map;
   }, [pipelineStates, pipeline, stages]);
@@ -248,16 +259,22 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
   const moveMutation = useMutation({
     mutationFn: ({ stateId, itemData, stage }) => {
       if (stateId) {
-        return base44.entities.Task.update(stateId, {
-          status: stage.id,
-          updated_at: new Date().toISOString()
+        return base44.entities.CasePipelineState.update(stateId, {
+          current_stage_id: stage.id,
+          current_stage_name: stage.name,
+          stage_entered_at: new Date().toISOString()
         });
       }
-      return base44.entities.Task.create({
+      
+      const { id, current_stage_id, current_stage_name, stage_entered_at, pipeline_id, company_id, case_title, ...extraData } = itemData;
+      return base44.entities.CasePipelineState.create({
         company_id: companyId,
-        category: pipeline.id,
-        status: stage.id,
-        ...itemData
+        pipeline_id: pipeline.id,
+        current_stage_id: stage.id,
+        current_stage_name: stage.name,
+        stage_entered_at: new Date().toISOString(),
+        case_title: itemData.title,
+        stage_history: JSON.stringify(extraData)
       });
     },
     onSuccess: () => {
@@ -266,11 +283,14 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
   });
 
   const createItemMutation = useMutation({
-    mutationFn: (itemData) => base44.entities.Task.create({
+    mutationFn: (itemData) => base44.entities.CasePipelineState.create({
       company_id: companyId,
-      category: pipeline.id,
-      status: addingToStage,
-      ...itemData
+      pipeline_id: pipeline.id,
+      current_stage_id: addingToStage,
+      current_stage_name: stages.find(s => s.id === addingToStage)?.name || "",
+      stage_entered_at: new Date().toISOString(),
+      case_title: itemData.title,
+      stage_history: JSON.stringify(itemData)
     }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pipeline-states"] });
@@ -303,7 +323,7 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
 
   if (!pipeline || stages.length === 0 || !isDndReady) return null;
 
-  const totalItems = pipelineStates.filter(s => s.category === pipeline.id).length;
+  const totalItems = pipelineStates.filter(s => s.pipeline_id === pipeline.id).length;
 
   return (
     <div className="bg-card/50 backdrop-blur-3xl rounded-[2rem] border border-white/20 dark:border-white/10 shadow-xl overflow-hidden flex flex-col h-full relative">
