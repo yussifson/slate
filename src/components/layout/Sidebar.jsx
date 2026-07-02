@@ -66,6 +66,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const navigate = useNavigate();
  const [mobileOpen, setMobileOpen] = useState(false);
  const [dynamicModules, setDynamicModules] = useState([]);
+ const [deletedDynamicModules, setDeletedDynamicModules] = useState([]);
  const [openMenuId, setOpenMenuId] = useState(null);
  const [renameData, setRenameData] = useState(null);
  const [deleteData, setDeleteData] = useState(null);
@@ -160,12 +161,13 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  if (!isAdmin) {
  query = query.eq('status', 'published');
 } else {
- query = query.in('status', ['published', 'draft']);
+ query = query.in('status', ['published', 'draft', 'deleted']);
 }
 
  const { data} = await query;
  const filteredData = (data || []).filter(m => !m.industry_type || m.industry_type === activeIndustry);
- setDynamicModules(filteredData);
+ setDynamicModules(filteredData.filter(m => m.status !== 'deleted'));
+ setDeletedDynamicModules(filteredData.filter(m => m.status === 'deleted'));
 } catch (err) {
  console.error("Failed to load dynamic nav", err);
 }
@@ -781,9 +783,10 @@ if (user?.role === "super_admin") {
  const confirmDelete = async () => {
  if (deleteData) {
  setDynamicModules(prev => prev.filter(m => m.id !== deleteData.id));
- await powerSync.execute(`DELETE FROM module_definitions WHERE id = ?`, [deleteData.id]);
+ await powerSync.execute(`UPDATE module_definitions SET status = 'deleted' WHERE id = ?`, [deleteData.id]);
  setDeleteData(null);
-}
+ toast.success("Feature deleted");
+ }
 };
 
   const confirmRename = async () => {
@@ -1142,34 +1145,55 @@ if (user?.role === "super_admin") {
         </DialogDescription>
       </DialogHeader>
       <div className="py-4 space-y-2 max-h-[300px] overflow-y-auto">
-        {Object.entries(navOverridesData?.overrides || {}).filter(([_, data]) => data.hidden || (isAdmin && data.deleted)).length === 0 ? (
+        {Object.entries(navOverridesData?.overrides || {}).filter(([_, data]) => data.hidden || (isAdmin && data.deleted)).length === 0 && deletedDynamicModules.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">No hidden or deleted pages.</p>
         ) : (
-          Object.entries(navOverridesData?.overrides || {}).filter(([_, data]) => data.hidden || (isAdmin && data.deleted)).map(([path, data]) => {
-            // Find original label by matching path across rawNavItems or just using path
-            const originalItem = rawNavItems.find(i => i.path === path);
-            const label = data.customName || originalItem?.label || path;
-            return (
-              <div key={path} className="flex items-center justify-between p-2 rounded-lg border">
+          <>
+            {Object.entries(navOverridesData?.overrides || {}).filter(([_, data]) => data.hidden || (isAdmin && data.deleted)).map(([path, data]) => {
+              const originalItem = rawNavItems.find(i => i.path === path);
+              const label = data.customName || originalItem?.label || path;
+              return (
+                <div key={path} className="flex items-center justify-between p-2 rounded-lg border">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">{label}</span>
+                    {data.deleted && <span className="text-[9px] bg-red-500/10 text-red-500 px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-semibold">Deleted</span>}
+                  </div>
+                  <Button size="sm" variant="outline" onClick={async () => {
+                    try {
+                      const currentOverrides = navOverridesData?.overrides || {};
+                      const newOverrides = { ...currentOverrides, [path]: { ...currentOverrides[path], hidden: false, deleted: false } };
+                      await saveNavOverrides(newOverrides);
+                      toast.success("Page restored");
+                    } catch (err) {
+                      toast.error("Failed to restore page");
+                    }
+                  }}>
+                    Restore
+                  </Button>
+                </div>
+              );
+            })}
+            
+            {deletedDynamicModules.map(m => (
+              <div key={m.id} className="flex items-center justify-between p-2 rounded-lg border">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">{label}</span>
-                  {data.deleted && <span className="text-[9px] bg-red-500/10 text-red-500 px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-semibold">Deleted</span>}
+                  <span className="text-sm font-medium">{m.name}</span>
+                  <span className="text-[9px] bg-red-500/10 text-red-500 px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-semibold">Deleted App</span>
                 </div>
                 <Button size="sm" variant="outline" onClick={async () => {
                   try {
-                    const currentOverrides = navOverridesData?.overrides || {};
-                    const newOverrides = { ...currentOverrides, [path]: { ...currentOverrides[path], hidden: false, deleted: false } };
-                    await saveNavOverrides(newOverrides);
-                    toast.success("Page restored");
+                    await powerSync.execute(`UPDATE module_definitions SET status = 'published' WHERE id = ?`, [m.id]);
+                    toast.success("Feature restored");
+                    // Data syncs automatically via postgres_changes channel defined in fetchDynamicNav
                   } catch (err) {
-                    toast.error("Failed to restore page");
+                    toast.error("Failed to restore feature");
                   }
                 }}>
                   Restore
                 </Button>
               </div>
-            );
-          })
+            ))}
+          </>
         )}
       </div>
       <DialogFooter>
