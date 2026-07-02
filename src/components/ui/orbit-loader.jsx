@@ -99,7 +99,7 @@ export function PageLoader({ label = 'Loading...' }) {
 
         {/* Minimalist Spinner */}
         <div style={{
-          width: '24px', height: '24px',
+          width: '32px', height: '32px',
           border: '2px solid rgba(16,185,129,0.15)',
           borderTopColor: '#10B981',
           borderRadius: '50%',
