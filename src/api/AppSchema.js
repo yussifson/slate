@@ -328,8 +328,7 @@ export const AppSchema = new Schema({
         line_total: column.real,
         batch_number: column.text,
         inventory_id: column.text,
-        created_at: column.text,
-        default_password: column.text
+        created_at: column.text
     }),
     univ_pharmacy_prescriptions: new Table({
         id: column.text,
@@ -4785,7 +4784,8 @@ export const AppSchema = new Schema({
         status: column.text,
         expires_at: column.text,
         invited_by: column.text,
-        created_at: column.text
+        created_at: column.text,
+        default_password: column.text
     }),
     portal_users: new Table({
         id: column.text,
