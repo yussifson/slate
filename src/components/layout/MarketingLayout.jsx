@@ -6,7 +6,7 @@ import { Button} from '@/components/ui/button';
 import { useAuth} from '@/lib/AuthContext';
 import { getSubdomainAndBase} from '@/lib/domainUtils';
 import { Logo} from '@/components/ui/Logo';
-import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { LanguageSwitcher, GOOGLE_LANGUAGES } from "@/components/ui/LanguageSwitcher";
 
 export default function MarketingLayout({ children}) {
  const { t, i18n} = useTranslation();
@@ -17,19 +17,9 @@ export default function MarketingLayout({ children}) {
  const location = useLocation();
  const [geoPopup, setGeoPopup] = useState(null);
 
- const languages = [
- { code: 'en', name: 'English', flag: '🇺🇸'},
- { code: 'es', name: 'Español', flag: '🇪🇸'},
- { code: 'fr', name: 'Français', flag: '🇫🇷'},
- { code: 'de', name: 'Deutsch', flag: '🇩🇪'},
- { code: 'pt', name: 'Português', flag: '🇵🇹'},
- { code: 'zh', name: '中文', flag: '🇨🇳'},
- { code: 'ja', name: '日本語', flag: '🇯🇵'},
- { code: 'ar', name: 'العربية', flag: '🇸🇦'},
- { code: 'he', name: 'עברית', flag: '🇮🇱'}
- ];
+ const languages = GOOGLE_LANGUAGES;
 
- const currentLanguage = languages.find(l => l.code === (i18n.language || 'en').split('-')[0]) || languages[0];
+ const currentLanguage = languages.find(l => l.code === (i18n.language || 'en').split('-')[0]) || languages.find(l => l.code === 'en');
 
  const { baseDomain} = getSubdomainAndBase();
  const companySubdomain = user?.subdomain || user?.company_name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
@@ -264,14 +254,13 @@ export default function MarketingLayout({ children}) {
  <Globe className="w-3.5 h-3.5 text-primary" />
  {t("choose_language", "Choose Language")}
  </span>
- <div className="grid grid-cols-2 gap-2 mt-2">
+ <div className="grid grid-cols-2 gap-2 mt-2 max-h-[40vh] overflow-y-auto pr-1 custom-scrollbar">
  {languages.map((lang) => (
  <button
  key={lang.code}
  onClick={() => handleLanguageChange(lang.code)}
  className={`text-left px-3 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 border ${currentLanguage.code === lang.code ? 'text-primary bg-slate-50 border-primary/20' : 'text-slate-700 bg-white border-primary/40'}`}
  >
- <span>{lang.flag}</span>
  <span>{lang.name}</span>
  </button>
  ))}
@@ -382,14 +371,13 @@ export default function MarketingLayout({ children}) {
  <Globe className="w-3.5 h-3.5 text-primary" />
  {t("choose_language", "Choose Language")}
  </span>
- <div className="grid grid-cols-2 gap-2 mt-2">
+ <div className="grid grid-cols-2 gap-2 mt-2 max-h-[40vh] overflow-y-auto pr-1 custom-scrollbar">
  {languages.map((lang) => (
  <button
  key={lang.code}
  onClick={() => handleLanguageChange(lang.code)}
  className={`text-left px-3 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 border ${currentLanguage.code === lang.code ? 'text-primary bg-white shadow-sm border-primary/20' : 'text-slate-600 bg-transparent border-transparent'}`}
  >
- <span className="text-base">{lang.flag}</span>
  <span>{lang.name}</span>
  </button>
  ))}
