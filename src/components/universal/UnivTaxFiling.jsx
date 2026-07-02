@@ -110,8 +110,15 @@ export default function UnivTaxFiling() {
  <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search tax filings..." className="w-full h-10 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
 
+ <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-xl w-fit">
+  <button onClick={() => setView('Default')} className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${view === 'Default' ? 'bg-background shadow-sm' : 'text-muted-foreground'}`}>List</button>
+  <button onClick={() => setView('Kanban')} className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${view === 'Kanban' ? 'bg-background shadow-sm' : 'text-muted-foreground'}`}>Kanban</button>
+ </div>
+
  {loading ? (
  <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+ ) : view === 'Kanban' ? (
+ <GenericKanban data={filtered} statusKey="status" titleKey="filing_name" />
  ) : (
  <div className="flex-1 overflow-auto rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm min-w-[600px]">
