@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import React, { useState, useEffect, useRef } from "react";
-import { Play, Square, Clock, X, ChevronDown } from "lucide-react";
+import { Play, Square, Clock, X, ChevronDown, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -166,12 +166,12 @@ export default function TimeTracker() {
         <Button 
           variant="ghost"
           size="icon" 
-          className={`shrink-0 relative overflow-hidden w-8 h-8 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${isRunning || activeReminder ? 'bg-primary text-white border-primary' : 'bg-card text-foreground border-primary/40 hover:bg-slate-50 dark:hover:bg-slate-100'}`}
+          className={`group shrink-0 relative overflow-hidden w-8 h-8 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${isRunning || activeReminder ? 'bg-gradient-to-r from-primary to-primary/90 text-white border-primary shadow-md' : 'bg-card text-foreground border-primary/40 hover:border-primary/60 hover:bg-slate-50 dark:hover:bg-slate-100 shadow-sm'}`}
           title="Time & Reminders"
         >
-          <Clock className={`w-4 h-4 ${isRunning ? 'animate-pulse' : (activeReminder ? '' : 'text-[#71717a] dark:text-gray-400')}`} />
+          <Timer className={`w-4 h-4 transition-colors ${isRunning ? 'animate-pulse' : (activeReminder ? '' : 'text-[#71717a] dark:text-gray-400 group-hover:text-primary')}`} />
           {(isRunning || activeReminder) && (
-            <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse shadow-[0_0_4px_rgba(248,113,113,0.8)]" />
+            <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-white animate-pulse shadow-[0_0_4px_rgba(255,255,255,0.8)]" />
           )}
         </Button>
       </PopoverTrigger>
