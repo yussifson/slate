@@ -223,7 +223,7 @@ const Sidebar = () => {
 };
 
 
-const ExecutionLogs = ({ companyId }) => {
+const ExecutionLogs = ({ companyId, setMode }) => {
   const { data: logs = [], isLoading } = useQuery({
     queryKey: ['automation_logs', companyId],
     queryFn: async () => {
@@ -742,9 +742,9 @@ export default function Automations() {
                               <Zap className="w-5 h-5 text-primary" />
                             </div>
                             <div>
-                              <CardTitle className="text-base line-clamp-1">{rule.trigger_key} Flow</CardTitle>
+                              <CardTitle className="text-base line-clamp-1">{rule.trigger_key || rule.name} Flow</CardTitle>
                               <CardDescription className="uppercase tracking-wider text-[10px] font-semibold text-primary mt-1 tracking-[0.04em]">
-                                {rule.trigger_key.replace('_', ' ')}
+                                {(rule.trigger_key || '').replace(/_/g, ' ')}
                               </CardDescription>
                             </div>
                           </div>
@@ -1011,7 +1011,7 @@ export default function Automations() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
             >
-              <ExecutionLogs companyId={companyId} />
+              <ExecutionLogs companyId={companyId} setMode={setMode} />
             </motion.div>
           )}
         </AnimatePresence>
