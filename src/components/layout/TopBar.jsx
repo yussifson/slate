@@ -89,17 +89,20 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  const targetCompany = user?.available_companies?.find(c => c.id === targetCompanyId);
  toast({ title: t('switching_workspace', "Switching Workspace..."), description: targetCompany?.name || "Loading..."});
  
- if (targetCompany?.subdomain) {
- let targetBase = window.location.hostname.split('.').slice(-2).join('.');
- if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
- targetBase = window.location.hostname;
-}
- const port = window.location.port ? `:${window.location.port}` : '';
- const targetHost = `${targetCompany.subdomain}.${targetBase}${port}`;
- window.location.href = `${window.location.protocol}//${targetHost}/`;
-} else {
- window.location.href = '/';
-}
+  const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && !!window.Capacitor);
+  if (targetCompany?.subdomain && !isNativeApp) {
+    let targetBase = window.location.hostname.split('.').slice(-2).join('.');
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      targetBase = window.location.hostname;
+    }
+    const port = window.location.port ? `:${window.location.port}` : '';
+    const targetHost = `${targetCompany.subdomain}.${targetBase}${port}`;
+    window.location.href = `${window.location.protocol}//${targetHost}/`;
+  } else {
+    navigate('/');
+    // Optional reload to reset application state
+    setTimeout(() => window.location.reload(), 100);
+  }
 } catch (e) {
  console.error(e);
  toast({ title: "Error", description: "Failed to switch workspace.", variant: "destructive"});

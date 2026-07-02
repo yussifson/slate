@@ -13,9 +13,8 @@ export default function MarketingLayout({ children}) {
  const { isAuthenticated, user, isLoadingAuth} = useAuth();
  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
  const [scrolled, setScrolled] = useState(false);
+ const [menuDrawerOpen, setMenuDrawerOpen] = useState(false);
  const location = useLocation();
-
- const [langDropdownOpen, setLangDropdownOpen] = useState(false);
  const [geoPopup, setGeoPopup] = useState(null);
 
  const languages = [
@@ -35,7 +34,8 @@ export default function MarketingLayout({ children}) {
  const { baseDomain} = getSubdomainAndBase();
  const companySubdomain = user?.subdomain || user?.company_name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
  const port = window.location.port ? `:${window.location.port}` : '';
- const workspaceUrl = companySubdomain ? `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}` : '/';
+ const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && window.Capacitor?.isNative === true);
+ const workspaceUrl = (companySubdomain && !isNativeApp) ? `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/` : '/';
 
  useEffect(() => {
  const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -73,6 +73,7 @@ export default function MarketingLayout({ children}) {
  // Close mobile menu on route change
  useEffect(() => {
  setMobileMenuOpen(false);
+ setMenuDrawerOpen(false);
 }, [location.pathname]);
 
  // First-time location country language detection
@@ -142,7 +143,7 @@ export default function MarketingLayout({ children}) {
  const handleLanguageChange = (code) => {
  i18n.changeLanguage(code);
  localStorage.setItem('slate_lang_pref', code);
- setLangDropdownOpen(false);
+ setMenuDrawerOpen(false);
 };
 
  const navItems = [
@@ -231,12 +232,7 @@ export default function MarketingLayout({ children}) {
 
  {/* Mobile CTA */}
  <div className="flex lg:hidden items-center gap-2.5">
- <button
- onClick={() => setLangDropdownOpen(!langDropdownOpen)}
- className="p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors bg-white/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 backdrop-blur-md hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
- >
- <Globe className="w-4 h-4 text-primary" />
- </button>
+ {/* Removed broken globe button */}
  {isLoadingAuth ? (
  <div className="w-16 h-9 rounded-full animate-pulse bg-muted/60"></div>
  ) : isAuthenticated ? (
@@ -315,31 +311,94 @@ export default function MarketingLayout({ children}) {
  {children}
  </main>
  {/* ========== MOBILE BOTTOM NAVIGATION ========== */}
- <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:backdrop-blur-2xl border-t border-primary/40 pb-[env(safe-area-inset-bottom)] -[0_-10px_40px_rgba(0,0,0,0.03)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:backdrop-blur-2xl border-t border-primary/40 pb-[env(safe-area-inset-bottom)] -[0_-10px_40px_rgba(0,0,0,0.03)] transition-shadow duration-200">
  <div className="flex items-center justify-around h-[68px] px-1">
- {navItems.map((item) => {
- const isActive = location.pathname === item.path;
- return (
- <Link
- key={item.name}
- to={item.path}
- className={`flex flex-col items-center justify-center gap-2 w-full h-full relative transition-colors ${
- isActive 
- ? 'text-primary' 
- : 'text-slate-400 hover:text-slate-600'
-}`}
- >
- <div className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-400 ease-out ${isActive ? 'bg-primary/10' : 'bg-transparent'}`}>
- <item.icon className={`w-[22px] h-[22px] transition-transform duration-400 ease-out ${isActive ? 'scale-110' : 'scale-100'}`} />
+ 
+ {/* Home */}
+ <Link to="/" className={`flex flex-col items-center justify-center gap-1.5 w-full h-full transition-colors ${location.pathname === '/' ? 'text-primary' : 'text-slate-400'}`}>
+ <div className={`relative flex items-center justify-center w-8 h-8 rounded-full ${location.pathname === '/' ? 'bg-primary/10' : 'bg-transparent'}`}>
+ <Home className={`w-5 h-5 ${location.pathname === '/' ? 'scale-110' : 'scale-100'}`} />
  </div>
- <span className={`text-[10px] font-semibold tracking-wide transition-all duration-300 ${isActive ? 'text-primary' : 'text-slate-500 font-semibold'}`}>
- {item.name}
- </span>
+ <span className={`text-[10px] font-semibold tracking-wide ${location.pathname === '/' ? 'text-primary' : 'text-slate-500'}`}>Home</span>
  </Link>
- );
-})}
+ 
+ {/* Pricing */}
+ <Link to="/pricing" className={`flex flex-col items-center justify-center gap-1.5 w-full h-full transition-colors ${location.pathname === '/pricing' ? 'text-primary' : 'text-slate-400'}`}>
+ <div className={`relative flex items-center justify-center w-8 h-8 rounded-full ${location.pathname === '/pricing' ? 'bg-primary/10' : 'bg-transparent'}`}>
+ <CreditCard className={`w-5 h-5 ${location.pathname === '/pricing' ? 'scale-110' : 'scale-100'}`} />
+ </div>
+ <span className={`text-[10px] font-semibold tracking-wide ${location.pathname === '/pricing' ? 'text-primary' : 'text-slate-500'}`}>Price</span>
+ </Link>
+ 
+ {/* Menu */}
+ <button onClick={() => setMenuDrawerOpen(true)} className={`flex flex-col items-center justify-center gap-1.5 w-full h-full transition-colors ${menuDrawerOpen ? 'text-primary' : 'text-slate-400'}`}>
+ <div className={`relative flex items-center justify-center w-8 h-8 rounded-full ${menuDrawerOpen ? 'bg-primary/10' : 'bg-transparent'}`}>
+ <Menu className={`w-5 h-5 ${menuDrawerOpen ? 'scale-110' : 'scale-100'}`} />
+ </div>
+ <span className={`text-[10px] font-semibold tracking-wide ${menuDrawerOpen ? 'text-primary' : 'text-slate-500'}`}>Menu</span>
+ </button>
+ 
+ {/* Auth / App */}
+ {isAuthenticated ? (
+ <a href={workspaceUrl} className="flex flex-col items-center justify-center gap-1.5 w-full h-full transition-colors text-slate-400">
+ <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-transparent">
+ <Building className="w-5 h-5" />
+ </div>
+ <span className="text-[10px] font-semibold tracking-wide text-slate-500">App</span>
+ </a>
+ ) : (
+ <Link to="/login" className="flex flex-col items-center justify-center gap-1.5 w-full h-full transition-colors text-slate-400">
+ <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-transparent">
+ <ArrowRight className="w-5 h-5" />
+ </div>
+ <span className="text-[10px] font-semibold tracking-wide text-slate-500">Login</span>
+ </Link>
+ )}
+ 
  </div>
  </nav>
+ 
+ {/* ========== MOBILE MENU DRAWER ========== */}
+ {menuDrawerOpen && (
+ <div className="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-sm md:hidden animate-in fade-in duration-200" onClick={() => setMenuDrawerOpen(false)}>
+ <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 pb-[calc(24px+env(safe-area-inset-bottom))] animate-in slide-in-from-bottom-full duration-300" onClick={(e) => e.stopPropagation()}>
+ <div className="flex justify-between items-center mb-6">
+ <h3 className="font-bold text-lg text-slate-900 tracking-tight">Menu</h3>
+ <button onClick={() => setMenuDrawerOpen(false)} className="p-2 bg-slate-100 rounded-full text-slate-500 hover:text-slate-800">
+ <X className="w-5 h-5" />
+ </button>
+ </div>
+ <div className="flex flex-col gap-4">
+ <Link to="/features" onClick={() => setMenuDrawerOpen(false)} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 active:bg-slate-100">
+ <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary"><Layers className="w-5 h-5" /></div>
+ <span className="font-semibold text-slate-800 text-[15px]">Features</span>
+ </Link>
+ <Link to="/solutions" onClick={() => setMenuDrawerOpen(false)} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 active:bg-slate-100">
+ <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary"><Building className="w-5 h-5" /></div>
+ <span className="font-semibold text-slate-800 text-[15px]">Solutions</span>
+ </Link>
+ <div className="mt-2 flex flex-col gap-2 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+ <span className="text-xs font-semibold text-slate-500 flex items-center gap-2.5 px-1 uppercase tracking-wider tracking-[0.04em]">
+ <Globe className="w-3.5 h-3.5 text-primary" />
+ {t("choose_language", "Choose Language")}
+ </span>
+ <div className="grid grid-cols-2 gap-2 mt-2">
+ {languages.map((lang) => (
+ <button
+ key={lang.code}
+ onClick={() => handleLanguageChange(lang.code)}
+ className={`text-left px-3 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 border ${currentLanguage.code === lang.code ? 'text-primary bg-white shadow-sm border-primary/20' : 'text-slate-600 bg-transparent border-transparent'}`}
+ >
+ <span className="text-base">{lang.flag}</span>
+ <span>{lang.name}</span>
+ </button>
+ ))}
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ )}
  {/* ========== PREMIUM FOOTER (LIGHT THEME) ========== */}
  <footer className="bg-slate-50 text-slate-600 pt-20 md:pt-28 pb-24 md:pb-12 border-t border-primary/40 relative overflow-hidden">
  {/* Subtle background glow */}

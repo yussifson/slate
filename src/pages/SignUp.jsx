@@ -15,7 +15,7 @@ export default function SignUp() {
  const { t} = useTranslation();
  const navigate = useNavigate();
  const location = useLocation();
- const isElectron = typeof window !== 'undefined' && window.location.protocol === 'file:';
+ const isElectron = typeof window !== 'undefined' && (window.location.protocol === 'file:' || !!window.Capacitor);
  const { isAuthenticated, user, isLoadingAuth} = useAuth();
  
  const [username, setUsername] = useState('');
@@ -30,6 +30,12 @@ export default function SignUp() {
 
  // Auto-redirect if already authenticated and NOT currently registering
  useEffect(() => {
+  const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && window.Capacitor?.isNative === true);
+  if (isNativeApp && !localStorage.getItem('slate_has_seen_onboarding')) {
+    navigate('/welcome', { replace: true });
+    return;
+  }
+
  if (!isLoadingAuth && isAuthenticated && user && !loading && !success) {
         if (isElectron) {
           if (user.role === 'student') navigate('/student-portal');

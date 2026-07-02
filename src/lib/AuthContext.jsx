@@ -583,7 +583,7 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
     
     if (shouldRedirect) {
-      if (typeof window !== 'undefined' && window.location.protocol === 'file:') {
+      if (typeof window !== 'undefined' && (window.location.protocol === 'file:' || !!window.Capacitor)) {
         window.location.hash = '/login';
       } else {
         window.location.href = '/login';
@@ -592,7 +592,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const navigateToLogin = useCallback(() => {
-    if (typeof window !== 'undefined' && window.location.protocol === 'file:') {
+    if (typeof window !== 'undefined' && (window.location.protocol === 'file:' || !!window.Capacitor)) {
       window.location.hash = '/login';
     } else {
       window.location.href = '/login';

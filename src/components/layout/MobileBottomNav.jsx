@@ -1,5 +1,5 @@
 import React, { useState} from "react";
-import { Link, useLocation} from "react-router-dom";
+import { Link, useLocation, useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
 import { cn} from "@/lib/utils";
 import { useNavigation} from "@/hooks/useNavigation";
@@ -17,6 +17,7 @@ const ICON_MAP = {
 export default function MobileBottomNav() {
  const { t} = useTranslation();
  const location = useLocation();
+ const navigate = useNavigate();
  const { user} = useAuth();
  const { impersonatedCompany} = useImpersonation();
  const { navItems} = useNavigation(user, impersonatedCompany);
@@ -164,7 +165,13 @@ export default function MobileBottomNav() {
                       if (!targetId || targetId === user.company_id) return;
                       // Update profiles directly via API
                       await base44.auth.updateProfile({ company_id: targetId });
-                      window.location.href = '/';
+                      const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && window.Capacitor?.isNative === true);
+                      if (isNativeApp) {
+                        navigate('/');
+                        setTimeout(() => window.location.reload(), 100);
+                      } else {
+                        window.location.href = '/';
+                      }
                     }}
                     className="bg-transparent border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1 text-sm text-foreground outline-none max-w-[150px] truncate"
                   >
@@ -184,7 +191,13 @@ export default function MobileBottomNav() {
                       value={sessionStorage.getItem('slate_industry_override') || 'law'}
                       onChange={(e) => {
                         sessionStorage.setItem('slate_industry_override', e.target.value);
-                        window.location.href = '/';
+                        const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && window.Capacitor?.isNative === true);
+                        if (isNativeApp) {
+                          navigate('/');
+                          setTimeout(() => window.location.reload(), 100);
+                        } else {
+                          window.location.href = '/';
+                        }
                       }}
                       className="bg-amber-50 dark:bg-amber-950/20 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 dark:border-amber-900 rounded-lg px-2 py-1 text-sm text-amber-700 dark:text-amber-400 outline-none"
                     >

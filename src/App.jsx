@@ -139,6 +139,7 @@ import ClientPortal from './pages/ClientPortal';
 import CaseDetail from './pages/CaseDetail';
 import StaffDashboard from './pages/StaffDashboard';
 import IntakeForm from './pages/IntakeForm';
+import NativeOnboarding from './pages/NativeOnboarding';
 import AppIntegrations from './pages/Integrations';
 import Automations from './pages/Automations';
 import Leads from './pages/Leads';
@@ -1095,7 +1096,8 @@ function SuperAdminRoute() {
 
 function App() {
   const { currentSubdomain } = getSubdomainAndBase();
-  const isBaseDomain = currentSubdomain === null;
+  const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && window.Capacitor?.isNative === true);
+  const isBaseDomain = currentSubdomain === null && !isNativeApp;
 
   useEffect(() => {
     initPowerSync().catch(console.error);
@@ -1135,6 +1137,7 @@ function App() {
                       </Route>
                       <Route path="/login" element={<Login />} />
                       <Route path="/signup" element={<SignUp />} />
+                      <Route path="/welcome" element={<NativeOnboarding />} />
                       <Route path="/forgot-password" element={<ForgotPassword />} />
                       <Route path="/reset-password" element={<ResetPassword />} />
                       
@@ -1171,6 +1174,7 @@ function App() {
                     <Routes>
                       <Route path="/login" element={<Login />} />
                       <Route path="/signup" element={<SignUp />} />
+                      <Route path="/welcome" element={<NativeOnboarding />} />
                       <Route path="/forgot-password" element={<ForgotPassword />} />
                       <Route path="/reset-password" element={<ResetPassword />} />
                       

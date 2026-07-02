@@ -493,11 +493,12 @@ export default function OnboardingWizard() {
  if (!currentSubdomain) {
  const __resCompS = await powerSync.execute(`SELECT subdomain FROM companies WHERE id = ?`, [companyIdToUse]);
  const company = __resCompS.rows && __resCompS.rows.length > 0 ? __resCompS.rows.item(0) : null;
- if (company?.subdomain) {
- const port = window.location.port ? `:${window.location.port}` : '';
- window.location.href = `${window.location.protocol}//${company.subdomain}.${baseDomain}${port}/?${transferParams.toString()}`;
- return;
-}
+  const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && !!window.Capacitor);
+  if (company?.subdomain && !isNativeApp) {
+    const port = window.location.port ? `:${window.location.port}` : '';
+    window.location.href = `${window.location.protocol}//${company.subdomain}.${baseDomain}${port}/?${transferParams.toString()}`;
+    return;
+  }
 }
  navigate(`/?${transferParams.toString()}`);
 } catch (err) {

@@ -37,7 +37,7 @@ const LOGIN_QUOTES = [
 
 export default function Login() {
   const navigate = useNavigate();
-  const isElectron = window.location.protocol === 'file:';
+  const isElectron = window.location.protocol === 'file:' || (typeof window !== 'undefined' && !!window.Capacitor);
  const { t} = useTranslation();
  const [email, setEmail] = useState('');
  const [password, setPassword] = useState('');
@@ -56,9 +56,15 @@ export default function Login() {
  const [checkingSubdomain, setCheckingSubdomain] = useState(!!currentSubdomain);
  const [invalidSubdomain, setInvalidSubdomain] = useState(false);
 
- // Auto-redirect if already authenticated
+ // Auto-redirect if already authenticated or if native app needs onboarding
  useEffect(() => {
- if (!isLoadingAuth && isAuthenticated && user) {
+  const isNativeApp = window.location.protocol === 'file:' || (typeof window !== 'undefined' && window.Capacitor?.isNative === true);
+  if (isNativeApp && !localStorage.getItem('slate_has_seen_onboarding')) {
+    navigate('/welcome', { replace: true });
+    return;
+  }
+
+  if (!isLoadingAuth && isAuthenticated && user) {
       if (isElectron) {
         if (user.role === 'student') navigate('/student-portal');
         else if (user.role === 'parent') navigate('/parent-portal');
@@ -299,24 +305,34 @@ export default function Login() {
       }
       
       if (companySubdomain && companySubdomain !== currentSubdomain && !workspace) {
-        const port = window.location.port ? `:${window.location.port}` : '';
-        let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
-        if (authData?.session?.access_token && authData?.session?.refresh_token) {
-          url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
+        if (isElectron) { 
+          navigate('/'); 
+        } else {
+          const port = window.location.port ? `:${window.location.port}` : '';
+          let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
+          if (authData?.session?.access_token && authData?.session?.refresh_token) {
+            url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
+          }
+          window.location.href = url; 
         }
-        if (isElectron) { navigate('/'); } else { window.location.href = url; }
         return;
       } else if (companySubdomain && workspace && !currentSubdomain) {
         // We are on root, redirecting to the workspace
-        const port = window.location.port ? `:${window.location.port}` : '';
-        let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
-        if (authData?.session?.access_token && authData?.session?.refresh_token) {
-          url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
+        let localPath = '/';
+        if (profile?.role === 'student') localPath = '/student-portal';
+        else if (profile?.role === 'parent') localPath = '/parent-portal';
+        else if (['client', 'patient', 'guest', 'customer', 'member', 'policyholder'].includes(profile?.role)) localPath = '/portal';
+        
+        if (isElectron) { 
+          navigate(localPath); 
+        } else { 
+          const port = window.location.port ? `:${window.location.port}` : '';
+          let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}${localPath}`;
+          if (authData?.session?.access_token && authData?.session?.refresh_token) {
+            url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
+          }
+          window.location.href = url; 
         }
-        if (profile?.role === 'student') url += 'student-portal';
-        else if (profile?.role === 'parent') url += 'parent-portal';
-        else if (['client', 'patient', 'guest', 'customer', 'member', 'policyholder'].includes(profile?.role)) url += 'portal';
-        if (isElectron) { navigate(url.substring(url.indexOf(port) + port.length) || '/'); } else { window.location.href = url; }
         return;
       }
     }
@@ -356,19 +372,23 @@ export default function Login() {
       const companySubdomain = company?.subdomain || company?.custom_domain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
       
       if (companySubdomain) {
- const port = window.location.port ? `:${window.location.port}` : '';
- let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
- if (authData?.session?.access_token && authData?.session?.refresh_token) {
- url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
-}
- 
- if (profile?.role === 'student') url += 'student-portal';
- else if (profile?.role === 'parent') url += 'parent-portal';
- else if (['client', 'patient', 'guest', 'customer', 'member', 'policyholder'].includes(profile?.role)) url += 'portal';
- 
- if (isElectron) { navigate(url.substring(url.indexOf(port) + port.length) || '/'); } else { window.location.href = url; }
- return;
-}
+        let localPath = '/';
+        if (profile?.role === 'student') localPath = '/student-portal';
+        else if (profile?.role === 'parent') localPath = '/parent-portal';
+        else if (['client', 'patient', 'guest', 'customer', 'member', 'policyholder'].includes(profile?.role)) localPath = '/portal';
+
+        if (isElectron) { 
+          navigate(localPath); 
+        } else {
+          const port = window.location.port ? `:${window.location.port}` : '';
+          let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}${localPath}`;
+          if (authData?.session?.access_token && authData?.session?.refresh_token) {
+             url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
+          }
+          window.location.href = url; 
+        }
+        return;
+      }
 }
  
  // 3. Fallback if they somehow have no company but ARE onboarded
@@ -385,7 +405,7 @@ export default function Login() {
 }
 
  if (invalidSubdomain) {
- const mainUrl = `${getMainAppUrl()}/login`;
+ const mainUrl = isNativeApp ? '/login' : `${getMainAppUrl()}/login`;
 
  return (
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-50/50 dark:bg-slate-900 p-4 font-sans backdrop-blur-sm">
@@ -397,7 +417,7 @@ export default function Login() {
       <p className="mb-8 text-sm font-medium text-slate-500 dark:text-slate-400 leading-relaxed">
         {t("we_couldn_t_find_an_organizati", "We couldn't find an organization matching the web address")} <span className="font-semibold text-slate-900 dark:text-white">"{currentSubdomain}"</span>.
       </p>
-      <button onClick={() => window.location.href = mainUrl} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3.5 px-6 rounded-xl transition-all">
+      <button onClick={() => isNativeApp ? navigate('/login') : (window.location.href = mainUrl)} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3.5 px-6 rounded-xl transition-all">
         {t("go_to_main_login_portal", "Go to Main Login Portal")}
       </button>
     </div>
