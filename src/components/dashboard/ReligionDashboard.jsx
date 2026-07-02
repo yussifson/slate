@@ -265,10 +265,10 @@ export default function ReligionDashboard({ companyId, company, isAdmin }) {
             <span className="text-xs font-medium text-muted-foreground capitalize">{plan.name}</span>
           </div>
           <div className="space-y-4 mb-5">
-            <UsageRow label="Volunteers" used={staff.length} max={plan.maxUsers} />
+            <UsageRow label="Volunteers" used={activeVolunteers} max={plan.maxUsers} />
             <UsageRow label="Storage" used={0} max={plan.maxStorageGB} suffix=" GB" />
-            <UsageRow label="Events" used={events.length} max={plan.maxCases} />
-            <UsageRow label="Members" used={members.length} max={plan.maxClients} />
+            <UsageRow label="Events" used={upcomingEvents.length} max={plan.maxCases} />
+            <UsageRow label="Members" used={activeMembers} max={plan.maxClients} />
           </div>
           <div className="pt-4 border-t border-border">
             <div className="flex items-center justify-between">

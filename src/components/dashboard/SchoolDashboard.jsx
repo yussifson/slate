@@ -54,18 +54,20 @@ export default function SchoolDashboard({ companyId, company, isAdmin, industry 
     queryKey: ["school_stats", companyId],
     queryFn: async () => {
       if (!companyId) return null;
-      const [studentsRes, classesRes, invoicesRes, eventsRes] = await Promise.all([
+      const [studentsRes, classesRes, invoicesRes, eventsRes, staffRes] = await Promise.all([
         powerSync.execute('SELECT * FROM school_students WHERE company_id = ?', [companyId]),
         powerSync.execute('SELECT * FROM school_classes WHERE company_id = ?', [companyId]),
         base44.entities.Invoice.filter({ company_id: companyId }),
-        powerSync.execute("SELECT * FROM industry_records WHERE record_type = 'timetable_slot' AND company_id = ?", [companyId])
+        powerSync.execute("SELECT * FROM industry_records WHERE record_type = 'timetable_slot' AND company_id = ?", [companyId]),
+        powerSync.execute("SELECT * FROM profiles WHERE company_id = ? AND role != 'student' AND role != 'parent'", [companyId])
       ]);
 
       return {
         students: studentsRes.rows._array || Array.from(studentsRes.rows),
         classes: classesRes.rows._array || Array.from(classesRes.rows),
         invoices: invoicesRes || [],
-        events: eventsRes.rows._array || Array.from(eventsRes.rows)
+        events: eventsRes.rows._array || Array.from(eventsRes.rows),
+        staff: staffRes.rows._array || Array.from(staffRes.rows)
       };
     },
     enabled: !!companyId
@@ -75,6 +77,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin, industry 
   const classes = stats?.classes || [];
   const invoices = stats?.invoices || [];
   const events = stats?.events || [];
+  const staff = stats?.staff || [];
 
   const activeStudents = students.filter(s => s.status !== "dropped" && s.status !== "graduated");
   const activeClasses = classes; // Assume all returned are active or apply logic

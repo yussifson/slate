@@ -604,7 +604,7 @@ export default function PipelinePage() {
 
   const { data: pipelineStates = [] } = useQuery({
     queryKey: ["pipeline-states", user?.company_id],
-    queryFn: () => base44.entities.CasePipelineState.filter({ company_id: user?.company_id }),
+    queryFn: () => base44.entities.Task.filter({ company_id: user?.company_id }),
     enabled: !!user?.company_id
   });
 
@@ -643,7 +643,7 @@ export default function PipelinePage() {
     ? pipelines.find(p => p.id === activePipelineId)
     : pipelines[0];
 
-  const pipelineItems = pipelineStates.filter(s => s.pipeline_id === activePipeline?.id);
+  const pipelineItems = pipelineStates.filter(s => s.category === activePipeline?.id);
 
   return (
     <div className="flex h-full">
@@ -735,7 +735,7 @@ export default function PipelinePage() {
                     pipeline={p}
                     onEdit={setEditing}
                     onDelete={(id) => deleteMutation.mutate(id)}
-                    itemCount={pipelineStates.filter(s => s.pipeline_id === p.id).length}
+                    itemCount={pipelineStates.filter(s => s.category === p.id).length}
                   />
                 ))}
               </div>
