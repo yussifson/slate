@@ -135,7 +135,7 @@ export default function HRDashboard() {
     <div className="space-y-6 p-6">
 
       {/* ── Hero Header ── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#16a34a] to-[#f97316] p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#16a34a] to-[#f97316] p-5 md:p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
         <div className="absolute -bottom-10 -right-16 w-56 h-56 bg-white/5 rounded-full" />
@@ -176,14 +176,14 @@ export default function HRDashboard() {
       </div>
 
       {/* ── KPI Cards ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {kpis.map((kpi, i) => (
           <MetricCard key={i} {...kpi} />
         ))}
       </div>
 
       {/* ── Charts ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-6">
         <div className="lg:col-span-2 bg-card rounded-2xl border border-border/50 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>

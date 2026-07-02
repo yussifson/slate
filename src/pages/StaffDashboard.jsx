@@ -93,7 +93,7 @@ export default function StaffDashboard() {
         subtitle={`${format(today, "EEEE, MMMM d, yyyy")} · Your personal workspace`}
       />
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard icon={Briefcase} label="Active Cases" value={activeCases.length} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
         <StatCard icon={CheckSquare} label="Pending Tasks" value={pendingTasks.length} sub={overdueTasks.length > 0 ? `${overdueTasks.length} overdue` : undefined} color="bg-amber-50 text-amber-600" />
         <StatCard icon={Clock} label="Hours This Month" value={totalHours.toFixed(1)} sub={`${billedHours.toFixed(1)}h billed`} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
@@ -116,7 +116,7 @@ export default function StaffDashboard() {
 
         {/* Monthly breakdown by category */}
         {monthEntries.length > 0 && (
-          <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 sm:grid-cols-3 gap-3">
             {Object.entries(
               monthEntries.reduce((acc, e) => {
                 const cat = e.category || "other";
@@ -134,7 +134,7 @@ export default function StaffDashboard() {
           </div>
         )}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6">
         {/* Tasks */}
         <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/40 flex items-center justify-between">
@@ -150,9 +150,9 @@ export default function StaffDashboard() {
           </div>
           <div className="divide-y divide-border-[0.5px] border-black/9 dark:border-white/8 max-h-80 overflow-y-auto">
             {loadingTasks ? (
-              <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("loading", "Loading...")}</div>
+              <div className="p-5 md:p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("loading", "Loading...")}</div>
             ) : pendingTasks.length === 0 ? (
-              <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_pending_tasks", "No pending tasks 🎉")}</div>
+              <div className="p-5 md:p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_pending_tasks", "No pending tasks 🎉")}</div>
             ) : pendingTasks
                 .sort((a, b) => {
                   const aOd = a.due_date && isBefore(new Date(a.due_date), today);
@@ -194,7 +194,7 @@ export default function StaffDashboard() {
           </div>
           <div className="divide-y divide-border-[0.5px] border-black/9 dark:border-white/8 max-h-80 overflow-y-auto">
             {upcomingHearings.length === 0 ? (
-              <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_upcoming_hearings", "No upcoming hearings")}</div>
+              <div className="p-5 md:p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_upcoming_hearings", "No upcoming hearings")}</div>
             ) : upcomingHearings.map(h => {
               return (
                 <div key={h.id} className="px-4 py-3 flex items-center gap-3">
@@ -223,7 +223,7 @@ export default function StaffDashboard() {
         </div>
         <div className="divide-y divide-border">
           {activeCases.length === 0 ? (
-            <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_active_cases_assigned_to_yo", "No active cases assigned to you")}</div>
+            <div className="p-5 md:p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_active_cases_assigned_to_yo", "No active cases assigned to you")}</div>
           ) : activeCases.slice(0, 6).map(c => {
             return (
               <div key={c.id} className="px-4 py-3 flex items-center gap-3">

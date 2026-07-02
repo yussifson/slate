@@ -94,7 +94,7 @@ export default function EnterpriseDashboard() {
   const currentInd = (selectedVertical?.industry_type || selectedVertical?.industry || '').replace(/_/g, ' ');
 
   return (
-    <div className="p-4 sm:p-8 max-w-screen-xl mx-auto space-y-6 min-h-screen">
+    <div className="p-3 md:p-6 max-w-screen-xl mx-auto space-y-4 min-h-screen">
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -138,7 +138,7 @@ export default function EnterpriseDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-6">
         <div className="lg:col-span-4 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Your Verticals</h2>
@@ -148,7 +148,7 @@ export default function EnterpriseDashboard() {
           {loading ? (
             <div className="flex flex-col gap-2">{[1,2,3].map(i => <div key={i} className="h-20 bg-slate-200 dark:bg-slate-800 rounded-xl animate-pulse" />)}</div>
           ) : portfolio.length === 0 ? (
-            <div className="p-8 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl text-center bg-white dark:bg-slate-900">
+            <div className="p-5 md:p-8 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl text-center bg-white dark:bg-slate-900">
               <Building2 className="mx-auto text-slate-400 mb-2 w-8 h-8" />
               <p className="text-slate-500 text-sm font-medium">No verticals deployed yet.</p>
               <Button onClick={() => setShowDeployModal(true)} variant="outline" size="sm" className="mt-3 rounded-lg">Deploy First Vertical</Button>
@@ -205,7 +205,7 @@ export default function EnterpriseDashboard() {
                   </Button>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   {(() => {
                     const s = getStats(selectedVertical);
                     return [

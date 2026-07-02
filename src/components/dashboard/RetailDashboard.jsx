@@ -33,17 +33,7 @@ function UsageRow({ label, used, max, suffix = "" }) {
   );
 }
 
-const SALES_DATA = [
-  { day: 'Mon', sales: 3200 }, { day: 'Tue', sales: 4100 },
-  { day: 'Wed', sales: 3800 }, { day: 'Thu', sales: 5200 },
-  { day: 'Fri', sales: 6800 }, { day: 'Sat', sales: 7400 },
-  { day: 'Sun', sales: 4900 },
-];
-
-const TOP_CATS = [
-  { cat: 'Electronics', value: 42 }, { cat: 'Clothing', value: 28 },
-  { cat: 'Food & Bev', value: 18 }, { cat: 'Home', value: 12 },
-];
+import { powerSync } from '@/api/PowerSyncConnector';
 
 export default function RetailDashboard({ companyId, company, isAdmin }) {
   const { t } = useTranslation();
@@ -51,18 +41,68 @@ export default function RetailDashboard({ companyId, company, isAdmin }) {
   const queryClient = useQueryClient();
   const [chartPeriod, setChartPeriod] = useState('7D');
 
-  const { data: orders = [] } = useQuery({ queryKey: ["cases", companyId], queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: customers = [] } = useQuery({ queryKey: ["clients", companyId], queryFn: () => base44.entities.Client.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: staff = [] } = useQuery({ queryKey: ["staff", companyId], queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: invoices = [] } = useQuery({ queryKey: ["invoices", companyId], queryFn: () => base44.entities.Invoice.filter({ company_id: companyId }), enabled: !!companyId });
+  const { data: stats } = useQuery({
+    queryKey: ["retail_stats", companyId],
+    queryFn: async () => {
+      if (!companyId) return null;
+      const [orders, customers, products] = await Promise.all([
+        powerSync.execute('SELECT * FROM univ_retail_orders WHERE company_id = ? ORDER BY created_at DESC', [companyId]),
+        powerSync.execute('SELECT count(*) as count FROM univ_retail_customers WHERE company_id = ?', [companyId]),
+        powerSync.execute('SELECT category FROM univ_retail_products WHERE company_id = ?', [companyId])
+      ]);
+      const ordersArray = orders.rows._array || Array.from(orders.rows);
+      const prodArray = products.rows._array || Array.from(products.rows);
+      
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      let salesData = days.map(d => ({ day: d, sales: 0 }));
+      let totalRev = 0;
+      
+      ordersArray.forEach(o => {
+        if (o.status === 'Completed' || o.status === 'Delivered' || o.status === 'Paid') {
+          totalRev += (Number(o.total) || 0);
+        }
+        if (o.created_at) {
+          const d = new Date(o.created_at).getDay();
+          if (!isNaN(d)) salesData[d].sales += (Number(o.total) || 0);
+        }
+      });
+      const todayIdx = new Date().getDay();
+      salesData = [...salesData.slice(todayIdx + 1), ...salesData.slice(0, todayIdx + 1)];
 
-  const activeOrders = orders.filter(o => o.status === "in_progress");
-  const totalRevenue = invoices.filter(i => i.status === "paid").reduce((s, i) => s + (i.total_amount || 0), 0);
-  const pendingOrders = orders.filter(o => o.status === "open");
+      const catCounts = {};
+      prodArray.forEach(p => {
+         const c = p.category || 'General';
+         catCounts[c] = (catCounts[c] || 0) + 1;
+      });
+      let topCats = Object.entries(catCounts).map(([cat, value]) => ({ cat, value })).sort((a,b) => b.value - a.value).slice(0, 4);
+      if (topCats.length === 0) topCats = [{ cat: 'General', value: 0 }];
+
+      return {
+        activeOrders: ordersArray.filter(o => o.status === 'Processing' || o.status === 'in_progress').length,
+        pendingOrders: ordersArray.filter(o => o.status === 'Pending' || o.status === 'open').length,
+        totalOrders: ordersArray.length,
+        customers: customers.rows._array[0]?.count || 0,
+        totalRevenue: totalRev,
+        salesData,
+        topCats,
+        // for monthly revenue chart if needed
+        invoices: ordersArray.map(o => ({ ...o, total_amount: o.total }))
+      };
+    },
+    enabled: !!companyId
+  });
+
+  const activeOrdersLength = stats?.activeOrders || 0;
+  const pendingOrdersLength = stats?.pendingOrders || 0;
+  const customersLength = stats?.customers || 0;
+  const totalRevenue = stats?.totalRevenue || 0;
+  const SALES_DATA = stats?.salesData || [];
+  const TOP_CATS = stats?.topCats || [];
+  
   const currency = company?.currency || "USD";
   const planKey = company?.subscription_plan === 'free' ? 'free_trial' : company?.subscription_plan;
   const plan = SUBSCRIPTION_PLANS[planKey] || SUBSCRIPTION_PLANS.free_trial;
-  const chartData = buildMonthlyRevenueChart(invoices);
+  const chartData = buildMonthlyRevenueChart(stats?.invoices || []);
 
   const { toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -86,10 +126,10 @@ export default function RetailDashboard({ companyId, company, isAdmin }) {
   }
 
   const kpis = [
-    { label: 'Active Orders', value: activeOrders.length, sub: `${orders.length} total`, icon: ShoppingCart, alt: false, trend: '+9%' },
-    { label: 'Total Customers', value: customers.length, sub: 'registered', icon: Users, alt: true, trend: '+22%' },
+    { label: 'Active Orders', value: activeOrdersLength, sub: `${stats?.totalOrders || 0} total`, icon: ShoppingCart, alt: false, trend: '+9%' },
+    { label: 'Total Customers', value: customersLength, sub: 'registered', icon: Users, alt: true, trend: '+22%' },
     { label: 'Revenue', value: formatCurrency(totalRevenue, currency), sub: 'collected this period', icon: DollarSign, alt: false, trend: '+31%' },
-    { label: 'Pending Orders', value: pendingOrders.length, sub: 'awaiting processing', icon: Package, alt: true, trend: pendingOrders.length > 15 ? 'High' : 'Normal' },
+    { label: 'Pending Orders', value: pendingOrdersLength, sub: 'awaiting processing', icon: Package, alt: true, trend: pendingOrdersLength > 15 ? 'High' : 'Normal' },
   ];
 
   // Correct routes from App.jsx retail suite

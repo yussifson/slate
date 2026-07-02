@@ -136,7 +136,7 @@ export default function ReportsDashboard() {
 
  if (isRetail && !isRetailAdmin(user)) {
  return (
- <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 h-[calc(100vh-100px)]">
+ <div className="flex-1 flex flex-col items-center justify-center p-5 md:p-8 text-center animate-in fade-in duration-500 h-[calc(100vh-100px)]">
  <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
  <ShieldAlert className="w-10 h-10 text-red-600 dark:text-red-500" />
  </div>
@@ -422,7 +422,7 @@ export default function ReportsDashboard() {
  />
  </div>
 
- <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+ <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-6">
  <ReportSection
  className="lg:col-span-2"
  title={t("revenue_trend", "Revenue trend")}
@@ -485,7 +485,7 @@ export default function ReportsDashboard() {
  </ReportSection>
  </div>
 
- <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+ <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6">
  <ReportSection
  title={t("actual_vs_target", "Actual vs target revenue")}
  description={t("monthly_performance_against_goal", "Monthly performance against goal")}
@@ -545,7 +545,7 @@ export default function ReportsDashboard() {
  </ReportSection>
  )}
 
- <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+ <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 md:gap-6">
  <ReportSection
  title={isSchool ? t("top_students_by_billing", "Top students by billing") : isRetail ? t("top_customers_by_billing", "Top customers by billing") : t("top_clients_by_billing", "Top clients by billing")}
  description={isSchool ? t("highest_value_students", "Highest value student accounts") : t("highest_value_relationships", "Highest value relationships")}
@@ -630,20 +630,20 @@ export default function ReportsDashboard() {
  description={t("key_figures_for_selected_period", "Key figures for the selected period")}
  icon={FileText}
  >
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
- <div className="p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mt-4">
+ <div className="p-4 md:p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
  <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("total_invoices", "Total invoices")}</p>
  <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">{invoices.length}</p>
  </div>
- <div className="p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <div className="p-4 md:p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
  <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("paid_invoices", "Paid invoices")}</p>
  <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">{paidCount}</p>
  </div>
- <div className="p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <div className="p-4 md:p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
  <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("team_members", "Team members")}</p>
  <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">{staff.length}</p>
  </div>
- <div className="p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <div className="p-4 md:p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
  <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("avg_monthly_revenue", "Avg monthly revenue")}</p>
  <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">
  {formatCurrency(months ? Math.round(totalRevenue / months) : 0, currency)}

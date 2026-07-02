@@ -102,7 +102,7 @@ export default function GlobalAnalyticsDashboard() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         <MetricCard title="Active Companies" value={stats.companies} icon={<Building2 className="text-blue-500" />} trend="+12% this week" />
         <MetricCard title="Total Users" value={stats.totalUsers.toLocaleString()} icon={<Users className="text-emerald-500" />} trend="+5.4% this week" />
         <MetricCard title="Hospital Patients" value={stats.hospitalPatients.toLocaleString()} icon={<HeartPulse className="text-rose-500" />} trend="+2.1% this week" />
@@ -110,7 +110,7 @@ export default function GlobalAnalyticsDashboard() {
       </div>
 
       {/* Main Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-6">
         
         {/* Multiline Comparison Chart */}
         <div className="col-span-2 school-card p-6">

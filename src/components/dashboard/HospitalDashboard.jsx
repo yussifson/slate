@@ -10,24 +10,6 @@ import {
 import { Link } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
-const DEPT_DATA = [
-  { name: 'Emergency', patients: 24 },
-  { name: 'OPD', patients: 68 },
-  { name: 'Surgery', patients: 12 },
-  { name: 'ICU', patients: 8 },
-  { name: 'Pediatrics', patients: 19 },
-];
-
-const ADMIT_DATA = [
-  { name: 'Mon', admissions: 14 },
-  { name: 'Tue', admissions: 18 },
-  { name: 'Wed', admissions: 12 },
-  { name: 'Thu', admissions: 21 },
-  { name: 'Fri', admissions: 16 },
-  { name: 'Sat', admissions: 9 },
-  { name: 'Sun', admissions: 7 },
-];
-
 export default function HospitalDashboard({ companyId }) {
   const { t } = useTranslation();
   const [chartPeriod, setChartPeriod] = useState('7D');
@@ -36,21 +18,49 @@ export default function HospitalDashboard({ companyId }) {
     queryKey: ["hospital_stats", companyId],
     queryFn: async () => {
       if (!companyId) return null;
-      const [patients, appointments, beds, queue] = await Promise.all([
+      const [patients, appointments, beds, queue, admissionsRes, allAppointments] = await Promise.all([
         powerSync.execute('SELECT count(*) as count FROM univ_patients WHERE company_id = ?', [companyId]),
         powerSync.execute('SELECT count(*) as count FROM univ_appointments WHERE company_id = ? AND date >= CURRENT_DATE', [companyId]),
         powerSync.execute('SELECT count(*) as count FROM univ_beds WHERE company_id = ? AND status = ?', [companyId, 'available']),
-        powerSync.execute('SELECT count(*) as count FROM univ_opd_queues WHERE company_id = ? AND status = ?', [companyId, 'waiting'])
+        powerSync.execute('SELECT count(*) as count FROM univ_opd_queues WHERE company_id = ? AND status = ?', [companyId, 'waiting']),
+        powerSync.execute('SELECT admission_date FROM univ_admissions WHERE company_id = ? AND admission_date >= date(\'now\', \'-7 days\')', [companyId]),
+        powerSync.execute('SELECT type FROM univ_appointments WHERE company_id = ? AND date >= date(\'now\', \'-30 days\')', [companyId])
       ]);
+
+      const admitArray = admissionsRes.rows._array || Array.from(admissionsRes.rows);
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      let admitData = days.map(d => ({ name: d, admissions: 0 }));
+      admitArray.forEach(a => {
+        const d = new Date(a.admission_date).getDay();
+        if (!isNaN(d)) admitData[d].admissions++;
+      });
+      // Rearrange so today is last
+      const todayIdx = new Date().getDay();
+      admitData = [...admitData.slice(todayIdx + 1), ...admitData.slice(0, todayIdx + 1)];
+
+      const apptArray = allAppointments.rows._array || Array.from(allAppointments.rows);
+      const deptCounts = {};
+      apptArray.forEach(a => {
+         const t = a.type || 'General';
+         deptCounts[t] = (deptCounts[t] || 0) + 1;
+      });
+      let deptData = Object.entries(deptCounts).map(([name, patients]) => ({ name, patients })).sort((a,b) => b.patients - a.patients).slice(0, 5);
+      if (deptData.length === 0) deptData = [{ name: 'General', patients: 0 }];
+
       return {
-        patients: patients.rows._array[0].count,
-        appointments: appointments.rows._array[0].count,
-        availableBeds: beds.rows._array[0].count,
-        waitingQueue: queue.rows._array[0].count
+        patients: patients.rows._array[0]?.count || 0,
+        appointments: appointments.rows._array[0]?.count || 0,
+        availableBeds: beds.rows._array[0]?.count || 0,
+        waitingQueue: queue.rows._array[0]?.count || 0,
+        admitData,
+        deptData
       };
     },
     enabled: !!companyId
   });
+
+  const ADMIT_DATA = stats?.admitData || [];
+  const DEPT_DATA = stats?.deptData || [];
 
   const kpis = [
     { label: 'Total Patients', value: stats?.patients || 0, sub: 'lifetime records', icon: Users, trend: '+6%' },

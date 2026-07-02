@@ -33,15 +33,9 @@ function UsageRow({ label, used, max, suffix = "" }) {
   );
 }
 
-const WEEKLY_DATA = [
-  { day: 'Mon', delivered: 42, failed: 3 },
-  { day: 'Tue', delivered: 58, failed: 2 },
-  { day: 'Wed', delivered: 51, failed: 5 },
-  { day: 'Thu', delivered: 67, failed: 1 },
-  { day: 'Fri', delivered: 74, failed: 4 },
-  { day: 'Sat', delivered: 33, failed: 2 },
-  { day: 'Sun', delivered: 19, failed: 1 },
-];
+
+
+import { powerSync } from '@/api/PowerSyncConnector';
 
 export default function LogisticsDashboard({ companyId, company, isAdmin }) {
   const { t } = useTranslation();
@@ -49,19 +43,42 @@ export default function LogisticsDashboard({ companyId, company, isAdmin }) {
   const queryClient = useQueryClient();
   const [chartPeriod, setChartPeriod] = useState('7D');
 
-  const { data: shipments = [] } = useQuery({ queryKey: ["shipments", companyId], queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: clients = [] } = useQuery({ queryKey: ["clients", companyId], queryFn: () => base44.entities.Client.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: staff = [] } = useQuery({ queryKey: ["staff", companyId], queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: invoices = [] } = useQuery({ queryKey: ["invoices", companyId], queryFn: () => base44.entities.Invoice.filter({ company_id: companyId }), enabled: !!companyId });
+  const { data: shipments = [] } = useQuery({ 
+    queryKey: ["logistics_shipments", companyId], 
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute('SELECT * FROM logistics_loads WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+      return res.rows._array || Array.from(res.rows);
+    }, 
+    enabled: !!companyId 
+  });
 
-  const inTransit = shipments.filter(s => s.status === "in_progress");
-  const delivered = shipments.filter(s => s.status === "closed");
-  const pending = shipments.filter(s => s.status === "open");
-  const totalRevenue = invoices.filter(i => i.status === "paid").reduce((s, i) => s + (i.total_amount || 0), 0);
+  const inTransit = shipments.filter(s => s.status === "in_transit");
+  const delivered = shipments.filter(s => s.status === "delivered");
+  const pending = shipments.filter(s => ["open", "pending", "assigned"].includes(s.status));
+  const totalRevenue = shipments.filter(s => s.status === "delivered").reduce((sum, s) => sum + (Number(s.price) || 0), 0);
+  
   const currency = company?.currency || "USD";
   const planKey = company?.subscription_plan === 'free' ? 'free_trial' : company?.subscription_plan;
   const plan = SUBSCRIPTION_PLANS[planKey] || SUBSCRIPTION_PLANS.free_trial;
-  const chartData = buildMonthlyRevenueChart(invoices);
+  
+  const chartData = React.useMemo(() => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    let data = days.map(d => ({ day: d, delivered: 0, failed: 0 }));
+    
+    shipments.forEach(s => {
+      if (s.created_at) {
+        const d = new Date(s.created_at).getDay();
+        if (!isNaN(d)) {
+          if (s.status === 'delivered') data[d].delivered++;
+          if (s.status === 'failed' || s.status === 'cancelled') data[d].failed++;
+        }
+      }
+    });
+
+    const todayIdx = new Date().getDay();
+    return [...data.slice(todayIdx + 1), ...data.slice(0, todayIdx + 1)];
+  }, [shipments]);
 
   const { toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -196,13 +213,13 @@ export default function LogisticsDashboard({ companyId, company, isAdmin }) {
             <p className="text-xs text-muted-foreground mt-0.5">Deliveries vs failures this week</p>
           </div>
           <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={WEEKLY_DATA} margin={{ top: 0, right: 5, left: -25, bottom: 0 }}>
+            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-              <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} />
-              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} />
+              <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} />
               <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} />
-              <Bar dataKey="delivered" fill="#16a34a" radius={[3, 3, 0, 0]} name="Delivered" />
-              <Bar dataKey="failed" fill="#f97316" radius={[3, 3, 0, 0]} name="Failed" />
+              <Bar dataKey="delivered" stackId="a" fill="#16a34a" radius={[0, 0, 4, 4]} />
+              <Bar dataKey="failed" stackId="a" fill="#ef4444" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -35,28 +35,46 @@ function UsageRow({ label, used, max, suffix = "" }) {
   );
 }
 
+import { powerSync } from '@/api/PowerSyncConnector';
+
 export default function ReligionDashboard({ companyId, company, isAdmin }) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [chartPeriod, setChartPeriod] = useState('6M');
 
-  const { data: members = [] } = useQuery({ queryKey: ["clients", companyId], queryFn: () => base44.entities.Client.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: events = [] } = useQuery({ queryKey: ["hearings", companyId], queryFn: () => base44.entities.Hearing.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: staff = [] } = useQuery({ queryKey: ["staff", companyId], queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: donations = [] } = useQuery({ queryKey: ["invoices", companyId], queryFn: () => base44.entities.Invoice.filter({ company_id: companyId }), enabled: !!companyId });
+  const { data: stats } = useQuery({
+    queryKey: ["religion_stats", companyId],
+    queryFn: async () => {
+      if (!companyId) return null;
+      const [members, events, volunteers, donations] = await Promise.all([
+        powerSync.execute('SELECT count(*) as count FROM univ_religion_members WHERE company_id = ? AND status = ?', [companyId, 'Active']),
+        powerSync.execute('SELECT * FROM univ_religion_events WHERE company_id = ? AND date >= CURRENT_DATE ORDER BY date ASC', [companyId]),
+        powerSync.execute('SELECT count(*) as count FROM univ_religion_volunteers WHERE company_id = ? AND status = ?', [companyId, 'Active']),
+        powerSync.execute('SELECT amount, created_at FROM univ_religion_donations WHERE company_id = ? AND status = ?', [companyId, 'Completed'])
+      ]);
+      return {
+        activeMembers: members.rows._array[0].count,
+        upcomingEvents: events.rows._array || Array.from(events.rows),
+        activeVolunteers: volunteers.rows._array[0]?.count || 0,
+        donations: donations.rows._array || Array.from(donations.rows)
+      };
+    },
+    enabled: !!companyId
+  });
 
-  const activeMembers = members.filter(m => m.status === "active");
-  const totalDonations = donations.filter(d => d.status === "paid").reduce((s, d) => s + (d.total_amount || 0), 0);
-  const upcomingEvents = events
-    .filter(e => e.status === "scheduled" && e.date && isAfter(new Date(e.date), new Date()))
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
-    .slice(0, 5);
+  const activeMembers = stats?.activeMembers || 0;
+  const upcomingEvents = stats?.upcomingEvents?.slice(0, 5) || [];
+  const donations = stats?.donations || [];
+  const totalDonations = donations.reduce((s, d) => s + (d.amount || 0), 0);
+  const activeVolunteers = stats?.activeVolunteers || 0;
 
   const currency = company?.currency || "USD";
   const planKey = company?.subscription_plan === 'free' ? 'free_trial' : company?.subscription_plan;
   const plan = SUBSCRIPTION_PLANS[planKey] || SUBSCRIPTION_PLANS.free_trial;
-  const chartData = buildMonthlyRevenueChart(donations);
+  
+  // Adapt buildMonthlyRevenueChart to use amount instead of total_amount
+  const chartData = buildMonthlyRevenueChart(donations.map(d => ({ ...d, total_amount: d.amount })));
 
   const { toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);

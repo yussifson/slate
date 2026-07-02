@@ -36,28 +36,50 @@ function UsageRow({ label, used, max, suffix = "" }) {
   );
 }
 
+import { powerSync } from '@/api/PowerSyncConnector';
+
 export default function InsuranceDashboard({ companyId, company, isAdmin, industry = 'insurance' }) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [chartPeriod, setChartPeriod] = useState('6M');
 
-  const { data: claims = [] } = useQuery({ queryKey: ["cases", companyId], queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: policies = [] } = useQuery({ queryKey: ["clients", companyId], queryFn: () => base44.entities.Client.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: events = [] } = useQuery({ queryKey: ["hearings", companyId], queryFn: () => base44.entities.Hearing.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: agents = [] } = useQuery({ queryKey: ["staff", companyId], queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: premiums = [] } = useQuery({ queryKey: ["invoices", companyId], queryFn: () => base44.entities.Invoice.filter({ company_id: companyId }), enabled: !!companyId });
+  const { data: stats } = useQuery({
+    queryKey: ["insurance_stats", companyId],
+    queryFn: async () => {
+      if (!companyId) return null;
+      const [claimsRes, policiesRes, agentsRes, premiumsRes] = await Promise.all([
+        powerSync.execute(`SELECT * FROM insurance_claims WHERE company_id = ?`, [companyId]),
+        powerSync.execute(`SELECT * FROM univ_insurancepolicy WHERE company_id = ?`, [companyId]),
+        powerSync.execute(`SELECT * FROM insurance_agents WHERE company_id = ?`, [companyId]),
+        powerSync.execute(`SELECT * FROM insurance_premiums WHERE company_id = ?`, [companyId])
+      ]);
+      return {
+        claims: claimsRes.rows._array || Array.from(claimsRes.rows),
+        policies: policiesRes.rows._array || Array.from(policiesRes.rows),
+        agents: agentsRes.rows._array || Array.from(agentsRes.rows),
+        premiums: premiumsRes.rows._array || Array.from(premiumsRes.rows)
+      };
+    },
+    enabled: !!companyId
+  });
 
-  const activeClaims = claims.filter(c => ["open", "in_progress", "pending_hearing"].includes(c.status));
-  const activePolicies = policies.filter(p => p.status === "active");
-  const totalRevenue = premiums.filter(p => p.status === "paid").reduce((s, p) => s + (p.total_amount || 0), 0);
-  const overduePremiums = premiums.filter(p => p.status === "overdue").length;
+  const claims = stats?.claims || [];
+  const policies = stats?.policies || [];
+  const agents = stats?.agents || [];
+  const premiums = stats?.premiums || [];
+  const events = []; // Events mock/placeholder if needed
+
+  const activeClaims = claims.filter(c => ["Pending", "Under Review", "Open"].includes(c.status));
+  const activePolicies = policies.filter(p => p.status === "Active");
+  const totalRevenue = premiums.filter(p => p.status === "Paid").reduce((s, p) => s + (Number(p.amount) || 0), 0);
+  const overduePremiums = premiums.filter(p => p.status === "Overdue" || p.status === "Unpaid").length;
   const currency = company?.currency || "USD";
   const planKey = company?.subscription_plan === 'free' ? 'free_trial' : company?.subscription_plan;
   const plan = SUBSCRIPTION_PLANS[planKey] || SUBSCRIPTION_PLANS.free_trial;
 
-  const chartData = buildMonthlyRevenueChart(premiums);
-  const claimDistribution = buildDistributionChart(claims, "stage");
+  const chartData = buildMonthlyRevenueChart(premiums.map(p => ({ ...p, total_amount: p.amount })));
+  const claimDistribution = buildDistributionChart(claims, "type");
   const pieData = claimDistribution.filter(d => d.count > 0).slice(0, 4);
 
   const upcomingEvents = events

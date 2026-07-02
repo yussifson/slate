@@ -60,11 +60,24 @@ export default function HotelDashboard({ companyId, company, isAdmin }) {
   const planKey = company?.subscription_plan === 'free' ? 'free_trial' : company?.subscription_plan;
   const plan = SUBSCRIPTION_PLANS[planKey] || SUBSCRIPTION_PLANS.free_trial;
 
-  const chartData = [
-    { name: 'Jan', Revenue: 12000 }, { name: 'Feb', Revenue: 15000 },
-    { name: 'Mar', Revenue: 18000 }, { name: 'Apr', Revenue: 22000 },
-    { name: 'May', Revenue: 24000 }, { name: 'Jun', Revenue: 19000 },
-  ];
+  const chartData = React.useMemo(() => {
+    const data = dbReservations.reduce((acc, res) => {
+      if (res.status === 'Cancelled' || !res.created_at) return acc;
+      const month = format(new Date(res.created_at), 'MMM');
+      const rev = Number(res.data?.total) || 0;
+      acc[month] = (acc[month] || 0) + rev;
+      return acc;
+    }, {});
+    
+    // Sort chronologically based on recent 6 months
+    const months = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      months.push(format(d, 'MMM'));
+    }
+    return months.map(m => ({ name: m, Revenue: data[m] || 0 }));
+  }, [dbReservations]);
 
   const bookingDist = [
     { name: 'Confirmed', count: dbReservations.filter(r => r.status === 'Confirmed').length },

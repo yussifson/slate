@@ -39,24 +39,45 @@ function UsageRow({ label, used, max, suffix = "" }) {
   );
 }
 
+import { powerSync } from '@/api/PowerSyncConnector';
+
 export default function SchoolDashboard({ companyId, company, isAdmin, industry = 'school' }) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [chartPeriod, setChartPeriod] = useState('6M');
 
-  // Terminology adapts to industry (school/university/online etc.)
   const studentTerm = getTerm('client', industry) || 'Students';
   const caseTerm = getTerm('case', industry) || 'Classes';
 
-  const { data: students = [] } = useQuery({ queryKey: ["clients", companyId], queryFn: () => base44.entities.Client.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: classes = [] } = useQuery({ queryKey: ["cases", companyId], queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: events = [] } = useQuery({ queryKey: ["hearings", companyId], queryFn: () => base44.entities.Hearing.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: staff = [] } = useQuery({ queryKey: ["staff", companyId], queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: invoices = [] } = useQuery({ queryKey: ["invoices", companyId], queryFn: () => base44.entities.Invoice.filter({ company_id: companyId }), enabled: !!companyId });
+  const { data: stats } = useQuery({
+    queryKey: ["school_stats", companyId],
+    queryFn: async () => {
+      if (!companyId) return null;
+      const [studentsRes, classesRes, invoicesRes, eventsRes] = await Promise.all([
+        powerSync.execute('SELECT * FROM school_students WHERE company_id = ?', [companyId]),
+        powerSync.execute('SELECT * FROM school_classes WHERE company_id = ?', [companyId]),
+        base44.entities.Invoice.filter({ company_id: companyId }),
+        powerSync.execute("SELECT * FROM industry_records WHERE record_type = 'timetable_slot' AND company_id = ?", [companyId])
+      ]);
 
-  const activeStudents = students.filter(s => s.status === "active");
-  const activeClasses = classes.filter(c => c.status === "in_progress" || c.status === "open");
+      return {
+        students: studentsRes.rows._array || Array.from(studentsRes.rows),
+        classes: classesRes.rows._array || Array.from(classesRes.rows),
+        invoices: invoicesRes || [],
+        events: eventsRes.rows._array || Array.from(eventsRes.rows)
+      };
+    },
+    enabled: !!companyId
+  });
+
+  const students = stats?.students || [];
+  const classes = stats?.classes || [];
+  const invoices = stats?.invoices || [];
+  const events = stats?.events || [];
+
+  const activeStudents = students.filter(s => s.status !== "dropped" && s.status !== "graduated");
+  const activeClasses = classes; // Assume all returned are active or apply logic
   const totalFees = invoices.filter(i => i.status === "paid").reduce((s, i) => s + (i.total_amount || 0), 0);
   const overdueFees = invoices.filter(i => i.status === "overdue").length;
 
@@ -64,12 +85,12 @@ export default function SchoolDashboard({ companyId, company, isAdmin, industry 
   const planKey = company?.subscription_plan === 'free' ? 'free_trial' : company?.subscription_plan;
   const plan = SUBSCRIPTION_PLANS[planKey] || SUBSCRIPTION_PLANS.free_trial;
   const chartData = buildMonthlyRevenueChart(invoices);
-  const classDistribution = buildDistributionChart(classes, "stage");
+  const classDistribution = buildDistributionChart(classes.map(c => ({ stage: c.subject || 'General' })), "stage");
   const pieData = classDistribution.filter(d => d.count > 0).slice(0, 4);
 
   const upcomingEvents = events
-    .filter(e => e.status === "scheduled" && e.date && isAfter(new Date(e.date), new Date()))
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .map(e => e.data)
+    .filter(e => e?.day && e?.startTime)
     .slice(0, 5);
 
   const { toast } = useToast();

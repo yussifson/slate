@@ -94,8 +94,8 @@ export default function SuperAdminDashboard() {
 
  return (
  <div className="space-y-6 max-w-2xl">
- <div className="relative overflow-hidden bg-gradient-to-br from-primary/90 to-primary/70 rounded-md-[2.5rem] p-8 md:p-12 text-white border-[0.5px] border-black/9 dark:border-white/8 border-white/10">
- <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+ <div className="relative overflow-hidden bg-gradient-to-br from-primary/90 to-primary/70 rounded-md-[2.5rem] p-5 md:p-8 md:p-12 text-white border-[0.5px] border-black/9 dark:border-white/8 border-white/10">
+ <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-6">
  <div className="text-center md:text-left">
  <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2 tracking-[-0.02em]">Welcome back, {user?.user_metadata?.full_name || 'Admin'}</h1>
  <p className="text-primary/10 font-medium text-lg">System Configuration & {getTerm(activeIndustry, "venue") || "Firm"} Setup</p>
@@ -132,7 +132,7 @@ export default function SuperAdminDashboard() {
  </div>
  </div>
 
- <div className="grid grid-cols-2 gap-3 text-sm">
+ <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
  <div className="bg-muted/40 rounded-xl p-3">
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("currency", "Currency")}</p>
  <p className="font-medium mt-0.5">{company.currency}</p>

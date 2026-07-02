@@ -1,12 +1,18 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.optavel.slate',
+  appId: 'com.slate.slate',
   appName: 'Slate',
   webDir: 'dist',
   plugins: {
     CapacitorUpdater: {
-      autoUpdate: true,
+      version: '0.0.0',
+      appId: 'com.slate.slate',
+      autoUpdate: 'always',
+      autoSplashscreen: true
+    },
+    SplashScreen: {
+      launchAutoHide: false
     }
   }
 };

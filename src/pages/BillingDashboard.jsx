@@ -230,7 +230,7 @@ function CompanyBilling({ companyId }) {
         title="Billing"
         subtitle="Invoices and expenses"
       />
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard icon={DollarSign} label="Collected" value={formatCurrency(totalCollected, currency)} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
         <MetricCard icon={Clock} label="Pending" value={formatCurrency(totalPending, currency)} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
         <MetricCard icon={AlertCircle} label="Overdue" value={overdueCount} color="bg-red-50 text-red-600" />
@@ -505,7 +505,7 @@ function SuperAdminBilling() {
           </div>
         }
       />
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard icon={DollarSign} label="Total Collected" value={`$${totalRevenue.toLocaleString()}`} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
         <MetricCard icon={Clock} label="Pending" value={`$${totalPending.toLocaleString()}`} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
         <MetricCard icon={AlertCircle} label="Overdue Invoices" value={overdueCount} color="bg-red-50 text-red-600" />
