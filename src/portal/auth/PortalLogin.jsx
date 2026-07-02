@@ -11,27 +11,23 @@ export default function PortalLogin({ isInvite = false }) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleMagicLinkLogin = async (e) => {
+  const handlePasswordLogin = async (e) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !password) return;
     setLoading(true);
     
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
-        options: {
-          emailRedirectTo: window.location.origin,
-        },
+        password
       });
 
       if (error) throw error;
-
-      toast({
-        title: "Magic Link Sent",
-        description: "Check your email for the secure access link.",
-      });
+      
+      // on success, the session updates and PortalRouter redirects
     } catch (error) {
       toast({
         title: "Login Error",
@@ -62,7 +58,7 @@ export default function PortalLogin({ isInvite = false }) {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-slate-100">
-          <form className="space-y-6" onSubmit={handleMagicLinkLogin}>
+          <form className="space-y-6" onSubmit={handlePasswordLogin}>
             <div>
               <Label htmlFor="email" className="block text-sm font-medium text-slate-700">
                 Email address
@@ -83,12 +79,31 @@ export default function PortalLogin({ isInvite = false }) {
             </div>
 
             <div>
+              <Label htmlFor="password" className="block text-sm font-medium text-slate-700">
+                Password
+              </Label>
+              <div className="mt-1">
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                  placeholder="Enter your password"
+                />
+              </div>
+            </div>
+
+            <div>
               <Button
                 type="submit"
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 disabled={loading}
               >
-                {loading ? 'Sending link...' : 'Send Magic Link'}
+                {loading ? 'Signing in...' : 'Sign In'}
                 {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
               </Button>
             </div>

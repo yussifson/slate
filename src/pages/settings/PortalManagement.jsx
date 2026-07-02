@@ -56,13 +56,14 @@ function InviteDialog({ industry, companyId, onSuccess }) {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const roles = PORTAL_ROLES[industry] || [{ value: 'client', label: 'Client' }];
 
   const handleInvite = async () => {
-    if (!email || !role) {
-      toast({ title: 'Missing fields', description: 'Please fill in the email and role.', variant: 'destructive' });
+    if (!email || !role || !password) {
+      toast({ title: 'Missing fields', description: 'Please fill in the email, role, and default password.', variant: 'destructive' });
       return;
     }
     setLoading(true);
@@ -80,32 +81,43 @@ function InviteDialog({ industry, companyId, onSuccess }) {
         status: 'pending',
         expires_at: expiresAt,
         invited_by: (await supabase.auth.getUser()).data.user?.id || '',
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        default_password: password
       };
       
       await powerSync.execute(
-        `INSERT INTO portal_invitations (id, company_id, email, full_name, role, token, status, expires_at, invited_by, created_at) VALUES (uuid(), ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [invitePayload.company_id, invitePayload.email, invitePayload.full_name, invitePayload.role, invitePayload.token, invitePayload.status, invitePayload.expires_at, invitePayload.invited_by, invitePayload.created_at]
+        `INSERT INTO portal_invitations (id, company_id, email, full_name, role, token, status, expires_at, invited_by, created_at, default_password) VALUES (uuid(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [invitePayload.company_id, invitePayload.email, invitePayload.full_name, invitePayload.role, invitePayload.token, invitePayload.status, invitePayload.expires_at, invitePayload.invited_by, invitePayload.created_at, invitePayload.default_password]
       );
 
-      // Step 2: Use Supabase Admin invite (or magic link as fallback)
-      const { error: authErr } = await supabase.auth.admin?.inviteUserByEmail
-        ? await supabase.auth.admin.inviteUserByEmail(email.toLowerCase().trim(), {
-            data: { role, company_id: companyId, full_name: name, portal_token: token },
-            redirectTo: `${window.location.origin}/portal`,
+      // Step 2: Use Supabase REST API to sign up user without logging out admin
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      if (supabaseUrl && anonKey) {
+        const res = await fetch(`${supabaseUrl}/auth/v1/signup`, {
+          method: 'POST',
+          headers: {
+            'apikey': anonKey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: email.toLowerCase().trim(),
+            password,
+            data: { role, company_id: companyId, full_name: name, portal_token: token }
           })
-        : { error: null };
-
-      if (authErr) {
-        console.warn('Admin invite not available, invitation record created. User must be manually notified.');
+        });
+        if (!res.ok) {
+          const errData = await res.json();
+          console.warn('REST signup issue:', errData);
+        }
       }
 
       toast({
-        title: '✅ Invitation Sent',
-        description: `${email} has been invited as a ${roles.find(r => r.value === role)?.label || role}.`,
+        title: '✅ Client Created',
+        description: `${email} has been created as a ${roles.find(r => r.value === role)?.label || role}.`,
       });
       setOpen(false);
-      setEmail(''); setName(''); setRole('');
+      setEmail(''); setName(''); setRole(''); setPassword('');
       onSuccess?.();
     } catch (err) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
@@ -150,12 +162,19 @@ function InviteDialog({ industry, companyId, onSuccess }) {
               This controls which portal view the user sees when they log in.
             </p>
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="invite-password">Default Password <span className="text-red-500">*</span></Label>
+            <Input id="invite-password" type="text" placeholder="e.g. Welcome123!" value={password} onChange={e => setPassword(e.target.value)} />
+            <p className="text-xs text-muted-foreground">
+              The client will use this password to log in. You can copy it later to send to them.
+            </p>
+          </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
           <Button onClick={handleInvite} disabled={loading} className="gap-2">
-            <Mail className="w-4 h-4" />
-            {loading ? 'Sending...' : 'Send Invitation'}
+            <UserPlus className="w-4 h-4" />
+            {loading ? 'Creating...' : 'Create Client'}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -209,10 +228,11 @@ export default function PortalManagement() {
     onError: (err) => toast({ title: 'Error', description: err.message, variant: 'destructive' }),
   });
 
-  const copyLink = (token) => {
-    const url = `${window.location.origin}/portal?invite=${token}`;
-    navigator.clipboard.writeText(url);
-    toast({ title: 'Link copied!', description: 'The invitation link has been copied to your clipboard.' });
+  const copyDetails = (inv) => {
+    const url = `${window.location.origin}/portal?invite=${inv.token}`;
+    const details = `Portal Link: ${url}\nEmail: ${inv.email}\nPassword: ${inv.default_password || 'Not set'}`;
+    navigator.clipboard.writeText(details);
+    toast({ title: 'Details copied!', description: 'The login details have been copied to your clipboard.' });
   };
 
   const activeUsers = portalUsers.filter(u => u.status === 'active');
@@ -322,9 +342,9 @@ export default function PortalManagement() {
                               variant="ghost"
                               size="sm"
                               className="text-xs gap-1 h-7"
-                              onClick={() => copyLink(inv.token)}
+                              onClick={() => copyDetails(inv)}
                             >
-                              <Copy className="w-3 h-3" /> Copy Link
+                              <Copy className="w-3 h-3" /> Copy Details
                             </Button>
                             <Button
                               variant="ghost"
