@@ -22,6 +22,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import TimeRemindersTab from '@/components/shared/TimeRemindersTab';
 
 const formatDuration = (minutes) => {
   if (!minutes) return '0h 0m';
@@ -81,8 +82,50 @@ export default function TimeTracking() {
       const res = await powerSync.execute('SELECT * FROM univ_time_tracking WHERE company_id = ? ORDER BY date DESC, created_at DESC', [companyId]);
       return res.rows._array || [];
     },
+    },
     enabled: !!companyId
   });
+
+  const { data: reminders = [], isLoading: isLoadingReminders } = useQuery({
+    queryKey: ['time_reminders', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute('SELECT * FROM univ_time_reminders WHERE company_id = ? ORDER BY remind_at ASC', [companyId]);
+      return res.rows._array || [];
+    },
+    enabled: !!companyId
+  });
+
+  // Reminders Alert Logic
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      reminders.forEach(r => {
+        if (r.status === 'Pending' && r.remind_at) {
+          const remindTime = new Date(r.remind_at);
+          // Alert if within the last 60 seconds of the minute
+          if (now >= remindTime && now.getTime() - remindTime.getTime() < 60000) {
+            toast({ title: `🔔 Reminder: ${r.title}`, description: r.description || 'Time to check your task!', duration: 10000 });
+          }
+        }
+      });
+    }, 60000);
+    
+    // Check once immediately on load if anything is due right now
+    const timeout = setTimeout(() => {
+      const now = new Date();
+      reminders.forEach(r => {
+        if (r.status === 'Pending' && r.remind_at) {
+          const remindTime = new Date(r.remind_at);
+          if (now >= remindTime && now.getTime() - remindTime.getTime() < 60000) {
+            toast({ title: `🔔 Reminder: ${r.title}`, description: r.description || 'Time to check your task!', duration: 10000 });
+          }
+        }
+      });
+    }, 3000);
+    
+    return () => { clearInterval(interval); clearTimeout(timeout); };
+  }, [reminders, toast]);
 
   // Track user activity for idle detection
   useEffect(() => {
@@ -473,6 +516,7 @@ export default function TimeTracking() {
           <TabsTrigger value="my-timesheets" className="data-[state=active]:bg-background">My Timesheets</TabsTrigger>
           <TabsTrigger value="approvals" className="data-[state=active]:bg-background">Team Approvals</TabsTrigger>
           <TabsTrigger value="profitability" className="data-[state=active]:bg-background">Project Budgets</TabsTrigger>
+          <TabsTrigger value="reminders" className="data-[state=active]:bg-background">Reminders</TabsTrigger>
         </TabsList>
 
         <TabsContent value="my-timesheets" className="space-y-6">
@@ -601,8 +645,12 @@ export default function TimeTracking() {
                       </div>
                    ))}
                 </div>
-             </div>
-          </div>
+              </div>
+           </div>
+        </TabsContent>
+
+        <TabsContent value="reminders" className="space-y-6">
+          <TimeRemindersTab reminders={reminders} isLoading={isLoadingReminders} />
         </TabsContent>
       </Tabs>
 

@@ -6189,5 +6189,18 @@ export const AppSchema = new Schema({
         status: column.text,
         ai_summary: column.text,
         ai_tags: column.text
+    }),
+    univ_time_reminders: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        user_id: column.text,
+        title: column.text,
+        description: column.text,
+        remind_at: column.text,
+        is_recurring: column.integer,
+        recurrence_pattern: column.text,
+        priority: column.text,
+        status: column.text
     })
 });

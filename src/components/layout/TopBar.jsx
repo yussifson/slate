@@ -18,7 +18,7 @@ import { useQueryClient} from "@tanstack/react-query";
 import { useToast} from "@/components/ui/use-toast";
 import ThemeToggle from "./ThemeToggle";
 import UnivNotificationCenter from "@/components/universal/UnivNotificationCenter";
-import TimeTracker from "../shared/TimeTracker";
+
 import { useCompany} from "@/hooks/useCompanyId";
 import { INDUSTRIES} from "@/config/industries";
 import ProfileAvatarDialog from "@/components/shared/ProfileAvatarDialog";
@@ -148,10 +148,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
 
 
-      {/* Global Time Tracker */}
-      <div className={`hidden sm:block ${inPopover ? '!block' : ''}`}>
-        <TimeTracker />
-      </div>
+
 
       {/* Premium Theme Toggle & Notifications */}
       <ThemeToggle />
