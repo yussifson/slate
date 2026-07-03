@@ -6257,6 +6257,7 @@ export const AppSchema = new Schema({
         is_recurring: column.integer,
         recurrence_pattern: column.text,
         priority: column.text,
-        status: column.text
+        status: column.text,
+        sound: column.text
     })
 });

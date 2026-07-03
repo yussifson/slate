@@ -97,6 +97,16 @@ export default function TimeTracking() {
 
   // Reminders Alert Logic
   useEffect(() => {
+    const playReminderSound = (soundType) => {
+      if (!soundType || soundType === 'none') return;
+      try {
+        const audio = new Audio(`/sounds/${soundType}.mp3`);
+        audio.play().catch(e => console.log('Audio play blocked:', e));
+      } catch (err) {
+        console.error('Audio error:', err);
+      }
+    };
+
     const interval = setInterval(() => {
       const now = new Date();
       reminders.forEach(r => {
@@ -105,6 +115,7 @@ export default function TimeTracking() {
           // Alert if within the last 60 seconds of the minute
           if (now >= remindTime && now.getTime() - remindTime.getTime() < 60000) {
             toast({ title: `🔔 Reminder: ${r.title}`, description: r.description || 'Time to check your task!', duration: 10000 });
+            playReminderSound(r.sound);
           }
         }
       });
@@ -118,6 +129,7 @@ export default function TimeTracking() {
           const remindTime = new Date(r.remind_at);
           if (now >= remindTime && now.getTime() - remindTime.getTime() < 60000) {
             toast({ title: `🔔 Reminder: ${r.title}`, description: r.description || 'Time to check your task!', duration: 10000 });
+            playReminderSound(r.sound);
           }
         }
       });
@@ -141,21 +153,22 @@ export default function TimeTracking() {
 
   // Timer & Idle Logic
   useEffect(() => {
-    const savedTimer = localStorage.getItem('slate_active_timer');
-    if (savedTimer) {
-      try {
-        const parsed = JSON.parse(savedTimer);
-        const elapsedSinceStart = Math.floor((Date.now() - parsed.startTime) / 1000);
-        setTimerSeconds(parsed.accumulatedSeconds + elapsedSinceStart);
-        setTimerDescription(parsed.description || '');
-        setTimerProject(parsed.project || '');
-        setTimerBillable(parsed.billable ?? true);
-        setIsTimerRunning(true);
-      } catch (e) {
-        localStorage.removeItem('slate_active_timer');
-      }
-    }
-  }, []);
+    const fetchTimer = async () => {
+       if (!companyId || !user?.email) return;
+       const res = await powerSync.execute('SELECT * FROM active_timers WHERE company_id = ? AND created_by = ? LIMIT 1', [companyId, user.email]);
+       if (res.rows.length > 0) {
+          const parsed = res.rows.item(0);
+          const startTime = new Date(parsed.start_time).getTime();
+          const elapsedSinceStart = Math.floor((Date.now() - startTime) / 1000);
+          setTimerSeconds((parsed.accumulated_seconds || 0) + elapsedSinceStart);
+          setTimerDescription(parsed.description || '');
+          setTimerProject(parsed.case_id || '');
+          setTimerBillable(parsed.is_billable === 1);
+          setIsTimerRunning(true);
+       }
+    };
+    fetchTimer();
+  }, [companyId, user?.email]);
 
   useEffect(() => {
     let interval = null;
@@ -168,22 +181,23 @@ export default function TimeTracking() {
           setIdleSeconds(Math.floor((now - lastActiveTime) / 1000));
         } else if (!showIdleWarning) {
           setTimerSeconds(s => s + 1);
-          if (timerSeconds % 5 === 0) {
-             const currentData = JSON.parse(localStorage.getItem('slate_active_timer') || '{}');
-             if (currentData.startTime) {
-                localStorage.setItem('slate_active_timer', JSON.stringify({
-                   ...currentData,
-                   description: timerDescription,
-                   project: timerProject,
-                   billable: timerBillable
-                }));
-             }
+          if (timerSeconds % 5 === 0 && companyId && user?.email) {
+             const timerId = `timer-${user.email}`;
+             const startTimeIso = new Date(Date.now() - timerSeconds * 1000).toISOString();
+             powerSync.execute(
+                 `INSERT OR REPLACE INTO active_timers (id, company_id, description, case_id, start_time, accumulated_seconds, is_billable, created_by, created_at)
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                 [
+                    timerId, companyId, timerDescription, timerProject, 
+                    startTimeIso, timerSeconds, timerBillable ? 1 : 0, user.email, new Date().toISOString()
+                 ]
+             );
           }
         }
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isTimerRunning, timerSeconds, timerDescription, timerProject, timerBillable, lastActiveTime, showIdleWarning]);
+  }, [isTimerRunning, timerSeconds, timerDescription, timerProject, timerBillable, lastActiveTime, showIdleWarning, companyId, user?.email]);
 
   const handleKeepIdleTime = () => {
     setTimerSeconds(s => s + idleSeconds);
@@ -201,18 +215,24 @@ export default function TimeTracking() {
   const handleStartTimer = () => {
     setIsTimerRunning(true);
     setLastActiveTime(Date.now());
-    localStorage.setItem('slate_active_timer', JSON.stringify({
-      startTime: Date.now(),
-      accumulatedSeconds: timerSeconds,
-      description: timerDescription,
-      project: timerProject,
-      billable: timerBillable
-    }));
+    if (companyId && user?.email) {
+        const timerId = `timer-${user.email}`;
+        powerSync.execute(
+            `INSERT OR REPLACE INTO active_timers (id, company_id, description, case_id, start_time, accumulated_seconds, is_billable, created_by, created_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+               timerId, companyId, timerDescription, timerProject, 
+               new Date().toISOString(), timerSeconds, timerBillable ? 1 : 0, user.email, new Date().toISOString()
+            ]
+        );
+    }
   };
 
   const handleStopTimer = () => {
     setIsTimerRunning(false);
-    localStorage.removeItem('slate_active_timer');
+    if (companyId && user?.email) {
+        powerSync.execute(`DELETE FROM active_timers WHERE id = ?`, [`timer-${user.email}`]);
+    }
     
     if (timerSeconds < 60) {
       toast({ title: "Timer too short", description: "Time logged must be at least 1 minute.", variant: "default" });
@@ -655,15 +675,15 @@ export default function TimeTracking() {
 
       {/* Manual Entry Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[500px] p-0 overflow-y-auto max-h-[85vh] rounded-2xl border-border shadow-xl bg-card">
-          <DialogHeader className="px-6 pt-6 pb-4 border-b border-border bg-muted/30">
+        <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-2xl border-border shadow-xl bg-card flex flex-col max-h-[90vh]">
+          <DialogHeader className="px-6 pt-6 pb-4 border-b border-border bg-muted/30 shrink-0">
             <DialogTitle className="text-xl flex items-center gap-2 text-foreground">
               <FileText className="w-5 h-5 text-primary" />
               {editingEntry ? 'Edit Time Entry' : 'Manual Time Entry'}
             </DialogTitle>
           </DialogHeader>
           
-          <div className="p-6 space-y-6">
+          <div className="p-6 space-y-6 flex-1 overflow-y-auto">
             <div className="space-y-2">
               <Label className="text-xs uppercase tracking-wider text-muted-foreground">Description</Label>
               <Input 
@@ -753,7 +773,7 @@ export default function TimeTracking() {
             </div>
           </div>
           
-          <DialogFooter className="px-6 py-4 border-t border-border bg-muted/30">
+          <DialogFooter className="px-6 py-4 border-t border-border bg-muted/30 shrink-0">
             <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
             <Button 
               onClick={handleSave} 

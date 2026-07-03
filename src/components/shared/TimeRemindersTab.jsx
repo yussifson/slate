@@ -29,7 +29,8 @@ export default function TimeRemindersTab({ reminders, isLoading }) {
     time: '',
     priority: 'Medium',
     is_recurring: false,
-    recurrence_pattern: 'none'
+    recurrence_pattern: 'none',
+    sound: 'default'
   });
 
   const saveMutation = useMutation({
@@ -37,11 +38,11 @@ export default function TimeRemindersTab({ reminders, isLoading }) {
       const dateTimeStr = `${data.remind_at}T${data.time || '00:00'}:00Z`;
       const id = crypto.randomUUID();
       await powerSync.execute(
-        `INSERT INTO univ_time_reminders (id, created_at, company_id, user_id, title, description, remind_at, is_recurring, recurrence_pattern, priority, status)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO univ_time_reminders (id, created_at, company_id, user_id, title, description, remind_at, is_recurring, recurrence_pattern, priority, status, sound)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           id, new Date().toISOString(), companyId, user.id, data.title, data.description, dateTimeStr,
-          data.is_recurring ? 1 : 0, data.recurrence_pattern, data.priority, 'Pending'
+          data.is_recurring ? 1 : 0, data.recurrence_pattern, data.priority, 'Pending', data.sound
         ]
       );
     },
@@ -49,7 +50,7 @@ export default function TimeRemindersTab({ reminders, isLoading }) {
       queryClient.invalidateQueries(['time_reminders', companyId]);
       toast({ title: "Reminder Created", description: "Your reminder has been set." });
       setIsModalOpen(false);
-      setFormData({ title: '', description: '', remind_at: '', time: '', priority: 'Medium', is_recurring: false, recurrence_pattern: 'none' });
+      setFormData({ title: '', description: '', remind_at: '', time: '', priority: 'Medium', is_recurring: false, recurrence_pattern: 'none', sound: 'default' });
     }
   });
 
@@ -137,14 +138,14 @@ export default function TimeRemindersTab({ reminders, isLoading }) {
       </div>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[450px] p-0 overflow-hidden rounded-2xl border-border shadow-xl bg-card">
-          <DialogHeader className="px-6 pt-6 pb-4 border-b border-border bg-muted/30">
+        <DialogContent className="sm:max-w-[450px] p-0 overflow-hidden rounded-2xl border-border shadow-xl bg-card flex flex-col max-h-[90vh]">
+          <DialogHeader className="px-6 pt-6 pb-4 border-b border-border bg-muted/30 shrink-0">
             <DialogTitle className="text-xl flex items-center gap-2 text-foreground">
               <AlertCircle className="w-5 h-5 text-primary" />
               New Reminder
             </DialogTitle>
           </DialogHeader>
-          <div className="p-6 space-y-5 overflow-y-auto max-h-[60vh]">
+          <div className="p-6 space-y-5 flex-1 overflow-y-auto">
             <div className="space-y-2">
               <Label className="text-xs uppercase tracking-wider text-muted-foreground">Reminder Title</Label>
               <Input 
@@ -204,8 +205,27 @@ export default function TimeRemindersTab({ reminders, isLoading }) {
                  </Select>
                </div>
             )}
+            <div className="space-y-2">
+               <Label className="text-xs uppercase tracking-wider text-muted-foreground">Alert Sound</Label>
+               <Select value={formData.sound} onValueChange={v => {
+                  setFormData({...formData, sound: v});
+                  if (v !== 'none') {
+                     const audio = new Audio(`/sounds/${v}.mp3`);
+                     audio.play().catch(e => console.log('Audio play blocked:', e));
+                  }
+               }}>
+                  <SelectTrigger><SelectValue placeholder="Sound" /></SelectTrigger>
+                  <SelectContent>
+                     <SelectItem value="none">None (Silent)</SelectItem>
+                     <SelectItem value="default">Default Chime</SelectItem>
+                     <SelectItem value="bell">Classic Bell</SelectItem>
+                     <SelectItem value="digital">Digital Beep</SelectItem>
+                     <SelectItem value="piano">Piano Chord</SelectItem>
+                  </SelectContent>
+               </Select>
+            </div>
           </div>
-          <DialogFooter className="px-6 py-4 border-t border-border bg-muted/20">
+          <DialogFooter className="px-6 py-4 border-t border-border bg-muted/20 shrink-0">
             <Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancel</Button>
             <Button onClick={handleCreate} disabled={saveMutation.isPending} className="bg-primary text-primary-foreground hover:bg-primary/90">Save Reminder</Button>
           </DialogFooter>
