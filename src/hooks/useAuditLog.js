@@ -9,6 +9,7 @@ export function useLogActivity() {
     mutationFn: async ({ action, recordType, recordId, changes }) => {
       const error = await (async () => {
         const _payload = {
+          id: crypto.randomUUID(),
           user_id: user?.id,
           user_email: user?.email,
           action,

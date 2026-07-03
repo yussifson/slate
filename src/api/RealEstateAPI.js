@@ -78,8 +78,8 @@ export const RealEstateAPI = {
 
       // Log to audit trail
       powerSync.execute(
-        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-        [userId, 'create', 'property', id, JSON.stringify(data), now]
+        'INSERT INTO audit_logs (id, user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [crypto.randomUUID(), userId, 'create', 'property', id, JSON.stringify(data), now]
       ).catch(e => console.warn('Audit log error:', e));
       return id;
     } catch (e) {
@@ -1034,8 +1034,8 @@ export const RealEstateAPI = {
 
       // Audit logged inline during commission rule creation
       powerSync.execute(
-        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-        [userId, 'create', 'commission_rule', id, JSON.stringify(data), now]
+        'INSERT INTO audit_logs (id, user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [crypto.randomUUID(), userId, 'create', 'commission_rule', id, JSON.stringify(data), now]
       ).catch(e => console.warn('Audit log error:', e));
 
       return id;
@@ -1219,8 +1219,8 @@ export const RealEstateAPI = {
       );
 
       powerSync.execute(
-        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-        [userId, 'create', 'trust_ledger', id, JSON.stringify(data), now]
+        'INSERT INTO audit_logs (id, user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [crypto.randomUUID(), userId, 'create', 'trust_ledger', id, JSON.stringify(data), now]
       ).catch(e => console.warn('Audit log error:', e));
 
       return id;
@@ -1312,8 +1312,8 @@ export const RealEstateAPI = {
       );
 
       powerSync.execute(
-        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-        [userId, 'create', 'document_template', id, JSON.stringify(data), now]
+        'INSERT INTO audit_logs (id, user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [crypto.randomUUID(), userId, 'create', 'document_template', id, JSON.stringify(data), now]
       ).catch(e => console.warn('Audit log error:', e));
 
       return id;
@@ -1406,8 +1406,8 @@ export const RealEstateAPI = {
       );
 
       powerSync.execute(
-        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-        [userId, 'create', 'counter_offer', id, JSON.stringify(data), now]
+        'INSERT INTO audit_logs (id, user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [crypto.randomUUID(), userId, 'create', 'counter_offer', id, JSON.stringify(data), now]
       ).catch(e => console.warn('Audit log error:', e));
 
       return id;
@@ -1509,8 +1509,8 @@ export const RealEstateAPI = {
       );
 
       powerSync.execute(
-        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-        [userId, 'create', 'payment_schedule', id, JSON.stringify(data), now]
+        'INSERT INTO audit_logs (id, user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [crypto.randomUUID(), userId, 'create', 'payment_schedule', id, JSON.stringify(data), now]
       ).catch(e => console.warn('Audit log error:', e));
 
       return id;
@@ -1601,8 +1601,8 @@ export const RealEstateAPI = {
       );
 
       powerSync.execute(
-        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-        [userId, 'create', 'esignature', id, JSON.stringify(data), now]
+        'INSERT INTO audit_logs (id, user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [crypto.randomUUID(), userId, 'create', 'esignature', id, JSON.stringify(data), now]
       ).catch(e => console.warn('Audit log error:', e));
 
       return id;
@@ -1699,8 +1699,8 @@ export const RealEstateAPI = {
       );
 
       powerSync.execute(
-        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-        [userId, 'create', 'market_data', id, JSON.stringify(data), now]
+        'INSERT INTO audit_logs (id, user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [crypto.randomUUID(), userId, 'create', 'market_data', id, JSON.stringify(data), now]
       ).catch(e => console.warn('Audit log error:', e));
 
       return id;
@@ -1795,8 +1795,8 @@ export const RealEstateAPI = {
       );
 
       powerSync.execute(
-        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-        [userId, 'create', 'escrow_account', id, JSON.stringify(data), now]
+        'INSERT INTO audit_logs (id, user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [crypto.randomUUID(), userId, 'create', 'escrow_account', id, JSON.stringify(data), now]
       ).catch(e => console.warn('Audit log error:', e));
 
       return id;

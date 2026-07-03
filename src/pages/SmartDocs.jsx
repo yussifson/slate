@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { powerSync } from "@/api/PowerSyncConnector";
+import { supabase } from "@/api/supabaseClient";
 import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +14,7 @@ import { useToast } from "@/components/ui/use-toast";
 import {
   FolderOpen, FileText, Search, Plus, Link2, Brain, Tag,
   Calendar, AlertTriangle, CheckCircle2, Eye, Download,
-  Folder, File, Layers, Network, Clock, Shield, Zap
+  Folder, File, Layers, Network, Clock, Shield, Zap, Upload, X
 } from "lucide-react";
 
 const DOC_CATEGORIES = ["Contract", "Invoice", "Receipt", "Employee File", "Passport/ID", "Certification", "Policy", "Medical Report", "Purchase Order", "Other"];
@@ -200,6 +201,10 @@ export default function SmartDocs() {
   const [showFolderForm, setShowFolderForm] = useState(false);
 
   const [uploadForm, setUploadForm] = useState({ name: "", category: "Contract", folder_id: "none", tags: "", expiry_date: "", file_url: "", signature_status: "unsigned", notes: "" });
+  const [uploadMode, setUploadMode] = useState("url"); // "url" | "file"
+  const [uploadFile, setUploadFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
   const [linkForm, setLinkForm] = useState({ entity_type: "staff", entity_id: "", relationship: "" });
   const [folderForm, setFolderForm] = useState({ name: "", color: "#6366f1" });
 
@@ -230,13 +235,45 @@ export default function SmartDocs() {
 
   const saveDoc = async () => {
     if (!uploadForm.name) return toast({ title: "Document name is required", variant: "destructive" });
+    
+    let fileUrl = uploadForm.file_url;
+    let fileType = '';
+
+    // Handle file upload if user chose file mode
+    if (uploadMode === "file" && uploadFile) {
+      setIsUploading(true);
+      try {
+        const ext = uploadFile.name.split('.').pop().toLowerCase();
+        fileType = ext;
+        const filePath = `${companyId}/${crypto.randomUUID()}.${ext}`;
+        const { data: storageData, error: storageErr } = await supabase.storage
+          .from('documents')
+          .upload(filePath, uploadFile, { upsert: false });
+        if (storageErr) throw storageErr;
+        const { data: publicUrlData } = supabase.storage
+          .from('documents')
+          .getPublicUrl(filePath);
+        fileUrl = publicUrlData?.publicUrl || '';
+        if (!uploadForm.name) {
+          setUploadForm(f => ({ ...f, name: uploadFile.name.replace(`.${ext}`, '') }));
+        }
+      } catch (err) {
+        toast({ title: "Upload Failed", description: err.message, variant: "destructive" });
+        setIsUploading(false);
+        return;
+      }
+      setIsUploading(false);
+    }
+
     await powerSync.execute(
-      "INSERT INTO documents (id, created_at, company_id, name, category, folder_id, tags, expiry_date, file_url, signature_status, notes, uploaded_by, filing_date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-      [crypto.randomUUID(), new Date().toISOString(), companyId, uploadForm.name, uploadForm.category, uploadForm.folder_id === "none" ? null : uploadForm.folder_id, uploadForm.tags, uploadForm.expiry_date || null, uploadForm.file_url, uploadForm.signature_status, uploadForm.notes, user?.full_name || user?.email, new Date().toISOString()]
+      "INSERT INTO documents (id, created_at, company_id, name, category, folder_id, tags, expiry_date, file_url, file_type, signature_status, notes, uploaded_by, filing_date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      [crypto.randomUUID(), new Date().toISOString(), companyId, uploadForm.name, uploadForm.category, uploadForm.folder_id === "none" ? null : uploadForm.folder_id, uploadForm.tags, uploadForm.expiry_date || null, fileUrl, fileType || uploadForm.file_type, uploadForm.signature_status, uploadForm.notes, user?.full_name || user?.email, new Date().toISOString()]
     );
     await loadDocs();
     setShowUploadForm(false);
     setUploadForm({ name: "", category: "Contract", folder_id: "none", tags: "", expiry_date: "", file_url: "", signature_status: "unsigned", notes: "" });
+    setUploadFile(null);
+    setUploadMode("url");
     toast({ title: "Document added to Smart Docs" });
   };
 
@@ -421,14 +458,95 @@ export default function SmartDocs() {
                   </SelectContent>
                 </Select>
               </div>
-              <div><Label>File URL</Label><Input placeholder="https://..." value={uploadForm.file_url} onChange={e => setUploadForm(f => ({ ...f, file_url: e.target.value }))} /></div>
+
+              {/* File Source Toggle */}
+              <div className="col-span-2">
+                <Label className="mb-1 block">Document Source</Label>
+                <div className="flex rounded-lg border border-border overflow-hidden">
+                  <button
+                    onClick={() => setUploadMode("url")}
+                    className={`flex-1 py-2 text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
+                      uploadMode === "url" ? "bg-violet-600 text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"
+                    }`}
+                  >
+                    <Link2 className="w-3.5 h-3.5" /> Paste URL / Link
+                  </button>
+                  <button
+                    onClick={() => setUploadMode("file")}
+                    className={`flex-1 py-2 text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
+                      uploadMode === "file" ? "bg-violet-600 text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"
+                    }`}
+                  >
+                    <Upload className="w-3.5 h-3.5" /> Upload from Device
+                  </button>
+                </div>
+              </div>
+
+              {/* URL Input */}
+              {uploadMode === "url" && (
+                <div className="col-span-2">
+                  <Label>File URL</Label>
+                  <Input placeholder="https://..." value={uploadForm.file_url} onChange={e => setUploadForm(f => ({ ...f, file_url: e.target.value }))} />
+                </div>
+              )}
+
+              {/* File Upload */}
+              {uploadMode === "file" && (
+                <div className="col-span-2">
+                  <Label>Select File</Label>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    className="hidden"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.jpg,.jpeg,.png,.ppt,.pptx"
+                    onChange={e => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setUploadFile(file);
+                        if (!uploadForm.name) {
+                          const baseName = file.name.split('.').slice(0, -1).join('.');
+                          setUploadForm(f => ({ ...f, name: baseName }));
+                        }
+                      }
+                    }}
+                  />
+                  {uploadFile ? (
+                    <div className="flex items-center gap-3 p-3 rounded-lg border border-violet-200 bg-violet-50 dark:bg-violet-900/20">
+                      <FileText className="w-8 h-8 text-violet-500 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">{uploadFile.name}</p>
+                        <p className="text-xs text-muted-foreground">{(uploadFile.size / 1024).toFixed(1)} KB</p>
+                      </div>
+                      <button onClick={() => { setUploadFile(null); if (fileInputRef.current) fileInputRef.current.value = ''; }} className="text-muted-foreground hover:text-destructive">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-full border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/10 transition-colors cursor-pointer group"
+                    >
+                      <Upload className="w-10 h-10 mx-auto mb-2 text-muted-foreground group-hover:text-violet-500 transition-colors" />
+                      <p className="text-sm font-medium text-muted-foreground group-hover:text-violet-600">Click to browse files</p>
+                      <p className="text-xs text-muted-foreground mt-1">PDF, Word, Excel, Images, PowerPoint</p>
+                    </button>
+                  )}
+                </div>
+              )}
+
               <div><Label>Expiry Date</Label><Input type="date" value={uploadForm.expiry_date} onChange={e => setUploadForm(f => ({ ...f, expiry_date: e.target.value }))} /></div>
               <div className="col-span-2"><Label>Tags (comma separated)</Label><Input placeholder="contract, hr, 2026" value={uploadForm.tags} onChange={e => setUploadForm(f => ({ ...f, tags: e.target.value }))} /></div>
               <div className="col-span-2"><Label>Notes</Label><Textarea placeholder="Notes about this document..." rows={2} value={uploadForm.notes} onChange={e => setUploadForm(f => ({ ...f, notes: e.target.value }))} /></div>
             </div>
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setShowUploadForm(false)}>Cancel</Button>
-              <Button onClick={saveDoc}>Add Document</Button>
+              <Button onClick={saveDoc} disabled={isUploading} className="gap-2">
+                {isUploading ? (
+                  <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Uploading...</>
+                ) : (
+                  <><Upload className="w-4 h-4" />Add Document</>
+                )}
+              </Button>
             </div>
           </div>
         </DialogContent>

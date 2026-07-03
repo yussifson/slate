@@ -9,6 +9,9 @@ export function getSubdomainAndBase() {
     knownBaseDomains.push(envBase);
   }
 
+  // Reserved system subdomains that should never be treated as tenant subdomains
+  const reservedSubdomains = ['flow', 'app', 'www', 'admin', 'api', 'mail', 'staging', 'dev', 'beta', 'test'];
+
   // Handle localhost scenarios
   if (host === 'localhost' || host.startsWith('127.0.0.1')) {
     return { currentSubdomain: null, baseDomain: host, isCustomDomain: false };
@@ -32,6 +35,10 @@ export function getSubdomainAndBase() {
     }
     if (host.endsWith(`.${base}`)) {
       const currentSubdomain = host.replace(`.${base}`, '');
+      // Treat reserved system subdomains as the base domain (not tenant subdomains)
+      if (reservedSubdomains.includes(currentSubdomain)) {
+        return { currentSubdomain: null, baseDomain: base, isCustomDomain: false };
+      }
       return { currentSubdomain, baseDomain: base, isCustomDomain: false };
     }
   }
