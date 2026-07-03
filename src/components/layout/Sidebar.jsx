@@ -726,11 +726,11 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
       rawNavItems.push({ label: "Unified Inbox", path: "/unified-inbox", icon: "Inbox" });
     }
 
-    // Inject Documents & Signatures
+    // Inject SmartDocs
     if (!rawNavItems.some(n => n.path === '/documents')) {
-      rawNavItems.push({ label: "Documents & Signatures", path: "/documents", icon: "FileSignature" });
+      rawNavItems.push({ label: "SmartDocs", path: "/documents", icon: "FileSignature" });
     } else {
-      rawNavItems = rawNavItems.map(n => n.path === '/documents' ? { ...n, label: "Documents & Signatures", icon: "FileSignature" } : n);
+      rawNavItems = rawNavItems.map(n => n.path === '/documents' ? { ...n, label: "SmartDocs", icon: "FileSignature" } : n);
     }
   }
 
