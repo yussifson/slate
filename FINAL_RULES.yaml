@@ -334,6 +334,7 @@ bucket_definitions:
       - SELECT * FROM univ_re_rent_payment_history WHERE company_id = bucket.company_id
       - SELECT * FROM univ_re_agent_metrics WHERE company_id = bucket.company_id
       - SELECT * FROM univ_re_audit_log WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_time_tracking WHERE company_id = bucket.company_id
 
   client_workspace:
     parameters:

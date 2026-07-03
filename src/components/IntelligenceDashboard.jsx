@@ -120,29 +120,28 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
   // Full dashboard mode with Tabs for powerful tools
   return (
     <div className="space-y-8 pb-20 animate-in fade-in duration-500">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-6 mb-8 mt-2">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary via-emerald-500 to-teal-600 border border-white/20 backdrop-blur-xl flex items-center justify-center shadow-2xl shadow-primary/30 relative overflow-hidden">
-            <div className="absolute inset-0 bg-white/20 opacity-0 hover:opacity-100 transition-opacity"></div>
-            <Brain className="w-7 h-7 text-white" />
+          <div className="w-12 h-12 rounded-xl bg-slate-900 dark:bg-white flex items-center justify-center shadow-sm">
+            <Brain className="w-6 h-6 text-white dark:text-slate-900" />
           </div>
           <div>
-            <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
               AI Intelligence Hub
             </h1>
-            <p className="text-sm text-muted-foreground font-medium mt-1">
-              Powerful active AI tools and continuous passive data insights
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+              Enterprise-grade analytical tools and continuous passive data insights
             </p>
           </div>
         </div>
       </div>
 
       <Tabs defaultValue="insights" className="w-full">
-        <TabsList className="mb-8 flex flex-wrap sm:grid w-full sm:grid-cols-4 max-w-4xl bg-slate-100/50 dark:bg-slate-900/50 backdrop-blur-md p-1.5 rounded-xl border border-slate-200/50 dark:border-white/5 shadow-inner">
-          <TabsTrigger value="insights" className="gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=active]:shadow-md transition-all font-semibold"><Sparkles className="w-4 h-4"/> Insights Engine</TabsTrigger>
-          <TabsTrigger value="oracle" className="gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:dark:bg-slate-800 data-[state=active]:text-blue-500 data-[state=active]:shadow-md transition-all font-semibold"><Bot className="w-4 h-4"/> Data Oracle</TabsTrigger>
-          <TabsTrigger value="report" className="gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:dark:bg-slate-800 data-[state=active]:text-purple-500 data-[state=active]:shadow-md transition-all font-semibold"><FileText className="w-4 h-4"/> Report Generator</TabsTrigger>
-          <TabsTrigger value="anomaly" className="gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:dark:bg-slate-800 data-[state=active]:text-red-500 data-[state=active]:shadow-md transition-all font-semibold"><Activity className="w-4 h-4"/> Anomaly Scanner</TabsTrigger>
+        <TabsList className="mb-8 w-full flex justify-start gap-6 bg-transparent p-0 border-b border-slate-200 dark:border-slate-800 rounded-none h-auto overflow-x-auto hide-scrollbar">
+          <TabsTrigger value="insights" className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-primary pb-3 px-1 transition-all font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"><Sparkles className="w-4 h-4"/> Insights Engine</TabsTrigger>
+          <TabsTrigger value="oracle" className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-blue-500 pb-3 px-1 transition-all font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"><Bot className="w-4 h-4"/> Data Oracle</TabsTrigger>
+          <TabsTrigger value="report" className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-purple-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-purple-500 pb-3 px-1 transition-all font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"><FileText className="w-4 h-4"/> Report Generator</TabsTrigger>
+          <TabsTrigger value="anomaly" className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-red-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-red-500 pb-3 px-1 transition-all font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"><Activity className="w-4 h-4"/> Anomaly Scanner</TabsTrigger>
         </TabsList>
 
         <TabsContent value="insights" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">

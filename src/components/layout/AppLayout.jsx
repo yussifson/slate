@@ -237,14 +237,8 @@ export default function AppLayout() {
   {/* Custom Electron Title Bar - only renders in the desktop app */}
   <ElectronTitleBar />
   <div className="flex flex-1 overflow-hidden relative overscroll-y-none">
- {/* Global Ambient Orbit Background - Unified Optavel Theme */}
- <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-white dark:bg-[#0A0F1C] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- {/* Clean White Background with subtle Emerald Green accents */}
- <div className="absolute inset-0 bg-gradient-to-br from-[hsl(158,68%,38%)]/[0.03] via-transparent to-[hsl(158,68%,38%)]/[0.06] dark:from-[hsl(158,68%,38%)]/10 dark:via-[#0A0F1C] dark:to-[hsl(158,68%,38%)]/20" />
- 
- {/* Soft Radial Glows - Emerald Green */}
- <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[hsl(158,68%,38%)]/5 blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
- <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[hsl(158,68%,38%)]/5 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
+ {/* Clean Background */}
+ <div className="absolute inset-0 z-0 bg-white dark:bg-[#0A0F1C] pointer-events-none transition-all duration-1000">
  </div>
 
  <div className="z-10 flex">

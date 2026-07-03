@@ -552,7 +552,7 @@ return (
  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
  {/* Badge */}
  <FadeIn>
- <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-xs font-semibold text-slate-600 mb-8  tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="hidden md:inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-xs font-semibold text-slate-600 mb-8  tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <span className="flex h-2 w-2 rounded-full bg-primary" />
  {t("trusted_by_500_enterprise_team", "Trusted by 500+ Enterprise Teams  •")} <span className="font-semibold text-primary flex items-center gap-2"><Sparkles className="w-3 h-3"/> {t("powered_by_orbit_ai", "Powered by Orbit AI")}</span>
  </div>
@@ -585,55 +585,46 @@ return (
  {/* AI Input Box */}
  <FadeIn delay="delay-250">
  <div className="max-w-4xl mx-auto mb-10 relative z-20">
- 
  {orbitStage === "idle" && (
  <form onSubmit={handleAiSubmit} className="flex flex-col items-center group w-full">
- <div className="w-full relative p-[1px] rounded-2xl overflow-hidden transition-all duration-300 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.15)]">
- 
- {/* Elegant Gradient Border */}
- <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-transparent to-primary/20 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
- 
- {/* Inner White Container */}
- <div className="relative bg-white dark:bg-slate-900 backdrop-blur-xl rounded-2xl p-6 sm:p-8 text-center flex flex-col h-full w-full z-10 border border-primary/10">
- <div className="mb-6 flex flex-col items-center">
- <div className="w-10 h-10 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 border border-primary/20">
-   <Sparkles className="w-5 h-5 text-primary" />
- </div>
- <h2 className="font-bold text-slate-900 dark:text-white text-3xl sm:text-4xl tracking-tight leading-tight">
- Can't find your preferred workslate? <br/><span className="text-primary font-black mt-2 inline-block">Build it with Orbit Build</span>
- </h2>
- <p className="text-slate-500 dark:text-slate-400 mt-4 text-sm max-w-2xl mx-auto">Describe your dream workspace in plain english, and our AI will build a custom enterprise system tailored exactly to your needs.</p>
- </div>
- <div className="relative w-full text-left">
-   <textarea
-   value={aiPrompt}
-   onChange={(e) => {
-   setAiPrompt(e.target.value);
-   setShowFirmAlert(false);
-   }}
-   placeholder="e.g. I need a CRM for my logistics company to manage delivery drivers and track client invoices..."
-   className="w-full h-24 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 text-slate-900 dark:text-white placeholder-slate-400 font-medium text-base border border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none resize-none transition-all"
-   />
- </div>
- <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
- <div className="flex items-center gap-2">
-   <span className="flex h-2 w-2 relative">
-     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary/60 opacity-75"></span>
-     <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-   </span>
-   <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest tracking-[0.04em]">Powered by Orbit Intelligence</span>
- </div>
- <button
- type="submit"
- disabled={!aiPrompt.trim()}
- className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white px-8 py-3.5 rounded-xl font-semibold tracking-wide shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/30 disabled:opacity-50 disabled:hover:translate-y-0 flex items-center justify-center gap-2"
- >
- <Sparkles className="w-4 h-4" />
- Build with Orbit
- </button>
- </div>
- </div>
- </div>
+   <div className="w-full flex flex-col items-center">
+     <h2 className="text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-white mb-8 tracking-tight text-center">
+       What do you want to build today?
+     </h2>
+     
+     <div className="relative w-full max-w-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.15)] transition-all duration-300 rounded-3xl group-focus-within:shadow-[0_8px_30px_rgba(16,185,129,0.2)]">
+       <textarea
+         value={aiPrompt}
+         onChange={(e) => {
+           setAiPrompt(e.target.value);
+           setShowFirmAlert(false);
+         }}
+         placeholder="Describe your dream workspace in plain english..."
+         className="w-full min-h-[64px] bg-white dark:bg-slate-900 rounded-3xl py-5 pl-6 pr-16 text-slate-900 dark:text-white placeholder-slate-400 font-medium text-lg border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-primary/20 outline-none resize-none"
+         rows={1}
+       />
+       <button
+         type="submit"
+         disabled={!aiPrompt.trim()}
+         className="absolute right-3 bottom-3 w-10 h-10 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center justify-center transition-all disabled:opacity-50 disabled:bg-slate-300 shadow-md"
+       >
+         <ArrowRight className="w-5 h-5" />
+       </button>
+     </div>
+     
+     <div className="mt-8 flex flex-wrap justify-center gap-3">
+       {["Create a CRM system", "Build a logistics tracker", "Design an HR dashboard"].map(txt => (
+         <button 
+           key={txt} 
+           type="button" 
+           onClick={() => setAiPrompt(txt)} 
+           className="px-4 py-2 rounded-2xl bg-white dark:bg-slate-800 border-[0.5px] border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm"
+         >
+           {txt}
+         </button>
+       ))}
+     </div>
+   </div>
  </form>
  )}
 

@@ -158,34 +158,34 @@ export default function TowerManager() {
 
       {/* Enterprise Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 relative z-10">
-        <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-colors">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Active Branches</p>
-            <div className="p-2 bg-primary/5 dark:bg-primary/10 rounded-lg">
-              <Building2 className="w-5 h-5 text-primary dark:text-primary" />
+        <div className="bg-white dark:bg-[#111827] rounded-xl p-6 shadow-sm border-[0.5px] border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow">
+          <div className="flex items-start justify-between mb-2">
+            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Active Branches</p>
+            <div className="p-1.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-md">
+              <Building2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             </div>
           </div>
-          <h3 className="text-4xl font-black text-slate-900 dark:text-white">{loading ? '-' : towers.length}</h3>
+          <h3 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{loading ? '-' : towers.length}</h3>
         </div>
         
-        <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-colors">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Global Revenue</p>
-            <div className="p-2 bg-primary/5 dark:bg-primary/10 rounded-lg">
-              <DollarSign className="w-5 h-5 text-primary dark:text-primary" />
+        <div className="bg-white dark:bg-[#111827] rounded-xl p-6 shadow-sm border-[0.5px] border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow">
+          <div className="flex items-start justify-between mb-2">
+            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Global Revenue</p>
+            <div className="p-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+              <DollarSign className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </div>
           </div>
-          <h3 className="text-4xl font-black text-slate-900 dark:text-white">{aggregates ? `$${aggregates.totalRevenue.toLocaleString()}` : '-'}</h3>
+          <h3 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{aggregates ? `$${aggregates.totalRevenue.toLocaleString()}` : '-'}</h3>
         </div>
 
-        <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-colors">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Total Network Users</p>
-            <div className="p-2 bg-primary/5 dark:bg-primary/10 rounded-lg">
-              <Users className="w-5 h-5 text-primary dark:text-primary" />
+        <div className="bg-white dark:bg-[#111827] rounded-xl p-6 shadow-sm border-[0.5px] border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow">
+          <div className="flex items-start justify-between mb-2">
+            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Total Network Users</p>
+            <div className="p-1.5 bg-purple-50 dark:bg-purple-900/20 rounded-md">
+              <Users className="w-4 h-4 text-purple-600 dark:text-purple-400" />
             </div>
           </div>
-          <h3 className="text-4xl font-black text-slate-900 dark:text-white">{aggregates ? aggregates.activeUsers.toLocaleString() : '-'}</h3>
+          <h3 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{aggregates ? aggregates.activeUsers.toLocaleString() : '-'}</h3>
         </div>
       </div>
 
