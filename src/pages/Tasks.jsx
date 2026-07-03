@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { powerSync } from "@/api/PowerSyncConnector";
@@ -15,11 +15,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Search, CheckCircle2, Clock, AlertCircle, Sparkles, ListChecks, Calendar, Users, MoreVertical, Edit2 } from "lucide-react";
+import { Plus, Search, CheckCircle2, Clock, AlertCircle, Sparkles, ListChecks, Calendar, Users, MoreVertical, Edit2, Link2, BarChart2, GanttChartSquare, AlertTriangle } from "lucide-react";
 import { generateText } from "@/lib/cloudflareAI";
-import { format } from "date-fns";
+import { format, differenceInDays, addDays, parseISO, isValid } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const PRIORITY_COLORS = {
   low: "bg-gray-100 text-gray-700",
@@ -33,7 +34,7 @@ const STATUS_COLORS = {
   completed: "bg-slate-100 text-primary/90",
   cancelled: "bg-gray-100 text-[#71717a] dark:text-gray-400"};
 
-function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, caseTerm }) {
+function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, caseTerm, allTasks }) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const isEdit = !!initialData?.id;
@@ -47,7 +48,11 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
     priority: "medium",
     status: "pending",
     due_date: "",
-    category: "legal"};
+    start_date: "",
+    category: "legal",
+    depends_on: [], // Array of task IDs this is blocked by
+    custom_fields: {} // { fieldName: value }
+  };
 
   const [form, setForm] = useState(initialData || defaultForm);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -185,6 +190,10 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
               <Label>{t("due_date", "Due Date")}</Label>
               <Input type="date" value={form.due_date} onChange={e => set("due_date", e.target.value)} />
             </div>
+          <div className="col-span-2">
+              <Label>Start Date</Label>
+              <Input type="date" value={form.start_date || ''} onChange={e => set("start_date", e.target.value)} />
+            </div>
           </div>
           <div>
             <Label>{t("related", "Related")} {caseTerm}</Label>
@@ -209,6 +218,65 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
                 <SelectItem value="other">{t("other", "Other")}</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Task Dependencies */}
+          {allTasks?.length > 0 && (
+            <div>
+              <Label className="flex items-center gap-1.5"><Link2 className="w-3.5 h-3.5" /> Blocked By (Dependencies)</Label>
+              <div className="border border-border rounded-lg p-3 max-h-28 overflow-y-auto space-y-1.5 mt-1.5 bg-muted/30">
+                {allTasks.filter(t => t.id !== initialData?.id).map(t => (
+                  <label key={t.id} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={(form.depends_on || []).includes(t.id)}
+                      onChange={(e) => {
+                        const cur = form.depends_on || [];
+                        set('depends_on', e.target.checked ? [...cur, t.id] : cur.filter(id => id !== t.id));
+                      }}
+                      className="rounded"
+                    />
+                    <span className="truncate">{t.title}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Custom Fields */}
+          <div className="border border-border rounded-lg p-3 space-y-3 bg-muted/20">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Custom Fields</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-xs">Estimated Hours</Label>
+                <Input
+                  type="number" min="0"
+                  placeholder="0"
+                  value={form.custom_fields?.estimated_hours || ''}
+                  onChange={e => set('custom_fields', { ...form.custom_fields, estimated_hours: e.target.value })}
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Story Points</Label>
+                <Input
+                  type="number" min="0"
+                  placeholder="0"
+                  value={form.custom_fields?.story_points || ''}
+                  onChange={e => set('custom_fields', { ...form.custom_fields, story_points: e.target.value })}
+                  className="h-8 text-sm"
+                />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Sprint / Milestone</Label>
+              <Input
+                placeholder="e.g. Sprint 3 or Q3 Launch"
+                value={form.custom_fields?.sprint || ''}
+                onChange={e => set('custom_fields', { ...form.custom_fields, sprint: e.target.value })}
+                className="h-8 text-sm"
+              />
+            </div>
           </div>
         </div>
         <DialogFooter>
@@ -350,6 +418,8 @@ export default function Tasks() {
       }},
   ];
 
+  const [activeView, setActiveView] = useState('board');
+
   return (
     <div className="space-y-6 school-page-enter font-dmsans">
       <PageHeader
@@ -382,8 +452,13 @@ export default function Tasks() {
           );
         })}
       </div>
-      {/* Filters */}
-      <div className="flex flex-wrap gap-3">
+
+      {/* View Toggle + Filters */}
+      <div className="flex flex-wrap gap-3 items-center">
+        <div className="flex items-center bg-muted border border-border rounded-lg p-1 gap-1">
+          <button onClick={() => setActiveView('board')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors', activeView === 'board' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}><ListChecks className="w-4 h-4"/>Board</button>
+          <button onClick={() => setActiveView('gantt')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors', activeView === 'gantt' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}><GanttChartSquare className="w-4 h-4"/>Timeline</button>
+        </div>
         <div className="relative flex-1 min-w-48">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
           <Input className="pl-9" placeholder="Search tasks..." value={search} onChange={e => setSearch(e.target.value)} />
@@ -399,6 +474,9 @@ export default function Tasks() {
           </SelectContent>
         </Select>
       </div>
+      {activeView === 'gantt' ? (
+        <GanttView tasks={filtered} />
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
         {isLoading ? (
           <div className="col-span-full py-12 text-center text-slate-500">Loading tasks...</div>
@@ -469,7 +547,20 @@ export default function Tasks() {
                     <Badge className={cn("text-[10px] uppercase font-bold tracking-wider", PRIORITY_COLORS[row.priority] || "bg-slate-100 text-slate-700")}>
                       {row.priority}
                     </Badge>
+                    {row.depends_on?.length > 0 && (
+                      <Badge className="text-[10px] bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 flex items-center gap-1">
+                        <AlertTriangle className="w-2.5 h-2.5" /> Blocked
+                      </Badge>
+                    )}
+                    {row.custom_fields?.sprint && (
+                      <Badge className="text-[10px] bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400">
+                        {row.custom_fields.sprint}
+                      </Badge>
+                    )}
                   </div>
+                  {row.custom_fields?.estimated_hours && (
+                    <p className="text-xs text-muted-foreground mb-2">⏱ Est. {row.custom_fields.estimated_hours}h</p>
+                  )}
                 </div>
 
                 {/* Bottom Section */}
@@ -507,6 +598,7 @@ export default function Tasks() {
           })
         )}
       </div>
+      )}
       {showForm && (
         <TaskFormDialog
           open={showForm}
@@ -516,8 +608,85 @@ export default function Tasks() {
           staff={staff}
           companyId={companyId}
           caseTerm={caseTerm}
+          allTasks={tasks}
         />
       )}
+    </div>
+  );
+}
+
+// ─── Gantt / Timeline View ─────────────────────────────────────────
+function GanttView({ tasks }) {
+  const today = new Date();
+  const rangeStart = new Date(today);
+  rangeStart.setDate(1);
+  const rangeEnd = addDays(rangeStart, 60);
+  const totalDays = differenceInDays(rangeEnd, rangeStart);
+
+  const tasksWithDates = tasks.filter(t => t.due_date && isValid(parseISO(t.due_date)));
+
+  const PRIORITY_COLORS_GANTT = {
+    low: 'bg-gray-400',
+    medium: 'bg-blue-500',
+    high: 'bg-orange-500',
+    urgent: 'bg-red-500'
+  };
+
+  if (tasksWithDates.length === 0) {
+    return (
+      <div className="py-16 text-center bg-card rounded-xl border border-dashed border-slate-300">
+        <GanttChartSquare className="w-12 h-12 mx-auto text-slate-400 mb-3" />
+        <h3 className="text-lg font-medium">No dated tasks</h3>
+        <p className="text-slate-500 text-sm">Add due dates to your tasks to see them on the timeline.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
+      {/* Header ruler */}
+      <div className="flex border-b border-border bg-muted/40">
+        <div className="w-48 shrink-0 px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Task</div>
+        <div className="flex-1 relative h-10">
+          {[0, 15, 30, 45].map(d => (
+            <div key={d} className="absolute top-0 h-full border-l border-border/50 flex items-center px-2" style={{ left: `${(d / totalDays) * 100}%` }}>
+              <span className="text-[10px] text-muted-foreground">{format(addDays(rangeStart, d), 'MMM d')}</span>
+            </div>
+          ))}
+          {/* Today marker */}
+          <div className="absolute top-0 h-full border-l-2 border-primary/70" style={{ left: `${(differenceInDays(today, rangeStart) / totalDays) * 100}%` }} />
+        </div>
+      </div>
+
+      {/* Rows */}
+      <div className="divide-y divide-border">
+        {tasksWithDates.sort((a,b) => new Date(a.due_date) - new Date(b.due_date)).map(task => {
+          const start = task.start_date && isValid(parseISO(task.start_date)) ? parseISO(task.start_date) : addDays(parseISO(task.due_date), -3);
+          const end = parseISO(task.due_date);
+          const startPct = Math.max(0, (differenceInDays(start, rangeStart) / totalDays) * 100);
+          const widthPct = Math.max(1, (differenceInDays(end, start) / totalDays) * 100);
+          const barColor = PRIORITY_COLORS_GANTT[task.priority] || 'bg-blue-500';
+          const isOverdue = end < today && task.status !== 'completed';
+
+          return (
+            <div key={task.id} className="flex items-center hover:bg-muted/30 transition-colors">
+              <div className="w-48 shrink-0 px-4 py-3 flex flex-col gap-0.5">
+                <p className="text-sm font-medium truncate">{task.title}</p>
+                <p className="text-[10px] text-muted-foreground capitalize">{task.status?.replace('_', ' ')}</p>
+              </div>
+              <div className="flex-1 relative h-14 flex items-center pr-4">
+                <div
+                  className={cn('absolute h-6 rounded-full flex items-center px-2.5 text-[10px] font-semibold text-white truncate shadow-sm', barColor, isOverdue ? 'opacity-60 border-2 border-red-500' : '')}
+                  style={{ left: `${startPct}%`, width: `${widthPct}%` }}
+                  title={`${task.title} — Due: ${format(end, 'MMM d, yyyy')}`}
+                >
+                  {widthPct > 5 ? format(end, 'MMM d') : ''}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

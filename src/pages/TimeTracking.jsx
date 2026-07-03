@@ -5,7 +5,7 @@ import {
   Clock, Play, Square, Pause, Plus, FileText, 
   Brain, Tag, DollarSign, Calendar, Search, 
   Trash2, Edit3, CheckCircle2, ChevronDown, ListFilter,
-  BarChart3, PieChart
+  BarChart3, PieChart, AlertTriangle
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -20,6 +20,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 const formatDuration = (minutes) => {
   if (!minutes) return '0h 0m';
@@ -52,6 +54,12 @@ export default function TimeTracking() {
   const [timerProject, setTimerProject] = useState('');
   const [timerBillable, setTimerBillable] = useState(true);
 
+  // Idle Detection State
+  const [lastActiveTime, setLastActiveTime] = useState(Date.now());
+  const [showIdleWarning, setShowIdleWarning] = useState(false);
+  const [idleSeconds, setIdleSeconds] = useState(0);
+  const IDLE_THRESHOLD = 5 * 60 * 1000; // 5 minutes
+
   const [formData, setFormData] = useState({
     project_id: '',
     task_id: '',
@@ -64,6 +72,7 @@ export default function TimeTracking() {
   });
 
   const [isAiProcessing, setIsAiProcessing] = useState(false);
+  const [activeTab, setActiveTab] = useState('my-timesheets');
 
   const { data: entries = [], isLoading } = useQuery({
     queryKey: ['time_tracking', companyId],
@@ -75,31 +84,20 @@ export default function TimeTracking() {
     enabled: !!companyId
   });
 
-  const filteredEntries = useMemo(() => {
-    let filtered = entries;
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      filtered = filtered.filter(e => 
-        (e.description || '').toLowerCase().includes(q) || 
-        (e.project_id || '').toLowerCase().includes(q) ||
-        (e.ai_tags || '').toLowerCase().includes(q)
-      );
-    }
-    return filtered;
-  }, [entries, searchQuery]);
+  // Track user activity for idle detection
+  useEffect(() => {
+    const handleActivity = () => {
+      setLastActiveTime(Date.now());
+    };
+    window.addEventListener('mousemove', handleActivity);
+    window.addEventListener('keydown', handleActivity);
+    return () => {
+      window.removeEventListener('mousemove', handleActivity);
+      window.removeEventListener('keydown', handleActivity);
+    };
+  }, []);
 
-  const totalHoursThisWeek = useMemo(() => {
-    const now = new Date();
-    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-    return filteredEntries
-      .filter(e => new Date(e.date) >= startOfWeek)
-      .reduce((acc, curr) => acc + (curr.duration_minutes || 0), 0) / 60;
-  }, [filteredEntries]);
-
-  const totalBillableAmount = useMemo(() => {
-     return filteredEntries.reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
-  }, [filteredEntries]);
-
+  // Timer & Idle Logic
   useEffect(() => {
     const savedTimer = localStorage.getItem('slate_active_timer');
     if (savedTimer) {
@@ -121,27 +119,46 @@ export default function TimeTracking() {
     let interval = null;
     if (isTimerRunning) {
       interval = setInterval(() => {
-        setTimerSeconds(s => s + 1);
-        if (timerSeconds % 5 === 0) {
-           const currentData = JSON.parse(localStorage.getItem('slate_active_timer') || '{}');
-           if (currentData.startTime) {
-              localStorage.setItem('slate_active_timer', JSON.stringify({
-                 ...currentData,
-                 description: timerDescription,
-                 project: timerProject,
-                 billable: timerBillable
-              }));
-           }
+        const now = Date.now();
+        if (now - lastActiveTime > IDLE_THRESHOLD && !showIdleWarning) {
+          setIsTimerRunning(false);
+          setShowIdleWarning(true);
+          setIdleSeconds(Math.floor((now - lastActiveTime) / 1000));
+        } else if (!showIdleWarning) {
+          setTimerSeconds(s => s + 1);
+          if (timerSeconds % 5 === 0) {
+             const currentData = JSON.parse(localStorage.getItem('slate_active_timer') || '{}');
+             if (currentData.startTime) {
+                localStorage.setItem('slate_active_timer', JSON.stringify({
+                   ...currentData,
+                   description: timerDescription,
+                   project: timerProject,
+                   billable: timerBillable
+                }));
+             }
+          }
         }
       }, 1000);
-    } else {
-      clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [isTimerRunning, timerSeconds, timerDescription, timerProject, timerBillable]);
+  }, [isTimerRunning, timerSeconds, timerDescription, timerProject, timerBillable, lastActiveTime, showIdleWarning]);
+
+  const handleKeepIdleTime = () => {
+    setTimerSeconds(s => s + idleSeconds);
+    setShowIdleWarning(false);
+    setLastActiveTime(Date.now());
+    setIsTimerRunning(true);
+  };
+
+  const handleDiscardIdleTime = () => {
+    setShowIdleWarning(false);
+    setLastActiveTime(Date.now());
+    setIsTimerRunning(true);
+  };
 
   const handleStartTimer = () => {
     setIsTimerRunning(true);
+    setLastActiveTime(Date.now());
     localStorage.setItem('slate_active_timer', JSON.stringify({
       startTime: Date.now(),
       accumulatedSeconds: timerSeconds,
@@ -278,6 +295,16 @@ export default function TimeTracking() {
     }
   });
 
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ id, status }) => {
+      await powerSync.execute('UPDATE univ_time_tracking SET status = ? WHERE id = ?', [status, id]);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['time_tracking', companyId]);
+      toast({ title: "Status Updated", description: "Timesheet status successfully updated." });
+    }
+  });
+
   const handleAiInsights = async (entry) => {
     setIsAiProcessing(true);
     toast({ title: "AI Analysis", description: "Analyzing time entry context..." });
@@ -315,6 +342,46 @@ export default function TimeTracking() {
     saveMutation.mutate(formData);
   };
 
+  const filteredEntries = useMemo(() => {
+    let filtered = entries;
+    if (activeTab === 'my-timesheets') {
+      filtered = filtered.filter(e => e.user_id === user?.id || e.user_id === 'system');
+    }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(e => 
+        (e.description || '').toLowerCase().includes(q) || 
+        (e.project_id || '').toLowerCase().includes(q) ||
+        (e.ai_tags || '').toLowerCase().includes(q) ||
+        (e.user_name || '').toLowerCase().includes(q)
+      );
+    }
+    return filtered;
+  }, [entries, searchQuery, activeTab, user]);
+
+  const profitabilityData = useMemo(() => {
+    const projectMap = {};
+    entries.forEach(e => {
+      if (!e.project_id) return;
+      if (!projectMap[e.project_id]) projectMap[e.project_id] = { project: e.project_id, revenue: 0, hours: 0 };
+      projectMap[e.project_id].revenue += e.total_amount || 0;
+      projectMap[e.project_id].hours += (e.duration_minutes || 0) / 60;
+    });
+    return Object.values(projectMap).sort((a,b) => b.revenue - a.revenue).slice(0, 5);
+  }, [entries]);
+
+  const totalHoursThisWeek = useMemo(() => {
+    const now = new Date();
+    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+    return filteredEntries
+      .filter(e => new Date(e.date) >= startOfWeek)
+      .reduce((acc, curr) => acc + (curr.duration_minutes || 0), 0) / 60;
+  }, [filteredEntries]);
+
+  const totalBillableAmount = useMemo(() => {
+     return filteredEntries.reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
+  }, [filteredEntries]);
+
   return (
     <div className="p-4 md:p-8 space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto min-h-screen pb-24 text-foreground bg-background">
       {/* Header & Stats */}
@@ -323,7 +390,7 @@ export default function TimeTracking() {
           <h1 className="text-3xl font-bold text-foreground tracking-tight flex items-center gap-3">
             <Clock className="w-8 h-8 text-primary" /> Time Tracker
           </h1>
-          <p className="text-muted-foreground mt-2 text-sm">Log hours, manage billables, and generate AI insights.</p>
+          <p className="text-muted-foreground mt-2 text-sm">Log hours, manage billables, and monitor project budgets.</p>
         </div>
         <div className="flex gap-4">
             <div className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col justify-center min-w-[140px]">
@@ -401,46 +468,63 @@ export default function TimeTracking() {
         </div>
       </div>
 
-      {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div className="relative w-full sm:max-w-md">
-          <Search className="w-4 h-4 absolute left-3.5 top-3 text-muted-foreground" />
-          <Input 
-            placeholder="Search descriptions, tags, or projects..." 
-            className="pl-10 h-10 rounded-xl bg-card border-border text-foreground"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-          />
-        </div>
-        <div className="flex gap-3 w-full sm:w-auto">
-          <Button onClick={() => openModal()} className="flex-1 sm:flex-none gap-2 h-10 rounded-xl px-5 bg-primary text-primary-foreground hover:bg-primary/90">
-            <Plus className="w-4 h-4" /> Manual Entry
-          </Button>
-        </div>
-      </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="mb-4 bg-muted border border-border">
+          <TabsTrigger value="my-timesheets" className="data-[state=active]:bg-background">My Timesheets</TabsTrigger>
+          <TabsTrigger value="approvals" className="data-[state=active]:bg-background">Team Approvals</TabsTrigger>
+          <TabsTrigger value="profitability" className="data-[state=active]:bg-background">Project Budgets</TabsTrigger>
+        </TabsList>
 
-      {/* Data List */}
-      <div className="space-y-6">
-        {isLoading ? (
-          <div className="p-12 flex justify-center"><OrbitLoader /></div>
-        ) : filteredEntries.length === 0 ? (
-          <div className="bg-card border border-border rounded-2xl p-12 text-center flex flex-col items-center shadow-sm">
-            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-                <Clock className="w-8 h-8 text-muted-foreground" />
+        <TabsContent value="my-timesheets" className="space-y-6">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="relative w-full sm:max-w-md">
+              <Search className="w-4 h-4 absolute left-3.5 top-3 text-muted-foreground" />
+              <Input 
+                placeholder="Search descriptions, tags, or projects..." 
+                className="pl-10 h-10 rounded-xl bg-card border-border text-foreground"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
             </div>
-            <h3 className="text-lg font-semibold text-foreground">No time entries yet</h3>
-            <p className="text-muted-foreground mt-1 max-w-sm">Track your first activity using the timer above, or log historical time manually.</p>
+            <div className="flex gap-3 w-full sm:w-auto">
+              <Button onClick={() => openModal()} className="flex-1 sm:flex-none gap-2 h-10 rounded-xl px-5 bg-primary text-primary-foreground hover:bg-primary/90">
+                <Plus className="w-4 h-4" /> Manual Entry
+              </Button>
+            </div>
           </div>
-        ) : (
+          
+          <TimeEntriesTable 
+             entries={filteredEntries} 
+             isLoading={isLoading} 
+             onAiInsights={handleAiInsights}
+             onEdit={openModal}
+             onDelete={(id) => deleteMutation.mutate(id)}
+             isAiProcessing={isAiProcessing}
+          />
+        </TabsContent>
+
+        <TabsContent value="approvals" className="space-y-6">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="relative w-full sm:max-w-md">
+              <Search className="w-4 h-4 absolute left-3.5 top-3 text-muted-foreground" />
+              <Input 
+                placeholder="Search employee names or projects..." 
+                className="pl-10 h-10 rounded-xl bg-card border-border text-foreground"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+
           <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden flex flex-col">
             <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left text-foreground">
                 <thead className="bg-muted/50 text-muted-foreground uppercase text-[10px] tracking-widest font-semibold border-b border-border">
                     <tr>
-                    <th className="px-6 py-4">Activity</th>
-                    <th className="px-6 py-4">Project / Tags</th>
-                    <th className="px-6 py-4">Billing</th>
-                    <th className="px-6 py-4 text-right">Duration</th>
+                    <th className="px-6 py-4">Employee & Activity</th>
+                    <th className="px-6 py-4">Project</th>
+                    <th className="px-6 py-4">Duration</th>
+                    <th className="px-6 py-4">Status</th>
                     <th className="px-6 py-4 text-right">Actions</th>
                     </tr>
                 </thead>
@@ -448,85 +532,79 @@ export default function TimeTracking() {
                     {filteredEntries.map(entry => (
                     <tr key={entry.id} className="hover:bg-muted/30 transition-colors group">
                         <td className="px-6 py-4">
-                            <div className="flex flex-col gap-1 max-w-[300px]">
-                                <span className="font-medium text-foreground truncate">{entry.description || '(No description)'}</span>
-                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                    <Calendar className="w-3 h-3" /> {entry.date}
-                                </div>
-                                {entry.ai_summary && (
-                                    <p className="text-xs text-primary/80 bg-primary/5 p-1.5 rounded mt-1 border border-primary/10 leading-snug">
-                                        ✨ {entry.ai_summary}
-                                    </p>
-                                )}
+                            <div className="flex flex-col gap-1 max-w-[250px]">
+                                <span className="font-medium text-foreground">{entry.user_name}</span>
+                                <span className="text-muted-foreground text-xs truncate">{entry.description || '(No description)'}</span>
                             </div>
                         </td>
                         <td className="px-6 py-4">
-                            <div className="flex flex-col gap-2 items-start">
-                                {entry.project_id && (
-                                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-md border border-blue-200 dark:border-blue-800/50">
-                                        <Tag className="w-3 h-3" /> {entry.project_id}
-                                    </span>
-                                )}
-                                {entry.ai_tags && (
-                                    <div className="flex flex-wrap gap-1 mt-1">
-                                    {entry.ai_tags.split(',').map(tag => (
-                                        <span key={tag} className="px-1.5 py-0.5 bg-secondary text-secondary-foreground text-[10px] rounded-sm font-medium">
-                                        {tag.trim()}
-                                        </span>
-                                    ))}
-                                    </div>
-                                )}
-                            </div>
+                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-md">
+                                <Tag className="w-3 h-3" /> {entry.project_id || 'N/A'}
+                            </span>
                         </td>
                         <td className="px-6 py-4">
-                        {entry.is_billable === 1 ? (
-                            <div className="flex flex-col">
-                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold w-fit border border-green-200 dark:border-green-800/50">
-                                <DollarSign className="w-3 h-3" /> Billable
-                            </span>
-                            <span className="text-xs text-muted-foreground mt-1.5 font-medium">${entry.hourly_rate}/hr &rarr; <span className="text-foreground">${entry.total_amount?.toFixed(2)}</span></span>
-                            </div>
-                        ) : (
-                            <span className="inline-flex items-center px-2 py-1 rounded-md bg-muted text-muted-foreground text-xs font-medium">
-                            Non-billable
-                            </span>
-                        )}
-                        </td>
-                        <td className="px-6 py-4 text-right">
                             <span className="font-mono font-bold text-base text-foreground bg-muted/50 px-2 py-1 rounded">
                                 {formatDuration(entry.duration_minutes)}
                             </span>
                         </td>
+                        <td className="px-6 py-4">
+                            <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${entry.status === 'Approved' ? 'bg-green-100 text-green-700' : entry.status === 'Rejected' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+                                {entry.status || 'Pending'}
+                            </span>
+                        </td>
                         <td className="px-6 py-4 text-right">
-                            <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                {!entry.ai_summary && (
-                                    <Button 
-                                        onClick={() => handleAiInsights(entry)}
-                                        variant="ghost" 
-                                        size="icon" 
-                                        disabled={isAiProcessing}
-                                        className="h-8 w-8 text-primary hover:bg-primary/10"
-                                        title="Generate AI Insights"
-                                    >
-                                        <Brain className="w-4 h-4" />
-                                    </Button>
-                                )}
-                                <Button onClick={() => openModal(entry)} variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
-                                    <Edit3 className="w-4 h-4" />
-                                </Button>
-                                <Button onClick={() => deleteMutation.mutate(entry.id)} variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10">
-                                    <Trash2 className="w-4 h-4" />
-                                </Button>
-                            </div>
+                             <div className="flex items-center justify-end gap-2">
+                                <Button size="sm" variant="outline" className="h-8 text-green-600 hover:text-green-700 hover:bg-green-50" onClick={() => updateStatusMutation.mutate({ id: entry.id, status: 'Approved' })}>Approve</Button>
+                                <Button size="sm" variant="outline" className="h-8 text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => updateStatusMutation.mutate({ id: entry.id, status: 'Rejected' })}>Reject</Button>
+                             </div>
                         </td>
                     </tr>
                     ))}
+                    {filteredEntries.length === 0 && (
+                        <tr><td colSpan="5" className="p-8 text-center text-muted-foreground">No entries found for approval.</td></tr>
+                    )}
                 </tbody>
                 </table>
             </div>
           </div>
-        )}
-      </div>
+        </TabsContent>
+
+        <TabsContent value="profitability" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+             <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+                <h3 className="font-semibold text-lg mb-4">Top Projects by Revenue</h3>
+                <div className="h-[300px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={profitabilityData}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#333" opacity={0.1}/>
+                      <XAxis dataKey="project" tick={{fontSize: 12}} />
+                      <YAxis tick={{fontSize: 12}} tickFormatter={(value) => `$${value}`} />
+                      <Tooltip formatter={(value) => `$${value}`} cursor={{fill: 'transparent'}}/>
+                      <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+             </div>
+             <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+                <h3 className="font-semibold text-lg mb-4">Budget Utilization (Mock)</h3>
+                <p className="text-muted-foreground text-sm mb-4">Tracking actuals against project budgets.</p>
+                <div className="space-y-4">
+                   {profitabilityData.map(p => (
+                      <div key={p.project} className="space-y-2">
+                         <div className="flex justify-between text-sm">
+                            <span className="font-medium">{p.project}</span>
+                            <span className="text-muted-foreground">${p.revenue.toFixed(0)} / $10,000</span>
+                         </div>
+                         <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                            <div className="bg-green-500 h-full rounded-full" style={{ width: `${Math.min(100, (p.revenue / 10000) * 100)}%`}} />
+                         </div>
+                      </div>
+                   ))}
+                </div>
+             </div>
+          </div>
+        </TabsContent>
+      </Tabs>
 
       {/* Manual Entry Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -640,6 +718,140 @@ export default function TimeTracking() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Idle Warning Modal */}
+      <Dialog open={showIdleWarning} onOpenChange={setShowIdleWarning}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-amber-600">
+               <AlertTriangle className="w-5 h-5" /> Idle Detected
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+             <p className="text-foreground">You've been inactive for {Math.floor(idleSeconds / 60)} minutes. The timer has been paused.</p>
+             <p className="text-muted-foreground text-sm mt-2">Do you want to keep this idle time or discard it?</p>
+          </div>
+          <DialogFooter>
+             <Button variant="outline" onClick={handleDiscardIdleTime}>Discard Idle Time</Button>
+             <Button onClick={handleKeepIdleTime}>Keep Idle Time</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
+}
+
+function TimeEntriesTable({ entries, isLoading, onAiInsights, onEdit, onDelete, isAiProcessing }) {
+    if (isLoading) {
+        return <div className="p-12 flex justify-center"><OrbitLoader /></div>;
+    }
+    if (entries.length === 0) {
+        return (
+            <div className="bg-card border border-border rounded-2xl p-12 text-center flex flex-col items-center shadow-sm">
+            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+                <Clock className="w-8 h-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-lg font-semibold text-foreground">No time entries yet</h3>
+            <p className="text-muted-foreground mt-1 max-w-sm">Track your first activity using the timer above, or log historical time manually.</p>
+            </div>
+        );
+    }
+    return (
+        <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden flex flex-col">
+        <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left text-foreground">
+            <thead className="bg-muted/50 text-muted-foreground uppercase text-[10px] tracking-widest font-semibold border-b border-border">
+                <tr>
+                <th className="px-6 py-4">Activity</th>
+                <th className="px-6 py-4">Project / Tags</th>
+                <th className="px-6 py-4">Billing</th>
+                <th className="px-6 py-4 text-right">Duration</th>
+                <th className="px-6 py-4 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody className="divide-y divide-border bg-card">
+                {entries.map(entry => (
+                <tr key={entry.id} className="hover:bg-muted/30 transition-colors group">
+                    <td className="px-6 py-4">
+                        <div className="flex flex-col gap-1 max-w-[300px]">
+                            <span className="font-medium text-foreground truncate">{entry.description || '(No description)'}</span>
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <Calendar className="w-3 h-3" /> {entry.date}
+                            </div>
+                            {entry.ai_summary && (
+                                <p className="text-xs text-primary/80 bg-primary/5 p-1.5 rounded mt-1 border border-primary/10 leading-snug">
+                                    ✨ {entry.ai_summary}
+                                </p>
+                            )}
+                        </div>
+                    </td>
+                    <td className="px-6 py-4">
+                        <div className="flex flex-col gap-2 items-start">
+                            {entry.project_id && (
+                                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-md border border-blue-200 dark:border-blue-800/50">
+                                    <Tag className="w-3 h-3" /> {entry.project_id}
+                                </span>
+                            )}
+                            {entry.ai_tags && (
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                {entry.ai_tags.split(',').map(tag => (
+                                    <span key={tag} className="px-1.5 py-0.5 bg-secondary text-secondary-foreground text-[10px] rounded-sm font-medium">
+                                    {tag.trim()}
+                                    </span>
+                                ))}
+                                </div>
+                            )}
+                        </div>
+                    </td>
+                    <td className="px-6 py-4">
+                    {entry.is_billable === 1 ? (
+                        <div className="flex flex-col">
+                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold w-fit border border-green-200 dark:border-green-800/50">
+                            <DollarSign className="w-3 h-3" /> Billable
+                        </span>
+                        <span className="text-xs text-muted-foreground mt-1.5 font-medium">${entry.hourly_rate}/hr &rarr; <span className="text-foreground">${entry.total_amount?.toFixed(2)}</span></span>
+                        </div>
+                    ) : (
+                        <span className="inline-flex items-center px-2 py-1 rounded-md bg-muted text-muted-foreground text-xs font-medium">
+                        Non-billable
+                        </span>
+                    )}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                        <span className="font-mono font-bold text-base text-foreground bg-muted/50 px-2 py-1 rounded">
+                            {formatDuration(entry.duration_minutes)}
+                        </span>
+                        <div className="mt-1 text-xs font-medium text-muted-foreground">
+                            {entry.status || 'Logged'}
+                        </div>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            {!entry.ai_summary && (
+                                <Button 
+                                    onClick={() => onAiInsights(entry)}
+                                    variant="ghost" 
+                                    size="icon" 
+                                    disabled={isAiProcessing}
+                                    className="h-8 w-8 text-primary hover:bg-primary/10"
+                                    title="Generate AI Insights"
+                                >
+                                    <Brain className="w-4 h-4" />
+                                </Button>
+                            )}
+                            <Button onClick={() => onEdit(entry)} variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                                <Edit3 className="w-4 h-4" />
+                            </Button>
+                            <Button onClick={() => onDelete(entry.id)} variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10">
+                                <Trash2 className="w-4 h-4" />
+                            </Button>
+                        </div>
+                    </td>
+                </tr>
+                ))}
+            </tbody>
+            </table>
+        </div>
+        </div>
+    );
 }
