@@ -931,7 +931,102 @@ export const AppSchema = new Schema({
         uploaded_by: column.text,
         notes: column.text,
         version: column.text,
-        shared_with_client: column.text}),
+        shared_with_client: column.text,
+        ai_summary: column.text,
+        key_obligations: column.text,
+        risks: column.text,
+        expiry_date: column.text,
+        signature_status: column.text,
+        folder_id: column.text,
+        tags: column.text
+    }),
+    smart_folders: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        name: column.text,
+        parent_id: column.text,
+        color: column.text
+    }),
+    smart_doc_links: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        document_id: column.text,
+        entity_type: column.text, // e.g. 'staff', 'invoice', 'property'
+        entity_id: column.text,
+        relationship: column.text // e.g. 'employment_contract', 'receipt'
+    }),
+    hr_jobs: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        title: column.text,
+        department: column.text,
+        location: column.text,
+        type: column.text,
+        status: column.text,
+        description: column.text,
+        requirements: column.text
+    }),
+    hr_applicants: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        job_id: column.text,
+        name: column.text,
+        email: column.text,
+        phone: column.text,
+        resume_url: column.text,
+        stage: column.text, // e.g. applied, screened, interview, offer, hired
+        ai_score: column.real,
+        interview_score: column.real,
+        notes: column.text
+    }),
+    hr_attendance: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        staff_id: column.text,
+        date: column.text,
+        clock_in: column.text,
+        clock_out: column.text,
+        status: column.text, // present, late, absent
+        location_lat: column.real,
+        location_lng: column.real
+    }),
+    hr_performance_reviews: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        staff_id: column.text,
+        reviewer_id: column.text,
+        period: column.text,
+        type: column.text, // self, manager, peer
+        score: column.real,
+        strengths: column.text,
+        weaknesses: column.text,
+        status: column.text
+    }),
+    hr_training_courses: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        title: column.text,
+        description: column.text,
+        category: column.text,
+        is_mandatory: column.integer
+    }),
+    hr_training_records: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        staff_id: column.text,
+        course_id: column.text,
+        status: column.text,
+        completed_at: column.text,
+        expiry_date: column.text
+    }),
     expenses: new Table({
         id: column.text,
         created_at: column.text,

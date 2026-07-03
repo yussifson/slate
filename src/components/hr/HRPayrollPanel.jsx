@@ -46,6 +46,15 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
     queryFn: () => base44.entities.PayrollSlip.filter({ company_id: companyId, pay_period: period }),
     enabled: !!companyId && !!period});
 
+  const { data: payrollRuns = [] } = useQuery({
+    queryKey: ["payroll_runs", companyId],
+    queryFn: () => base44.entities.PayrollRun.filter({ company_id: companyId }),
+    enabled: !!companyId});
+
+  const createRunMutation = useMutation({
+    mutationFn: (data) => base44.entities.PayrollRun.create(data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["payroll_runs", companyId] })});
+
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.PayrollSlip.create(data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["payroll", companyId, period] })});
@@ -59,6 +68,20 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
     const existingEmails = new Set(slips.map(s => s.staff_email));
     const toGenerate = staff.filter(s => s.status === "active" && s.salary > 0 && !existingEmails.has(s.user_email));
 
+    // Create a payroll run record first
+    const periodStart = period + "-01";
+    const periodEnd = period + "-" + new Date(Number(period.split("-")[0]), Number(period.split("-")[1]), 0).getDate();
+    const runId = await createRunMutation.mutateAsync({
+      company_id: companyId,
+      run_date: new Date().toISOString().split('T')[0],
+      period_start: periodStart,
+      period_end: periodEnd,
+      status: 'draft',
+      total_amount: 0,
+      created_by: user?.email || ''
+    }).then(r => r?.id).catch(() => null);
+
+    let totalAmount = 0;
     for (const member of toGenerate) {
       // Calculate leave days taken this period
       const periodYear = Number(period.split("-")[0]);
@@ -75,6 +98,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
       const gross = basic;
       const totalDeductions = 0;
       const net = gross - totalDeductions;
+      totalAmount += net;
 
       await createMutation.mutateAsync({
         company_id: companyId,
@@ -92,6 +116,11 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
         currency: currency,
         leave_days_taken: leaveDays,
         status: "draft"});
+    }
+
+    // Update payroll run total
+    if (runId) {
+      await base44.entities.PayrollRun.update(runId, { total_amount: totalAmount, status: 'draft' });
     }
     setGenerating(false);
   };

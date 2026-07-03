@@ -61,6 +61,18 @@ export default function Leads() {
     queryFn: () => base44.entities.Lead.filter({ company_id: companyId }),
     enabled: !!companyId});
 
+  const { data: emailSequences = [] } = useQuery({
+    queryKey: ["email_sequences", companyId],
+    queryFn: () => base44.entities.EmailSequence.filter({ company_id: companyId }),
+    enabled: !!companyId});
+
+  const createSequenceMutation = useMutation({
+    mutationFn: (data) => base44.entities.EmailSequence.create({ ...data, company_id: companyId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["email_sequences"] });
+      toast({ title: "Sequence created" });
+    }});
+
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Lead.update(id, data),
     onSuccess: () => {
@@ -266,23 +278,31 @@ export default function Leads() {
           <div className="py-4 space-y-4">
             <p className="text-sm text-muted-foreground">Automated drip campaigns for new leads.</p>
             <div className="space-y-3">
-              {[
-                { name: "New Lead Welcome", step: "3 emails over 7 days", active: 12 },
-                { name: "Cold Lead Re-engagement", step: "2 emails over 14 days", active: 5 }
-              ].map(seq => (
-                <div key={seq.name} className="flex items-center justify-between p-3 border border-border rounded-lg bg-card">
+              {emailSequences.length === 0 && (
+                 <p className="text-sm text-muted-foreground italic">No sequences found. Create one below.</p>
+              )}
+              {emailSequences.map(seq => {
+                const stepsObj = seq.steps ? JSON.parse(seq.steps) : [];
+                return (
+                <div key={seq.id} className="flex items-center justify-between p-3 border border-border rounded-lg bg-card">
                   <div>
                     <h4 className="font-medium text-sm">{seq.name}</h4>
-                    <p className="text-xs text-muted-foreground">{seq.step}</p>
+                    <p className="text-xs text-muted-foreground">{stepsObj.length} emails</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-xs font-semibold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">{seq.active} Active</span>
+                    <span className="text-xs font-semibold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">{seq.description}</span>
                     <Button variant="ghost" size="sm"><Pencil className="w-4 h-4"/></Button>
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
-            <Button className="w-full mt-2 gap-2"><Plus className="w-4 h-4"/> Create Sequence</Button>
+            <Button 
+                onClick={() => createSequenceMutation.mutate({ name: "New Lead Welcome", description: "Default welcome", steps: "[]" })}
+                className="w-full mt-2 gap-2"
+                disabled={createSequenceMutation.isPending}
+            >
+                <Plus className="w-4 h-4"/> Create Default Sequence
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

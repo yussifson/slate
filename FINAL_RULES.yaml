@@ -46,6 +46,11 @@ bucket_definitions:
       - SELECT * FROM subscription_invoices WHERE company_id = bucket.company_id
       - SELECT * FROM tasks WHERE company_id = bucket.company_id
       - SELECT * FROM time_entries WHERE company_id = bucket.company_id
+      - SELECT * FROM active_timers WHERE company_id = bucket.company_id
+      - SELECT * FROM email_sequences WHERE company_id = bucket.company_id
+      - SELECT * FROM accounts WHERE company_id = bucket.company_id
+      - SELECT * FROM journal_entries WHERE company_id = bucket.company_id
+      - SELECT * FROM payroll_runs WHERE company_id = bucket.company_id
       - SELECT * FROM industry_records WHERE company_id = bucket.company_id
       - SELECT * FROM connected_apps WHERE company_id = bucket.company_id
       - SELECT * FROM module_definitions WHERE company_id = bucket.company_id
@@ -269,10 +274,6 @@ bucket_definitions:
       - SELECT * FROM fleet_metrics WHERE company_id = bucket.company_id
       - SELECT * FROM workspace_insights WHERE company_id = bucket.company_id
       - SELECT * FROM intelligence_runs WHERE company_id = bucket.company_id
-      - SELECT * FROM insight_feedback WHERE company_id = bucket.company_id
-      - SELECT * FROM engine_accuracy WHERE company_id = bucket.company_id
-      - SELECT * FROM workspace_modules WHERE company_id = bucket.company_id
-      - SELECT * FROM marketplace_review_requests WHERE company_id = bucket.company_id
       - SELECT * FROM univ_patient_allergies WHERE company_id = bucket.company_id
       - SELECT * FROM univ_patient_problems WHERE company_id = bucket.company_id
       - SELECT * FROM univ_patient_immunizations WHERE company_id = bucket.company_id

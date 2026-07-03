@@ -1,7 +1,8 @@
 import { useTranslation } from "react-i18next";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useAuth } from "@/lib/AuthContext";
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -10,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Users, CalendarDays, MessageSquareWarning, DollarSign,
   ArrowUpCircle, ArrowUpRight, ArrowDownRight, RefreshCw,
-  TrendingUp, Briefcase, Clock, CheckCircle2, AlertTriangle
+  TrendingUp, Briefcase, Clock, CheckCircle2, AlertTriangle, Activity
 } from "lucide-react";
 import { formatCurrency } from "@/lib/constants";
 import { isSuperAdmin } from "@/lib/constants";
@@ -84,6 +85,31 @@ export default function HRDashboard() {
     queryFn: () => base44.entities.Promotion.filter({ company_id: companyId }, "-created_date", 100),
     enabled: !!companyId
   });
+
+  const { data: workloadTasks = [] } = useQuery({
+    queryKey: ["workload_tasks", companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute(
+        'SELECT assigned_to_name, assigned_to, status FROM tasks WHERE company_id = ? AND status != ?',
+        [companyId, 'completed']
+      );
+      return res.rows._array || [];
+    },
+    enabled: !!companyId
+  });
+
+  const workloadByMember = useMemo(() => {
+    const map = {};
+    workloadTasks.forEach(t => {
+      const name = t.assigned_to_name || 'Unassigned';
+      if (!map[name]) map[name] = { name, total: 0, in_progress: 0, pending: 0 };
+      map[name].total++;
+      if (t.status === 'in_progress' || t.status === 'In Progress') map[name].in_progress++;
+      else map[name].pending++;
+    });
+    return Object.values(map).sort((a, b) => b.total - a.total).slice(0, 10);
+  }, [workloadTasks]);
 
   const { data: company } = useQuery({
     queryKey: ["company", companyId],
@@ -278,6 +304,10 @@ export default function HRDashboard() {
             <TabsTrigger value="payroll" className="rounded-lg text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm">
               {t("payroll", "Payroll")}
             </TabsTrigger>
+            <TabsTrigger value="workload" className="rounded-lg text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Activity className="w-3.5 h-3.5 mr-1.5" />
+              {t("workload", "Workload")}
+            </TabsTrigger>
           </TabsList>
 
           <div className="p-4">
@@ -298,6 +328,49 @@ export default function HRDashboard() {
             </TabsContent>
             <TabsContent value="payroll" className="mt-0">
               <HRPayrollPanel companyId={companyId} staff={staff} currency={currency} isAdmin={isAdmin} leaves={leaves} user={user} />
+            </TabsContent>
+            <TabsContent value="workload" className="mt-0">
+              <div className="space-y-4 py-2">
+                <div className="flex items-center gap-2 mb-2">
+                  <Activity className="w-5 h-5 text-primary" />
+                  <h3 className="text-base font-semibold">Team Workload Utilization</h3>
+                  <span className="text-xs text-muted-foreground ml-2">(Active & pending tasks per member)</span>
+                </div>
+                {workloadByMember.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground text-sm">No active tasks found.</div>
+                ) : (
+                  <div className="space-y-3">
+                    {workloadByMember.map(member => {
+                      const maxTasks = Math.max(...workloadByMember.map(m => m.total), 1);
+                      const utilPct = Math.round((member.total / maxTasks) * 100);
+                      const color = utilPct > 75 ? 'bg-red-500' : utilPct > 40 ? 'bg-amber-500' : 'bg-green-500';
+                      return (
+                        <div key={member.name} className="bg-muted/30 rounded-xl p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-medium text-sm">{member.name}</span>
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                              <span className="text-amber-600 font-semibold">{member.pending} Pending</span>
+                              <span className="text-blue-600 font-semibold">{member.in_progress} In Progress</span>
+                              <span className="font-bold text-foreground">{member.total} Total</span>
+                            </div>
+                          </div>
+                          <div className="w-full bg-muted rounded-full h-2">
+                            <div
+                              className={`h-2 rounded-full transition-all duration-500 ${color}`}
+                              style={{ width: `${utilPct}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                <div className="mt-4 flex items-center gap-6 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-green-500 inline-block"></span> Low (&lt;40%)</span>
+                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> Medium (40-75%)</span>
+                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-red-500 inline-block"></span> High (&gt;75%)</span>
+                </div>
+              </div>
             </TabsContent>
           </div>
         </Tabs>

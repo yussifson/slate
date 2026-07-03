@@ -22,7 +22,22 @@ const TABLE_MAP = {
     Notification: 'notifications',
     TimeEntry: 'time_entries',
     AutomationRule: 'automation_rules',
-    PartnerApplication: 'partner_applications'
+    PartnerApplication: 'partner_applications',
+    Lead: 'leads',
+    LeaveRequest: 'leave_requests',
+    HRComplaint: 'h_r_complaints',
+    Promotion: 'promotions',
+    PayrollSlip: 'payroll_slips',
+    Expense: 'expenses',
+    Retainer: 'retainers',
+    SignatureRequest: 'signature_requests',
+    SubscriptionInvoice: 'subscription_invoices',
+    // Phase 3 new entities
+    EmailSequence: 'email_sequences',
+    Account: 'accounts',
+    JournalEntry: 'journal_entries',
+    PayrollRun: 'payroll_runs',
+    ActiveTimer: 'active_timers'
 };
 
 

@@ -233,6 +233,7 @@ export const SCHEMA_COLUMNS = {
     "billed",
     "invoice_id",
     "status",
+    "vendor_name",
     "notes"
   ],
   "firm_settings": [
@@ -327,7 +328,10 @@ export const SCHEMA_COLUMNS = {
     "status",
     "assigned_to",
     "notes",
-    "preferred_contact"
+    "preferred_contact",
+    "lead_score",
+    "email_sequence_id",
+    "meeting_link"
   ],
   "leave_requests": [
     "id",
@@ -592,7 +596,13 @@ export const SCHEMA_COLUMNS = {
     "status",
     "due_date",
     "completed_date",
-    "category"
+    "category",
+    "start_date",
+    "estimated_hours",
+    "story_points",
+    "sprint",
+    "depends_on",
+    "custom_fields"
   ],
   "time_entries": [
     "id",
@@ -617,7 +627,8 @@ export const SCHEMA_COLUMNS = {
     "is_billable",
     "billed",
     "invoice_id",
-    "category"
+    "category",
+    "approval_status"
   ],
   "profiles": [
     "id",
@@ -788,7 +799,13 @@ export const SCHEMA_COLUMNS = {
     "status",
     "due_date",
     "completed_date",
-    "category"
+    "category",
+    "start_date",
+    "estimated_hours",
+    "story_points",
+    "sprint",
+    "depends_on",
+    "custom_fields"
   ],
   "time_entries": [
     "id",
@@ -813,7 +830,8 @@ export const SCHEMA_COLUMNS = {
     "is_billable",
     "billed",
     "invoice_id",
-    "category"
+    "category",
+    "approval_status"
   ],
   "profiles": [
     "id",

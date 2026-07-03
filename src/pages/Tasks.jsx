@@ -63,9 +63,16 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
   }, [open, initialData]);
 
   const mutation = useMutation({
-    mutationFn: (data) => isEdit
-      ? base44.entities.Task.update(initialData.id, data)
-      : base44.entities.Task.create({ ...data, company_id: companyId }),
+    mutationFn: (data) => {
+      const payload = {
+         ...data,
+         depends_on: data.depends_on ? JSON.stringify(data.depends_on) : null,
+         custom_fields: data.custom_fields ? JSON.stringify(data.custom_fields) : null,
+      };
+      return isEdit
+        ? base44.entities.Task.update(initialData.id, payload)
+        : base44.entities.Task.create({ ...payload, company_id: companyId });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks", companyId] });
       onClose();
