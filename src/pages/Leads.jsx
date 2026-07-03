@@ -113,6 +113,7 @@ export default function Leads() {
           </div>
         );
       }
+    },
     {
       header: "Score",
       render: row => {
