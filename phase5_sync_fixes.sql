@@ -66,7 +66,6 @@ CREATE TABLE IF NOT EXISTS public.smart_doc_links (
 );
 
 -- 3. Alter Documents table to add SmartDocs/AI features
--- These will not error if they already exist because of IF NOT EXISTS
 ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS ai_summary TEXT;
 ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS key_obligations TEXT;
 ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS risks TEXT;
@@ -83,46 +82,65 @@ ALTER TABLE public.smart_folders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.smart_doc_links ENABLE ROW LEVEL SECURITY;
 
 -- 5. Add universal read/write policies for company-scoped data
--- (Assuming standard multi-tenant RLS based on company_id, 
---  these can be restricted further based on user roles later)
+-- We use WITH CHECK to explicitly allow inserts
 
 -- univ_time_tracking
 DROP POLICY IF EXISTS "Enable all for users based on company_id" ON public.univ_time_tracking;
 CREATE POLICY "Enable all for users based on company_id" ON public.univ_time_tracking
     AS PERMISSIVE FOR ALL TO public
-    USING (company_id = current_setting('request.jwt.claims', true)::json->>'company_id');
+    USING (company_id = current_setting('request.jwt.claims', true)::json->>'company_id')
+    WITH CHECK (company_id = current_setting('request.jwt.claims', true)::json->>'company_id');
 
 -- univ_time_reminders
 DROP POLICY IF EXISTS "Enable all for users based on company_id" ON public.univ_time_reminders;
 CREATE POLICY "Enable all for users based on company_id" ON public.univ_time_reminders
     AS PERMISSIVE FOR ALL TO public
-    USING (company_id = current_setting('request.jwt.claims', true)::json->>'company_id');
+    USING (company_id = current_setting('request.jwt.claims', true)::json->>'company_id')
+    WITH CHECK (company_id = current_setting('request.jwt.claims', true)::json->>'company_id');
 
 -- active_timers
 DROP POLICY IF EXISTS "Enable all for users based on company_id" ON public.active_timers;
 CREATE POLICY "Enable all for users based on company_id" ON public.active_timers
     AS PERMISSIVE FOR ALL TO public
-    USING (company_id = current_setting('request.jwt.claims', true)::json->>'company_id');
+    USING (company_id = current_setting('request.jwt.claims', true)::json->>'company_id')
+    WITH CHECK (company_id = current_setting('request.jwt.claims', true)::json->>'company_id');
 
 -- smart_folders
 DROP POLICY IF EXISTS "Enable all for users based on company_id" ON public.smart_folders;
 CREATE POLICY "Enable all for users based on company_id" ON public.smart_folders
     AS PERMISSIVE FOR ALL TO public
-    USING (company_id = current_setting('request.jwt.claims', true)::json->>'company_id');
+    USING (company_id = current_setting('request.jwt.claims', true)::json->>'company_id')
+    WITH CHECK (company_id = current_setting('request.jwt.claims', true)::json->>'company_id');
 
 -- smart_doc_links
 DROP POLICY IF EXISTS "Enable all for users based on company_id" ON public.smart_doc_links;
 CREATE POLICY "Enable all for users based on company_id" ON public.smart_doc_links
     AS PERMISSIVE FOR ALL TO public
-    USING (company_id = current_setting('request.jwt.claims', true)::json->>'company_id');
+    USING (company_id = current_setting('request.jwt.claims', true)::json->>'company_id')
+    WITH CHECK (company_id = current_setting('request.jwt.claims', true)::json->>'company_id');
 
 -- 6. Add Tables to PowerSync Publication
--- This is critical so PowerSync actually syncs the data
-ALTER PUBLICATION powersync ADD TABLE public.univ_time_tracking;
-ALTER PUBLICATION powersync ADD TABLE public.univ_time_reminders;
-ALTER PUBLICATION powersync ADD TABLE public.active_timers;
-ALTER PUBLICATION powersync ADD TABLE public.smart_folders;
-ALTER PUBLICATION powersync ADD TABLE public.smart_doc_links;
+-- Wrapped in a DO block to prevent errors if already added
+DO $$
+BEGIN
+    BEGIN
+        ALTER PUBLICATION powersync ADD TABLE public.univ_time_tracking;
+    EXCEPTION WHEN duplicate_object THEN END;
+    
+    BEGIN
+        ALTER PUBLICATION powersync ADD TABLE public.univ_time_reminders;
+    EXCEPTION WHEN duplicate_object THEN END;
 
--- Note: 'documents' should already be in publication, but just in case:
--- Do not run if already there, so we wrap it or just rely on existing publication
+    BEGIN
+        ALTER PUBLICATION powersync ADD TABLE public.active_timers;
+    EXCEPTION WHEN duplicate_object THEN END;
+
+    BEGIN
+        ALTER PUBLICATION powersync ADD TABLE public.smart_folders;
+    EXCEPTION WHEN duplicate_object THEN END;
+
+    BEGIN
+        ALTER PUBLICATION powersync ADD TABLE public.smart_doc_links;
+    EXCEPTION WHEN duplicate_object THEN END;
+END $$;
+

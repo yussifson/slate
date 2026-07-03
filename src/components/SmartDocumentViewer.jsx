@@ -11,6 +11,7 @@ import {
   MessageSquare, RefreshCw, Copy, CheckCheck, Maximize2,
   Minimize2, AlertCircle, FileQuestion
 } from "lucide-react";
+import ReactMarkdown from 'react-markdown';
 
 // ─── Detect file type from URL or extension ─────────────────────────────────
 function getFileType(doc) {
@@ -46,8 +47,8 @@ function ChatMessage({ msg }) {
   if (msg.role === "user") {
     return (
       <div className="flex justify-end mb-3">
-        <div className="max-w-[85%] bg-violet-600 text-white px-4 py-2.5 rounded-2xl rounded-tr-md text-sm leading-relaxed">
-          {msg.content}
+        <div className="max-w-[85%] bg-emerald-600 text-white px-4 py-2.5 rounded-2xl rounded-tr-md text-sm leading-relaxed">
+          <ReactMarkdown className="prose prose-sm prose-invert break-words max-w-none">{msg.content}</ReactMarkdown>
         </div>
       </div>
     );
@@ -55,12 +56,12 @@ function ChatMessage({ msg }) {
 
   return (
     <div className="flex gap-2 mb-3 group">
-      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
         <Brain className="w-3.5 h-3.5 text-white" />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="bg-muted/60 border border-border rounded-2xl rounded-tl-md px-4 py-3 text-sm text-foreground leading-relaxed whitespace-pre-wrap">
-          {msg.content}
+        <div className="bg-muted/60 border border-border rounded-2xl rounded-tl-md px-4 py-3 text-sm text-foreground leading-relaxed">
+          <ReactMarkdown className="prose prose-sm dark:prose-invert break-words max-w-none">{msg.content}</ReactMarkdown>
         </div>
         <button
           onClick={copy}
@@ -107,7 +108,7 @@ function DocumentRenderer({ doc, type }) {
       <div className="relative w-full h-full">
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-muted/50">
-            <Loader2 className="w-8 h-8 animate-spin text-violet-500" />
+            <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
           </div>
         )}
         <iframe
@@ -137,7 +138,7 @@ function DocumentRenderer({ doc, type }) {
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-muted/30 z-10 pointer-events-none">
             <div className="flex flex-col items-center gap-2">
-              <Loader2 className="w-8 h-8 animate-spin text-violet-500" />
+              <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
               <p className="text-sm text-muted-foreground">Loading Office Viewer...</p>
             </div>
           </div>
@@ -271,20 +272,20 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-2 md:p-4">
-      <div className={`bg-background rounded-2xl shadow-2xl border border-border flex flex-col overflow-hidden transition-all duration-300 ${
-        isFullscreen ? "w-full h-full rounded-none" : "w-full max-w-7xl h-[92vh]"
+    <div className={`fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center ${isFullscreen ? 'p-0' : 'p-2 md:p-4'}`}>
+      <div className={`bg-background shadow-2xl border border-border flex flex-col overflow-hidden transition-all duration-300 ${
+        isFullscreen ? "w-full h-full rounded-none" : "w-full max-w-7xl h-[92vh] rounded-2xl"
       }`}>
         
         {/* ── Header ── */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-muted/30 flex-shrink-0">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
             {fileIconMap[fileType]}
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-foreground truncate text-sm">{doc.name}</p>
             <div className="flex items-center gap-2 flex-wrap">
-              {doc.category && <Badge className="text-[10px] px-1.5 py-0 h-4 bg-violet-100 text-violet-700">{doc.category}</Badge>}
+              {doc.category && <Badge className="text-[10px] px-1.5 py-0 h-4 bg-emerald-100 text-emerald-700">{doc.category}</Badge>}
               <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{fileType.toUpperCase()}</span>
               {doc.expiry_date && <span className="text-[10px] text-amber-500">Expires: {doc.expiry_date}</span>}
             </div>
@@ -312,7 +313,7 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
             </Button>
             <button
               onClick={() => setAiPanelExpanded(v => !v)}
-              className="hidden md:flex h-8 px-2 items-center gap-1 text-xs font-medium text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 rounded-lg transition-colors"
+              className="hidden md:flex h-8 px-2 items-center gap-1 text-xs font-medium text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
               title="Toggle AI Panel"
             >
               <Brain className="w-3.5 h-3.5" />
@@ -342,9 +343,9 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
             <div className="w-full md:w-[380px] flex-shrink-0 border-l border-border flex flex-col bg-background">
               
               {/* AI Panel Header */}
-              <div className="px-4 py-3 border-b border-border bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 flex-shrink-0">
+              <div className="px-4 py-3 border-b border-border bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 flex-shrink-0">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
                     <Sparkles className="w-3.5 h-3.5 text-white" />
                   </div>
                   <div>
@@ -363,7 +364,7 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
                       key={s.label}
                       onClick={() => sendMessage(s.prompt)}
                       disabled={isThinking}
-                      className="text-[11px] px-2.5 py-1 rounded-full bg-violet-100 text-violet-700 hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-300 dark:hover:bg-violet-800/40 font-medium transition-colors disabled:opacity-50"
+                      className="text-[11px] px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:hover:bg-emerald-800/40 font-medium transition-colors disabled:opacity-50"
                     >
                       {s.label}
                     </button>
@@ -378,14 +379,14 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
                 ))}
                 {isThinking && (
                   <div className="flex gap-2 mb-3">
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <Brain className="w-3.5 h-3.5 text-white" />
                     </div>
                     <div className="bg-muted/60 border border-border rounded-2xl rounded-tl-md px-4 py-3">
                       <div className="flex gap-1 items-center">
-                        <span className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                        <span className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                        <span className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                       </div>
                     </div>
                   </div>
@@ -412,7 +413,7 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
                   />
                   <Button
                     size="icon"
-                    className="h-full w-9 bg-violet-600 hover:bg-violet-700 flex-shrink-0"
+                    className="h-full w-9 bg-emerald-600 hover:bg-emerald-700 flex-shrink-0"
                     onClick={() => sendMessage()}
                     disabled={!input.trim() || isThinking}
                   >

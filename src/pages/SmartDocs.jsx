@@ -314,9 +314,9 @@ export default function SmartDocs() {
   });
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-6 pt-0">
       {/* Hero Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 p-6 md:p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-green-600 to-teal-700 p-6 md:p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-8 -right-8 w-48 h-48 bg-white/10 rounded-full" />
         <div className="absolute -bottom-12 -right-20 w-64 h-64 bg-white/5 rounded-full" />
@@ -328,13 +328,13 @@ export default function SmartDocs() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold">Smart Docs</h1>
-                <p className="text-violet-200 text-sm">Business Knowledge Graph · AI-powered document intelligence</p>
+                <p className="text-emerald-200 text-sm">Business Knowledge Graph · AI-powered document intelligence</p>
               </div>
             </div>
             <div className="flex gap-6 mt-3 text-sm">
-              <span className="flex items-center gap-1.5"><FileText className="w-4 h-4 text-violet-300" /><strong>{docs.length}</strong> Documents</span>
-              <span className="flex items-center gap-1.5"><Folder className="w-4 h-4 text-violet-300" /><strong>{folders.length}</strong> Folders</span>
-              <span className="flex items-center gap-1.5"><Network className="w-4 h-4 text-violet-300" /><strong>{links.length}</strong> Connections</span>
+              <span className="flex items-center gap-1.5"><FileText className="w-4 h-4 text-emerald-300" /><strong>{docs.length}</strong> Documents</span>
+              <span className="flex items-center gap-1.5"><Folder className="w-4 h-4 text-emerald-300" /><strong>{folders.length}</strong> Folders</span>
+              <span className="flex items-center gap-1.5"><Network className="w-4 h-4 text-emerald-300" /><strong>{links.length}</strong> Connections</span>
               {expiringSoon.length > 0 && <span className="flex items-center gap-1.5 text-amber-300"><AlertTriangle className="w-4 h-4" /><strong>{expiringSoon.length}</strong> Expiring soon</span>}
             </div>
           </div>
@@ -342,7 +342,7 @@ export default function SmartDocs() {
             <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30 gap-2" onClick={() => setShowFolderForm(true)}>
               <Folder className="w-4 h-4" />New Folder
             </Button>
-            <Button size="sm" className="bg-white text-violet-700 hover:bg-white/90 gap-2" onClick={() => setShowUploadForm(true)}>
+            <Button size="sm" className="bg-white text-emerald-700 hover:bg-white/90 gap-2" onClick={() => setShowUploadForm(true)}>
               <Plus className="w-4 h-4" />Add Document
             </Button>
           </div>
