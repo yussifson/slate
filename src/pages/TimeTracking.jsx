@@ -82,7 +82,6 @@ export default function TimeTracking() {
       const res = await powerSync.execute('SELECT * FROM univ_time_tracking WHERE company_id = ? ORDER BY date DESC, created_at DESC', [companyId]);
       return res.rows._array || [];
     },
-    },
     enabled: !!companyId
   });
 
@@ -656,7 +655,7 @@ export default function TimeTracking() {
 
       {/* Manual Entry Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-2xl border-border shadow-xl bg-card">
+        <DialogContent className="sm:max-w-[500px] p-0 overflow-y-auto max-h-[85vh] rounded-2xl border-border shadow-xl bg-card">
           <DialogHeader className="px-6 pt-6 pb-4 border-b border-border bg-muted/30">
             <DialogTitle className="text-xl flex items-center gap-2 text-foreground">
               <FileText className="w-5 h-5 text-primary" />
@@ -664,7 +663,7 @@ export default function TimeTracking() {
             </DialogTitle>
           </DialogHeader>
           
-          <div className="p-6 space-y-6 overflow-y-auto max-h-[60vh]">
+          <div className="p-6 space-y-6">
             <div className="space-y-2">
               <Label className="text-xs uppercase tracking-wider text-muted-foreground">Description</Label>
               <Input 
