@@ -199,7 +199,7 @@ export default function SmartDocs() {
   const [showLinkForm, setShowLinkForm] = useState(false);
   const [showFolderForm, setShowFolderForm] = useState(false);
 
-  const [uploadForm, setUploadForm] = useState({ name: "", category: "Contract", folder_id: "", tags: "", expiry_date: "", file_url: "", signature_status: "unsigned", notes: "" });
+  const [uploadForm, setUploadForm] = useState({ name: "", category: "Contract", folder_id: "none", tags: "", expiry_date: "", file_url: "", signature_status: "unsigned", notes: "" });
   const [linkForm, setLinkForm] = useState({ entity_type: "staff", entity_id: "", relationship: "" });
   const [folderForm, setFolderForm] = useState({ name: "", color: "#6366f1" });
 
@@ -232,11 +232,11 @@ export default function SmartDocs() {
     if (!uploadForm.name) return toast({ title: "Document name is required", variant: "destructive" });
     await powerSync.execute(
       "INSERT INTO documents (id, created_at, company_id, name, category, folder_id, tags, expiry_date, file_url, signature_status, notes, uploaded_by, filing_date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-      [crypto.randomUUID(), new Date().toISOString(), companyId, uploadForm.name, uploadForm.category, uploadForm.folder_id || null, uploadForm.tags, uploadForm.expiry_date || null, uploadForm.file_url, uploadForm.signature_status, uploadForm.notes, user?.full_name || user?.email, new Date().toISOString()]
+      [crypto.randomUUID(), new Date().toISOString(), companyId, uploadForm.name, uploadForm.category, uploadForm.folder_id === "none" ? null : uploadForm.folder_id, uploadForm.tags, uploadForm.expiry_date || null, uploadForm.file_url, uploadForm.signature_status, uploadForm.notes, user?.full_name || user?.email, new Date().toISOString()]
     );
     await loadDocs();
     setShowUploadForm(false);
-    setUploadForm({ name: "", category: "Contract", folder_id: "", tags: "", expiry_date: "", file_url: "", signature_status: "unsigned", notes: "" });
+    setUploadForm({ name: "", category: "Contract", folder_id: "none", tags: "", expiry_date: "", file_url: "", signature_status: "unsigned", notes: "" });
     toast({ title: "Document added to Smart Docs" });
   };
 
@@ -416,7 +416,7 @@ export default function SmartDocs() {
                 <Select value={uploadForm.folder_id} onValueChange={v => setUploadForm(f => ({ ...f, folder_id: v }))}>
                   <SelectTrigger><SelectValue placeholder="No Folder" /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">No Folder</SelectItem>
+                    <SelectItem value="none">No Folder</SelectItem>
                     {folders.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
                   </SelectContent>
                 </Select>

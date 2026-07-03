@@ -661,7 +661,7 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
                   <Select value={form.assigned_to} onValueChange={handleAssignee}>
                     <SelectTrigger><SelectValue placeholder="Choose an employee..." /></SelectTrigger>
                     <SelectContent>
-                      {teamMembers.length === 0 && <SelectItem value="" disabled>No employees found</SelectItem>}
+                      {teamMembers.length === 0 && <SelectItem value="none" disabled>No employees found</SelectItem>}
                       {teamMembers.map(m => (
                         <SelectItem key={m.id} value={m.id}>
                           <div className="flex items-center gap-2">
@@ -685,7 +685,7 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
                   <Select value={form.assigned_to} onValueChange={handleAssignee}>
                     <SelectTrigger><SelectValue placeholder="Choose a client..." /></SelectTrigger>
                     <SelectContent>
-                      {clients.length === 0 && <SelectItem value="" disabled>No clients found</SelectItem>}
+                      {clients.length === 0 && <SelectItem value="none" disabled>No clients found</SelectItem>}
                       {clients.map(c => (
                         <SelectItem key={c.id} value={c.id}>
                           <div className="flex items-center gap-2">
