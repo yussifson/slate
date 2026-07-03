@@ -1,4 +1,4 @@
-﻿bucket_definitions:
+bucket_definitions:
   global:
     data:
       - SELECT * FROM companies
@@ -51,6 +51,14 @@
       - SELECT * FROM accounts WHERE company_id = bucket.company_id
       - SELECT * FROM journal_entries WHERE company_id = bucket.company_id
       - SELECT * FROM payroll_runs WHERE company_id = bucket.company_id
+      - SELECT * FROM hr_jobs WHERE company_id = bucket.company_id
+      - SELECT * FROM hr_applicants WHERE company_id = bucket.company_id
+      - SELECT * FROM hr_attendance WHERE company_id = bucket.company_id
+      - SELECT * FROM hr_performance_reviews WHERE company_id = bucket.company_id
+      - SELECT * FROM hr_training_courses WHERE company_id = bucket.company_id
+      - SELECT * FROM hr_training_records WHERE company_id = bucket.company_id
+      - SELECT * FROM smart_folders WHERE company_id = bucket.company_id
+      - SELECT * FROM smart_doc_links WHERE company_id = bucket.company_id
       - SELECT * FROM industry_records WHERE company_id = bucket.company_id
       - SELECT * FROM connected_apps WHERE company_id = bucket.company_id
       - SELECT * FROM module_definitions WHERE company_id = bucket.company_id
