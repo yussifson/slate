@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Clock, Play, Square, Pause, Plus, FileText, 
   Brain, Tag, DollarSign, Calendar, Search, 
-  Trash2, Edit3, CheckCircle2, ChevronDown, ListFilter
+  Trash2, Edit3, CheckCircle2, ChevronDown, ListFilter,
+  BarChart3, PieChart
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -15,7 +16,24 @@ import { generateText } from '@/lib/cloudflareAI';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+const formatDuration = (minutes) => {
+  if (!minutes) return '0h 0m';
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return `${h}h ${m}m`;
+};
+
+const formatTimeFromSeconds = (totalSeconds) => {
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+};
 
 export default function TimeTracking() {
   const { t } = useTranslation();
@@ -28,13 +46,12 @@ export default function TimeTracking() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState(null);
 
-  // Live Timer State
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [timerDescription, setTimerDescription] = useState('');
   const [timerProject, setTimerProject] = useState('');
+  const [timerBillable, setTimerBillable] = useState(true);
 
-  // Form State
   const [formData, setFormData] = useState({
     project_id: '',
     task_id: '',
@@ -42,13 +59,12 @@ export default function TimeTracking() {
     date: new Date().toISOString().split('T')[0],
     duration_minutes: 0,
     is_billable: 1,
-    hourly_rate: 0,
+    hourly_rate: 50,
     status: 'Logged'
   });
 
   const [isAiProcessing, setIsAiProcessing] = useState(false);
 
-  // Load Time Entries
   const { data: entries = [], isLoading } = useQuery({
     queryKey: ['time_tracking', companyId],
     queryFn: async () => {
@@ -72,47 +88,119 @@ export default function TimeTracking() {
     return filtered;
   }, [entries, searchQuery]);
 
-  // Timer Effect
+  const totalHoursThisWeek = useMemo(() => {
+    const now = new Date();
+    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+    return filteredEntries
+      .filter(e => new Date(e.date) >= startOfWeek)
+      .reduce((acc, curr) => acc + (curr.duration_minutes || 0), 0) / 60;
+  }, [filteredEntries]);
+
+  const totalBillableAmount = useMemo(() => {
+     return filteredEntries.reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
+  }, [filteredEntries]);
+
+  useEffect(() => {
+    const savedTimer = localStorage.getItem('slate_active_timer');
+    if (savedTimer) {
+      try {
+        const parsed = JSON.parse(savedTimer);
+        const elapsedSinceStart = Math.floor((Date.now() - parsed.startTime) / 1000);
+        setTimerSeconds(parsed.accumulatedSeconds + elapsedSinceStart);
+        setTimerDescription(parsed.description || '');
+        setTimerProject(parsed.project || '');
+        setTimerBillable(parsed.billable ?? true);
+        setIsTimerRunning(true);
+      } catch (e) {
+        localStorage.removeItem('slate_active_timer');
+      }
+    }
+  }, []);
+
   useEffect(() => {
     let interval = null;
     if (isTimerRunning) {
       interval = setInterval(() => {
         setTimerSeconds(s => s + 1);
+        if (timerSeconds % 5 === 0) {
+           const currentData = JSON.parse(localStorage.getItem('slate_active_timer') || '{}');
+           if (currentData.startTime) {
+              localStorage.setItem('slate_active_timer', JSON.stringify({
+                 ...currentData,
+                 description: timerDescription,
+                 project: timerProject,
+                 billable: timerBillable
+              }));
+           }
+        }
       }, 1000);
     } else {
       clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [isTimerRunning]);
+  }, [isTimerRunning, timerSeconds, timerDescription, timerProject, timerBillable]);
 
-  const formatTime = (totalSeconds) => {
-    const h = Math.floor(totalSeconds / 3600);
-    const m = Math.floor((totalSeconds % 3600) / 60);
-    const s = totalSeconds % 60;
-    return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  const handleStartTimer = () => {
+    setIsTimerRunning(true);
+    localStorage.setItem('slate_active_timer', JSON.stringify({
+      startTime: Date.now(),
+      accumulatedSeconds: timerSeconds,
+      description: timerDescription,
+      project: timerProject,
+      billable: timerBillable
+    }));
   };
 
-  const handleStartTimer = () => setIsTimerRunning(true);
-  const handlePauseTimer = () => setIsTimerRunning(false);
   const handleStopTimer = () => {
     setIsTimerRunning(false);
+    localStorage.removeItem('slate_active_timer');
+    
     if (timerSeconds < 60) {
-      toast({ title: "Timer too short", description: "Time logged must be at least 1 minute." });
+      toast({ title: "Timer too short", description: "Time logged must be at least 1 minute.", variant: "default" });
+      setTimerSeconds(0);
+      setTimerDescription('');
+      setTimerProject('');
       return;
     }
+
     const minutes = Math.ceil(timerSeconds / 60);
-    openModal({
-      description: timerDescription,
-      project_id: timerProject,
-      duration_minutes: minutes,
-      date: new Date().toISOString().split('T')[0],
-      is_billable: 1,
-      hourly_rate: 0,
-      status: 'Logged'
-    });
-    setTimerSeconds(0);
-    setTimerDescription('');
-    setTimerProject('');
+    
+    if (timerDescription.trim().length > 0) {
+       saveMutation.mutate({
+          description: timerDescription,
+          project_id: timerProject,
+          duration_minutes: minutes,
+          date: new Date().toISOString().split('T')[0],
+          is_billable: timerBillable ? 1 : 0,
+          hourly_rate: 50,
+          status: 'Logged'
+       });
+       setTimerSeconds(0);
+       setTimerDescription('');
+       setTimerProject('');
+    } else {
+       openModal({
+         description: timerDescription,
+         project_id: timerProject,
+         duration_minutes: minutes,
+         date: new Date().toISOString().split('T')[0],
+         is_billable: timerBillable ? 1 : 0,
+         hourly_rate: 50,
+         status: 'Logged'
+       });
+       setTimerSeconds(0);
+       setTimerDescription('');
+       setTimerProject('');
+    }
+  };
+
+  const handleDiscardTimer = () => {
+      setIsTimerRunning(false);
+      localStorage.removeItem('slate_active_timer');
+      setTimerSeconds(0);
+      setTimerDescription('');
+      setTimerProject('');
+      toast({ description: "Timer discarded." });
   };
 
   const openModal = (entry = null) => {
@@ -125,7 +213,7 @@ export default function TimeTracking() {
         date: entry.date || new Date().toISOString().split('T')[0],
         duration_minutes: entry.duration_minutes || 0,
         is_billable: entry.is_billable ?? 1,
-        hourly_rate: entry.hourly_rate || 0,
+        hourly_rate: entry.hourly_rate || 50,
         status: entry.status || 'Logged'
       });
     } else {
@@ -137,7 +225,7 @@ export default function TimeTracking() {
         date: new Date().toISOString().split('T')[0],
         duration_minutes: 0,
         is_billable: 1,
-        hourly_rate: 0,
+        hourly_rate: 50,
         status: 'Logged'
       });
     }
@@ -173,7 +261,7 @@ export default function TimeTracking() {
     onSuccess: () => {
       queryClient.invalidateQueries(['time_tracking', companyId]);
       setIsModalOpen(false);
-      toast({ title: "Success", description: "Time entry saved." });
+      toast({ title: "Success", description: "Time entry saved successfully." });
     },
     onError: (err) => {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -192,9 +280,13 @@ export default function TimeTracking() {
 
   const handleAiInsights = async (entry) => {
     setIsAiProcessing(true);
-    toast({ title: "AI Analysis", description: "Generating summary and tags..." });
+    toast({ title: "AI Analysis", description: "Analyzing time entry context..." });
     try {
-      const prompt = `Analyze this time entry description: "${entry.description}". Generate a short, professional 1-sentence summary of the work done, and provide 2-3 relevant tags separated by commas. Format exactly as: SUMMARY: [summary] | TAGS: [tags]`;
+      const prompt = `Analyze this time tracking description: "${entry.description}". 
+      Task: Generate a concise, professional 1-sentence summary of the work done suitable for client billing reports.
+      Also provide 2-3 relevant categorization tags separated by commas. 
+      Format EXACTLY as: SUMMARY: [summary] | TAGS: [tags]`;
+      
       const response = await generateText(prompt);
       
       const parts = response.split('|');
@@ -207,7 +299,7 @@ export default function TimeTracking() {
 
       await powerSync.execute('UPDATE univ_time_tracking SET ai_summary = ?, ai_tags = ? WHERE id = ?', [summary, tags, entry.id]);
       queryClient.invalidateQueries(['time_tracking', companyId]);
-      toast({ title: "AI Insights Ready", description: "Summary and tags updated." });
+      toast({ title: "Insights Generated", description: "AI summary and tags attached." });
     } catch (e) {
       toast({ title: "AI Error", description: "Could not generate insights.", variant: "destructive" });
     } finally {
@@ -217,238 +309,288 @@ export default function TimeTracking() {
 
   const handleSave = () => {
     if (!formData.description || formData.duration_minutes <= 0) {
-      toast({ title: "Required Fields", description: "Please enter a description and duration.", variant: "destructive" });
+      toast({ title: "Required Fields", description: "Please enter a valid description and duration.", variant: "destructive" });
       return;
     }
     saveMutation.mutate(formData);
   };
 
   return (
-    <div className="p-4 md:p-8 space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto">
-      {/* Header & Live Timer */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-card p-6 rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm">
+    <div className="p-4 md:p-8 space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto min-h-screen pb-24 text-foreground bg-background">
+      {/* Header & Stats */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-2">
         <div>
           <h1 className="text-3xl font-bold text-foreground tracking-tight flex items-center gap-3">
-            <Clock className="w-8 h-8 text-primary" /> Time Tracking
+            <Clock className="w-8 h-8 text-primary" /> Time Tracker
           </h1>
-          <p className="text-muted-foreground mt-2">Track billable hours, manage projects, and log activities.</p>
+          <p className="text-muted-foreground mt-2 text-sm">Log hours, manage billables, and generate AI insights.</p>
+        </div>
+        <div className="flex gap-4">
+            <div className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col justify-center min-w-[140px]">
+                <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mb-1">This Week</span>
+                <span className="text-2xl font-bold text-foreground">{totalHoursThisWeek.toFixed(1)}<span className="text-sm font-normal text-muted-foreground ml-1">hrs</span></span>
+            </div>
+            <div className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col justify-center min-w-[140px]">
+                <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mb-1">Billable</span>
+                <span className="text-2xl font-bold text-green-600 dark:text-green-500">${totalBillableAmount.toFixed(2)}</span>
+            </div>
+        </div>
+      </div>
+
+      {/* Live Timer Widget */}
+      <div className="bg-card border border-border p-3 md:p-4 rounded-2xl shadow-md flex flex-col xl:flex-row items-center gap-4 transition-all sticky top-4 z-20">
+        <div className="flex-1 w-full xl:w-auto relative">
+           <Input 
+             placeholder="What are you working on?" 
+             value={timerDescription}
+             onChange={e => setTimerDescription(e.target.value)}
+             className="w-full bg-transparent border-none text-base md:text-lg focus-visible:ring-0 px-2 h-12 placeholder:text-muted-foreground/60 text-foreground"
+           />
         </div>
         
-        {/* Live Timer Widget */}
-        <div className="bg-slate-50 dark:bg-slate-900/50 border-[0.5px] border-primary/20 p-4 rounded-2xl w-full lg:w-auto flex flex-col sm:flex-row items-center gap-4 shadow-inner">
-          <div className="flex-1 min-w-[200px]">
-            <Input 
-              placeholder="What are you working on?" 
-              value={timerDescription}
-              onChange={e => setTimerDescription(e.target.value)}
-              className="bg-white dark:bg-slate-800 border-none shadow-sm text-sm h-10"
-            />
-          </div>
-          <div className="text-3xl font-mono font-bold tracking-tighter text-primary w-32 text-center">
-            {formatTime(timerSeconds)}
-          </div>
-          <div className="flex items-center gap-2">
-            {!isTimerRunning ? (
-              <Button onClick={handleStartTimer} size="icon" className="w-12 h-12 rounded-xl bg-primary hover:bg-primary/90 text-white shadow-md transition-transform active:scale-95">
-                <Play className="w-6 h-6 ml-1 fill-current" />
-              </Button>
-            ) : (
-              <Button onClick={handlePauseTimer} size="icon" variant="outline" className="w-12 h-12 rounded-xl border-primary/50 text-primary hover:bg-primary/10 transition-transform active:scale-95">
-                <Pause className="w-6 h-6 fill-current" />
-              </Button>
-            )}
-            {(timerSeconds > 0 || isTimerRunning) && (
-              <Button onClick={handleStopTimer} size="icon" variant="destructive" className="w-12 h-12 rounded-xl shadow-md transition-transform active:scale-95">
-                <Square className="w-5 h-5 fill-current" />
-              </Button>
-            )}
-          </div>
+        <div className="flex w-full xl:w-auto items-center justify-between xl:justify-end gap-4 border-t xl:border-t-0 xl:border-l border-border pt-4 xl:pt-0 xl:pl-4">
+            <div className="flex items-center gap-3">
+                <div className="relative hidden sm:block">
+                    <Input 
+                        placeholder="Project" 
+                        value={timerProject}
+                        onChange={e => setTimerProject(e.target.value)}
+                        className="w-32 h-10 border-border text-sm rounded-lg bg-background text-foreground"
+                    />
+                </div>
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors" onClick={() => setTimerBillable(!timerBillable)}>
+                    <DollarSign className={`w-4 h-4 ${timerBillable ? 'text-green-500' : 'text-muted-foreground'}`} />
+                    <span className={`text-sm font-medium ${timerBillable ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}`}>
+                        {timerBillable ? 'Billable' : 'Non-billable'}
+                    </span>
+                </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+                <div className={`text-3xl md:text-4xl font-mono font-bold tracking-tight w-[140px] text-center ${isTimerRunning ? 'text-primary' : 'text-foreground'}`}>
+                    {formatTimeFromSeconds(timerSeconds)}
+                </div>
+                
+                <div className="flex items-center gap-2">
+                    {timerSeconds > 0 && !isTimerRunning && (
+                        <Button onClick={handleDiscardTimer} variant="ghost" size="icon" className="h-12 w-12 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10">
+                            <Trash2 className="w-5 h-5" />
+                        </Button>
+                    )}
+                    
+                    {!isTimerRunning ? (
+                        <Button 
+                            onClick={handleStartTimer} 
+                            className="h-12 w-32 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold tracking-wide shadow-lg hover:shadow-xl transition-all"
+                        >
+                            <Play className="w-5 h-5 mr-2 fill-current" /> START
+                        </Button>
+                    ) : (
+                        <div className="flex items-center gap-2">
+                            <Button 
+                                onClick={handleStopTimer} 
+                                variant="destructive"
+                                className="h-12 w-32 rounded-full font-bold tracking-wide shadow-lg hover:shadow-xl transition-all"
+                            >
+                                <Square className="w-5 h-5 mr-2 fill-current" /> STOP
+                            </Button>
+                        </div>
+                    )}
+                </div>
+            </div>
         </div>
       </div>
 
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div className="relative w-full sm:w-96">
+        <div className="relative w-full sm:max-w-md">
           <Search className="w-4 h-4 absolute left-3.5 top-3 text-muted-foreground" />
           <Input 
-            placeholder="Search descriptions, projects, or AI tags..." 
-            className="pl-10 h-10 rounded-xl bg-card border-[0.5px] border-black/9 dark:border-white/8 shadow-sm"
+            placeholder="Search descriptions, tags, or projects..." 
+            className="pl-10 h-10 rounded-xl bg-card border-border text-foreground"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
           />
         </div>
         <div className="flex gap-3 w-full sm:w-auto">
-          <Button onClick={() => openModal()} className="flex-1 sm:flex-none gap-2 h-10 rounded-xl px-5 bg-foreground text-background hover:bg-foreground/90 shadow-md">
-            <Plus className="w-4 h-4" /> Log Time Manually
+          <Button onClick={() => openModal()} className="flex-1 sm:flex-none gap-2 h-10 rounded-xl px-5 bg-primary text-primary-foreground hover:bg-primary/90">
+            <Plus className="w-4 h-4" /> Manual Entry
           </Button>
         </div>
       </div>
 
-      {/* Data Grid */}
-      <div className="bg-card rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 overflow-hidden shadow-sm">
+      {/* Data List */}
+      <div className="space-y-6">
         {isLoading ? (
           <div className="p-12 flex justify-center"><OrbitLoader /></div>
         ) : filteredEntries.length === 0 ? (
-          <div className="p-12 text-center flex flex-col items-center">
-            <Clock className="w-12 h-12 text-slate-300 mb-4" />
-            <h3 className="text-lg font-semibold text-foreground">No time entries found</h3>
-            <p className="text-muted-foreground mt-1">Start the timer above or log time manually.</p>
+          <div className="bg-card border border-border rounded-2xl p-12 text-center flex flex-col items-center shadow-sm">
+            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+                <Clock className="w-8 h-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-lg font-semibold text-foreground">No time entries yet</h3>
+            <p className="text-muted-foreground mt-1 max-w-sm">Track your first activity using the timer above, or log historical time manually.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-slate-50/50 dark:bg-slate-900/50 text-slate-500 uppercase text-[11px] tracking-wider font-semibold border-b border-black/5 dark:border-white/5">
-                <tr>
-                  <th className="px-6 py-4 rounded-tl-3xl">Date</th>
-                  <th className="px-6 py-4">Description</th>
-                  <th className="px-6 py-4">Duration</th>
-                  <th className="px-6 py-4">Billing</th>
-                  <th className="px-6 py-4">AI Intelligence</th>
-                  <th className="px-6 py-4 text-right rounded-tr-3xl">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-black/5 dark:divide-white/5">
-                {filteredEntries.map(entry => (
-                  <tr key={entry.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors group">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2 text-foreground font-medium">
-                        <Calendar className="w-4 h-4 text-primary" />
-                        {entry.date}
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-1">{entry.user_name}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="font-medium text-foreground max-w-[200px] truncate">{entry.description}</div>
-                      {entry.project_id && <div className="text-xs text-primary mt-1 flex items-center gap-1"><Tag className="w-3 h-3" /> {entry.project_id}</div>}
-                    </td>
-                    <td className="px-6 py-4 font-mono font-medium">
-                      {Math.floor(entry.duration_minutes / 60)}h {entry.duration_minutes % 60}m
-                    </td>
-                    <td className="px-6 py-4">
-                      {entry.is_billable === 1 ? (
-                        <div className="flex flex-col">
-                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-500/10 text-green-600 text-xs font-semibold w-fit">
-                            <DollarSign className="w-3 h-3" /> Billable
-                          </span>
-                          <span className="text-xs text-muted-foreground mt-1">${entry.hourly_rate}/hr (${entry.total_amount?.toFixed(2)})</span>
-                        </div>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 text-xs font-semibold w-fit">
-                          Non-billable
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 min-w-[250px] max-w-[350px]">
-                      {entry.ai_summary ? (
-                        <div className="space-y-1.5">
-                          <p className="text-xs text-foreground bg-primary/5 p-2 rounded-lg leading-relaxed border-[0.5px] border-primary/20">
-                            {entry.ai_summary}
-                          </p>
-                          {entry.ai_tags && (
-                            <div className="flex flex-wrap gap-1">
-                              {entry.ai_tags.split(',').map(tag => (
-                                <span key={tag} className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] rounded-md uppercase tracking-widest font-semibold">
-                                  {tag.trim()}
-                                </span>
-                              ))}
+          <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden flex flex-col">
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left text-foreground">
+                <thead className="bg-muted/50 text-muted-foreground uppercase text-[10px] tracking-widest font-semibold border-b border-border">
+                    <tr>
+                    <th className="px-6 py-4">Activity</th>
+                    <th className="px-6 py-4">Project / Tags</th>
+                    <th className="px-6 py-4">Billing</th>
+                    <th className="px-6 py-4 text-right">Duration</th>
+                    <th className="px-6 py-4 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody className="divide-y divide-border bg-card">
+                    {filteredEntries.map(entry => (
+                    <tr key={entry.id} className="hover:bg-muted/30 transition-colors group">
+                        <td className="px-6 py-4">
+                            <div className="flex flex-col gap-1 max-w-[300px]">
+                                <span className="font-medium text-foreground truncate">{entry.description || '(No description)'}</span>
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                    <Calendar className="w-3 h-3" /> {entry.date}
+                                </div>
+                                {entry.ai_summary && (
+                                    <p className="text-xs text-primary/80 bg-primary/5 p-1.5 rounded mt-1 border border-primary/10 leading-snug">
+                                        ✨ {entry.ai_summary}
+                                    </p>
+                                )}
                             </div>
-                          )}
-                        </div>
-                      ) : (
-                        <Button 
-                          onClick={() => handleAiInsights(entry)}
-                          variant="ghost" 
-                          size="sm" 
-                          disabled={isAiProcessing}
-                          className="text-xs h-8 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950/30 gap-1.5 rounded-lg border-[0.5px] border-indigo-200 dark:border-indigo-800/50"
-                        >
-                          <Brain className="w-3.5 h-3.5" /> Generate AI Insights
-                        </Button>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button onClick={() => openModal(entry)} variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-primary rounded-lg">
-                          <Edit3 className="w-4 h-4" />
-                        </Button>
-                        <Button onClick={() => deleteMutation.mutate(entry.id)} variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-red-500 rounded-lg">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        </td>
+                        <td className="px-6 py-4">
+                            <div className="flex flex-col gap-2 items-start">
+                                {entry.project_id && (
+                                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-md border border-blue-200 dark:border-blue-800/50">
+                                        <Tag className="w-3 h-3" /> {entry.project_id}
+                                    </span>
+                                )}
+                                {entry.ai_tags && (
+                                    <div className="flex flex-wrap gap-1 mt-1">
+                                    {entry.ai_tags.split(',').map(tag => (
+                                        <span key={tag} className="px-1.5 py-0.5 bg-secondary text-secondary-foreground text-[10px] rounded-sm font-medium">
+                                        {tag.trim()}
+                                        </span>
+                                    ))}
+                                    </div>
+                                )}
+                            </div>
+                        </td>
+                        <td className="px-6 py-4">
+                        {entry.is_billable === 1 ? (
+                            <div className="flex flex-col">
+                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold w-fit border border-green-200 dark:border-green-800/50">
+                                <DollarSign className="w-3 h-3" /> Billable
+                            </span>
+                            <span className="text-xs text-muted-foreground mt-1.5 font-medium">${entry.hourly_rate}/hr &rarr; <span className="text-foreground">${entry.total_amount?.toFixed(2)}</span></span>
+                            </div>
+                        ) : (
+                            <span className="inline-flex items-center px-2 py-1 rounded-md bg-muted text-muted-foreground text-xs font-medium">
+                            Non-billable
+                            </span>
+                        )}
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                            <span className="font-mono font-bold text-base text-foreground bg-muted/50 px-2 py-1 rounded">
+                                {formatDuration(entry.duration_minutes)}
+                            </span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                            <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                {!entry.ai_summary && (
+                                    <Button 
+                                        onClick={() => handleAiInsights(entry)}
+                                        variant="ghost" 
+                                        size="icon" 
+                                        disabled={isAiProcessing}
+                                        className="h-8 w-8 text-primary hover:bg-primary/10"
+                                        title="Generate AI Insights"
+                                    >
+                                        <Brain className="w-4 h-4" />
+                                    </Button>
+                                )}
+                                <Button onClick={() => openModal(entry)} variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                                    <Edit3 className="w-4 h-4" />
+                                </Button>
+                                <Button onClick={() => deleteMutation.mutate(entry.id)} variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10">
+                                    <Trash2 className="w-4 h-4" />
+                                </Button>
+                            </div>
+                        </td>
+                    </tr>
+                    ))}
+                </tbody>
+                </table>
+            </div>
           </div>
         )}
       </div>
 
       {/* Manual Entry Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[500px] p-6 rounded-3xl border-slate-200 dark:border-slate-800 shadow-2xl">
-          <DialogHeader className="mb-4">
-            <DialogTitle className="text-xl flex items-center gap-2">
+        <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-2xl border-border shadow-xl bg-card">
+          <DialogHeader className="px-6 pt-6 pb-4 border-b border-border bg-muted/30">
+            <DialogTitle className="text-xl flex items-center gap-2 text-foreground">
               <FileText className="w-5 h-5 text-primary" />
-              {editingEntry ? 'Edit Time Entry' : 'Log Time Manually'}
+              {editingEntry ? 'Edit Time Entry' : 'Manual Time Entry'}
             </DialogTitle>
           </DialogHeader>
           
-          <div className="space-y-5">
-            <div>
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">Description *</label>
+          <div className="p-6 space-y-6">
+            <div className="space-y-2">
+              <Label className="text-xs uppercase tracking-wider text-muted-foreground">Description</Label>
               <Input 
                 value={formData.description}
                 onChange={e => setFormData({...formData, description: e.target.value})}
                 placeholder="What did you work on?"
-                className="h-11 rounded-xl bg-slate-50 dark:bg-slate-900 border-black/5 dark:border-white/5 focus-visible:ring-primary/40"
+                className="h-10 bg-background text-foreground"
               />
             </div>
             
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">Date</label>
+              <div className="space-y-2">
+                <Label className="text-xs uppercase tracking-wider text-muted-foreground">Date</Label>
                 <Input 
                   type="date"
                   value={formData.date}
                   onChange={e => setFormData({...formData, date: e.target.value})}
-                  className="h-11 rounded-xl bg-slate-50 dark:bg-slate-900 border-black/5 dark:border-white/5"
+                  className="h-10 bg-background text-foreground"
                 />
               </div>
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">Duration (Mins) *</label>
+              <div className="space-y-2">
+                <Label className="text-xs uppercase tracking-wider text-muted-foreground">Duration (Mins)</Label>
                 <Input 
                   type="number"
                   min="1"
                   value={formData.duration_minutes}
                   onChange={e => setFormData({...formData, duration_minutes: parseInt(e.target.value) || 0})}
-                  className="h-11 rounded-xl bg-slate-50 dark:bg-slate-900 border-black/5 dark:border-white/5"
+                  className="h-10 bg-background font-mono text-foreground"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">Project / Client (Optional)</label>
+            <div className="space-y-2">
+              <Label className="text-xs uppercase tracking-wider text-muted-foreground">Project / Client</Label>
               <Input 
                 value={formData.project_id}
                 onChange={e => setFormData({...formData, project_id: e.target.value})}
                 placeholder="e.g. Project Apollo"
-                className="h-11 rounded-xl bg-slate-50 dark:bg-slate-900 border-black/5 dark:border-white/5"
+                className="h-10 bg-background text-foreground"
               />
             </div>
 
-            <div className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border-[0.5px] border-black/5 dark:border-white/5 space-y-4 shadow-inner">
+            <div className="p-4 bg-muted/40 rounded-xl border border-border space-y-4">
               <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                  <span className="text-sm font-semibold text-foreground">Billable Time</span>
-                  <span className="text-xs text-muted-foreground">Charge client for this work</span>
+                <div className="space-y-0.5">
+                  <Label className="text-sm font-medium text-foreground">Billable Work</Label>
+                  <p className="text-xs text-muted-foreground">Charge this time to the client</p>
                 </div>
-                <button 
-                  onClick={() => setFormData({...formData, is_billable: formData.is_billable === 1 ? 0 : 1})}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formData.is_billable === 1 ? 'bg-primary' : 'bg-slate-300 dark:bg-slate-700'}`}
-                >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formData.is_billable === 1 ? 'translate-x-6' : 'translate-x-1'}`} />
-                </button>
+                <Switch 
+                  checked={formData.is_billable === 1}
+                  onCheckedChange={(c) => setFormData({...formData, is_billable: c ? 1 : 0})}
+                />
               </div>
               
               <AnimatePresence>
@@ -459,32 +601,43 @@ export default function TimeTracking() {
                     exit={{ height: 0, opacity: 0 }}
                     className="overflow-hidden"
                   >
-                    <div className="pt-3 border-t-[0.5px] border-black/5 dark:border-white/5 mt-3">
-                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">Hourly Rate ($)</label>
-                      <Input 
-                        type="number"
-                        min="0"
-                        value={formData.hourly_rate}
-                        onChange={e => setFormData({...formData, hourly_rate: parseFloat(e.target.value) || 0})}
-                        className="h-11 rounded-xl bg-white dark:bg-slate-950 border-black/10 dark:border-white/10"
-                      />
-                      <div className="mt-2 text-sm font-semibold text-primary">
-                        Total Amount: <span className="font-bold">${((formData.duration_minutes / 60) * formData.hourly_rate).toFixed(2)}</span>
+                    <div className="pt-4 border-t border-border mt-2 space-y-3">
+                      <div className="space-y-2">
+                          <Label className="text-xs uppercase tracking-wider text-muted-foreground">Hourly Rate (USD)</Label>
+                          <div className="relative">
+                            <DollarSign className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
+                            <Input 
+                                type="number"
+                                min="0"
+                                value={formData.hourly_rate}
+                                onChange={e => setFormData({...formData, hourly_rate: parseFloat(e.target.value) || 0})}
+                                className="pl-9 h-10 bg-background text-foreground"
+                            />
+                          </div>
+                      </div>
+                      <div className="flex justify-between items-center bg-background p-3 rounded-lg border border-border">
+                        <span className="text-sm font-medium text-muted-foreground">Calculated Total</span>
+                        <span className="text-lg font-bold text-foreground">
+                            ${((formData.duration_minutes / 60) * formData.hourly_rate).toFixed(2)}
+                        </span>
                       </div>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
-
+          </div>
+          
+          <DialogFooter className="px-6 py-4 border-t border-border bg-muted/30">
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
             <Button 
               onClick={handleSave} 
               disabled={saveMutation.isPending}
-              className="w-full h-12 rounded-xl font-semibold bg-foreground text-background hover:bg-foreground/90 mt-4 shadow-md transition-all active:scale-[0.98]"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 min-w-[120px]"
             >
-              {saveMutation.isPending ? <OrbitLoader size="sm" /> : (editingEntry ? 'Update Entry' : 'Save Entry')}
+              {saveMutation.isPending ? <OrbitLoader size="sm" /> : (editingEntry ? 'Save Changes' : 'Add Entry')}
             </Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
