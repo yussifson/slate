@@ -191,11 +191,21 @@ export const AuthProvider = ({ children }) => {
           };
           const _keys = Object.keys(_payload);
           const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-          await powerSync.execute(`INSERT INTO profiles (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
-          const __resNew = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
-          const newProfile = __resNew.rows && __resNew.rows.length > 0 ? __resNew.rows.item(0) : null;
-          const insertError = null;
-          if (!insertError) {
+          
+          let newProfile = null;
+          let insertError = null;
+          try {
+            await powerSync.execute(`INSERT INTO profiles (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+            const __resNew = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
+            newProfile = __resNew.rows && __resNew.rows.length > 0 ? __resNew.rows.item(0) : null;
+          } catch(err) {
+            console.warn('[AuthContext] PowerSync offline insert failed:', err);
+            insertError = err;
+            // Provide a mock profile so auth can proceed if PowerSync is crashed
+            newProfile = _payload;
+          }
+          
+          if (!insertError || newProfile) {
             profile = newProfile;
             profileError = null;
           }
@@ -223,23 +233,34 @@ export const AuthProvider = ({ children }) => {
             };
             const _keys = Object.keys(_payload);
             const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-            await powerSync.execute(`UPDATE profiles SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, sessionUser.id]);
-            const __resUpd = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
-            const updatedProfile = __resUpd.rows && __resUpd.rows.length > 0 ? __resUpd.rows.item(0) : null;
-            const updateError = null;
-            if (!updateError) {
+            
+            let updatedProfile = null;
+            let updateError = null;
+            try {
+              await powerSync.execute(`UPDATE profiles SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, sessionUser.id]);
+              const __resUpd = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
+              updatedProfile = __resUpd.rows && __resUpd.rows.length > 0 ? __resUpd.rows.item(0) : null;
+            } catch(err) {
+              console.warn('[AuthContext] PowerSync offline update failed:', err);
+              updateError = err;
+              updatedProfile = { ...profile, ..._payload };
+            }
+            
+            if (!updateError || updatedProfile) {
               profile = updatedProfile;
             }
           }
         }
 
         if (staffRecord.id && !staffRecord.user_id) {
-          await (async () => {
-        const _payload = { user_id: sessionUser.id };
-        const _keys = Object.keys(_payload);
-        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        await powerSync.execute(`UPDATE staff_records SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, staffRecord.id]);
-      })();
+          try {
+            const _payload = { user_id: sessionUser.id };
+            const _keys = Object.keys(_payload);
+            const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+            await powerSync.execute(`UPDATE staff_records SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, staffRecord.id]);
+          } catch(err) {
+            console.warn('[AuthContext] PowerSync offline staff update failed:', err);
+          }
         }
       } else if (!profile) {
         let invitedCompanyId = sessionUser.user_metadata?.company_id || null;
