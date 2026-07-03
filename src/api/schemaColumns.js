@@ -209,7 +209,45 @@ export const SCHEMA_COLUMNS = {
     "uploaded_by",
     "notes",
     "version",
-    "shared_with_client"
+    "shared_with_client",
+    "tags",
+    "expiry_date",
+    "signature_status",
+    "folder_id",
+    "ai_summary",
+    "key_obligations",
+    "risks"
+  ],
+  "smart_folders": [
+    "id",
+    "created_at",
+    "company_id",
+    "name",
+    "parent_id",
+    "color"
+  ],
+  "smart_doc_links": [
+    "id",
+    "created_at",
+    "company_id",
+    "document_id",
+    "entity_type",
+    "entity_id",
+    "relationship"
+  ],
+  "case_pipelines": [
+    "id",
+    "created_at",
+    "updated_at",
+    "company_id",
+    "name",
+    "description",
+    "category",
+    "stages",
+    "item_label",
+    "color",
+    "icon",
+    "is_active"
   ],
   "expenses": [
     "id",

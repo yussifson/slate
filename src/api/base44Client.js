@@ -36,8 +36,12 @@ const TABLE_MAP = {
     EmailSequence: 'email_sequences',
     Account: 'accounts',
     JournalEntry: 'journal_entries',
-    PayrollRun: 'payroll_runs',
-    ActiveTimer: 'active_timers'
+    ActiveTimer: 'active_timers',
+    // Phase 5 new entities
+    CasePipeline: 'case_pipelines',
+    SmartFolder: 'smart_folders',
+    SmartDocLink: 'smart_doc_links',
+    CasePipelineState: 'case_pipeline_states'
 };
 
 
