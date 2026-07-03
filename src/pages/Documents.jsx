@@ -120,6 +120,18 @@ export default function SmartDocs() {
     enabled: !!companyId,
   });
 
+  const { data: clients = [] } = useQuery({
+    queryKey: ["clients_list", companyId],
+    queryFn: async () => {
+      const res = await powerSync.execute(
+        "SELECT id, name, email FROM clients WHERE company_id = ? ORDER BY name ASC",
+        [companyId]
+      );
+      return res.rows._array || [];
+    },
+    enabled: !!companyId,
+  });
+
   // ── Mutations ────────────────────────────────────────────────────────────────
 
   const createMutation = useMutation({
@@ -434,6 +446,7 @@ export default function SmartDocs() {
         companyId={companyId}
         caseTerm={caseTerm}
         teamMembers={teamMembers}
+        clients={clients}
       />
 
       {/* ── Detail / Audit Panel ────────────────────────────────────────────── */}
@@ -500,7 +513,13 @@ export default function SmartDocs() {
 
 // ── Document Upload Dialog ────────────────────────────────────────────────────
 
-function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, addDocCategory, companyId, caseTerm, teamMembers }) {
+const SHARE_TYPE_OPTS = [
+  { value: "none",      label: "Don't Share",           icon: "🔒", desc: "Only visible to you and admins" },
+  { value: "employees", label: "Share with Employees",   icon: "👥", desc: "Pick specific staff members" },
+  { value: "clients",   label: "Share with Clients",     icon: "🤝", desc: "Pick from your client list" },
+];
+
+function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, addDocCategory, companyId, caseTerm, teamMembers, clients }) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [form, setForm] = useState({
@@ -508,10 +527,19 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
     assigned_to: "", assigned_name: "", assigned_email: "",
     signature_status: "None", is_confidential: false,
   });
+  const [shareType, setShareType] = useState("none");
   const [uploading, setUploading] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
 
   const handleChange = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
+
+  const handleShareTypeChange = (type) => {
+    setShareType(type);
+    // Reset assignment when type changes
+    handleChange("assigned_to", "");
+    handleChange("assigned_name", "");
+    handleChange("assigned_email", "");
+  };
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -535,36 +563,34 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit({ ...form, file_url: fileUrl });
-    setForm({ name: "", category: "other", case_id: "", case_title: "", notes: "", assigned_to: "", assigned_name: "", assigned_email: "", signature_status: "None", is_confidential: false });
-    setFileUrl("");
+  const handleAssignee = (id) => {
+    if (shareType === "employees") {
+      const m = teamMembers.find(m => m.id === id);
+      if (m) { handleChange("assigned_to", m.id); handleChange("assigned_name", m.full_name || m.email); handleChange("assigned_email", m.email); }
+    } else if (shareType === "clients") {
+      const c = clients.find(c => c.id === id);
+      if (c) { handleChange("assigned_to", c.id); handleChange("assigned_name", c.name); handleChange("assigned_email", c.email || ""); }
+    }
   };
 
-  const handleAssignee = (memberId) => {
-    const member = teamMembers.find(m => m.id === memberId);
-    if (member) {
-      handleChange("assigned_to", member.id);
-      handleChange("assigned_name", member.full_name || member.email);
-      handleChange("assigned_email", member.email);
-    } else {
-      handleChange("assigned_to", "");
-      handleChange("assigned_name", "");
-      handleChange("assigned_email", "");
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({ ...form, file_url: fileUrl, share_type: shareType });
+    setForm({ name: "", category: "other", case_id: "", case_title: "", notes: "", assigned_to: "", assigned_name: "", assigned_email: "", signature_status: "None", is_confidential: false });
+    setShareType("none");
+    setFileUrl("");
   };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden rounded-2xl border-border shadow-xl bg-card">
-        <DialogHeader className="px-6 pt-6 pb-4 border-b border-border bg-muted/30">
+      <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden rounded-2xl border-border shadow-xl bg-card flex flex-col max-h-[90vh]">
+        <DialogHeader className="px-6 pt-6 pb-4 border-b border-border bg-muted/30 shrink-0">
           <DialogTitle className="text-xl flex items-center gap-2 text-foreground">
             <Upload className="w-5 h-5 text-primary" /> Upload to SmartDocs
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <div className="p-6 space-y-5 overflow-y-auto max-h-[65vh]">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+          <div className="p-6 space-y-5 flex-1 overflow-y-auto">
 
             {/* File Drop */}
             <div>
@@ -604,23 +630,77 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
               </div>
             </div>
 
-            {/* Assign To */}
-            <div>
-              <Label className="text-xs uppercase tracking-wider text-muted-foreground">Assign To (Staff / Client)</Label>
-              <Select value={form.assigned_to} onValueChange={handleAssignee}>
-                <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select team member or client..." /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">— No assignment —</SelectItem>
-                  {teamMembers.map(m => (
-                    <SelectItem key={m.id} value={m.id}>
-                      <div className="flex items-center gap-2">
-                        <span>{m.full_name || m.email}</span>
-                        <span className="text-xs text-muted-foreground capitalize">· {m.role}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            {/* ── Sharing Section ─────────────────────────────────────────────── */}
+            <div className="space-y-3">
+              <Label className="text-xs uppercase tracking-wider text-muted-foreground">Sharing &amp; Assignment</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {SHARE_TYPE_OPTS.map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => handleShareTypeChange(opt.value)}
+                    className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 text-center transition-all ${
+                      shareType === opt.value
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-muted/20 text-muted-foreground hover:border-primary/40 hover:bg-muted/40"
+                    }`}
+                  >
+                    <span className="text-xl">{opt.icon}</span>
+                    <span className="text-xs font-semibold leading-tight">{opt.label}</span>
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {SHARE_TYPE_OPTS.find(o => o.value === shareType)?.desc}
+              </p>
+
+              {/* Employee Picker */}
+              {shareType === "employees" && (
+                <div>
+                  <Label className="text-xs text-muted-foreground mb-1 block">Select Employee</Label>
+                  <Select value={form.assigned_to} onValueChange={handleAssignee}>
+                    <SelectTrigger><SelectValue placeholder="Choose an employee..." /></SelectTrigger>
+                    <SelectContent>
+                      {teamMembers.length === 0 && <SelectItem value="" disabled>No employees found</SelectItem>}
+                      {teamMembers.map(m => (
+                        <SelectItem key={m.id} value={m.id}>
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-[9px] font-bold text-primary">
+                              {(m.full_name || m.email || "?")[0].toUpperCase()}
+                            </div>
+                            <span>{m.full_name || m.email}</span>
+                            <span className="text-xs text-muted-foreground capitalize">· {m.role}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* Client Picker */}
+              {shareType === "clients" && (
+                <div>
+                  <Label className="text-xs text-muted-foreground mb-1 block">Select Client</Label>
+                  <Select value={form.assigned_to} onValueChange={handleAssignee}>
+                    <SelectTrigger><SelectValue placeholder="Choose a client..." /></SelectTrigger>
+                    <SelectContent>
+                      {clients.length === 0 && <SelectItem value="" disabled>No clients found</SelectItem>}
+                      {clients.map(c => (
+                        <SelectItem key={c.id} value={c.id}>
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center text-[9px] font-bold text-amber-700">
+                              {(c.name || "?")[0].toUpperCase()}
+                            </div>
+                            <span>{c.name}</span>
+                            {c.email && <span className="text-xs text-muted-foreground">· {c.email}</span>}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
             </div>
 
             {/* Signature Status */}
@@ -650,7 +730,7 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
             </div>
           </div>
 
-          <DialogFooter className="px-6 py-4 border-t border-border bg-muted/20">
+          <DialogFooter className="px-6 py-4 border-t border-border bg-muted/20 shrink-0">
             <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
             <Button type="submit" disabled={uploading} className="bg-primary text-primary-foreground hover:bg-primary/90">
               {uploading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Uploading...</> : "Upload Document"}
