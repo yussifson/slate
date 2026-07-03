@@ -367,7 +367,7 @@ export default function TimeTracking() {
             </div>
 
             <div className="flex items-center gap-4">
-                <div className={`text-3xl md:text-4xl font-mono font-bold tracking-tight w-[140px] text-center ${isTimerRunning ? 'text-primary' : 'text-foreground'}`}>
+                <div className={`text-3xl md:text-4xl font-mono font-bold tracking-tight min-w-[160px] w-auto shrink-0 text-center ${isTimerRunning ? 'text-primary' : 'text-foreground'}`}>
                     {formatTimeFromSeconds(timerSeconds)}
                 </div>
                 
@@ -538,7 +538,7 @@ export default function TimeTracking() {
             </DialogTitle>
           </DialogHeader>
           
-          <div className="p-6 space-y-6">
+          <div className="p-6 space-y-6 overflow-y-auto max-h-[60vh]">
             <div className="space-y-2">
               <Label className="text-xs uppercase tracking-wider text-muted-foreground">Description</Label>
               <Input 
