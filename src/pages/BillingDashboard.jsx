@@ -416,7 +416,6 @@ function CompanyBilling({ companyId }) {
             </div>
           )}
         </TabsContent>
-        </TabsContent>
 
         {/* ── Accounts Payable Tab ── */}
         <TabsContent value="payables" className="mt-4 space-y-4">
