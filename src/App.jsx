@@ -130,6 +130,7 @@ import CalendarPage from './pages/CalendarPage';
 import Invoices from './pages/Invoices';
 import Tasks from './pages/Tasks';
 import Documents from './pages/Documents';
+import HCMSmartDocs from './pages/SmartDocs';
 import Team from './pages/Team';
 
 import Settings from './pages/Settings';
@@ -559,6 +560,7 @@ function PlatformRoutes() {
       <Route path="/invoices" element={<UnivInvoice />} />
       <Route path="/tasks" element={<Tasks />} />
       <Route path="/documents" element={<UnivDocument />} />
+      <Route path="/smart-docs" element={<HCMSmartDocs />} />
       <Route path="/team" element={<UnivHREmployee />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/portal" element={<PortalManagement />} />

@@ -26,6 +26,10 @@ import HRSalaryPanel from "@/components/hr/HRSalaryPanel";
 import HRComplaintsPanel from "@/components/hr/HRComplaintsPanel";
 import HRPromotionsPanel from "@/components/hr/HRPromotionsPanel";
 import HRPayrollPanel from "@/components/hr/HRPayrollPanel";
+import HRRecruitmentPanel from "@/components/hr/HRRecruitmentPanel";
+import HRAttendancePanel from "@/components/hr/HRAttendancePanel";
+import HRPerformancePanel from "@/components/hr/HRPerformancePanel";
+import HRTrainingPanel from "@/components/hr/HRTrainingPanel";
 
 function MetricCard({ icon: Icon, label, value, alt = false, trend, trendUp }) {
   return (
@@ -308,6 +312,18 @@ export default function HRDashboard() {
               <Activity className="w-3.5 h-3.5 mr-1.5" />
               {t("workload", "Workload")}
             </TabsTrigger>
+            <TabsTrigger value="recruitment" className="rounded-lg text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              {t("recruitment", "Recruitment")}
+            </TabsTrigger>
+            <TabsTrigger value="attendance" className="rounded-lg text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              {t("attendance", "Attendance")}
+            </TabsTrigger>
+            <TabsTrigger value="performance" className="rounded-lg text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              {t("performance", "Performance")}
+            </TabsTrigger>
+            <TabsTrigger value="training" className="rounded-lg text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              {t("training", "Training")}
+            </TabsTrigger>
           </TabsList>
 
           <div className="p-4">
@@ -328,6 +344,18 @@ export default function HRDashboard() {
             </TabsContent>
             <TabsContent value="payroll" className="mt-0">
               <HRPayrollPanel companyId={companyId} staff={staff} currency={currency} isAdmin={isAdmin} leaves={leaves} user={user} />
+            </TabsContent>
+            <TabsContent value="recruitment" className="mt-0">
+              <HRRecruitmentPanel companyId={companyId} isAdmin={isAdmin} staff={staff} />
+            </TabsContent>
+            <TabsContent value="attendance" className="mt-0">
+              <HRAttendancePanel companyId={companyId} isAdmin={isAdmin} staff={staff} user={user} />
+            </TabsContent>
+            <TabsContent value="performance" className="mt-0">
+              <HRPerformancePanel companyId={companyId} isAdmin={isAdmin} staff={staff} user={user} />
+            </TabsContent>
+            <TabsContent value="training" className="mt-0">
+              <HRTrainingPanel companyId={companyId} isAdmin={isAdmin} staff={staff} />
             </TabsContent>
             <TabsContent value="workload" className="mt-0">
               <div className="space-y-4 py-2">

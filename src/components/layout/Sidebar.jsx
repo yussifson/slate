@@ -727,10 +727,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     }
 
     // Inject SmartDocs
-    if (!rawNavItems.some(n => n.path === '/documents')) {
-      rawNavItems.push({ label: "SmartDocs", path: "/documents", icon: "FileSignature" });
+    if (!rawNavItems.some(n => n.path === '/smart-docs')) {
+      rawNavItems.push({ label: "Smart Docs", path: "/smart-docs", icon: "Brain" });
     } else {
-      rawNavItems = rawNavItems.map(n => n.path === '/documents' ? { ...n, label: "SmartDocs", icon: "FileSignature" } : n);
+      rawNavItems = rawNavItems.map(n => n.path === '/smart-docs' ? { ...n, label: "Smart Docs", icon: "Brain" } : n);
     }
   }
 
