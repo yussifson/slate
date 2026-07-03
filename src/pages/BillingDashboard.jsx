@@ -8,7 +8,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { isSuperAdmin } from "@/lib/constants";
-import { CreditCard, AlertCircle, CheckCircle, Clock, Send, RefreshCw, DollarSign, MoreVertical, Pencil, Plus, Search, Receipt, Trash2 } from "lucide-react";
+import { CreditCard, AlertCircle, CheckCircle, Clock, Send, RefreshCw, DollarSign, MoreVertical, Pencil, Plus, Search, Receipt, Trash2, FileText, PieChart, Building2, TrendingUp, TrendingDown, Layers, Hash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -241,6 +241,9 @@ function CompanyBilling({ companyId }) {
           <TabsList>
             <TabsTrigger value="invoices">{t("invoices", "Invoices")}</TabsTrigger>
             <TabsTrigger value="expenses">{t("expenses", "Expenses")}</TabsTrigger>
+            <TabsTrigger value="payables">Accounts Payable</TabsTrigger>
+            <TabsTrigger value="coa">Chart of Accounts</TabsTrigger>
+            <TabsTrigger value="pl">P&L</TabsTrigger>
           </TabsList>
           <div className="flex gap-2">
             <Button size="sm" variant="outline" onClick={() => { setEditingExpense(null); setShowExpenseForm(true); }}>
@@ -413,6 +416,86 @@ function CompanyBilling({ companyId }) {
             </div>
           )}
         </TabsContent>
+        </TabsContent>
+
+        {/* ── Accounts Payable Tab ── */}
+        <TabsContent value="payables" className="mt-4 space-y-4">
+          <div className="bg-card rounded-xl border border-border p-8 text-center max-w-3xl mx-auto mt-8">
+            <Building2 className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Accounts Payable</h3>
+            <p className="text-muted-foreground mb-6">Manage vendor bills, purchase orders, and scheduled payments in one place.</p>
+            <div className="grid grid-cols-3 gap-4 mb-8">
+              <div className="p-4 bg-muted/30 rounded-lg border border-border text-left">
+                <p className="text-xs text-muted-foreground uppercase font-semibold">Total Owed</p>
+                <p className="text-xl font-bold text-red-600">$4,250.00</p>
+              </div>
+              <div className="p-4 bg-muted/30 rounded-lg border border-border text-left">
+                <p className="text-xs text-muted-foreground uppercase font-semibold">Overdue</p>
+                <p className="text-xl font-bold text-red-600">$1,200.00</p>
+              </div>
+              <div className="p-4 bg-muted/30 rounded-lg border border-border text-left">
+                <p className="text-xs text-muted-foreground uppercase font-semibold">Draft Bills</p>
+                <p className="text-xl font-bold text-slate-700">3</p>
+              </div>
+            </div>
+            <Button className="gap-2"><Plus className="w-4 h-4"/> Record a Vendor Bill</Button>
+          </div>
+        </TabsContent>
+
+        {/* ── Chart of Accounts Tab ── */}
+        <TabsContent value="coa" className="mt-4 space-y-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold flex items-center gap-2"><Layers className="w-5 h-5"/> Chart of Accounts</h3>
+            <Button size="sm" variant="outline" className="gap-2"><Plus className="w-4 h-4"/> Add Account</Button>
+          </div>
+          <div className="bg-card rounded-xl border border-border overflow-hidden">
+            <div className="divide-y divide-border">
+              {[
+                { code: "1000", name: "Operating Cash", type: "Asset", bal: "$42,500.00" },
+                { code: "1200", name: "Accounts Receivable", type: "Asset", bal: "$15,200.00" },
+                { code: "2000", name: "Accounts Payable", type: "Liability", bal: "$4,250.00" },
+                { code: "4000", name: "Services Revenue", type: "Revenue", bal: "$125,000.00" },
+                { code: "5000", name: "Payroll Expenses", type: "Expense", bal: "$45,000.00" }
+              ].map(acc => (
+                <div key={acc.code} className="p-4 flex items-center justify-between hover:bg-muted/20">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded bg-muted flex items-center justify-center text-xs font-mono font-bold text-muted-foreground">{acc.code}</div>
+                    <div>
+                      <p className="font-semibold">{acc.name}</p>
+                      <p className="text-xs text-muted-foreground">{acc.type}</p>
+                    </div>
+                  </div>
+                  <p className="font-mono text-sm font-medium">{acc.bal}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* ── P&L Tab ── */}
+        <TabsContent value="pl" className="mt-4 space-y-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold flex items-center gap-2"><FileText className="w-5 h-5"/> Income Statement (P&L)</h3>
+            <Select defaultValue="ytd"><SelectTrigger className="w-32"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="ytd">Year to Date</SelectItem><SelectItem value="mtd">Month to Date</SelectItem></SelectContent></Select>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-card rounded-xl border border-border p-6 shadow-sm flex flex-col gap-1">
+              <p className="text-sm font-semibold text-muted-foreground uppercase flex items-center gap-2"><TrendingUp className="w-4 h-4 text-green-500"/> Total Income</p>
+              <p className="text-3xl font-bold text-green-600">$125,000.00</p>
+            </div>
+            <div className="bg-card rounded-xl border border-border p-6 shadow-sm flex flex-col gap-1">
+              <p className="text-sm font-semibold text-muted-foreground uppercase flex items-center gap-2"><TrendingDown className="w-4 h-4 text-red-500"/> Total Expenses</p>
+              <p className="text-3xl font-bold text-red-600">$52,450.00</p>
+            </div>
+          </div>
+
+          <div className="bg-card rounded-xl border border-border p-6 shadow-sm flex items-center justify-between">
+            <h4 className="text-xl font-bold">Net Income</h4>
+            <p className="text-3xl font-black text-primary">$72,550.00</p>
+          </div>
+        </TabsContent>
+
       </Tabs>
       {(showForm || editingInvoice) && (
         <InvoiceForm

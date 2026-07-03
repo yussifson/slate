@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
-import { Users, Search, ExternalLink, Mail, Phone, CheckCircle, XCircle, Trash2, Pencil, Save } from "lucide-react";
+import { Users, Search, ExternalLink, Mail, Phone, CheckCircle, XCircle, Trash2, Pencil, Save, Calendar as CalendarIcon, Zap, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +30,20 @@ const URGENCY_COLORS = {
   high: "bg-amber-100 text-amber-700",
   urgent: "bg-red-100 text-red-700"};
 
+const calculateLeadScore = (lead) => {
+  let score = 0;
+  if (lead.status === 'qualified') score += 40;
+  else if (lead.status === 'contacted') score += 20;
+  else if (lead.status === 'new') score += 10;
+  if (lead.urgency === 'urgent') score += 30;
+  else if (lead.urgency === 'high') score += 20;
+  else if (lead.urgency === 'medium') score += 10;
+  if (lead.email) score += 10;
+  if (lead.phone) score += 10;
+  if (lead.organization) score += 10;
+  return Math.min(100, score);
+};
+
 export default function Leads() {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -39,6 +53,8 @@ export default function Leads() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedLead, setSelectedLead] = useState(null);
+  const [showScheduler, setShowScheduler] = useState(false);
+  const [showSequences, setShowSequences] = useState(false);
 
   const { data: leads = [], isLoading } = useQuery({
     queryKey: ["leads", companyId],
@@ -97,6 +113,13 @@ export default function Leads() {
           </div>
         );
       }
+    {
+      header: "Score",
+      render: row => {
+        const score = calculateLeadScore(row);
+        const color = score >= 70 ? "text-green-700 bg-green-100" : score >= 40 ? "text-amber-700 bg-amber-100" : "text-slate-700 bg-slate-100";
+        return <Badge className={`text-[10px] ${color}`}>{score}</Badge>;
+      }
     },
     { header: "Case Type", render: row => {
       return <Badge variant="outline" className="text-[10px] capitalize">{row.case_type?.replace("_", " ") || "—"}</Badge>;
@@ -140,12 +163,20 @@ export default function Leads() {
   return (
     <div className="space-y-4">
       <PageHeader
-        title="Leads"
+        title="Leads & CRM"
         subtitle={`${leads.filter(l => l.status === "new").length} new leads from intake form`}
         actions={
-          <Button variant="outline" size="sm" className="gap-2.5" onClick={() => window.open(intakeFormUrl, "_blank")}>
-            <ExternalLink className="w-3.5 h-3.5" /> {t("view_intake_form", "View Intake Form")}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="gap-2 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50" onClick={() => setShowSequences(true)}>
+              <Send className="w-4 h-4" /> Email Sequences
+            </Button>
+            <Button variant="outline" size="sm" className="gap-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50" onClick={() => setShowScheduler(true)}>
+              <CalendarIcon className="w-4 h-4" /> Meeting Scheduler
+            </Button>
+            <Button variant="outline" size="sm" className="gap-2" onClick={() => window.open(intakeFormUrl, "_blank")}>
+              <ExternalLink className="w-4 h-4" /> {t("view_intake_form", "Intake Form")}
+            </Button>
+          </div>
         }
       />
       {/* Intake Form Link Banner */}
@@ -205,6 +236,55 @@ export default function Leads() {
           isConverting={convertToClientMutation.isPending}
         />
       )}
+
+      {/* Meeting Scheduler Modal */}
+      <Dialog open={showScheduler} onOpenChange={setShowScheduler}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><CalendarIcon className="w-5 h-5 text-blue-500"/> Meeting Scheduler</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <p className="text-sm text-muted-foreground">Share this link with leads to let them book time directly on your calendar.</p>
+            <div className="bg-muted p-3 rounded-lg flex items-center justify-between border border-border">
+              <span className="text-sm font-medium truncate">{window.location.origin}/book/{companyId || 'demo'}</span>
+              <Button size="sm" variant="secondary" onClick={() => {
+                navigator.clipboard.writeText(`${window.location.origin}/book/${companyId || 'demo'}`);
+                toast({ title: "Booking link copied!" });
+              }}>Copy</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Email Sequences Modal */}
+      <Dialog open={showSequences} onOpenChange={setShowSequences}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Send className="w-5 h-5 text-indigo-500"/> Email Sequences</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <p className="text-sm text-muted-foreground">Automated drip campaigns for new leads.</p>
+            <div className="space-y-3">
+              {[
+                { name: "New Lead Welcome", step: "3 emails over 7 days", active: 12 },
+                { name: "Cold Lead Re-engagement", step: "2 emails over 14 days", active: 5 }
+              ].map(seq => (
+                <div key={seq.name} className="flex items-center justify-between p-3 border border-border rounded-lg bg-card">
+                  <div>
+                    <h4 className="font-medium text-sm">{seq.name}</h4>
+                    <p className="text-xs text-muted-foreground">{seq.step}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-semibold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">{seq.active} Active</span>
+                    <Button variant="ghost" size="sm"><Pencil className="w-4 h-4"/></Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Button className="w-full mt-2 gap-2"><Plus className="w-4 h-4"/> Create Sequence</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
