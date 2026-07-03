@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { supabase } from "@/api/supabaseClient";
+import SmartDocumentViewer from "@/components/SmartDocumentViewer";
 import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -80,7 +81,7 @@ function DocumentCard({ doc, onClick, isSelected }) {
   );
 }
 
-function AISummaryPanel({ doc, links }) {
+function AISummaryPanel({ doc, links, onView }) {
   const [generating, setGenerating] = useState(false);
   const [localSummary, setLocalSummary] = useState(doc.ai_summary || "");
 
@@ -171,7 +172,7 @@ function AISummaryPanel({ doc, links }) {
       {/* Actions */}
       {doc.file_url && (
         <div className="flex gap-2">
-          <Button size="sm" variant="outline" className="flex-1 gap-2" onClick={() => window.open(doc.file_url, "_blank")}>
+          <Button size="sm" variant="outline" className="flex-1 gap-2 text-violet-600 border-violet-200 hover:bg-violet-50" onClick={() => onView ? onView(doc) : window.open(doc.file_url, '_blank')}>
             <Eye className="w-4 h-4" />View
           </Button>
           <Button size="sm" variant="outline" className="flex-1 gap-2" onClick={() => window.open(doc.file_url, "_blank")}>
@@ -193,6 +194,7 @@ export default function SmartDocs() {
   const [links, setLinks] = useState([]);
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [selectedLinks, setSelectedLinks] = useState([]);
+  const [viewingDoc, setViewingDoc] = useState(null);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [filterFolder, setFilterFolder] = useState("all");
@@ -429,7 +431,7 @@ export default function SmartDocs() {
               <Link2 className="w-4 h-4" /> Link to Entity
             </Button>
 
-            <AISummaryPanel doc={selectedDoc} links={selectedLinks} />
+            <AISummaryPanel doc={selectedDoc} links={selectedLinks} onView={setViewingDoc} />
           </div>
         )}
       </div>
@@ -589,6 +591,14 @@ export default function SmartDocs() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Smart Document Viewer Overlay */}
+      {viewingDoc && (
+        <SmartDocumentViewer
+          doc={viewingDoc}
+          onClose={() => setViewingDoc(null)}
+        />
+      )}
     </div>
   );
 }
