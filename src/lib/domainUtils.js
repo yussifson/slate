@@ -10,7 +10,8 @@ export function getSubdomainAndBase() {
   }
 
   // Reserved system subdomains that should never be treated as tenant subdomains
-  const reservedSubdomains = ['flow', 'app', 'www', 'admin', 'api', 'mail', 'staging', 'dev', 'beta', 'test'];
+  // Only block known Vercel/deployment preview patterns, NOT company names
+  const reservedSubdomains = ['www'];
 
   // Handle localhost scenarios
   if (host === 'localhost' || host.startsWith('127.0.0.1')) {
@@ -35,7 +36,7 @@ export function getSubdomainAndBase() {
     }
     if (host.endsWith(`.${base}`)) {
       const currentSubdomain = host.replace(`.${base}`, '');
-      // Treat reserved system subdomains as the base domain (not tenant subdomains)
+      // Only block truly generic web prefixes like 'www'
       if (reservedSubdomains.includes(currentSubdomain)) {
         return { currentSubdomain: null, baseDomain: base, isCustomDomain: false };
       }
@@ -56,6 +57,11 @@ export function getMainAppUrl() {
 
 export function isDesktopApp() {
   if (typeof window === 'undefined') return false;
+
+  // If running over HTTPS on a real domain, it is ALWAYS a web browser — never a desktop/native app.
+  // This prevents HashRouter from being incorrectly used for web users.
+  if (window.location.protocol === 'https:') return false;
+
   const ua = window.navigator.userAgent.toLowerCase();
   const isElectronEnv = ua.includes('electron');
   const isTauri = !!window.__TAURI__;
