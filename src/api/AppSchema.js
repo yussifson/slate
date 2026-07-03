@@ -6275,6 +6275,7 @@ export const AppSchema = new Schema({
         duration_minutes: column.integer,
         is_billable: column.integer,
         hourly_rate: column.real,
+        currency: column.text,
         total_amount: column.real,
         status: column.text,
         ai_summary: column.text,

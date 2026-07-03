@@ -62,13 +62,13 @@ export default function TimeTracking() {
   const IDLE_THRESHOLD = 5 * 60 * 1000; // 5 minutes
 
   const [formData, setFormData] = useState({
-    project_id: '',
-    task_id: '',
     description: '',
     date: new Date().toISOString().split('T')[0],
-    duration_minutes: 0,
+    duration_minutes: 60,
+    project_id: '',
     is_billable: 1,
     hourly_rate: 50,
+    currency: user?.company_currency || 'USD',
     status: 'Logged'
   });
 
@@ -252,6 +252,7 @@ export default function TimeTracking() {
           date: new Date().toISOString().split('T')[0],
           is_billable: timerBillable ? 1 : 0,
           hourly_rate: 50,
+          currency: 'USD',
           status: 'Logged'
        });
        setTimerSeconds(0);
@@ -265,6 +266,7 @@ export default function TimeTracking() {
          date: new Date().toISOString().split('T')[0],
          is_billable: timerBillable ? 1 : 0,
          hourly_rate: 50,
+         currency: 'USD',
          status: 'Logged'
        });
        setTimerSeconds(0);
@@ -286,13 +288,13 @@ export default function TimeTracking() {
     if (entry) {
       setEditingEntry(entry);
       setFormData({
-        project_id: entry.project_id || '',
-        task_id: entry.task_id || '',
         description: entry.description || '',
         date: entry.date || new Date().toISOString().split('T')[0],
-        duration_minutes: entry.duration_minutes || 0,
-        is_billable: entry.is_billable ?? 1,
+        duration_minutes: entry.duration_minutes || 60,
+        project_id: entry.project_id || '',
+        is_billable: entry.is_billable !== undefined ? entry.is_billable : 1,
         hourly_rate: entry.hourly_rate || 50,
+        currency: entry.currency || user?.company_currency || 'USD',
         status: entry.status || 'Logged'
       });
     } else {
@@ -675,7 +677,7 @@ export default function TimeTracking() {
 
       {/* Manual Entry Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-2xl border-border shadow-xl bg-card flex flex-col max-h-[90vh]">
+        <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-2xl border-border shadow-xl bg-card flex flex-col max-h-[85vh] md:max-h-[90vh]">
           <DialogHeader className="px-6 pt-6 pb-4 border-b border-border bg-muted/30 shrink-0">
             <DialogTitle className="text-xl flex items-center gap-2 text-foreground">
               <FileText className="w-5 h-5 text-primary" />
@@ -748,22 +750,35 @@ export default function TimeTracking() {
                   >
                     <div className="pt-4 border-t border-border mt-2 space-y-3">
                       <div className="space-y-2">
-                          <Label className="text-xs uppercase tracking-wider text-muted-foreground">Hourly Rate (USD)</Label>
-                          <div className="relative">
-                            <DollarSign className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
+                          <Label className="text-xs uppercase tracking-wider text-muted-foreground">Hourly Rate</Label>
+                          <div className="flex rounded-md shadow-sm">
+                            <select
+                                value={formData.currency}
+                                onChange={e => setFormData({...formData, currency: e.target.value})}
+                                className="h-10 px-3 bg-muted border border-border rounded-l-md text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                            >
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="GBP">GBP (£)</option>
+                                <option value="CAD">CAD ($)</option>
+                                <option value="AUD">AUD ($)</option>
+                                <option value="ZAR">ZAR (R)</option>
+                                <option value="NGN">NGN (₦)</option>
+                                <option value="KES">KES (KSh)</option>
+                            </select>
                             <Input 
                                 type="number"
                                 min="0"
                                 value={formData.hourly_rate}
                                 onChange={e => setFormData({...formData, hourly_rate: parseFloat(e.target.value) || 0})}
-                                className="pl-9 h-10 bg-background text-foreground"
+                                className="h-10 bg-background text-foreground rounded-l-none border-l-0 focus-visible:ring-1"
                             />
                           </div>
                       </div>
                       <div className="flex justify-between items-center bg-background p-3 rounded-lg border border-border">
                         <span className="text-sm font-medium text-muted-foreground">Calculated Total</span>
                         <span className="text-lg font-bold text-foreground">
-                            ${((formData.duration_minutes / 60) * formData.hourly_rate).toFixed(2)}
+                            {formData.currency} {((formData.duration_minutes / 60) * formData.hourly_rate).toFixed(2)}
                         </span>
                       </div>
                     </div>
