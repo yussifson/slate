@@ -35,10 +35,13 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
 
   const loadEmployees = async () => {
     try {
-      const [staffRes, clientsRes, crmRes] = await Promise.all([
+      const [staffRes, clientsRes, crmRes, retailRes, pharmacyRes, reRes] = await Promise.all([
         powerSync.getAll('SELECT id, name, email FROM univ_hr_employees WHERE company_id = ?', [companyId]),
         powerSync.getAll('SELECT id, name, email FROM clients WHERE company_id = ?', [companyId]),
-        powerSync.getAll('SELECT id, first_name, last_name, email FROM univ_crm_leads WHERE company_id = ?', [companyId])
+        powerSync.getAll('SELECT id, first_name, last_name, email FROM univ_crm_leads WHERE company_id = ?', [companyId]),
+        powerSync.getAll('SELECT id, name, email FROM univ_retail_customers WHERE company_id = ?', [companyId]),
+        powerSync.getAll('SELECT id, customer_name as name, email FROM univ_pharmacy_customers WHERE company_id = ?', [companyId]),
+        powerSync.getAll('SELECT id, name, email FROM univ_re_clients WHERE company_id = ?', [companyId])
       ]);
       const staffMembers = (staffRes || []).map(s => ({
         ...s,
@@ -46,7 +49,12 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
         email: s.email,
         type: 'team'
       }));
-      const clientMembers = (clientsRes || []).map(c => ({
+      const clientMembers = [
+        ...(clientsRes || []),
+        ...(retailRes || []),
+        ...(pharmacyRes || []),
+        ...(reRes || [])
+      ].map(c => ({
         ...c,
         full_name: c.name || 'Unnamed Client',
         email: c.email,

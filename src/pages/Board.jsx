@@ -66,14 +66,10 @@ export default function Board() {
 };
 }, [companyId]);
 
-  const loadRooms = async () => {
-   setIsLoading(true);
-   try {
-   const { data} = await supabase
-   .from('video_rooms')
-   .select('*')
-   .eq('company_id', companyId)
-   .order('created_at', { ascending: false});
+   const loadRooms = async () => {
+    setIsLoading(true);
+    try {
+      const data = await powerSync.getAll('SELECT * FROM video_rooms WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
    
    let visibleRooms = data || [];
    if (isPortalUser) {
