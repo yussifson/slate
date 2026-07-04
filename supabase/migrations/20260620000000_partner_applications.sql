@@ -15,10 +15,12 @@ CREATE TABLE IF NOT EXISTS public.partner_applications (
 ALTER TABLE public.partner_applications ENABLE ROW LEVEL SECURITY;
 
 -- Allow public to insert applications
+DROP POLICY IF EXISTS "Allow public insert on partner_applications" ON public.partner_applications;
 CREATE POLICY "Allow public insert on partner_applications" ON public.partner_applications
     FOR INSERT WITH CHECK (true);
 
 -- Allow super_admin to read all applications
+DROP POLICY IF EXISTS "Allow super_admin read on partner_applications" ON public.partner_applications;
 CREATE POLICY "Allow super_admin read on partner_applications" ON public.partner_applications
     FOR SELECT USING (
         EXISTS (
@@ -28,6 +30,7 @@ CREATE POLICY "Allow super_admin read on partner_applications" ON public.partner
     );
 
 -- Allow super_admin to update applications
+DROP POLICY IF EXISTS "Allow super_admin update on partner_applications" ON public.partner_applications;
 CREATE POLICY "Allow super_admin update on partner_applications" ON public.partner_applications
     FOR UPDATE USING (
         EXISTS (
@@ -42,6 +45,7 @@ CREATE POLICY "Allow super_admin update on partner_applications" ON public.partn
     );
 
 -- Allow super_admin to delete applications
+DROP POLICY IF EXISTS "Allow super_admin delete on partner_applications" ON public.partner_applications;
 CREATE POLICY "Allow super_admin delete on partner_applications" ON public.partner_applications
     FOR DELETE USING (
         EXISTS (

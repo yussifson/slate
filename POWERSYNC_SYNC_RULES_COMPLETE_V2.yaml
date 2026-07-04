@@ -45,6 +45,9 @@ bucket_definitions:
       - SELECT * FROM staff_records WHERE company_id = bucket.company_id
       - SELECT * FROM subscription_invoices WHERE company_id = bucket.company_id
       - SELECT * FROM tasks WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_task_comments WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_task_checklists WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_task_attachments WHERE company_id = bucket.company_id
       - SELECT * FROM time_entries WHERE company_id = bucket.company_id
       - SELECT * FROM univ_time_tracking WHERE company_id = bucket.company_id
       - SELECT * FROM univ_time_reminders WHERE company_id = bucket.company_id

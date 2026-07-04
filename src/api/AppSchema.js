@@ -6216,6 +6216,36 @@ export const AppSchema = new Schema({
         assignee_id: column.text,
         created_at: column.text
     }),
+    univ_task_comments: new Table({
+        id: column.text,
+        task_id: column.text,
+        company_id: column.text,
+        created_by: column.text,
+        comment_text: column.text,
+        created_at: column.text,
+        created_date: column.text
+    }),
+    univ_task_checklists: new Table({
+        id: column.text,
+        task_id: column.text,
+        company_id: column.text,
+        title: column.text,
+        is_completed: column.text,
+        created_by: column.text,
+        created_at: column.text,
+        created_date: column.text
+    }),
+    univ_task_attachments: new Table({
+        id: column.text,
+        task_id: column.text,
+        company_id: column.text,
+        file_url: column.text,
+        file_name: column.text,
+        file_size: column.text,
+        created_by: column.text,
+        created_at: column.text,
+        created_date: column.text
+    }),
     optavel_transactions: new Table({
         id: column.text,
         company_id: column.text,
