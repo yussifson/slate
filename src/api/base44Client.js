@@ -500,7 +500,7 @@ export const base44 = {
                         })();
 
                         toast({ title: "Success", description: `Successfully updated record in ${tableName}.`, variant: "default" });
-                        return revealResults(updatedData);
+                        return revealResults({ ...securedPayload, id });
                     } catch (err) {
                         console.error(`[PowerSync] Update failed on ${tableName}:`, err);
                         toast({ title: "Error", description: `Failed to update record in ${tableName}.`, variant: "destructive" });
