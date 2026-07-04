@@ -89,6 +89,8 @@ export default function UnivHREmployee() {
  try {
  const payload = {
    name: `${form.first_name} ${form.last_name}`.trim(),
+   first_name: form.first_name,
+   last_name: form.last_name,
    email: form.email,
    phone: form.phone,
    role: form.role_title,

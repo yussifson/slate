@@ -3031,6 +3031,8 @@ export const AppSchema = new Schema({
         company_id: column.text,
         employee_id: column.text,
         name: column.text,
+        first_name: column.text,
+        last_name: column.text,
         email: column.text,
         phone: column.text,
         role: column.text,

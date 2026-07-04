@@ -36,13 +36,13 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
   const loadEmployees = async () => {
     try {
       const [staffRes, clientsRes] = await Promise.all([
-        supabase.from('staff_records').select('id, full_name, user_email').eq('company_id', companyId),
+        supabase.from('univ_hr_employees').select('id, name, email').eq('company_id', companyId),
         supabase.from('clients').select('id, name, email').eq('company_id', companyId),
       ]);
       const staffMembers = (staffRes.data || []).map(s => ({
         ...s,
-        full_name: s.full_name || 'Unnamed Staff',
-        email: s.user_email,
+        full_name: s.name || 'Unnamed Staff',
+        email: s.email,
         type: 'team'
       }));
       const clientMembers = (clientsRes.data || []).map(c => ({
