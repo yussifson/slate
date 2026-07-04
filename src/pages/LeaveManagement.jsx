@@ -31,7 +31,7 @@ export default function LeaveManagement() {
 
   const { data: allLeaves = [] } = useQuery({
     queryKey: ["leaves", companyId],
-    queryFn: () => base44.entities.LeaveRequest.filter({ company_id: companyId }, "-created_date", 100),
+    queryFn: () => base44.entities.LeaveRequest.filter({ company_id: companyId }, "-created_at", 100),
     enabled: !!companyId});
 
   const { data: staffRecords = [] } = useQuery({

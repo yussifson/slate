@@ -933,6 +933,7 @@ export const AppSchema = new Schema({
     hr_jobs: new Table({
         id: column.text,
         created_at: column.text,
+        created_by: column.text,
         company_id: column.text,
         title: column.text,
         department: column.text,

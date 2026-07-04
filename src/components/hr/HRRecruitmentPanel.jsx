@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@/lib/AuthContext";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -102,6 +103,7 @@ function KanbanColumn({ stage, applicants, onCardClick, onDragStart, onDragOver,
 }
 
 export default function HRRecruitmentPanel({ companyId, isAdmin, staff = [] }) {
+  const { user } = useAuth();
   const { toast } = useToast();
   const [jobs, setJobs] = useState([]);
   const [applicants, setApplicants] = useState([]);
@@ -133,8 +135,8 @@ export default function HRRecruitmentPanel({ companyId, isAdmin, staff = [] }) {
   const saveJob = async () => {
     if (!jobForm.title) return toast({ title: "Job title is required", variant: "destructive" });
     await powerSync.execute(
-      "INSERT INTO hr_jobs (id, created_at, company_id, title, department, location, type, status, description, requirements) VALUES (?,?,?,?,?,?,?,?,?,?)",
-      [crypto.randomUUID(), new Date().toISOString(), companyId, jobForm.title, jobForm.department, jobForm.location, jobForm.type, jobForm.status, jobForm.description, jobForm.requirements]
+      "INSERT INTO hr_jobs (id, created_at, created_by, company_id, title, department, location, type, status, description, requirements) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+      [crypto.randomUUID(), new Date().toISOString(), user?.id, companyId, jobForm.title, jobForm.department, jobForm.location, jobForm.type, jobForm.status, jobForm.description, jobForm.requirements]
     );
     await loadData();
     setShowJobForm(false);
