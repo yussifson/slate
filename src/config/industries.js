@@ -35,6 +35,7 @@ export const INDUSTRIES = {
       { label: 'Leads', path: '/leads', icon: 'UserPlus' },
       { label: 'Calendar', path: '/calendar', icon: 'Calendar' },
       { label: 'Billing', path: '/billing', icon: 'Receipt' },
+      { label: 'Trust Accounting', path: '/trust-accounting', icon: 'Landmark' },
       { label: 'Pipeline', path: '/pipeline', icon: 'GitBranch' },
       { label: 'Legal Research', path: '/research', icon: 'BookOpen' },
       { label: 'Conflict Check', path: '/conflict-check', icon: 'Shield' },
