@@ -110,20 +110,15 @@ export default function Board() {
   const roomId = crypto.randomUUID();
 
   let meetingDomain = window.location.hostname;
-  const knownBases = ['optavel.com', 'slate.optavel.com', 'slated.optavel.com', 'oatstack.com'];
   if (meetingDomain.includes('localhost') || meetingDomain.includes('127.0.0.1')) {
     meetingDomain = `meet.localhost`;
+  } else if (meetingDomain.includes('optavel.com')) {
+    meetingDomain = `meet.optavel.com`;
+  } else if (meetingDomain.includes('oatstack.com')) {
+    meetingDomain = `meet.oatstack.com`;
   } else {
-    if (meetingDomain.startsWith('app.') || meetingDomain.startsWith('www.')) {
-      meetingDomain = meetingDomain.replace(/^(app|www)\./, 'meet.');
-    } else {
-      const baseMatch = knownBases.find(b => meetingDomain.endsWith(b));
-      if (baseMatch) {
-         meetingDomain = `meet.${baseMatch}`;
-      } else {
-         meetingDomain = `meet.${meetingDomain}`;
-      }
-    }
+    // For custom white-label domains
+    meetingDomain = `meet.${meetingDomain}`;
   }
   const customMeetingOrigin = `${window.location.protocol}//${meetingDomain}${window.location.port ? ':' + window.location.port : ''}`;
 
