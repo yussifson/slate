@@ -29,7 +29,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  const localVideoTrack = useVideoTrack(localSessionId);
  const isMuted = localAudioTrack?.state !== 'playable';
  const isVideoOff = localVideoTrack?.state !== 'playable';
- const [joined, setJoined] = useState(false);
+ const [joined, setJoined] = useState(daily ? daily.meetingState() === 'joined-meeting' : false);
  const { toast} = useToast();
  const [isAiLoading, setIsAiLoading] = useState(false);
  const [aiResponse, setAiResponse] = useState(null);
@@ -68,7 +68,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
 });
 
  const ensureJoined = () => {
- if (joined && daily) return true;
+ if (daily && daily.meetingState() === 'joined-meeting') return true;
  toast({
  title: 'Connecting…',
  description: 'Wait until the call has connected before using camera or mic.'});
