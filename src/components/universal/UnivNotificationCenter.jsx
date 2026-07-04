@@ -22,16 +22,24 @@ export default function UnivNotificationCenter() {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('all'); // all, unread
+  const [optimisticReads, setOptimisticReads] = useState(new Set());
+  const [optimisticDeletes, setOptimisticDeletes] = useState(new Set());
 
   const { data: rawNotifications = [] } = useQuery(
     user?.email ? `SELECT * FROM notifications WHERE recipient_email = ?` : `SELECT * FROM notifications WHERE 1=0`,
     user?.email ? [user?.email] : []
   );
 
-  // Sort descending by created_at
-  const notifications = [...rawNotifications].sort((a, b) => {
-    return new Date(b.created_at || b.created_date || 0) - new Date(a.created_at || a.created_date || 0);
-  });
+  // Sort descending by created_at and apply optimistic states
+  const notifications = [...rawNotifications]
+    .filter(n => !optimisticDeletes.has(n.id))
+    .map(n => ({
+      ...n,
+      is_read: optimisticReads.has(n.id) ? 'true' : String(n.is_read)
+    }))
+    .sort((a, b) => {
+      return new Date(b.created_at || b.created_date || 0) - new Date(a.created_at || a.created_date || 0);
+    });
 
   // Real-time toast notification listener via PowerSync reactivity
   const prevCount = React.useRef(0);
@@ -49,12 +57,16 @@ export default function UnivNotificationCenter() {
 
   const markReadMutation = useMutation({
     mutationFn: (id) => base44.entities.Notification.update(id, { is_read: 'true' }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] }),
+    onMutate: (id) => {
+      setOptimisticReads(prev => new Set([...prev, id]));
+    }
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Notification.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] }),
+    onMutate: (id) => {
+      setOptimisticDeletes(prev => new Set([...prev, id]));
+    }
   });
 
   const unreadCount = notifications.filter(n => n.is_read !== 'true').length;
@@ -70,9 +82,10 @@ export default function UnivNotificationCenter() {
 
   const markAllAsRead = async () => {
     const unread = notifications.filter(n => n.is_read !== 'true');
+    // Optimistic update
+    setOptimisticReads(prev => new Set([...prev, ...unread.map(n => n.id)]));
     try {
       await Promise.all(unread.map(n => base44.entities.Notification.update(n.id, { is_read: 'true' })));
-      queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] });
       toast({ title: 'All marked as read' });
     } catch (e) {
       console.error(e);
@@ -100,7 +113,11 @@ export default function UnivNotificationCenter() {
   const formatTime = (dateStr) => {
     if (!dateStr) return 'Just now';
     try {
-      return formatDistanceToNow(new Date(dateStr), { addSuffix: true });
+      let cleanStr = dateStr;
+      if (!cleanStr.includes('Z') && !cleanStr.includes('+')) {
+        cleanStr = cleanStr.replace(' ', 'T') + 'Z';
+      }
+      return formatDistanceToNow(new Date(cleanStr), { addSuffix: true });
     } catch (e) {
       return 'Recently';
     }

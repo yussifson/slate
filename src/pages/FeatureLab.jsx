@@ -45,10 +45,28 @@ export default function FeatureLab() {
   
   const fetchRequests = async () => {
     try {
+      // Find the root company of the current company
+      const { data: currentCompany } = await supabase
+        .from('companies')
+        .select('id, parent_id')
+        .eq('id', user?.company_id)
+        .single();
+      
+      const rootId = currentCompany?.parent_id || currentCompany?.id || user?.company_id;
+
+      // Find all sibling/child companies
+      const { data: familyCompanies } = await supabase
+        .from('companies')
+        .select('id')
+        .or(`id.eq.${rootId},parent_id.eq.${rootId}`);
+
+      const familyIds = (familyCompanies || []).map(c => c.id);
+      const searchIds = familyIds.length > 0 ? familyIds : [user?.company_id];
+
       const { data, error } = await supabase
         .from('univ_feature_requests')
         .select('*')
-        .eq('company_id', user?.company_id);
+        .in('company_id', searchIds);
         
       if (error) throw error;
       

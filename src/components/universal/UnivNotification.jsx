@@ -44,37 +44,44 @@ export default function UnivNotification() {
 }
 };
 
- const markAllRead = async () => {
- if (!companyId) return;
- try {
- const { error} = await supabase
- .from('univ_notifications')
- .update({ read: true})
- .eq('company_id', companyId)
- .eq('read', false);
- if (error) throw error;
- toast.success('All notifications marked as read');
- fetchNotifications();
-} catch (err) {
- console.error(err);
- toast.error(err.message || 'Failed to mark all as read');
-}
-};
+  const markAllRead = async () => {
+    if (!companyId) return;
+    
+    // Optimistic UI update
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    
+    try {
+      const { error } = await supabase
+        .from('univ_notifications')
+        .update({ read: true })
+        .eq('company_id', companyId)
+        .eq('read', false);
+      if (error) throw error;
+      toast.success('All notifications marked as read');
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || 'Failed to mark all as read');
+      fetchNotifications(); // revert on error
+    }
+  };
 
- const markAsRead = async (id) => {
- try {
- const { error} = await supabase
- .from('univ_notifications')
- .update({ read: true})
- .eq('id', id);
- if (error) throw error;
- toast.success('Notification marked as read');
- fetchNotifications();
-} catch (err) {
- console.error(err);
- toast.error(err.message || 'Failed to mark as read');
-}
-};
+  const markAsRead = async (id) => {
+    // Optimistic UI update
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    
+    try {
+      const { error } = await supabase
+        .from('univ_notifications')
+        .update({ read: true })
+        .eq('id', id);
+      if (error) throw error;
+      toast.success('Notification marked as read');
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || 'Failed to mark as read');
+      fetchNotifications(); // revert on error
+    }
+  };
 
  const getIcon = (type) => {
  switch(type) {
@@ -94,14 +101,18 @@ export default function UnivNotification() {
 }
 };
 
- const formatTime = (dateStr) => {
- if (!dateStr) return '';
- const date = new Date(dateStr);
- const now = new Date();
- const diffMs = now - date;
- const diffMins = Math.floor(diffMs / 60000);
- const diffHours = Math.floor(diffMins / 60);
- const diffDays = Math.floor(diffHours / 24);
+  const formatTime = (dateStr) => {
+    if (!dateStr) return '';
+    let cleanStr = dateStr;
+    if (!cleanStr.includes('Z') && !cleanStr.includes('+')) {
+      cleanStr = cleanStr.replace(' ', 'T') + 'Z';
+    }
+    const date = new Date(cleanStr);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.max(0, Math.floor(diffMs / 60000));
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
 
  if (diffMins < 1) return 'Just now';
  if (diffMins < 60) return `${diffMins} mins ago`;

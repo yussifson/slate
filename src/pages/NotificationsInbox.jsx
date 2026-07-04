@@ -25,6 +25,8 @@ export default function NotificationsInbox() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('all'); // all, unread, archived
   const [aiBriefing, setAiBriefing] = useState(null);
+  const [optimisticReads, setOptimisticReads] = useState(new Set());
+  const [optimisticDeletes, setOptimisticDeletes] = useState(new Set());
   const [isGeneratingBriefing, setIsGeneratingBriefing] = useState(false);
 
   const { data: rawNotifications = [], isLoading } = useQuery(
@@ -32,18 +34,26 @@ export default function NotificationsInbox() {
     user?.email ? [user?.email] : []
   );
 
-  // Sort descending by created_at
-  const notifications = [...rawNotifications].sort((a, b) => {
-    return new Date(b.created_at || b.created_date || 0) - new Date(a.created_at || a.created_date || 0);
-  });
+  // Sort descending by created_at and apply optimistic states
+  const notifications = [...rawNotifications]
+    .filter(n => !optimisticDeletes.has(n.id))
+    .map(n => ({
+      ...n,
+      is_read: optimisticReads.has(n.id) ? 'true' : String(n.is_read)
+    }))
+    .sort((a, b) => {
+      return new Date(b.created_at || b.created_date || 0) - new Date(a.created_at || a.created_date || 0);
+    });
 
   const markReadMutation = useMutation({
     mutationFn: (id) => base44.entities.Notification.update(id, { is_read: 'true' }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] })});
+    onMutate: (id) => setOptimisticReads(prev => new Set([...prev, id]))
+  });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Notification.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] })});
+    onMutate: (id) => setOptimisticDeletes(prev => new Set([...prev, id]))
+  });
 
   const filteredNotifications = notifications.filter(n => {
     const isRead = String(n.is_read) === 'true';
@@ -86,9 +96,9 @@ export default function NotificationsInbox() {
 
   const markAllAsRead = async () => {
     const unread = notifications.filter(n => String(n.is_read) !== 'true');
+    setOptimisticReads(prev => new Set([...prev, ...unread.map(n => n.id)]));
     try {
       await Promise.all(unread.map(n => base44.entities.Notification.update(n.id, { is_read: 'true' })));
-      queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] });
       toast({ title: 'All marked as read' });
     } catch (e) {
       console.error(e);
@@ -97,9 +107,9 @@ export default function NotificationsInbox() {
 
   const clearAll = async () => {
     if (!window.confirm("Are you sure you want to permanently delete all notifications?")) return;
+    setOptimisticDeletes(prev => new Set([...prev, ...notifications.map(n => n.id)]));
     try {
       await Promise.all(notifications.map(n => base44.entities.Notification.delete(n.id)));
-      queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] });
       toast({ title: 'Inbox cleared' });
     } catch (e) {
       console.error(e);
@@ -122,7 +132,11 @@ export default function NotificationsInbox() {
   const formatTime = (dateStr) => {
     if (!dateStr) return 'Just now';
     try {
-      const d = new Date(dateStr);
+      let cleanStr = dateStr;
+      if (!cleanStr.includes('Z') && !cleanStr.includes('+')) {
+        cleanStr = cleanStr.replace(' ', 'T') + 'Z';
+      }
+      const d = new Date(cleanStr);
       return `${format(d, 'MMM d, yyyy')} • ${formatDistanceToNow(d, { addSuffix: true })}`;
     } catch (e) {
       return 'Recently';
