@@ -6,7 +6,7 @@ import { generateText } from "@/lib/cloudflareAI";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useToast } from "@/components/ui/use-toast";
 import {
-  X, Download, ExternalLink, Brain, Send, ChevronRight,
+  X, Download, ExternalLink, Brain, Send, ChevronRight, ChevronDown,
   FileText, Image, Sheet, Presentation, Loader2, Sparkles,
   MessageSquare, RefreshCw, Copy, CheckCheck, Maximize2,
   Minimize2, AlertCircle, FileQuestion
@@ -204,6 +204,7 @@ export default function SmartDocumentViewer({ doc, onClose }) {
   const [isThinking, setIsThinking] = useState(false);
   const [aiPanelExpanded, setAiPanelExpanded] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [quickAnalysisOpen, setQuickAnalysisOpen] = useState(true);
   const chatEndRef = useRef(null);
   const fileType = getFileType(doc);
 
@@ -272,7 +273,7 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
   };
 
   return (
-    <div className={`fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center ${isFullscreen ? 'p-0' : 'p-2 md:p-4'}`}>
+    <div className={`fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center ${isFullscreen ? 'p-0' : 'p-2 md:p-4'}`}>
       <div className={`bg-background shadow-2xl border border-border flex flex-col overflow-hidden transition-all duration-300 ${
         isFullscreen ? "w-full h-full rounded-none" : "w-full max-w-7xl h-[92vh] rounded-2xl"
       }`}>
@@ -355,21 +356,35 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
                 </div>
               </div>
 
-              {/* Suggestion Chips */}
-              <div className="px-3 py-2 border-b border-border flex-shrink-0">
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1.5 font-medium">Quick Analysis</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {AI_SUGGESTIONS.map(s => (
-                    <button
-                      key={s.label}
-                      onClick={() => sendMessage(s.prompt)}
-                      disabled={isThinking}
-                      className="text-[11px] px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:hover:bg-emerald-800/40 font-medium transition-colors disabled:opacity-50"
-                    >
-                      {s.label}
-                    </button>
-                  ))}
-                </div>
+              {/* Suggestion Chips - Collapsible */}
+              <div className="border-b border-border flex-shrink-0">
+                <button
+                  onClick={() => setQuickAnalysisOpen(o => !o)}
+                  className="w-full flex items-center justify-between px-3 py-2 text-[10px] text-muted-foreground uppercase tracking-wider font-medium hover:text-foreground transition-colors"
+                >
+                  <span className="flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" />
+                    Quick Analysis
+                  </span>
+                  {quickAnalysisOpen
+                    ? <ChevronDown className="w-3 h-3" />
+                    : <ChevronRight className="w-3 h-3" />
+                  }
+                </button>
+                {quickAnalysisOpen && (
+                  <div className="px-3 pb-2.5 flex flex-wrap gap-1.5">
+                    {AI_SUGGESTIONS.map(s => (
+                      <button
+                        key={s.label}
+                        onClick={() => sendMessage(s.prompt)}
+                        disabled={isThinking}
+                        className="text-[11px] px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:hover:bg-emerald-800/40 font-medium transition-colors disabled:opacity-50"
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Chat Messages */}
@@ -396,7 +411,7 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
 
               {/* Input */}
               <div className="p-3 border-t border-border flex-shrink-0">
-                <div className="flex gap-2">
+                <div className="relative">
                   <Textarea
                     value={input}
                     onChange={e => setInput(e.target.value)}
@@ -408,19 +423,18 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
                     }}
                     placeholder="Ask anything about this document..."
                     rows={2}
-                    className="flex-1 resize-none text-sm min-h-0 py-2"
+                    className="resize-none text-sm pr-11 py-2.5"
                     disabled={isThinking}
                   />
-                  <Button
-                    size="icon"
-                    className="h-full w-9 bg-emerald-600 hover:bg-emerald-700 flex-shrink-0"
+                  <button
                     onClick={() => sendMessage()}
                     disabled={!input.trim() || isThinking}
+                    className="absolute right-2 bottom-2 w-7 h-7 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
                   >
-                    {isThinking ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                  </Button>
+                    {isThinking ? <Loader2 className="w-3.5 h-3.5 text-white animate-spin" /> : <Send className="w-3.5 h-3.5 text-white" />}
+                  </button>
                 </div>
-                <p className="text-[10px] text-muted-foreground mt-1.5 text-center">Press Enter to send · Shift+Enter for new line</p>
+                <p className="text-[10px] text-muted-foreground mt-1.5 text-center">Enter to send · Shift+Enter for new line</p>
               </div>
             </div>
           )}
