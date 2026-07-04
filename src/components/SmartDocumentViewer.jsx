@@ -344,18 +344,7 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
           {aiPanelExpanded && (
             <div className="w-full md:w-[380px] flex-shrink-0 border-l border-border flex flex-col bg-background">
               
-              {/* AI Panel Header */}
-              <div className="px-4 py-3 border-b border-border bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 flex-shrink-0">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
-                    <Sparkles className="w-3.5 h-3.5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-foreground">Orbit AI Assistant</p>
-                    <p className="text-[10px] text-muted-foreground">Analyzing document intelligence</p>
-                  </div>
-                </div>
-              </div>
+
 
               {/* Suggestion Chips - Collapsible */}
               <div className="border-b border-border flex-shrink-0">
