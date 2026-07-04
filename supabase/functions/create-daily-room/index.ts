@@ -68,6 +68,7 @@ serve(async (req) => {
 
       if (dbError) {
         console.error('Failed to insert into video_rooms:', dbError);
+        throw new Error(`Database error: ${dbError.message}`);
       }
     }
 
