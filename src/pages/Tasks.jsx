@@ -518,20 +518,28 @@ export default function Tasks() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: "Total", value: stats.total, icon: Clock, color: "text-primary bg-slate-50" },
-          { label: "Pending", value: stats.pending, icon: AlertCircle, color: "text-yellow-600 bg-yellow-50" },
-          { label: "In Progress", value: stats.in_progress, icon: Clock, color: "text-primary bg-slate-50" },
-          { label: "Completed", value: stats.completed, icon: CheckCircle2, color: "text-primary bg-slate-50" },
-        ].map(({ label, value, icon: Icon, color }) => {
+          { label: "Total", value: stats.total, icon: Clock, bg: "bg-gradient-to-br from-emerald-500 to-emerald-600", text: "text-white", border: "border-emerald-500/20" },
+          { label: "Pending", value: stats.pending, icon: AlertCircle, bg: "bg-white dark:bg-[#2C2C2E]", text: "text-emerald-700 dark:text-emerald-400", border: "border-emerald-500/20", iconBg: "bg-emerald-50 dark:bg-emerald-500/10" },
+          { label: "In Progress", value: stats.in_progress, icon: Clock, bg: "bg-white dark:bg-[#2C2C2E]", text: "text-emerald-700 dark:text-emerald-400", border: "border-emerald-500/20", iconBg: "bg-emerald-50 dark:bg-emerald-500/10" },
+          { label: "Completed", value: stats.completed, icon: CheckCircle2, bg: "bg-white dark:bg-[#2C2C2E]", text: "text-emerald-700 dark:text-emerald-400", border: "border-emerald-500/20", iconBg: "bg-emerald-50 dark:bg-emerald-500/10" },
+        ].map(({ label, value, icon: Icon, bg, text, border, iconBg }) => {
           return (
-            <div key={label} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${color}`}>
-                <Icon className="w-4 h-4" />
+            <div key={label} className={`rounded-2xl border ${border} ${bg} p-5 flex flex-col gap-4 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group`}>
+              <div className="flex items-center justify-between z-10">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${iconBg || 'bg-white/20 text-white'}`}>
+                  <Icon className={`w-5 h-5 ${iconBg ? 'text-emerald-600 dark:text-emerald-400' : 'text-white'}`} />
+                </div>
+                <p className={`text-3xl font-bold tracking-tight ${bg.includes('emerald-500') ? 'text-white' : 'text-slate-900 dark:text-white'}`}>
+                  {value}
+                </p>
               </div>
-              <div>
-                <p className="text-xl font-semibold">{value}</p>
-                <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{label}</p>
+              <div className="z-10 mt-auto">
+                <p className={`text-sm font-semibold tracking-wide uppercase ${bg.includes('emerald-500') ? 'text-emerald-50' : 'text-slate-500 dark:text-slate-400'}`}>
+                  {label} Tasks
+                </p>
               </div>
+              {/* Subtle background decoration */}
+              <div className="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
             </div>
           );
         })}
@@ -602,7 +610,8 @@ export default function Tasks() {
             return (
               <div 
                 key={row.id} 
-                className={`group relative rounded-2xl p-5 border shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between ${statusConfig.bg} ${statusConfig.border}`}
+                onClick={() => { setEditing(row); setShowForm(true); }}
+                className={`group relative rounded-2xl p-5 border shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between cursor-pointer ${statusConfig.bg} ${statusConfig.border}`}
               >
                 {/* Top Section */}
                 <div>
