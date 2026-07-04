@@ -41,6 +41,8 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  const [aiResponse, setAiResponse] = useState(null);
  const [transcriptData, setTranscriptData] = useState([]);
  const [showSettings, setShowSettings] = useState(false);
+ const [showInvite, setShowInvite] = useState(false);
+ const [inviteEmail, setInviteEmail] = useState("");
  const [isInviteLoading, setIsInviteLoading] = useState(false);
  const [copiedLink, setCopiedLink] = useState(false);
  const { theme, changeTheme } = useTheme();

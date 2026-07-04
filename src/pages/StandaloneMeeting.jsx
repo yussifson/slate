@@ -12,10 +12,8 @@ import { Button } from '@/components/ui/button';
 function MeetLoader({ label = 'Preparing your secure meeting...' }) {
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center bg-white dark:bg-[#090E17]">
-      <div className="w-20 h-20 relative flex items-center justify-center">
-        <div className="absolute inset-0 rounded-full border-4 border-slate-100 dark:border-white/5" />
-        <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-        <Video className="w-8 h-8 text-primary animate-pulse" />
+      <div className="w-24 h-24 relative flex items-center justify-center animate-pulse">
+        <img src="/orbit-logo.png" alt="Orbit Logo" className="w-full h-full object-contain drop-shadow-xl" />
       </div>
       <p className="mt-8 text-slate-500 font-medium tracking-wide animate-pulse">{label}</p>
     </div>
@@ -81,6 +79,25 @@ export default function StandaloneMeeting() {
     handleJoin();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
+
+  // Effect 1b: Change Favicon and Title
+  useEffect(() => {
+    document.title = "Orbit Meeting";
+    const link = document.querySelector("link[rel~='icon']");
+    const oldHref = link ? link.href : null;
+    if (link) {
+      link.href = "/orbit-logo.png";
+    } else {
+      const newLink = document.createElement('link');
+      newLink.rel = 'icon';
+      newLink.href = '/orbit-logo.png';
+      document.head.appendChild(newLink);
+    }
+    return () => {
+      document.title = "Slate Workspace";
+      if (link && oldHref) link.href = oldHref;
+    };
+  }, []);
 
   // Effect 2: Countdown timer for scheduled meetings — MUST be before any conditional returns
   useEffect(() => {

@@ -47,7 +47,9 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
 
         setError(null);
       } catch (err) {
-        console.warn("Could not access camera/mic for pre-join preview", err);
+        if (err.name !== 'NotFoundError') {
+          console.warn("Could not access camera/mic for pre-join preview", err);
+        }
         if (mounted) {
           // If they explicitly denied, or no device found
           setError("Camera or microphone access denied. You can still join without them.");
