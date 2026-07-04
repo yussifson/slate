@@ -226,6 +226,9 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  return (
  <div className="flex flex-col h-full bg-background rounded-xl overflow-hidden relative border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 group">
  
+ {/* Main Layout Area */}
+ <div className="flex-1 flex flex-row relative min-w-0 overflow-hidden">
+ 
  {/* Video Content Area */}
  <div className="flex-1 flex flex-col relative min-w-0">
  {/* AI Response Overlay */}
@@ -323,6 +326,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  </div>
  </div>
  )}
+ </div>
  </div>
 
  {/* Control Bar */}
@@ -518,10 +522,10 @@ function ParticipantTile({ id, isLocal, className }) {
  
  {!isLocal && <audio ref={audioRef} autoPlay playsInline />}
  
- <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-lg">
- <span className="text-white text-xs font-semibold tracking-wide">{displayName}</span>
- {audioState?.state !== 'playable' && <MicOff className="w-3.5 h-3.5 text-white/80" />}
- </div>
+  <div className={`absolute bottom-6 left-6 ${avatarColor} px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg ring-2 ring-white/20 dark:ring-black/20 backdrop-blur-md transition-all`}>
+  <span className="text-white text-xs font-bold tracking-wide">{displayName}</span>
+  {audioState?.state !== 'playable' && <MicOff className="w-3.5 h-3.5 text-white/90" />}
+  </div>
  </div>
  );
 }

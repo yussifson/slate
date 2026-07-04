@@ -111,16 +111,17 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
       <div className="flex flex-col items-center w-full max-w-3xl">
         <div className="relative w-full aspect-video bg-slate-100 dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-2xl border border-slate-200/60 dark:border-white/10 flex items-center justify-center transition-colors">
           
-          {isVideoOn ? (
-            <video 
-              ref={videoRef}
-              autoPlay 
-              muted 
-              playsInline 
-              className="w-full h-full object-cover transform -scale-x-100" 
-            />
-          ) : (
-            <div className="flex flex-col items-center justify-center">
+          {/* Video element is always rendered to preserve srcObject, but hidden when isVideoOn is false */}
+          <video 
+            ref={videoRef}
+            autoPlay 
+            muted 
+            playsInline 
+            className={`w-full h-full object-cover transform -scale-x-100 ${!isVideoOn ? 'hidden' : ''}`} 
+          />
+          
+          {!isVideoOn && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-900 z-10">
               <div className="w-24 h-24 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-sm border border-slate-200/50 dark:border-white/5">
                 <VideoOff className="w-10 h-10 text-slate-400 dark:text-slate-500" />
               </div>
