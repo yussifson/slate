@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
+import CustomPDFViewer from "@/components/documents/CustomPDFViewer";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { generateText } from "@/lib/cloudflareAI";
@@ -107,27 +108,7 @@ function DocumentRenderer({ doc, type }) {
   if (type === "pdf") {
     return (
       <div className="relative w-full h-full">
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-muted/50">
-            <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
-          </div>
-        )}
-        <iframe
-          src={doc.file_url}
-          title={doc.name}
-          className="w-full h-full border-0"
-          onLoad={() => setIsLoading(false)}
-          onError={() => { setIframeError(true); setIsLoading(false); }}
-        />
-        {iframeError && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-muted-foreground bg-muted/50">
-            <AlertCircle className="w-12 h-12 text-amber-400" />
-            <p className="font-medium">Could not preview PDF inline</p>
-            <Button size="sm" variant="outline" onClick={() => window.open(doc.file_url, "_blank")}>
-              <ExternalLink className="w-4 h-4 mr-2" /> Open in New Tab
-            </Button>
-          </div>
-        )}
+        <CustomPDFViewer url={doc.file_url} name={doc.name} />
       </div>
     );
   }
