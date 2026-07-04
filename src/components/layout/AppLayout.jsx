@@ -331,7 +331,7 @@ export default function AppLayout() {
  />
   <div className="flex-1 relative flex overflow-hidden">
    <main className={cn(
-          "flex-1 w-full mx-auto overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto",
+          "flex-1 w-full mx-auto flex flex-col overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto",
           ['/chat', '/email-inbox'].includes(location.pathname) 
             ? "p-0" 
             : "px-3 md:px-5 lg:px-6 pt-4 md:pt-5 pb-[calc(52px+env(safe-area-inset-bottom)+1rem)] md:pb-6"
@@ -343,7 +343,7 @@ export default function AppLayout() {
          animate={{ opacity: 1, y: 0 }}
          exit={{ opacity: 0, y: -10 }}
          transition={{ duration: 0.15, ease: "easeOut" }}
-         className="min-h-full w-full flex flex-col"
+         className="flex-1 w-full flex flex-col"
        >
          <Outlet />
        </motion.div>
