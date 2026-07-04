@@ -187,8 +187,8 @@ export default function MeetLandingPage() {
                   <div className="pt-2">
                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 mt-2">Join Link</p>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                      <div className="flex-1 bg-slate-50 dark:bg-black/50 p-3 rounded-xl border border-slate-200 dark:border-white/5 truncate flex items-center">
-                        <span className="text-sm text-primary font-medium truncate select-all">
+                      <div className="flex-1 min-w-0 bg-slate-50 dark:bg-black/50 p-3 rounded-xl border border-slate-200 dark:border-white/5 flex items-center">
+                        <span className="text-sm text-primary font-medium truncate select-all block w-full">
                           {laterLink}
                         </span>
                       </div>
