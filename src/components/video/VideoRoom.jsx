@@ -249,22 +249,39 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  {isPipMode ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
  </Button>
 
- {/* Video Grid */}
- <div className="flex-1 p-4 flex flex-wrap content-center justify-center gap-4 overflow-y-auto bg-muted/30">
- {screens.map(screen => (
- <ScreenShareTile key={screen.screenId} screen={screen} />
- ))}
- {(() => {
- const allParticipants = [localSessionId, ...participantIds.filter(id => id !== localSessionId)].filter(Boolean);
- return allParticipants.map(id => (
- <ParticipantTile key={id} id={id} isLocal={id === localSessionId} />
- )).concat(allParticipants.length === 0 ? (
- <div key="loader" className="absolute inset-0 flex items-center justify-center">
- <OrbitLoader size="md" />
- </div>
- ) : []);
-})()}
- </div>
+  {/* Video Grid */}
+  {screens.length > 0 ? (
+    <div className="flex-1 flex flex-col lg:flex-row p-4 gap-4 overflow-hidden bg-muted/30">
+      {/* Screen Share Main Area */}
+      <div className="flex-[3] relative rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-white/10 shadow-inner bg-slate-900">
+        {screens.map(screen => (
+          <ScreenShareTile key={screen.screenId} screen={screen} className="w-full h-full absolute inset-0" />
+        ))}
+      </div>
+      {/* Participant Sidebar */}
+      <div className="flex-1 lg:max-w-[320px] flex lg:flex-col gap-4 overflow-x-auto lg:overflow-y-auto min-h-[140px] lg:min-h-0 items-center lg:items-stretch content-start">
+        {(() => {
+          const allParticipants = [localSessionId, ...participantIds.filter(id => id !== localSessionId)].filter(Boolean);
+          return allParticipants.map(id => (
+            <ParticipantTile key={id} id={id} isLocal={id === localSessionId} className="w-64 min-w-[16rem] lg:w-full lg:min-w-0 shrink-0 m-0" />
+          ));
+        })()}
+      </div>
+    </div>
+  ) : (
+    <div className="flex-1 p-4 flex flex-wrap content-center justify-center gap-4 overflow-y-auto bg-muted/30">
+      {(() => {
+        const allParticipants = [localSessionId, ...participantIds.filter(id => id !== localSessionId)].filter(Boolean);
+        return allParticipants.map(id => (
+          <ParticipantTile key={id} id={id} isLocal={id === localSessionId} />
+        )).concat(allParticipants.length === 0 ? (
+          <div key="loader" className="absolute inset-0 flex items-center justify-center">
+            <OrbitLoader size="md" />
+          </div>
+        ) : []);
+      })()}
+    </div>
+  )}
 
  {/* Chat Sidebar */}
  {showChat && (
@@ -406,7 +423,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  );
 }
 
-function ScreenShareTile({ screen}) {
+function ScreenShareTile({ screen, className }) {
  const videoRef = useRef(null);
  const audioRef = useRef(null);
 
@@ -423,7 +440,7 @@ function ScreenShareTile({ screen}) {
 }, [screen.screenAudio?.track, screen.local]);
 
  return (
- <div className="relative bg-slate-800 rounded-xl overflow-hidden group flex items-center justify-center md:col-span-2 lg:col-span-3">
+ <div className={`relative bg-slate-800 rounded-xl overflow-hidden group flex items-center justify-center ${className || ''}`}>
  {screen.screenVideo?.state === 'playable' ? (
  <video 
  ref={videoRef}
@@ -453,7 +470,7 @@ const avatarColors = [
   'bg-amber-500', 'bg-teal-500', 'bg-cyan-500'
 ];
 
-function ParticipantTile({ id, isLocal}) {
+function ParticipantTile({ id, isLocal, className }) {
  const videoState = useVideoTrack(id);
  const audioState = useAudioTrack(id);
  const participant = useParticipant(id);
@@ -484,7 +501,7 @@ function ParticipantTile({ id, isLocal}) {
 }, [audioState?.track, isLocal]);
 
  return (
- <div className="relative bg-slate-100 dark:bg-slate-800/50 rounded-2xl overflow-hidden group flex items-center justify-center aspect-video w-full max-w-3xl min-w-[320px] shadow-sm border border-slate-200 dark:border-white/10 m-2">
+ <div className={`relative bg-slate-100 dark:bg-slate-800/50 rounded-2xl overflow-hidden group flex items-center justify-center aspect-video shadow-sm border border-slate-200 dark:border-white/10 ${className || 'w-full max-w-3xl min-w-[320px] m-2'}`}>
  {videoState?.state === 'playable' ? (
  <video 
  ref={videoRef}
