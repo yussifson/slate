@@ -213,7 +213,15 @@ export default function SmartDocs() {
   const loadDocs = useCallback(async () => {
     if (!companyId) return;
     const res = await powerSync.execute("SELECT * FROM documents WHERE company_id = ? ORDER BY created_at DESC", [companyId]);
-    setDocs(res.rows?._array || []);
+    const parsed = (res.rows?._array || []).map(d => {
+      let extra = {};
+      try { extra = JSON.parse(d.notes || "{}"); } catch(e) {}
+      if (extra.is_json_wrapper) {
+        return { ...d, ...extra, notes: extra.notes };
+      }
+      return d;
+    });
+    setDocs(parsed);
   }, [companyId]);
 
   const loadFolders = useCallback(async () => {
@@ -267,9 +275,18 @@ export default function SmartDocs() {
       setIsUploading(false);
     }
 
+    const extra = {
+      is_json_wrapper: true,
+      notes: uploadForm.notes,
+      tags: uploadForm.tags,
+      expiry_date: uploadForm.expiry_date || null,
+      signature_status: uploadForm.signature_status,
+      folder_id: uploadForm.folder_id === "none" ? null : uploadForm.folder_id
+    };
+
     await powerSync.execute(
-      "INSERT INTO documents (id, created_at, company_id, name, category, folder_id, tags, expiry_date, file_url, file_type, signature_status, notes, uploaded_by, filing_date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-      [crypto.randomUUID(), new Date().toISOString(), companyId, uploadForm.name, uploadForm.category, uploadForm.folder_id === "none" ? null : uploadForm.folder_id, uploadForm.tags, uploadForm.expiry_date || null, fileUrl, fileType || uploadForm.file_type, uploadForm.signature_status, uploadForm.notes, user?.full_name || user?.email, new Date().toISOString()]
+      "INSERT INTO documents (id, created_at, company_id, name, category, file_url, file_type, notes, uploaded_by, filing_date) VALUES (?,?,?,?,?,?,?,?,?,?)",
+      [crypto.randomUUID(), new Date().toISOString(), companyId, uploadForm.name, uploadForm.category, fileUrl, fileType || uploadForm.file_type, JSON.stringify(extra), user?.full_name || user?.email, new Date().toISOString()]
     );
     await loadDocs();
     setShowUploadForm(false);

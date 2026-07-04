@@ -1,4 +1,5 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -272,10 +273,10 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
     unknown: <FileText className="w-4 h-4 text-muted-foreground" />,
   };
 
-  return (
-    <div className={`fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center ${isFullscreen ? 'p-0' : 'p-2 md:p-4'}`}>
+  const content = (
+    <div className={`fixed inset-0 z-[99999] bg-emerald-950/40 dark:bg-emerald-950/60 backdrop-blur-sm flex items-center justify-center ${isFullscreen ? 'p-0' : 'p-2 md:p-6 lg:p-8'}`}>
       <div className={`bg-background shadow-2xl border border-border flex flex-col overflow-hidden transition-all duration-300 ${
-        isFullscreen ? "w-full h-full rounded-none" : "w-full max-w-7xl h-[92vh] rounded-2xl"
+        isFullscreen ? "w-full h-full rounded-none" : "w-full max-w-[1400px] h-[92vh] rounded-xl"
       }`}>
         
         {/* ── Header ── */}
@@ -442,4 +443,6 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
       </div>
     </div>
   );
+
+  return createPortal(content, document.body);
 }

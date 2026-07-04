@@ -209,14 +209,7 @@ export const SCHEMA_COLUMNS = {
     "uploaded_by",
     "notes",
     "version",
-    "shared_with_client",
-    "tags",
-    "expiry_date",
-    "signature_status",
-    "folder_id",
-    "ai_summary",
-    "key_obligations",
-    "risks"
+    "shared_with_client"
   ],
   "smart_folders": [
     "id",
