@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const DAILY_API_KEY = Deno.env.get('DAILY_API_KEY')
 
@@ -51,7 +52,8 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
 
     if (supabaseUrl && supabaseServiceKey) {
-      // Import createClient dynamically if possible, or just use a raw fetch request
+      const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
       const insertPayload = {
         id: roomName,
         title: 'Meeting Room',
@@ -60,19 +62,12 @@ serve(async (req) => {
         status: 'active'
       };
 
-      const dbResponse = await fetch(`${supabaseUrl}/rest/v1/video_rooms`, {
-        method: 'POST',
-        headers: {
-          'apikey': supabaseServiceKey,
-          'Authorization': `Bearer ${supabaseServiceKey}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'resolution=merge-duplicates'
-        },
-        body: JSON.stringify(insertPayload)
-      });
+      const { error: dbError } = await supabase
+        .from('video_rooms')
+        .upsert(insertPayload)
 
-      if (!dbResponse.ok) {
-        console.error('Failed to insert into video_rooms:', await dbResponse.text());
+      if (dbError) {
+        console.error('Failed to insert into video_rooms:', dbError);
       }
     }
 
@@ -81,6 +76,7 @@ serve(async (req) => {
       status: 200,
     })
   } catch (error) {
+    console.error('Error creating Daily room:', error)
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,

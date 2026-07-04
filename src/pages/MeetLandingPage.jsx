@@ -5,14 +5,19 @@ import { Video, Keyboard, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { Copy, Plus, Link as LinkIcon } from 'lucide-react';
 
 export default function MeetLandingPage() {
   const [meetingCode, setMeetingCode] = useState('');
   const [isCreating, setIsCreating] = useState(false);
+  const [laterLink, setLaterLink] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleCreateMeeting = async () => {
+  const handleCreateMeeting = async (type) => {
     setIsCreating(true);
     try {
       const roomId = crypto.randomUUID();
@@ -22,7 +27,16 @@ export default function MeetLandingPage() {
 
       if (error) throw error;
 
-      navigate(`/join/${roomId}`);
+      if (type === 'instant') {
+        navigate(`/join/${roomId}`);
+      } else {
+        // Create for later
+        const domain = window.location.hostname;
+        const port = window.location.port ? ':' + window.location.port : '';
+        const protocol = window.location.protocol;
+        setLaterLink(`${protocol}//${domain}${port}/join/${roomId}`);
+        setIsDialogOpen(true);
+      }
     } catch (err) {
       console.error('Failed to create meeting:', err);
       toast({ title: 'Error', description: 'Could not create a new meeting. Try again.', variant: 'destructive' });
@@ -71,15 +85,34 @@ export default function MeetLandingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full pt-4">
-            <Button 
-              size="lg" 
-              onClick={handleCreateMeeting} 
-              disabled={isCreating}
-              className="w-full sm:w-auto h-12 px-6 gap-2 text-base rounded-md"
-            >
-              {isCreating ? <OrbitLoader /> : <Video className="w-5 h-5" />}
-              New meeting
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  size="lg" 
+                  disabled={isCreating}
+                  className="w-full sm:w-auto h-12 px-6 gap-2 text-base rounded-md"
+                >
+                  {isCreating ? <OrbitLoader /> : <Video className="w-5 h-5" />}
+                  New meeting
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-64 p-2 shadow-xl border-slate-100 dark:border-white/10 rounded-xl">
+                <DropdownMenuItem 
+                  onClick={() => handleCreateMeeting('later')}
+                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50 dark:hover:bg-white/5"
+                >
+                  <LinkIcon className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+                  <span className="font-medium text-slate-700 dark:text-slate-200">Create a meeting for later</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => handleCreateMeeting('instant')}
+                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50 dark:hover:bg-white/5"
+                >
+                  <Plus className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+                  <span className="font-medium text-slate-700 dark:text-slate-200">Start an instant meeting</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             
             <form onSubmit={handleJoin} className="relative w-full sm:w-64">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -129,6 +162,41 @@ export default function MeetLandingPage() {
           </div>
         </div>
       </main>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-2xl rounded-2xl p-6">
+          <DialogHeader className="mb-4">
+            <DialogTitle className="text-xl font-medium text-slate-900 dark:text-white">Here's the link to your meeting</DialogTitle>
+            <DialogDescription className="text-slate-500 pt-2">
+              Copy this link and send it to people you want to meet with. Be sure to save it so you can use it later, too.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center space-x-2 bg-slate-100 dark:bg-black/50 p-3 rounded-lg border border-slate-200 dark:border-white/10">
+            <span className="flex-1 text-sm text-slate-800 dark:text-slate-200 truncate select-all px-2">
+              {laterLink}
+            </span>
+            <Button 
+              type="button" 
+              size="sm" 
+              variant="ghost" 
+              className="px-3"
+              onClick={() => {
+                navigator.clipboard.writeText(laterLink);
+                toast({ title: 'Copied', description: 'Meeting link copied to clipboard.' });
+              }}
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+          </div>
+          <DialogFooter className="mt-6 sm:justify-start">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary" className="w-full sm:w-auto">
+                Close
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

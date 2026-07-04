@@ -10,7 +10,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { Video, Keyboard, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-function StandaloneMeetingInner({ url, roomName, onLeave }) {
+function StandaloneMeetingInner({ url, roomName, onLeave, onToast }) {
   const [hasJoined, setHasJoined] = useState(false);
   const [guestName, setGuestName] = useState('');
 
@@ -45,6 +45,20 @@ function StandaloneMeetingInner({ url, roomName, onLeave }) {
             >
               Ask to join
             </Button>
+            <div className="pt-2">
+              <Button 
+                variant="ghost" 
+                className="w-full text-slate-500"
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  if (onToast) {
+                    onToast({ title: 'Copied', description: 'Meeting link copied to clipboard.' });
+                  }
+                }}
+              >
+                Copy meeting link
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -146,10 +160,9 @@ export default function StandaloneMeeting() {
   return (
     <StandaloneMeetingInner 
       url={meetingUrl} 
-      roomName={roomName}
-      onLeave={() => {
-        window.location.href = '/'; // redirect after meeting ends
-      }}
+      roomName={roomName} 
+      onToast={toast}
+      onLeave={() => navigate('/')} 
     />
   );
 }

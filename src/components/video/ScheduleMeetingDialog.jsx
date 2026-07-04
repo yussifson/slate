@@ -8,7 +8,7 @@ import { supabase } from '@/api/supabaseClient';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { Users, Lock, Globe, Clock, CalendarIcon, Briefcase } from 'lucide-react';
+import { Users, Lock, Globe, Clock, CalendarIcon, Briefcase, Copy, CheckCircle2 } from 'lucide-react';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -26,9 +26,17 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
   const [employees, setEmployees] = useState([]);
   const [selectedParticipants, setSelectedParticipants] = useState([]);
   const [isScheduling, setIsScheduling] = useState(false);
+  const [scheduledMeeting, setScheduledMeeting] = useState(null);
 
   useEffect(() => {
-    if (open && companyId) {
+    if (!open) {
+      setTitle('');
+      setDate('');
+      setTime('');
+      setIsPrivate(false);
+      setSelectedParticipants([]);
+      setScheduledMeeting(null);
+    } else if (companyId) {
       loadEmployees();
     }
   }, [open, companyId]);
@@ -92,7 +100,6 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
       
       const roomName = `scheduled-${Math.random().toString(36).substring(2, 10)}`;
       
-      // 1. Create Daily Room
       const { data: dailyData, error: functionError } = await supabase.functions.invoke('create-daily-room', {
         body: { roomName, privacy: isPrivate ? 'private' : 'public' }
       });
@@ -110,13 +117,11 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
       } else if (meetingDomain.includes('oatstack.com')) {
         meetingDomain = `meet.oatstack.com`;
       } else {
-        // For custom white-label domains
         meetingDomain = `meet.${meetingDomain}`;
       }
       
       const customMeetingOrigin = `${window.location.protocol}//${meetingDomain}${window.location.port ? ':' + window.location.port : ''}`;
 
-      // 2. Save to PowerSync / Supabase
       const _payload = {
         id: roomId,
         company_id: companyId,
@@ -133,17 +138,14 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
         meeting_link: `${customMeetingOrigin}/join/${roomId}`
       };
 
-      // Save directly to Supabase to bypass offline sync delays
       const { error: dbError } = await supabase.from('video_rooms').upsert(_payload);
       if (dbError) {
         console.warn("Failed to insert meeting to Supabase directly:", dbError);
-        // Fallback to powersync if Supabase insert fails
         const _keys = Object.keys(_payload);
         const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         await powerSync.execute(`INSERT INTO video_rooms (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
       }
 
-      // 3. Send Email Invites
       if (selectedParticipants.length > 0) {
         for (const participant of selectedParticipants) {
           await NotificationService.emit({
@@ -158,10 +160,14 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
         toast({ title: 'Invites Sent', description: `Emailed ${selectedParticipants.length} participants.` });
       }
 
-      toast({ title: 'Meeting Scheduled', description: 'Your meeting is set!' });
+      setScheduledMeeting({
+        title,
+        date: scheduledStart.toLocaleDateString(),
+        time: scheduledStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        link: _payload.meeting_link
+      });
+      
       onScheduled && onScheduled();
-      onOpenChange(false);
-
     } catch (err) {
       console.error(err);
       toast({ title: 'Error', description: err.message || 'Failed to schedule meeting', variant: 'destructive' });
@@ -173,130 +179,187 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>Schedule a Meeting</DialogTitle>
-          <DialogDescription>Set a time and invite team members to a video call.</DialogDescription>
-        </DialogHeader>
+        {scheduledMeeting ? (
+          <div className="flex flex-col items-center justify-center space-y-6 py-6 text-center">
+            <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 rounded-full flex items-center justify-center mb-2">
+              <CheckCircle2 className="w-8 h-8" />
+            </div>
+            <DialogHeader>
+              <DialogTitle className="text-2xl">Meeting Scheduled!</DialogTitle>
+              <DialogDescription>Your meeting is set and invitations have been sent.</DialogDescription>
+            </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label>Meeting Title</Label>
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Weekly Sync" />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Date</Label>
-              <div className="relative">
-                <CalendarIcon className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="pl-9" />
+            <div className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 p-4 rounded-xl text-left space-y-3">
+              <div>
+                <p className="text-sm font-medium text-slate-500">Meeting Title</p>
+                <p className="text-base text-slate-900 dark:text-white font-medium">{scheduledMeeting.title}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-slate-500">Date</p>
+                  <p className="text-base text-slate-900 dark:text-white font-medium">{scheduledMeeting.date}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-500">Time</p>
+                  <p className="text-base text-slate-900 dark:text-white font-medium">{scheduledMeeting.time}</p>
+                </div>
+              </div>
+              <div className="pt-2">
+                <p className="text-sm font-medium text-slate-500 mb-1">Meeting Link</p>
+                <div className="flex items-center space-x-2 bg-white dark:bg-black p-2 rounded-lg border border-slate-200 dark:border-white/10">
+                  <span className="flex-1 text-sm text-slate-800 dark:text-slate-200 truncate select-all">
+                    {scheduledMeeting.link}
+                  </span>
+                  <Button 
+                    type="button" 
+                    size="sm" 
+                    variant="ghost" 
+                    onClick={() => {
+                      const inviteText = `You are invited to a meeting.\n\nTitle: ${scheduledMeeting.title}\nDate: ${scheduledMeeting.date}\nTime: ${scheduledMeeting.time}\n\nJoin Link: ${scheduledMeeting.link}`;
+                      navigator.clipboard.writeText(inviteText);
+                      toast({ title: 'Copied', description: 'Invitation copied to clipboard.' });
+                    }}
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
-            <div className="space-y-2">
-              <Label>Time</Label>
-              <div className="relative">
-                <Clock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="pl-9" />
+
+            <DialogFooter className="w-full sm:justify-center pt-4">
+              <Button onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
+                Done
+              </Button>
+            </DialogFooter>
+          </div>
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle>Schedule a Meeting</DialogTitle>
+              <DialogDescription>Set a time and invite team members to a video call.</DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label>Meeting Title</Label>
+                <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Weekly Sync" />
               </div>
-            </div>
-          </div>
 
-          <div className="flex items-center justify-between rounded-lg border p-4">
-            <div className="space-y-0.5">
-              <Label className="text-base flex items-center gap-2">
-                {isPrivate ? <Lock className="h-4 w-4 text-rose-500" /> : <Globe className="h-4 w-4 text-emerald-500" />}
-                {isPrivate ? 'Private Meeting' : 'Public Meeting'}
-              </Label>
-              <p className="text-sm text-muted-foreground">
-                {isPrivate ? 'Only invited participants can join this room.' : 'Anyone with the link can join.'}
-              </p>
-            </div>
-            <Switch checked={isPrivate} onCheckedChange={setIsPrivate} />
-          </div>
-
-          {isPrivate && (
-            <div className="space-y-2 pt-2">
-              <Label>Invite Participants ({selectedParticipants.length})</Label>
-              <Tabs defaultValue="staff" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="staff">Internal Staff</TabsTrigger>
-                  <TabsTrigger value="clients">Clients</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="staff" className="mt-2">
-                  <div className="max-h-[150px] overflow-y-auto border rounded-md p-2 space-y-1">
-                    {employees.filter(e => e.type === 'team').length === 0 ? (
-                      <p className="text-sm text-muted-foreground p-2">No internal staff found.</p>
-                    ) : (
-                      employees.filter(e => e.type === 'team').map((emp) => {
-                        const isSelected = selectedParticipants.find((p) => p.id === emp.id);
-                        return (
-                          <div
-                            key={emp.id || emp.email}
-                            onClick={() => handleToggleParticipant(emp)}
-                            className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
-                              isSelected ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
-                            }`}
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-500'}`}>
-                                <Users className="w-4 h-4" />
-                              </div>
-                              <div>
-                                <p className="text-sm font-medium">{emp.full_name || emp.name}</p>
-                                <p className="text-xs text-gray-500">{emp.email}</p>
-                              </div>
-                            </div>
-                            {isSelected && <div className="w-2 h-2 rounded-full bg-primary" />}
-                          </div>
-                        );
-                      })
-                    )}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Date</Label>
+                  <div className="relative">
+                    <CalendarIcon className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="pl-9" />
                   </div>
-                </TabsContent>
-
-                <TabsContent value="clients" className="mt-2">
-                  <div className="max-h-[150px] overflow-y-auto border rounded-md p-2 space-y-1">
-                    {employees.filter(e => e.type === 'client').length === 0 ? (
-                      <p className="text-sm text-muted-foreground p-2">No clients found.</p>
-                    ) : (
-                      employees.filter(e => e.type === 'client').map((emp) => {
-                        const isSelected = selectedParticipants.find((p) => p.id === emp.id);
-                        return (
-                          <div
-                            key={emp.id || emp.email}
-                            onClick={() => handleToggleParticipant(emp)}
-                            className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
-                              isSelected ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
-                            }`}
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-500'}`}>
-                                <Briefcase className="w-4 h-4" />
-                              </div>
-                              <div>
-                                <p className="text-sm font-medium">{emp.full_name || emp.name}</p>
-                                <p className="text-xs text-gray-500">{emp.email}</p>
-                              </div>
-                            </div>
-                            {isSelected && <div className="w-2 h-2 rounded-full bg-primary" />}
-                          </div>
-                        );
-                      })
-                    )}
+                </div>
+                <div className="space-y-2">
+                  <Label>Time</Label>
+                  <div className="relative">
+                    <Clock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="pl-9" />
                   </div>
-                </TabsContent>
-              </Tabs>
-            </div>
-          )}
-        </div>
+                </div>
+              </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={handleSchedule} disabled={isScheduling}>
-            {isScheduling ? <OrbitLoader size="sm" /> : 'Schedule'}
-          </Button>
-        </DialogFooter>
+              <div className="flex items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <Label className="text-base flex items-center gap-2">
+                    {isPrivate ? <Lock className="h-4 w-4 text-rose-500" /> : <Globe className="h-4 w-4 text-emerald-500" />}
+                    {isPrivate ? 'Private Meeting' : 'Public Meeting'}
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    {isPrivate ? 'Only invited participants can join this room.' : 'Anyone with the link can join.'}
+                  </p>
+                </div>
+                <Switch checked={isPrivate} onCheckedChange={setIsPrivate} />
+              </div>
+
+              {isPrivate && (
+                <div className="space-y-2 pt-2">
+                  <Label>Invite Participants ({selectedParticipants.length})</Label>
+                  <Tabs defaultValue="staff" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="staff">Internal Staff</TabsTrigger>
+                      <TabsTrigger value="clients">Clients</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="staff" className="mt-2">
+                      <div className="max-h-[150px] overflow-y-auto border rounded-md p-2 space-y-1">
+                        {employees.filter(e => e.type === 'team').length === 0 ? (
+                          <p className="text-sm text-muted-foreground p-2">No internal staff found.</p>
+                        ) : (
+                          employees.filter(e => e.type === 'team').map((emp) => {
+                            const isSelected = selectedParticipants.find((p) => p.id === emp.id);
+                            return (
+                              <div
+                                key={emp.id || emp.email}
+                                onClick={() => handleToggleParticipant(emp)}
+                                className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
+                                  isSelected ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
+                                }`}
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-500'}`}>
+                                    <Users className="w-4 h-4" />
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium">{emp.full_name || emp.name}</p>
+                                    <p className="text-xs text-gray-500">{emp.email}</p>
+                                  </div>
+                                </div>
+                                {isSelected && <div className="w-2 h-2 rounded-full bg-primary" />}
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="clients" className="mt-2">
+                      <div className="max-h-[150px] overflow-y-auto border rounded-md p-2 space-y-1">
+                        {employees.filter(e => e.type === 'client').length === 0 ? (
+                          <p className="text-sm text-muted-foreground p-2">No clients found.</p>
+                        ) : (
+                          employees.filter(e => e.type === 'client').map((emp) => {
+                            const isSelected = selectedParticipants.find((p) => p.id === emp.id);
+                            return (
+                              <div
+                                key={emp.id || emp.email}
+                                onClick={() => handleToggleParticipant(emp)}
+                                className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
+                                  isSelected ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
+                                }`}
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-500'}`}>
+                                    <Briefcase className="w-4 h-4" />
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium">{emp.full_name || emp.name}</p>
+                                    <p className="text-xs text-gray-500">{emp.email}</p>
+                                  </div>
+                                </div>
+                                {isSelected && <div className="w-2 h-2 rounded-full bg-primary" />}
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </div>
+              )}
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+              <Button onClick={handleSchedule} disabled={isScheduling}>
+                {isScheduling ? <OrbitLoader size="sm" /> : 'Schedule'}
+              </Button>
+            </DialogFooter>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
