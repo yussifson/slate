@@ -228,10 +228,19 @@ export default function StandaloneMeeting() {
     );
   }
 
+  useEffect(() => {
+    document.title = roomName ? `${roomName} - Optavel Meet` : "Joining Room - Optavel Meet";
+  }, [roomName]);
+
   if (!meetingUrl) {
     return (
-      <div className="w-screen h-screen flex items-center justify-center">
-        <OrbitLoader />
+      <div className="w-screen h-screen flex flex-col items-center justify-center bg-white dark:bg-[#090E17]">
+        <div className="w-20 h-20 relative flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full border-4 border-slate-100 dark:border-white/5"></div>
+          <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+          <Video className="w-8 h-8 text-primary animate-pulse" />
+        </div>
+        <p className="mt-8 text-slate-500 font-medium tracking-wide animate-pulse">Preparing your secure meeting...</p>
       </div>
     );
   }

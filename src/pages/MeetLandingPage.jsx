@@ -164,37 +164,54 @@ export default function MeetLandingPage() {
       </main>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-2xl rounded-2xl p-6">
-          <DialogHeader className="mb-4">
-            <DialogTitle className="text-xl font-medium text-slate-900 dark:text-white">Here's the link to your meeting</DialogTitle>
-            <DialogDescription className="text-slate-500 pt-2">
-              Copy this link and send it to people you want to meet with. Be sure to save it so you can use it later, too.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex items-center space-x-2 bg-slate-100 dark:bg-black/50 p-3 rounded-lg border border-slate-200 dark:border-white/10">
-            <span className="flex-1 text-sm text-slate-800 dark:text-slate-200 truncate select-all px-2">
-              {laterLink}
-            </span>
-            <Button 
-              type="button" 
-              size="sm" 
-              variant="ghost" 
-              className="px-3"
-              onClick={() => {
-                navigator.clipboard.writeText(laterLink);
-                toast({ title: 'Copied', description: 'Meeting link copied to clipboard.' });
-              }}
-            >
-              <Copy className="h-4 w-4" />
-            </Button>
+        <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white dark:bg-slate-900 border-none shadow-2xl rounded-2xl">
+          <div className="flex flex-col p-2">
+            <div className="relative w-full overflow-hidden rounded-2xl bg-gradient-to-b from-primary/10 to-transparent p-8 text-center border border-primary/20 shadow-sm">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Sparkles className="w-32 h-32 text-primary transform rotate-12" />
+              </div>
+              
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mb-6 shadow-lg shadow-primary/30">
+                  <Video className="w-8 h-8" />
+                </div>
+                
+                <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2 tracking-tight">Here's your meeting link</h2>
+                <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-sm">
+                  Copy this link and send it to people you want to meet with. Be sure to save it so you can use it later.
+                </p>
+
+                <div className="w-full bg-white dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-white/10 rounded-2xl p-6 text-left shadow-sm space-y-5 relative">
+                  <div className="pt-2">
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 mt-2">Join Link</p>
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                      <div className="flex-1 bg-slate-50 dark:bg-black/50 p-3 rounded-xl border border-slate-200 dark:border-white/5 truncate flex items-center">
+                        <span className="text-sm text-primary font-medium truncate select-all">
+                          {laterLink}
+                        </span>
+                      </div>
+                      <Button 
+                        type="button" 
+                        size="lg"
+                        className="rounded-xl shrink-0 gap-2 h-12 sm:h-auto"
+                        onClick={() => {
+                          navigator.clipboard.writeText(laterLink);
+                          toast({ title: 'Copied', description: 'Meeting link copied to clipboard.' });
+                        }}
+                      >
+                        <Copy className="h-4 w-4" />
+                        Copy
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <Button onClick={() => setIsDialogOpen(false)} variant="ghost" className="mt-6 w-full sm:w-auto px-8 text-slate-500 hover:text-slate-700">
+                  Done
+                </Button>
+              </div>
+            </div>
           </div>
-          <DialogFooter className="mt-6 sm:justify-start">
-            <DialogClose asChild>
-              <Button type="button" variant="secondary" className="w-full sm:w-auto">
-                Close
-              </Button>
-            </DialogClose>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

@@ -95,11 +95,11 @@ export default function Board() {
  const handleStartCall = async () => {
  setIsCreating(true);
  try {
- const roomName = `room-${Math.random().toString(36).substring(2, 10)}`;
+ const roomId = crypto.randomUUID();
  
  // Call our Supabase Edge function to create a Daily room securely
  const { data: dailyData, error: functionError} = await supabase.functions.invoke('create-daily-room', {
- body: { roomName}
+ body: { roomName: roomId }
 });
  
  if (functionError) {
@@ -107,7 +107,6 @@ export default function Board() {
 }
 
   const realUrl = dailyData.url;
-  const roomId = crypto.randomUUID();
 
   let meetingDomain = window.location.hostname;
   if (meetingDomain.includes('localhost') || meetingDomain.includes('127.0.0.1')) {

@@ -98,16 +98,15 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
     try {
       const scheduledStart = new Date(`${date}T${time}`);
       
-      const roomName = `scheduled-${Math.random().toString(36).substring(2, 10)}`;
+      const roomId = crypto.randomUUID();
       
       const { data: dailyData, error: functionError } = await supabase.functions.invoke('create-daily-room', {
-        body: { roomName, privacy: isPrivate ? 'private' : 'public' }
+        body: { roomName: roomId, privacy: isPrivate ? 'private' : 'public' }
       });
 
       if (functionError) throw new Error(functionError.message || 'Failed to create Daily room via edge function');
 
       const realUrl = dailyData.url;
-      const roomId = crypto.randomUUID();
 
       let meetingDomain = window.location.hostname;
       if (meetingDomain.includes('localhost') || meetingDomain.includes('127.0.0.1')) {
