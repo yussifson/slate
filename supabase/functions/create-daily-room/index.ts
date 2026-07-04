@@ -15,7 +15,7 @@ serve(async (req) => {
   }
 
   try {
-    const { roomName, privacy } = await req.json()
+    const { roomName, privacy, companyId } = await req.json()
 
     if (!DAILY_API_KEY) {
       throw new Error('DAILY_API_KEY is missing')
@@ -56,6 +56,7 @@ serve(async (req) => {
 
       const insertPayload = {
         id: roomName,
+        company_id: companyId || '00000000-0000-0000-0000-000000000000',
         title: 'Meeting Room',
         daily_room_url: room.url,
         daily_room_name: room.name,
