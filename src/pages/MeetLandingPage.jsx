@@ -165,6 +165,8 @@ export default function MeetLandingPage() {
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white dark:bg-slate-900 border-none shadow-2xl rounded-2xl">
+          <DialogTitle className="sr-only">Meeting Link Created</DialogTitle>
+          <DialogDescription className="sr-only">Your meeting link is ready to be copied.</DialogDescription>
           <div className="flex flex-col p-2">
             <div className="relative w-full overflow-hidden rounded-2xl bg-gradient-to-b from-primary/10 to-transparent p-8 text-center border border-primary/20 shadow-sm">
               <div className="absolute top-0 right-0 p-4 opacity-10">

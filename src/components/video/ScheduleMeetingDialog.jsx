@@ -179,14 +179,17 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden bg-white dark:bg-slate-900 border-none shadow-2xl rounded-2xl">
         {scheduledMeeting ? (
-          <div className="flex flex-col p-2">
-            <div className="relative w-full overflow-hidden rounded-2xl bg-gradient-to-b from-emerald-500/10 to-transparent p-8 text-center border border-emerald-500/20 shadow-sm">
+          <>
+            <DialogTitle className="sr-only">Meeting Scheduled</DialogTitle>
+            <DialogDescription className="sr-only">Your meeting has been scheduled and invitations have been sent.</DialogDescription>
+            <div className="flex flex-col p-2 max-h-[85vh] overflow-y-auto">
+            <div className="relative w-full overflow-hidden rounded-2xl bg-gradient-to-b from-emerald-500/10 to-transparent p-6 sm:p-8 text-center border border-emerald-500/20 shadow-sm">
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <CalendarIcon className="w-32 h-32 text-emerald-500 transform rotate-12" />
               </div>
               
               <div className="relative z-10 flex flex-col items-center">
-                <div className="w-16 h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30">
+                <div className="w-16 h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30 shrink-0">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
                 
@@ -195,28 +198,28 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
                   Your meeting has been set and calendar invitations have been sent to all participants.
                 </p>
 
-                <div className="w-full bg-white dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-white/10 rounded-2xl p-6 text-left shadow-sm space-y-5 relative">
+                <div className="w-full bg-white dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-white/10 rounded-2xl p-5 sm:p-6 text-left shadow-sm space-y-5 relative">
                   <div>
                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Meeting Title</p>
-                    <p className="text-lg text-slate-900 dark:text-white font-medium">{scheduledMeeting.title}</p>
+                    <p className="text-lg text-slate-900 dark:text-white font-medium truncate">{scheduledMeeting.title}</p>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-6">
-                    <div>
+                  <div className="grid grid-cols-2 gap-4 sm:gap-6">
+                    <div className="truncate">
                       <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Date</p>
-                      <p className="text-base text-slate-800 dark:text-slate-200">{scheduledMeeting.date}</p>
+                      <p className="text-sm sm:text-base text-slate-800 dark:text-slate-200 truncate">{scheduledMeeting.date}</p>
                     </div>
-                    <div>
+                    <div className="truncate">
                       <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Time</p>
-                      <p className="text-base text-slate-800 dark:text-slate-200">{scheduledMeeting.time}</p>
+                      <p className="text-sm sm:text-base text-slate-800 dark:text-slate-200 truncate">{scheduledMeeting.time}</p>
                     </div>
                   </div>
 
                   <div className="pt-2 border-t border-slate-100 dark:border-white/5">
                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 mt-2">Join Link</p>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                      <div className="flex-1 bg-slate-50 dark:bg-black/50 p-3 rounded-xl border border-slate-200 dark:border-white/5 truncate flex items-center">
-                        <span className="text-sm text-primary font-medium truncate select-all">
+                      <div className="flex-1 bg-slate-50 dark:bg-black/50 p-3 rounded-xl border border-slate-200 dark:border-white/5 truncate flex items-center min-w-0">
+                        <span className="text-sm text-primary font-medium truncate select-all w-full block">
                           {scheduledMeeting.link}
                         </span>
                       </div>
@@ -237,12 +240,13 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
                   </div>
                 </div>
 
-                <Button onClick={() => onOpenChange(false)} variant="ghost" className="mt-6 w-full sm:w-auto px-8 text-slate-500 hover:text-slate-700">
+                <Button onClick={() => onOpenChange(false)} variant="ghost" className="mt-6 w-full sm:w-auto px-8 text-slate-500 hover:text-slate-700 shrink-0">
                   Done
                 </Button>
               </div>
             </div>
           </div>
+          </>
         ) : (
           <div className="p-6">
             <DialogHeader>
