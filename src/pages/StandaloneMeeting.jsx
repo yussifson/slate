@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
-import { DailyProvider } from '@daily-co/daily-react';
 import VideoRoom from '@/components/video/VideoRoom';
 import { useAuth } from '@/lib/AuthContext';
 import { Video, Sparkles } from 'lucide-react';
@@ -76,14 +75,13 @@ function StandaloneMeetingInner({ url, roomName, onLeave, onToast }) {
 
   return (
     <div className="w-screen h-screen bg-black overflow-hidden flex flex-col relative">
-      <DailyProvider url={url}>
-        <VideoRoom
-          roomUrl={url}
-          onLeave={onLeave}
-          isPipMode={false}
-          togglePipMode={() => {}}
-        />
-      </DailyProvider>
+      {/* VideoRoom creates its own DailyProvider + callObject internally — do NOT wrap in another DailyProvider */}
+      <VideoRoom
+        roomUrl={url}
+        onLeave={onLeave}
+        isPipMode={false}
+        togglePipMode={() => {}}
+      />
     </div>
   );
 }

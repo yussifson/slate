@@ -1127,29 +1127,30 @@ function App() {
             <Router>
               <GlobalSystemListener />
               <ErrorBoundary>
-                <React.Suspense fallback={<PageLoader label="Loading Module..." />}>
-                  {isMeetDomain ? (
+                {isMeetDomain ? (
+                  /* ── MEET DOMAIN: completely isolated Suspense — NO Slate loader ── */
+                  <React.Suspense fallback={
+                    <div className="w-screen h-screen flex flex-col items-center justify-center bg-white dark:bg-[#090E17]">
+                      <div className="w-20 h-20 relative flex items-center justify-center">
+                        <div className="absolute inset-0 rounded-full border-4 border-slate-100 dark:border-white/5" />
+                        <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+                        <svg className="w-8 h-8 text-primary animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <p className="mt-8 text-slate-500 font-medium tracking-wide animate-pulse">Preparing your secure meeting...</p>
+                    </div>
+                  }>
                     <Routes>
                       <Route path="/" element={<MeetLandingPage />} />
-                      <Route path="/join/:roomId" element={
-                        <React.Suspense fallback={
-                          <div className="w-screen h-screen flex flex-col items-center justify-center bg-white dark:bg-[#090E17]">
-                            <div className="w-20 h-20 relative flex items-center justify-center">
-                              <div className="absolute inset-0 rounded-full border-4 border-slate-100 dark:border-white/5" />
-                              <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-                              <svg className="w-8 h-8 text-primary animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                              </svg>
-                            </div>
-                            <p className="mt-8 text-slate-500 font-medium tracking-wide animate-pulse">Preparing your secure meeting...</p>
-                          </div>
-                        }>
-                          <StandaloneMeeting />
-                        </React.Suspense>
-                      } />
+                      <Route path="/join/:roomId" element={<StandaloneMeeting />} />
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
-                  ) : isBaseDomain ? (
+                  </React.Suspense>
+                ) : (
+                  /* ── ALL OTHER DOMAINS: workspace / marketing / app routes ── */
+                  <React.Suspense fallback={<PageLoader label="Loading Module..." />}>
+                    {isBaseDomain ? (
                     /* Storefront Routes for the Base Domain */
                     <Routes>
                       <Route element={<MarketingLayout><Outlet /></MarketingLayout>}>

@@ -497,98 +497,97 @@ function ParticipantTile({ id, isLocal}) {
 // Wrapper to initialize Daily provider
 export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePipMode}) {
  const [daily, setDaily] = useState(null);
- 
- if (roomUrl && (roomUrl.includes('meet.jit.si') || roomUrl.includes('meet.ffmuc.net') || roomUrl.includes('jitsi'))) {
- return (
- <div className="flex flex-col h-full bg-slate-50/50 dark:bg-slate-950 rounded-xl relative overflow-hidden items-center justify-center text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
- <div className="absolute top-0 right-0 z-50 p-2 flex gap-2">
- <Button variant="destructive" size="sm" onClick={onLeave} className="rounded-full h-8 px-4 font-semibold opacity-80 hover:opacity-100 ">
- <PhoneOff className="w-4 h-4 mr-2" /> End Session
- </Button>
- </div>
- 
- <div className="flex flex-col items-center max-w-md text-center p-8 bg-white dark:bg-slate-900 rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-24 h-24 bg-slate-50 dark:bg-primary/30 rounded-full flex items-center justify-center mb-6 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/80">
- <VideoIcon className="w-10 h-10 text-primary dark:text-primary/70" />
- </div>
- <h2 className="text-2xl font-semibold mb-3 text-slate-800 dark:text-white tracking-tight tracking-[-0.02em]">Secure Video Meeting</h2>
- <p className="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed text-sm max-w-sm">
- To ensure maximum performance and bypass browser limits, your enterprise video call will open in a new secure window.
- </p>
- 
- <div className="flex flex-col gap-3 w-full">
- <Button 
- size="lg" 
- className="w-full bg-primary hover:bg-primary/90 text-white font-semibold h-12 text-[15px] rounded-xl transition-all"
- onClick={() => window.open(roomUrl, '_blank')}
- >
- Launch Meeting
- <ExternalLink className="w-5 h-5 ml-2 opacity-80" />
- </Button>
- <Button variant="ghost" className="text-slate-500 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl h-11" onClick={() => {
- navigator.clipboard.writeText(roomUrl);
- toast({ description: "Meeting link copied to clipboard!"});
-}}>
- Copy Link
- </Button>
- </div>
- </div>
- </div>
- );
-}
+ // Keep a ref so the cleanup closure always has access to the latest callObject
+ // without triggering re-renders on creation
+ const callRef = useRef(null);
 
  useEffect(() => {
- if (!roomUrl) return;
- let callObject = null;
- let cancelled = false;
+  if (!roomUrl) return;
 
- import('@daily-co/daily-js').then((DailyIframe) => {
- if (cancelled) return;
- callObject = DailyIframe.default.createCallObject();
- 
- const joinOpts = { url: roomUrl, audioSource: true, videoSource: true};
- if (typeof token === 'string' && token.length > 0) {
- joinOpts.token = token;
-}
- 
- // Explicitly request permissions before joining to fix production issues
- callObject.startCamera()
- .then(() => {
- if (cancelled) return;
- callObject.join(joinOpts).catch(console.error);
-})
- .catch((err) => {
- console.warn('Camera/Mic permission denied or not found. Joining without local media.', err);
- if (cancelled) return;
- // Fallback: join without enforcing strict local media
- callObject.join({ url: roomUrl}).catch(console.error);
-});
+  let cancelled = false;
 
- setDaily(callObject);
-});
+  const initDaily = async () => {
+   const DailyIframe = await import('@daily-co/daily-js');
 
- return () => {
- cancelled = true;
- if (callObject) {
- callObject.leave().catch(() => {});
- callObject.destroy();
-}
- setDaily(null);
-};
-}, [roomUrl, token]);
+   if (cancelled) return;
+
+   // ── Destroy any pre-existing instance (guards against React StrictMode double-invoke
+   //    and "Duplicate DailyIframe instances are not allowed" errors) ──────────────────
+   try {
+    const existing = DailyIframe.default.getCallInstance();
+    if (existing) {
+     try { await existing.leave(); } catch (_) {}
+     existing.destroy();
+    }
+   } catch (_) {}
+
+   // Also destroy our own tracked ref if it's still around
+   if (callRef.current) {
+    try { await callRef.current.leave(); } catch (_) {}
+    callRef.current.destroy();
+    callRef.current = null;
+   }
+
+   if (cancelled) return;
+
+   const callObject = DailyIframe.default.createCallObject();
+   callRef.current = callObject;
+
+   const joinOpts = { url: roomUrl, audioSource: true, videoSource: true };
+   if (typeof token === 'string' && token.length > 0) {
+    joinOpts.token = token;
+   }
+
+   try {
+    await callObject.startCamera();
+    if (cancelled) return;
+    await callObject.join(joinOpts);
+   } catch (camErr) {
+    console.warn('Camera/Mic permission denied. Joining without local media.', camErr);
+    if (cancelled) return;
+    try { await callObject.join({ url: roomUrl }); } catch (e) { console.error(e); }
+   }
+
+   if (cancelled) return;
+   setDaily(callObject);
+  };
+
+  initDaily().catch(console.error);
+
+  return () => {
+   cancelled = true;
+   // Async cleanup: leave + destroy without blocking React
+   const cleanup = async () => {
+    const obj = callRef.current;
+    if (obj) {
+     callRef.current = null;
+     try { await obj.leave(); } catch (_) {}
+     try { obj.destroy(); } catch (_) {}
+    }
+   };
+   cleanup();
+   setDaily(null);
+  };
+ }, [roomUrl, token]);
 
  if (!daily || !roomUrl) {
+  return (
+   <div className="flex flex-col h-full bg-slate-950 rounded-xl items-center justify-center gap-4">
+    <div className="w-16 h-16 relative flex items-center justify-center">
+     <div className="absolute inset-0 rounded-full border-4 border-slate-700" />
+     <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+     <VideoIcon className="w-6 h-6 text-primary" />
+    </div>
+    <p className="text-slate-400 font-medium tracking-wide animate-pulse">Connecting to secure video server...</p>
+   </div>
+  );
+ }
+
  return (
- <div className="flex flex-col h-full bg-slate-950 rounded-xl items-center justify-center">
- <OrbitLoader size="md" />
- <p className="text-slate-400 font-medium">Connecting to secure video server...</p>
- </div>
+  <DailyProvider callObject={daily}>
+   <VideoRoomInner roomUrl={roomUrl} onLeave={onLeave} isPipMode={isPipMode} togglePipMode={togglePipMode} />
+  </DailyProvider>
  );
 }
 
- return (
- <DailyProvider callObject={daily}>
- <VideoRoomInner roomUrl={roomUrl} onLeave={onLeave} isPipMode={isPipMode} togglePipMode={togglePipMode} />
- </DailyProvider>
- );
-}
+
