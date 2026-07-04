@@ -10,7 +10,8 @@ import {
  useDaily,
  useDailyEvent,
  useScreenShare,
- useParticipant
+ useParticipant,
+ useActiveSpeakerId
 } from '@daily-co/daily-react';
 import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink, MessageSquare, Send, X, UserPlus, Mail} from 'lucide-react';
 import { Button} from "@/components/ui/button";
@@ -27,9 +28,11 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  const { screens, isSharingScreen, startScreenShare, stopScreenShare} = useScreenShare();
  const localAudioTrack = useAudioTrack(localSessionId);
  const localVideoTrack = useVideoTrack(localSessionId);
+ const activeSpeakerId = useActiveSpeakerId();
+ 
+ const [joined, setJoined] = useState(daily ? daily.meetingState() === 'joined-meeting' : false);
  const isMuted = localAudioTrack?.state !== 'playable';
  const isVideoOff = localVideoTrack?.state !== 'playable';
- const [joined, setJoined] = useState(daily ? daily.meetingState() === 'joined-meeting' : false);
  const { toast} = useToast();
  const [isAiLoading, setIsAiLoading] = useState(false);
  const [aiResponse, setAiResponse] = useState(null);
@@ -58,6 +61,13 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  setJoined(false);
  onLeave();
 });
+
+ useDailyEvent('participant-left', (ev) => {
+    toast({
+      title: "Participant Left",
+      description: `${ev.participant.user_name || 'A participant'} left the meeting.`,
+    });
+  });
 
  useDailyEvent('error', (ev) => {
  console.error('Daily error:', ev);
@@ -253,38 +263,37 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  </Button>
 
   {/* Video Grid */}
-  {screens.length > 0 ? (
-    <div className="flex-1 flex flex-col lg:flex-row p-4 gap-4 overflow-hidden bg-muted/30">
-      {/* Screen Share Main Area */}
-      <div className="flex-[3] relative rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-white/10 shadow-inner bg-slate-900">
-        {screens.map(screen => (
-          <ScreenShareTile key={screen.screenId} screen={screen} className="w-full h-full absolute inset-0" />
-        ))}
-      </div>
-      {/* Participant Sidebar */}
-      <div className="flex-1 lg:max-w-[320px] flex lg:flex-col gap-4 overflow-x-auto lg:overflow-y-auto min-h-[140px] lg:min-h-0 items-center lg:items-stretch content-start">
-        {(() => {
-          const allParticipants = [localSessionId, ...participantIds.filter(id => id !== localSessionId)].filter(Boolean);
-          return allParticipants.map(id => (
+  {(() => {
+    const allParticipants = [localSessionId, ...participantIds.filter(id => id !== localSessionId)].filter(Boolean);
+    const mainSpeakerId = activeSpeakerId || (allParticipants.length > 1 ? allParticipants.find(id => id !== localSessionId) : localSessionId);
+    const sidebarParticipants = allParticipants.filter(id => id !== mainSpeakerId);
+
+    return (
+      <div className="flex-1 flex flex-col lg:flex-row p-4 gap-4 overflow-hidden bg-muted/30">
+        {/* Main Stage Area */}
+        <div className="flex-[3] relative rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-white/10 shadow-inner bg-slate-900">
+          {screens.length > 0 ? (
+            screens.map(screen => (
+              <ScreenShareTile key={screen.screenId} screen={screen} className="w-full h-full absolute inset-0" />
+            ))
+          ) : mainSpeakerId ? (
+            <ParticipantTile id={mainSpeakerId} isLocal={mainSpeakerId === localSessionId} className="w-full h-full absolute inset-0 !m-0 !border-0 !rounded-none" />
+          ) : null}
+        </div>
+        {/* Participant Sidebar */}
+        <div className="flex-1 lg:max-w-[320px] flex lg:flex-col gap-4 overflow-x-auto lg:overflow-y-auto min-h-[140px] lg:min-h-0 items-center lg:items-stretch content-start">
+          {sidebarParticipants.map(id => (
             <ParticipantTile key={id} id={id} isLocal={id === localSessionId} className="w-64 min-w-[16rem] lg:w-full lg:min-w-0 shrink-0 m-0" />
-          ));
-        })()}
+          ))}
+          {allParticipants.length === 0 && (
+            <div key="loader" className="flex items-center justify-center w-full h-full text-slate-400">
+              <OrbitLoader size="md" />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  ) : (
-    <div className="flex-1 p-4 flex flex-wrap content-start justify-center gap-4 overflow-y-auto bg-muted/30">
-      {(() => {
-        const allParticipants = [localSessionId, ...participantIds.filter(id => id !== localSessionId)].filter(Boolean);
-        return allParticipants.map(id => (
-          <ParticipantTile key={id} id={id} isLocal={id === localSessionId} />
-        )).concat(allParticipants.length === 0 ? (
-          <div key="loader" className="absolute inset-0 flex items-center justify-center">
-            <OrbitLoader size="md" />
-          </div>
-        ) : []);
-      })()}
-    </div>
-  )}
+    );
+  })()}
 
  {/* Chat Sidebar */}
  {showChat && (

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Mic, MicOff, Video as VideoIcon, VideoOff, Settings, AlertCircle } from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, AlertCircle, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -8,6 +8,8 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
   const [isMicOn, setIsMicOn] = useState(true);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [error, setError] = useState(null);
+  const [localStream, setLocalStream] = useState(null);
+  const [volume, setVolume] = useState(0);
   
   const videoRef = useRef(null);
   const streamRef = useRef(null);
@@ -29,6 +31,7 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
         }
 
         streamRef.current = stream;
+        setLocalStream(stream);
         
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -63,6 +66,53 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
       }
     };
   }, []); // Run once on mount
+
+  // Audio Visualizer Effect
+  useEffect(() => {
+    if (!localStream || !isMicOn) {
+      setVolume(0);
+      return;
+    }
+
+    let audioContext;
+    let analyser;
+    let microphone;
+    let animationFrame;
+
+    try {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioContext.createAnalyser();
+      analyser.smoothingTimeConstant = 0.8;
+      analyser.fftSize = 256;
+
+      microphone = audioContext.createMediaStreamSource(localStream);
+      microphone.connect(analyser);
+
+      const checkVolume = () => {
+        const array = new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteFrequencyData(array);
+        let values = 0;
+        for (let i = 0; i < array.length; i++) {
+          values += array[i];
+        }
+        const average = values / array.length;
+        // Amplify average for visual effect (0 to 100)
+        setVolume(Math.min(100, Math.round((average / 256) * 100 * 3)));
+        animationFrame = requestAnimationFrame(checkVolume);
+      };
+
+      checkVolume();
+    } catch (err) {
+      console.warn("AudioContext error for visualizer", err);
+    }
+
+    return () => {
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+      if (audioContext && audioContext.state !== 'closed') {
+        audioContext.close().catch(console.error);
+      }
+    };
+  }, [localStream, isMicOn]);
 
   // Toggle handlers for the preview tracks
   const toggleMic = () => {
@@ -137,23 +187,36 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
           )}
 
           {/* Overlay Controls */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl px-4 py-3 rounded-2xl border border-slate-200/50 dark:border-white/10 shadow-lg shadow-black/5">
-            <Button 
-              onClick={toggleMic}
-              variant={isMicOn ? "outline" : "destructive"}
-              size="icon"
-              className={`w-14 h-14 rounded-full shadow-sm transition-all duration-300 ${isMicOn ? 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700' : ''}`}
-            >
-              {isMicOn ? <Mic className="w-6 h-6 text-slate-700 dark:text-slate-300" /> : <MicOff className="w-6 h-6" />}
-            </Button>
-            <Button 
-              onClick={toggleVideo}
-              variant={isVideoOn ? "outline" : "destructive"}
-              size="icon"
-              className={`w-14 h-14 rounded-full shadow-sm transition-all duration-300 ${isVideoOn ? 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700' : ''}`}
-            >
-              {isVideoOn ? <VideoIcon className="w-6 h-6 text-slate-700 dark:text-slate-300" /> : <VideoOff className="w-6 h-6" />}
-            </Button>
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20">
+            {/* Audio Visualizer */}
+            <div className={`flex items-center gap-1.5 h-6 transition-opacity duration-300 ${isMicOn ? 'opacity-100' : 'opacity-0'}`}>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div 
+                  key={i}
+                  className="w-1.5 bg-green-500 rounded-full transition-all duration-75"
+                  style={{ height: `${Math.max(20, volume * (Math.random() * 0.5 + 0.5))}%` }}
+                />
+              ))}
+            </div>
+
+            <div className="flex items-center gap-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl px-4 py-3 rounded-2xl border border-slate-200/50 dark:border-white/10 shadow-lg shadow-black/5">
+              <Button 
+                onClick={toggleMic}
+                variant={isMicOn ? "outline" : "destructive"}
+                size="icon"
+                className={`w-14 h-14 rounded-full shadow-sm transition-all duration-300 ${isMicOn ? 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700' : ''}`}
+              >
+                {isMicOn ? <Mic className="w-6 h-6 text-slate-700 dark:text-slate-300" /> : <MicOff className="w-6 h-6" />}
+              </Button>
+              <Button 
+                onClick={toggleVideo}
+                variant={isVideoOn ? "outline" : "destructive"}
+                size="icon"
+                className={`w-14 h-14 rounded-full shadow-sm transition-all duration-300 ${isVideoOn ? 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700' : ''}`}
+              >
+                {isVideoOn ? <VideoIcon className="w-6 h-6 text-slate-700 dark:text-slate-300" /> : <VideoOff className="w-6 h-6" />}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
