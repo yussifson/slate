@@ -92,7 +92,7 @@ export default function UnivHREmployee() {
    email: form.email,
    phone: form.phone,
    role: form.role_title,
-   department_id: form.department,
+   department: form.department,
    status: form.status,
    salary: form.salary ? Number(form.salary) : null,
    start_date: form.hire_date || null,
@@ -155,7 +155,7 @@ export default function UnivHREmployee() {
        first_name: parts[0] || '',
        last_name: parts.slice(1).join(' '),
        role_title: emp.role || '',
-       department: emp.department_id || '',
+       department: emp.department || '',
        hire_date: emp.start_date || ''
      };
    }
@@ -165,7 +165,7 @@ export default function UnivHREmployee() {
    setIsModalOpen(true);
  };
  const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM); setPassword('');};
- const filtered = employees.filter(e => `${e.name} ${e.email} ${e.department_id} ${e.role}`.toLowerCase().includes(search.toLowerCase()));
+ const filtered = employees.filter(e => `${e.name} ${e.email} ${e.department} ${e.role}`.toLowerCase().includes(search.toLowerCase()));
 
  return (
  <div className={`flex flex-col gap-6 w-full ${view !== 'Default' ? 'hide-default' : ''}`}>

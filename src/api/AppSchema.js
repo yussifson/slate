@@ -3034,7 +3034,7 @@ export const AppSchema = new Schema({
         email: column.text,
         phone: column.text,
         role: column.text,
-        department_id: column.text,
+        department: column.text,
         reports_to: column.text,
         salary: column.real,
         start_date: column.text,

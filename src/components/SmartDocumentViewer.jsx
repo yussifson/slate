@@ -206,8 +206,38 @@ export default function SmartDocumentViewer({ doc, onClose }) {
   const [aiPanelExpanded, setAiPanelExpanded] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [quickAnalysisOpen, setQuickAnalysisOpen] = useState(true);
+  const [extractedText, setExtractedText] = useState("");
   const chatEndRef = useRef(null);
   const fileType = getFileType(doc);
+
+  useEffect(() => {
+    async function extract() {
+      if (!doc.file_url) return;
+      try {
+        if (fileType === 'pdf') {
+          const pdfjsLib = await import('pdfjs-dist');
+          pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+          const loadingTask = pdfjsLib.getDocument(doc.file_url);
+          const pdf = await loadingTask.promise;
+          let text = '';
+          const maxPages = Math.min(pdf.numPages, 10);
+          for (let i = 1; i <= maxPages; i++) {
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            text += content.items.map(item => item.str).join(' ') + '\\n';
+          }
+          setExtractedText(text);
+        } else if (fileType === 'text') {
+          const res = await fetch(doc.file_url);
+          const text = await res.text();
+          setExtractedText(text.slice(0, 15000));
+        }
+      } catch (err) {
+        console.error("Failed to extract document text:", err);
+      }
+    }
+    extract();
+  }, [doc.file_url, fileType]);
 
   const docContext = `
 Document Name: ${doc.name}
@@ -236,6 +266,8 @@ ${doc.ai_summary ? `Existing Summary: ${doc.ai_summary}` : ""}
       const systemPrompt = `You are an expert document analyst and business intelligence assistant embedded inside Slate, a business management platform.
 You are analyzing the following document metadata:
 ${docContext}
+
+${extractedText ? `--- EXTRACTED DOCUMENT TEXT ---\n${extractedText}\n-------------------------------` : ""}
 
 Provide helpful, structured, and actionable insights. Be concise but thorough. Use bullet points for lists. Format your response clearly.`;
 
