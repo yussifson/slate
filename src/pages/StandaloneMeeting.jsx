@@ -84,22 +84,43 @@ export default function StandaloneMeeting() {
 
   const handleJoin = async () => {
     try {
-      const { data: room, error: fetchError } = await supabase
-        .from('video_rooms')
-        .select('*')
-        .eq('id', roomId)
-        .single();
+      let room = null;
+      let fetchError = null;
 
-      if (fetchError || !room) {
-        throw new Error('Meeting not found or has ended.');
+      // Try fetching from Supabase, retry once after 1.5s to handle PowerSync upload delays
+      for (let i = 0; i < 2; i++) {
+        const res = await supabase
+          .from('video_rooms')
+          .select('*')
+          .eq('id', roomId)
+          .single();
+        
+        if (res.data) {
+          room = res.data;
+          fetchError = null;
+          break;
+        } else {
+          fetchError = res.error;
+          if (i === 0) await new Promise(r => setTimeout(r, 1500));
+        }
       }
 
-      let joinUrl = room.daily_room_url;
+      let joinUrl = '';
+      let isPrivate = false;
+      let finalRoomName = 'Meeting Room';
 
-      if (room.privacy_type === 'private') {
-        // If not logged in, we might need a way to authenticate them, or at least pass a token
-        // For now, try to generate a token using current user's details if available
-        // If not available, this edge function might reject them depending on its implementation
+      if (fetchError || !room) {
+        // Fallback: If DB sync failed or it's an ad-hoc room that failed to insert, 
+        // construct the daily.co URL directly.
+        joinUrl = `https://optalflow.daily.co/${roomId}`;
+        finalRoomName = 'Instant Meeting';
+      } else {
+        joinUrl = room.daily_room_url;
+        isPrivate = room.privacy_type === 'private';
+        finalRoomName = room.title || room.daily_room_name;
+      }
+
+      if (isPrivate) {
         const userName = user ? user.full_name : 'Guest';
         const userId = user ? user.id : 'anonymous';
         
@@ -114,7 +135,7 @@ export default function StandaloneMeeting() {
         joinUrl = `${joinUrl}?t=${data.token}`;
       }
 
-      setRoomName(room.title || room.daily_room_name);
+      setRoomName(finalRoomName);
       setMeetingUrl(joinUrl);
     } catch (err) {
       console.error(err);

@@ -22,6 +22,21 @@ export default function MeetLandingPage() {
 
       if (error) throw error;
 
+      // Save to database so StandaloneMeeting can find it
+      const { error: dbError } = await supabase
+        .from('video_rooms')
+        .insert({
+          id: roomId,
+          title: 'Instant Meeting',
+          daily_room_url: data.url,
+          daily_room_name: data.name,
+          status: 'active'
+        });
+
+      if (dbError) {
+        console.warn('Failed to insert video room to DB, but daily room exists', dbError);
+      }
+
       navigate(`/join/${roomId}`);
     } catch (err) {
       console.error('Failed to create meeting:', err);
