@@ -21,8 +21,13 @@ export default function CustomPDFViewer({ url, name }) {
     setError(null);
 
     const loadPDF = async () => {
+      if (!url) {
+        setError("Invalid PDF URL");
+        setIsLoading(false);
+        return;
+      }
       try {
-        loadingTask = pdfjsLib.getDocument(url);
+        loadingTask = pdfjsLib.getDocument({ url });
         const loadedPdf = await loadingTask.promise;
         setPdf(loadedPdf);
         setNumPages(loadedPdf.numPages);
@@ -149,7 +154,7 @@ export default function CustomPDFViewer({ url, name }) {
       <div className="flex-1 overflow-auto bg-slate-900/50 p-4 flex justify-center">
         {isLoading && (
           <div className="flex flex-col items-center justify-center h-full gap-3 text-slate-400">
-            <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
             <p className="text-sm">Loading PDF...</p>
           </div>
         )}

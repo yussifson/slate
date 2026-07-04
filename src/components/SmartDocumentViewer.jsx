@@ -49,7 +49,7 @@ function ChatMessage({ msg }) {
   if (msg.role === "user") {
     return (
       <div className="flex justify-end mb-3">
-        <div className="max-w-[85%] bg-emerald-600 text-white px-4 py-2.5 rounded-2xl rounded-tr-md text-sm leading-relaxed">
+        <div className="max-w-[85%] bg-primary text-white px-4 py-2.5 rounded-2xl rounded-tr-md text-sm leading-relaxed">
           <ReactMarkdown className="prose prose-sm prose-invert break-words max-w-none">{msg.content}</ReactMarkdown>
         </div>
       </div>
@@ -58,7 +58,7 @@ function ChatMessage({ msg }) {
 
   return (
     <div className="flex gap-2 mb-3 group">
-      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center flex-shrink-0 mt-0.5">
         <Brain className="w-3.5 h-3.5 text-white" />
       </div>
       <div className="flex-1 min-w-0">
@@ -120,7 +120,7 @@ function DocumentRenderer({ doc, type }) {
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-muted/30 z-10 pointer-events-none">
             <div className="flex flex-col items-center gap-2">
-              <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
               <p className="text-sm text-muted-foreground">Loading Office Viewer...</p>
             </div>
           </div>
@@ -287,20 +287,20 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
   };
 
   const content = (
-    <div className={`fixed inset-0 z-[99999] bg-emerald-950/40 dark:bg-emerald-950/60 backdrop-blur-sm flex items-center justify-center ${isFullscreen ? 'p-0' : 'p-2 md:p-6 lg:p-8'}`}>
+    <div className={`fixed inset-0 z-[99999] bg-black/40 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center ${isFullscreen ? 'p-0' : 'p-2 md:p-6 lg:p-8'}`}>
       <div className={`bg-background shadow-2xl border border-border flex flex-col overflow-hidden transition-all duration-300 ${
         isFullscreen ? "w-full h-full rounded-none" : "w-full max-w-[1400px] h-[92vh] rounded-xl"
       }`}>
         
         {/* ── Header ── */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-muted/30 flex-shrink-0">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center flex-shrink-0">
             {fileIconMap[fileType]}
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-foreground truncate text-sm">{doc.name}</p>
             <div className="flex items-center gap-2 flex-wrap">
-              {doc.category && <Badge className="text-[10px] px-1.5 py-0 h-4 bg-emerald-100 text-emerald-700">{doc.category}</Badge>}
+              {doc.category && <Badge className="text-[10px] px-1.5 py-0 h-4 bg-primary/10 text-primary">{doc.category}</Badge>}
               <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{fileType.toUpperCase()}</span>
               {doc.expiry_date && <span className="text-[10px] text-amber-500">Expires: {doc.expiry_date}</span>}
             </div>
@@ -328,7 +328,7 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
             </Button>
             <button
               onClick={() => setAiPanelExpanded(v => !v)}
-              className="hidden md:flex h-8 px-2 items-center gap-1 text-xs font-medium text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
+              className="hidden md:flex h-8 px-2 items-center gap-1 text-xs font-medium text-primary hover:bg-primary/5 dark:hover:bg-primary/10 rounded-lg transition-colors"
               title="Toggle AI Panel"
             >
               <Brain className="w-3.5 h-3.5" />
@@ -381,7 +381,7 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
                         key={s.label}
                         onClick={() => sendMessage(s.prompt)}
                         disabled={isThinking}
-                        className="text-[11px] px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:hover:bg-emerald-800/40 font-medium transition-colors disabled:opacity-50"
+                        className="text-[11px] px-2.5 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 dark:bg-primary/20 dark:text-primary dark:hover:bg-primary/30 font-medium transition-colors disabled:opacity-50"
                       >
                         {s.label}
                       </button>
@@ -397,14 +397,14 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
                 ))}
                 {isThinking && (
                   <div className="flex gap-2 mb-3">
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <Brain className="w-3.5 h-3.5 text-white" />
                     </div>
                     <div className="bg-muted/60 border border-border rounded-2xl rounded-tl-md px-4 py-3">
                       <div className="flex gap-1 items-center">
-                        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                        <span className="w-2 h-2 bg-primary-foreground rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                        <span className="w-2 h-2 bg-primary-foreground rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <span className="w-2 h-2 bg-primary-foreground rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                       </div>
                     </div>
                   </div>
@@ -432,7 +432,7 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
                   <button
                     onClick={() => sendMessage()}
                     disabled={!input.trim() || isThinking}
-                    className="absolute right-2 bottom-2 w-7 h-7 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+                    className="absolute right-2 bottom-2 w-7 h-7 rounded-lg bg-primary hover:hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
                   >
                     {isThinking ? <Loader2 className="w-3.5 h-3.5 text-white animate-spin" /> : <Send className="w-3.5 h-3.5 text-white" />}
                   </button>
