@@ -36,23 +36,23 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
   const loadEmployees = async () => {
     try {
       const [staffRes, clientsRes, crmRes] = await Promise.all([
-        supabase.from('univ_hr_employees').select('id, name, email').eq('company_id', companyId),
-        supabase.from('clients').select('id, name, email').eq('company_id', companyId),
-        supabase.from('univ_crm_leads').select('id, first_name, last_name, email').eq('company_id', companyId)
+        powerSync.getAll('SELECT id, name, email FROM univ_hr_employees WHERE company_id = ?', [companyId]),
+        powerSync.getAll('SELECT id, name, email FROM clients WHERE company_id = ?', [companyId]),
+        powerSync.getAll('SELECT id, first_name, last_name, email FROM univ_crm_leads WHERE company_id = ?', [companyId])
       ]);
-      const staffMembers = (staffRes.data || []).map(s => ({
+      const staffMembers = (staffRes || []).map(s => ({
         ...s,
         full_name: s.name || 'Unnamed Staff',
         email: s.email,
         type: 'team'
       }));
-      const clientMembers = (clientsRes.data || []).map(c => ({
+      const clientMembers = (clientsRes || []).map(c => ({
         ...c,
         full_name: c.name || 'Unnamed Client',
         email: c.email,
         type: 'client'
       }));
-      const crmMembers = (crmRes.data || []).map(c => ({
+      const crmMembers = (crmRes || []).map(c => ({
         ...c,
         full_name: `${c.first_name || ''} ${c.last_name || ''}`.trim() || 'Unnamed Client',
         email: c.email,
@@ -94,6 +94,25 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
       const realUrl = dailyData.url;
       const roomId = crypto.randomUUID();
 
+      let meetingDomain = window.location.hostname;
+      const knownBases = ['optavel.com', 'slate.optavel.com', 'slated.optavel.com', 'oatstack.com'];
+      if (meetingDomain.includes('localhost') || meetingDomain.includes('127.0.0.1')) {
+        meetingDomain = `meet.localhost`;
+      } else {
+        if (meetingDomain.startsWith('app.') || meetingDomain.startsWith('www.')) {
+          meetingDomain = meetingDomain.replace(/^(app|www)\./, 'meet.');
+        } else {
+          const baseMatch = knownBases.find(b => meetingDomain.endsWith(b));
+          if (baseMatch) {
+             meetingDomain = `meet.${baseMatch}`;
+          } else {
+             meetingDomain = `meet.${meetingDomain}`;
+          }
+        }
+      }
+      
+      const customMeetingOrigin = `${window.location.protocol}//${meetingDomain}${window.location.port ? ':' + window.location.port : ''}`;
+
       // 2. Save to PowerSync / Supabase
       const _payload = {
         id: roomId,
@@ -108,7 +127,7 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
         privacy_type: isPrivate ? 'private' : 'public',
         scheduled_start_time: scheduledStart.toISOString(),
         participants: JSON.stringify(selectedParticipants.map(p => ({ id: p.id, email: p.email, name: p.full_name }))),
-        meeting_link: `${window.location.origin}/join/${roomId}` // generic join link to handle tokens
+        meeting_link: `${customMeetingOrigin}/join/${roomId}`
       };
 
       const _keys = Object.keys(_payload);

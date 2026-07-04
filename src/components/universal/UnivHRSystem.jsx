@@ -7,6 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Users, Building2, Shield, CalendarHeart, UserPlus, Clock, BadgeDollarSign, Target, GraduationCap, AlertCircle, ArrowUpCircle, Wallet } from 'lucide-react';
 import PageHeader from '../shared/PageHeader';
 
+import { powerSync } from '@/api/PowerSyncConnector';
 const UnivHREmployee = React.lazy(() => import('./UnivHREmployee'));
 import UnivDepartments from './UnivDepartments';
 import UnivAccessControl from './UnivAccessControl';
@@ -31,7 +32,10 @@ export default function UnivHRSystem() {
   // Fetch all necessary data for the HR modules
   const { data: staff = [] } = useQuery({
     queryKey: ["staff", companyId],
-    queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }),
+    queryFn: async () => {
+      const res = await powerSync.execute("SELECT id, name as full_name, email, role, department, status, salary, start_date as hire_date, phone, company_id FROM univ_hr_employees WHERE company_id = ?", [companyId]);
+      return res.rows?._array || [];
+    },
     enabled: !!companyId
   });
 

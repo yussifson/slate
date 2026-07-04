@@ -89,7 +89,7 @@ function PromotionFormDialog({ onClose, onSubmit, staff, currency }) {
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   const handleStaffChange = (email) => {
-    const s = staff.find(s => s.user_email === email);
+    const s = staff.find(s => s.email === email);
     set("staff_email", email);
     set("staff_name", s?.full_name || "");
     set("from_role", s?.role || "");
@@ -110,8 +110,8 @@ function PromotionFormDialog({ onClose, onSubmit, staff, currency }) {
             <Label>{t("staff_member", "Staff Member *")}</Label>
             <Select value={form.staff_email || "none"} onValueChange={v => v !== "none" && handleStaffChange(v)}>
               <SelectTrigger><SelectValue placeholder="Select staff..." /></SelectTrigger>
-              <SelectContent>{staff.map(s => {
-                return <SelectItem key={s.user_email} value={s.user_email}>{s.full_name}</SelectItem>;
+              <SelectContent position="popper" className="z-[9999] max-h-60">{staff.map(s => {
+                return <SelectItem key={s.email} value={s.email}>{s.full_name}</SelectItem>;
               })}</SelectContent>
             </Select>
           </div>

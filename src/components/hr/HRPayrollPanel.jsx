@@ -66,7 +66,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
   const bulkGenerate = async () => {
     setGenerating(true);
     const existingEmails = new Set(slips.map(s => s.staff_email));
-    const toGenerate = staff.filter(s => s.status === "active" && s.salary > 0 && !existingEmails.has(s.user_email));
+    const toGenerate = staff.filter(s => s.status === "active" && s.salary > 0 && !existingEmails.has(s.email));
 
     // Create a payroll run record first
     const periodStart = period + "-01";
@@ -87,7 +87,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
       const periodYear = Number(period.split("-")[0]);
       const periodMonth = Number(period.split("-")[1]);
       const leaveDays = (leaves || []).filter(l =>
-        l.staff_email === member.user_email &&
+        l.staff_email === member.email &&
         l.status === "approved" &&
         l.start_date &&
         new Date(l.start_date).getFullYear() === periodYear &&
@@ -102,7 +102,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
 
       await createMutation.mutateAsync({
         company_id: companyId,
-        staff_email: member.user_email,
+        staff_email: member.email,
         staff_name: member.full_name,
         staff_role: member.role,
         department: member.department || "",
@@ -141,7 +141,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
   const draftCount = slips.filter(s => s.status === "draft").length;
   const approvedCount = slips.filter(s => s.status === "approved").length;
   const paidCount = slips.filter(s => s.status === "paid").length;
-  const ungeneratedCount = staff.filter(s => s.status === "active" && s.salary > 0 && !slips.find(sl => sl.staff_email === s.user_email)).length;
+  const ungeneratedCount = staff.filter(s => s.status === "active" && s.salary > 0 && !slips.find(sl => sl.staff_email === s.email)).length;
 
   return (
     <div className="space-y-4">

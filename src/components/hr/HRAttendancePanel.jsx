@@ -60,7 +60,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
   const loadTodayRecords = useCallback(async () => {
     if (!companyId) return;
     const res = await powerSync.execute(
-      "SELECT a.*, s.full_name FROM hr_attendance a LEFT JOIN staff_records s ON a.staff_id = s.id WHERE a.company_id = ? AND a.date = ? ORDER BY a.clock_in DESC",
+      "SELECT a.*, s.name as full_name FROM hr_attendance a LEFT JOIN univ_hr_employees s ON a.staff_id = s.id WHERE a.company_id = ? AND a.date = ? ORDER BY a.clock_in DESC",
       [companyId, today]
     );
     const rows = res.rows?._array || [];
@@ -72,7 +72,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
   const loadHistory = useCallback(async () => {
     if (!companyId) return;
     const res = await powerSync.execute(
-      "SELECT a.*, s.full_name FROM hr_attendance a LEFT JOIN staff_records s ON a.staff_id = s.id WHERE a.company_id = ? ORDER BY a.date DESC, a.clock_in DESC LIMIT 200",
+      "SELECT a.*, s.name as full_name FROM hr_attendance a LEFT JOIN univ_hr_employees s ON a.staff_id = s.id WHERE a.company_id = ? ORDER BY a.date DESC, a.clock_in DESC LIMIT 200",
       [companyId]
     );
     setHistoryRecords(res.rows?._array || []);

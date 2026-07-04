@@ -10,6 +10,7 @@ import { isDesktopApp } from '@/lib/domainUtils';
 const Router = isDesktopApp() ? HashRouter : BrowserRouter;
 import PageNotFound from './lib/PageNotFound';
 const JoinMeeting = React.lazy(() => import('@/pages/JoinMeeting'));
+const StandaloneMeeting = React.lazy(() => import('@/pages/StandaloneMeeting'));
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import { ImpersonationProvider } from '@/lib/ImpersonationContext';
@@ -1104,8 +1105,8 @@ import { CapacitorUpdater } from '@capgo/capacitor-updater';
 function App() {
   const { currentSubdomain } = getSubdomainAndBase();
   const isNativeApp = isDesktopApp();
-  // We want ALL users (even on Native apps) to see the Marketing layout initially
   const isBaseDomain = currentSubdomain === null;
+  const isMeetDomain = currentSubdomain === 'meet' || window.location.hostname.startsWith('meet.');
 
   useEffect(() => {
     initPowerSync().catch(console.error);
@@ -1126,7 +1127,12 @@ function App() {
               <GlobalSystemListener />
               <ErrorBoundary>
                 <React.Suspense fallback={<PageLoader label="Loading Module..." />}>
-                  {isBaseDomain ? (
+                  {isMeetDomain ? (
+                    <Routes>
+                      <Route path="/join/:roomId" element={<StandaloneMeeting />} />
+                      <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
+                  ) : isBaseDomain ? (
                     /* Storefront Routes for the Base Domain */
                     <Routes>
                       <Route element={<MarketingLayout><Outlet /></MarketingLayout>}>

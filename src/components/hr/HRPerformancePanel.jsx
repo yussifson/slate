@@ -47,7 +47,7 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
   const loadReviews = useCallback(async () => {
     if (!companyId) return;
     const res = await powerSync.execute(
-      "SELECT r.*, s.full_name FROM hr_performance_reviews r LEFT JOIN staff_records s ON r.staff_id = s.id WHERE r.company_id = ? ORDER BY r.created_at DESC",
+      "SELECT r.*, s.name as full_name FROM hr_performance_reviews r LEFT JOIN univ_hr_employees s ON r.staff_id = s.id WHERE r.company_id = ? ORDER BY r.created_at DESC",
       [companyId]
     );
     setReviews(res.rows?._array || []);
@@ -233,7 +233,7 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
                 <Label>Employee *</Label>
                 <Select value={form.staff_id} onValueChange={v => setForm(f => ({ ...f, staff_id: v }))}>
                   <SelectTrigger><SelectValue placeholder="Select employee" /></SelectTrigger>
-                  <SelectContent>{staff.map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}</SelectContent>
+                  <SelectContent position="popper" className="z-[9999] max-h-60">{staff.map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div>
@@ -244,7 +244,7 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
                 <Label>Review Type</Label>
                 <Select value={form.type} onValueChange={v => setForm(f => ({ ...f, type: v }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{REVIEW_TYPES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                  <SelectContent position="popper" className="z-[9999] max-h-60">{REVIEW_TYPES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div>
@@ -255,7 +255,7 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
                 <Label>Status</Label>
                 <Select value={form.status} onValueChange={v => setForm(f => ({ ...f, status: v }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
+                  <SelectContent position="popper" className="z-[9999] max-h-60">
                     <SelectItem value="draft">Draft</SelectItem>
                     <SelectItem value="submitted">Submitted</SelectItem>
                     <SelectItem value="approved">Approved</SelectItem>

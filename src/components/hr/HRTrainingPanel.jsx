@@ -55,7 +55,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
     if (!companyId) return;
     const cr = await powerSync.execute("SELECT * FROM hr_training_courses WHERE company_id = ? ORDER BY created_at DESC", [companyId]);
     const rr = await powerSync.execute(
-      "SELECT r.*, c.title as course_title, c.category, c.is_mandatory, s.full_name FROM hr_training_records r LEFT JOIN hr_training_courses c ON r.course_id = c.id LEFT JOIN staff_records s ON r.staff_id = s.id WHERE r.company_id = ? ORDER BY r.created_at DESC",
+      "SELECT r.*, c.title as course_title, c.category, c.is_mandatory, s.name as full_name FROM hr_training_records r LEFT JOIN hr_training_courses c ON r.course_id = c.id LEFT JOIN univ_hr_employees s ON r.staff_id = s.id WHERE r.company_id = ? ORDER BY r.created_at DESC",
       [companyId]
     );
     setCourses(cr.rows?._array || []);
@@ -357,14 +357,14 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
                 <Label>Category</Label>
                 <Select value={courseForm.category} onValueChange={v => setCourseForm(f => ({ ...f, category: v }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                  <SelectContent position="popper" className="z-[9999] max-h-60">{CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div>
                 <Label>Mandatory?</Label>
                 <Select value={String(courseForm.is_mandatory)} onValueChange={v => setCourseForm(f => ({ ...f, is_mandatory: parseInt(v) }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
+                  <SelectContent position="popper" className="z-[9999] max-h-60">
                     <SelectItem value="0">Optional</SelectItem>
                     <SelectItem value="1">Mandatory</SelectItem>
                   </SelectContent>
@@ -389,14 +389,14 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
               <Label>Employee *</Label>
               <Select value={enrollForm.staff_id} onValueChange={v => setEnrollForm(f => ({ ...f, staff_id: v }))}>
                 <SelectTrigger><SelectValue placeholder="Select employee" /></SelectTrigger>
-                <SelectContent>{staff.map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}</SelectContent>
+                <SelectContent position="popper" className="z-[9999] max-h-60">{staff.map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div>
               <Label>Course *</Label>
               <Select value={enrollForm.course_id} onValueChange={v => setEnrollForm(f => ({ ...f, course_id: v }))}>
                 <SelectTrigger><SelectValue placeholder="Select course" /></SelectTrigger>
-                <SelectContent>{courses.map(c => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}</SelectContent>
+                <SelectContent position="popper" className="z-[9999] max-h-60">{courses.map(c => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div><Label>Certification Expiry (optional)</Label><Input type="date" value={enrollForm.expiry_date} onChange={e => setEnrollForm(f => ({ ...f, expiry_date: e.target.value }))} /></div>

@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -25,7 +25,9 @@ export default function HRSalaryPanel({ companyId, staff, currency, isAdmin }) {
   const [editing, setEditing] = useState(null);
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.StaffRecord.update(id, data),
+    mutationFn: async ({ id, data }) => {
+      await powerSync.execute("UPDATE univ_hr_employees SET salary = ? WHERE id = ?", [data.salary, id]);
+    },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["staff", companyId] }); setEditing(null); }});
 
   const totalPayroll = staff.filter(s => s.status === "active").reduce((s, m) => s + (m.salary || 0), 0);

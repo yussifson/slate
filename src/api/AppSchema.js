@@ -810,7 +810,13 @@ export const AppSchema = new Schema({
         company_id: column.text,
         name: column.text,
         case_type: column.text,
+        description: column.text,
+        category: column.text,
         stages: column.text,
+        item_label: column.text,
+        color: column.text,
+        icon: column.text,
+        is_active: column.text,
         is_default: column.text}),
     case_pipeline_states: new Table({
         id: column.text,

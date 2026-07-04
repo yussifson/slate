@@ -232,15 +232,18 @@ export const SCHEMA_COLUMNS = {
     "id",
     "created_at",
     "updated_at",
+    "created_by",
     "company_id",
     "name",
+    "case_type",
     "description",
     "category",
     "stages",
     "item_label",
     "color",
     "icon",
-    "is_active"
+    "is_active",
+    "is_default"
   ],
   "expenses": [
     "id",

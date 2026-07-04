@@ -173,10 +173,10 @@ function PipelineItemCard({ item, provided, snapshot, itemLabel }) {
     <div
       ref={provided.innerRef}
       {...provided.draggableProps}
-      className={`relative bg-card/80 backdrop-blur-md border border-white/10 dark:border-white/5 rounded-2xl p-4 text-xs space-y-3 group cursor-pointer transition-all duration-200 ${
+      className={`relative bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl p-4 text-xs space-y-3 group cursor-pointer transition-all duration-200 ${
         snapshot.isDragging
-          ? "border-primary/50 shadow-2xl shadow-primary/10 rotate-2 scale-105 z-50 bg-card"
-          : "hover:border-primary/30 hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-white/5 shadow-sm hover:-translate-y-0.5"
+          ? "border-primary/50 shadow-lg shadow-primary/5 rotate-2 scale-105 z-50 bg-card"
+          : "hover:border-primary/30 hover:shadow-md shadow-sm hover:-translate-y-0.5"
       }`}
     >
       <div className="flex items-start gap-2">
@@ -361,7 +361,7 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
             {stages.map(stage => {
               const cards = stageItems[stage.id] || [];
               return (
-                <div key={stage.id} className="w-[320px] shrink-0 flex flex-col gap-4 bg-background/40 backdrop-blur-2xl p-4 rounded-3xl border border-white/20 dark:border-white/5 shadow-2xl shadow-black/5 max-h-full">
+                <div key={stage.id} className="w-[320px] shrink-0 flex flex-col gap-4 bg-background/60 backdrop-blur-md p-4 rounded-3xl border border-border/50 shadow-sm max-h-full">
                   {/* Stage header */}
                   <div className="flex items-center gap-3 px-2">
                     <div className="relative flex items-center justify-center w-5 h-5">

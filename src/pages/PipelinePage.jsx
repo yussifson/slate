@@ -651,9 +651,9 @@ export default function PipelinePage() {
   const pipelineItems = pipelineStates.filter(s => s.pipeline_id === activePipeline?.id);
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-[calc(100vh-100px)] overflow-hidden">
       {/* Main content */}
-      <div className="flex-1 min-w-0 overflow-auto">
+      <div className="flex-1 min-w-0 overflow-y-auto">
         <div className="p-3 md:p-6 space-y-4">
           <PageHeader
             title="Pipelines"
