@@ -62,8 +62,17 @@ export default function UnivHREmployee() {
  const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
  setEmployees(data || []);
  
- const depRes = await powerSync.execute(`SELECT name FROM univ_hr_departments WHERE company_id = ? ORDER BY name ASC`, [companyId]);
- setDepartments(depRes.rows ? (depRes.rows._array || Array.from(depRes.rows)).map(d => d.name) : []);
+  const depRes = await powerSync.execute(`SELECT name FROM univ_hr_departments WHERE company_id = ? ORDER BY name ASC`, [companyId]);
+  const customDepts = depRes.rows ? (depRes.rows._array || Array.from(depRes.rows)).map(d => d.name) : [];
+  
+  let predefinedDepts = [];
+  try {
+    const ind = await import('@/config/industries');
+    const defaultDepts = ind.INDUSTRIES[activeIndustry]?.departments || ind.INDUSTRIES.law.departments || [];
+    predefinedDepts = defaultDepts.map(d => d.label);
+  } catch(e) {}
+  
+  setDepartments(Array.from(new Set([...predefinedDepts, ...customDepts])));
 
  const roleRes = await powerSync.execute(`SELECT role_name FROM univ_roles WHERE company_id = ? ORDER BY role_name ASC`, [companyId]);
  const customRoles = roleRes.rows ? (roleRes.rows._array || Array.from(roleRes.rows)).map(r => r.role_name) : [];

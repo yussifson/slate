@@ -126,21 +126,21 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 p-6 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-primary p-6 text-primary-foreground">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-4 -right-4 w-32 h-32 bg-white/10 rounded-full" />
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-xl font-bold">Training & Learning</h2>
-              <p className="text-emerald-100 text-sm">{courses.length} courses · {records.length} enrollments · {overallPct}% overall completion</p>
+              <p className="text-primary-foreground/80 text-sm">{courses.length} courses · {records.length} enrollments · {overallPct}% overall completion</p>
             </div>
             {isAdmin && (
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30" onClick={() => setShowEnrollForm(true)}>
                   <Users className="w-4 h-4 mr-1" /> Enroll Staff
                 </Button>
-                <Button size="sm" className="bg-white text-emerald-700 hover:bg-white/90" onClick={() => setShowCourseForm(true)}>
+                <Button size="sm" className="bg-background text-primary hover:bg-background/90" onClick={() => setShowCourseForm(true)}>
                   <Plus className="w-4 h-4 mr-1" /> New Course
                 </Button>
               </div>
@@ -156,9 +156,9 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
               { label: "Not Started", value: notStartedCount, icon: RefreshCw },
             ].map(({ label, value, icon: Icon }) => (
               <div key={label} className="bg-white/15 rounded-xl p-3 text-center">
-                <Icon className="w-4 h-4 mx-auto mb-1 text-emerald-200" />
+                <Icon className="w-4 h-4 mx-auto mb-1 text-primary-foreground/90" />
                 <p className="text-xl font-bold">{value}</p>
-                <p className="text-xs text-emerald-200">{label}</p>
+                <p className="text-xs text-primary-foreground/90">{label}</p>
               </div>
             ))}
           </div>
@@ -237,8 +237,8 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
                         </td>
                         <td className="px-4 py-3">
                           {isAdmin && r.status !== "completed" && (
-                            <Button size="sm" variant="ghost" className="h-7 text-xs text-emerald-600 hover:bg-emerald-50" onClick={() => setShowUpdateForm(r)}>
-                              Update
+                            <Button size="sm" variant="ghost" className="h-7 text-xs text-primary hover:bg-primary/10" onClick={() => setShowUpdateForm(r)}>
+                              Update Status
                             </Button>
                           )}
                           {r.status === "completed" && (
@@ -270,8 +270,8 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
                 return (
                   <div key={course.id} className="bg-card border border-border rounded-2xl p-5 hover:shadow-lg transition-all">
                     <div className="flex items-start justify-between mb-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center">
-                        <BookOpen className="w-5 h-5 text-white" />
+                      <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+                        <BookOpen className="w-5 h-5 text-primary-foreground" />
                       </div>
                       <div className="flex flex-col items-end gap-1">
                         <ProgressRing pct={pct} size={48} />
@@ -333,7 +333,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
                           <span className="text-xs text-muted-foreground">{s.completed}/{s.total}</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-1.5">
-                          <div className={`h-1.5 rounded-full transition-all ${s.pct >= 80 ? "bg-green-500" : s.pct >= 40 ? "bg-amber-500" : "bg-slate-400"}`} style={{ width: `${s.pct}%` }} />
+                          <div className={`h-1.5 rounded-full transition-all ${s.pct >= 80 ? "bg-primary" : s.pct >= 40 ? "bg-amber-500" : "bg-slate-400"}`} style={{ width: `${s.pct}%` }} />
                         </div>
                       </div>
                       <ProgressRing pct={s.pct} size={40} />

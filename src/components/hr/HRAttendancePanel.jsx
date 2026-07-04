@@ -142,19 +142,19 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-teal-500 to-cyan-600 p-6 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-primary p-6 text-primary-foreground">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-4 -right-4 w-32 h-32 bg-white/10 rounded-full" />
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-xl font-bold">Attendance</h2>
-              <p className="text-teal-100 text-sm">{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</p>
+              <p className="text-primary-foreground/80 text-sm">{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</p>
             </div>
             <div className="flex gap-6 text-center">
-              <div><p className="text-2xl font-bold">{totalPresent}</p><p className="text-xs text-teal-200">Present</p></div>
-              <div><p className="text-2xl font-bold">{totalLate}</p><p className="text-xs text-teal-200">Late</p></div>
-              <div><p className="text-2xl font-bold">{totalAbsent}</p><p className="text-xs text-teal-200">Absent</p></div>
+              <div><p className="text-2xl font-bold">{totalPresent}</p><p className="text-xs text-primary-foreground/90">Present</p></div>
+              <div><p className="text-2xl font-bold">{totalLate}</p><p className="text-xs text-primary-foreground/90">Late</p></div>
+              <div><p className="text-2xl font-bold">{totalAbsent}</p><p className="text-xs text-primary-foreground/90">Absent</p></div>
             </div>
           </div>
 
@@ -162,15 +162,15 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
           <div className="bg-white/15 backdrop-blur rounded-xl p-4 flex items-center justify-between">
             <div>
               <p className="font-semibold text-sm">My Attendance Today</p>
-              <p className="text-teal-100 text-xs mt-0.5">
+              <p className="text-primary-foreground/80 text-xs mt-0.5">
                 {myRecord ? (
                   <>In: {formatTime(myRecord.clock_in)} {myRecord.clock_out ? `· Out: ${formatTime(myRecord.clock_out)}` : "· Still clocked in"}</>
                 ) : "Not clocked in yet"}
               </p>
-              {gpsStatus && <p className="text-teal-200 text-xs mt-1 flex items-center gap-1"><MapPin className="w-3 h-3" />{gpsStatus}</p>}
+              {gpsStatus && <p className="text-primary-foreground/90 text-xs mt-1 flex items-center gap-1"><MapPin className="w-3 h-3" />{gpsStatus}</p>}
             </div>
             {!myRecord ? (
-              <Button size="sm" className="bg-white text-teal-700 hover:bg-white/90 gap-2" onClick={clockIn} disabled={clockingIn}>
+              <Button size="sm" className="bg-background text-primary hover:bg-background/90 gap-2" onClick={clockIn} disabled={clockingIn}>
                 <LogIn className="w-4 h-4" />{clockingIn ? "Clocking in..." : "Clock In"}
               </Button>
             ) : !myRecord.clock_out ? (
@@ -200,7 +200,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {boardData.map(member => (
                 <div key={member.id} className="bg-card border border-border rounded-xl p-4 flex items-center gap-3 hover:shadow-md transition-all">
-                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                  <div className="w-11 h-11 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm flex-shrink-0">
                     {avatarInitials(member.full_name)}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -210,7 +210,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
                       <p className="text-xs text-muted-foreground">Out: {formatTime(member.record.clock_out)} · {hoursWorked(member.record.clock_in, member.record.clock_out)}h</p>
                     )}
                     {member.record?.location_lat && (
-                      <p className="text-xs text-teal-600 flex items-center gap-1"><MapPin className="w-2.5 h-2.5" />GPS tracked</p>
+                      <p className="text-xs text-primary flex items-center gap-1"><MapPin className="w-2.5 h-2.5" />GPS tracked</p>
                     )}
                   </div>
                   <StatusBadge status={member.record?.status || "absent"} />

@@ -47,8 +47,8 @@ export default function CustomDepartmentsSettings() {
           [formData.name, formData.description, formData.id]);
         toast.success('Department updated');
       } else {
-        await powerSync.execute("INSERT INTO univ_hr_departments (id, company_id, name, description, created_at) VALUES (uuid(), ?, ?, ?, datetime('now'))", 
-          [companyId, formData.name, formData.description]);
+        await powerSync.execute("INSERT INTO univ_hr_departments (id, company_id, name, description, created_at) VALUES (?, ?, ?, ?, ?)", 
+          [crypto.randomUUID(), companyId, formData.name, formData.description, new Date().toISOString()]);
         toast.success('Department created');
       }
       setIsModalOpen(false);

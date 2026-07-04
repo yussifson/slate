@@ -37,19 +37,19 @@ export default function UnivHRSystem() {
 
   const { data: leaves = [] } = useQuery({
     queryKey: ["leaves", companyId],
-    queryFn: () => base44.entities.LeaveRequest.filter({ company_id: companyId }, "-created_date", 200),
+    queryFn: () => base44.entities.LeaveRequest.filter({ company_id: companyId }, "-created_at", 200),
     enabled: !!companyId
   });
 
   const { data: complaints = [] } = useQuery({
     queryKey: ["complaints", companyId],
-    queryFn: () => base44.entities.HRComplaint.filter({ company_id: companyId }, "-created_date", 100),
+    queryFn: () => base44.entities.HRComplaint.filter({ company_id: companyId }, "-created_at", 100),
     enabled: !!companyId
   });
 
   const { data: promotions = [] } = useQuery({
     queryKey: ["promotions", companyId],
-    queryFn: () => base44.entities.Promotion.filter({ company_id: companyId }, "-created_date", 100),
+    queryFn: () => base44.entities.Promotion.filter({ company_id: companyId }, "-created_at", 100),
     enabled: !!companyId
   });
 
