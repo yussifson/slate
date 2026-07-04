@@ -35,9 +35,10 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
 
   const loadEmployees = async () => {
     try {
-      const [staffRes, clientsRes] = await Promise.all([
+      const [staffRes, clientsRes, crmRes] = await Promise.all([
         supabase.from('univ_hr_employees').select('id, name, email').eq('company_id', companyId),
         supabase.from('clients').select('id, name, email').eq('company_id', companyId),
+        supabase.from('univ_crm_leads').select('id, first_name, last_name, email').eq('company_id', companyId)
       ]);
       const staffMembers = (staffRes.data || []).map(s => ({
         ...s,
@@ -51,7 +52,13 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
         email: c.email,
         type: 'client'
       }));
-      setEmployees([...staffMembers, ...clientMembers]);
+      const crmMembers = (crmRes.data || []).map(c => ({
+        ...c,
+        full_name: `${c.first_name || ''} ${c.last_name || ''}`.trim() || 'Unnamed Client',
+        email: c.email,
+        type: 'client'
+      }));
+      setEmployees([...staffMembers, ...clientMembers, ...crmMembers]);
     } catch (err) {
       console.error('Failed to load participants:', err);
     }

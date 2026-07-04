@@ -14,6 +14,11 @@ import {
   Minimize2, AlertCircle, FileQuestion
 } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
+import * as pdfjsLib from "pdfjs-dist";
+import pdfWorker from "pdfjs-dist/build/pdf.worker.mjs?url";
+
+// Configure worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
 // ─── Detect file type from URL or extension ─────────────────────────────────
 function getFileType(doc) {
@@ -198,10 +203,6 @@ export default function SmartDocumentViewer({ doc, onClose }) {
       setIsExtracting(true);
       try {
         if (fileType === 'pdf') {
-          const pdfjsLib = await import('pdfjs-dist');
-          // Use the locally bundled worker to avoid CDN 404 errors
-          const pdfWorker = await import('pdfjs-dist/build/pdf.worker.mjs?url');
-          pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker.default;
           const loadingTask = pdfjsLib.getDocument({ url: doc.file_url });
           const pdf = await loadingTask.promise;
           let text = '';
