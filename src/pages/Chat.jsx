@@ -14,6 +14,7 @@ import AddChatDialog from "@/components/chat/AddChatDialog";
 import { useToast} from "@/components/ui/use-toast";
 import { format} from "date-fns";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
+import { useUIPreference } from "@/hooks/useUIPreference";
 
 export default function Chat() {
  const { t} = useTranslation();
@@ -36,7 +37,7 @@ export default function Chat() {
  const [isSummarizing, setIsSummarizing] = useState(false);
  const [chatSummary, setChatSummary] = useState(null);
  const [searchQuery, setSearchQuery] = useState("");
- const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+ const [isSidebarCollapsed, setIsSidebarCollapsed] = useUIPreference(user, 'chatSidebarCollapsed', false);
 
  const messagesEndRef = useRef(null);
  const fileInputRef = useRef(null);

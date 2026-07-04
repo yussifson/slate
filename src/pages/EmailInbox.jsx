@@ -18,6 +18,7 @@ import { formatDistanceToNow, format} from "date-fns";
 import { cn} from "@/lib/utils";
 import { generateText} from "@/lib/cloudflareAI";
 import { toast } from "react-hot-toast";
+import { useUIPreference } from "@/hooks/useUIPreference";
 
 export default function EmailInbox() {
  const { t} = useTranslation();
@@ -26,7 +27,7 @@ export default function EmailInbox() {
  const queryClient = useQueryClient();
 
  const [activeTab, setActiveTab] = useState("inbox");
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useUIPreference(user, 'emailSidebarCollapsed', false);
  const [selectedEmail, setSelectedEmail] = useState(null);
  const [showCompose, setShowCompose] = useState(false);
  const [isComposeMinimized, setIsComposeMinimized] = useState(false);
