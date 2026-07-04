@@ -1,11 +1,16 @@
 import React, { useState, Suspense } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
+import { isSuperAdmin } from '@/lib/constants';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Users, Building2, Shield, CalendarHeart, UserPlus, Clock, BadgeDollarSign, Target, GraduationCap, AlertCircle, ArrowUpCircle, Wallet } from 'lucide-react';
+import PageHeader from '../shared/PageHeader';
+
 const UnivHREmployee = React.lazy(() => import('./UnivHREmployee'));
 import UnivDepartments from './UnivDepartments';
 import UnivAccessControl from './UnivAccessControl';
 import UnivLeaveManagement from './UnivLeaveManagement';
-import { Users, Building2, Shield, CalendarHeart, UserPlus, Clock, BadgeDollarSign, Target, GraduationCap, AlertCircle, ArrowUpCircle, Wallet } from 'lucide-react';
-import PageHeader from '../shared/PageHeader';
 
 const HRRecruitmentPanel = React.lazy(() => import('../hr/HRRecruitmentPanel'));
 const HRAttendancePanel = React.lazy(() => import('../hr/HRAttendancePanel'));
@@ -18,47 +23,118 @@ const HRSalaryPanel = React.lazy(() => import('../hr/HRSalaryPanel'));
 
 export default function UnivHRSystem() {
   const [activeTab, setActiveTab] = useState("employees");
+  const { user } = useAuth();
+  const companyId = user?.company_id;
+  const isAdmin = user?.role === "company_admin" || user?.role === "hr" || isSuperAdmin(user);
+  const currency = "USD"; // Fallback for components that expect it
+
+  // Fetch all necessary data for the HR modules
+  const { data: staff = [] } = useQuery({
+    queryKey: ["staff", companyId],
+    queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }),
+    enabled: !!companyId
+  });
+
+  const { data: leaves = [] } = useQuery({
+    queryKey: ["leaves", companyId],
+    queryFn: () => base44.entities.LeaveRequest.filter({ company_id: companyId }, "-created_date", 200),
+    enabled: !!companyId
+  });
+
+  const { data: complaints = [] } = useQuery({
+    queryKey: ["complaints", companyId],
+    queryFn: () => base44.entities.HRComplaint.filter({ company_id: companyId }, "-created_date", 100),
+    enabled: !!companyId
+  });
+
+  const { data: promotions = [] } = useQuery({
+    queryKey: ["promotions", companyId],
+    queryFn: () => base44.entities.Promotion.filter({ company_id: companyId }, "-created_date", 100),
+    enabled: !!companyId
+  });
 
   return (
-    <div className="w-full">
-      <div className="pb-6 shrink-0">
+    <div className="w-full flex flex-col h-full">
+      <div className="pb-4 shrink-0">
         <PageHeader title="HR & Leave" subtitle="Manage your staff, departments, roles, and leave policies in one place." />
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6 w-full">
-          <TabsList className="bg-muted p-1 rounded-xl flex flex-wrap gap-1 justify-start w-full">
-            <TabsTrigger value="employees" className="rounded-lg text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm flex items-center gap-2"><Users className="w-4 h-4" /><span className="hidden sm:inline">Employees</span></TabsTrigger>
-            <TabsTrigger value="departments" className="rounded-lg text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm flex items-center gap-2"><Building2 className="w-4 h-4" /><span className="hidden sm:inline">Departments</span></TabsTrigger>
-            <TabsTrigger value="roles" className="rounded-lg text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm flex items-center gap-2"><Shield className="w-4 h-4" /><span className="hidden sm:inline">Roles</span></TabsTrigger>
-            <TabsTrigger value="leave" className="rounded-lg text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm flex items-center gap-2"><CalendarHeart className="w-4 h-4" /><span className="hidden sm:inline">Leave</span></TabsTrigger>
-            <TabsTrigger value="attendance" className="rounded-lg text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm flex items-center gap-2"><Clock className="w-4 h-4" /><span className="hidden sm:inline">Attendance</span></TabsTrigger>
-            <TabsTrigger value="payroll" className="rounded-lg text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm flex items-center gap-2"><BadgeDollarSign className="w-4 h-4" /><span className="hidden sm:inline">Payroll</span></TabsTrigger>
-            <TabsTrigger value="performance" className="rounded-lg text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm flex items-center gap-2"><Target className="w-4 h-4" /><span className="hidden sm:inline">Performance</span></TabsTrigger>
-            <TabsTrigger value="training" className="rounded-lg text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm flex items-center gap-2"><GraduationCap className="w-4 h-4" /><span className="hidden sm:inline">Training</span></TabsTrigger>
-            <TabsTrigger value="recruitment" className="rounded-lg text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm flex items-center gap-2"><UserPlus className="w-4 h-4" /><span className="hidden sm:inline">Recruitment</span></TabsTrigger>
-            <TabsTrigger value="complaints" className="rounded-lg text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm flex items-center gap-2"><AlertCircle className="w-4 h-4" /><span className="hidden sm:inline">Complaints</span></TabsTrigger>
-            <TabsTrigger value="promotions" className="rounded-lg text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm flex items-center gap-2"><ArrowUpCircle className="w-4 h-4" /><span className="hidden sm:inline">Promotions</span></TabsTrigger>
-            <TabsTrigger value="salary" className="rounded-lg text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm flex items-center gap-2"><Wallet className="w-4 h-4" /><span className="hidden sm:inline">Salary</span></TabsTrigger>
-          </TabsList>
-        </Tabs>
+        
+        {/* Enterprise-style horizontal scrolling tabs */}
+        <div className="mt-6 border-b border-border/60">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="bg-transparent p-0 w-full flex justify-start overflow-x-auto overflow-y-hidden whitespace-nowrap gap-1 md:gap-3 scrollbar-hide h-auto rounded-none border-0">
+              
+              <TabsTrigger value="employees" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
+                <Users className="w-4 h-4 opacity-70" />Employees
+              </TabsTrigger>
+              
+              <TabsTrigger value="departments" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
+                <Building2 className="w-4 h-4 opacity-70" />Departments
+              </TabsTrigger>
+              
+              <TabsTrigger value="roles" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
+                <Shield className="w-4 h-4 opacity-70" />Roles
+              </TabsTrigger>
+              
+              <TabsTrigger value="leave" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
+                <CalendarHeart className="w-4 h-4 opacity-70" />Leave
+              </TabsTrigger>
+              
+              <TabsTrigger value="attendance" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
+                <Clock className="w-4 h-4 opacity-70" />Attendance
+              </TabsTrigger>
+              
+              <TabsTrigger value="payroll" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
+                <BadgeDollarSign className="w-4 h-4 opacity-70" />Payroll
+              </TabsTrigger>
+              
+              <TabsTrigger value="performance" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
+                <Target className="w-4 h-4 opacity-70" />Performance
+              </TabsTrigger>
+              
+              <TabsTrigger value="training" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
+                <GraduationCap className="w-4 h-4 opacity-70" />Training
+              </TabsTrigger>
+              
+              <TabsTrigger value="recruitment" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
+                <UserPlus className="w-4 h-4 opacity-70" />Recruitment
+              </TabsTrigger>
+              
+              <TabsTrigger value="complaints" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
+                <AlertCircle className="w-4 h-4 opacity-70" />Complaints
+              </TabsTrigger>
+              
+              <TabsTrigger value="promotions" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
+                <ArrowUpCircle className="w-4 h-4 opacity-70" />Promotions
+              </TabsTrigger>
+              
+              <TabsTrigger value="salary" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
+                <Wallet className="w-4 h-4 opacity-70" />Salary
+              </TabsTrigger>
+
+            </TabsList>
+          </Tabs>
+        </div>
       </div>
 
-      <div className="flex-1 w-full pb-8">
+      <div className="flex-1 w-full pb-8 pt-4">
         {activeTab === 'employees' && (
-          <Suspense fallback={<div className="flex items-center justify-center py-20 text-[#71717a] dark:text-gray-400">Loading Employees...</div>}>
+          <Suspense fallback={<div className="flex items-center justify-center py-20 text-muted-foreground text-sm">Loading Employees...</div>}>
             <UnivHREmployee />
           </Suspense>
         )}
         {activeTab === 'departments' && <UnivDepartments />}
         {activeTab === 'roles' && <UnivAccessControl />}
         {activeTab === 'leave' && <UnivLeaveManagement />}
-        <Suspense fallback={<div className="flex items-center justify-center py-20 text-[#71717a]">Loading...</div>}>
-          {activeTab === 'attendance' && <HRAttendancePanel />}
-          {activeTab === 'payroll' && <HRPayrollPanel />}
-          {activeTab === 'performance' && <HRPerformancePanel />}
-          {activeTab === 'training' && <HRTrainingPanel />}
-          {activeTab === 'recruitment' && <HRRecruitmentPanel />}
-          {activeTab === 'complaints' && <HRComplaintsPanel />}
-          {activeTab === 'promotions' && <HRPromotionsPanel />}
-          {activeTab === 'salary' && <HRSalaryPanel />}
+        
+        <Suspense fallback={<div className="flex items-center justify-center py-20 text-muted-foreground text-sm">Loading Panel...</div>}>
+          {activeTab === 'attendance' && <HRAttendancePanel companyId={companyId} staff={staff} isAdmin={isAdmin} user={user} />}
+          {activeTab === 'payroll' && <HRPayrollPanel companyId={companyId} staff={staff} currency={currency} isAdmin={isAdmin} leaves={leaves} user={user} />}
+          {activeTab === 'performance' && <HRPerformancePanel companyId={companyId} staff={staff} isAdmin={isAdmin} user={user} />}
+          {activeTab === 'training' && <HRTrainingPanel companyId={companyId} staff={staff} isAdmin={isAdmin} user={user} />}
+          {activeTab === 'recruitment' && <HRRecruitmentPanel companyId={companyId} staff={staff} isAdmin={isAdmin} user={user} />}
+          {activeTab === 'complaints' && <HRComplaintsPanel companyId={companyId} complaints={complaints} staff={staff} isAdmin={isAdmin} user={user} />}
+          {activeTab === 'promotions' && <HRPromotionsPanel companyId={companyId} promotions={promotions} staff={staff} currency={currency} isAdmin={isAdmin} user={user} />}
+          {activeTab === 'salary' && <HRSalaryPanel companyId={companyId} staff={staff} currency={currency} isAdmin={isAdmin} user={user} />}
         </Suspense>
       </div>
     </div>
