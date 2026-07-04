@@ -6223,6 +6223,7 @@ export const AppSchema = new Schema({
         created_by: column.text,
         comment_text: column.text,
         created_at: column.text,
+        updated_at: column.text,
         created_date: column.text
     }),
     univ_task_checklists: new Table({
@@ -6233,6 +6234,7 @@ export const AppSchema = new Schema({
         is_completed: column.text,
         created_by: column.text,
         created_at: column.text,
+        updated_at: column.text,
         created_date: column.text
     }),
     univ_task_attachments: new Table({
@@ -6244,6 +6246,7 @@ export const AppSchema = new Schema({
         file_size: column.text,
         created_by: column.text,
         created_at: column.text,
+        updated_at: column.text,
         created_date: column.text
     }),
     optavel_transactions: new Table({
