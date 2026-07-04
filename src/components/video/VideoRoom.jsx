@@ -13,11 +13,14 @@ import {
  useParticipant,
  useActiveSpeakerId
 } from '@daily-co/daily-react';
-import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink, MessageSquare, Send, X, UserPlus, Mail} from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink, MessageSquare, Send, X, UserPlus, Mail, Settings, Check, Copy} from 'lucide-react';
 import { Button} from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { generateText} from "@/lib/cloudflareAI";
 import { useToast} from "@/components/ui/use-toast";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
+import { useTheme } from "@/lib/ThemeContext";
 
 // Inner component that actually uses the Daily hooks
 function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
@@ -37,32 +40,92 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  const [isAiLoading, setIsAiLoading] = useState(false);
  const [aiResponse, setAiResponse] = useState(null);
  const [transcriptData, setTranscriptData] = useState([]);
- const [showInvite, setShowInvite] = useState(false);
- const [inviteEmail, setInviteEmail] = useState("");
+ const [showSettings, setShowSettings] = useState(false);
+ const [isInviteLoading, setIsInviteLoading] = useState(false);
+ const [copiedLink, setCopiedLink] = useState(false);
+ const { theme, changeTheme } = useTheme();
 
- const handleInvite = () => {
- if (!inviteEmail.trim()) return;
- 
- navigator.clipboard.writeText(roomUrl);
- const subject = encodeURIComponent("You're invited to a secure video meeting");
- const body = encodeURIComponent(`Please join my active video meeting here:\n${roomUrl}\n\nNo account is required. When you click the link, just type your name to join!`);
- window.location.href = `mailto:${inviteEmail}?subject=${subject}&body=${body}`;
- 
- toast({ title: "Email Client Opened", description: `Link copied and drafted for ${inviteEmail}.`});
- setInviteEmail("");
- setShowInvite(false);
-};
+ const handleCopyLink = () => {
+   navigator.clipboard.writeText(roomUrl);
+   setCopiedLink(true);
+   toast({ title: "Link Copied", description: "Meeting link copied to clipboard." });
+   setTimeout(() => setCopiedLink(false), 2000);
+ };
 
- useDailyEvent('joined-meeting', () => {
- setJoined(true);
-});
+ const handleInvite = async () => {
+   if (!inviteEmail.trim()) return;
+   setIsInviteLoading(true);
+   try {
+     const { NotificationService } = await import('@/api/NotificationService');
+     await NotificationService.notifyMeetingInvite(roomUrl, inviteEmail.trim());
+     toast({ title: "Invite Sent", description: `Meeting invite securely sent to ${inviteEmail}.` });
+     setInviteEmail("");
+     setShowInvite(false);
+   } catch (error) {
+     console.error(error);
+     toast({ title: "Invite Failed", description: "Failed to send email invite via Novu.", variant: "destructive" });
+   } finally {
+     setIsInviteLoading(false);
+   }
+ };
+
+  useDailyEvent('joined-meeting', () => {
+   setJoined(true);
+   if (daily) {
+     daily.startTranscription().catch(e => console.warn("Transcription couldn't start", e));
+   }
+  });
+
+  const playSound = (type) => {
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      if (type === 'join') {
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1);
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.05);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + 0.5);
+      } else if (type === 'leave') {
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.1);
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.05);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + 0.5);
+      }
+    } catch (e) {
+      console.warn("Audio Playback failed", e);
+    }
+  };
+
+  useDailyEvent('participant-joined', (ev) => {
+    if (!ev.participant.local) {
+      playSound('join');
+      toast({
+        title: "Participant Joined",
+        description: `${ev.participant.user_name || 'Someone'} joined the meeting.`,
+      });
+    }
+  });
 
  useDailyEvent('left-meeting', () => {
- setJoined(false);
- onLeave();
+  setJoined(false);
+  onLeave();
 });
 
  useDailyEvent('participant-left', (ev) => {
+    playSound('leave');
     toast({
       title: "Participant Left",
       description: `${ev.participant.user_name || 'A participant'} left the meeting.`,
@@ -214,6 +277,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  const [chatMessages, setChatMessages] = useState([]);
  const [chatInput, setChatInput] = useState("");
  const [showChat, setShowChat] = useState(false);
+ const [showAiSidebar, setShowAiSidebar] = useState(false);
 
  // Handle incoming Daily text messages
  useDailyEvent('app-message', (ev) => {
@@ -241,16 +305,6 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  
  {/* Video Content Area */}
  <div className="flex-1 flex flex-col relative min-w-0">
- {/* AI Response Overlay */}
- {aiResponse && (
- <div className="absolute top-4 left-4 right-4 z-40 bg-card/95 backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-xl animate-in fade-in max-h-[80%] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center justify-between mb-3 border-b border-primary/40 pb-2">
- <h3 className="font-semibold flex items-center gap-2 text-primary"><Sparkles className="w-4 h-4"/> AI Meeting Notes</h3>
- <Button variant="ghost" size="sm" onClick={() => setAiResponse(null)} className="h-6 px-2 text-xs tracking-[0.04em]">Close</Button>
- </div>
- <div className="text-sm prose prose-sm dark:prose-invert" dangerouslySetInnerHTML={{ __html: aiResponse.replace(/\n/g, '<br/>')}} />
- </div>
- )}
 
  {/* PiP Toggle Button */}
  <Button 
@@ -338,6 +392,86 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  </div>
  </div>
 
+  {/* Invite Dialog */}
+  <Dialog open={showInvite} onOpenChange={setShowInvite}>
+    <DialogContent className="sm:max-w-md">
+      <DialogHeader>
+        <DialogTitle>Invite People</DialogTitle>
+        <DialogDescription>
+          Share this meeting link or invite participants directly via email.
+        </DialogDescription>
+      </DialogHeader>
+      <div className="flex flex-col gap-6 py-4">
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium">Copy Link</label>
+          <div className="flex gap-2">
+            <Input readOnly value={roomUrl} className="bg-muted" />
+            <Button variant="secondary" onClick={() => navigator.clipboard.writeText(roomUrl)} className="w-24">
+              Copy
+            </Button>
+          </div>
+        </div>
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">Or send email</span>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium">Invite via Email (Novu)</label>
+          <div className="flex gap-2">
+            <Input 
+              type="email" 
+              placeholder="participant@company.com" 
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleInvite()}
+            />
+            <Button onClick={handleInvite} disabled={isInviteLoading || !inviteEmail.trim()}>
+              {isInviteLoading ? "Sending..." : "Send Invite"}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </DialogContent>
+  </Dialog>
+
+  {/* Settings Dialog */}
+  <Dialog open={showSettings} onOpenChange={setShowSettings}>
+    <DialogContent className="sm:max-w-md">
+      <DialogHeader>
+        <DialogTitle>Meeting Settings</DialogTitle>
+        <DialogDescription>
+          Customize your meeting experience.
+        </DialogDescription>
+      </DialogHeader>
+      <div className="flex flex-col gap-6 py-4">
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium">Theme Preference</label>
+          <div className="grid grid-cols-2 gap-4">
+            <Button variant={theme === 'light' ? 'default' : 'outline'} onClick={() => changeTheme('light')}>Light Mode</Button>
+            <Button variant={theme === 'dark' ? 'default' : 'outline'} onClick={() => changeTheme('dark')}>Dark Mode</Button>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium">Avatar Color</label>
+          <div className="flex flex-wrap gap-2">
+            {avatarColors.map(color => (
+              <button 
+                key={color} 
+                className={`w-8 h-8 rounded-full ${color} ${daily?.participants()?.local?.userData && JSON.parse(daily.participants().local.userData || '{}').avatarColor === color ? 'ring-2 ring-offset-2 ring-primary' : ''}`}
+                onClick={() => daily?.setUserData(JSON.stringify({ avatarColor: color }))}
+                title="Change Avatar Color"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </DialogContent>
+  </Dialog>
+
  {/* Control Bar */}
  <div className={`bg-card border-t border-primary/40 flex items-center justify-center z-10 transition-all ${isPipMode ? 'h-12 px-2 gap-2' : 'h-20 px-6 gap-4'}`}>
  <Button 
@@ -375,15 +509,24 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  >
  <MessageSquare className="w-5 h-5" />
  </Button>
- <Button 
- onClick={() => setShowInvite(!showInvite)}
- variant={showInvite ? "default" : "secondary"}
- size="icon"
- className="w-12 h-12 rounded-full hidden sm:flex relative"
- title="Quick Connect / Invite"
- >
- <UserPlus className="w-5 h-5" />
- </Button>
+  <Button 
+  onClick={() => setShowInvite(true)}
+  variant="secondary"
+  size="icon"
+  className="w-12 h-12 rounded-full hidden sm:flex relative"
+  title="Invite People"
+  >
+  <UserPlus className="w-5 h-5" />
+  </Button>
+  <Button 
+  onClick={() => setShowSettings(true)}
+  variant="secondary"
+  size="icon"
+  className="w-12 h-12 rounded-full hidden sm:flex relative"
+  title="Settings"
+  >
+  <Settings className="w-5 h-5" />
+  </Button>
  <Button 
   variant="secondary"
   onClick={handleAiAssist}
@@ -410,28 +553,6 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  {isPipMode ? <PhoneOff className="w-3 h-3" /> : <><PhoneOff className="w-5 h-5 mr-2" /> Leave</>}
  </Button>
  </div>
- 
- {/* Invite Sidebar/Popup */}
- {showInvite && !isPipMode && (
- <div className="absolute bottom-24 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-6 w-[340px] bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 z-50 animate-in fade-in slide-in-from-bottom-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center justify-between mb-3">
- <h3 className="font-semibold flex items-center gap-2"><UserPlus className="w-4 h-4 text-primary"/> Quick Connect</h3>
- <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setShowInvite(false)}><X className="w-4 h-4" /></Button>
- </div>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mb-4">Invite external clients or guests instantly to this call. No account required.</p>
- <div className="flex gap-2">
- <input 
- type="email" 
- placeholder="guest@email.com" 
- className="flex-1 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary"
- value={inviteEmail}
- onChange={(e) => setInviteEmail(e.target.value)}
- onKeyDown={(e) => e.key === 'Enter' && handleInvite()}
- />
- <Button onClick={handleInvite} className="font-semibold ">Invite</Button>
- </div>
- </div>
- )}
  </div>
  );
 }
@@ -501,6 +622,18 @@ function ParticipantTile({ id, isLocal, className }) {
   return avatarColors[Math.abs(hash) % avatarColors.length];
  }, [displayName]);
 
+ const customAvatarColor = React.useMemo(() => {
+  if (participant?.userData) {
+    try {
+      const data = typeof participant.userData === 'string' ? JSON.parse(participant.userData) : participant.userData;
+      if (data?.avatarColor) return data.avatarColor;
+    } catch (e) {}
+  }
+  return null;
+ }, [participant?.userData]);
+
+ const finalAvatarColor = customAvatarColor || avatarColor;
+
  useEffect(() => {
  if (videoState?.track && videoRef.current) {
  videoRef.current.srcObject = new MediaStream([videoState.track]);
@@ -524,14 +657,14 @@ function ParticipantTile({ id, isLocal, className }) {
  className="w-full h-full object-cover"
  />
  ) : (
- <div className={`w-24 h-24 ${avatarColor} rounded-full flex items-center justify-center shadow-lg`}>
+ <div className={`w-24 h-24 ${finalAvatarColor} rounded-full flex items-center justify-center shadow-lg`}>
  <span className="text-3xl text-white font-bold tracking-tight">{initials}</span>
  </div>
  )}
  
  {!isLocal && <audio ref={audioRef} autoPlay playsInline />}
  
-  <div className={`absolute bottom-6 left-6 ${avatarColor} px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg ring-2 ring-white/20 dark:ring-black/20 backdrop-blur-md transition-all`}>
+  <div className={`absolute bottom-6 left-6 ${finalAvatarColor} px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg ring-2 ring-white/20 dark:ring-black/20 backdrop-blur-md transition-all`}>
   <span className="text-white text-xs font-bold tracking-wide">{displayName}</span>
   {audioState?.state !== 'playable' && <MicOff className="w-3.5 h-3.5 text-white/90" />}
   </div>

@@ -50,6 +50,49 @@ export const NotificationService = {
     }
   },
 
+  async notifyNewLead(companyId, leadData, recipientEmail) {
+    try {
+      await novu.trigger('new_lead_received', {
+        to: {
+          subscriberId: `${companyId}-${recipientEmail}`,
+          email: recipientEmail
+        },
+        payload: {
+          leadName: leadData.name,
+          leadSource: leadData.source,
+          companyId
+        }
+      });
+      
+      await this.logNotification(companyId, 'new_lead_received', recipientEmail, {
+        leadName: leadData.name
+      });
+    } catch (e) {
+      console.error('[Notification] notifyNewLead failed:', e);
+    }
+  },
+
+  /**
+   * Video Meeting Notifications
+   */
+  async notifyMeetingInvite(roomUrl, recipientEmail) {
+    try {
+      await novu.trigger('meeting_invite', {
+        to: {
+          subscriberId: `meeting-invite-${recipientEmail}`,
+          email: recipientEmail
+        },
+        payload: {
+          roomUrl: roomUrl
+        }
+      });
+      // Optionally log it if there's a specific company, but for external invites we might just fire and forget.
+    } catch (e) {
+      console.error('[Notification] notifyMeetingInvite failed:', e);
+      throw e; // throw so the UI can catch and show a toast
+    }
+  },
+
   async notifyEscrowReleased(companyId, escrowData, recipientEmail) {
     try {
       await novu.trigger('escrow_released', {
