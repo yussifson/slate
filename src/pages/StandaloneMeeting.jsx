@@ -7,7 +7,50 @@ import { DailyProvider } from '@daily-co/daily-react';
 import VideoRoom from '@/components/video/VideoRoom';
 import { useAuth } from '@/lib/AuthContext';
 
+import { Video, Keyboard, Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
 function StandaloneMeetingInner({ url, roomName, onLeave }) {
+  const [hasJoined, setHasJoined] = useState(false);
+  const [guestName, setGuestName] = useState('');
+
+  if (!hasJoined) {
+    return (
+      <div className="w-screen h-screen bg-white dark:bg-[#090E17] flex flex-col items-center justify-center p-4">
+        <div className="max-w-md w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl p-8 shadow-xl text-center space-y-6">
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+            <Video className="w-8 h-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-medium text-slate-900 dark:text-white">Ready to join?</h1>
+            <p className="text-slate-500 mt-2">{roomName || 'Secure Meeting'}</p>
+          </div>
+          
+          <div className="space-y-4 pt-4">
+            <input
+              type="text"
+              placeholder="What's your name?"
+              value={guestName}
+              onChange={(e) => setGuestName(e.target.value)}
+              className="w-full px-4 py-3 bg-white dark:bg-black border border-slate-300 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
+              autoFocus
+            />
+            <Button 
+              className="w-full py-6 text-lg rounded-xl"
+              disabled={!guestName.trim()}
+              onClick={() => {
+                // we can pass guestName to VideoRoom or use daily.setUserName later
+                setHasJoined(true);
+              }}
+            >
+              Ask to join
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // We use VideoRoom component directly but configured for full screen
   return (
     <div className="w-screen h-screen bg-black overflow-hidden flex flex-col relative">

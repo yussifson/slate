@@ -11,6 +11,7 @@ const Router = isDesktopApp() ? HashRouter : BrowserRouter;
 import PageNotFound from './lib/PageNotFound';
 const JoinMeeting = React.lazy(() => import('@/pages/JoinMeeting'));
 const StandaloneMeeting = React.lazy(() => import('@/pages/StandaloneMeeting'));
+const MeetLandingPage = React.lazy(() => import('@/pages/MeetLandingPage'));
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import { ImpersonationProvider } from '@/lib/ImpersonationContext';
@@ -1129,6 +1130,7 @@ function App() {
                 <React.Suspense fallback={<PageLoader label="Loading Module..." />}>
                   {isMeetDomain ? (
                     <Routes>
+                      <Route path="/" element={<MeetLandingPage />} />
                       <Route path="/join/:roomId" element={<StandaloneMeeting />} />
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
