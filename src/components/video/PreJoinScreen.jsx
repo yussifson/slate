@@ -1,0 +1,204 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, Settings, AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
+
+export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
+  const [userName, setUserName] = useState(defaultName);
+  const [isMicOn, setIsMicOn] = useState(true);
+  const [isVideoOn, setIsVideoOn] = useState(true);
+  const [error, setError] = useState(null);
+  
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    let mounted = true;
+
+    const startMedia = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: true, 
+          audio: true 
+        });
+        
+        if (!mounted) {
+          stream.getTracks().forEach(track => track.stop());
+          return;
+        }
+
+        streamRef.current = stream;
+        
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+
+        // Apply initial toggle states
+        stream.getAudioTracks().forEach(track => {
+          track.enabled = isMicOn;
+        });
+        stream.getVideoTracks().forEach(track => {
+          track.enabled = isVideoOn;
+        });
+
+        setError(null);
+      } catch (err) {
+        console.warn("Could not access camera/mic for pre-join preview", err);
+        if (mounted) {
+          // If they explicitly denied, or no device found
+          setError("Camera or microphone access denied. You can still join without them.");
+          setIsMicOn(false);
+          setIsVideoOn(false);
+        }
+      }
+    };
+
+    startMedia();
+
+    return () => {
+      mounted = false;
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []); // Run once on mount
+
+  // Toggle handlers for the preview tracks
+  const toggleMic = () => {
+    const newState = !isMicOn;
+    setIsMicOn(newState);
+    if (streamRef.current) {
+      streamRef.current.getAudioTracks().forEach(track => {
+        track.enabled = newState;
+      });
+    }
+  };
+
+  const toggleVideo = () => {
+    const newState = !isVideoOn;
+    setIsVideoOn(newState);
+    if (streamRef.current) {
+      streamRef.current.getVideoTracks().forEach(track => {
+        track.enabled = newState;
+      });
+    }
+  };
+
+  const handleJoinClick = () => {
+    if (!userName.trim()) {
+      toast({ title: 'Name required', description: 'Please enter your name to join.', variant: 'destructive' });
+      return;
+    }
+    
+    // Stop local preview tracks before passing control to Daily
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+
+    onJoin({
+      name: userName.trim(),
+      micOn: isMicOn,
+      videoOn: isVideoOn
+    });
+  };
+
+  return (
+    <div className="w-screen h-screen bg-slate-50 dark:bg-[#090E17] flex flex-col md:flex-row items-center justify-center p-4 gap-8 overflow-y-auto">
+      
+      {/* Left Side: Camera Preview */}
+      <div className="flex flex-col items-center w-full max-w-3xl">
+        <div className="relative w-full aspect-video bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10 flex items-center justify-center">
+          
+          {isVideoOn ? (
+            <video 
+              ref={videoRef}
+              autoPlay 
+              muted 
+              playsInline 
+              className="w-full h-full object-cover transform -scale-x-100" 
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center text-slate-500">
+              <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-4 shadow-inner">
+                <VideoOff className="w-10 h-10 text-slate-400" />
+              </div>
+              <p className="font-medium text-lg text-slate-300">Camera is off</p>
+            </div>
+          )}
+
+          {error && (
+            <div className="absolute top-4 left-4 right-4 bg-red-500/90 text-white px-4 py-3 rounded-xl flex items-start gap-3 backdrop-blur-md">
+              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+              <p className="text-sm font-medium leading-snug">{error}</p>
+            </div>
+          )}
+
+          {/* Overlay Controls */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-slate-900/60 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/10 shadow-2xl">
+            <Button 
+              onClick={toggleMic}
+              variant={isMicOn ? "secondary" : "destructive"}
+              size="icon"
+              className="w-14 h-14 rounded-full shadow-lg"
+            >
+              {isMicOn ? <Mic className="w-6 h-6" /> : <MicOff className="w-6 h-6" />}
+            </Button>
+            <Button 
+              onClick={toggleVideo}
+              variant={isVideoOn ? "secondary" : "destructive"}
+              size="icon"
+              className="w-14 h-14 rounded-full shadow-lg"
+            >
+              {isVideoOn ? <VideoIcon className="w-6 h-6" /> : <VideoOff className="w-6 h-6" />}
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Side: Join Form */}
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-slate-200 dark:border-white/10 p-8 space-y-8">
+        <div className="text-center">
+          <h1 className="text-3xl font-semibold text-slate-900 dark:text-white tracking-tight">Ready to join?</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-2 text-lg">{roomName || 'Secure Meeting'}</p>
+        </div>
+
+        <div className="space-y-5">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Your Name</label>
+            <input
+              type="text"
+              placeholder="e.g. Jane Doe"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              className="w-full px-5 py-4 bg-slate-50 dark:bg-black border border-slate-200 dark:border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary text-lg transition-shadow"
+              autoFocus
+              onKeyDown={(e) => { if (e.key === 'Enter' && userName.trim()) handleJoinClick(); }}
+            />
+          </div>
+
+          <Button
+            className="w-full py-7 text-xl rounded-2xl font-semibold shadow-lg shadow-primary/25"
+            disabled={!userName.trim()}
+            onClick={handleJoinClick}
+          >
+            Ask to join
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 py-6 rounded-2xl font-medium"
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+              toast({ title: 'Copied!', description: 'Meeting link copied to clipboard.' });
+            }}
+          >
+            Copy meeting link
+          </Button>
+        </div>
+      </div>
+
+    </div>
+  );
+}

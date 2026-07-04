@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 import VideoRoom from '@/components/video/VideoRoom';
+import PreJoinScreen from '@/components/video/PreJoinScreen';
 import { useAuth } from '@/lib/AuthContext';
 import { Video, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,52 +25,19 @@ function MeetLoader({ label = 'Preparing your secure meeting...' }) {
 // ─── Pre-join screen + in-meeting screen ──────────────────────────────────────
 function StandaloneMeetingInner({ url, roomName, onLeave, onToast }) {
   const [hasJoined, setHasJoined] = useState(false);
-  const [guestName, setGuestName] = useState('');
+  const [joinConfig, setJoinConfig] = useState({ name: '', micOn: true, videoOn: true });
+
+  const handleJoin = (config) => {
+    setJoinConfig(config);
+    setHasJoined(true);
+  };
 
   if (!hasJoined) {
     return (
-      <div className="w-screen h-screen bg-white dark:bg-[#090E17] flex flex-col items-center justify-center p-4">
-        <div className="max-w-md w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl p-8 shadow-xl text-center space-y-6">
-          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-            <Video className="w-8 h-8 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-medium text-slate-900 dark:text-white">Ready to join?</h1>
-            <p className="text-slate-500 mt-2">{roomName || 'Secure Meeting'}</p>
-          </div>
-
-          <div className="space-y-4 pt-4">
-            <input
-              type="text"
-              placeholder="What's your name?"
-              value={guestName}
-              onChange={(e) => setGuestName(e.target.value)}
-              className="w-full px-4 py-3 bg-white dark:bg-black border border-slate-300 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
-              autoFocus
-              onKeyDown={(e) => { if (e.key === 'Enter' && guestName.trim()) setHasJoined(true); }}
-            />
-            <Button
-              className="w-full py-6 text-lg rounded-xl"
-              disabled={!guestName.trim()}
-              onClick={() => setHasJoined(true)}
-            >
-              Ask to join
-            </Button>
-            <div className="pt-2">
-              <Button
-                variant="outline"
-                className="w-full text-slate-700 dark:text-slate-200 border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 py-6 rounded-xl text-md font-medium transition-all"
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  if (onToast) onToast({ title: 'Copied!', description: 'Meeting link copied to clipboard.' });
-                }}
-              >
-                Copy meeting link
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PreJoinScreen 
+        roomName={roomName} 
+        onJoin={handleJoin} 
+      />
     );
   }
 
@@ -78,7 +46,9 @@ function StandaloneMeetingInner({ url, roomName, onLeave, onToast }) {
       {/* VideoRoom creates its own DailyProvider + callObject internally — do NOT wrap in another DailyProvider */}
       <VideoRoom
         roomUrl={url}
-        userName={guestName}
+        userName={joinConfig.name}
+        initialAudio={joinConfig.micOn}
+        initialVideo={joinConfig.videoOn}
         onLeave={onLeave}
         isPipMode={false}
         togglePipMode={() => {}}

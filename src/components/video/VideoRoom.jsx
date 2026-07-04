@@ -224,7 +224,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
 };
 
  return (
- <div className="flex h-full bg-background rounded-xl overflow-hidden relative border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 group">
+ <div className="flex flex-col h-full bg-background rounded-xl overflow-hidden relative border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 group">
  
  {/* Video Content Area */}
  <div className="flex-1 flex flex-col relative min-w-0">
@@ -527,7 +527,7 @@ function ParticipantTile({ id, isLocal, className }) {
 }
 
 // Wrapper to initialize Daily provider
-export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePipMode, userName }) {
+export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePipMode, userName, initialAudio = true, initialVideo = true }) {
  const [daily, setDaily] = useState(null);
  // Keep a ref so the cleanup closure always has access to the latest callObject
  // without triggering re-renders on creation
@@ -562,7 +562,7 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
    const callObject = DailyIframe.createCallObject();
    callRef.current = callObject;
 
-   const joinOpts = { url: roomUrl, audioSource: true, videoSource: true };
+   const joinOpts = { url: roomUrl, audioSource: initialAudio, videoSource: initialVideo };
    if (typeof token === 'string' && token.length > 0) {
     joinOpts.token = token;
    }
