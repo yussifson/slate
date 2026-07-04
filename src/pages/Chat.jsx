@@ -305,11 +305,6 @@ export default function Chat() {
  {user?.avatar_url ? <img src={user.avatar_url} className="w-full h-full object-cover"/> : <MessageSquare className="w-5 h-5 text-primary" />}
  </div>
  <div className="flex items-center gap-2 text-[#54656f] dark:text-[#aebac1]">
- { !isPortalUser && (
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-primary/20" onClick={() => setIsAddChatOpen(true)}>
- <Plus className="w-5 h-5" />
- </Button>
- )}
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
  <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-primary/20">
@@ -317,8 +312,7 @@ export default function Chat() {
  </Button>
  </DropdownMenuTrigger>
  <DropdownMenuContent align="end" className="w-48">
- <DropdownMenuItem onClick={() => setIsAddChatOpen(true)}>New Chat</DropdownMenuItem>
- <DropdownMenuItem>Settings</DropdownMenuItem>
+ { !isPortalUser && <DropdownMenuItem onClick={() => setIsAddChatOpen(true)}>New Chat</DropdownMenuItem> }
  </DropdownMenuContent>
  </DropdownMenu>
  </div>
