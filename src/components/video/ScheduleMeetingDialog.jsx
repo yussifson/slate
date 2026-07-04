@@ -13,7 +13,6 @@ import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { NotificationService } from '@/services/NotificationService';
-import { base44 } from '@/api/base44Client';
 
 export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled }) {
   const { user } = useAuth();
@@ -36,12 +35,22 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
 
   const loadEmployees = async () => {
     try {
-      const [staffData, clientsData] = await Promise.all([
-        base44.entities.StaffRecord.filter({ company_id: companyId }),
-        base44.entities.Client.filter({ company_id: companyId }),
+      const [staffRes, clientsRes] = await Promise.all([
+        supabase.from('staff_records').select('id, full_name, user_email').eq('company_id', companyId),
+        supabase.from('clients').select('id, name, email').eq('company_id', companyId),
       ]);
-      const staffMembers = (staffData || []).map(s => ({ ...s, id: s.id || s.user_id, full_name: s.first_name + ' ' + s.last_name, type: 'team' }));
-      const clientMembers = (clientsData || []).map(c => ({ ...c, id: c.id, full_name: c.first_name + ' ' + c.last_name || c.name, type: 'client' }));
+      const staffMembers = (staffRes.data || []).map(s => ({
+        ...s,
+        full_name: s.full_name || 'Unnamed Staff',
+        email: s.user_email,
+        type: 'team'
+      }));
+      const clientMembers = (clientsRes.data || []).map(c => ({
+        ...c,
+        full_name: c.name || 'Unnamed Client',
+        email: c.email,
+        type: 'client'
+      }));
       setEmployees([...staffMembers, ...clientMembers]);
     } catch (err) {
       console.error('Failed to load participants:', err);

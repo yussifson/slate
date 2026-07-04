@@ -188,26 +188,30 @@ export default function SmartDocumentViewer({ doc, onClose }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [quickAnalysisOpen, setQuickAnalysisOpen] = useState(true);
   const [extractedText, setExtractedText] = useState("");
+  const [isExtracting, setIsExtracting] = useState(false);
   const chatEndRef = useRef(null);
   const fileType = getFileType(doc);
 
   useEffect(() => {
     async function extract() {
       if (!doc.file_url) return;
+      setIsExtracting(true);
       try {
         if (fileType === 'pdf') {
           const pdfjsLib = await import('pdfjs-dist');
-          pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
-          const loadingTask = pdfjsLib.getDocument(doc.file_url);
+          // Use the locally bundled worker to avoid CDN 404 errors
+          const pdfWorker = await import('pdfjs-dist/build/pdf.worker.mjs?url');
+          pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker.default;
+          const loadingTask = pdfjsLib.getDocument({ url: doc.file_url });
           const pdf = await loadingTask.promise;
           let text = '';
-          const maxPages = Math.min(pdf.numPages, 10);
+          const maxPages = Math.min(pdf.numPages, 15);
           for (let i = 1; i <= maxPages; i++) {
             const page = await pdf.getPage(i);
             const content = await page.getTextContent();
-            text += content.items.map(item => item.str).join(' ') + '\\n';
+            text += content.items.map(item => item.str).join(' ') + '\n';
           }
-          setExtractedText(text);
+          setExtractedText(text.trim());
         } else if (fileType === 'text') {
           const res = await fetch(doc.file_url);
           const text = await res.text();
@@ -215,6 +219,8 @@ export default function SmartDocumentViewer({ doc, onClose }) {
         }
       } catch (err) {
         console.error("Failed to extract document text:", err);
+      } finally {
+        setIsExtracting(false);
       }
     }
     extract();
@@ -358,6 +364,20 @@ Provide helpful, structured, and actionable insights. Be concise but thorough. U
             <div className="w-full md:w-[380px] flex-shrink-0 border-l border-border flex flex-col bg-background">
               
 
+
+              {/* Document Reading Status */}
+              {isExtracting && (
+                <div className="flex items-center gap-2 px-3 py-2 bg-primary/5 border-b border-border flex-shrink-0">
+                  <Loader2 className="w-3 h-3 animate-spin text-primary" />
+                  <span className="text-[11px] text-primary font-medium">Reading document content...</span>
+                </div>
+              )}
+              {!isExtracting && extractedText && (
+                <div className="flex items-center gap-2 px-3 py-2 bg-emerald-500/10 border-b border-border flex-shrink-0">
+                  <CheckCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-medium">Document content loaded — AI can answer questions about it</span>
+                </div>
+              )}
 
               {/* Suggestion Chips - Collapsible */}
               <div className="border-b border-border flex-shrink-0">
