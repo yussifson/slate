@@ -106,25 +106,44 @@ export default function Board() {
  throw new Error(functionError.message || "Failed to create Daily room via edge function");
 }
 
- const realUrl = dailyData.url;
+  const realUrl = dailyData.url;
+  const roomId = crypto.randomUUID();
 
- // Create new room record
- await (async () => {
- const _payload = {
-  id: crypto.randomUUID(),
-  company_id: companyId,
-  title: `${user?.full_name?.split(' ')[0] || 'User'}'s Instant Meeting`,
-  daily_room_url: realUrl,
-  daily_room_name: dailyData.name || roomName,
-  host_id: user.id,
-  status: 'active'
- };
+  let meetingDomain = window.location.hostname;
+  const knownBases = ['optavel.com', 'slate.optavel.com', 'slated.optavel.com', 'oatstack.com'];
+  if (meetingDomain.includes('localhost') || meetingDomain.includes('127.0.0.1')) {
+    meetingDomain = `meet.localhost`;
+  } else {
+    if (meetingDomain.startsWith('app.') || meetingDomain.startsWith('www.')) {
+      meetingDomain = meetingDomain.replace(/^(app|www)\./, 'meet.');
+    } else {
+      const baseMatch = knownBases.find(b => meetingDomain.endsWith(b));
+      if (baseMatch) {
+         meetingDomain = `meet.${baseMatch}`;
+      } else {
+         meetingDomain = `meet.${meetingDomain}`;
+      }
+    }
+  }
+  const customMeetingOrigin = `${window.location.protocol}//${meetingDomain}${window.location.port ? ':' + window.location.port : ''}`;
+
+  // Create new room record
+  await (async () => {
+  const _payload = {
+   id: roomId,
+   company_id: companyId,
+   title: `${user?.full_name?.split(' ')[0] || 'User'}'s Instant Meeting`,
+   daily_room_url: realUrl,
+   daily_room_name: dailyData.name || roomName,
+   host_id: user.id,
+   status: 'active',
+   meeting_link: `${customMeetingOrigin}/join/${roomId}`
+  };
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  await powerSync.execute(`INSERT INTO video_rooms (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
 })();
   // Record creation logic was executed above
-  const error = null;
 
  joinRoom(realUrl);
  return realUrl;
@@ -219,7 +238,7 @@ export default function Board() {
  ) : (
   <span className="text-xs font-medium px-2.5 py-1.5 rounded-md bg-muted text-muted-foreground flex items-center">Ended</span>
  )}
- <Button size="sm" variant="ghost" onClick={() => copyLink(room.daily_room_url)}><Copy className="w-4 h-4" /></Button>
+ <Button size="sm" variant="ghost" onClick={() => copyLink(room.meeting_link || room.daily_room_url)}><Copy className="w-4 h-4" /></Button>
  </div>
  </div>
  ))
