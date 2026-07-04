@@ -269,7 +269,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
       </div>
     </div>
   ) : (
-    <div className="flex-1 p-4 flex flex-wrap content-center justify-center gap-4 overflow-y-auto bg-muted/30">
+    <div className="flex-1 p-4 flex flex-wrap content-start justify-center gap-4 overflow-y-auto bg-muted/30">
       {(() => {
         const allParticipants = [localSessionId, ...participantIds.filter(id => id !== localSessionId)].filter(Boolean);
         return allParticipants.map(id => (
@@ -602,18 +602,18 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
   };
  }, [roomUrl, token]);
 
- if (!daily || !roomUrl) {
-  return (
-   <div className="flex flex-col h-full bg-slate-950 rounded-xl items-center justify-center gap-4">
-    <div className="w-16 h-16 relative flex items-center justify-center">
-     <div className="absolute inset-0 rounded-full border-4 border-slate-700" />
-     <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-     <VideoIcon className="w-6 h-6 text-primary" />
+  if (!daily || !roomUrl) {
+   return (
+    <div className="flex flex-col h-full bg-white dark:bg-[#090E17] rounded-xl items-center justify-center gap-4">
+     <div className="w-16 h-16 relative flex items-center justify-center">
+      <div className="absolute inset-0 rounded-full border-4 border-slate-100 dark:border-white/5" />
+      <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+      <VideoIcon className="w-6 h-6 text-primary" />
+     </div>
+     <p className="text-slate-500 font-medium tracking-wide animate-pulse">Connecting to secure video server...</p>
     </div>
-    <p className="text-slate-400 font-medium tracking-wide animate-pulse">Connecting to secure video server...</p>
-   </div>
-  );
- }
+   );
+  }
 
  return (
   <DailyProvider callObject={daily}>
