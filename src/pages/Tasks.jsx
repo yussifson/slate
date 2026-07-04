@@ -136,20 +136,19 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
           <DialogTitle className="text-xl font-bold tracking-tight">{isEdit ? "Task Details" : "New Task"}</DialogTitle>
         </DialogHeader>
         
-        {isEdit ? (
-          <Tabs defaultValue="details" className="flex-1 flex flex-col overflow-hidden">
-            <div className="px-6 py-3 bg-white dark:bg-[#2C2C2E] border-b border-black/5 dark:border-white/5 shrink-0">
-              <TabsList className="grid w-full max-w-md grid-cols-4">
-                <TabsTrigger value="details">Details</TabsTrigger>
-                <TabsTrigger value="checklist">Checklist</TabsTrigger>
-                <TabsTrigger value="comments">Comments</TabsTrigger>
-                <TabsTrigger value="files">Files</TabsTrigger>
-              </TabsList>
-            </div>
-            
-            <div className="flex-1 overflow-hidden relative">
-              <TabsContent value="details" className="h-full absolute inset-0 overflow-y-auto px-6 py-6 custom-scrollbar m-0 outline-none">
-                <div className="space-y-6 max-w-2xl mx-auto bg-white dark:bg-[#2C2C2E] p-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm">
+        <Tabs defaultValue="details" className="flex-1 flex flex-col overflow-hidden">
+          <div className="px-6 py-3 bg-white dark:bg-[#2C2C2E] border-b border-black/5 dark:border-white/5 shrink-0">
+            <TabsList className="grid w-full max-w-md grid-cols-4">
+              <TabsTrigger value="details">Details</TabsTrigger>
+              <TabsTrigger value="checklist">Checklist</TabsTrigger>
+              <TabsTrigger value="comments">Comments</TabsTrigger>
+              <TabsTrigger value="files">Files</TabsTrigger>
+            </TabsList>
+          </div>
+          
+          <div className="flex-1 overflow-hidden relative">
+            <TabsContent value="details" className="h-full absolute inset-0 overflow-y-auto px-6 py-6 custom-scrollbar m-0 outline-none">
+              <div className="space-y-6 max-w-2xl mx-auto bg-white dark:bg-[#2C2C2E] p-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm">
           <div>
             <Label>{t("title", "Title *")}</Label>
             <Input value={form.title} onChange={e => set("title", e.target.value)} placeholder="Task title" />
@@ -321,47 +320,6 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
         </TabsContent>
         </div>
         </Tabs>
-        ) : (
-          <div className="space-y-6 max-w-2xl mx-auto bg-white dark:bg-[#2C2C2E] p-6 m-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm overflow-y-auto flex-1">
-            <div>
-              <Label>{t("title", "Title *")}</Label>
-              <Input value={form.title} onChange={e => set("title", e.target.value)} placeholder="Task title" />
-            </div>
-            <div>
-              <Label>{t("description", "Description")}</Label>
-              <Textarea value={form.description} onChange={e => set("description", e.target.value)} rows={4} />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>{t("priority", "Priority")}</Label>
-                <Select value={form.priority} onValueChange={v => set("priority", v)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="low">Low</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="urgent">Urgent</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>{t("status", "Status")}</Label>
-                <Select value={form.status} onValueChange={v => set("status", v)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="in_progress">In Progress</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="col-span-2">
-              <Label>{t("due_date", "Due Date")}</Label>
-              <Input type="date" value={form.due_date} onChange={e => set("due_date", e.target.value)} />
-            </div>
-          </div>
-        )}
 
         <DialogFooter className="px-6 py-4 border-t border-black/5 dark:border-white/5 bg-white dark:bg-[#2C2C2E] shrink-0 mt-auto">
           <Button variant="outline" onClick={onClose} type="button">{t("cancel", "Cancel")}</Button>
