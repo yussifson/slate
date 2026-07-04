@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/api/supabaseClient';
 import { Video, Keyboard, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -163,6 +164,38 @@ export default function MeetLandingPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#090E17] flex flex-col font-sans">
+      <Helmet>
+        <title>Optavel Meet — Free HD Video Meetings for Teams</title>
+        <meta name="description" content="Optavel Meet is a free, secure, enterprise-grade video conferencing platform. Start or join HD video meetings instantly — no downloads required. Trusted by teams worldwide." />
+        <meta name="keywords" content="Optavel Meet, video meeting, online video call, video conferencing, free video call, HD video call, team meeting, virtual meeting, enterprise video, secure video call, Google Meet alternative, Zoom alternative" />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="Optavel" />
+        <link rel="canonical" href="https://meet.optavel.com/" />
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://meet.optavel.com/" />
+        <meta property="og:title" content="Optavel Meet — Free HD Video Meetings for Teams" />
+        <meta property="og:description" content="Start or join a free HD video meeting in seconds. Secure, enterprise-grade video conferencing by Optavel — no downloads, no friction." />
+        <meta property="og:site_name" content="Optavel Meet" />
+        <meta property="og:locale" content="en_US" />
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Optavel Meet — Free HD Video Meetings for Teams" />
+        <meta name="twitter:description" content="Start or join a free HD video meeting in seconds. Secure, enterprise-grade video conferencing by Optavel — no downloads, no friction." />
+        <meta name="twitter:site" content="@optavel" />
+        {/* Structured Data */}
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "Optavel Meet",
+          "url": "https://meet.optavel.com",
+          "description": "Free, secure, enterprise-grade HD video conferencing. Start or join meetings instantly — no downloads required.",
+          "applicationCategory": "CommunicationApplication",
+          "operatingSystem": "Any",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "provider": { "@type": "Organization", "name": "Optavel", "url": "https://optavel.com" }
+        })}</script>
+      </Helmet>
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-white/5">
         <div className="flex items-center gap-2.5">

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { Toaster as SonnerToaster } from "@/components/ui/sonner"
 import { Toaster as HotToaster } from "react-hot-toast"
@@ -1073,7 +1073,7 @@ function ProtectedRoute() {
     return <Navigate to="/onboarding" replace />;
   }
 
-  // ── PORTAL USER REDIRECT ──────────────────────────────────────────────────
+  // â”€â”€ PORTAL USER REDIRECT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // If the logged-in user has a portal role (client/patient/student/tenant etc.)
   // they should ONLY see /portal. Bounce them there if they try to access any
   // other route in the main workspace.
@@ -1128,7 +1128,7 @@ function App() {
               <GlobalSystemListener />
               <ErrorBoundary>
                 {isMeetDomain ? (
-                  /* ── MEET DOMAIN: completely isolated Suspense — NO Slate loader ── */
+                  /* â”€â”€ MEET DOMAIN: completely isolated Suspense â€” NO Slate loader â”€â”€ */
                   <React.Suspense fallback={
                     <div className="w-screen h-screen flex flex-col items-center justify-center bg-white dark:bg-[#090E17]">
                       <div className="w-20 h-20 relative flex items-center justify-center">
@@ -1148,98 +1148,92 @@ function App() {
                     </Routes>
                   </React.Suspense>
                 ) : (
-                  /* ── ALL OTHER DOMAINS: workspace / marketing / app routes ── */
+                  /* â”€â”€ ALL OTHER DOMAINS: workspace / marketing / app routes â”€â”€ */
                   <React.Suspense fallback={<PageLoader label="Loading Module..." />}>
                     {isBaseDomain ? (
-                    /* Storefront Routes for the Base Domain */
-                    <Routes>
-                      <Route element={<MarketingLayout><Outlet /></MarketingLayout>}>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/features" element={<Features />} />
-                        <Route path="/pricing" element={<Pricing />} />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/enterprise-contact" element={<EnterpriseContact />} />
-                        <Route path="/integrations" element={<Integrations />} />
-                        <Route path="/changelog" element={<Changelog />} />
-                        <Route path="/customers" element={<Customers />} />
-                        <Route path="/security" element={<Security />} />
-                        <Route path="/solutions" element={<Solutions />} />
-                        <Route path="/roi-calculator" element={<RoiCalculator />} />
-
-                        <Route path="/partners" element={<Partners />} />
-                        <Route path="/legal" element={<LegalDocs />} />
-                      </Route>
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/signup" element={<SignUp />} />
-                      <Route path="/welcome" element={<NativeOnboarding />} />
-                      <Route path="/forgot-password" element={<ForgotPassword />} />
-                      <Route path="/reset-password" element={<ResetPassword />} />
-                      
-                      <Route element={<ProtectedRoute />}>
-                        <Route path="/onboarding" element={<OnboardingWizard />} />
-                        
-                        {/* Super Admin Base Domain Dashboard */}
-                        <Route element={<AppLayout />}>
-                          <Route element={<SuperAdminRoute />}>
-                            <Route path="/admin" element={<AdminOverview />} />
-                            <Route path="/admin/intelligence" element={<AdminIntelligence />} />
-                            <Route path="/admin/rollout" element={<AdminRollout />} />
-                            <Route path="/admin/quotas" element={<AdminQuotas />} />
-                            <Route path="/admin/firms" element={<AdminFirms />} />
-                            <Route path="/admin/users" element={<AdminUsers />} />
-                            <Route path="/admin/billing" element={<AdminBilling />} />
-                            <Route path="/admin/pricing" element={<SuperAdminBilling title="Pricing Engine" />} />
-                            <Route path="/admin/security" element={<AdminSecurity />} />
-                            <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
-                            <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
-                            <Route path="/admin/partners" element={<AdminPartners />} />
-                            <Route path="/admin/feature-insider" element={<AdminFeatureInsider />} />
-                          </Route>
-
-                          {PlatformRoutes()}
+                      /* Storefront Routes for the Base Domain */
+                      <Routes>
+                        <Route element={<MarketingLayout><Outlet /></MarketingLayout>}>
+                          <Route path="/" element={<Home />} />
+                          <Route path="/features" element={<Features />} />
+                          <Route path="/pricing" element={<Pricing />} />
+                          <Route path="/about" element={<About />} />
+                          <Route path="/contact" element={<Contact />} />
+                          <Route path="/enterprise-contact" element={<EnterpriseContact />} />
+                          <Route path="/integrations" element={<Integrations />} />
+                          <Route path="/changelog" element={<Changelog />} />
+                          <Route path="/customers" element={<Customers />} />
+                          <Route path="/security" element={<Security />} />
+                          <Route path="/solutions" element={<Solutions />} />
+                          <Route path="/roi-calculator" element={<RoiCalculator />} />
+                          <Route path="/partners" element={<Partners />} />
+                          <Route path="/legal" element={<LegalDocs />} />
                         </Route>
-                      </Route>
-                      
-                      <Route path="/intake" element={<IntakeForm />} />
-                      <Route path="*" element={<PageNotFound />} />
-                    </Routes>
-                  ) : (
-                    /* App Routes for Subdomains */
-                    <Routes>
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/signup" element={<SignUp />} />
-                      <Route path="/welcome" element={<NativeOnboarding />} />
-                      <Route path="/forgot-password" element={<ForgotPassword />} />
-                      <Route path="/reset-password" element={<ResetPassword />} />
-                      
-                      <Route element={<ProtectedRoute />}>
-                        <Route element={<AppLayout />}>
-                          <Route element={<SuperAdminRoute />}>
-                            <Route path="/admin" element={<AdminOverview />} />
-                            <Route path="/admin/intelligence" element={<AdminIntelligence />} />
-                            <Route path="/admin/rollout" element={<AdminRollout />} />
-                            <Route path="/admin/quotas" element={<AdminQuotas />} />
-                            <Route path="/admin/firms" element={<AdminFirms />} />
-                            <Route path="/admin/users" element={<AdminUsers />} />
-                            <Route path="/admin/billing" element={<AdminBilling />} />
-                            <Route path="/admin/pricing" element={<SuperAdminBilling title="Pricing Engine" />} />
-                            <Route path="/admin/security" element={<AdminSecurity />} />
-                            <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
-                            <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
-                            <Route path="/admin/partners" element={<AdminPartners />} />
-                            <Route path="/admin/feature-insider" element={<AdminFeatureInsider />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/signup" element={<SignUp />} />
+                        <Route path="/welcome" element={<NativeOnboarding />} />
+                        <Route path="/forgot-password" element={<ForgotPassword />} />
+                        <Route path="/reset-password" element={<ResetPassword />} />
+                        <Route element={<ProtectedRoute />}>
+                          <Route path="/onboarding" element={<OnboardingWizard />} />
+                          {/* Super Admin Base Domain Dashboard */}
+                          <Route element={<AppLayout />}>
+                            <Route element={<SuperAdminRoute />}>
+                              <Route path="/admin" element={<AdminOverview />} />
+                              <Route path="/admin/intelligence" element={<AdminIntelligence />} />
+                              <Route path="/admin/rollout" element={<AdminRollout />} />
+                              <Route path="/admin/quotas" element={<AdminQuotas />} />
+                              <Route path="/admin/firms" element={<AdminFirms />} />
+                              <Route path="/admin/users" element={<AdminUsers />} />
+                              <Route path="/admin/billing" element={<AdminBilling />} />
+                              <Route path="/admin/pricing" element={<SuperAdminBilling title="Pricing Engine" />} />
+                              <Route path="/admin/security" element={<AdminSecurity />} />
+                              <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
+                              <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
+                              <Route path="/admin/partners" element={<AdminPartners />} />
+                              <Route path="/admin/feature-insider" element={<AdminFeatureInsider />} />
+                            </Route>
+                            {PlatformRoutes()}
                           </Route>
-
-                          {PlatformRoutes()}
                         </Route>
                         <Route path="/intake" element={<IntakeForm />} />
-                        <Route path="/onboarding" element={<OnboardingWizard />} />
                         <Route path="*" element={<PageNotFound />} />
-                      </Route>
-                    </Routes>
-                  )}
-                </React.Suspense>
+                      </Routes>
+                    ) : (
+                      /* App Routes for Subdomains */
+                      <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/signup" element={<SignUp />} />
+                        <Route path="/welcome" element={<NativeOnboarding />} />
+                        <Route path="/forgot-password" element={<ForgotPassword />} />
+                        <Route path="/reset-password" element={<ResetPassword />} />
+                        <Route element={<ProtectedRoute />}>
+                          <Route element={<AppLayout />}>
+                            <Route element={<SuperAdminRoute />}>
+                              <Route path="/admin" element={<AdminOverview />} />
+                              <Route path="/admin/intelligence" element={<AdminIntelligence />} />
+                              <Route path="/admin/rollout" element={<AdminRollout />} />
+                              <Route path="/admin/quotas" element={<AdminQuotas />} />
+                              <Route path="/admin/firms" element={<AdminFirms />} />
+                              <Route path="/admin/users" element={<AdminUsers />} />
+                              <Route path="/admin/billing" element={<AdminBilling />} />
+                              <Route path="/admin/pricing" element={<SuperAdminBilling title="Pricing Engine" />} />
+                              <Route path="/admin/security" element={<AdminSecurity />} />
+                              <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
+                              <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
+                              <Route path="/admin/partners" element={<AdminPartners />} />
+                              <Route path="/admin/feature-insider" element={<AdminFeatureInsider />} />
+                            </Route>
+                            {PlatformRoutes()}
+                          </Route>
+                          <Route path="/intake" element={<IntakeForm />} />
+                          <Route path="/onboarding" element={<OnboardingWizard />} />
+                          <Route path="*" element={<PageNotFound />} />
+                        </Route>
+                      </Routes>
+                    )}
+                  </React.Suspense>
+                )}
               </ErrorBoundary>
               <Toaster />
               <SonnerToaster />
