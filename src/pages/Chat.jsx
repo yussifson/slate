@@ -288,7 +288,7 @@ export default function Chat() {
  });
 
  return (
- <div className="h-full w-full overflow-hidden bg-background flex flex-col md:flex-row">
+ <div className="flex-1 w-full h-full min-h-0 overflow-hidden bg-background flex flex-col md:flex-row">
  <AddChatDialog 
  open={isAddChatOpen} 
  onOpenChange={setIsAddChatOpen} 
