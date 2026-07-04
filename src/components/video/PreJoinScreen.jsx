@@ -109,7 +109,7 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
       
       {/* Left Side: Camera Preview */}
       <div className="flex flex-col items-center w-full max-w-3xl">
-        <div className="relative w-full aspect-video bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10 flex items-center justify-center">
+        <div className="relative w-full aspect-video bg-slate-100 dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-2xl border border-slate-200/60 dark:border-white/10 flex items-center justify-center transition-colors">
           
           {isVideoOn ? (
             <video 
@@ -120,45 +120,45 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
               className="w-full h-full object-cover transform -scale-x-100" 
             />
           ) : (
-            <div className="flex flex-col items-center justify-center text-slate-500">
-              <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-4 shadow-inner">
-                <VideoOff className="w-10 h-10 text-slate-400" />
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-24 h-24 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-sm border border-slate-200/50 dark:border-white/5">
+                <VideoOff className="w-10 h-10 text-slate-400 dark:text-slate-500" />
               </div>
-              <p className="font-medium text-lg text-slate-300">Camera is off</p>
+              <p className="font-medium text-lg text-slate-600 dark:text-slate-300 tracking-wide">Camera is off</p>
             </div>
           )}
 
           {error && (
-            <div className="absolute top-4 left-4 right-4 bg-red-500/90 text-white px-4 py-3 rounded-xl flex items-start gap-3 backdrop-blur-md">
+            <div className="absolute top-4 left-4 right-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 px-5 py-4 rounded-2xl flex items-start gap-3 backdrop-blur-xl shadow-sm">
               <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-              <p className="text-sm font-medium leading-snug">{error}</p>
+              <p className="text-sm font-medium leading-relaxed">{error}</p>
             </div>
           )}
 
           {/* Overlay Controls */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-slate-900/60 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/10 shadow-2xl">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl px-4 py-3 rounded-2xl border border-slate-200/50 dark:border-white/10 shadow-lg shadow-black/5">
             <Button 
               onClick={toggleMic}
-              variant={isMicOn ? "secondary" : "destructive"}
+              variant={isMicOn ? "outline" : "destructive"}
               size="icon"
-              className="w-14 h-14 rounded-full shadow-lg"
+              className={`w-14 h-14 rounded-full shadow-sm transition-all duration-300 ${isMicOn ? 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700' : ''}`}
             >
-              {isMicOn ? <Mic className="w-6 h-6" /> : <MicOff className="w-6 h-6" />}
+              {isMicOn ? <Mic className="w-6 h-6 text-slate-700 dark:text-slate-300" /> : <MicOff className="w-6 h-6" />}
             </Button>
             <Button 
               onClick={toggleVideo}
-              variant={isVideoOn ? "secondary" : "destructive"}
+              variant={isVideoOn ? "outline" : "destructive"}
               size="icon"
-              className="w-14 h-14 rounded-full shadow-lg"
+              className={`w-14 h-14 rounded-full shadow-sm transition-all duration-300 ${isVideoOn ? 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700' : ''}`}
             >
-              {isVideoOn ? <VideoIcon className="w-6 h-6" /> : <VideoOff className="w-6 h-6" />}
+              {isVideoOn ? <VideoIcon className="w-6 h-6 text-slate-700 dark:text-slate-300" /> : <VideoOff className="w-6 h-6" />}
             </Button>
           </div>
         </div>
       </div>
 
       {/* Right Side: Join Form */}
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-slate-200 dark:border-white/10 p-8 space-y-8">
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-2xl border border-slate-200/60 dark:border-white/10 p-10 space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-semibold text-slate-900 dark:text-white tracking-tight">Ready to join?</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-2 text-lg">{roomName || 'Secure Meeting'}</p>
