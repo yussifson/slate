@@ -116,66 +116,68 @@ export default function CustomPDFViewer({ url, name }) {
   };
 
   return (
-    <div className="flex flex-col w-full h-full bg-slate-900 overflow-hidden text-slate-200">
+    <div className="flex flex-col w-full h-full bg-background overflow-hidden text-foreground">
       {/* Custom Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2 bg-slate-800 border-b border-slate-700 shrink-0">
+      <div className="flex items-center justify-between px-4 py-2 bg-muted/40 border-b border-border shrink-0">
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" onClick={handleZoomOut} disabled={scale <= 0.5} className="text-slate-300 hover:text-white hover:bg-slate-700">
+          <Button variant="ghost" size="icon" onClick={handleZoomOut} disabled={scale <= 0.5} className="hover:bg-muted">
             <ZoomOut className="w-4 h-4" />
           </Button>
           <span className="text-xs font-medium w-12 text-center">{Math.round(scale * 100)}%</span>
-          <Button variant="ghost" size="icon" onClick={handleZoomIn} disabled={scale >= 3.0} className="text-slate-300 hover:text-white hover:bg-slate-700">
+          <Button variant="ghost" size="icon" onClick={handleZoomIn} disabled={scale >= 3.0} className="hover:bg-muted">
             <ZoomIn className="w-4 h-4" />
           </Button>
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={handlePrevPage} disabled={pageNumber <= 1} className="text-slate-300 hover:text-white hover:bg-slate-700">
+          <Button variant="ghost" size="icon" onClick={handlePrevPage} disabled={pageNumber <= 1} className="hover:bg-muted">
             <ChevronLeft className="w-4 h-4" />
           </Button>
           <span className="text-sm font-medium">
             {pageNumber} / {numPages || 1}
           </span>
-          <Button variant="ghost" size="icon" onClick={handleNextPage} disabled={pageNumber >= numPages} className="text-slate-300 hover:text-white hover:bg-slate-700">
+          <Button variant="ghost" size="icon" onClick={handleNextPage} disabled={pageNumber >= numPages} className="hover:bg-muted">
             <ChevronRight className="w-4 h-4" />
           </Button>
         </div>
 
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" onClick={handleDownload} className="text-slate-300 hover:text-white hover:bg-slate-700">
+          <Button variant="ghost" size="icon" onClick={handleDownload} className="hover:bg-muted">
             <Download className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={handlePrint} className="text-slate-300 hover:text-white hover:bg-slate-700">
+          <Button variant="ghost" size="icon" onClick={handlePrint} className="hover:bg-muted">
             <Printer className="w-4 h-4" />
           </Button>
         </div>
       </div>
 
       {/* PDF Canvas Area */}
-      <div className="flex-1 overflow-auto bg-slate-900/50 p-4 flex justify-center">
+      <div className="flex-1 overflow-auto bg-muted/20 p-4 sm:p-8 flex justify-center">
         {isLoading && (
-          <div className="flex flex-col items-center justify-center h-full gap-3 text-slate-400">
+          <div className="flex flex-col items-center justify-center h-full gap-3 text-muted-foreground">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
             <p className="text-sm">Loading PDF...</p>
           </div>
         )}
 
         {error && (
-          <div className="flex flex-col items-center justify-center h-full gap-3 text-red-400">
+          <div className="flex flex-col items-center justify-center h-full gap-3 text-destructive">
             <AlertCircle className="w-10 h-10" />
             <p className="font-medium text-sm text-center max-w-xs">{error}</p>
           </div>
         )}
 
         {!isLoading && !error && (
-          <canvas
-            ref={canvasRef}
-            className="shadow-2xl max-w-full"
-            style={{
-              backgroundColor: "white",
-              display: "block",
-            }}
-          />
+          <div className="mx-auto" style={{ width: "fit-content" }}>
+            <canvas
+              ref={canvasRef}
+              className="shadow-xl ring-1 ring-border/50"
+              style={{
+                backgroundColor: "white",
+                display: "block",
+              }}
+            />
+          </div>
         )}
       </div>
     </div>
