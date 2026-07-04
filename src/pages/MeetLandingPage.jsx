@@ -7,15 +7,44 @@ import { useToast } from '@/components/ui/use-toast';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
-import { Copy, Plus, Link as LinkIcon } from 'lucide-react';
+import { Copy, Plus, Link as LinkIcon, ChevronLeft, ChevronRight, Calendar, ShieldCheck, Users } from 'lucide-react';
+
+const carouselItems = [
+  {
+    title: "Get a link you can share",
+    description: "Click New meeting to get a link you can send to people you want to meet with",
+    icon: <div className="relative flex items-center justify-center w-full h-full"><div className="absolute w-24 h-24 bg-blue-100 dark:bg-blue-900/30 rounded-full animate-pulse" /><LinkIcon className="w-10 h-10 text-blue-600 dark:text-blue-400 relative z-10" /></div>
+  },
+  {
+    title: "Plan ahead",
+    description: "Click New meeting to schedule meetings for later.",
+    icon: <div className="relative flex items-center justify-center w-full h-full"><div className="absolute w-24 h-24 bg-emerald-100 dark:bg-emerald-900/30 rounded-full animate-pulse" /><Calendar className="w-10 h-10 text-emerald-600 dark:text-emerald-400 relative z-10" /></div>
+  },
+  {
+    title: "Your meeting is safe",
+    description: "No one can join a meeting unless invited or admitted by the host",
+    icon: <div className="relative flex items-center justify-center w-full h-full"><div className="absolute w-24 h-24 bg-primary/10 rounded-full animate-pulse" /><div className="flex -space-x-2 relative z-10 items-end"><Users className="w-12 h-12 text-slate-400" /><ShieldCheck className="w-8 h-8 text-primary absolute -top-4 -right-2 bg-white dark:bg-slate-900 rounded-full" /></div></div>
+  }
+];
 
 export default function MeetLandingPage() {
   const [meetingCode, setMeetingCode] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [laterLink, setLaterLink] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % carouselItems.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % carouselItems.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + carouselItems.length) % carouselItems.length);
 
   const handleCreateMeeting = async (type) => {
     setIsCreating(true);
@@ -143,23 +172,47 @@ export default function MeetLandingPage() {
           </div>
         </div>
 
-        {/* Right Side: Hero Graphic */}
-        <div className="flex-1 hidden md:flex items-center justify-center">
-          <div className="relative w-full max-w-md aspect-square rounded-full bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 flex items-center justify-center p-12 overflow-hidden group">
-            {/* Abstract geometric composition representing a video call */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-50" />
-            <div className="relative w-full h-full border-2 border-dashed border-slate-200 dark:border-white/10 rounded-3xl flex flex-col items-center justify-center gap-4 transition-transform duration-700 group-hover:scale-105">
-              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
-                <Sparkles className="w-10 h-10 text-primary" />
-              </div>
-              <div className="flex gap-2">
-                <div className="w-16 h-16 rounded-2xl bg-blue-500/10" />
-                <div className="w-16 h-16 rounded-2xl bg-rose-500/10" />
-                <div className="w-16 h-16 rounded-2xl bg-amber-500/10" />
-              </div>
-              <p className="text-slate-400 text-sm font-medium mt-4">Get a link you can share</p>
+        {/* Right Side: Hero Graphic Carousel */}
+        <div className="flex-1 hidden md:flex items-center justify-center relative">
+          <Button variant="ghost" size="icon" onClick={prevSlide} className="absolute left-0 z-10 rounded-full w-10 h-10 bg-white/80 dark:bg-slate-900/80 hover:bg-slate-100 dark:hover:bg-slate-800 shadow-sm border border-slate-100 dark:border-white/10 shrink-0">
+            <ChevronLeft className="w-5 h-5 text-slate-500" />
+          </Button>
+
+          <div className="flex flex-col items-center text-center w-full max-w-sm px-6">
+            <div className="w-[300px] h-[300px] mb-8 rounded-full overflow-hidden relative">
+              {carouselItems.map((item, index) => (
+                <div
+                  key={index}
+                  className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                >
+                  {item.icon}
+                </div>
+              ))}
+            </div>
+            
+            <div className="h-24">
+              <h2 className="text-2xl font-medium text-slate-900 dark:text-white mb-2">
+                {carouselItems[currentSlide].title}
+              </h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium max-w-xs mx-auto leading-relaxed">
+                {carouselItems[currentSlide].description}
+              </p>
+            </div>
+
+            <div className="flex gap-2 mt-4">
+              {carouselItems.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`w-2 h-2 rounded-full transition-all ${index === currentSlide ? 'bg-primary w-4' : 'bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600'}`}
+                />
+              ))}
             </div>
           </div>
+
+          <Button variant="ghost" size="icon" onClick={nextSlide} className="absolute right-0 z-10 rounded-full w-10 h-10 bg-white/80 dark:bg-slate-900/80 hover:bg-slate-100 dark:hover:bg-slate-800 shadow-sm border border-slate-100 dark:border-white/10 shrink-0">
+            <ChevronRight className="w-5 h-5 text-slate-500" />
+          </Button>
         </div>
       </main>
 
