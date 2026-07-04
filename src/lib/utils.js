@@ -5,6 +5,26 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs))
 } 
 
+export async function forceDownload(url, filename) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Network response was not ok");
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.style.display = 'none';
+    a.href = blobUrl;
+    a.download = filename || url.split('/').pop() || "download";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => window.URL.revokeObjectURL(blobUrl), 100);
+  } catch (error) {
+    console.error("Failed to force download, falling back to window.open", error);
+    window.open(url, '_blank');
+  }
+}
+
 
 export const isIframe = window.self !== window.top;
 

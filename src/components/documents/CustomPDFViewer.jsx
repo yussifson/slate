@@ -3,6 +3,7 @@ import * as pdfjsLib from "pdfjs-dist";
 import pdfWorker from "pdfjs-dist/build/pdf.worker.mjs?url";
 import { ZoomIn, ZoomOut, Download, Printer, ChevronLeft, ChevronRight, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { forceDownload } from "@/lib/utils";
 
 // Configure worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
@@ -94,14 +95,7 @@ export default function CustomPDFViewer({ url, name }) {
   const handlePrevPage = () => setPageNumber((p) => Math.max(p - 1, 1));
   const handleNextPage = () => setPageNumber((p) => Math.min(p + 1, numPages));
 
-  const handleDownload = () => {
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = name || "document.pdf";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
+  const handleDownload = () => forceDownload(url, name || "document.pdf");
 
   const handlePrint = () => {
     // Basic print fallback for iframe-based printing

@@ -3,6 +3,7 @@ import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog";
 import { Button} from "@/components/ui/button";
 import { Download, ExternalLink, X, FileText} from "lucide-react";
+import { forceDownload } from "@/lib/utils";
 
 export default function DocumentPreviewModal({ fileUrl, fileName, open, onClose}) {
  const { t} = useTranslation();
@@ -66,11 +67,9 @@ export default function DocumentPreviewModal({ fileUrl, fileName, open, onClose}
  </DialogTitle>
  </div>
  <div className="flex items-center gap-2 select-none pr-8">
- <a href={fileUrl} download={fileName} target="_blank" rel="noopener noreferrer">
- <Button size="sm" variant="outline" className="h-8 gap-2.5 text-xs tracking-[0.04em]">
+ <Button size="sm" variant="outline" className="h-8 gap-2.5 text-xs tracking-[0.04em]" onClick={() => forceDownload(fileUrl, fileName)}>
  <Download className="w-3.5 h-3.5" /> {t("download", "Download")}
  </Button>
- </a>
  <a href={fileUrl} target="_blank" rel="noopener noreferrer">
  <Button size="sm" variant="ghost" className="h-8 gap-2.5 text-xs text-[#71717a] dark:text-gray-400 hover:text-foreground tracking-[0.04em]">
  <ExternalLink className="w-3.5 h-3.5" /> {t("open_direct", "Open Direct")}

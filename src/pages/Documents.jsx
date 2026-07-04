@@ -17,6 +17,8 @@ import {
   FileImage, FileVideo, Archive, Paperclip, ScanLine,
   ArrowUpRight, Activity, RefreshCw, Link2, Bell, Send
 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { forceDownload } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -825,9 +827,9 @@ function DocumentDetailPanel({ doc, onClose, onPreview, onRequestSignature, onAi
                 </a>
               )}
               {doc.file_url && (
-                <a href={doc.file_url} download>
-                  <Button variant="outline" className="w-full gap-2 text-sm h-9"><Download className="w-4 h-4" /> Download</Button>
-                </a>
+                <Button variant="outline" className="w-full gap-2 text-sm h-9" onClick={() => forceDownload(doc.file_url, doc.name)}>
+                  <Download className="w-4 h-4" /> Download
+                </Button>
               )}
               <Button variant="outline" className="gap-2 text-sm h-9" onClick={() => { onClose(); onAiExtract(doc); }}>
                 <Brain className="w-4 h-4 text-primary" /> AI Extract
