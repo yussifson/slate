@@ -4,6 +4,7 @@ import { useTranslation} from "react-i18next";
 import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, CheckCheck, Check, Smile, Paperclip, ImageIcon, FileText, File, X} from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button} from "@/components/ui/button";
 import { useAuth} from "@/lib/AuthContext";
 import { cn} from "@/lib/utils";
@@ -34,6 +35,7 @@ export default function Chat() {
  const [showAttachMenu, setShowAttachMenu] = useState(false);
  const [isSummarizing, setIsSummarizing] = useState(false);
  const [chatSummary, setChatSummary] = useState(null);
+ const [searchQuery, setSearchQuery] = useState("");
 
  const messagesEndRef = useRef(null);
  const fileInputRef = useRef(null);
@@ -75,6 +77,21 @@ export default function Chat() {
  .select(`*, chat_participants ( user_id, role )`)
  .in('id', roomIds)
  .order('updated_at', { ascending: false});
+ 
+ if (roomsData) {
+   const allUserIds = [...new Set(roomsData.flatMap(r => r.chat_participants?.map(p => p.user_id) || []))];
+   if (allUserIds.length > 0) {
+     const __res = await powerSync.execute(`SELECT id, full_name, avatar_url FROM profiles WHERE id IN (${allUserIds.map(()=>'?').join(',')})`, allUserIds);
+     const profiles = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+     if (profiles) {
+       setParticipantProfiles(prev => {
+         const pMap = { ...prev };
+         profiles.forEach(p => pMap[p.id] = p);
+         return pMap;
+       });
+     }
+   }
+ }
  
  setRooms(roomsData || []);
 } else {
@@ -263,6 +280,12 @@ export default function Chat() {
   };
 
  const activeRoom = rooms.find(r => r.id === activeRoomId);
+ const filteredRooms = rooms.filter(r => {
+   const otherParticipant = r.chat_participants?.find(p => p.user_id !== user.id);
+   const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
+   const roomName = r.name || otherProfile?.full_name || 'Direct Chat';
+   return roomName.toLowerCase().includes(searchQuery.toLowerCase());
+ });
 
  return (
  <div className="h-full w-full overflow-hidden bg-background flex flex-col md:flex-row">
@@ -287,9 +310,17 @@ export default function Chat() {
  <Plus className="w-5 h-5" />
  </Button>
  )}
+ <DropdownMenu>
+ <DropdownMenuTrigger asChild>
  <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-primary/20">
  <MoreVertical className="w-5 h-5" />
  </Button>
+ </DropdownMenuTrigger>
+ <DropdownMenuContent align="end" className="w-48">
+ <DropdownMenuItem onClick={() => setIsAddChatOpen(true)}>New Chat</DropdownMenuItem>
+ <DropdownMenuItem>Settings</DropdownMenuItem>
+ </DropdownMenuContent>
+ </DropdownMenu>
  </div>
  </div>
  
@@ -298,6 +329,8 @@ export default function Chat() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text" 
+ value={searchQuery}
+ onChange={(e) => setSearchQuery(e.target.value)}
  placeholder={t("search_chats", "Search or start new chat")} 
  className="w-full bg-[#f0f2f5] dark:bg-[#202c33] border-none rounded-xl pl-9 pr-4 py-2 text-sm focus:ring-0 focus:outline-none transition-all"
  />
@@ -307,7 +340,13 @@ export default function Chat() {
  <div className="flex-1 overflow-y-auto bg-background dark:bg-[#111b21]">
  {loadingRooms ? (
  <div className="flex justify-center p-8"><OrbitLoader size="md" /></div>
- ) : rooms.map(room => (
+ ) : filteredRooms.map(room => {
+   const otherParticipant = room.chat_participants?.find(p => p.user_id !== user.id);
+   const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
+   const roomName = room.name || otherProfile?.full_name || 'Direct Chat';
+   const avatarUrl = otherProfile?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${roomName}`;
+
+   return (
  <div 
  key={room.id}
  onClick={() => setActiveRoomId(room.id)}
@@ -318,24 +357,25 @@ export default function Chat() {
  >
  <div className="relative flex-shrink-0">
  {room.room_type === "group" ? (
- <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center">
+ <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden">
  <Users className="w-6 h-6 text-primary dark:text-primary/70" />
  </div>
  ) : (
- <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
- <UserCircle className="w-7 h-7 text-amber-600 dark:text-amber-400" />
+ <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center overflow-hidden">
+ {otherProfile?.avatar_url ? <img src={avatarUrl} alt={roomName} className="w-full h-full object-cover"/> : <UserCircle className="w-7 h-7 text-amber-600 dark:text-amber-400" />}
  </div>
  )}
  </div>
  <div className="flex-1 min-w-0 border-b border-primary/40 group-last:border-none pb-3">
  <div className="flex justify-between items-baseline mb-0.5">
- <p className="text-base text-foreground truncate">{room.name || 'Direct Chat'}</p>
+ <p className="text-base text-foreground truncate">{roomName}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{format(new Date(room.updated_at), 'h:mm a')}</p>
  </div>
  <p className="text-sm text-[#71717a] dark:text-gray-400 truncate">Click to view messages...</p>
  </div>
  </div>
- ))}
+ );
+ })}
  {!loadingRooms && rooms.length === 0 && (
  <div className="flex flex-col items-center justify-center p-8 h-full text-center text-[#71717a] dark:text-gray-400">
  <p>No chats found.</p>
@@ -348,25 +388,33 @@ export default function Chat() {
  </div>
 
  {/* Main Chat Area */}
- <div className="flex-1 flex flex-col h-[60%] md:h-full bg-[#efeae2] dark:bg-[#0b141a] relative">
+ <div className="flex-1 flex flex-col bg-[#efeae2] dark:bg-[#0b141a] relative w-full h-full">
  <div className="absolute inset-0 opacity-[0.06] dark:opacity-[0.03] pointer-events-none bg-[url('https://static.whatsapp.net/rsrc.php/v3/yl/r/1-vpMpu-EPE.png')]" />
 
  {activeRoom ? (
  <>
  {/* Chat Header */}
  <div className="px-4 py-3 border-b border-primary/40 flex items-center justify-between bg-[#f0f2f5] dark:bg-[#202c33] z-10 ">
+ {(() => {
+   const otherParticipant = activeRoom?.chat_participants?.find(p => p.user_id !== user.id);
+   const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
+   const roomName = activeRoom?.name || otherProfile?.full_name || 'Direct Chat';
+   const avatarUrl = otherProfile?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${roomName}`;
+   
+   return (
+ <>
  <div className="flex items-center gap-3">
- {activeRoom.room_type === "group" ? (
- <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center">
+ {activeRoom?.room_type === "group" ? (
+ <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden">
  <Users className="w-5 h-5 text-primary dark:text-primary/70" />
  </div>
  ) : (
- <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
- <UserCircle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+ <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center overflow-hidden">
+ {otherProfile?.avatar_url ? <img src={avatarUrl} alt={roomName} className="w-full h-full object-cover"/> : <UserCircle className="w-6 h-6 text-amber-600 dark:text-amber-400" />}
  </div>
  )}
  <div>
- <h3 className="font-semibold text-foreground leading-tight">{activeRoom.name || 'Direct Chat'}</h3>
+ <h3 className="font-semibold text-foreground leading-tight">{roomName}</h3>
  <p className="text-[12px] text-[#71717a] dark:text-gray-400">click here for contact info</p>
  </div>
  </div>
@@ -378,8 +426,19 @@ export default function Chat() {
       </Button>
     )}
  <button className="hover:text-foreground transition-colors"><Search className="w-5 h-5" /></button>
+ <DropdownMenu>
+ <DropdownMenuTrigger asChild>
  <button className="hover:text-foreground transition-colors"><MoreVertical className="w-5 h-5" /></button>
+ </DropdownMenuTrigger>
+ <DropdownMenuContent align="end" className="w-48">
+ <DropdownMenuItem>Contact Info</DropdownMenuItem>
+ <DropdownMenuItem>Clear Chat</DropdownMenuItem>
+ </DropdownMenuContent>
+ </DropdownMenu>
  </div>
+ </>
+   );
+ })()}
  </div>
 
  {/* AI Summary Banner */}
