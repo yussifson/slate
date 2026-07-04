@@ -391,8 +391,31 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  </div>
  </div>
  )}
- </div>
- </div>
+  {/* AI Sidebar */}
+  {(aiResponse || isAiLoading) && !isPipMode && (
+    <div className="w-80 border-l border-primary/40 bg-card flex flex-col shrink-0 animate-in slide-in-from-right hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="h-14 border-b border-primary/40 flex items-center justify-between px-4">
+        <h3 className="font-semibold flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-primary" /> Orbit AI
+        </h3>
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setAiResponse(null); setIsAiLoading(false); }}>
+          <X className="w-4 h-4" />
+        </Button>
+      </div>
+      <div className="flex-1 overflow-y-auto p-5">
+        {isAiLoading ? (
+          <div className="flex flex-col items-center justify-center h-full text-center opacity-70">
+            <OrbitLoader size="md" />
+            <p className="mt-4 text-sm font-medium">AI is analyzing the conversation...</p>
+          </div>
+        ) : (
+          <div className="text-sm leading-relaxed prose dark:prose-invert prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: aiResponse }} />
+        )}
+      </div>
+    </div>
+  )}
+  </div>
+  </div>
 
   {/* Invite Dialog */}
   <Dialog open={showInvite} onOpenChange={setShowInvite}>
@@ -458,15 +481,17 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium">Avatar Color</label>
+          <label className="text-sm font-medium">Real Avatar</label>
           <div className="flex flex-wrap gap-2">
-            {avatarColors.map(color => (
+            {realAvatars.map(url => (
               <button 
-                key={color} 
-                className={`w-8 h-8 rounded-full ${color} ${daily?.participants()?.local?.userData && JSON.parse(daily.participants().local.userData || '{}').avatarColor === color ? 'ring-2 ring-offset-2 ring-primary' : ''}`}
-                onClick={() => daily?.setUserData(JSON.stringify({ avatarColor: color }))}
-                title="Change Avatar Color"
-              />
+                key={url} 
+                className={`w-10 h-10 rounded-full overflow-hidden border-2 ${daily?.participants()?.local?.userData && JSON.parse(daily.participants().local.userData || '{}').avatarUrl === url ? 'border-primary' : 'border-transparent'}`}
+                onClick={() => daily?.setUserData(JSON.stringify({ avatarUrl: url }))}
+                title="Choose Avatar"
+              >
+                <img src={url} alt="Avatar" className="w-full h-full object-cover" />
+              </button>
             ))}
           </div>
         </div>
@@ -605,6 +630,7 @@ const avatarColors = [
   'bg-violet-500', 'bg-fuchsia-500', 'bg-rose-500', 
   'bg-amber-500', 'bg-teal-500', 'bg-cyan-500'
 ];
+const realAvatars = Array.from({ length: 10 }, (_, i) => `https://i.pravatar.cc/150?u=${i + 1}`);
 
 function ParticipantTile({ id, isLocal, className }) {
  const videoState = useVideoTrack(id);
@@ -627,8 +653,11 @@ function ParticipantTile({ id, isLocal, className }) {
  const customAvatarColor = React.useMemo(() => {
   if (participant?.userData) {
     try {
+ const customAvatarUrl = React.useMemo(() => {
+  if (participant?.userData) {
+    try {
       const data = typeof participant.userData === 'string' ? JSON.parse(participant.userData) : participant.userData;
-      if (data?.avatarColor) return data.avatarColor;
+      if (data?.avatarUrl) return data.avatarUrl;
     } catch (e) {}
   }
   return null;
@@ -649,7 +678,7 @@ function ParticipantTile({ id, isLocal, className }) {
 }, [audioState?.track, isLocal]);
 
  return (
- <div className={`relative bg-slate-100 dark:bg-slate-800/50 rounded-2xl overflow-hidden group flex items-center justify-center aspect-video shadow-sm border border-slate-200 dark:border-white/10 ${className || 'w-full max-w-3xl min-w-[320px] m-2'}`}>
+ <div className={`relative bg-white dark:bg-slate-900 rounded-2xl overflow-hidden group flex items-center justify-center aspect-video shadow-md border border-slate-200 dark:border-white/10 ${className || 'w-full max-w-3xl min-w-[320px] m-2'}`}>
  {videoState?.state === 'playable' ? (
  <video 
  ref={videoRef}
@@ -658,15 +687,19 @@ function ParticipantTile({ id, isLocal, className }) {
  playsInline 
  className="w-full h-full object-cover"
  />
+ ) : customAvatarUrl ? (
+ <div className="w-24 h-24 rounded-full flex items-center justify-center shadow-md overflow-hidden">
+  <img src={customAvatarUrl} alt={displayName} className="w-full h-full object-cover" />
+ </div>
  ) : (
- <div className={`w-24 h-24 ${finalAvatarColor} rounded-full flex items-center justify-center shadow-lg`}>
+ <div className={`w-24 h-24 ${finalAvatarColor} rounded-full flex items-center justify-center shadow-md`}>
  <span className="text-3xl text-white font-bold tracking-tight">{initials}</span>
  </div>
  )}
  
  {!isLocal && <audio ref={audioRef} autoPlay playsInline />}
  
-  <div className={`absolute bottom-6 left-6 ${finalAvatarColor} px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg ring-2 ring-white/20 dark:ring-black/20 backdrop-blur-md transition-all`}>
+  <div className={`absolute bottom-4 left-4 ${finalAvatarColor} px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-sm border border-black/10 dark:border-white/10 transition-all`}>
   <span className="text-white text-xs font-bold tracking-wide">{displayName}</span>
   {audioState?.state !== 'playable' && <MicOff className="w-3.5 h-3.5 text-white/90" />}
   </div>

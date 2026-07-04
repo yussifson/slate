@@ -8,12 +8,11 @@ import { useAuth } from '@/lib/AuthContext';
 import { Video, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-// ─── Standalone Loading Screen ────────────────────────────────────────────────
 function MeetLoader({ label = 'Preparing your secure meeting...' }) {
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center bg-white dark:bg-[#090E17]">
-      <div className="w-24 h-24 relative flex items-center justify-center animate-pulse">
-        <img src="/orbit-logo.png" alt="Orbit Logo" className="w-full h-full object-contain drop-shadow-xl" />
+      <div className="w-24 h-24 relative flex items-center justify-center animate-spin" style={{ animationDuration: '3s' }}>
+        <img src="/orbit-logo.svg" alt="Orbit Logo" className="w-full h-full object-contain drop-shadow-xl" />
       </div>
       <p className="mt-8 text-slate-500 font-medium tracking-wide animate-pulse">{label}</p>
     </div>
@@ -86,11 +85,11 @@ export default function StandaloneMeeting() {
     const link = document.querySelector("link[rel~='icon']");
     const oldHref = link ? link.href : null;
     if (link) {
-      link.href = "/orbit-logo.png";
+      link.href = "/orbit-logo.svg";
     } else {
       const newLink = document.createElement('link');
       newLink.rel = 'icon';
-      newLink.href = '/orbit-logo.png';
+      newLink.href = '/orbit-logo.svg';
       document.head.appendChild(newLink);
     }
     return () => {

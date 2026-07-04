@@ -182,7 +182,7 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
           )}
 
           {error && (
-            <div className="absolute top-4 left-4 right-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 px-5 py-4 rounded-2xl flex items-start gap-3 backdrop-blur-xl shadow-sm">
+            <div className="absolute top-4 left-4 right-4 bg-red-50 dark:bg-red-950/95 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-5 py-4 rounded-2xl flex items-start gap-3 shadow-md">
               <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
               <p className="text-sm font-medium leading-relaxed">{error}</p>
             </div>
@@ -201,7 +201,7 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
               ))}
             </div>
 
-            <div className="flex items-center gap-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl px-4 py-3 rounded-2xl border border-slate-200/50 dark:border-white/10 shadow-lg shadow-black/5">
+            <div className="flex items-center gap-4 bg-white dark:bg-slate-900 px-4 py-3 rounded-2xl border border-slate-200 dark:border-white/10 shadow-md">
               <Button 
                 onClick={toggleMic}
                 variant={isMicOn ? "outline" : "destructive"}
