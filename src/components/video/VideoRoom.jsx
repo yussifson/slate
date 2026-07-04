@@ -440,12 +440,18 @@ function ScreenShareTile({ screen}) {
  
  {!screen.local && <audio ref={audioRef} autoPlay playsInline />}
  
- <div className="absolute bottom-3 left-3 bg-primary/20 backdrop-blur-sm px-3 py-1 rounded-lg flex items-center gap-2">
- <span className="text-white text-xs font-medium tracking-[0.04em]">{screen.local ? "Your Screen" : "Shared Screen"}</span>
+ <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-lg">
+ <span className="text-white text-xs font-semibold tracking-wide">{screen.local ? "Your Screen" : "Shared Screen"}</span>
  </div>
  </div>
  );
 }
+
+const avatarColors = [
+  'bg-emerald-500', 'bg-blue-500', 'bg-indigo-500', 
+  'bg-violet-500', 'bg-fuchsia-500', 'bg-rose-500', 
+  'bg-amber-500', 'bg-teal-500', 'bg-cyan-500'
+];
 
 function ParticipantTile({ id, isLocal}) {
  const videoState = useVideoTrack(id);
@@ -456,6 +462,14 @@ function ParticipantTile({ id, isLocal}) {
  
  const displayName = participant?.user_name || (isLocal ? "You" : "Participant");
  const initials = displayName.substring(0, 2).toUpperCase();
+ 
+ const avatarColor = React.useMemo(() => {
+  let hash = 0;
+  for (let i = 0; i < displayName.length; i++) {
+   hash = displayName.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return avatarColors[Math.abs(hash) % avatarColors.length];
+ }, [displayName]);
 
  useEffect(() => {
  if (videoState?.track && videoRef.current) {
@@ -470,7 +484,7 @@ function ParticipantTile({ id, isLocal}) {
 }, [audioState?.track, isLocal]);
 
  return (
- <div className="relative bg-slate-800 rounded-xl overflow-hidden group flex items-center justify-center aspect-video w-full max-w-2xl min-w-[280px] shadow-sm border border-slate-700/50">
+ <div className="relative bg-slate-100 dark:bg-slate-800/50 rounded-2xl overflow-hidden group flex items-center justify-center aspect-video w-full max-w-3xl min-w-[320px] shadow-sm border border-slate-200 dark:border-white/10 m-2">
  {videoState?.state === 'playable' ? (
  <video 
  ref={videoRef}
@@ -480,16 +494,16 @@ function ParticipantTile({ id, isLocal}) {
  className="w-full h-full object-cover"
  />
  ) : (
- <div className="w-20 h-20 bg-slate-700 rounded-full flex items-center justify-center">
- <span className="text-2xl text-slate-300 font-bold tracking-[-0.02em]">{initials}</span>
+ <div className={`w-24 h-24 ${avatarColor} rounded-full flex items-center justify-center shadow-lg`}>
+ <span className="text-3xl text-white font-bold tracking-tight">{initials}</span>
  </div>
  )}
  
  {!isLocal && <audio ref={audioRef} autoPlay playsInline />}
  
- <div className="absolute bottom-3 left-3 bg-primary/20 backdrop-blur-sm px-3 py-1 rounded-lg flex items-center gap-2">
- <span className="text-white text-xs font-medium tracking-[0.04em]">{displayName}</span>
- {audioState?.state !== 'playable' && <MicOff className="w-3 h-3 text-red-500" />}
+ <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-lg">
+ <span className="text-white text-xs font-semibold tracking-wide">{displayName}</span>
+ {audioState?.state !== 'playable' && <MicOff className="w-3.5 h-3.5 text-white/80" />}
  </div>
  </div>
  );

@@ -74,7 +74,7 @@ function StandaloneMeetingInner({ url, roomName, onLeave, onToast }) {
   }
 
   return (
-    <div className="w-screen h-screen bg-black overflow-hidden flex flex-col relative">
+    <div className="w-screen h-screen bg-white dark:bg-[#090E17] overflow-hidden flex flex-col relative">
       {/* VideoRoom creates its own DailyProvider + callObject internally — do NOT wrap in another DailyProvider */}
       <VideoRoom
         roomUrl={url}
