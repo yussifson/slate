@@ -122,8 +122,7 @@ export default function Board() {
   }
   const customMeetingOrigin = `${window.location.protocol}//${meetingDomain}${window.location.port ? ':' + window.location.port : ''}`;
 
-  // Create new room record
-  await (async () => {
+  // Create new room record directly in Supabase to bypass offline sync delays
   const _payload = {
    id: roomId,
    company_id: companyId,
@@ -134,10 +133,15 @@ export default function Board() {
    status: 'active',
    meeting_link: `${customMeetingOrigin}/join/${roomId}`
   };
- const _keys = Object.keys(_payload);
- const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO video_rooms (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
-})();
+  
+  const { error: dbError } = await supabase.from('video_rooms').upsert(_payload);
+  if (dbError) {
+    console.warn("Failed to insert meeting to Supabase directly:", dbError);
+    // Fallback to powersync if Supabase insert fails
+    const _keys = Object.keys(_payload);
+    const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+    await powerSync.execute(`INSERT INTO video_rooms (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+  }
   // Record creation logic was executed above
 
  joinRoom(realUrl);

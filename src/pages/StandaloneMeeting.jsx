@@ -84,41 +84,19 @@ export default function StandaloneMeeting() {
 
   const handleJoin = async () => {
     try {
-      let room = null;
-      let fetchError = null;
-
-      // Try fetching from Supabase, retry once after 1.5s to handle PowerSync upload delays
-      for (let i = 0; i < 2; i++) {
-        const res = await supabase
-          .from('video_rooms')
-          .select('*')
-          .eq('id', roomId)
-          .single();
-        
-        if (res.data) {
-          room = res.data;
-          fetchError = null;
-          break;
-        } else {
-          fetchError = res.error;
-          if (i === 0) await new Promise(r => setTimeout(r, 1500));
-        }
-      }
-
-      let joinUrl = '';
-      let isPrivate = false;
-      let finalRoomName = 'Meeting Room';
+      const { data: room, error: fetchError } = await supabase
+        .from('video_rooms')
+        .select('*')
+        .eq('id', roomId)
+        .single();
 
       if (fetchError || !room) {
-        // Fallback: If DB sync failed or it's an ad-hoc room that failed to insert, 
-        // construct the daily.co URL directly.
-        joinUrl = `https://optalflow.daily.co/${roomId}`;
-        finalRoomName = 'Instant Meeting';
-      } else {
-        joinUrl = room.daily_room_url;
-        isPrivate = room.privacy_type === 'private';
-        finalRoomName = room.title || room.daily_room_name;
+        throw new Error('Meeting not found or has ended.');
       }
+
+      let joinUrl = room.daily_room_url;
+      let isPrivate = room.privacy_type === 'private';
+      let finalRoomName = room.title || room.daily_room_name;
 
       if (isPrivate) {
         const userName = user ? user.full_name : 'Guest';

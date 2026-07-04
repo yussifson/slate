@@ -133,9 +133,15 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
         meeting_link: `${customMeetingOrigin}/join/${roomId}`
       };
 
-      const _keys = Object.keys(_payload);
-      const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-      await powerSync.execute(`INSERT INTO video_rooms (${_keys.join(', ')}) VALUES (${_keys.map(() => '?').join(', ')})`, _vals);
+      // Save directly to Supabase to bypass offline sync delays
+      const { error: dbError } = await supabase.from('video_rooms').upsert(_payload);
+      if (dbError) {
+        console.warn("Failed to insert meeting to Supabase directly:", dbError);
+        // Fallback to powersync if Supabase insert fails
+        const _keys = Object.keys(_payload);
+        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO video_rooms (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+      }
 
       // 3. Send Email Invites
       if (selectedParticipants.length > 0) {

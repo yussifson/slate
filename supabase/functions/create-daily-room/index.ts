@@ -46,6 +46,36 @@ serve(async (req) => {
       throw new Error(room.info || 'Failed to create Daily room')
     }
 
+    // Bypass offline mode and insert directly into Supabase using Service Role Key
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+
+    if (supabaseUrl && supabaseServiceKey) {
+      // Import createClient dynamically if possible, or just use a raw fetch request
+      const insertPayload = {
+        id: roomName,
+        title: 'Meeting Room',
+        daily_room_url: room.url,
+        daily_room_name: room.name,
+        status: 'active'
+      };
+
+      const dbResponse = await fetch(`${supabaseUrl}/rest/v1/video_rooms`, {
+        method: 'POST',
+        headers: {
+          'apikey': supabaseServiceKey,
+          'Authorization': `Bearer ${supabaseServiceKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify(insertPayload)
+      });
+
+      if (!dbResponse.ok) {
+        console.error('Failed to insert into video_rooms:', await dbResponse.text());
+      }
+    }
+
     return new Response(JSON.stringify({ url: room.url, name: room.name }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
