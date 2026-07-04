@@ -194,10 +194,11 @@ export default function StandaloneMeeting() {
   };
 
   if (error) {
+    console.log("StandaloneMeeting rendering error state:", error, typeof error);
     return (
       <div className="w-screen h-screen flex flex-col items-center justify-center p-4">
         <h1 className="text-3xl text-rose-500 mb-4">Access Denied</h1>
-        <p className="text-slate-500 mb-6">{error}</p>
+        <p className="text-slate-500 mb-6">{String(error)}</p>
         <Button onClick={() => navigate('/')} className="rounded-full px-6 py-2">Go to Homepage</Button>
       </div>
     );
