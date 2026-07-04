@@ -370,7 +370,7 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
                 {isScheduling ? <OrbitLoader size="sm" /> : 'Schedule'}
               </Button>
             </DialogFooter>
-          </>
+          </div>
         )}
       </DialogContent>
     </Dialog>
