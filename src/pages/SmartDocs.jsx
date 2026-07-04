@@ -278,6 +278,7 @@ export default function SmartDocs() {
     const extra = {
       is_json_wrapper: true,
       notes: uploadForm.notes,
+      category: uploadForm.category,
       tags: uploadForm.tags,
       expiry_date: uploadForm.expiry_date || null,
       signature_status: uploadForm.signature_status,
@@ -286,7 +287,7 @@ export default function SmartDocs() {
 
     await powerSync.execute(
       "INSERT INTO documents (id, created_at, company_id, name, category, file_url, file_type, notes, uploaded_by, filing_date) VALUES (?,?,?,?,?,?,?,?,?,?)",
-      [crypto.randomUUID(), new Date().toISOString(), companyId, uploadForm.name, uploadForm.category, fileUrl, fileType || uploadForm.file_type, JSON.stringify(extra), user?.full_name || user?.email, new Date().toISOString()]
+      [crypto.randomUUID(), new Date().toISOString(), companyId, uploadForm.name, null, fileUrl, fileType || uploadForm.file_type, JSON.stringify(extra), user?.full_name || user?.email, new Date().toISOString()]
     );
     await loadDocs();
     setShowUploadForm(false);
