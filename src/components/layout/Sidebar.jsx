@@ -721,11 +721,6 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
       rawNavItems.push({ label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: "Wallet" });
     }
 
-    // Inject Unified Inbox
-    if (!rawNavItems.some(n => n.path === '/unified-inbox')) {
-      rawNavItems.push({ label: "Unified Inbox", path: "/unified-inbox", icon: "Inbox" });
-    }
-
     // Inject SmartDocs
     if (!rawNavItems.some(n => n.path === '/smart-docs')) {
       rawNavItems.push({ label: "Smart Docs", path: "/smart-docs", icon: "Brain" });

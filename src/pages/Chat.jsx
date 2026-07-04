@@ -302,33 +302,51 @@ export default function Chat() {
  
  {/* Sidebar - Channels & DMs */}
  <div className={cn(
-   "flex-shrink-0 border-r border-primary/40 bg-[#f0f2f5] dark:bg-[#202c33] flex flex-col h-[40%] md:h-full z-10 relative transition-all duration-300",
-   isSidebarCollapsed ? "w-0 md:w-20 overflow-hidden" : "w-full md:w-80 lg:w-96"
+   "flex-shrink-0 border-r border-primary/40 bg-background dark:bg-[#202c33] flex flex-col h-[40%] md:h-full z-10 relative transition-all duration-300",
+   isSidebarCollapsed ? "w-0 md:w-16 overflow-hidden" : "w-full md:w-80 lg:w-96"
  )}>
- <div className="p-4 bg-background dark:bg-[#202c33] border-b border-primary/40 flex items-center justify-between">
- <div className="flex items-center gap-3">
-   <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden shrink-0">
-   {user?.avatar_url ? <img src={user.avatar_url} className="w-full h-full object-cover"/> : <MessageSquare className="w-5 h-5 text-primary" />}
+ <div className={cn(
+   "border-b border-primary/40 flex items-center justify-between shrink-0",
+   isSidebarCollapsed ? "p-2 flex-col gap-2" : "p-4"
+ )}>
+ {!isSidebarCollapsed ? (
+   <div className="flex items-center justify-between w-full">
+     <div className="flex items-center gap-3">
+       <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden shrink-0">
+         {user?.avatar_url ? <img src={user.avatar_url} className="w-full h-full object-cover"/> : <MessageSquare className="w-5 h-5 text-primary" />}
+       </div>
+       <h2 className="font-semibold text-lg">Chats</h2>
+     </div>
+     <div className="flex items-center gap-1">
+       <Button variant="ghost" size="icon" onClick={() => setIsSidebarCollapsed(true)} className="w-9 h-9 rounded-full hover:bg-primary/10" title="Collapse Sidebar">
+         <PanelLeftClose className="w-5 h-5" />
+       </Button>
+       {!isPortalUser && (
+       <DropdownMenu>
+         <DropdownMenuTrigger asChild>
+           <Button variant="ghost" size="icon" className="w-9 h-9 rounded-full hover:bg-primary/10">
+             <MoreVertical className="w-5 h-5" />
+           </Button>
+         </DropdownMenuTrigger>
+         <DropdownMenuContent align="end" className="w-48">
+           <DropdownMenuItem onClick={() => setIsAddChatOpen(true)}>New Chat</DropdownMenuItem>
+         </DropdownMenuContent>
+       </DropdownMenu>
+       )}
+     </div>
    </div>
-   {!isSidebarCollapsed && <h2 className="font-semibold text-lg hidden md:block">Chats</h2>}
- </div>
- <div className="flex items-center gap-1 text-[#54656f] dark:text-[#aebac1]">
- <Button variant="ghost" size="icon" onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className="w-9 h-9 rounded-full hover:bg-primary/20 hidden md:flex" title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}>
-   {isSidebarCollapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
- </Button>
- {!isSidebarCollapsed && (
- <DropdownMenu>
- <DropdownMenuTrigger asChild>
- <Button variant="ghost" size="icon" className="w-9 h-9 rounded-full hover:bg-primary/20">
- <MoreVertical className="w-5 h-5" />
- </Button>
- </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-48">
- { !isPortalUser && <DropdownMenuItem onClick={() => setIsAddChatOpen(true)}>New Chat</DropdownMenuItem> }
- </DropdownMenuContent>
- </DropdownMenu>
+ ) : (
+   <>
+     <Button variant="ghost" size="icon" onClick={() => setIsSidebarCollapsed(false)} className="w-10 h-10 rounded-full hover:bg-primary/10 mx-auto" title="Expand Sidebar">
+       <PanelLeftOpen className="w-5 h-5" />
+     </Button>
+     {!isPortalUser && (
+       <Button variant="ghost" size="icon" onClick={() => setIsAddChatOpen(true)} className="w-10 h-10 rounded-full hover:bg-primary/10 mx-auto" title="New Chat">
+         <Plus className="w-5 h-5" />
+       </Button>
+     )}
+   </>
  )}
- </div>
  </div>
  
  {!isSidebarCollapsed && (
