@@ -113,7 +113,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
     setIsGenerating(true);
     toast({ title: "AI is generating task checklist..." });
     try {
-      const prompt = `Break down this task into a 3-5 step actionable checklist formatted nicely in markdown: "${form.title}"\nReturn ONLY the markdown checklist.`;
+      const prompt = `Break down this task into a 3-5 step actionable checklist in plain text without any markdown or special characters: "${form.title}"\nReturn ONLY the plain text checklist.`;
       const response = await generateText([{ role: 'user', content: prompt }]);
       
       const newDesc = form.description 

@@ -22,7 +22,7 @@ export default function TaskChecklist({ taskId }) {
 
     const addMutation = useMutation({
         mutationFn: async (title) => {
-            return await base44.entities.TaskChecklist.insert({
+            return await base44.entities.TaskChecklist.create({
                 task_id: taskId,
                 company_id: companyId,
                 title,

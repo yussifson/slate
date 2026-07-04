@@ -22,7 +22,7 @@ export default function TaskComments({ taskId }) {
 
     const addMutation = useMutation({
         mutationFn: async (text) => {
-            return await base44.entities.TaskComment.insert({
+            return await base44.entities.TaskComment.create({
                 task_id: taskId,
                 company_id: companyId,
                 comment_text: text,

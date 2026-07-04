@@ -23,7 +23,7 @@ export default function TaskAttachments({ taskId }) {
 
     const addMutation = useMutation({
         mutationFn: async (fileData) => {
-            return await base44.entities.TaskAttachment.insert({
+            return await base44.entities.TaskAttachment.create({
                 task_id: taskId,
                 company_id: companyId,
                 file_url: fileData.url,
