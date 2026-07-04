@@ -57,11 +57,11 @@ function StandaloneMeetingInner({ url, roomName, onLeave, onToast }) {
             </Button>
             <div className="pt-2">
               <Button
-                variant="ghost"
-                className="w-full text-slate-500"
+                variant="outline"
+                className="w-full text-slate-700 dark:text-slate-200 border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 py-6 rounded-xl text-md font-medium transition-all"
                 onClick={() => {
                   navigator.clipboard.writeText(window.location.href);
-                  if (onToast) onToast({ title: 'Copied', description: 'Meeting link copied to clipboard.' });
+                  if (onToast) onToast({ title: 'Copied!', description: 'Meeting link copied to clipboard.' });
                 }}
               >
                 Copy meeting link
@@ -78,6 +78,7 @@ function StandaloneMeetingInner({ url, roomName, onLeave, onToast }) {
       {/* VideoRoom creates its own DailyProvider + callObject internally — do NOT wrap in another DailyProvider */}
       <VideoRoom
         roomUrl={url}
+        userName={guestName}
         onLeave={onLeave}
         isPipMode={false}
         togglePipMode={() => {}}

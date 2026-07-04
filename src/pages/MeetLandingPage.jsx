@@ -345,7 +345,7 @@ export default function MeetLandingPage() {
 
       {/* Share Link Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white dark:bg-slate-900 border-none shadow-2xl rounded-2xl">
+        <DialogContent className="sm:max-w-md p-0 max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-900 border-none shadow-2xl rounded-2xl">
           <DialogTitle className="sr-only">Meeting Link Created</DialogTitle>
           <DialogDescription className="sr-only">Your meeting link is ready to be copied.</DialogDescription>
           <div className="p-2">
@@ -370,7 +370,7 @@ export default function MeetLandingPage() {
                     <Button
                       type="button"
                       size="lg"
-                      className="rounded-xl shrink-0 gap-2"
+                      className="rounded-xl shrink-0 gap-2 bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20 transition-all hover:scale-105"
                       onClick={() => {
                         navigator.clipboard.writeText(laterLink);
                         toast({ title: 'Copied!', description: 'Meeting link copied to clipboard.' });

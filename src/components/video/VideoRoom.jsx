@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef} from 'react';
+import DailyIframe from '@daily-co/daily-js';
 import { useTranslation} from "react-i18next";
 import { 
  DailyProvider, 
@@ -495,7 +496,7 @@ function ParticipantTile({ id, isLocal}) {
 }
 
 // Wrapper to initialize Daily provider
-export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePipMode}) {
+export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePipMode, userName }) {
  const [daily, setDaily] = useState(null);
  // Keep a ref so the cleanup closure always has access to the latest callObject
  // without triggering re-renders on creation
@@ -507,35 +508,35 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
   let cancelled = false;
 
   const initDaily = async () => {
-   const DailyIframe = await import('@daily-co/daily-js');
-
    if (cancelled) return;
 
-   // ── Destroy any pre-existing instance (guards against React StrictMode double-invoke
-   //    and "Duplicate DailyIframe instances are not allowed" errors) ──────────────────
+   // Destroy any pre-existing instance to prevent 'Duplicate DailyIframe instances' errors
    try {
-    const existing = DailyIframe.default.getCallInstance();
+    const existing = DailyIframe.getCallInstance();
     if (existing) {
      try { await existing.leave(); } catch (_) {}
-     existing.destroy();
+     try { existing.destroy(); } catch (_) {}
     }
    } catch (_) {}
 
    // Also destroy our own tracked ref if it's still around
    if (callRef.current) {
     try { await callRef.current.leave(); } catch (_) {}
-    callRef.current.destroy();
+    try { callRef.current.destroy(); } catch (_) {}
     callRef.current = null;
    }
 
    if (cancelled) return;
 
-   const callObject = DailyIframe.default.createCallObject();
+   const callObject = DailyIframe.createCallObject();
    callRef.current = callObject;
 
    const joinOpts = { url: roomUrl, audioSource: true, videoSource: true };
    if (typeof token === 'string' && token.length > 0) {
     joinOpts.token = token;
+   }
+   if (typeof userName === 'string' && userName.trim().length > 0) {
+    joinOpts.userName = userName.trim();
    }
 
    try {
@@ -543,9 +544,9 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
     if (cancelled) return;
     await callObject.join(joinOpts);
    } catch (camErr) {
-    console.warn('Camera/Mic permission denied. Joining without local media.', camErr);
+    console.warn('Camera/Mic permission denied or joining error.', camErr);
     if (cancelled) return;
-    try { await callObject.join({ url: roomUrl }); } catch (e) { console.error(e); }
+    try { await callObject.join({ url: roomUrl, userName: joinOpts.userName, token: joinOpts.token }); } catch (e) { console.error(e); }
    }
 
    if (cancelled) return;
