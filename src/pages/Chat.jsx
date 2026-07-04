@@ -1,7 +1,7 @@
 import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect, useRef} from "react";
 import { useTranslation} from "react-i18next";
-import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, CheckCheck, Check, Smile, Paperclip, ImageIcon, FileText, File, X} from "lucide-react";
+import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, CheckCheck, Check, Smile, Paperclip, ImageIcon, FileText, File, X, PanelLeftClose, PanelLeftOpen} from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -36,6 +36,7 @@ export default function Chat() {
  const [isSummarizing, setIsSummarizing] = useState(false);
  const [chatSummary, setChatSummary] = useState(null);
  const [searchQuery, setSearchQuery] = useState("");
+ const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
  const messagesEndRef = useRef(null);
  const fileInputRef = useRef(null);
@@ -299,15 +300,25 @@ export default function Chat() {
  />
  
  {/* Sidebar - Channels & DMs */}
- <div className="w-full md:w-80 lg:w-96 flex-shrink-0 border-r border-primary/40 bg-[#f0f2f5] dark:bg-[#202c33] flex flex-col h-[40%] md:h-full z-10 relative">
+ <div className={cn(
+   "flex-shrink-0 border-r border-primary/40 bg-[#f0f2f5] dark:bg-[#202c33] flex flex-col h-[40%] md:h-full z-10 relative transition-all duration-300",
+   isSidebarCollapsed ? "w-0 md:w-20 overflow-hidden" : "w-full md:w-80 lg:w-96"
+ )}>
  <div className="p-4 bg-background dark:bg-[#202c33] border-b border-primary/40 flex items-center justify-between">
- <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
- {user?.avatar_url ? <img src={user.avatar_url} className="w-full h-full object-cover"/> : <MessageSquare className="w-5 h-5 text-primary" />}
+ <div className="flex items-center gap-3">
+   <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden shrink-0">
+   {user?.avatar_url ? <img src={user.avatar_url} className="w-full h-full object-cover"/> : <MessageSquare className="w-5 h-5 text-primary" />}
+   </div>
+   {!isSidebarCollapsed && <h2 className="font-semibold text-lg hidden md:block">Chats</h2>}
  </div>
- <div className="flex items-center gap-2 text-[#54656f] dark:text-[#aebac1]">
+ <div className="flex items-center gap-1 text-[#54656f] dark:text-[#aebac1]">
+ <Button variant="ghost" size="icon" onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className="w-9 h-9 rounded-full hover:bg-primary/20 hidden md:flex" title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}>
+   {isSidebarCollapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
+ </Button>
+ {!isSidebarCollapsed && (
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-primary/20">
+ <Button variant="ghost" size="icon" className="w-9 h-9 rounded-full hover:bg-primary/20">
  <MoreVertical className="w-5 h-5" />
  </Button>
  </DropdownMenuTrigger>
@@ -315,9 +326,11 @@ export default function Chat() {
  { !isPortalUser && <DropdownMenuItem onClick={() => setIsAddChatOpen(true)}>New Chat</DropdownMenuItem> }
  </DropdownMenuContent>
  </DropdownMenu>
+ )}
  </div>
  </div>
  
+ {!isSidebarCollapsed && (
  <div className="p-3 bg-background dark:bg-[#111b21] border-b border-primary/40">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
@@ -330,6 +343,7 @@ export default function Chat() {
  />
  </div>
  </div>
+ )}
 
  <div className="flex-1 overflow-y-auto bg-background dark:bg-[#111b21]">
  {loadingRooms ? (
@@ -346,10 +360,11 @@ export default function Chat() {
  onClick={() => setActiveRoomId(room.id)}
  className={cn(
  "flex items-center gap-3 px-3 py-3 cursor-pointer transition-colors group",
- activeRoomId === room.id ? "bg-[#f0f2f5] dark:bg-[#2a3942]" : "hover:bg-[#f5f6f6] dark:hover:bg-[#202c33]"
+ activeRoomId === room.id ? "bg-[#f0f2f5] dark:bg-[#2a3942]" : "hover:bg-[#f5f6f6] dark:hover:bg-[#202c33]",
+ isSidebarCollapsed && "justify-center px-1"
  )}
  >
- <div className="relative flex-shrink-0">
+ <div className="relative flex-shrink-0" title={isSidebarCollapsed ? roomName : undefined}>
  {room.room_type === "group" ? (
  <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden">
  <Users className="w-6 h-6 text-primary dark:text-primary/70" />
@@ -360,6 +375,7 @@ export default function Chat() {
  </div>
  )}
  </div>
+ {!isSidebarCollapsed && (
  <div className="flex-1 min-w-0 border-b border-primary/40 group-last:border-none pb-3">
  <div className="flex justify-between items-baseline mb-0.5">
  <p className="text-base text-foreground truncate">{roomName}</p>
@@ -367,10 +383,11 @@ export default function Chat() {
  </div>
  <p className="text-sm text-[#71717a] dark:text-gray-400 truncate">Click to view messages...</p>
  </div>
+ )}
  </div>
  );
  })}
- {!loadingRooms && rooms.length === 0 && (
+ {!loadingRooms && rooms.length === 0 && !isSidebarCollapsed && (
  <div className="flex flex-col items-center justify-center p-8 h-full text-center text-[#71717a] dark:text-gray-400">
  <p>No chats found.</p>
  { !isPortalUser && (
