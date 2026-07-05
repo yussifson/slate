@@ -157,18 +157,18 @@ export default function GenericKanban({
       )}
       
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="flex gap-6 p-6 overflow-x-auto min-h-[600px] bg-muted/5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 pb-12 custom-scrollbar">
+        <div className="flex gap-6 p-6 overflow-x-auto min-h-[600px] bg-card shadow-sm rounded-3xl border border-border/40 pb-12 custom-scrollbar">
           {stages.map((status, index) => {
             // Function support for dynamic status matching (e.g. 'Low Stock' computed from quantity)
             // But since this is drag and drop, statuses need to be exact strings that match statusKey
             const items = (data || []).filter(d => d[statusKey] === status);
             
             return (
-              <div key={status} className="flex-shrink-0 w-[320px] bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-3xl flex flex-col h-full max-h-[80vh]">
-                <div className="flex justify-between items-center p-4 border-b border-border/30 bg-muted/20 rounded-t-3xl">
-                  <h3 className="font-extrabold text-foreground tracking-tight uppercase text-sm tracking-[0.04em]">{status}</h3>
+              <div key={status} className="flex-shrink-0 w-[320px] bg-muted/20 border border-border/60 rounded-3xl flex flex-col h-full max-h-[80vh] overflow-hidden shadow-sm">
+                <div className="flex justify-between items-center p-4 border-b border-border/50 bg-muted/40">
+                  <h3 className="font-extrabold text-foreground uppercase text-xs tracking-wider">{status}</h3>
                   <div className="flex items-center gap-2">
-                    <span className="bg-background text-foreground text-xs font-semibold px-2.5 py-1 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 tracking-[0.04em]">{items.length}</span>
+                    <span className="bg-background text-foreground text-xs font-bold px-2.5 py-0.5 rounded-full border border-border/60 shadow-sm">{items.length}</span>
                     {boardKey && (
                       <div className="flex items-center gap-1 opacity-0 hover:opacity-100 transition-opacity absolute right-4 group-hover:opacity-100">
                         <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={() => openEditStage(index, status)}>
@@ -192,22 +192,22 @@ export default function GenericKanban({
                       {items.map((item, i) => (
                         <Draggable key={item.id} draggableId={item.id} index={i}>
                           {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              style={{...provided.draggableProps.style, zIndex: snapshot.isDragging ? 999 : 1}}
-                              className={`bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-2xl transition-all cursor-grab active:cursor-grabbing hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] ${snapshot.isDragging ? 'shadow-xl border-emerald-500 ring-2 ring-emerald-500/20 rotate-2' : ''}`}
-                            >
-                              <h4 className="font-semibold text-sm text-foreground mb-3 leading-snug">{item[titleKey] || 'Untitled'}</h4>
-                              <div className="flex flex-wrap gap-2.5">
-                                {Object.keys(item).filter(k => k !== 'company_id' && k !== 'id' && k !== 'created_at' && k !== statusKey && k !== titleKey).slice(0, 3).map(k => (
-                                  <span key={k} className="bg-muted text-[#71717a] dark:text-gray-400 font-medium text-[10px] px-2 py-1 rounded-lg capitalize truncate max-w-[120px]">
-                                    {String(item[k] || '')}
-                                  </span>
-                                ))}
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                style={{...provided.draggableProps.style, zIndex: snapshot.isDragging ? 9999 : 1}}
+                                className={`bg-background border border-border/60 shadow-sm p-5 rounded-2xl transition-all cursor-grab active:cursor-grabbing hover:shadow-md hover:border-emerald-500/40 ${snapshot.isDragging ? 'shadow-xl border-emerald-500 ring-2 ring-emerald-500/20 rotate-2' : ''}`}
+                              >
+                                <h4 className="font-bold text-sm text-foreground mb-3 leading-snug">{item[titleKey] || 'Untitled'}</h4>
+                                <div className="flex flex-wrap gap-2">
+                                  {Object.keys(item).filter(k => k !== 'company_id' && k !== 'id' && k !== 'created_at' && k !== statusKey && k !== titleKey).slice(0, 3).map(k => (
+                                    <span key={k} className="bg-muted/50 border border-border/40 text-foreground/70 font-semibold text-[10px] px-2.5 py-1 rounded-md capitalize truncate max-w-[120px]">
+                                      {String(item[k] || '')}
+                                    </span>
+                                  ))}
+                                </div>
                               </div>
-                            </div>
                           )}
                         </Draggable>
                       ))}
