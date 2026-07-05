@@ -273,6 +273,7 @@ export const AppSchema = new Schema({
         received_date: column.text,
         received_by: column.text,
         is_quarantined: column.integer,
+        status: column.text,
         created_at: column.text,
         updated_at: column.text
     }),
@@ -6276,6 +6277,57 @@ export const AppSchema = new Schema({
         deal_id: column.text,
         activity_type: column.text,
         notes: column.text,
+        created_by: column.text,
+        created_at: column.text
+    }),
+    optavel_employees: new Table({
+        id: column.text,
+        company_id: column.text,
+        name: column.text,
+        role: column.text,
+        department: column.text,
+        onboarding_progress: column.integer,
+        status: column.text,
+        start_date: column.text,
+        created_at: column.text
+    }),
+    optavel_leave_requests: new Table({
+        id: column.text,
+        company_id: column.text,
+        employee_id: column.text,
+        type: column.text,
+        status: column.text,
+        start_date: column.text,
+        end_date: column.text,
+        created_at: column.text
+    }),
+    optavel_support_tickets: new Table({
+        id: column.text,
+        company_id: column.text,
+        title: column.text,
+        description: column.text,
+        status: column.text,
+        severity: column.text,
+        customer_id: column.text,
+        reporter_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    optavel_nps_responses: new Table({
+        id: column.text,
+        company_id: column.text,
+        customer_id: column.text,
+        score: column.integer,
+        feedback: column.text,
+        created_at: column.text
+    }),
+    optavel_partners: new Table({
+        id: column.text,
+        company_id: column.text,
+        name: column.text,
+        type: column.text,
+        status: column.text,
+        revenue_share: column.real,
         created_at: column.text
     }),
     univ_time_tracking: new Table({
