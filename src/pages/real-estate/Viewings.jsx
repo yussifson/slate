@@ -124,7 +124,7 @@ export default function Viewings() {
   const upcomingViewings = viewings.filter(v => new Date(v.viewing_date) >= new Date()).slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-6 transition-all duration-300 ease-in-out">
+    <div className="min-h-screen bg-background p-6 transition-all duration-300 ease-in-out">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
@@ -149,7 +149,7 @@ export default function Viewings() {
         {view === 'calendar' ? (
           <div className="grid grid-cols-3 gap-6 mb-8">
             <div className="col-span-2">
-              <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+              <Card className="p-0 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
                 <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2.5 text-lg font-bold tracking-wide">
@@ -181,7 +181,7 @@ export default function Viewings() {
 
             {/* Upcoming Viewings Sidebar */}
             <div>
-              <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+              <Card className="p-0 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col h-full">
                 <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
                   <CardTitle className="flex items-center gap-2.5 text-lg font-bold text-slate-900 dark:text-white tracking-wide">
                     <div className="p-1.5 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg border border-indigo-200 dark:border-indigo-800/50 shadow-sm">

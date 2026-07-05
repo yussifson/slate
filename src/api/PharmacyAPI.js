@@ -209,6 +209,81 @@ class PharmacyAPI {
       const oldValue = oldResult.rows._array?.[0] || {};
 
       await powerSync.execute(
+        'UPDATE univ_pharmacy_inventory SET status = ?, updated_at = ? WHERE id = ? AND company_id = ?',
+        [newStatus, now, inventoryId, companyId]
+      );
+
+      await this.logAuditAction(companyId, 'UPDATE', 'Inventory Status', inventoryId, oldValue, { status: newStatus }, userId);
+      return { success: true, message: 'Inventory status updated' };
+    } catch (e) {
+      console.error('[Pharmacy API] Update inventory status error:', e);
+      throw new Error(`Failed to update inventory status: ${e.message}`);
+    }
+  }
+
+  async deleteInventory(companyId, inventoryId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_pharmacy_inventory WHERE id = ? AND company_id = ?',
+        [inventoryId, companyId]
+      );
+      return { success: true, message: 'Inventory item deleted successfully' };
+    } catch (e) {
+      console.error('[Pharmacy API] Delete inventory error:', e);
+      throw new Error(`Failed to delete inventory: ${e.message}`);
+    }
+  }
+
+  // ========================================
+  // SALES & TRANSACTIONS
+  // ========================================
+
+  async createSale(companyId, saleData, userId) {
+    try {
+      const saleId = generateUUID();
+      const now = getSafeISO8601();
+
+      await powerSync.execute(
+        `INSERT INTO univ_pharmacy_sales (id, company_id, receipt_number, customer_id, sale_date,
+         total_items, subtotal, tax_amount, discount_amount, grand_total, amount_paid,
+         change_amount, payment_method, cashier_id, shift_id, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [saleId, companyId, saleData.receiptNumber, saleData.customerId, now,
+         saleData.items?.length || 0, saleData.subtotal || 0, saleData.taxAmount || 0,
+         saleData.discountAmount || 0, saleData.grandTotal || 0, saleData.amountPaid || 0,
+         saleData.changeAmount || 0, saleData.paymentMethod, userId, saleData.shiftId, now, now]
+      );
+
+      // Create sale items
+      if (saleData.items && Array.isArray(saleData.items)) {
+        for (const item of saleData.items) {
+          const itemId = generateUUID();
+          await powerSync.execute(
+            `INSERT INTO univ_pharmacy_sale_items (id, company_id, sale_id, drug_id, drug_name,
+             quantity_sold, unit_price, line_total, batch_number, inventory_id, created_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [itemId, companyId, saleId, item.drugId, item.drugName, item.quantitySold,
+             item.unitPrice, item.lineTotal, item.batchNumber, item.inventoryId, now]
+          );
+
+          // Update inventory
+          if (item.inventoryId) {
+            await this.updateInventoryQuantity(companyId, item.inventoryId, -item.quantitySold, 'Sale', userId);
+          }
+        }
+      }
+
+      await this.logAuditAction(companyId, 'CREATE', 'Sale', saleId, null, saleData, userId);
+
+      return { success: true, saleId, receiptNumber: saleData.receiptNumber };
+    } catch (e) {
+      console.error('[Pharmacy API] Create sale error:', e);
+      throw new Error(`Failed to create sale: ${e.message}`);
+    }
+  }
+
+  async getSales(companyId, filterOptions = {}) {
+    try {
       let query = 'SELECT * FROM univ_pharmacy_sales WHERE company_id = ?';
       const params = [companyId];
 

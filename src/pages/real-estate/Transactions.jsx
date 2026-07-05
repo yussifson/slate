@@ -247,8 +247,8 @@ export default function Transactions() {
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-              <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <Card className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
+              <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground text-sm font-medium mb-1 group-hover:text-emerald-500 transition-colors">Total Transactions</p>
@@ -258,23 +258,23 @@ export default function Transactions() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-              <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <Card className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
+              <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1 group-hover:text-emerald-500 transition-colors">Total Value</p>
-                    <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">${(stats.value / 1000000).toFixed(1)}M</p>
+                    <p className="text-muted-foreground text-sm font-medium mb-1 group-hover:text-emerald-500 transition-colors">Total Value</p>
+                    <p className="text-3xl font-bold text-foreground tracking-tight">${(stats.value / 1000000).toFixed(1)}M</p>
                   </div>
                   <div className="p-4 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><DollarSign className="w-7 h-7 text-emerald-600 dark:text-emerald-400" /></div>
                 </div>
               </CardContent>
             </Card>
-            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-              <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <Card className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-blue-500/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
+              <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1 group-hover:text-blue-500 transition-colors">Closed Deals</p>
-                    <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{stats.closed}</p>
+                    <p className="text-muted-foreground text-sm font-medium mb-1 group-hover:text-blue-500 transition-colors">Closed Deals</p>
+                    <p className="text-3xl font-bold text-foreground tracking-tight">{stats.closed}</p>
                   </div>
                   <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><CheckCircle className="w-7 h-7 text-blue-600 dark:text-blue-400" /></div>
                 </div>
