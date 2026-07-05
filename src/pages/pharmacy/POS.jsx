@@ -179,7 +179,7 @@ export default function POS() {
                     >
                       {/* Decoration */}
                       <div className={`absolute top-0 right-0 w-24 h-24 rounded-bl-full -mr-8 -mt-8 pointer-events-none transition-colors
-                        ${isOutOfStock ? 'bg-muted' : 'bg-gradient-to-br from-emerald-500/10 to-transparent group-hover:from-emerald-500/20'}`} />
+                        ${isOutOfStock ? 'bg-muted' : 'bg-emerald-500 opacity-90'}`} />
                       
                       <div className="flex justify-between items-start mb-2 relative">
                         <div className="pr-4">

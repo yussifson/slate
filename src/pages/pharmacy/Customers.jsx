@@ -103,7 +103,7 @@ export default function Customers() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCustomers.map(c => (
               <Card key={c.id} className="group p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl overflow-hidden relative">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-bl-full -mr-8 -mt-8 pointer-events-none" />
+                <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500 rounded-bl-full -mr-8 -mt-8 pointer-events-none opacity-90" />
                 <h3 className="font-bold text-xl text-foreground mb-4 group-hover:text-emerald-600 transition-colors">{c.customer_name}</h3>
                 
                 <div className="space-y-3 text-sm">
@@ -121,19 +121,9 @@ export default function Customers() {
                     <span className="font-medium text-foreground/80">{c.email || '-'}</span>
                   </div>
 
-                  {c.insurance_provider && (
-                    <div className="pt-4 mt-2 border-t border-border/50">
-                      <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
-                        {c.insurance_provider}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="absolute bottom-6 right-6">
-                    <div className="flex flex-col items-end">
-                      <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Total Spent</span>
-                      <span className="font-black text-xl text-emerald-600 dark:text-emerald-400">${(c.total_spent || 0).toFixed(2)}</span>
-                    </div>
+                  <div className="flex flex-col items-end pt-4 mt-2 border-t border-border/50">
+                    <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Total Spent</span>
+                    <span className="font-black text-xl text-emerald-600 dark:text-emerald-400">${(c.total_spent || 0).toFixed(2)}</span>
                   </div>
                 </div>
               </Card>
