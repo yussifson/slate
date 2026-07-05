@@ -284,7 +284,7 @@ export default function Offers() {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-3 mb-4 pr-24">
+                <div className="flex items-center gap-3 mb-4 pr-24 relative z-10">
                   <div className="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary/30/30 flex items-center justify-center text-primary dark:text-primary/80 shrink-0">
                     {(offer.buyer_name || '?')[0].toUpperCase()}
                   </div>
@@ -294,14 +294,14 @@ export default function Offers() {
                   </div>
                 </div>
 
-                <div className="flex flex-col mb-4 pb-4 border-b border-border/50">
+                <div className="flex flex-col mb-4 pb-4 border-b border-border/50 relative z-10">
                   <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Offer Amount</p>
                   <p className="text-2xl font-bold text-primary dark:text-primary/80 tracking-tight">
                     ${Number(offer.offer_amount || 0).toLocaleString()}
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 text-sm bg-muted/30 p-3 rounded-2xl flex-1">
+                <div className="grid grid-cols-2 gap-4 text-sm bg-muted/30 p-3 rounded-2xl flex-1 relative z-10">
                   <div>
                     <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Earnest Money</p>
                     <p className="font-medium text-foreground">
@@ -316,7 +316,7 @@ export default function Offers() {
                   </div>
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-border/50 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="mt-4 pt-4 border-t border-border/50 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity relative z-10">
                   <Button size="sm" variant="ghost" onClick={() => handleEdit(offer)} className="text-primary hover:bg-primary/5 dark:hover:bg-primary/30/20">
                     <Edit className="w-4 h-4 mr-1.5" /> Edit
                   </Button>
