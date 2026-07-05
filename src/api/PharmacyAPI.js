@@ -418,6 +418,87 @@ class PharmacyAPI {
   }
 
   // ========================================
+  // INSURANCE CLAIMS
+  // ========================================
+
+  async createClaim(companyId, claimData, userId) {
+    try {
+      const id = generateUUID();
+      const now = getSafeISO8601();
+
+      await powerSync.execute(
+        `INSERT INTO univ_pharmacy_insurance_claims (id, company_id, claim_number, patient_id,
+         prescription_id, insurance_provider, policy_number, claim_amount, approval_amount,
+         claim_status, submission_date, claim_date, notes, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, claimData.claimNumber, claimData.patientId || null,
+         claimData.prescriptionId || null, claimData.insuranceProvider, claimData.policyNumber,
+         claimData.claimAmount || 0, claimData.approvalAmount || 0,
+         claimData.claimStatus || 'Submitted', now, claimData.claimDate || now,
+         claimData.notes || '', now, now]
+      );
+
+      return { success: true, id, message: 'Claim created successfully' };
+    } catch (e) {
+      console.error('[Pharmacy API] Create claim error:', e);
+      throw new Error(`Failed to create claim: ${e.message}`);
+    }
+  }
+
+  async updateClaim(companyId, claimId, claimData, userId) {
+    try {
+      const now = getSafeISO8601();
+
+      await powerSync.execute(
+        `UPDATE univ_pharmacy_insurance_claims SET
+         claim_number = ?, insurance_provider = ?, policy_number = ?,
+         claim_amount = ?, approval_amount = ?, claim_status = ?,
+         claim_date = ?, notes = ?, updated_at = ?
+         WHERE id = ? AND company_id = ?`,
+        [claimData.claimNumber, claimData.insuranceProvider, claimData.policyNumber,
+         claimData.claimAmount, claimData.approvalAmount, claimData.claimStatus,
+         claimData.claimDate, claimData.notes, now, claimId, companyId]
+      );
+
+      return { success: true, message: 'Claim updated successfully' };
+    } catch (e) {
+      console.error('[Pharmacy API] Update claim error:', e);
+      throw new Error(`Failed to update claim: ${e.message}`);
+    }
+  }
+
+  async updateClaimStatus(companyId, claimId, newStatus, userId) {
+    try {
+      const now = getSafeISO8601();
+
+      await powerSync.execute(
+        `UPDATE univ_pharmacy_insurance_claims SET claim_status = ?, updated_at = ?
+         WHERE id = ? AND company_id = ?`,
+        [newStatus, now, claimId, companyId]
+      );
+
+      return { success: true, message: 'Claim status updated successfully' };
+    } catch (e) {
+      console.error('[Pharmacy API] Update claim status error:', e);
+      throw new Error(`Failed to update claim status: ${e.message}`);
+    }
+  }
+
+  async deleteClaim(companyId, claimId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_pharmacy_insurance_claims WHERE id = ? AND company_id = ?',
+        [claimId, companyId]
+      );
+
+      return { success: true, message: 'Claim deleted successfully' };
+    } catch (e) {
+      console.error('[Pharmacy API] Delete claim error:', e);
+      throw new Error(`Failed to delete claim: ${e.message}`);
+    }
+  }
+
+  // ========================================
   // ANALYTICS & REPORTING
   // ========================================
 

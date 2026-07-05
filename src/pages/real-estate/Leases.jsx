@@ -241,6 +241,18 @@ export default function Leases() {
               onChange={(e) => setSearch(e.target.value)}
               className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-base flex-1"
             />
+          </div>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-40 border-0 bg-transparent shadow-none focus:ring-0 font-medium">
+              <SelectValue placeholder="All Leases" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Leases</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="expiring-soon">Expiring Soon</SelectItem>
+              <SelectItem value="expired">Expired</SelectItem>
+            </SelectContent>
+          </Select>
         </Card>
 
         {isLoading ? (

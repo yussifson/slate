@@ -336,6 +336,7 @@ export default function Properties() {
             </div>
           </Card>
         )}
+      </div>
 
       {/* Form Modal */}
       <Sheet open={showForm} onOpenChange={setShowForm}>

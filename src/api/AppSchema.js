@@ -6378,6 +6378,8 @@ export const AppSchema = new Schema({
     univ_kanban_boards: new Table({
         id: column.text,
         company_id: column.text,
+        board_key: column.text,
+        stages: column.text,
         created_at: column.text,
         updated_at: column.text
     }),
