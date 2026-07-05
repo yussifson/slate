@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { Plus, Settings, Trash2, X } from 'lucide-react';
+import { Plus, Settings, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-hot-toast';

@@ -226,7 +226,7 @@ export default function Claims() {
                       <td className="p-4 font-bold text-foreground">{c.claim_number}</td>
                       <td className="p-4 text-muted-foreground">{c.insurance_provider}</td>
                       <td className="p-4 font-medium">${parseFloat(c.claim_amount || 0).toFixed(2)}</td>
-                      <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">${parseFloat(c.approval_amount || 0).toFixed(2)}</td>
+                      <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">${parseFloat(c.approved_amount || 0).toFixed(2)}</td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${getStatusColor(c.claim_status)}`}>
                           {c.claim_status}
@@ -274,7 +274,7 @@ export default function Claims() {
                   </div>
                   <div>
                     <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Approved</p>
-                    <p className="font-bold text-emerald-600 dark:text-emerald-400">${parseFloat(c.approval_amount || 0).toFixed(2)}</p>
+                    <p className="font-bold text-emerald-600 dark:text-emerald-400">${parseFloat(c.approved_amount || 0).toFixed(2)}</p>
                   </div>
                 </div>
 

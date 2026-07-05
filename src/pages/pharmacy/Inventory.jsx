@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, AlertCircle, TrendingDown, Package, Calendar } from 'lucide-react';
+import { Plus, AlertCircle, TrendingDown, Package, Calendar, Pencil, Trash2 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { usePowerSync } from '@powersync/react';
@@ -12,6 +12,7 @@ import { toast } from 'react-hot-toast';
 import PharmacyAPI from '@/api/PharmacyAPI';
 import ViewToggle from '@/components/shared/ViewToggle';
 import { useViewPreference } from '@/hooks/useViewPreference';
+import GenericKanban from '@/components/views/GenericKanban';
 
 export default function Inventory() {
   const { user } = useAuth();
@@ -21,6 +22,7 @@ export default function Inventory() {
   const [inventory, setInventory] = useState([]);
   const [drugs, setDrugs] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useViewPreference('pharmacy_inventory', 'list');
 
@@ -58,9 +60,15 @@ export default function Inventory() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await PharmacyAPI.addInventory(companyId, formData, user.id);
-      toast.success('Inventory added successfully');
+      if (editingId) {
+        await PharmacyAPI.updateInventoryQuantity(companyId, editingId, 0, 'Edit', user.id);
+        toast.success('Inventory updated');
+      } else {
+        await PharmacyAPI.addInventory(companyId, formData, user.id);
+        toast.success('Inventory added successfully');
+      }
       setShowForm(false);
+      setEditingId(null);
       setFormData({
         drugId: '', batchNumber: '', expiryDate: '', quantityInStock: 0,
         costPerUnit: 0, storageLocation: '', warehouseSection: '', shelfNumber: '',
@@ -70,6 +78,34 @@ export default function Inventory() {
     } catch (e) {
       toast.error(e.message);
     }
+  };
+
+  const handleDelete = async (id) => {
+    if (confirm('Delete this inventory item?')) {
+      try {
+        await PharmacyAPI.deleteInventory(companyId, id, user.id);
+        toast.success('Item deleted');
+        fetchData();
+      } catch (e) {
+        toast.error('Failed to delete item');
+      }
+    }
+  };
+
+  const handleEdit = (item) => {
+    setFormData({
+      drugId: item.drug_id || '',
+      batchNumber: item.batch_number || '',
+      expiryDate: item.expiry_date || '',
+      quantityInStock: item.quantity_in_stock || 0,
+      costPerUnit: item.cost_per_unit || 0,
+      storageLocation: item.storage_location || '',
+      warehouseSection: item.warehouse_section || '',
+      shelfNumber: item.shelf_number || '',
+      receivedDate: item.received_date || new Date().toISOString().split('T')[0]
+    });
+    setEditingId(item.id);
+    setShowForm(true);
   };
 
   const getDrugName = (drugId) => {
@@ -163,6 +199,7 @@ export default function Inventory() {
                     <th className="text-left p-4 font-semibold text-foreground">Available</th>
                     <th className="text-left p-4 font-semibold text-foreground">Expiry</th>
                     <th className="text-left p-4 font-semibold text-foreground">Location</th>
+                    <th className="text-right p-4 font-semibold text-foreground">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/50">
@@ -170,7 +207,7 @@ export default function Inventory() {
                     const expiry = new Date(item.expiry_date);
                     const isExpired = expiry < new Date();
                     return (
-                      <tr key={item.id} className={isExpired ? 'bg-red-50 dark:bg-red-900/10' : 'hover:bg-muted/30 transition-colors'}>
+                      <tr key={item.id} className={`group ${isExpired ? 'bg-red-50 dark:bg-red-900/10' : 'hover:bg-muted/30 transition-colors'}`}>
                         <td className="p-4 font-bold">{getDrugName(item.drug_id)}</td>
                         <td className="p-4 text-muted-foreground font-mono text-xs">{item.batch_number}</td>
                         <td className="p-4 font-medium">{item.quantity_in_stock}</td>
@@ -179,6 +216,16 @@ export default function Inventory() {
                           {item.expiry_date}
                         </td>
                         <td className="p-4 text-muted-foreground">{item.storage_location || '-'}</td>
+                        <td className="p-4 text-right">
+                          <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button variant="ghost" size="icon" onClick={() => handleEdit(item)} className="h-7 w-7 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                              <Pencil className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="h-7 w-7 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        </td>
                       </tr>
                     );
                   })}
@@ -203,6 +250,15 @@ export default function Inventory() {
                     : isLowStock ? <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-[10px] rounded-full font-bold uppercase tracking-wider">Low Stock</span>
                     : <span className="px-2 py-1 bg-emerald-100 text-emerald-800 text-[10px] rounded-full font-bold uppercase tracking-wider">Healthy</span>}
                   </div>
+                  {/* Hover actions */}
+                  <div className="absolute bottom-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(item)} className="h-7 w-7 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                      <Pencil className="w-3.5 h-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="h-7 w-7 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
                   <h3 className="font-bold text-lg pr-16 mb-1 line-clamp-1 group-hover:text-emerald-600 transition-colors">{getDrugName(item.drug_id)}</h3>
                   <p className="text-xs text-muted-foreground font-mono mb-4">Batch: {item.batch_number}</p>
                   
@@ -225,52 +281,47 @@ export default function Inventory() {
             })}
           </div>
         ) : (
-          <div className="flex gap-6 overflow-x-auto pb-4 hide-scrollbar">
-            {['Healthy', 'Low Stock', 'Critical/Expired'].map(status => {
-              const columnItems = inventory.filter(item => {
-                const expiry = new Date(item.expiry_date);
-                const isExpired = expiry < new Date();
-                const daysToExpiry = (expiry - new Date()) / (1000 * 60 * 60 * 24);
-                const isLow = item.quantity_available <= 50;
-                
-                if (status === 'Critical/Expired') return isExpired || (daysToExpiry < 30 && daysToExpiry > 0);
-                if (status === 'Low Stock') return isLow && !isExpired && !(daysToExpiry < 30 && daysToExpiry > 0);
-                return !isLow && !isExpired && !(daysToExpiry < 30 && daysToExpiry > 0);
-              });
+          <GenericKanban
+            data={inventory.map(item => {
+              const expiry = new Date(item.expiry_date);
+              const isExpired = expiry < new Date();
+              const daysToExpiry = (expiry - new Date()) / (1000 * 60 * 60 * 24);
+              const isLow = item.quantity_available <= 50;
               
-              return (
-                <div key={status} className="flex-none w-80 flex flex-col gap-4">
-                  <div className="flex items-center justify-between px-2">
-                    <h3 className="font-bold text-foreground">{status}</h3>
-                    <span className="text-xs font-semibold bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
-                      {columnItems.length}
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-3 min-h-[200px] bg-muted/20 p-3 rounded-3xl border border-border/30">
-                    {columnItems.map(item => (
-                      <Card key={item.id} className="p-4 border border-border/40 bg-card shadow-sm hover:shadow-md transition-shadow rounded-2xl cursor-pointer">
-                        <div className="flex justify-between items-start mb-1">
-                          <span className="text-[10px] font-mono text-muted-foreground">B: {item.batch_number}</span>
-                        </div>
-                        <p className="font-bold text-foreground mb-3 text-sm leading-tight">{getDrugName(item.drug_id)}</p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">Avail: {item.quantity_available}</span>
-                          <span className="text-xs text-muted-foreground flex items-center gap-1"><Calendar className="w-3 h-3"/> {item.expiry_date}</span>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              );
+              let defaultStatus = 'Healthy';
+              if (isExpired || (daysToExpiry < 30 && daysToExpiry > 0)) {
+                defaultStatus = 'Critical/Expired';
+              } else if (isLow) {
+                defaultStatus = 'Low Stock';
+              }
+              
+              return {
+                ...item,
+                computed_status: item.status || defaultStatus,
+                drugName: getDrugName(item.drug_id)
+              };
             })}
-          </div>
+            statusKey="computed_status"
+            titleKey="drugName"
+            boardKey="pharmacy_inventory"
+            defaultStages={['Healthy', 'Low Stock', 'Critical/Expired']}
+            onStatusChange={async (itemId, newStatus) => {
+              try {
+                await PharmacyAPI.updateInventoryStatus(companyId, itemId, newStatus, user.id);
+                toast.success(`Moved to ${newStatus}`);
+                fetchData();
+              } catch (e) {
+                toast.error('Failed to update status');
+              }
+            }}
+          />
         )}
       </div>
 
       <Sheet open={showForm} onOpenChange={setShowForm}>
         <SheetContent className="w-full max-w-md overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Add Stock</SheetTitle>
+            <SheetTitle>{editingId ? 'Edit Inventory Item' : 'Add Stock'}</SheetTitle>
           </SheetHeader>
           <form onSubmit={handleSubmit} className="space-y-4 mt-6">
             <div>

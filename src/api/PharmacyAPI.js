@@ -189,64 +189,26 @@ class PharmacyAPI {
         [Math.max(0, newQuantity), now, inventoryId]
       );
 
+      await this.logAuditAction(companyId, 'UPDATE', 'Inventory', inventoryId, current, { quantity_in_stock: newQuantity }, userId);
       return { success: true, message: 'Inventory quantity updated' };
     } catch (e) {
       console.error('[Pharmacy API] Update inventory quantity error:', e);
-      throw new Error(`Failed to update inventory: ${e.message}`);
+      throw new Error(`Failed to update quantity: ${e.message}`);
     }
   }
 
-  // ========================================
-  // SALES & TRANSACTIONS
-  // ========================================
-
-  async createSale(companyId, saleData, userId) {
+  async updateInventoryStatus(companyId, inventoryId, newStatus, userId) {
     try {
-      const saleId = generateUUID();
       const now = getSafeISO8601();
 
-      // Create sale record
-      await powerSync.execute(
-        `INSERT INTO univ_pharmacy_sales (id, company_id, receipt_number, customer_id, sale_date,
-         total_items, subtotal, tax_amount, discount_amount, grand_total, amount_paid, 
-         change_amount, payment_method, cashier_id, shift_id, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [saleId, companyId, saleData.receiptNumber, saleData.customerId, now,
-         saleData.items?.length || 0, saleData.subtotal || 0, saleData.taxAmount || 0,
-         saleData.discountAmount || 0, saleData.grandTotal || 0, saleData.amountPaid || 0,
-         saleData.changeAmount || 0, saleData.paymentMethod, userId, saleData.shiftId, now, now]
+      // Get old value for audit
+      const oldResult = await powerSync.execute(
+        'SELECT status FROM univ_pharmacy_inventory WHERE id = ?',
+        [inventoryId]
       );
+      const oldValue = oldResult.rows._array?.[0] || {};
 
-      // Create sale items
-      if (saleData.items && Array.isArray(saleData.items)) {
-        for (const item of saleData.items) {
-          const itemId = generateUUID();
-          await powerSync.execute(
-            `INSERT INTO univ_pharmacy_sale_items (id, company_id, sale_id, drug_id, drug_name,
-             quantity_sold, unit_price, line_total, batch_number, inventory_id, created_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [itemId, companyId, saleId, item.drugId, item.drugName, item.quantitySold,
-             item.unitPrice, item.lineTotal, item.batchNumber, item.inventoryId, now]
-          );
-
-          // Update inventory
-          if (item.inventoryId) {
-            await this.updateInventoryQuantity(companyId, item.inventoryId, -item.quantitySold, 'Sale', userId);
-          }
-        }
-      }
-
-      await this.logAuditAction(companyId, 'CREATE', 'Sale', saleId, null, saleData, userId);
-
-      return { success: true, saleId, receiptNumber: saleData.receiptNumber };
-    } catch (e) {
-      console.error('[Pharmacy API] Create sale error:', e);
-      throw new Error(`Failed to create sale: ${e.message}`);
-    }
-  }
-
-  async getSales(companyId, filterOptions = {}) {
-    try {
+      await powerSync.execute(
       let query = 'SELECT * FROM univ_pharmacy_sales WHERE company_id = ?';
       const params = [companyId];
 
@@ -298,6 +260,52 @@ class PharmacyAPI {
     } catch (e) {
       console.error('[Pharmacy API] Create prescription error:', e);
       throw new Error(`Failed to create prescription: ${e.message}`);
+    }
+  }
+
+  async updatePrescriptionStatus(companyId, prescriptionId, newStatus, userId) {
+    try {
+      const now = getSafeISO8601();
+      await powerSync.execute(
+        'UPDATE univ_pharmacy_prescriptions SET prescription_status = ?, updated_at = ? WHERE id = ? AND company_id = ?',
+        [newStatus, now, prescriptionId, companyId]
+      );
+      return { success: true, message: 'Prescription status updated' };
+    } catch (e) {
+      console.error('[Pharmacy API] Update prescription status error:', e);
+      throw new Error('Failed to update prescription status: ' + e.message);
+    }
+  }
+
+  async updatePrescription(companyId, prescriptionId, data, userId) {
+    try {
+      const now = getSafeISO8601();
+      await powerSync.execute(
+        `UPDATE univ_pharmacy_prescriptions SET
+         physician_name = ?, dosage = ?, frequency = ?,
+         duration_days = ?, refills_allowed = ?, prescription_status = ?,
+         updated_at = ? WHERE id = ? AND company_id = ?`,
+        [data.physicianName, data.dosage, data.frequency,
+         data.durationDays, data.refillsAllowed || 0, data.prescriptionStatus || 'Pending',
+         now, prescriptionId, companyId]
+      );
+      return { success: true, message: 'Prescription updated' };
+    } catch (e) {
+      console.error('[Pharmacy API] Update prescription error:', e);
+      throw new Error('Failed to update prescription: ' + e.message);
+    }
+  }
+
+  async deletePrescription(companyId, prescriptionId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_pharmacy_prescriptions WHERE id = ? AND company_id = ?',
+        [prescriptionId, companyId]
+      );
+      return { success: true, message: 'Prescription deleted' };
+    } catch (e) {
+      console.error('[Pharmacy API] Delete prescription error:', e);
+      throw new Error('Failed to delete prescription: ' + e.message);
     }
   }
 
@@ -427,15 +435,13 @@ class PharmacyAPI {
       const now = getSafeISO8601();
 
       await powerSync.execute(
-        `INSERT INTO univ_pharmacy_insurance_claims (id, company_id, claim_number, patient_id,
-         prescription_id, insurance_provider, policy_number, claim_amount, approval_amount,
-         claim_status, submission_date, claim_date, notes, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, companyId, claimData.claimNumber, claimData.patientId || null,
-         claimData.prescriptionId || null, claimData.insuranceProvider, claimData.policyNumber,
-         claimData.claimAmount || 0, claimData.approvalAmount || 0,
-         claimData.claimStatus || 'Submitted', now, claimData.claimDate || now,
-         claimData.notes || '', now, now]
+        `INSERT INTO univ_pharmacy_insurance_claims (id, company_id, claim_number, customer_id,
+         insurance_provider, claim_amount, approved_amount,
+         claim_status, claim_date, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, claimData.claimNumber, claimData.customerId || null,
+         claimData.insuranceProvider, claimData.claimAmount || 0, claimData.approvalAmount || 0,
+         claimData.claimStatus || 'Submitted', claimData.claimDate || now, now, now]
       );
 
       return { success: true, id, message: 'Claim created successfully' };
@@ -451,13 +457,13 @@ class PharmacyAPI {
 
       await powerSync.execute(
         `UPDATE univ_pharmacy_insurance_claims SET
-         claim_number = ?, insurance_provider = ?, policy_number = ?,
-         claim_amount = ?, approval_amount = ?, claim_status = ?,
-         claim_date = ?, notes = ?, updated_at = ?
+         claim_number = ?, insurance_provider = ?,
+         claim_amount = ?, approved_amount = ?, claim_status = ?,
+         claim_date = ?, updated_at = ?
          WHERE id = ? AND company_id = ?`,
-        [claimData.claimNumber, claimData.insuranceProvider, claimData.policyNumber,
+        [claimData.claimNumber, claimData.insuranceProvider,
          claimData.claimAmount, claimData.approvalAmount, claimData.claimStatus,
-         claimData.claimDate, claimData.notes, now, claimId, companyId]
+         claimData.claimDate, now, claimId, companyId]
       );
 
       return { success: true, message: 'Claim updated successfully' };

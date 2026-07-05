@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, FileText, Clock } from 'lucide-react';
+import { Plus, Search, FileText, Clock, Pencil, Trash2 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { usePowerSync } from '@powersync/react';
@@ -12,6 +12,7 @@ import { toast } from 'react-hot-toast';
 import PharmacyAPI from '@/api/PharmacyAPI';
 import ViewToggle from '@/components/shared/ViewToggle';
 import { useViewPreference } from '@/hooks/useViewPreference';
+import GenericKanban from '@/components/views/GenericKanban';
 
 export default function Prescriptions() {
   const { user } = useAuth();
@@ -23,6 +24,7 @@ export default function Prescriptions() {
   const [drugs, setDrugs] = useState([]);
   const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useViewPreference('pharmacy_prescriptions', 'list');
 
@@ -67,9 +69,22 @@ export default function Prescriptions() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await PharmacyAPI.createPrescription(companyId, formData, user.id);
-      toast.success('Prescription created');
+      if (editingId) {
+        await PharmacyAPI.updatePrescription(companyId, editingId, {
+          physicianName: formData.physicianName,
+          dosage: formData.dosage,
+          frequency: formData.frequency,
+          durationDays: formData.durationDays,
+          refillsAllowed: formData.refillsAllowed,
+          prescriptionStatus: 'Pending'
+        }, user.id);
+        toast.success('Prescription updated');
+      } else {
+        await PharmacyAPI.createPrescription(companyId, formData, user.id);
+        toast.success('Prescription created');
+      }
       setShowForm(false);
+      setEditingId(null);
       setFormData({
         customerId: '',
         prescriptionNumber: `RX-${Date.now()}`,
@@ -87,6 +102,37 @@ export default function Prescriptions() {
       fetchData();
     } catch (e) {
       toast.error(e.message);
+    }
+  };
+
+  const handleEdit = (p) => {
+    setFormData({
+      customerId: p.customer_id || '',
+      prescriptionNumber: p.prescription_number || '',
+      physicianName: p.physician_name || '',
+      physicianLicenseNumber: p.physician_license_number || '',
+      prescriptionDate: p.prescription_date || new Date().toISOString().split('T')[0],
+      prescribedDrugId: p.prescribed_drug_id || '',
+      drugName: p.drug_name || '',
+      quantityPrescribed: p.quantity_prescribed || 1,
+      dosage: p.dosage || '',
+      frequency: p.frequency || '',
+      durationDays: p.duration_days || 30,
+      refillsAllowed: p.refills_allowed || 0
+    });
+    setEditingId(p.id);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (confirm('Delete this prescription?')) {
+      try {
+        await PharmacyAPI.deletePrescription(companyId, id, user.id);
+        toast.success('Prescription deleted');
+        fetchData();
+      } catch (e) {
+        toast.error('Failed to delete prescription');
+      }
     }
   };
 
@@ -136,12 +182,13 @@ export default function Prescriptions() {
                     <th className="p-4 font-semibold text-foreground">Drug</th>
                     <th className="p-4 font-semibold text-foreground">Dosage / Freq</th>
                     <th className="p-4 font-semibold text-foreground">Duration</th>
-                    <th className="p-4 font-semibold text-foreground text-right">Status</th>
+                    <th className="p-4 font-semibold text-foreground">Status</th>
+                    <th className="p-4 font-semibold text-foreground text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/50">
                   {filteredPrescriptions.map(p => (
-                    <tr key={p.id} className="hover:bg-muted/30 transition-colors">
+                    <tr key={p.id} className="group hover:bg-muted/30 transition-colors">
                       <td className="p-4 font-bold text-foreground">
                         <div className="flex items-center gap-2">
                           <FileText className="w-4 h-4 text-emerald-500" />
@@ -152,13 +199,23 @@ export default function Prescriptions() {
                       <td className="p-4 text-muted-foreground">{p.dosage} - {p.frequency}</td>
                       <td className="p-4 text-muted-foreground">{p.duration_days} days</td>
                       <td className="p-4 text-right">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                          p.prescription_status === 'Pending' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' 
-                          : p.prescription_status === 'Filled' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
-                          : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                        }`}>
-                          {p.prescription_status || 'New'}
-                        </span>
+                        <div className="flex items-center justify-end gap-2">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                            p.prescription_status === 'Pending' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' 
+                            : p.prescription_status === 'Filled' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
+                            : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                          }`}>
+                            {p.prescription_status || 'New'}
+                          </span>
+                          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button variant="ghost" size="icon" onClick={() => handleEdit(p)} className="h-7 w-7 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                              <Pencil className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button variant="ghost" size="icon" onClick={() => handleDelete(p.id)} className="h-7 w-7 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -170,7 +227,7 @@ export default function Prescriptions() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPrescriptions.map(p => (
               <Card key={p.id} className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-6 flex justify-end w-full pointer-events-none">
+                <div className="absolute top-0 right-0 p-6 flex justify-end w-full">
                   <span className={`px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-bold shadow-sm ${
                     p.prescription_status === 'Pending' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' 
                     : p.prescription_status === 'Filled' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
@@ -178,6 +235,16 @@ export default function Prescriptions() {
                   }`}>
                     {p.prescription_status || 'New'}
                   </span>
+                </div>
+
+                {/* Hover actions */}
+                <div className="absolute bottom-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <Button variant="ghost" size="icon" onClick={() => handleEdit(p)} className="h-7 w-7 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                    <Pencil className="w-3.5 h-3.5" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(p.id)} className="h-7 w-7 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
                 </div>
                 
                 <div className="flex items-center gap-3 mb-4">
@@ -209,41 +276,31 @@ export default function Prescriptions() {
             ))}
           </div>
         ) : (
-          <div className="flex gap-6 overflow-x-auto pb-4 hide-scrollbar">
-            {['Pending', 'Filled', 'Cancelled'].map(status => {
-              const columnItems = filteredPrescriptions.filter(p => (p.prescription_status || 'Pending') === status);
-              return (
-                <div key={status} className="flex-none w-80 flex flex-col gap-4">
-                  <div className="flex items-center justify-between px-2">
-                    <h3 className="font-bold text-foreground">{status}</h3>
-                    <span className="text-xs font-semibold bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
-                      {columnItems.length}
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-3 min-h-[200px] bg-muted/20 p-3 rounded-3xl border border-border/30">
-                    {columnItems.map(p => (
-                      <Card key={p.id} className="p-4 border border-border/40 bg-card shadow-sm hover:shadow-md transition-shadow rounded-2xl cursor-pointer">
-                        <div className="flex justify-between items-start mb-2">
-                          <span className="text-[10px] font-mono text-muted-foreground">{p.prescription_number}</span>
-                        </div>
-                        <p className="font-bold text-foreground mb-2 text-sm">{p.drug_name}</p>
-                        <div className="flex items-center justify-between text-xs text-muted-foreground">
-                          <span className="truncate max-w-[120px]">{p.dosage}</span>
-                          <span className="flex items-center gap-1"><Clock className="w-3 h-3"/> {p.duration_days}d</span>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <GenericKanban
+            data={filteredPrescriptions.map(p => ({
+              ...p,
+              computed_status: p.prescription_status || 'Pending'
+            }))}
+            statusKey="computed_status"
+            titleKey="drug_name"
+            boardKey="pharmacy_prescriptions"
+            defaultStages={['Pending', 'Filled', 'Cancelled']}
+            onStatusChange={async (itemId, newStatus) => {
+              try {
+                await PharmacyAPI.updatePrescriptionStatus(companyId, itemId, newStatus, user.id);
+                toast.success(`Moved to ${newStatus}`);
+                fetchData();
+              } catch (e) {
+                toast.error('Failed to update status');
+              }
+            }}
+          />
         )}
 
         <Sheet open={showForm} onOpenChange={setShowForm}>
-          <SheetContent className="w-full max-w-md overflow-y-auto">
+          <SheetContent aria-describedby={undefined} className="w-full max-w-md overflow-y-auto">
             <SheetHeader>
-              <SheetTitle>New Prescription</SheetTitle>
+              <SheetTitle>{editingId ? 'Edit Prescription' : 'New Prescription'}</SheetTitle>
             </SheetHeader>
             <form onSubmit={handleSubmit} className="space-y-4 mt-6">
               <div>
@@ -290,8 +347,8 @@ export default function Prescriptions() {
                 </div>
               </div>
               <div className="flex gap-2 pt-6">
-                <Button type="submit" className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700">Create</Button>
-                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
+                <Button type="submit" className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700">{editingId ? 'Save Changes' : 'Create'}</Button>
+                <Button type="button" variant="outline" onClick={() => { setShowForm(false); setEditingId(null); }}>Cancel</Button>
               </div>
             </form>
           </SheetContent>
