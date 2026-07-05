@@ -314,7 +314,7 @@ export default function DocumentTemplates() {
 
               <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
                 <p className="text-xs font-medium text-muted-foreground">Signatures Required</p>
-                <p className="font-bold text-blue-600">{template.required_signatures}</p>
+                <p className="font-bold text-primary">{template.required_signatures}</p>
               </div>
 
               <div className="flex gap-2 pt-2 border-t">

@@ -72,7 +72,7 @@ export default function TenantPortal() {
     paid: 'bg-green-100 text-green-700',
     pending: 'bg-yellow-100 text-yellow-700',
     overdue: 'bg-red-100 text-red-700',
-    open: 'bg-blue-100 text-blue-700',
+    open: 'bg-primary/10 text-primary/90',
     resolved: 'bg-green-100 text-green-700',
     in_progress: 'bg-orange-100 text-orange-700',
   }[s] || 'bg-gray-100 text-gray-600');
@@ -115,7 +115,7 @@ export default function TenantPortal() {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <StatCard icon={CreditCard} label="Payments Made" value={payments.filter(p => p.status === 'paid').length} color="bg-green-100 text-green-700" />
         <StatCard icon={AlertCircle} label="Outstanding" value={payments.filter(p => p.status === 'pending' || p.status === 'overdue').length} color="bg-red-100 text-red-700" />
-        <StatCard icon={Wrench} label="Maintenance Requests" value={maintenance.length} color="bg-blue-100 text-blue-700" />
+        <StatCard icon={Wrench} label="Maintenance Requests" value={maintenance.length} color="bg-primary/10 text-primary/90" />
       </div>
 
       {/* Payment History */}

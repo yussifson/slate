@@ -18,10 +18,10 @@ import { toast } from 'react-hot-toast';
 const pipelineStages = [
   { id: 'offer_accepted', label: 'Offer Accepted', color: 'bg-orange-50/80 border-orange-200/60 dark:bg-orange-950/30 dark:border-orange-900/40 border-l-4 border-l-orange-500 dark:border-l-orange-500', badge: 'bg-orange-500 text-white shadow-sm shadow-orange-500/20' },
   { id: 'inspection', label: 'Under Inspection', color: 'bg-amber-50/80 border-amber-200/60 dark:bg-amber-950/30 dark:border-amber-900/40 border-l-4 border-l-amber-500 dark:border-l-amber-500', badge: 'bg-amber-500 text-white shadow-sm shadow-amber-500/20' },
-  { id: 'appraisal', label: 'Appraisal', color: 'bg-blue-50/80 border-blue-200/60 dark:bg-blue-950/30 dark:border-blue-900/40 border-l-4 border-l-blue-500 dark:border-l-blue-500', badge: 'bg-blue-500 text-white shadow-sm shadow-blue-500/20' },
-  { id: 'financing', label: 'Financing', color: 'bg-indigo-50/80 border-indigo-200/60 dark:bg-indigo-950/30 dark:border-indigo-900/40 border-l-4 border-l-indigo-500 dark:border-l-indigo-500', badge: 'bg-indigo-500 text-white shadow-sm shadow-indigo-500/20' },
-  { id: 'ready_close', label: 'Ready to Close', color: 'bg-purple-50/80 border-purple-200/60 dark:bg-purple-950/30 dark:border-purple-900/40 border-l-4 border-l-purple-500 dark:border-l-purple-500', badge: 'bg-purple-500 text-white shadow-sm shadow-purple-500/20' },
-  { id: 'closed', label: 'Closed', color: 'bg-emerald-50/80 border-emerald-200/60 dark:bg-emerald-950/30 dark:border-emerald-900/40 border-l-4 border-l-emerald-500 dark:border-l-emerald-500', badge: 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/20' }
+  { id: 'appraisal', label: 'Appraisal', color: 'bg-primary/5/80 border-primary/20/60 dark:bg-blue-950/30 dark:border-primary/30/40 border-l-4 border-l-primary dark:border-l-primary', badge: 'bg-primary text-white shadow-sm shadow-primary/20' },
+  { id: 'financing', label: 'Financing', color: 'bg-primary/5/80 border-primary/20/60 dark:bg-indigo-950/30 dark:border-primary/30/40 border-l-4 border-l-primary dark:border-l-primary', badge: 'bg-primary text-white shadow-sm shadow-primary/20' },
+  { id: 'ready_close', label: 'Ready to Close', color: 'bg-primary/5/80 border-primary/20/60 dark:bg-purple-950/30 dark:border-primary/30/40 border-l-4 border-l-primary dark:border-l-primary', badge: 'bg-primary text-white shadow-sm shadow-primary/20' },
+  { id: 'closed', label: 'Closed', color: 'bg-primary/5/80 border-primary/20/60 dark:bg-emerald-950/30 dark:border-primary/30/40 border-l-4 border-l-primary dark:border-l-primary', badge: 'bg-primary text-white shadow-sm shadow-primary/20' }
 ];
 
 export default function Transactions() {
@@ -166,10 +166,10 @@ export default function Transactions() {
             <span className={`w-2.5 h-2.5 rounded-full ${pipelineStages.find(s => s.id === stage)?.badge}`}></span>
             {pipelineStages.find(s => s.id === stage)?.label}
           </h3>
-          <Badge className="bg-emerald-100/50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs px-2.5 py-0.5 rounded-full font-medium border-0">{transactions.length}</Badge>
+          <Badge className="bg-primary/10/50 text-primary/90 dark:bg-primary/30/30 dark:text-primary/80 text-xs px-2.5 py-0.5 rounded-full font-medium border-0">{transactions.length}</Badge>
         </div>
         <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
-          <div className="bg-gradient-to-r from-emerald-500 to-teal-500 h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${(transactions.length / Math.max(...pipelineStages.map(() => 3), 1)) * 100}%` }}></div>
+          <div className="bg-gradient-to-r from-primary to-teal-500 h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${(transactions.length / Math.max(...pipelineStages.map(() => 3), 1)) * 100}%` }}></div>
         </div>
       </div>
       
@@ -203,7 +203,7 @@ export default function Transactions() {
                 </div>
               </div>
               <div className="flex items-center justify-between pt-1" onClick={() => setSelectedTransaction(transaction)}>
-                <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 bg-emerald-100/50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-md font-bold shadow-sm border border-emerald-200/50 dark:border-emerald-800/30">
+                <div className="flex items-center gap-1.5 text-primary/90 dark:text-primary/80 bg-primary/10/50 dark:bg-primary/30/30 px-2.5 py-1 rounded-md font-bold shadow-sm border border-primary/20/50 dark:border-primary/40/30">
                   <DollarSign className="w-3.5 h-3.5" />
                   <span className="text-sm">${(transaction.sale_price / 1000).toFixed(0)}K</span>
                 </div>
@@ -232,14 +232,14 @@ export default function Transactions() {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
             <div>
               <h1 className="text-4xl font-bold text-foreground flex items-center gap-3">
-                <div className="p-2.5 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl border border-emerald-200 dark:border-emerald-800/50 shadow-sm"><Banknote className="w-7 h-7 text-emerald-600 dark:text-emerald-400" /></div>
+                <div className="p-2.5 bg-primary/10 dark:bg-primary/30/30 rounded-xl border border-primary/20 dark:border-primary/40/50 shadow-sm"><Banknote className="w-7 h-7 text-primary dark:text-primary/80" /></div>
                 Sales Pipeline
               </h1>
               <p className="text-muted-foreground mt-2 font-medium">Track property transactions through the sales pipeline</p>
             </div>
             <div className="flex items-center gap-4">
               <ViewToggle view={view} onViewChange={setView} allowedViews={['kanban', 'list']} />
-              <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', sellerName: '', salePrice: 0, closingDate: '', agentName: '', status: 'offer_accepted', notes: '' }); }} className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0 gap-2 rounded-xl transition-all duration-300">
+              <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', sellerName: '', salePrice: 0, closingDate: '', agentName: '', status: 'offer_accepted', notes: '' }); }} className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 gap-2 rounded-xl transition-all duration-300">
                 <Plus className="w-5 h-5" /> New Transaction
               </Button>
             </div>
@@ -247,36 +247,36 @@ export default function Transactions() {
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
+            <Card className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-muted-foreground text-sm font-medium mb-1 group-hover:text-emerald-500 transition-colors">Total Transactions</p>
+                    <p className="text-muted-foreground text-sm font-medium mb-1 group-hover:text-primary transition-colors">Total Transactions</p>
                     <p className="text-3xl font-bold text-foreground tracking-tight">{stats.total}</p>
                   </div>
-                  <div className="p-4 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><Banknote className="w-7 h-7 text-emerald-600 dark:text-emerald-400" /></div>
+                  <div className="p-4 bg-primary/10 dark:bg-primary/30/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><Banknote className="w-7 h-7 text-primary dark:text-primary/80" /></div>
                 </div>
               </CardContent>
             </Card>
-            <Card className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
+            <Card className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-muted-foreground text-sm font-medium mb-1 group-hover:text-emerald-500 transition-colors">Total Value</p>
+                    <p className="text-muted-foreground text-sm font-medium mb-1 group-hover:text-primary transition-colors">Total Value</p>
                     <p className="text-3xl font-bold text-foreground tracking-tight">${(stats.value / 1000000).toFixed(1)}M</p>
                   </div>
-                  <div className="p-4 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><DollarSign className="w-7 h-7 text-emerald-600 dark:text-emerald-400" /></div>
+                  <div className="p-4 bg-primary/10 dark:bg-primary/30/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><DollarSign className="w-7 h-7 text-primary dark:text-primary/80" /></div>
                 </div>
               </CardContent>
             </Card>
-            <Card className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-blue-500/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
+            <Card className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-muted-foreground text-sm font-medium mb-1 group-hover:text-blue-500 transition-colors">Closed Deals</p>
+                    <p className="text-muted-foreground text-sm font-medium mb-1 group-hover:text-primary transition-colors">Closed Deals</p>
                     <p className="text-3xl font-bold text-foreground tracking-tight">{stats.closed}</p>
                   </div>
-                  <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><CheckCircle className="w-7 h-7 text-blue-600 dark:text-blue-400" /></div>
+                  <div className="p-4 bg-primary/10 dark:bg-primary/30/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><CheckCircle className="w-7 h-7 text-primary dark:text-primary/80" /></div>
                 </div>
               </CardContent>
             </Card>
@@ -314,12 +314,12 @@ export default function Transactions() {
                   {filteredTransactions.map(transaction => (
                     <tr key={transaction.id} className="group hover:bg-muted/30 transition-colors">
                       <td className="p-4 font-bold text-foreground">
-                        <div className="cursor-pointer hover:text-emerald-600 transition-colors" onClick={() => setSelectedTransaction(transaction)}>
+                        <div className="cursor-pointer hover:text-primary transition-colors" onClick={() => setSelectedTransaction(transaction)}>
                           {transaction.property_address}
                         </div>
                       </td>
                       <td className="p-4 text-muted-foreground">{transaction.buyer_name}</td>
-                      <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">
+                      <td className="p-4 font-bold text-primary dark:text-primary/80">
                         ${Number(transaction.sale_price || 0).toLocaleString()}
                       </td>
                       <td className="p-4 text-muted-foreground">{new Date(transaction.closing_date).toLocaleDateString()}</td>
@@ -330,7 +330,7 @@ export default function Transactions() {
                       </td>
                       <td className="p-4 text-right">
                         <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-emerald-50 text-emerald-600 dark:hover:bg-emerald-900/30" onClick={() => handleEdit(transaction)}>
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/5 text-primary dark:hover:bg-primary/30/30" onClick={() => handleEdit(transaction)}>
                             <Edit className="w-4 h-4" />
                           </Button>
                           <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-red-50 text-red-600 dark:hover:bg-red-900/30" onClick={() => handleDelete(transaction.id)}>
@@ -359,8 +359,8 @@ export default function Transactions() {
               <div className="space-y-8 mt-8">
                 <div className="bg-gray-50 dark:bg-slate-900/50 rounded-2xl p-6 border border-gray-100 dark:border-white/5">
                   <div className="flex items-start gap-4">
-                    <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl mt-1 border border-emerald-200/50 dark:border-emerald-800/30">
-                      <Home className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                    <div className="p-3 bg-primary/10 dark:bg-primary/30/30 rounded-xl mt-1 border border-primary/20/50 dark:border-primary/40/30">
+                      <Home className="w-6 h-6 text-primary dark:text-primary/80" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider mb-1">Property</p>
@@ -386,16 +386,16 @@ export default function Transactions() {
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 rounded-2xl p-6 border border-emerald-100 dark:border-emerald-900/30">
-                  <p className="text-xs text-emerald-600 dark:text-emerald-400 uppercase font-bold tracking-wider mb-2">Sale Price</p>
-                  <p className="text-4xl font-black text-emerald-700 dark:text-emerald-400">${selectedTransaction.sale_price?.toLocaleString()}</p>
+                <div className="bg-gradient-to-br from-primary/5 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 rounded-2xl p-6 border border-primary/10 dark:border-primary/30/30">
+                  <p className="text-xs text-primary dark:text-primary/80 uppercase font-bold tracking-wider mb-2">Sale Price</p>
+                  <p className="text-4xl font-black text-primary/90 dark:text-primary/80">${selectedTransaction.sale_price?.toLocaleString()}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-1">
                     <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Agent</p>
                     <p className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-xs text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-200/50 dark:border-emerald-800/30">{selectedTransaction.agent_name?.charAt(0) || '?'}</div>
+                      <div className="w-6 h-6 rounded-full bg-primary/10 dark:bg-primary/30/30 flex items-center justify-center text-xs text-primary dark:text-primary/80 font-bold border border-primary/20/50 dark:border-primary/40/30">{selectedTransaction.agent_name?.charAt(0) || '?'}</div>
                       {selectedTransaction.agent_name}
                     </p>
                   </div>
@@ -441,7 +441,7 @@ export default function Transactions() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Sale Price <span className="text-red-500">*</span></label>
-                  <Input className="dark:bg-slate-900 dark:border-white/10 dark:text-white font-medium text-emerald-600 dark:text-emerald-400" type="number" value={formData.salePrice} onChange={(e) => setFormData({ ...formData, salePrice: parseFloat(e.target.value) })} required />
+                  <Input className="dark:bg-slate-900 dark:border-white/10 dark:text-white font-medium text-primary dark:text-primary/80" type="number" value={formData.salePrice} onChange={(e) => setFormData({ ...formData, salePrice: parseFloat(e.target.value) })} required />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Closing Date <span className="text-red-500">*</span></label>

@@ -121,19 +121,19 @@ export default function RealEstateDashboard() {
   };
 
   const kpis = [
-    { label: 'Active Properties', value: activeProperties, sub: `${properties.length} total`, icon: Building2, from: 'from-green-500', to: 'to-emerald-600', trend: '+5%', up: true },
+    { label: 'Active Properties', value: activeProperties, sub: `${properties.length} total`, icon: Building2, from: 'from-green-500', to: 'to-primary', trend: '+5%', up: true },
     { label: 'Active Buyers', value: activeBuyers, sub: `${clients.length} total clients`, icon: Users, from: 'from-orange-500', to: 'to-orange-600', trend: '+12%', up: true },
     { label: 'Viewings This Month', value: thisMonthViewings, sub: 'scheduled & completed', icon: Eye, from: 'from-green-500', to: 'to-green-600', trend: '+8%', up: true },
     { label: 'Monthly Revenue', value: `$${(monthlyRevenue / 1000).toFixed(0)}K`, sub: 'closed this month', icon: DollarSign, from: 'from-orange-500', to: 'to-orange-600', trend: '+22%', up: true },
-    { label: 'Active Leases', value: activeLeases, sub: `${pendingOffers} pending offers`, icon: Home, from: 'from-green-500', to: 'to-emerald-600', trend: '+3%', up: true },
+    { label: 'Active Leases', value: activeLeases, sub: `${pendingOffers} pending offers`, icon: Home, from: 'from-green-500', to: 'to-primary', trend: '+3%', up: true },
   ];
 
   const quickNav = [
-    { label: 'Properties', href: '/real-estate/properties', icon: Building2, count: properties.length, from: 'from-green-500', to: 'to-emerald-600' },
+    { label: 'Properties', href: '/real-estate/properties', icon: Building2, count: properties.length, from: 'from-green-500', to: 'to-primary' },
     { label: 'Clients', href: '/real-estate/clients', icon: Users, count: clients.length, from: 'from-orange-500', to: 'to-orange-600' },
     { label: 'Viewings', href: '/real-estate/viewings', icon: Calendar, count: viewings.length, from: 'from-green-500', to: 'to-green-600' },
     { label: 'Offers', href: '/real-estate/offers', icon: FileText, count: offers.length, from: 'from-orange-500', to: 'to-orange-600' },
-    { label: 'Transactions', href: '/real-estate/transactions', icon: DollarSign, count: transactions.length, from: 'from-green-500', to: 'to-emerald-600' },
+    { label: 'Transactions', href: '/real-estate/transactions', icon: DollarSign, count: transactions.length, from: 'from-green-500', to: 'to-primary' },
     { label: 'Leases', href: '/real-estate/leases', icon: Home, count: leases.length, from: 'from-orange-500', to: 'to-orange-600' },
     { label: 'Maintenance', href: '/real-estate/maintenance', icon: Wrench, count: 0, from: 'from-green-500', to: 'to-green-600' },
     { label: 'Market Data', href: '/real-estate/market-data', icon: BarChart3, count: 0, from: 'from-orange-500', to: 'to-orange-600' },
@@ -158,34 +158,33 @@ export default function RealEstateDashboard() {
     <div className="space-y-6 p-6">
 
       {/* ── Hero Header ── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 p-8 text-white">
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary via-primary/90 to-emerald-900 p-10 text-white shadow-xl hover:shadow-2xl transition-shadow">
         <div className="absolute inset-0 bg-black/10" />
-        <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
-        <div className="absolute -bottom-10 -right-16 w-56 h-56 bg-white/5 rounded-full" />
-        <div className="relative z-10 flex items-center justify-between">
+        <div className="absolute -top-10 -right-10 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-56 h-56 bg-primary/40 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
-                <Building2 className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 shadow-inner">
+                <Building2 className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold tracking-tight">Real Estate Dashboard</h1>
-                <p className="text-green-100 text-sm">Welcome back, {user?.email?.split('@')[0]} 👋</p>
+                <h1 className="text-3xl font-black tracking-tight">Real Estate Command</h1>
+                <p className="text-emerald-100 font-medium text-sm mt-0.5">Welcome back, {user?.email?.split('@')[0]} 👋</p>
               </div>
             </div>
-            <p className="text-green-200 text-xs mt-1">
+            <p className="text-emerald-200/80 font-bold text-xs mt-2 uppercase tracking-widest">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button
               onClick={handleAIInsight}
               disabled={isGenerating || !isProOrAbove}
-              className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur gap-2"
-              variant="outline"
+              className="bg-white text-primary hover:bg-emerald-50 border-0 shadow-lg font-bold gap-2 rounded-xl h-12 px-6"
             >
-              <Sparkles className="w-4 h-4" />
-              {isGenerating ? 'Generating...' : 'AI Insight'}
+              <Sparkles className="w-5 h-5 text-amber-500" />
+              {isGenerating ? 'Analyzing...' : 'Generate Insight'}
             </Button>
           </div>
         </div>
@@ -193,14 +192,14 @@ export default function RealEstateDashboard() {
 
       {/* ── AI Insight ── */}
       {aiInsight && (
-        <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-2xl p-5">
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-              <Sparkles className="w-4 h-4 text-emerald-600" />
+        <div className="bg-primary/5 border border-primary/20 rounded-[2rem] p-6 shadow-sm">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0 mt-0.5 border border-primary/20">
+              <Sparkles className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-emerald-800 mb-1">AI Market Insight</p>
-              <p className="text-sm text-emerald-700 leading-relaxed">{aiInsight}</p>
+              <p className="text-xs uppercase tracking-wider font-extrabold text-primary mb-2">Orbit AI Market Insight</p>
+              <p className="text-sm font-medium text-foreground leading-relaxed">{aiInsight}</p>
             </div>
           </div>
         </div>
@@ -209,19 +208,24 @@ export default function RealEstateDashboard() {
       {/* ── KPI Cards ── */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {kpis.map((kpi, i) => (
-          <div key={i} className="group p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden flex flex-col">
-            <div className="flex items-start justify-between mb-4">
-              <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${kpi.from} ${kpi.to} flex items-center justify-center shadow-md`}>
-                <kpi.icon className="w-5 h-5 text-white" />
-              </div>
-              <span className={`text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${kpi.up ? 'text-green-700 bg-green-50' : 'text-red-600 bg-red-50'}`}>
-                {kpi.up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-                {kpi.trend}
-              </span>
+          <div key={i} className="group p-6 border border-border/60 bg-card/40 backdrop-blur-md hover:shadow-2xl hover:border-primary/50 transition-all duration-300 rounded-[2rem] relative overflow-hidden flex flex-col hover:-translate-y-1">
+            <div className="absolute -top-6 -right-6 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-500 group-hover:scale-110 pointer-events-none">
+              <kpi.icon className="w-32 h-32 text-primary" />
             </div>
-            <p className="text-2xl font-bold text-foreground mb-1">{kpi.value}</p>
-            <p className="text-sm font-medium text-foreground mb-0.5">{kpi.label}</p>
-            <p className="text-xs text-muted-foreground">{kpi.sub}</p>
+            <div className="flex items-start justify-between mb-5 relative z-10">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                <kpi.icon className="w-6 h-6 text-primary group-hover:text-white transition-colors duration-300" />
+              </div>
+              <Badge variant="outline" className={`font-bold px-2.5 py-1 uppercase tracking-wider text-[9px] border-0 ${kpi.up ? 'text-emerald-700 bg-emerald-50 dark:bg-emerald-900/30' : 'text-rose-600 bg-rose-50 dark:bg-rose-900/30'}`}>
+                {kpi.up ? <ArrowUpRight className="w-3 h-3 mr-0.5" /> : <ArrowDownRight className="w-3 h-3 mr-0.5" />}
+                {kpi.trend}
+              </Badge>
+            </div>
+            <div className="relative z-10 mt-auto">
+              <p className="text-3xl font-black text-foreground mb-1 tracking-tight">{kpi.value}</p>
+              <p className="text-sm font-bold text-foreground">{kpi.label}</p>
+              <p className="text-xs font-medium text-muted-foreground mt-0.5 uppercase tracking-wide">{kpi.sub}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -229,7 +233,7 @@ export default function RealEstateDashboard() {
       {/* ── Charts Row ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Revenue Area Chart */}
-        <div className="lg:col-span-2 p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden flex flex-col">
+        <div className="lg:col-span-2 p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-base font-semibold text-foreground">Revenue Trend</h3>
@@ -262,7 +266,7 @@ export default function RealEstateDashboard() {
         </div>
 
         {/* Property Status Donut */}
-        <div className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden flex flex-col">
+        <div className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden flex flex-col">
           <div className="mb-6">
             <h3 className="text-base font-semibold text-foreground">Property Status</h3>
             <p className="text-xs text-muted-foreground mt-0.5">Current listing distribution</p>
@@ -292,7 +296,7 @@ export default function RealEstateDashboard() {
       {/* ── Activity Feed + Recent Transactions ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Transactions */}
-        <div className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden flex flex-col">
+        <div className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-base font-semibold text-foreground">Recent Sales</h3>
             <Link to="/real-estate/transactions">
@@ -308,7 +312,7 @@ export default function RealEstateDashboard() {
             <div className="space-y-3">
               {transactions.slice(0, 5).map(txn => (
                 <div key={txn.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/40 transition-colors">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-primary flex items-center justify-center text-white text-xs font-bold shrink-0">
                     {(txn.buyer_name || 'T')[0].toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -328,7 +332,7 @@ export default function RealEstateDashboard() {
         </div>
 
         {/* Recent Viewings */}
-        <div className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden flex flex-col">
+        <div className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-base font-semibold text-foreground">Upcoming Viewings</h3>
             <Link to="/real-estate/viewings">
@@ -374,7 +378,7 @@ export default function RealEstateDashboard() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
           {quickNav.map((item, i) => (
             <Link key={i} to={item.href}>
-              <div className="p-4 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 hover:-translate-y-0.5 transition-all rounded-3xl text-center cursor-pointer group">
+              <div className="p-4 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 hover:-translate-y-0.5 transition-all rounded-3xl text-center cursor-pointer group">
                 <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.from} ${item.to} flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform shadow-sm`}>
                   <item.icon className="w-5 h-5 text-white" />
                 </div>

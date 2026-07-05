@@ -157,7 +157,7 @@ export default function EscrowAccounts() {
 
   const getStatusColor = (status) => {
     switch(status) {
-      case 'held': return 'bg-blue-100 text-blue-800';
+      case 'held': return 'bg-primary/10 text-primary/40';
       case 'released': return 'bg-green-100 text-green-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'disputed': return 'bg-red-100 text-red-800';
@@ -218,7 +218,7 @@ export default function EscrowAccounts() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold text-blue-600 dark:text-blue-400">{heldEscrow}</div>
+            <div className="text-sm font-bold text-primary dark:text-primary/80">{heldEscrow}</div>
             <p className="text-xs text-muted-foreground mt-1">Currently held</p>
           </CardContent>
         </Card>
@@ -298,7 +298,7 @@ export default function EscrowAccounts() {
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
                 <p className="text-xs font-medium text-muted-foreground">Escrow Amount</p>
-                <p className="text-sm font-bold text-blue-600 dark:text-blue-400">${(account.escrow_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                <p className="text-sm font-bold text-primary dark:text-primary/80">${(account.escrow_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-sm">

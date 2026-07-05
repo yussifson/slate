@@ -327,12 +327,12 @@ export default function TrustAccounting() {
           ) : (
             accounts.map(account => (
               <Card key={account.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-                <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 to-indigo-500" />
+                <div className="h-1.5 w-full bg-gradient-to-r from-primary to-primary" />
                 <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
                   <div className="flex items-start justify-between">
                     <div>
                       <CardTitle className="text-lg font-bold flex items-center gap-2">
-                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
+                        <div className="p-2 bg-primary/10 dark:bg-primary/30/30 rounded-lg text-primary dark:text-primary/80">
                           <Wallet className="w-4 h-4" />
                         </div>
                         {account.account_name}
@@ -345,9 +345,9 @@ export default function TrustAccounting() {
                   </div>
                 </CardHeader>
                 <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-                  <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-blue-950/30 dark:to-indigo-900/10 rounded-xl border border-blue-100/50 dark:border-blue-800/30">
-                    <p className="text-xs text-blue-600/70 dark:text-blue-400/70 font-semibold uppercase tracking-wider mb-1">Current Balance</p>
-                    <p className="text-3xl font-extrabold text-blue-700 dark:text-blue-400 tracking-tight">
+                  <div className="p-4 bg-gradient-to-br from-primary/5 to-primary/5 dark:from-blue-950/30 dark:to-primary/30/10 rounded-xl border border-primary/10/50 dark:border-primary/40/30">
+                    <p className="text-xs text-primary/70 dark:text-primary/80/70 font-semibold uppercase tracking-wider mb-1">Current Balance</p>
+                    <p className="text-3xl font-extrabold text-primary/90 dark:text-primary/80 tracking-tight">
                       ${(account.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </p>
                   </div>

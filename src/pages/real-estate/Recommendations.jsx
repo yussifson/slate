@@ -160,7 +160,7 @@ export default function Recommendations() {
             recommendationScore: 0.85,
             recommendationReason: '',
             clientAction: 'pending',
-          }); }} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+          }); }} className="gap-2 bg-primary hover:bg-primary/90 text-white">
             <Plus className="w-4 h-4" /> Add Recommendation
           </Button>
         }
@@ -173,8 +173,8 @@ export default function Recommendations() {
         <REStatCard label="Avg Score" value={`${(avgScore * 100).toFixed(0)}%`} hint="Match confidence" icon={TrendingUp} />
       </div>
 
-      <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-600/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-        <div className="p-4 border-b border-emerald-600/40 bg-muted/50 flex flex-wrap gap-4 items-center">
+      <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="p-4 border-b border-primary/40 bg-muted/50 flex flex-wrap gap-4 items-center">
           <div className="relative max-w-md flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
             <Input
@@ -206,7 +206,7 @@ export default function Recommendations() {
               subtitle={`Agent: ${rec.recommended_agent_id?.substring(0, 20)}`}
               iconText={<Lightbulb className="w-6 h-6" />}
               badge={rec.client_action}
-              badgeColor={rec.client_action === 'accepted' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-700 border-slate-200'}
+              badgeColor={rec.client_action === 'accepted' ? 'bg-primary/5 text-primary/90 border-primary/20' : 'bg-slate-100 text-slate-700 border-slate-200'}
               onEdit={() => handleEdit(rec)}
               onDelete={() => handleDelete(rec.id)}
               metrics={[

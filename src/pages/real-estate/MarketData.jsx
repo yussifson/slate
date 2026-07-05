@@ -226,11 +226,11 @@ export default function MarketData() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
                     <p className="text-xs font-medium text-muted-foreground">Average Price</p>
-                    <p className="font-bold text-blue-600">${(market.average_price / 1000000).toFixed(2)}M</p>
+                    <p className="font-bold text-primary">${(market.average_price / 1000000).toFixed(2)}M</p>
                   </div>
                   <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
                     <p className="text-xs font-medium text-muted-foreground">Median Price</p>
-                    <p className="font-bold text-purple-600">${(market.median_price / 1000000).toFixed(2)}M</p>
+                    <p className="font-bold text-primary">${(market.median_price / 1000000).toFixed(2)}M</p>
                   </div>
                 </div>
 

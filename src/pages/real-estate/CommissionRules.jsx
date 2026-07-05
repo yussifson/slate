@@ -262,11 +262,11 @@ export default function CommissionRules() {
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="grid grid-cols-2 gap-3">
                 {rule.commission_percentage > 0 && (
-                  <div className="flex items-center gap-2 p-2 bg-blue-50 rounded">
-                    <Percent className="w-4 h-4 text-blue-600" />
+                  <div className="flex items-center gap-2 p-2 bg-primary/5 rounded">
+                    <Percent className="w-4 h-4 text-primary" />
                     <div>
                       <p className="text-xs text-muted-foreground">Commission</p>
-                      <p className="font-bold text-blue-600">{rule.commission_percentage}%</p>
+                      <p className="font-bold text-primary">{rule.commission_percentage}%</p>
                     </div>
                   </div>
                 )}

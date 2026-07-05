@@ -83,7 +83,7 @@ export default function AuditLog() {
                   <td className="py-3 px-4">
                     <span className={`px-2 py-1 rounded text-xs font-medium ${
                       log.action === 'create' ? 'bg-green-100 text-green-800' :
-                      log.action === 'update' ? 'bg-blue-100 text-blue-800' :
+                      log.action === 'update' ? 'bg-primary/10 text-primary/40' :
                       log.action === 'delete' ? 'bg-red-100 text-red-800' :
                       'bg-gray-100 text-gray-800'
                     }`}>

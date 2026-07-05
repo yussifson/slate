@@ -160,7 +160,7 @@ export default function LeaseRenewals() {
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'accepted': return 'bg-green-100 text-green-800';
       case 'rejected': return 'bg-red-100 text-red-800';
-      case 'completed': return 'bg-blue-100 text-blue-800';
+      case 'completed': return 'bg-primary/10 text-primary/40';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -299,9 +299,9 @@ export default function LeaseRenewals() {
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
                 <p className="text-xs font-medium text-muted-foreground">New Rent Amount</p>
-                <p className="text-sm font-bold text-blue-600 dark:text-blue-400">${(renewal.new_rent_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                <p className="text-sm font-bold text-primary dark:text-primary/80">${(renewal.new_rent_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
                 {renewal.rent_increase_percentage && (
-                  <p className="text-sm text-blue-600 mt-1">+{renewal.rent_increase_percentage}% increase</p>
+                  <p className="text-sm text-primary mt-1">+{renewal.rent_increase_percentage}% increase</p>
                 )}
               </div>
 

@@ -15,7 +15,7 @@ import { toast } from 'react-hot-toast';
 const roleColors = {
   'admin': 'bg-orange-100 text-orange-800',
   'agent': 'bg-green-100 text-green-800',
-  'support': 'bg-blue-100 text-blue-800',
+  'support': 'bg-primary/10 text-primary/40',
   'viewer': 'bg-gray-100 text-gray-800',
 };
 

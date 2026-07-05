@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Building2, Search, Plus, Edit, Trash2, MapPin, DollarSign, Home } from 'lucide-react';
+import { Building2, Search, Plus, Edit, Trash2, MapPin, DollarSign, Home, BedDouble, Bath, Square, ArrowRight } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
@@ -15,10 +15,11 @@ import { toast } from 'react-hot-toast';
 import { REPageHeader } from '@/components/real-estate/RealEstateViewKit';
 import ViewToggle from '@/components/shared/ViewToggle';
 import { useViewPreference } from '@/hooks/useViewPreference';
+
 const statusColors = {
-  'active': 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-400',
-  'pending': 'bg-orange-100 text-orange-800 dark:bg-orange-500/20 dark:text-orange-400',
-  'sold': 'bg-gray-100 text-gray-800 dark:bg-gray-500/20 dark:text-gray-400',
+  'active': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30',
+  'pending': 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400 border-amber-200 dark:border-amber-500/30',
+  'sold': 'bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400 border-blue-200 dark:border-blue-500/30',
 };
 
 export default function Properties() {
@@ -148,14 +149,20 @@ export default function Properties() {
   }
 
   const PropertyCard = ({ property }) => (
-    <div className="group bg-card/60 backdrop-blur-sm border border-border/40 rounded-3xl p-6 hover:shadow-xl hover:border-emerald-500/30 transition-all relative overflow-hidden flex flex-col h-full">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500 rounded-bl-full -mr-10 -mt-10 pointer-events-none opacity-90" />
+    <div className="group bg-card/40 backdrop-blur-md border border-border/60 rounded-[2rem] p-6 hover:shadow-2xl hover:border-primary/50 transition-all duration-300 relative overflow-hidden flex flex-col h-full hover:-translate-y-1">
+      {/* Real Estate Specific Decoration */}
+      <div className="absolute -top-10 -right-10 opacity-[0.03] pointer-events-none group-hover:opacity-[0.07] transition-opacity duration-500 group-hover:scale-110">
+        <Building2 className="w-48 h-48 text-primary" />
+      </div>
       
-      <div className="flex items-start justify-between mb-4">
+      <div className="flex items-start justify-between mb-5 relative z-10">
         <div className="flex-1 pr-12">
-          <h3 className="text-xl font-bold text-foreground group-hover:text-emerald-600 transition-colors line-clamp-1">{property.address}</h3>
-          <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5" /> {property.city}, {property.state}
+          <Badge className={`mb-3 uppercase tracking-wider text-[10px] font-extrabold border ${statusColors[property.status?.toLowerCase()] || statusColors.active}`}>
+            {property.status || 'Active'}
+          </Badge>
+          <h3 className="text-2xl font-black text-foreground group-hover:text-primary transition-colors line-clamp-1">{property.address}</h3>
+          <p className="text-sm font-medium text-muted-foreground mt-2 flex items-center gap-1.5">
+            <MapPin className="w-4 h-4 text-primary/60" /> {property.city}, {property.state} {property.zip_code}
           </p>
         </div>
       </div>
@@ -165,7 +172,7 @@ export default function Properties() {
           size="icon"
           variant="secondary"
           onClick={() => handleEdit(property)}
-          className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-emerald-500 hover:text-white text-emerald-600 transition-colors border-0 shadow-sm"
+          className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-primary hover:text-white text-primary transition-colors border-0 shadow-sm"
           title="Edit Property"
         >
           <Edit className="w-4 h-4" />
@@ -192,29 +199,34 @@ export default function Properties() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-6 text-sm flex-1 bg-muted/20 p-4 rounded-2xl border border-border/30 mt-2">
-        <div>
-          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Beds / Baths</p>
-          <p className="font-medium text-foreground">{property.bedrooms} / {property.bathrooms}</p>
+      <div className="grid grid-cols-3 gap-3 mb-6 flex-1 relative z-10">
+        <div className="bg-primary/5 rounded-2xl p-3 flex flex-col items-center justify-center border border-primary/10">
+          <BedDouble className="w-5 h-5 text-primary mb-1.5" />
+          <p className="font-bold text-lg leading-none">{property.bedrooms}</p>
+          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mt-1">Beds</p>
         </div>
-        <div>
-          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Size</p>
-          <p className="font-medium text-foreground">{property.square_feet} sqft</p>
+        <div className="bg-primary/5 rounded-2xl p-3 flex flex-col items-center justify-center border border-primary/10">
+          <Bath className="w-5 h-5 text-primary mb-1.5" />
+          <p className="font-bold text-lg leading-none">{property.bathrooms}</p>
+          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mt-1">Baths</p>
         </div>
-        <div className="col-span-2">
-          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Price</p>
-          <p className="font-bold text-emerald-600 dark:text-emerald-400 text-lg">${Number(property.price).toLocaleString()}</p>
+        <div className="bg-primary/5 rounded-2xl p-3 flex flex-col items-center justify-center border border-primary/10">
+          <Square className="w-5 h-5 text-primary mb-1.5" />
+          <p className="font-bold text-lg leading-none">{property.square_feet?.toLocaleString() || 0}</p>
+          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mt-1">Sq Ft</p>
         </div>
       </div>
-      
-      <div className="mt-auto">
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-          property.status === 'active' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' :
-          property.status === 'pending' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' :
-          'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400'
-        }`}>
-          {property.status.toUpperCase()}
-        </span>
+
+      <div className="flex items-center justify-between pt-4 border-t border-border/40 mt-auto relative z-10">
+        <div>
+          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-0.5">List Price</p>
+          <p className="font-black text-2xl text-primary flex items-center">
+            ${parseFloat(property.price || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+          </p>
+        </div>
+        <Badge variant="outline" className="bg-background font-bold uppercase text-[10px] px-3 py-1 border-border/50 text-foreground">
+          {property.property_type}
+        </Badge>
       </div>
     </div>
   );
@@ -231,7 +243,7 @@ export default function Properties() {
             <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
             <Button
               onClick={() => { setShowForm(true); setEditingId(null); }}
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
+              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0"
             >
               <Plus className="w-4 h-4 mr-2" /> Add Property
             </Button>
@@ -296,12 +308,12 @@ export default function Properties() {
                       <td className="p-4 text-muted-foreground">
                         {property.bedrooms} Beds • {property.bathrooms} Baths • {property.square_feet} sqft
                       </td>
-                      <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">
+                      <td className="p-4 font-bold text-primary dark:text-primary/80">
                         ${Number(property.price).toLocaleString()}
                       </td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                          property.status === 'active' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' :
+                          property.status === 'active' ? 'bg-primary/10 text-primary/40 dark:bg-primary/30/30 dark:text-primary/80' :
                           property.status === 'pending' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' :
                           'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400'
                         }`}>
@@ -310,7 +322,7 @@ export default function Properties() {
                       </td>
                       <td className="p-4 text-right">
                         <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-emerald-50 text-emerald-600 dark:hover:bg-emerald-900/30" onClick={() => handleEdit(property)}>
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/5 text-primary dark:hover:bg-primary/30/30" onClick={() => handleEdit(property)}>
                             <Edit className="w-4 h-4" />
                           </Button>
                           <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-red-50 text-red-600 dark:hover:bg-red-900/30" onClick={async () => {

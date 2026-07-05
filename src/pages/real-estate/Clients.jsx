@@ -17,9 +17,9 @@ import { toast } from 'react-hot-toast';
 
 const typeColors = {
   'buyer': 'bg-orange-100 text-orange-800 dark:bg-orange-500/20 dark:text-orange-300',
-  'seller': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300',
-  'tenant': 'bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-300',
-  'landlord': 'bg-purple-100 text-purple-800 dark:bg-purple-500/20 dark:text-purple-300',
+  'seller': 'bg-primary/10 text-primary/40 dark:bg-primary/20 dark:text-primary/40',
+  'tenant': 'bg-primary/10 text-primary/40 dark:bg-primary/20 dark:text-primary/40',
+  'landlord': 'bg-primary/10 text-primary/40 dark:bg-primary/20 dark:text-primary/40',
 };
 
 export default function Clients() {
@@ -151,12 +151,12 @@ export default function Clients() {
   };
 
   const ClientCard = ({ client }) => (
-    <div className="group bg-card/60 backdrop-blur-sm border border-border/40 rounded-3xl p-6 hover:shadow-xl hover:border-emerald-500/30 transition-all relative overflow-hidden flex flex-col h-full">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500 rounded-bl-full -mr-10 -mt-10 pointer-events-none opacity-90" />
+    <div className="group bg-card/60 backdrop-blur-sm border border-border/40 rounded-3xl p-6 hover:shadow-xl hover:border-primary/30 transition-all relative overflow-hidden flex flex-col h-full">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-primary rounded-bl-full -mr-10 -mt-10 pointer-events-none opacity-90" />
       
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1 pr-12">
-          <h3 className="text-xl font-bold text-foreground group-hover:text-emerald-600 transition-colors line-clamp-1">{client.name}</h3>
+          <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">{client.name}</h3>
           <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
             <MapPin className="w-3.5 h-3.5" /> {client.city || 'Location not set'}
           </p>
@@ -168,7 +168,7 @@ export default function Clients() {
           size="icon"
           variant="secondary"
           onClick={() => handleEdit(client)}
-          className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-emerald-500 hover:text-white text-emerald-600 transition-colors border-0 shadow-sm"
+          className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-primary hover:text-white text-primary transition-colors border-0 shadow-sm"
           title="Edit Client"
         >
           <Edit className="w-4 h-4" />
@@ -187,20 +187,20 @@ export default function Clients() {
       <div className="space-y-3 text-sm mb-6 flex-1">
         {client.email && (
           <div className="flex items-center gap-3 text-muted-foreground group/link">
-            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover/link:bg-blue-500 group-hover/link:text-white transition-colors">
+            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/30/30 flex items-center justify-center text-primary dark:text-primary/80 group-hover/link:bg-primary group-hover/link:text-white transition-colors">
               <Mail className="w-4 h-4" />
             </div>
-            <a href={`mailto:${client.email}`} className="font-medium text-foreground/80 group-hover/link:text-blue-500 transition-colors truncate">
+            <a href={`mailto:${client.email}`} className="font-medium text-foreground/80 group-hover/link:text-primary transition-colors truncate">
               {client.email}
             </a>
           </div>
         )}
         {client.phone && (
           <div className="flex items-center gap-3 text-muted-foreground group/link">
-            <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover/link:bg-emerald-500 group-hover/link:text-white transition-colors">
+            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/30/30 flex items-center justify-center text-primary dark:text-primary/80 group-hover/link:bg-primary group-hover/link:text-white transition-colors">
               <Phone className="w-4 h-4" />
             </div>
-            <a href={`tel:${client.phone}`} className="font-medium text-foreground/80 group-hover/link:text-emerald-500 transition-colors">
+            <a href={`tel:${client.phone}`} className="font-medium text-foreground/80 group-hover/link:text-primary transition-colors">
               {client.phone}
             </a>
           </div>
@@ -212,7 +212,7 @@ export default function Clients() {
           {client.type.toUpperCase()}
         </span>
         {client.budget > 0 && (
-          <span className="font-extrabold text-emerald-600 dark:text-emerald-400">
+          <span className="font-extrabold text-primary dark:text-primary/80">
             ${Number(client.budget).toLocaleString()}
           </span>
         )}
@@ -232,7 +232,7 @@ export default function Clients() {
             <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
             <Button
               onClick={() => { setShowForm(true); setEditingId(null); }}
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
+              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0"
             >
               <Plus className="w-4 h-4 mr-2" /> Add Client
             </Button>
@@ -306,12 +306,12 @@ export default function Clients() {
                           {client.type.toUpperCase()}
                         </span>
                       </td>
-                      <td className="p-4 text-right font-bold text-emerald-600 dark:text-emerald-400">
+                      <td className="p-4 text-right font-bold text-primary dark:text-primary/80">
                         {client.budget > 0 ? `$${Number(client.budget).toLocaleString()}` : '-'}
                       </td>
                       <td className="p-4 text-right">
                         <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-emerald-50 text-emerald-600 dark:hover:bg-emerald-900/30" onClick={() => handleEdit(client)}>
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/5 text-primary dark:hover:bg-primary/30/30" onClick={() => handleEdit(client)}>
                             <Edit className="w-4 h-4" />
                           </Button>
                           <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-red-50 text-red-600 dark:hover:bg-red-900/30" onClick={() => handleDelete(client.id)}>

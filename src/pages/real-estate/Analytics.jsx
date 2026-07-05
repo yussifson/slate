@@ -193,7 +193,7 @@ export default function Analytics() {
                 <span className="text-sm font-bold">{analytics.avgDaysOnMarket} days</span>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
-                <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${Math.min((analytics.avgDaysOnMarket / 90) * 100, 100)}%` }}></div>
+                <div className="bg-primary h-2 rounded-full" style={{ width: `${Math.min((analytics.avgDaysOnMarket / 90) * 100, 100)}%` }}></div>
               </div>
             </div>
           </CardContent>
@@ -213,11 +213,11 @@ export default function Analytics() {
             </div>
             <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
               <p className="text-xs font-medium text-muted-foreground">Transaction Volume</p>
-              <p className="text-sm font-bold text-blue-600 dark:text-blue-400">${(analytics.avgTransactionValue * analytics.totalTransactions / 1000000).toFixed(1)}M</p>
+              <p className="text-sm font-bold text-primary dark:text-primary/80">${(analytics.avgTransactionValue * analytics.totalTransactions / 1000000).toFixed(1)}M</p>
             </div>
             <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
               <p className="text-xs font-medium text-muted-foreground">Avg per Deal</p>
-              <p className="text-sm font-bold text-purple-600 dark:text-purple-400">${(analytics.avgTransactionValue / 1000).toFixed(0)}K</p>
+              <p className="text-sm font-bold text-primary dark:text-primary/80">${(analytics.avgTransactionValue / 1000).toFixed(0)}K</p>
             </div>
           </CardContent>
         </Card>
@@ -240,14 +240,14 @@ export default function Analytics() {
             <div>
               <div className="text-sm font-medium mb-2">Deal Conversion</div>
               <div className="flex gap-2">
-                <div className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Strong</div>
+                <div className="text-xs bg-primary/10 text-primary/40 px-2 py-1 rounded">Strong</div>
                 <div className="text-xs">78%</div>
               </div>
             </div>
             <div>
               <div className="text-sm font-medium mb-2">Market Position</div>
               <div className="flex gap-2">
-                <div className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Growing</div>
+                <div className="text-xs bg-primary/10 text-primary/40 px-2 py-1 rounded">Growing</div>
                 <div className="text-xs">+12% YoY</div>
               </div>
             </div>

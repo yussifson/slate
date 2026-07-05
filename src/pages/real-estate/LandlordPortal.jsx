@@ -60,7 +60,7 @@ export default function LandlordPortal() {
   });
 
   const statusColor = (s) => ({
-    open: 'bg-blue-100 text-blue-700',
+    open: 'bg-primary/10 text-primary/90',
     in_progress: 'bg-orange-100 text-orange-700',
     resolved: 'bg-green-100 text-green-700',
     active: 'bg-green-100 text-green-700',
@@ -79,7 +79,7 @@ export default function LandlordPortal() {
         <StatCard icon={Building2} label="Total Properties" value={properties.length} color="bg-primary/10 text-primary" />
         <StatCard icon={Users} label="Active Tenants" value={properties.reduce((a, p) => a + (p.leases?.filter(l => l.status === 'active').length || 0), 0)} color="bg-green-100 text-green-700" />
         <StatCard icon={Wrench} label="Open Maintenance" value={maintenance.filter(m => m.status === 'open' || m.status === 'in_progress').length} color="bg-orange-100 text-orange-700" />
-        <StatCard icon={Wallet} label="Properties Vacant" value={properties.filter(p => !p.leases?.some(l => l.status === 'active')).length} color="bg-blue-100 text-blue-700" />
+        <StatCard icon={Wallet} label="Properties Vacant" value={properties.filter(p => !p.leases?.some(l => l.status === 'active')).length} color="bg-primary/10 text-primary/90" />
       </div>
 
       {/* Properties Overview */}

@@ -15,7 +15,7 @@ const statusConfig = {
   pending: { color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20', badge: 'bg-orange-100 text-orange-800 dark:bg-orange-500/20 dark:text-orange-400', icon: Clock },
   paid: { color: 'text-green-600 dark:text-green-400', bg: 'bg-green-50 dark:bg-green-900/20', badge: 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-400', icon: CheckCircle },
   overdue: { color: 'text-red-600 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-900/20', badge: 'bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-400', icon: AlertTriangle },
-  partial: { color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20', badge: 'bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400', icon: Clock }
+  partial: { color: 'text-primary dark:text-primary/80', bg: 'bg-primary/5 dark:bg-primary/30/20', badge: 'bg-primary/10 text-primary/40 dark:bg-primary/20 dark:text-primary/80', icon: Clock }
 };
 
 export default function RentPayments() {
@@ -65,7 +65,7 @@ export default function RentPayments() {
   const overDuePayments = payments.filter(p => p.status === 'overdue');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 p-6 transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-white to-primary/5 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -188,9 +188,9 @@ export default function RentPayments() {
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-blue-100 dark:text-blue-200 text-xs font-semibold uppercase mb-1 tracking-wider">Collection Rate</p>
+                  <p className="text-primary/10 dark:text-primary/20 text-xs font-semibold uppercase mb-1 tracking-wider">Collection Rate</p>
                   <p className="text-3xl font-bold">{stats.collectionRate.toFixed(0)}%</p>
-                  <p className="text-xs text-blue-200 dark:text-blue-300 mt-2">On-time payments</p>
+                  <p className="text-xs text-primary/20 dark:text-primary/40 mt-2">On-time payments</p>
                 </div>
                 <TrendingUp className="w-8 h-8 opacity-80" />
               </div>
@@ -218,13 +218,13 @@ export default function RentPayments() {
                   upcomingPayments.map((payment) => (
                     <div key={payment.id} className="p-4 border-b border-slate-100 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer group">
                       <div className="flex items-start justify-between mb-2">
-                        <p className="font-bold text-slate-900 dark:text-slate-100 text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{payment.tenant_name}</p>
+                        <p className="font-bold text-slate-900 dark:text-slate-100 text-sm group-hover:text-primary dark:group-hover:text-primary/80 transition-colors">{payment.tenant_name}</p>
                         <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400 text-xs border-0 shadow-sm">Due Soon</Badge>
                       </div>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 truncate">{payment.property_address || 'Property'}</p>
                       <div className="flex justify-between items-end">
                         <p className="text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{new Date(payment.due_date).toLocaleDateString()}</p>
-                        <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400">${payment.amount?.toLocaleString()}</span>
+                        <span className="text-sm font-extrabold text-primary dark:text-primary/80">${payment.amount?.toLocaleString()}</span>
                       </div>
                     </div>
                   ))
@@ -245,7 +245,7 @@ export default function RentPayments() {
               <div className="max-h-96 overflow-y-auto">
                 {overDuePayments.length === 0 ? (
                   <div className="p-8 text-center text-slate-500 dark:text-slate-400">
-                    <CheckCircle className="w-10 h-10 mx-auto mb-3 opacity-50 text-emerald-500" />
+                    <CheckCircle className="w-10 h-10 mx-auto mb-3 opacity-50 text-primary" />
                     <p className="text-sm font-medium">No overdue payments</p>
                   </div>
                 ) : (
@@ -286,12 +286,12 @@ export default function RentPayments() {
                   payments.filter(p => p.status === 'paid').slice(0, 5).map((payment) => (
                     <div key={payment.id} className="p-4 border-b border-slate-100 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer group">
                       <div className="flex items-start justify-between mb-2">
-                        <p className="font-bold text-slate-900 dark:text-slate-100 text-sm group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{payment.tenant_name}</p>
-                        <Badge className="bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-400 text-xs border-0 shadow-sm">Paid</Badge>
+                        <p className="font-bold text-slate-900 dark:text-slate-100 text-sm group-hover:text-primary dark:group-hover:text-primary/80 transition-colors">{payment.tenant_name}</p>
+                        <Badge className="bg-primary/10 text-primary/40 dark:bg-primary/30/40 dark:text-primary/80 text-xs border-0 shadow-sm">Paid</Badge>
                       </div>
                       <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2 truncate bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded w-fit capitalize">{payment.payment_method?.replace('_', ' ') || 'Bank Transfer'}</p>
                       <div className="flex items-center justify-between mt-3">
-                        <span className="text-sm font-extrabold text-indigo-600 dark:text-indigo-400">${payment.amount?.toLocaleString()}</span>
+                        <span className="text-sm font-extrabold text-primary dark:text-primary/80">${payment.amount?.toLocaleString()}</span>
                         <span className="text-xs font-medium text-slate-400 dark:text-slate-500">{new Date(payment.payment_date).toLocaleDateString()}</span>
                       </div>
                     </div>
@@ -329,11 +329,11 @@ export default function RentPayments() {
                     <tr
                       key={payment.id}
                       onClick={() => setSelectedPayment(payment)}
-                      className={`border-b border-gray-100 hover:bg-indigo-50 cursor-pointer transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+                      className={`border-b border-gray-100 hover:bg-primary/5 cursor-pointer transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <div className="p-2 bg-indigo-100 rounded-full"><User className="w-4 h-4 text-indigo-600" /></div>
+                          <div className="p-2 bg-primary/10 rounded-full"><User className="w-4 h-4 text-primary" /></div>
                           <p className="font-semibold text-gray-900 text-sm">{payment.tenant_name}</p>
                         </div>
                       </td>
@@ -343,7 +343,7 @@ export default function RentPayments() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <p className="text-lg font-bold text-indigo-600">${payment.amount?.toLocaleString()}</p>
+                        <p className="text-lg font-bold text-primary">${payment.amount?.toLocaleString()}</p>
                       </td>
                       <td className="px-6 py-4">
                         <p className="text-sm text-gray-700">{payment.due_date}</p>
@@ -385,7 +385,7 @@ export default function RentPayments() {
                   </div>
                   <div>
                     <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Amount</p>
-                    <p className="text-3xl font-bold text-indigo-600">${selectedPayment.amount?.toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-primary">${selectedPayment.amount?.toLocaleString()}</p>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>

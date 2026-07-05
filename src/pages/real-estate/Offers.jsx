@@ -18,7 +18,7 @@ import GenericKanban from '@/components/views/GenericKanban';
 
 const statusColors = {
   'pending': 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-400',
-  'accepted': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-400',
+  'accepted': 'bg-primary/10 text-primary/40 dark:bg-primary/30/40 dark:text-primary/80',
   'rejected': 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400',
   'expired': 'bg-slate-100 text-slate-800 dark:bg-slate-800/40 dark:text-slate-400',
 };
@@ -172,7 +172,7 @@ export default function Offers() {
             <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
             <Button
               onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', offerAmount: 0, earnestMoney: 0, contingencies: '', expirationDate: '', agentName: '', notes: '', status: 'pending' }); }}
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
+              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0"
             >
               <Plus className="w-4 h-4 mr-2" /> New Offer
             </Button>
@@ -208,7 +208,7 @@ export default function Offers() {
             <TrendingUp className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-foreground mb-2">No Offers Found</h3>
             <p className="text-muted-foreground mb-6">Create your first offer to start tracking negotiations.</p>
-            <Button onClick={() => setShowForm(true)} className="bg-emerald-600 text-white hover:bg-emerald-700">
+            <Button onClick={() => setShowForm(true)} className="bg-primary text-white hover:bg-primary/90">
               <Plus className="w-4 h-4 mr-2" /> Create Offer
             </Button>
           </div>
@@ -231,12 +231,12 @@ export default function Offers() {
                     <tr key={offer.id} className="group hover:bg-muted/30 transition-colors">
                       <td className="p-4 font-bold text-foreground">
                         <div className="flex items-center gap-2">
-                          <FileText className="w-4 h-4 text-emerald-500" />
+                          <FileText className="w-4 h-4 text-primary" />
                           <span className="line-clamp-1">{offer.property_address}</span>
                         </div>
                       </td>
                       <td className="p-4 text-muted-foreground">{offer.buyer_name}</td>
-                      <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">
+                      <td className="p-4 font-bold text-primary dark:text-primary/80">
                         ${Number(offer.offer_amount || 0).toLocaleString()}
                       </td>
                       <td className="p-4 text-muted-foreground">
@@ -249,7 +249,7 @@ export default function Offers() {
                       </td>
                       <td className="p-4 text-right">
                         <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button size="icon" variant="ghost" onClick={() => handleEdit(offer)} className="h-8 w-8 hover:bg-emerald-50 text-emerald-600 dark:hover:bg-emerald-900/30">
+                          <Button size="icon" variant="ghost" onClick={() => handleEdit(offer)} className="h-8 w-8 hover:bg-primary/5 text-primary dark:hover:bg-primary/30/30">
                             <Edit className="w-4 h-4" />
                           </Button>
                           <Button size="icon" variant="ghost" onClick={() => handleDelete(offer.id)} className="h-8 w-8 hover:bg-red-50 text-red-600 dark:hover:bg-red-900/30">
@@ -275,7 +275,7 @@ export default function Offers() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredOffers.map(offer => (
-              <Card key={offer.id} className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
+              <Card key={offer.id} className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
                 <div className="absolute top-0 right-0 p-6 flex justify-end w-full">
                   <span className={`px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-bold shadow-sm ${statusColors[offer.status] || 'bg-muted'}`}>
                     {offer.status}
@@ -283,18 +283,18 @@ export default function Offers() {
                 </div>
 
                 <div className="flex items-center gap-3 mb-4 pr-24">
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary/30/30 flex items-center justify-center text-primary dark:text-primary/80 shrink-0">
                     {(offer.buyer_name || '?')[0].toUpperCase()}
                   </div>
                   <div>
-                    <h3 className="font-bold text-foreground group-hover:text-emerald-600 transition-colors line-clamp-1">{offer.property_address}</h3>
+                    <h3 className="font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">{offer.property_address}</h3>
                     <p className="text-xs text-muted-foreground">{offer.buyer_name}</p>
                   </div>
                 </div>
 
                 <div className="flex flex-col mb-4 pb-4 border-b border-border/50">
                   <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Offer Amount</p>
-                  <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
+                  <p className="text-2xl font-bold text-primary dark:text-primary/80 tracking-tight">
                     ${Number(offer.offer_amount || 0).toLocaleString()}
                   </p>
                 </div>
@@ -315,7 +315,7 @@ export default function Offers() {
                 </div>
 
                 <div className="mt-4 pt-4 border-t border-border/50 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button size="sm" variant="ghost" onClick={() => handleEdit(offer)} className="text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                  <Button size="sm" variant="ghost" onClick={() => handleEdit(offer)} className="text-primary hover:bg-primary/5 dark:hover:bg-primary/30/20">
                     <Edit className="w-4 h-4 mr-1.5" /> Edit
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => handleDelete(offer.id)} className="text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">
@@ -386,7 +386,7 @@ export default function Offers() {
 
               <div className="flex gap-3 pt-6 border-t border-border/50">
                 <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="flex-1">Cancel</Button>
-                <Button type="submit" className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white">{editingId ? 'Update' : 'Create'}</Button>
+                <Button type="submit" className="flex-1 bg-gradient-to-r from-primary to-teal-600 text-white">{editingId ? 'Update' : 'Create'}</Button>
               </div>
             </form>
           </SheetContent>

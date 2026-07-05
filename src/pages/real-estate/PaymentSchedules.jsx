@@ -375,7 +375,7 @@ export default function PaymentSchedules() {
               </div>
             </div>
 
-            <div className="space-y-2 p-3 bg-blue-50 rounded">
+            <div className="space-y-2 p-3 bg-primary/5 rounded">
               <label className="text-sm font-medium">Late Fee Configuration</label>
               <Select value={formData.lateFeesType} onValueChange={(value) => setFormData({ ...formData, lateFeesType: value })}>
                 <SelectTrigger>

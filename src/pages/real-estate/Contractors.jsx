@@ -286,7 +286,7 @@ export default function Contractors() {
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-center gap-2 text-sm">
                 <Mail className="w-4 h-4 text-muted-foreground" />
-                <a href={`mailto:${c.email}`} className="text-blue-600 hover:underline">{c.email}</a>
+                <a href={`mailto:${c.email}`} className="text-primary hover:underline">{c.email}</a>
               </div>
               
               <div className="flex items-center gap-2 text-sm">
@@ -301,7 +301,7 @@ export default function Contractors() {
 
               <div className="flex gap-2 flex-wrap pt-2 border-t">
                 {c.is_licensed && <Badge variant="outline" className="bg-green-50">Licensed</Badge>}
-                {c.is_insured && <Badge variant="outline" className="bg-blue-50">Insured</Badge>}
+                {c.is_insured && <Badge variant="outline" className="bg-primary/5">Insured</Badge>}
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-sm bg-muted/50 p-2 rounded">

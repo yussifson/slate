@@ -80,7 +80,7 @@ export default function Commissions() {
   const filteredCommissions = getFilteredCommissions();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-primary/5 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -153,7 +153,7 @@ export default function Commissions() {
               >
                 <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                   <div className="flex items-center justify-between mb-3">
-                    <div className="p-2 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full">
+                    <div className="p-2 bg-gradient-to-br from-green-100 to-primary/10 rounded-full">
                       <User className="w-4 h-4 text-green-600" />
                     </div>
                     <span className="text-xs font-bold text-white px-2 py-1 rounded-full bg-green-600">{agentStats.count}</span>

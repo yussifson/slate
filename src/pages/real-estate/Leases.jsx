@@ -147,18 +147,18 @@ export default function Leases() {
   const LeaseCard = ({ lease }) => {
     const status = getLeaseStatus(lease);
     const badgeColors = {
-      'active': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-400',
+      'active': 'bg-primary/10 text-primary/40 dark:bg-primary/30/40 dark:text-primary/80',
       'expiring-soon': 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400',
       'expired': 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400',
     };
     
     return (
-      <div className="group bg-card/60 backdrop-blur-sm border border-border/40 rounded-3xl p-6 hover:shadow-xl hover:border-emerald-500/30 transition-all relative overflow-hidden flex flex-col h-full">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500 rounded-bl-full -mr-10 -mt-10 pointer-events-none opacity-90" />
+      <div className="group bg-card/60 backdrop-blur-sm border border-border/40 rounded-3xl p-6 hover:shadow-xl hover:border-primary/30 transition-all relative overflow-hidden flex flex-col h-full">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary rounded-bl-full -mr-10 -mt-10 pointer-events-none opacity-90" />
         
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1 pr-12">
-            <h3 className="text-xl font-bold text-foreground group-hover:text-emerald-600 transition-colors line-clamp-1">{lease.property_address || 'No address'}</h3>
+            <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">{lease.property_address || 'No address'}</h3>
             <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
               <span className="w-5 h-5 rounded bg-muted flex items-center justify-center text-xs font-bold text-foreground">
                 {(lease.tenant_name || '?')[0].toUpperCase()}
@@ -173,7 +173,7 @@ export default function Leases() {
             size="icon"
             variant="secondary"
             onClick={() => handleEdit(lease)}
-            className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-emerald-500 hover:text-white text-emerald-600 transition-colors border-0 shadow-sm"
+            className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-primary hover:text-white text-primary transition-colors border-0 shadow-sm"
             title="Edit Lease"
           >
             <Edit className="w-4 h-4" />
@@ -200,7 +200,7 @@ export default function Leases() {
           </div>
           <div className="col-span-2">
             <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Monthly Rent</p>
-            <p className="font-bold text-emerald-600 dark:text-emerald-400 text-lg">${Number(lease.monthly_rent || 0).toLocaleString()}</p>
+            <p className="font-bold text-primary dark:text-primary/80 text-lg">${Number(lease.monthly_rent || 0).toLocaleString()}</p>
           </div>
         </div>
         
@@ -225,7 +225,7 @@ export default function Leases() {
             <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
             <Button
               onClick={() => { setShowForm(true); setEditingId(null); }}
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
+              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0"
             >
               <Plus className="w-4 h-4 mr-2" /> Add Lease
             </Button>
@@ -283,7 +283,7 @@ export default function Leases() {
                   {filteredLeases.map(lease => {
                     const status = getLeaseStatus(lease);
                     const badgeColors = {
-                      'active': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-400',
+                      'active': 'bg-primary/10 text-primary/40 dark:bg-primary/30/40 dark:text-primary/80',
                       'expiring-soon': 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400',
                       'expired': 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400',
                     };
@@ -294,7 +294,7 @@ export default function Leases() {
                         <td className="p-4 text-muted-foreground">
                           {new Date(lease.start_date).toLocaleDateString()} - {new Date(lease.end_date).toLocaleDateString()}
                         </td>
-                        <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">
+                        <td className="p-4 font-bold text-primary dark:text-primary/80">
                           ${Number(lease.monthly_rent || 0).toLocaleString()}/mo
                         </td>
                         <td className="p-4">
@@ -304,7 +304,7 @@ export default function Leases() {
                         </td>
                         <td className="p-4 text-right">
                           <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-emerald-50 text-emerald-600 dark:hover:bg-emerald-900/30" onClick={() => handleEdit(lease)}>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/5 text-primary dark:hover:bg-primary/30/30" onClick={() => handleEdit(lease)}>
                               <Edit className="w-4 h-4" />
                             </Button>
                             <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-red-50 text-red-600 dark:hover:bg-red-900/30" onClick={() => handleDelete(lease.id)}>

@@ -15,9 +15,9 @@ import { toast } from 'react-hot-toast';
 
 const statusColors = {
   'new': 'bg-orange-100 text-orange-800',
-  'contacted': 'bg-blue-100 text-blue-800',
+  'contacted': 'bg-primary/10 text-primary/40',
   'qualified': 'bg-green-100 text-green-800',
-  'negotiating': 'bg-purple-100 text-purple-800',
+  'negotiating': 'bg-primary/10 text-primary/40',
   'closed': 'bg-green-100 text-green-800',
   'lost': 'bg-gray-100 text-gray-800',
 };
@@ -25,7 +25,7 @@ const statusColors = {
 const leadTypeColors = {
   'buyer': 'bg-green-100 text-green-800',
   'seller': 'bg-orange-100 text-orange-800',
-  'investor': 'bg-blue-100 text-blue-800',
+  'investor': 'bg-primary/10 text-primary/40',
   'renter': 'bg-gray-100 text-gray-800',
 };
 

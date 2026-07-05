@@ -392,7 +392,7 @@ export default function ESignatures() {
               </div>
             </div>
 
-            <div className="space-y-2 p-3 bg-blue-50 rounded">
+            <div className="space-y-2 p-3 bg-primary/5 rounded">
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
