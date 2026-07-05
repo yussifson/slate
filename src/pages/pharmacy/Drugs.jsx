@@ -10,6 +10,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'react-hot-toast';
 import PharmacyAPI from '@/api/PharmacyAPI';
+import ViewToggle from '@/components/shared/ViewToggle';
+import { useViewPreference } from '@/hooks/useViewPreference';
 
 export default function Drugs() {
   const { user } = useAuth();
@@ -21,6 +23,7 @@ export default function Drugs() {
   const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [view, setView] = useViewPreference('pharmacy_drugs', 'grid');
 
   const [formData, setFormData] = useState({
     drugName: '',
@@ -93,55 +96,61 @@ export default function Drugs() {
   };
 
   const DrugCard = ({ drug }) => (
-    <div className="bg-card border border-border rounded-lg p-5 hover:shadow-lg transition-shadow">
+    <div className="group bg-card/60 backdrop-blur-sm border border-border/40 rounded-3xl p-6 hover:shadow-xl hover:border-emerald-500/30 transition-all relative overflow-hidden flex flex-col h-full">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-bl-full -mr-10 -mt-10 pointer-events-none" />
+      
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
-          <h3 className="text-lg font-bold text-foreground">{drug.drug_name}</h3>
-          <p className="text-sm text-muted-foreground">{drug.generic_name}</p>
+          <h3 className="text-xl font-bold text-foreground group-hover:text-emerald-600 transition-colors pr-2">{drug.drug_name}</h3>
+          <p className="text-sm text-muted-foreground mt-1">{drug.generic_name}</p>
         </div>
-        <div className="flex gap-2">
-          {drug.is_controlled && <Shield className="w-5 h-5 text-orange-500" title="Controlled substance" />}
-          {drug.requires_prescription && <AlertCircle className="w-5 h-5 text-red-500" title="Requires prescription" />}
+        <div className="flex gap-1.5 flex-shrink-0">
+          {drug.is_controlled && (
+            <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600" title="Controlled Substance">
+              <Shield className="w-4 h-4" />
+            </div>
+          )}
+          {drug.requires_prescription && (
+            <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600" title="Requires Prescription">
+              <AlertCircle className="w-4 h-4" />
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
+      <div className="grid grid-cols-2 gap-4 mb-6 text-sm flex-1 bg-muted/20 p-4 rounded-2xl border border-border/30">
         <div>
-          <p className="text-muted-foreground">Strength</p>
+          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Strength</p>
           <p className="font-medium text-foreground">{drug.strength || '-'}</p>
         </div>
         <div>
-          <p className="text-muted-foreground">Price</p>
-          <p className="font-medium text-foreground">${parseFloat(drug.unit_price || 0).toFixed(2)}</p>
+          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Price</p>
+          <p className="font-bold text-emerald-600 dark:text-emerald-400">${parseFloat(drug.unit_price || 0).toFixed(2)}</p>
         </div>
-        <div>
-          <p className="text-muted-foreground">Manufacturer</p>
-          <p className="font-medium text-foreground text-xs">{drug.manufacturer || '-'}</p>
-        </div>
-        <div>
-          <p className="text-muted-foreground">Category</p>
-          <p className="font-medium text-foreground text-xs">{drug.therapeutic_category || '-'}</p>
+        <div className="col-span-2">
+          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Manufacturer</p>
+          <p className="font-medium text-foreground text-xs line-clamp-1">{drug.manufacturer || '-'}</p>
         </div>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 mt-auto">
         <Button
           size="sm"
-          variant="outline"
+          variant="secondary"
           onClick={() => {
             setFormData({...drug, isControlled: !!drug.is_controlled, requiresPrescription: !!drug.requires_prescription});
             setEditingId(drug.id);
             setShowForm(true);
           }}
-          className="flex-1"
+          className="flex-1 bg-muted/50 hover:bg-emerald-500 hover:text-white transition-colors"
         >
-          <Edit2 className="w-4 h-4 mr-1" />
+          <Edit2 className="w-4 h-4 mr-2" />
           Edit
         </Button>
         <Button
           size="sm"
           variant="outline"
-          className="text-destructive hover:text-destructive"
+          className="text-destructive hover:bg-destructive hover:text-destructive-foreground transition-colors border-destructive/20"
         >
           <Trash2 className="w-4 h-4" />
         </Button>
@@ -158,53 +167,94 @@ export default function Drugs() {
             <h1 className="text-4xl font-bold text-foreground">Drug Catalog</h1>
             <p className="text-muted-foreground mt-2">Manage your pharmacy drug inventory and information</p>
           </div>
-          <Button
-            onClick={() => {
-              setEditingId(null);
-              setFormData({
-                drugName: '', genericName: '', strength: '', unitOfMeasurement: '',
-                drugForm: '', manufacturer: '', ndcCode: '', therapeuticCategory: '',
-                unitPrice: 0, discountPercentage: 0, reorderLevel: 50, maximumStock: 500,
-                barcode: '', isControlled: false, requiresPrescription: false
-              });
-              setShowForm(true);
-            }}
-            className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Drug
-          </Button>
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <Button
+              onClick={() => {
+                setEditingId(null);
+                setFormData({
+                  drugName: '', genericName: '', strength: '', unitOfMeasurement: '',
+                  drugForm: '', manufacturer: '', ndcCode: '', therapeuticCategory: '',
+                  unitPrice: 0, discountPercentage: 0, reorderLevel: 50, maximumStock: 500,
+                  barcode: '', isControlled: false, requiresPrescription: false
+                });
+                setShowForm(true);
+              }}
+              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Drug
+            </Button>
+          </div>
         </div>
 
         {/* Search and Filters */}
-        <Card className="p-4 mb-6 border border-border bg-card">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+        <Card className="p-2 px-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex items-center rounded-2xl shadow-sm">
+          <div className="relative flex-1 flex items-center">
+            <Search className="w-5 h-5 text-muted-foreground mr-2" />
             <Input
               placeholder="Search by drug name, generic name, or NDC code..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10"
+              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-base flex-1"
             />
           </div>
         </Card>
 
-        {/* Drug Grid */}
+        {/* Drug Grid/List */}
         {loading ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Loading drugs...</p>
-          </div>
+          <div className="text-center py-12 text-muted-foreground">Loading drugs...</div>
         ) : filteredDrugs.length === 0 ? (
-          <Card className="p-12 text-center border border-border bg-card">
-            <p className="text-muted-foreground mb-4">No drugs found</p>
-            <Button onClick={() => setShowForm(true)}>Add your first drug</Button>
-          </Card>
-        ) : (
+          <div className="text-center py-12 text-muted-foreground border border-dashed rounded-2xl border-border">No drugs found.</div>
+        ) : view === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDrugs.map(drug => (
               <DrugCard key={drug.id} drug={drug} />
             ))}
           </div>
+        ) : (
+          <Card className="border border-border/50 bg-card/60 backdrop-blur-sm rounded-3xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-muted/50 border-b border-border">
+                  <tr>
+                    <th className="p-4 font-semibold text-foreground">Drug Name</th>
+                    <th className="p-4 font-semibold text-foreground">Strength & Form</th>
+                    <th className="p-4 font-semibold text-foreground">Manufacturer</th>
+                    <th className="p-4 font-semibold text-foreground">Price</th>
+                    <th className="p-4 font-semibold text-foreground">Flags</th>
+                    <th className="p-4 font-semibold text-foreground text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/50">
+                  {filteredDrugs.map(drug => (
+                    <tr key={drug.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="p-4">
+                        <p className="font-bold text-foreground">{drug.drug_name}</p>
+                        <p className="text-xs text-muted-foreground">{drug.generic_name}</p>
+                      </td>
+                      <td className="p-4 text-muted-foreground">{drug.strength} {drug.drug_form}</td>
+                      <td className="p-4 text-muted-foreground">{drug.manufacturer}</td>
+                      <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">${parseFloat(drug.unit_price || 0).toFixed(2)}</td>
+                      <td className="p-4">
+                        <div className="flex gap-2">
+                          {drug.is_controlled && <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400">Controlled</span>}
+                          {drug.requires_prescription && <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">Rx</span>}
+                        </div>
+                      </td>
+                      <td className="p-4 text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button size="icon" variant="ghost" onClick={() => { setFormData({...drug, isControlled: !!drug.is_controlled, requiresPrescription: !!drug.requires_prescription}); setEditingId(drug.id); setShowForm(true); }}>
+                            <Edit2 className="w-4 h-4 text-muted-foreground" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
         )}
       </div>
 

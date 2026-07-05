@@ -10,6 +10,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'react-hot-toast';
 import PharmacyAPI from '@/api/PharmacyAPI';
+import ViewToggle from '@/components/shared/ViewToggle';
+import { useViewPreference } from '@/hooks/useViewPreference';
 
 export default function Inventory() {
   const { user } = useAuth();
@@ -20,6 +22,7 @@ export default function Inventory() {
   const [drugs, setDrugs] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [view, setView] = useViewPreference('pharmacy_inventory', 'list');
 
   const [formData, setFormData] = useState({
     drugId: '',
@@ -95,13 +98,16 @@ export default function Inventory() {
             <h1 className="text-4xl font-bold text-foreground">Inventory Management</h1>
             <p className="text-muted-foreground mt-2">Track stock levels and manage drug inventory</p>
           </div>
-          <Button
-            onClick={() => setShowForm(true)}
-            className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Stock
-          </Button>
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
+            <Button
+              onClick={() => setShowForm(true)}
+              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Stock
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -138,51 +144,127 @@ export default function Inventory() {
           </Card>
         </div>
 
-        <Card className="border border-border bg-card overflow-hidden">
-          {loading ? (
-            <div className="p-12 text-center">
-              <p className="text-muted-foreground">Loading inventory...</p>
-            </div>
-          ) : inventory.length === 0 ? (
-            <div className="p-12 text-center">
-              <p className="text-muted-foreground mb-4">No inventory items yet</p>
-              <Button onClick={() => setShowForm(true)}>Add first item</Button>
-            </div>
-          ) : (
+        {loading ? (
+          <div className="p-12 text-center text-muted-foreground">Loading inventory...</div>
+        ) : inventory.length === 0 ? (
+          <div className="p-12 text-center border border-dashed rounded-2xl border-border">
+            <p className="text-muted-foreground mb-4">No inventory items yet</p>
+            <Button onClick={() => setShowForm(true)}>Add first item</Button>
+          </div>
+        ) : view === 'list' ? (
+          <Card className="border border-border/50 bg-card/60 backdrop-blur-sm rounded-3xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-muted border-b border-border">
+                <thead className="bg-muted/50 border-b border-border">
                   <tr>
-                    <th className="text-left p-4 font-medium text-foreground">Drug Name</th>
-                    <th className="text-left p-4 font-medium text-foreground">Batch</th>
-                    <th className="text-left p-4 font-medium text-foreground">Quantity</th>
-                    <th className="text-left p-4 font-medium text-foreground">Available</th>
-                    <th className="text-left p-4 font-medium text-foreground">Expiry</th>
-                    <th className="text-left p-4 font-medium text-foreground">Location</th>
+                    <th className="text-left p-4 font-semibold text-foreground">Drug Name</th>
+                    <th className="text-left p-4 font-semibold text-foreground">Batch</th>
+                    <th className="text-left p-4 font-semibold text-foreground">Quantity</th>
+                    <th className="text-left p-4 font-semibold text-foreground">Available</th>
+                    <th className="text-left p-4 font-semibold text-foreground">Expiry</th>
+                    <th className="text-left p-4 font-semibold text-foreground">Location</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border">
+                <tbody className="divide-y divide-border/50">
                   {inventory.map((item) => {
                     const expiry = new Date(item.expiry_date);
                     const isExpired = expiry < new Date();
                     return (
-                      <tr key={item.id} className={isExpired ? 'bg-red-50 dark:bg-red-950' : 'hover:bg-muted/50'}>
-                        <td className="p-4">{getDrugName(item.drug_id)}</td>
-                        <td className="p-4">{item.batch_number}</td>
-                        <td className="p-4">{item.quantity_in_stock}</td>
-                        <td className="p-4">{item.quantity_available}</td>
-                        <td className={`p-4 ${isExpired ? 'text-red-600 font-bold' : ''}`}>
+                      <tr key={item.id} className={isExpired ? 'bg-red-50 dark:bg-red-900/10' : 'hover:bg-muted/30 transition-colors'}>
+                        <td className="p-4 font-bold">{getDrugName(item.drug_id)}</td>
+                        <td className="p-4 text-muted-foreground font-mono text-xs">{item.batch_number}</td>
+                        <td className="p-4 font-medium">{item.quantity_in_stock}</td>
+                        <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">{item.quantity_available}</td>
+                        <td className={`p-4 ${isExpired ? 'text-red-600 font-bold' : 'text-muted-foreground'}`}>
                           {item.expiry_date}
                         </td>
-                        <td className="p-4">{item.storage_location || '-'}</td>
+                        <td className="p-4 text-muted-foreground">{item.storage_location || '-'}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
             </div>
-          )}
-        </Card>
+          </Card>
+        ) : view === 'grid' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {inventory.map((item) => {
+              const expiry = new Date(item.expiry_date);
+              const isExpired = expiry < new Date();
+              const daysToExpiry = (expiry - new Date()) / (1000 * 60 * 60 * 24);
+              const isExpiringSoon = daysToExpiry < 30 && daysToExpiry > 0;
+              const isLowStock = item.quantity_available <= 50;
+              
+              return (
+                <Card key={item.id} className={`p-5 rounded-3xl border shadow-sm transition-all relative overflow-hidden group ${isExpired ? 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-900' : 'bg-card/60 backdrop-blur-sm border-border/40 hover:shadow-lg hover:border-emerald-500/30'}`}>
+                  <div className="absolute top-0 right-0 p-4">
+                    {isExpired ? <span className="px-2 py-1 bg-red-100 text-red-800 text-[10px] rounded-full font-bold uppercase tracking-wider">Expired</span>
+                    : isExpiringSoon ? <span className="px-2 py-1 bg-orange-100 text-orange-800 text-[10px] rounded-full font-bold uppercase tracking-wider">Expiring</span>
+                    : isLowStock ? <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-[10px] rounded-full font-bold uppercase tracking-wider">Low Stock</span>
+                    : <span className="px-2 py-1 bg-emerald-100 text-emerald-800 text-[10px] rounded-full font-bold uppercase tracking-wider">Healthy</span>}
+                  </div>
+                  <h3 className="font-bold text-lg pr-16 mb-1 line-clamp-1 group-hover:text-emerald-600 transition-colors">{getDrugName(item.drug_id)}</h3>
+                  <p className="text-xs text-muted-foreground font-mono mb-4">Batch: {item.batch_number}</p>
+                  
+                  <div className="grid grid-cols-2 gap-4 bg-muted/30 p-3 rounded-2xl">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Available</p>
+                      <p className="font-bold text-emerald-600 dark:text-emerald-400 text-lg">{item.quantity_available}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">In Stock</p>
+                      <p className="font-medium text-foreground">{item.quantity_in_stock}</p>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {item.expiry_date}</span>
+                    <span className="truncate max-w-[80px]">{item.storage_location || 'No Location'}</span>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="flex gap-6 overflow-x-auto pb-4 hide-scrollbar">
+            {['Healthy', 'Low Stock', 'Critical/Expired'].map(status => {
+              const columnItems = inventory.filter(item => {
+                const expiry = new Date(item.expiry_date);
+                const isExpired = expiry < new Date();
+                const daysToExpiry = (expiry - new Date()) / (1000 * 60 * 60 * 24);
+                const isLow = item.quantity_available <= 50;
+                
+                if (status === 'Critical/Expired') return isExpired || (daysToExpiry < 30 && daysToExpiry > 0);
+                if (status === 'Low Stock') return isLow && !isExpired && !(daysToExpiry < 30 && daysToExpiry > 0);
+                return !isLow && !isExpired && !(daysToExpiry < 30 && daysToExpiry > 0);
+              });
+              
+              return (
+                <div key={status} className="flex-none w-80 flex flex-col gap-4">
+                  <div className="flex items-center justify-between px-2">
+                    <h3 className="font-bold text-foreground">{status}</h3>
+                    <span className="text-xs font-semibold bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
+                      {columnItems.length}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-3 min-h-[200px] bg-muted/20 p-3 rounded-3xl border border-border/30">
+                    {columnItems.map(item => (
+                      <Card key={item.id} className="p-4 border border-border/40 bg-card shadow-sm hover:shadow-md transition-shadow rounded-2xl cursor-pointer">
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="text-[10px] font-mono text-muted-foreground">B: {item.batch_number}</span>
+                        </div>
+                        <p className="font-bold text-foreground mb-3 text-sm leading-tight">{getDrugName(item.drug_id)}</p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">Avail: {item.quantity_available}</span>
+                          <span className="text-xs text-muted-foreground flex items-center gap-1"><Calendar className="w-3 h-3"/> {item.expiry_date}</span>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <Sheet open={showForm} onOpenChange={setShowForm}>

@@ -9,6 +9,8 @@ import { Card } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { toast } from 'react-hot-toast';
 import PharmacyAPI from '@/api/PharmacyAPI';
+import ViewToggle from '@/components/shared/ViewToggle';
+import { useViewPreference } from '@/hooks/useViewPreference';
 
 export default function Customers() {
   const { user } = useAuth();
@@ -19,6 +21,7 @@ export default function Customers() {
   const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [view, setView] = useViewPreference('pharmacy_customers', 'grid');
 
   const [formData, setFormData] = useState({
     customerName: '',
@@ -73,45 +76,107 @@ export default function Customers() {
             <h1 className="text-4xl font-bold text-foreground">Customers</h1>
             <p className="text-muted-foreground mt-2">Manage patient information</p>
           </div>
-          <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-purple-600 to-purple-700 text-white">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Customer
-          </Button>
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0">
+              <Plus className="w-4 h-4 mr-2" />
+              Add Patient
+            </Button>
+          </div>
         </div>
 
-        <Card className="p-4 mb-6 border border-border bg-card">
-          <Input placeholder="Search by name or phone..." value={search} onChange={(e) => setSearch(e.target.value)} />
+        <Card className="p-2 px-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex items-center rounded-2xl shadow-sm">
+          <Search className="w-5 h-5 text-muted-foreground mr-2" />
+          <Input 
+            placeholder="Search by name, phone, or email..." 
+            value={search} 
+            onChange={(e) => setSearch(e.target.value)} 
+            className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-base"
+          />
         </Card>
 
         {loading ? (
-          <div className="text-center py-12">Loading...</div>
-        ) : (
+          <div className="text-center py-12 text-muted-foreground">Loading patients...</div>
+        ) : filteredCustomers.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground border border-dashed rounded-2xl border-border">No patients found.</div>
+        ) : view === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCustomers.map(c => (
-              <Card key={c.id} className="p-5 border border-border bg-card hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-lg text-foreground mb-3">{c.customer_name}</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Phone className="w-4 h-4" />
-                    <span>{c.phone || '-'}</span>
+              <Card key={c.id} className="group p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl overflow-hidden relative">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-bl-full -mr-8 -mt-8 pointer-events-none" />
+                <h3 className="font-bold text-xl text-foreground mb-4 group-hover:text-emerald-600 transition-colors">{c.customer_name}</h3>
+                
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center gap-3 text-muted-foreground">
+                    <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                      <Phone className="w-4 h-4" />
+                    </div>
+                    <span className="font-medium text-foreground/80">{c.phone || '-'}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Mail className="w-4 h-4" />
-                    <span>{c.email || '-'}</span>
+                  
+                  <div className="flex items-center gap-3 text-muted-foreground">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                      <Mail className="w-4 h-4" />
+                    </div>
+                    <span className="font-medium text-foreground/80">{c.email || '-'}</span>
                   </div>
+
                   {c.insurance_provider && (
-                    <div className="pt-2 border-t border-border">
-                      <p className="text-xs text-muted-foreground">Insurance</p>
-                      <p className="font-medium text-foreground">{c.insurance_provider}</p>
+                    <div className="pt-4 mt-2 border-t border-border/50">
+                      <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                        {c.insurance_provider}
+                      </div>
                     </div>
                   )}
-                  <div className="pt-2 text-xs text-muted-foreground">
-                    Total Spent: <span className="font-bold text-primary">${(c.total_spent || 0).toFixed(2)}</span>
+
+                  <div className="absolute bottom-6 right-6">
+                    <div className="flex flex-col items-end">
+                      <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Total Spent</span>
+                      <span className="font-black text-xl text-emerald-600 dark:text-emerald-400">${(c.total_spent || 0).toFixed(2)}</span>
+                    </div>
                   </div>
                 </div>
               </Card>
             ))}
           </div>
+        ) : (
+          <Card className="border border-border/50 bg-card/60 backdrop-blur-sm rounded-3xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-muted/50 border-b border-border">
+                  <tr>
+                    <th className="p-4 font-semibold text-foreground">Patient Name</th>
+                    <th className="p-4 font-semibold text-foreground">Contact</th>
+                    <th className="p-4 font-semibold text-foreground">Insurance</th>
+                    <th className="p-4 font-semibold text-foreground text-right">Total Spent</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/50">
+                  {filteredCustomers.map(c => (
+                    <tr key={c.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="p-4 font-bold text-foreground">{c.customer_name}</td>
+                      <td className="p-4">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-foreground/80 flex items-center gap-1.5"><Phone className="w-3 h-3 text-muted-foreground" /> {c.phone || '-'}</span>
+                          <span className="text-muted-foreground text-xs flex items-center gap-1.5"><Mail className="w-3 h-3" /> {c.email || '-'}</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        {c.insurance_provider ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                            {c.insurance_provider}
+                          </span>
+                        ) : '-'}
+                      </td>
+                      <td className="p-4 text-right font-bold text-emerald-600 dark:text-emerald-400">
+                        ${(c.total_spent || 0).toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
         )}
 
         <Sheet open={showForm} onOpenChange={setShowForm}>
