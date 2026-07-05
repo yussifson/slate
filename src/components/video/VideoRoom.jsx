@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import DailyIframe from '@daily-co/daily-js';
 import { useTranslation} from "react-i18next";
 import { 
@@ -52,7 +52,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
 
  const sendReaction = (emoji) => {
    if (!daily) return;
-   const msg = { type: 'reaction', emoji, name: userName || 'Someone' };
+   const msg = { type: 'reaction', emoji, name: daily?.participants()?.local?.user_name || 'Someone' };
    daily.sendAppMessage(msg, '*');
    
    const id = Date.now() + Math.random();
@@ -88,12 +88,12 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
    }
  };
 
-  useDailyEvent('joined-meeting', () => {
+  useDailyEvent('joined-meeting', useCallback(() => {
    setJoined(true);
    if (daily) {
      daily.startTranscription().catch(e => console.warn("Transcription couldn't start", e));
    }
-  });
+  }, [daily]));
 
   const playSound = (type) => {
     try {
@@ -128,7 +128,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
     }
   };
 
-  useDailyEvent('participant-joined', (ev) => {
+  useDailyEvent('participant-joined', useCallback((ev) => {
     if (!ev.participant.local) {
       playSound('join');
       toast({
@@ -136,28 +136,29 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
         description: `${ev.participant.user_name || 'Someone'} joined the meeting.`,
       });
     }
-  });
+  }, [toast]));
 
- useDailyEvent('left-meeting', () => {
+ useDailyEvent('left-meeting', useCallback(() => {
   setJoined(false);
   onLeave();
-});
+}, [onLeave]));
 
- useDailyEvent('participant-left', (ev) => {
+ useDailyEvent('participant-left', useCallback((ev) => {
     playSound('leave');
     toast({
       title: "Participant Left",
       description: `${ev.participant.user_name || 'A participant'} left the meeting.`,
+      variant: 'destructive'
     });
-  });
+  }, [toast]));
 
- useDailyEvent('error', (ev) => {
+ useDailyEvent('error', useCallback((ev) => {
  console.error('Daily error:', ev);
  toast({
  title: 'Video connection error',
  description: ev?.errorMsg || 'Could not connect to the meeting room.',
  variant: 'destructive'});
-});
+}, [toast]));
 
  const ensureJoined = () => {
  if (daily && daily.meetingState() === 'joined-meeting') return true;
@@ -299,7 +300,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  const [showAiSidebar, setShowAiSidebar] = useState(false);
 
  // Handle incoming Daily messages
- useDailyEvent('app-message', (ev) => {
+ useDailyEvent('app-message', useCallback((ev) => {
   if (ev.data && ev.data.type === 'chat') {
     setChatMessages(prev => [...prev, { from: ev.fromId, name: ev.data.name, text: ev.data.text, time: new Date()}]);
   }
@@ -313,11 +314,11 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
   if (ev.data && ev.data.type === 'transcription') {
     setTranscriptData(prev => [...prev, { name: 'Participant', text: ev.data.text}]);
   }
- });
+ }, []));
 
  const sendChatMessage = () => {
  if (!chatInput.trim() || !daily) return;
- const msg = { type: 'chat', text: chatInput.trim(), name: 'Me'};
+ const msg = { type: 'chat', text: chatInput.trim(), name: daily?.participants()?.local?.user_name || 'Me'};
  daily.sendAppMessage(msg, '*');
  setChatMessages(prev => [...prev, { from: 'local', name: 'Me', text: chatInput.trim(), time: new Date()}]);
  setChatInput("");
@@ -505,16 +506,31 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium">Real Avatar</label>
+          <label className="text-sm font-medium">Vector Avatar</label>
           <div className="flex flex-wrap gap-2">
-            {realAvatars.map(url => (
+            {vectorAvatars.map(url => (
               <button 
                 key={url} 
                 className={`w-10 h-10 rounded-full overflow-hidden border-2 ${daily?.participants()?.local?.userData && JSON.parse(daily.participants().local.userData || '{}').avatarUrl === url ? 'border-primary' : 'border-transparent'}`}
-                onClick={() => daily?.setUserData(JSON.stringify({ avatarUrl: url }))}
+                onClick={() => daily?.setUserData(JSON.stringify({ avatarUrl: url, avatarColor: null }))}
                 title="Choose Avatar"
               >
-                <img src={url} alt="Avatar" className="w-full h-full object-cover" />
+                <img src={url} alt="Avatar" className="w-full h-full object-cover bg-slate-100 dark:bg-slate-800" />
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium">Color Initial Avatar</label>
+          <div className="flex flex-wrap gap-2">
+            {avatarColors.map(color => (
+              <button 
+                key={color} 
+                className={`w-10 h-10 rounded-full overflow-hidden border-2 flex items-center justify-center ${color} ${daily?.participants()?.local?.userData && JSON.parse(daily.participants().local.userData || '{}').avatarColor === color ? 'border-primary ring-2 ring-primary ring-offset-2 dark:ring-offset-slate-900' : 'border-transparent'}`}
+                onClick={() => daily?.setUserData(JSON.stringify({ avatarUrl: null, avatarColor: color }))}
+                title="Choose Color"
+              >
+                <span className="text-white text-xs font-bold">Aa</span>
               </button>
             ))}
           </div>
@@ -697,7 +713,7 @@ const avatarColors = [
   'bg-violet-500', 'bg-fuchsia-500', 'bg-rose-500', 
   'bg-amber-500', 'bg-teal-500', 'bg-cyan-500'
 ];
-const realAvatars = Array.from({ length: 10 }, (_, i) => `https://i.pravatar.cc/150?u=${i + 1}`);
+const vectorAvatars = Array.from({ length: 10 }, (_, i) => `https://api.dicebear.com/7.x/micah/svg?seed=OptavelUser${i + 1}&backgroundColor=transparent`);
 
 function ParticipantTile({ id, isLocal, className }) {
  const videoState = useVideoTrack(id);
@@ -717,17 +733,27 @@ function ParticipantTile({ id, isLocal, className }) {
   return avatarColors[Math.abs(hash) % avatarColors.length];
  }, [displayName]);
 
- const customAvatarUrl = React.useMemo(() => {
-  if (participant?.userData) {
-    try {
-      const data = typeof participant.userData === 'string' ? JSON.parse(participant.userData) : participant.userData;
-      if (data?.avatarUrl) return data.avatarUrl;
-    } catch (e) {}
-  }
-  return null;
- }, [participant?.userData]);
+  const customAvatarColor = React.useMemo(() => {
+   if (participant?.userData) {
+     try {
+       const data = typeof participant.userData === 'string' ? JSON.parse(participant.userData) : participant.userData;
+       if (data?.avatarColor) return data.avatarColor;
+     } catch (e) {}
+   }
+   return null;
+  }, [participant?.userData]);
 
- const finalAvatarColor = avatarColor;
+  const customAvatarUrl = React.useMemo(() => {
+   if (participant?.userData) {
+     try {
+       const data = typeof participant.userData === 'string' ? JSON.parse(participant.userData) : participant.userData;
+       if (data?.avatarUrl) return data.avatarUrl;
+     } catch (e) {}
+   }
+   return null;
+  }, [participant?.userData]);
+
+  const finalAvatarColor = customAvatarColor || avatarColor;
 
  useEffect(() => {
  if (videoState?.track && videoRef.current) {
