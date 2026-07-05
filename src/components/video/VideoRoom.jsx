@@ -50,18 +50,34 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  const [floatingEmojis, setFloatingEmojis] = useState([]);
  const EMOJIS = ['👍', '❤️', '👏', '😂', '🎉', '🔥'];
 
- const sendReaction = (emoji) => {
-   if (!daily) return;
-   const msg = { type: 'reaction', emoji, name: daily?.participants()?.local?.user_name || 'Someone' };
-   daily.sendAppMessage(msg, '*');
-   
-   const id = Date.now() + Math.random();
-   setFloatingEmojis(prev => [...prev, { id, emoji }]);
-   setTimeout(() => {
-     setFloatingEmojis(prev => prev.filter(e => e.id !== id));
-   }, 4000);
-   setShowEmojis(false);
- };
+  const addEmojiBurst = useCallback((emoji) => {
+    const count = Math.floor(Math.random() * 4) + 4; // 4 to 7 emojis
+    const newEmojis = [];
+    const now = Date.now();
+    for (let i = 0; i < count; i++) {
+      newEmojis.push({
+        id: now + i + Math.random(),
+        emoji,
+        leftOffset: Math.floor(Math.random() * 160) - 80, // -80px to 80px
+        rotation: Math.floor(Math.random() * 80) - 40, // -40deg to 40deg
+        delay: Math.random() * 0.4, // 0 to 0.4s delay
+        scale: 0.8 + Math.random() * 0.7, // 0.8 to 1.5 scale
+      });
+    }
+    setFloatingEmojis(prev => [...prev, ...newEmojis]);
+    setTimeout(() => {
+      setFloatingEmojis(prev => prev.filter(e => !newEmojis.find(n => n.id === e.id)));
+    }, 4000);
+  }, []);
+
+  const sendReaction = (emoji) => {
+    if (!daily) return;
+    const msg = { type: 'reaction', emoji, name: daily?.participants()?.local?.user_name || 'Someone' };
+    daily.sendAppMessage(msg, '*');
+    
+    addEmojiBurst(emoji);
+    setShowEmojis(false);
+  };
 
  const handleCopyLink = () => {
    navigator.clipboard.writeText(roomUrl);
@@ -305,11 +321,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
     setChatMessages(prev => [...prev, { from: ev.fromId, name: ev.data.name, text: ev.data.text, time: new Date()}]);
   }
   if (ev.data && ev.data.type === 'reaction') {
-    const id = Date.now() + Math.random();
-    setFloatingEmojis(prev => [...prev, { id, emoji: ev.data.emoji }]);
-    setTimeout(() => {
-      setFloatingEmojis(prev => prev.filter(e => e.id !== id));
-    }, 4000);
+    addEmojiBurst(ev.data.emoji);
   }
   if (ev.data && ev.data.type === 'transcription') {
     setTranscriptData(prev => [...prev, { name: 'Participant', text: ev.data.text}]);
@@ -548,19 +560,24 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  {floatingEmojis.map((e) => (
    <div 
      key={e.id} 
-     className="absolute bottom-32 left-1/2 -translate-x-1/2 text-5xl pointer-events-none z-50 transition-transform"
+     className="absolute bottom-24 text-4xl pointer-events-none z-50 origin-bottom"
      style={{
-       animation: 'floatUp 3s ease-out forwards'
+       left: `calc(50% + ${e.leftOffset}px)`,
+       '--rot': `${e.rotation}deg`,
+       '--scl': e.scale,
+       animation: `floatUpEmoji 3s ease-out forwards`,
+       animationDelay: `${e.delay}s`,
+       opacity: 0, // start invisible until delay
      }}
    >
      {e.emoji}
    </div>
  ))}
  <style>{`
-   @keyframes floatUp {
-     0% { opacity: 1; transform: translate(-50%, 0) scale(0.5); }
-     20% { transform: translate(-50%, -20px) scale(1.2); }
-     100% { opacity: 0; transform: translate(-50%, -150px) scale(1.5); }
+   @keyframes floatUpEmoji {
+     0% { opacity: 0; transform: translate(-50%, 0px) rotate(var(--rot)) scale(var(--scl)); }
+     5% { opacity: 1; transform: translate(-50%, -10px) rotate(calc(var(--rot) * 1.2)) scale(calc(var(--scl) * 1.2)); }
+     100% { opacity: 0; transform: translate(-50%, -300px) rotate(calc(var(--rot) * 0.5)) scale(var(--scl)); }
    }
  `}</style>
 
