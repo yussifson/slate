@@ -240,7 +240,7 @@ export default function Drugs() {
                 </thead>
                 <tbody className="divide-y divide-border/50">
                   {filteredDrugs.map(drug => (
-                    <tr key={drug.id} className="hover:bg-muted/30 transition-colors">
+                    <tr key={drug.id} className="group hover:bg-muted/30 transition-colors">
                       <td className="p-4">
                         <p className="font-bold text-foreground">{drug.drug_name}</p>
                         <p className="text-xs text-muted-foreground">{drug.generic_name}</p>

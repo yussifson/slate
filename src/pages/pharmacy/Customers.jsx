@@ -183,7 +183,7 @@ export default function Customers() {
                 </thead>
                 <tbody className="divide-y divide-border/50">
                   {filteredCustomers.map(c => (
-                    <tr key={c.id} className="hover:bg-muted/30 transition-colors">
+                    <tr key={c.id} className="group hover:bg-muted/30 transition-colors">
                       <td className="p-4 font-bold text-foreground">{c.customer_name}</td>
                       <td className="p-4">
                         <div className="flex flex-col gap-1">
