@@ -263,13 +263,24 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  </DropdownMenu>
  )}
 
+ {/* Spotlight Search Toggle */}
+ <Button
+  onClick={() => window.dispatchEvent(new CustomEvent('open-spotlight'))}
+  variant="ghost"
+  size="icon"
+  className="shrink-0 group relative overflow-hidden w-8 h-8 flex items-center justify-center rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 bg-card text-foreground border-primary/40 hover:border-primary/40 hover:bg-slate-50 hover:text-primary dark:hover:bg-slate-100 shadow-sm"
+  title="Spotlight Search (⌘K)"
+ >
+  <LayoutGrid className="w-4 h-4 text-[#71717a] dark:text-gray-400 group-hover:text-primary transition-colors" />
+ </Button>
+
  {/* Orbit Bolt Toggle */}
  {!['client', 'patient', 'guest', 'parent', 'student', 'learner', 'trainee', 'customer', 'policyholder', 'member', 'tenant', 'landlord', 'employee'].includes(user?.role?.toLowerCase()) && (
  <Button
  onClick={toggleBolt}
  variant="ghost"
  size="icon"
- className={`shrink-0 relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-semibold rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${
+ className={`shrink-0 sm:ml-1 relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-semibold rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${
  isBoltOpen
  ? "bg-gradient-to-r from-primary/80 to-primary text-white border-primary -[0_0_15px_rgba(var(--primary),0.5)] scale-95"
  : "bg-card text-foreground border-primary/40 hover:border-primary/50 hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/10 hover:text-primary -[0_0_10px_rgba(var(--primary),0.15)]"
@@ -280,17 +291,6 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   <span className="hidden sm:inline">{t("orbit_build", "Orbit Build")}</span>
   </Button>
  )}
-
- {/* Spotlight Search Toggle */}
- <Button
-  onClick={() => window.dispatchEvent(new CustomEvent('open-spotlight'))}
-  variant="ghost"
-  size="icon"
-  className="shrink-0 sm:ml-1 group relative overflow-hidden w-8 h-8 flex items-center justify-center rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 bg-card text-foreground border-primary/40 hover:border-primary/40 hover:bg-slate-50 hover:text-primary dark:hover:bg-slate-100 shadow-sm"
-  title="Spotlight Search (⌘K)"
- >
-  <LayoutGrid className="w-4 h-4 text-[#71717a] dark:text-gray-400 group-hover:text-primary transition-colors" />
- </Button>
 
  {/* Orbit AI Toggle */}
  <Button

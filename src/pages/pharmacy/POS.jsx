@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ShoppingCart, Plus, Minus, X, CreditCard, Banknote, Printer } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, X, CreditCard, Banknote, Printer, Search } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { usePowerSync } from '@powersync/react';
