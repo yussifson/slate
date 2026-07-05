@@ -26,6 +26,7 @@ export default function POS() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showReceipt, setShowReceipt] = useState(false);
   const [lastReceipt, setLastReceipt] = useState(null);
+  const [companySettings, setCompanySettings] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -33,14 +34,18 @@ export default function POS() {
 
   const fetchData = async () => {
     try {
-      const [drugsResult, invResult, custResult] = await Promise.all([
+      const [drugsResult, invResult, custResult, compResult] = await Promise.all([
         PharmacyAPI.getDrugs(companyId),
         PharmacyAPI.getInventory(companyId),
-        PharmacyAPI.getCustomers(companyId)
+        PharmacyAPI.getCustomers(companyId),
+        powerSync.execute('SELECT * FROM companies WHERE id = ?', [companyId])
       ]);
       setDrugs(drugsResult);
       setInventory(invResult);
       setCustomers(custResult);
+      if (compResult.rows?.length > 0) {
+        setCompanySettings(compResult.rows.item(0));
+      }
     } catch (e) {
       console.error('[POS] Error:', e);
       toast.error('Failed to load data');
@@ -162,7 +167,8 @@ export default function POS() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4">
+    <>
+    <div className="min-h-screen bg-background p-4 print:hidden">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-foreground">Point of Sale</h1>
@@ -265,46 +271,49 @@ export default function POS() {
                     <p className="text-sm">Cart is empty</p>
                   </div>
                 ) : cart.map((item, idx) => (
-                  <div key={idx} className="bg-background border border-border/40 p-3 rounded-2xl flex items-center justify-between group shadow-sm">
-                    <div className="flex-1">
-                      <p className="text-sm font-bold text-foreground line-clamp-1">{item.drugName}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        <span className="font-medium">${item.unitPrice.toFixed(2)}</span> × {item.quantity}
-                      </p>
+                  <div key={idx} className="bg-background border border-border/40 p-4 rounded-2xl flex flex-col gap-3 group shadow-sm">
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-foreground break-words">{item.drugName}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          <span className="font-medium text-emerald-600 dark:text-emerald-400">${item.unitPrice.toFixed(2)}</span> / unit
+                        </p>
+                      </div>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => removeFromCart(idx)}
+                        className="h-8 w-8 rounded-full text-red-500 hover:bg-red-50 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
                     </div>
-                    <div className="flex items-center gap-2 pl-2">
+                    <div className="flex items-center justify-between mt-1 pt-3 border-t border-border/30">
                       <div className="flex items-center bg-muted/50 rounded-xl border border-border/50 p-0.5">
                         <Button
                           size="icon"
                           variant="ghost"
                           onClick={() => updateCartQuantity(idx, -1)}
-                          className="h-6 w-6 rounded-lg hover:bg-background"
+                          className="h-7 w-7 rounded-lg hover:bg-background text-foreground"
                         >
-                          <Minus className="w-3 h-3" />
+                          <Minus className="w-3.5 h-3.5" />
                         </Button>
-                        <span className="w-6 text-center text-sm font-medium">{item.quantity}</span>
+                        <span className="w-8 text-center text-sm font-bold">{item.quantity}</span>
                         <Button
                           size="icon"
                           variant="ghost"
                           onClick={() => updateCartQuantity(idx, 1)}
-                          className="h-6 w-6 rounded-lg hover:bg-background"
+                          className="h-7 w-7 rounded-lg hover:bg-background text-foreground"
                         >
-                          <Plus className="w-3 h-3" />
+                          <Plus className="w-3.5 h-3.5" />
                         </Button>
                       </div>
                       
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm text-emerald-600 dark:text-emerald-400 w-14 text-right">
+                      <div className="text-right">
+                        <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground block">Total</span>
+                        <span className="font-bold text-base text-emerald-600 dark:text-emerald-400">
                           ${(item.unitPrice * item.quantity).toFixed(2)}
                         </span>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          onClick={() => removeFromCart(idx)}
-                          className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-full shrink-0"
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
                       </div>
                     </div>
                   </div>
@@ -392,8 +401,14 @@ export default function POS() {
           {lastReceipt && (
             <div className="mt-6 space-y-4 font-mono text-sm">
               <div className="text-center pb-4 border-b border-border">
-                <p className="font-bold">PHARMACY</p>
-                <p className="text-xs text-muted-foreground">{lastReceipt.receiptNumber}</p>
+                {companySettings?.receipt_show_logo && companySettings?.logo_url ? (
+                  <img src={companySettings.logo_url} alt="Logo" className="h-10 mx-auto mb-2" />
+                ) : null}
+                <p className="font-bold uppercase text-lg">{companySettings?.name || 'PHARMACY'}</p>
+                {companySettings?.receipt_header && (
+                  <p className="text-xs whitespace-pre-line mt-1">{companySettings.receipt_header}</p>
+                )}
+                <p className="text-xs text-muted-foreground mt-2">Receipt #{lastReceipt.receiptNumber}</p>
               </div>
 
               <div className="space-y-2">
@@ -437,9 +452,12 @@ export default function POS() {
 
               <div className="text-center text-xs text-muted-foreground pt-4">
                 <p>{lastReceipt.timestamp.toLocaleString()}</p>
+                {companySettings?.receipt_footer && (
+                  <p className="mt-2 whitespace-pre-line italic">{companySettings.receipt_footer}</p>
+                )}
               </div>
 
-              <Button onClick={() => window.print()} className="w-full" variant="outline">
+              <Button onClick={() => window.print()} className="w-full print:hidden" variant="outline">
                 <Printer className="w-4 h-4 mr-2" />
                 Print Receipt
               </Button>
@@ -447,6 +465,68 @@ export default function POS() {
           )}
         </SheetContent>
       </Sheet>
-    </div>
+
+      {/* Hidden Print-Only View */}
+      {lastReceipt && (
+        <div className="hidden print:block fixed inset-0 bg-white text-black z-[999999] p-8 font-mono max-w-sm mx-auto w-full">
+          <div className="text-center pb-4 border-b border-gray-300">
+            {companySettings?.receipt_show_logo && companySettings?.logo_url ? (
+              <img src={companySettings.logo_url} alt="Logo" className="h-12 mx-auto mb-2 filter grayscale" />
+            ) : null}
+            <h1 className="font-bold text-xl uppercase">{companySettings?.name || 'PHARMACY'}</h1>
+            {companySettings?.receipt_header && (
+              <p className="text-sm whitespace-pre-line mt-1">{companySettings.receipt_header}</p>
+            )}
+            <p className="text-sm text-gray-500 mt-2">Receipt #{lastReceipt.receiptNumber}</p>
+          </div>
+
+          <div className="py-4 space-y-2 border-b border-gray-300">
+            {lastReceipt.items.map((item, idx) => (
+              <div key={idx} className="flex justify-between text-sm">
+                <span>{item.drugName} x{item.quantity}</span>
+                <span>${item.lineTotal.toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="py-4 space-y-1 text-sm border-b border-gray-300">
+            <div className="flex justify-between">
+              <span>Subtotal:</span>
+              <span>${lastReceipt.subtotal.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Tax:</span>
+              <span>${lastReceipt.tax.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between font-bold text-lg mt-2">
+              <span>Total:</span>
+              <span>${lastReceipt.total.toFixed(2)}</span>
+            </div>
+          </div>
+
+          <div className="py-4 space-y-1 text-sm border-b border-gray-300">
+            <div className="flex justify-between">
+              <span>Payment:</span>
+              <span>${lastReceipt.amountPaid.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Change:</span>
+              <span>${lastReceipt.change.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-gray-500">
+              <span>Method:</span>
+              <span>{lastReceipt.paymentMethod}</span>
+            </div>
+          </div>
+
+          <div className="text-center text-sm text-gray-500 pt-4">
+            <p>{lastReceipt.timestamp.toLocaleString()}</p>
+            {companySettings?.receipt_footer && (
+              <p className="mt-4 whitespace-pre-line italic">{companySettings.receipt_footer}</p>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 }

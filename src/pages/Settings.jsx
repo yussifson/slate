@@ -9,15 +9,17 @@ import { useToast} from "@/components/ui/use-toast";
 import { getSubdomainAndBase} from "@/lib/domainUtils";
 
 import {
- Settings2, Palette, DollarSign, ShieldCheck, Lock, CreditCard, Building
+ Settings2, Palette, DollarSign, ShieldCheck, Lock, CreditCard, Building, FileText
 } from "lucide-react";
 
 import { SystemSettings, BrandSettings} from "@/components/settings/SystemBrandSettings";
 import { CurrencySettings, SecuritySettings, BillingSettings} from "@/components/settings/SecurityBillingSettings";
+import { ReceiptSettings } from "@/components/settings/ReceiptSettings";
 const SECTIONS = [
  { id: "system", label: "System Configuration", icon: Settings2, cat: "General"},
  { id: "brand", label: "Brand & Identity", icon: Palette, cat: "General"},
  { id: "security", label: "Security & Encryption", icon: Lock, cat: "Security & Access"},
+ { id: "receipts", label: "Receipt Templates", icon: FileText, cat: "Documents & Receipts"},
  { id: "billing", label: "Billing & Subscriptions",icon: CreditCard, cat: "Billing"},
  { id: "currency", label: "Regional Currency", icon: DollarSign, cat: "Billing"},
 ];
@@ -53,7 +55,8 @@ export default function Settings() {
       const allowedFields = [
         'name', 'subdomain', 'custom_domain', 'tagline', 'primary_color', 
         'logo_url', 'logo_light_url', 'favicon_url', 
-        'currency', 'language', 'timezone', 'date_format', 'time_format', 'calendar_start'
+        'currency', 'language', 'timezone', 'date_format', 'time_format', 'calendar_start',
+        'receipt_template', 'receipt_header', 'receipt_footer', 'receipt_show_logo'
       ];
       for (const field of allowedFields) {
         if (data[field] !== undefined) {
@@ -116,6 +119,9 @@ export default function Settings() {
       console.error("Failed to save system settings", err);
     }
   } : fakeSuccess} saving={saving} />;
+ case "receipts": return <ReceiptSettings company={company} onSave={company ? async d => {
+   try { await updateCompany(d); } catch (e) { console.error("Save receipt settings failed", e); }
+ } : fakeSuccess} saving={saving} />;
  case "brand": return <BrandSettings activeIndustry={activeIndustry} company={company} onSave={company ? async d => { 
  try {
  if (d.custom_domain && d.custom_domain !== company.custom_domain) {
@@ -137,11 +143,11 @@ export default function Settings() {
  }
 
  await updateCompany({ 
- name: d.name, logo_url: d.logo_url, subdomain: d.subdomain,
- custom_domain: d.custom_domain,
- logo_light_url: d.logo_light_url, favicon_url: d.favicon_url,
- tagline: d.tagline, primary_color: d.primary_color
-});
+  name: d.name, logo_url: d.logo_url, subdomain: d.subdomain,
+  custom_domain: d.custom_domain,
+  logo_light_url: d.logo_light_url, favicon_url: d.favicon_url,
+  tagline: d.tagline, primary_color: d.primary_color
+ });
 
  if (d.subdomain && d.subdomain !== company.subdomain) {
  const { baseDomain} = getSubdomainAndBase();
