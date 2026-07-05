@@ -153,10 +153,11 @@ export default function Leases() {
     };
     
     return (
-      <div className="group bg-card/60 backdrop-blur-sm border border-border/40 rounded-3xl p-6 hover:shadow-xl hover:border-primary/30 transition-all relative overflow-hidden flex flex-col h-full">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-primary rounded-bl-full -mr-10 -mt-10 pointer-events-none opacity-90" />
+      <div className="group bg-card/60 backdrop-blur-md border border-border/40 rounded-3xl p-6 hover:shadow-2xl hover:border-primary/50 transition-all relative overflow-hidden flex flex-col h-full hover:-translate-y-1">
+        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/5 rounded-bl-[3rem] border-b border-l border-primary/20 pointer-events-none z-0 transition-transform duration-500 group-hover:scale-110" />
+        <div className="absolute bottom-0 right-0 w-32 h-32 bg-primary/10 rounded-tl-[5rem] pointer-events-none z-0 transition-colors duration-500 group-hover:bg-primary/20" />
         
-        <div className="flex items-start justify-between mb-4">
+        <div className="flex items-start justify-between mb-4 relative z-10">
           <div className="flex-1 pr-12">
             <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">{lease.property_address || 'No address'}</h3>
             <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
@@ -189,7 +190,7 @@ export default function Leases() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6 text-sm flex-1 bg-muted/20 p-4 rounded-2xl border border-border/30 mt-2">
+        <div className="grid grid-cols-2 gap-4 mb-6 text-sm flex-1 bg-muted/20 p-4 rounded-2xl border border-border/30 mt-2 relative z-10">
           <div>
             <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Start Date</p>
             <p className="font-medium text-foreground">{new Date(lease.start_date).toLocaleDateString()}</p>
@@ -204,7 +205,7 @@ export default function Leases() {
           </div>
         </div>
         
-        <div className="mt-auto">
+        <div className="mt-auto relative z-10">
           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${badgeColors[status]}`}>
             {status.replace('-', ' ').toUpperCase()}
           </span>

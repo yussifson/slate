@@ -276,6 +276,8 @@ export default function Offers() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredOffers.map(offer => (
               <Card key={offer.id} className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
+                <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/5 rounded-bl-3xl border-b border-l border-primary/20 pointer-events-none z-0 transition-transform duration-500 group-hover:scale-110" />
+                <div className="absolute bottom-0 right-0 w-24 h-24 bg-primary/10 rounded-tl-[4rem] pointer-events-none z-0 transition-colors duration-500 group-hover:bg-primary/20" />
                 <div className="absolute top-0 right-0 p-6 flex justify-end w-full">
                   <span className={`px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-bold shadow-sm ${statusColors[offer.status] || 'bg-muted'}`}>
                     {offer.status}

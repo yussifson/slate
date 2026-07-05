@@ -326,7 +326,9 @@ export default function TrustAccounting() {
             </Card>
           ) : (
             accounts.map(account => (
-              <Card key={account.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+              <Card key={account.id} className="relative group bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+                <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/5 rounded-bl-3xl border-b border-l border-primary/20 pointer-events-none z-0 transition-transform duration-500 group-hover:scale-110" />
+                <div className="absolute bottom-0 right-0 w-24 h-24 bg-primary/10 rounded-tl-[4rem] pointer-events-none z-0 transition-colors duration-500 group-hover:bg-primary/20" />
                 <div className="h-1.5 w-full bg-gradient-to-r from-primary to-primary" />
                 <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
                   <div className="flex items-start justify-between">
