@@ -6374,4 +6374,287 @@ export const AppSchema = new Schema({
         status: column.text,
         sound: column.text
     })
+,
+    univ_kanban_boards: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_support_tickets: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    delivery_windows: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    sla_tracking: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    inventory_movements: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    driver_metrics: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    fleet_metrics: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    online_orders: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    online_settings: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_assignments: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_attendance: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_canteen: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_classes: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_complaints: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_exams: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_fees: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_gamification: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_grades: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_hostel: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_library: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_notices: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_parents: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_students: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_teachers: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    school_transport: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_allergies: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_beds: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_blood_requests: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_consents: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_discharges: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_immunisations: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_lab_results: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_school_assignment_submissions: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_school_assignments: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_school_attendance: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_school_course_registrations: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_school_discipline: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_school_exams: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_school_grades: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_school_hostel: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_school_library_books: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_school_library_categories: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_school_notices: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_school_timetable: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_school_transport: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_staff_shifts: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_vitals: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    })
 });
