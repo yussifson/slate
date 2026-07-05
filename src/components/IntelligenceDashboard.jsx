@@ -116,7 +116,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
       </div>
     );
   }
-
+  return (
     <div className="space-y-8 pb-20 animate-in fade-in duration-500">
       <Tabs defaultValue="insights" className="w-full">
         <TabsList className="mb-8 w-full flex justify-start gap-6 bg-transparent p-0 border-b border-slate-200 dark:border-slate-800 rounded-none h-auto overflow-x-auto hide-scrollbar">
