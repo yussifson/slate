@@ -151,7 +151,7 @@ export default function Prescriptions() {
           </div>
           <div className="flex items-center gap-4">
             <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
-            <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0">
+            <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0">
               <Plus className="w-4 h-4 mr-2" />
               New Prescription
             </Button>
@@ -191,7 +191,7 @@ export default function Prescriptions() {
                     <tr key={p.id} className="group hover:bg-muted/30 transition-colors">
                       <td className="p-4 font-bold text-foreground">
                         <div className="flex items-center gap-2">
-                          <FileText className="w-4 h-4 text-emerald-500" />
+                          <FileText className="w-4 h-4 text-primary" />
                           {p.prescription_number}
                         </div>
                       </td>
@@ -202,7 +202,7 @@ export default function Prescriptions() {
                         <div className="flex items-center justify-end gap-2">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                             p.prescription_status === 'Pending' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' 
-                            : p.prescription_status === 'Filled' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
+                            : p.prescription_status === 'Filled' ? 'bg-primary/10 text-primary/40 dark:bg-primary/30/30 dark:text-primary/80'
                             : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
                           }`}>
                             {p.prescription_status || 'New'}
@@ -226,11 +226,11 @@ export default function Prescriptions() {
         ) : view === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPrescriptions.map(p => (
-              <Card key={p.id} className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden group">
+              <Card key={p.id} className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-6 flex justify-end w-full">
                   <span className={`px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-bold shadow-sm ${
                     p.prescription_status === 'Pending' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' 
-                    : p.prescription_status === 'Filled' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
+                    : p.prescription_status === 'Filled' ? 'bg-primary/10 text-primary/40 dark:bg-primary/30/30 dark:text-primary/80'
                     : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
                   }`}>
                     {p.prescription_status || 'New'}
@@ -248,11 +248,11 @@ export default function Prescriptions() {
                 </div>
                 
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary/30/30 flex items-center justify-center text-primary dark:text-primary/80">
                     <FileText className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-foreground group-hover:text-emerald-600 transition-colors line-clamp-1 pr-16">{p.drug_name}</h3>
+                    <h3 className="font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1 pr-16">{p.drug_name}</h3>
                     <p className="text-xs text-muted-foreground font-mono">{p.prescription_number}</p>
                   </div>
                 </div>
@@ -269,7 +269,7 @@ export default function Prescriptions() {
                 </div>
 
                 <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground font-medium">
-                  <Clock className="w-3.5 h-3.5 text-emerald-500" />
+                  <Clock className="w-3.5 h-3.5 text-primary" />
                   Duration: {p.duration_days} days
                 </div>
               </Card>

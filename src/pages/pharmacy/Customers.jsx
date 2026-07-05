@@ -78,7 +78,7 @@ export default function Customers() {
           </div>
           <div className="flex items-center gap-4">
             <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
-            <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0">
+            <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0">
               <Plus className="w-4 h-4 mr-2" />
               Add Patient
             </Button>
@@ -102,9 +102,8 @@ export default function Customers() {
         ) : view === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCustomers.map(c => (
-              <Card key={c.id} className="group p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl overflow-hidden relative">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500 rounded-bl-full -mr-8 -mt-8 pointer-events-none opacity-90" />
-                <h3 className="font-bold text-xl text-foreground mb-4 group-hover:text-emerald-600 transition-colors pr-8">{c.customer_name}</h3>
+              <Card key={c.id} className="group p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl overflow-hidden relative flex flex-col justify-between">
+                <h3 className="font-bold text-xl text-foreground mb-4 group-hover:text-primary transition-colors">{c.customer_name}</h3>
                 
                 <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                   <Button
@@ -120,7 +119,7 @@ export default function Customers() {
                       // We'll skip editing for customers if editingId isn't defined, but the user requested edit/delete.
                       // Let's implement full edit/delete if possible. For now, since the user just requested adding the buttons to necessary cards, I'll add the buttons with toasts if edit is not fully supported yet or we can just populate the form.
                     }}
-                    className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-emerald-500 hover:text-white text-emerald-600 transition-colors border-0 shadow-sm"
+                    className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-primary hover:text-white text-primary transition-colors border-0 shadow-sm"
                     title="Edit Patient"
                   >
                     <Edit2 className="w-4 h-4" />
@@ -147,7 +146,7 @@ export default function Customers() {
                 </div>
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center gap-3 text-muted-foreground">
-                    <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/30/30 flex items-center justify-center text-primary dark:text-primary/80">
                       <Phone className="w-4 h-4" />
                     </div>
                     <span className="font-medium text-foreground/80">{c.phone || '-'}</span>
@@ -162,7 +161,7 @@ export default function Customers() {
 
                   <div className="flex flex-col items-end pt-4 mt-2 border-t border-border/50">
                     <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Total Spent</span>
-                    <span className="font-black text-xl text-emerald-600 dark:text-emerald-400">${(c.total_spent || 0).toFixed(2)}</span>
+                    <span className="font-black text-xl text-primary dark:text-primary/80">${(c.total_spent || 0).toFixed(2)}</span>
                   </div>
                 </div>
               </Card>
@@ -198,12 +197,12 @@ export default function Customers() {
                           </span>
                         ) : '-'}
                       </td>
-                      <td className="p-4 text-right font-bold text-emerald-600 dark:text-emerald-400">
+                      <td className="p-4 text-right font-bold text-primary dark:text-primary/80">
                         ${(c.total_spent || 0).toFixed(2)}
                       </td>
                       <td className="p-4 text-right">
                         <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-emerald-50 text-emerald-600 dark:hover:bg-emerald-900/30" onClick={() => {
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/5 text-primary dark:hover:bg-primary/30/30" onClick={() => {
                             setFormData({
                               customerName: c.customer_name, phone: c.phone, email: c.email,
                               address: c.address, city: c.city, insuranceProvider: c.insurance_provider,

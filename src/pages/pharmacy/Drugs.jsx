@@ -96,12 +96,10 @@ export default function Drugs() {
   };
 
   const DrugCard = ({ drug }) => (
-    <div className="group bg-card/60 backdrop-blur-sm border border-border/40 rounded-3xl p-6 hover:shadow-xl hover:border-emerald-500/30 transition-all relative overflow-hidden flex flex-col h-full">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500 rounded-bl-full -mr-10 -mt-10 pointer-events-none opacity-90" />
-      
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <h3 className="text-xl font-bold text-foreground group-hover:text-emerald-600 transition-colors pr-2">{drug.drug_name}</h3>
+    <div className="group bg-card/60 backdrop-blur-sm border border-border/40 rounded-3xl p-6 hover:shadow-xl hover:border-primary/30 transition-all relative overflow-hidden flex flex-col justify-between h-full">
+      <div className="mb-4">
+        <div className="flex justify-between items-start">
+          <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">{drug.drug_name}</h3>
           <p className="text-sm text-muted-foreground mt-1">{drug.generic_name}</p>
         </div>
         <div className="flex gap-1.5 flex-shrink-0">
@@ -125,7 +123,7 @@ export default function Drugs() {
         </div>
         <div>
           <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Price</p>
-          <p className="font-bold text-emerald-600 dark:text-emerald-400">${parseFloat(drug.unit_price || 0).toFixed(2)}</p>
+          <p className="font-bold text-primary dark:text-primary/80">${parseFloat(drug.unit_price || 0).toFixed(2)}</p>
         </div>
         <div className="col-span-2">
           <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Manufacturer</p>
@@ -142,7 +140,7 @@ export default function Drugs() {
             setEditingId(drug.id);
             setShowForm(true);
           }}
-          className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-emerald-500 hover:text-white text-emerald-600 transition-colors border-0 shadow-sm"
+          className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-primary hover:text-white text-primary transition-colors border-0 shadow-sm"
           title="Edit Drug"
         >
           <Edit2 className="w-4 h-4" />
@@ -192,7 +190,7 @@ export default function Drugs() {
                 });
                 setShowForm(true);
               }}
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
+              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Drug
@@ -247,7 +245,7 @@ export default function Drugs() {
                       </td>
                       <td className="p-4 text-muted-foreground">{drug.strength} {drug.drug_form}</td>
                       <td className="p-4 text-muted-foreground">{drug.manufacturer}</td>
-                      <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">${parseFloat(drug.unit_price || 0).toFixed(2)}</td>
+                      <td className="p-4 font-bold text-primary dark:text-primary/80">${parseFloat(drug.unit_price || 0).toFixed(2)}</td>
                       <td className="p-4">
                         <div className="flex gap-2">
                           {drug.is_controlled && <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400">Controlled</span>}
@@ -256,7 +254,7 @@ export default function Drugs() {
                       </td>
                       <td className="p-4 text-right">
                         <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-emerald-50 text-emerald-600 dark:hover:bg-emerald-900/30" onClick={() => { setFormData({...drug, isControlled: !!drug.is_controlled, requiresPrescription: !!drug.requires_prescription}); setEditingId(drug.id); setShowForm(true); }}>
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/5 text-primary dark:hover:bg-primary/30/30" onClick={() => { setFormData({...drug, isControlled: !!drug.is_controlled, requiresPrescription: !!drug.requires_prescription}); setEditingId(drug.id); setShowForm(true); }}>
                             <Edit2 className="w-4 h-4" />
                           </Button>
                           <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-red-50 text-red-600 dark:hover:bg-red-900/30" onClick={async () => {

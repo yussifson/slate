@@ -78,18 +78,18 @@ export default function Dashboard() {
   ].filter(d => d.value > 0);
 
   const kpis = [
-    { label: "Today's Sales", value: `$${parseFloat(analytics?.total_sales || 0).toFixed(2)}`, sub: 'vs yesterday', icon: DollarSign, from: 'from-green-500', to: 'to-emerald-600', trend: '+12%', up: true },
+    { label: "Today's Sales", value: `$${parseFloat(analytics?.total_sales || 0).toFixed(2)}`, sub: 'vs yesterday', icon: DollarSign, from: 'from-green-500', to: 'to-primary', trend: '+12%', up: true },
     { label: 'Transactions', value: analytics?.total_transactions || 0, sub: 'completed sales', icon: ShoppingCart, from: 'from-orange-500', to: 'to-orange-600', trend: '+8%', up: true },
     { label: 'Inventory Items', value: inventoryStatus.total, sub: 'total SKUs tracked', icon: Package, from: 'from-green-500', to: 'to-green-600', trend: '', up: true },
     { label: 'Low Stock Alerts', value: inventoryStatus.lowStock, sub: 'need reordering', icon: AlertCircle, from: 'from-orange-500', to: 'to-orange-600', trend: '-5%', up: false },
   ];
 
   const quickNav = [
-    { label: 'Drugs', href: '/pharmacy/drugs', icon: Pill, from: 'from-green-500', to: 'to-emerald-600' },
+    { label: 'Drugs', href: '/pharmacy/drugs', icon: Pill, from: 'from-green-500', to: 'to-primary' },
     { label: 'Inventory', href: '/pharmacy/inventory', icon: Package, from: 'from-orange-500', to: 'to-orange-600' },
     { label: 'Customers', href: '/pharmacy/customers', icon: Users, from: 'from-green-500', to: 'to-green-600' },
     { label: 'POS', href: '/pharmacy/pos', icon: ShoppingCart, from: 'from-orange-500', to: 'to-orange-600' },
-    { label: 'Prescriptions', href: '/pharmacy/prescriptions', icon: Activity, from: 'from-green-500', to: 'to-emerald-600' },
+    { label: 'Prescriptions', href: '/pharmacy/prescriptions', icon: Activity, from: 'from-green-500', to: 'to-primary' },
     { label: 'Reports', href: '/pharmacy/reports', icon: BarChart3, from: 'from-orange-500', to: 'to-orange-600' },
   ];
 
@@ -107,7 +107,7 @@ export default function Dashboard() {
     <div className="space-y-6 p-6">
 
       {/* ── Hero Header ── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-orange-500 p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-primary to-orange-500 p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
         <div className="absolute -bottom-10 -right-16 w-56 h-56 bg-white/5 rounded-full" />
