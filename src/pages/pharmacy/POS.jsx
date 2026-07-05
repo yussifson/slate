@@ -199,12 +199,14 @@ export default function POS() {
                       key={drug.id}
                       onClick={() => !isOutOfStock && addToCart(drug)}
                       disabled={isOutOfStock}
-                      className={`text-left p-5 rounded-2xl border transition-all flex flex-col justify-between min-h-[140px]
+                      className={`text-left p-5 rounded-2xl border transition-all flex flex-col justify-between min-h-[140px] relative overflow-hidden group
                         ${isOutOfStock 
                           ? 'bg-muted/30 border-border/40 opacity-60 cursor-not-allowed' 
                           : 'bg-card border-border/60 hover:shadow-md hover:border-primary/50 hover:-translate-y-0.5'}`}
                     >
-                      <div className="w-full">
+                      <div className="absolute top-0 right-0 w-16 h-16 bg-primary rounded-bl-[100px] -mr-6 -mt-6 pointer-events-none opacity-[0.85] z-0 transition-transform group-hover:scale-110" />
+                      
+                      <div className="w-full relative z-10 pr-4">
                         <p className={`font-bold text-lg leading-tight break-words ${isOutOfStock ? 'text-muted-foreground' : 'text-foreground group-hover:text-primary'}`}>
                           {drug.drug_name}
                         </p>
@@ -256,9 +258,9 @@ export default function POS() {
                 </Select>
               </div>
 
-              <div className="flex-1 overflow-y-auto custom-scrollbar mb-6 pr-2 space-y-3">
+              <div className="flex-1 overflow-y-auto custom-scrollbar mb-6 pr-2 space-y-3 min-h-[250px]">
                 {cart.length === 0 ? (
-                  <div className="h-32 flex flex-col items-center justify-center text-muted-foreground border-2 border-dashed border-border/50 rounded-2xl">
+                  <div className="h-full min-h-[200px] flex flex-col items-center justify-center text-muted-foreground border-2 border-dashed border-border/50 rounded-2xl">
                     <ShoppingCart className="w-8 h-8 mb-2 opacity-20" />
                     <p className="text-sm">Cart is empty</p>
                   </div>

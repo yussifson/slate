@@ -103,7 +103,8 @@ export default function Customers() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCustomers.map(c => (
               <Card key={c.id} className="group p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl overflow-hidden relative flex flex-col justify-between">
-                <h3 className="font-bold text-xl text-foreground mb-4 group-hover:text-primary transition-colors">{c.customer_name}</h3>
+                <div className="absolute top-0 right-0 w-24 h-24 bg-primary rounded-bl-[100px] -mr-8 -mt-8 pointer-events-none opacity-[0.85] z-0 transition-transform group-hover:scale-110" />
+                <h3 className="font-bold text-xl text-foreground mb-4 group-hover:text-primary transition-colors relative z-10 pr-8">{c.customer_name}</h3>
                 
                 <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                   <Button

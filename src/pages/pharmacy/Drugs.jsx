@@ -97,9 +97,10 @@ export default function Drugs() {
 
   const DrugCard = ({ drug }) => (
     <div className="group bg-card/60 backdrop-blur-sm border border-border/40 rounded-3xl p-6 hover:shadow-xl hover:border-primary/30 transition-all relative overflow-hidden flex flex-col justify-between h-full">
-      <div className="mb-4">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-primary rounded-bl-[100px] -mr-10 -mt-10 pointer-events-none opacity-[0.85] z-0 transition-transform group-hover:scale-110" />
+      <div className="mb-4 relative z-10">
         <div className="flex justify-between items-start">
-          <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">{drug.drug_name}</h3>
+          <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors pr-8">{drug.drug_name}</h3>
           <p className="text-sm text-muted-foreground mt-1">{drug.generic_name}</p>
         </div>
         <div className="flex gap-1.5 flex-shrink-0">
