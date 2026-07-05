@@ -951,7 +951,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
                          </button>
                        )}
                      </>
-                   ) : item.path.startsWith('/ob/') ? (
+                   ) : (item.path && item.path.startsWith('/ob/')) ? (
                      <>
                        {isAdmin && (
                          <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label, true); setOpenMenuId(null); }} className="w-full text-left px-4 py-2 text-xs hover:bg-sidebar-accent text-sidebar-foreground/80 flex items-center gap-2">
@@ -990,9 +990,19 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
    if (isPortalUser) {
      return (
-       <div className="space-y-0.5 mt-2">
-         {navItems.map(item => renderItem(item))}
-       </div>
+        <div className="space-y-0.5 mt-2">
+          {navItems.map((item, idx) => {
+            if (item.section) {
+              return (
+                <div key={`sec-${idx}`} className={cn("px-4 py-2 mt-4 mb-1 text-[10px] font-bold text-sidebar-foreground/50 uppercase tracking-wider", collapsed && "hidden")}>
+                  {item.section}
+                </div>
+              );
+            }
+            if (!item.path) return null;
+            return renderItem(item);
+          })}
+        </div>
      );
    }
 
@@ -1016,9 +1026,19 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
             </button>
          )}
          
-         <div className={cn("space-y-0.5 transition-all duration-300 overflow-hidden", (!isExpanded && !collapsed) ? "max-h-0 opacity-0" : "max-h-[2000px] opacity-100")}>
-           {items.map(item => renderItem(item))}
-         </div>
+          <div className={cn("space-y-0.5 transition-all duration-300 overflow-hidden", (!isExpanded && !collapsed) ? "max-h-0 opacity-0" : "max-h-[2000px] opacity-100")}>
+            {items.map((item, idx) => {
+              if (item.section) {
+                return (
+                  <div key={`sec-${idx}`} className={cn("px-4 py-2 mt-4 mb-1 text-[10px] font-bold text-sidebar-foreground/50 uppercase tracking-wider", collapsed && "hidden")}>
+                    {item.section}
+                  </div>
+                );
+              }
+              if (!item.path) return null;
+              return renderItem(item);
+            })}
+          </div>
        </div>
      );
    });
