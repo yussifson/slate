@@ -522,14 +522,14 @@ export default function OnboardingWizard() {
  ];
 
  return (
- <div className="min-h-[100dvh] bg-background flex flex-col justify-center items-center sm:py-12 sm:px-6 relative overflow-hidden font-sans">
+ <div ref={scrollRef} className="min-h-[100dvh] bg-background flex flex-col items-center sm:py-12 sm:px-6 relative overflow-x-hidden overflow-y-auto font-sans">
  
  {/* Background Decorative Elements */}
  <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
  <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-primary/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
  {/* Main Container */}
- <div className={`w-full h-[100dvh] sm:h-auto ${step === 4 ? 'sm:max-w-[95%]' : 'sm:max-w-3xl'} bg-card sm:rounded-3xl sm:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm sm:border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8/60 relative z-10 flex flex-col sm:my-10 transition-all duration-500`}>
+ <div className={`w-full sm:my-auto sm:h-auto ${step === 4 ? 'sm:max-w-[95%]' : 'sm:max-w-3xl'} bg-card sm:rounded-3xl sm:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm sm:border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8/60 relative z-10 flex flex-col transition-all duration-500`}>
  
  {/* Header Section */}
  <div className="px-5 sm:px-8 pt-6 sm:pt-8 pb-6 border-b border-primary/40 shrink-0">
@@ -573,7 +573,7 @@ export default function OnboardingWizard() {
  </div>
 
  {/* Scrollable Content Area */}
- <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 sm:px-8 py-6 sm:py-8 scroll-smooth hide-scrollbar">
+ <div className="px-5 sm:px-8 py-6 sm:py-8">
  <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
  
  {/* Step 1: Company Profile */}
