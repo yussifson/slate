@@ -13,7 +13,7 @@ const TEMPLATES = [
   { id: 'detailed', name: 'Detailed Invoice', description: 'Includes full tabular breakdown and tax summaries' },
 ];
 
-export function ReceiptSettings({ company, onSave, saving }) {
+export function ReceiptSettings({ company, onSave, saving, hideHeader = false }) {
   const [formData, setFormData] = useState({
     receipt_template: 'modern',
     receipt_header: '',
@@ -42,10 +42,12 @@ export function ReceiptSettings({ company, onSave, saving }) {
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div>
-        <h2 className="text-3xl font-extrabold text-foreground tracking-tight">Receipt Configuration</h2>
-        <p className="text-muted-foreground mt-2">Customize the appearance and contents of printed receipts.</p>
-      </div>
+      {!hideHeader && (
+        <div>
+          <h2 className="text-3xl font-extrabold text-foreground tracking-tight">Receipt Configuration</h2>
+          <p className="text-muted-foreground mt-2">Customize the appearance and contents of printed receipts.</p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="space-y-8">

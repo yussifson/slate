@@ -14,14 +14,14 @@ import {
 
 import { SystemSettings, BrandSettings} from "@/components/settings/SystemBrandSettings";
 import { CurrencySettings, SecuritySettings, BillingSettings} from "@/components/settings/SecurityBillingSettings";
-import { ReceiptSettings } from "@/components/settings/ReceiptSettings";
+import { CustomizationsSettings } from "@/components/settings/CustomizationsSettings";
 const SECTIONS = [
  { id: "system", label: "System Configuration", icon: Settings2, cat: "General"},
  { id: "brand", label: "Brand & Identity", icon: Palette, cat: "General"},
  { id: "security", label: "Security & Encryption", icon: Lock, cat: "Security & Access"},
- { id: "receipts", label: "Receipt Templates", icon: FileText, cat: "Documents & Receipts"},
  { id: "billing", label: "Billing & Subscriptions",icon: CreditCard, cat: "Billing"},
  { id: "currency", label: "Regional Currency", icon: DollarSign, cat: "Billing"},
+ { id: "customizations", label: "Customizations", icon: FileText, cat: "Billing"},
 ];
 
 export default function Settings() {
@@ -119,8 +119,8 @@ export default function Settings() {
       console.error("Failed to save system settings", err);
     }
   } : fakeSuccess} saving={saving} />;
- case "receipts": return <ReceiptSettings company={company} onSave={company ? async d => {
-   try { await updateCompany(d); } catch (e) { console.error("Save receipt settings failed", e); }
+ case "customizations": return <CustomizationsSettings company={company} onSave={company ? async d => {
+   try { await updateCompany(d); } catch (e) { console.error("Save customizations settings failed", e); }
  } : fakeSuccess} saving={saving} />;
  case "brand": return <BrandSettings activeIndustry={activeIndustry} company={company} onSave={company ? async d => { 
  try {
