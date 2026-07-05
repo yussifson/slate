@@ -133,24 +133,36 @@ export default function Drugs() {
         </div>
       </div>
 
-      <div className="flex gap-2 mt-auto">
+      <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
         <Button
-          size="sm"
+          size="icon"
           variant="secondary"
           onClick={() => {
             setFormData({...drug, isControlled: !!drug.is_controlled, requiresPrescription: !!drug.requires_prescription});
             setEditingId(drug.id);
             setShowForm(true);
           }}
-          className="flex-1 bg-muted/50 hover:bg-emerald-500 hover:text-white transition-colors"
+          className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-emerald-500 hover:text-white text-emerald-600 transition-colors border-0 shadow-sm"
+          title="Edit Drug"
         >
-          <Edit2 className="w-4 h-4 mr-2" />
-          Edit
+          <Edit2 className="w-4 h-4" />
         </Button>
         <Button
-          size="sm"
-          variant="outline"
-          className="text-destructive hover:bg-destructive hover:text-destructive-foreground transition-colors border-destructive/20"
+          size="icon"
+          variant="destructive"
+          onClick={async () => {
+            if(window.confirm('Are you sure you want to delete this drug?')) {
+              try {
+                await PharmacyAPI.deleteDrug(companyId, drug.id, user.id);
+                fetchDrugs();
+                toast.success('Drug deleted');
+              } catch (e) {
+                toast.error(e.message);
+              }
+            }
+          }}
+          className="h-8 w-8 bg-red-100/80 dark:bg-red-900/80 backdrop-blur-sm hover:bg-red-500 text-red-600 hover:text-white transition-colors border-0 shadow-sm"
+          title="Delete Drug"
         >
           <Trash2 className="w-4 h-4" />
         </Button>
@@ -243,9 +255,22 @@ export default function Drugs() {
                         </div>
                       </td>
                       <td className="p-4 text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button size="icon" variant="ghost" onClick={() => { setFormData({...drug, isControlled: !!drug.is_controlled, requiresPrescription: !!drug.requires_prescription}); setEditingId(drug.id); setShowForm(true); }}>
-                            <Edit2 className="w-4 h-4 text-muted-foreground" />
+                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-emerald-50 text-emerald-600 dark:hover:bg-emerald-900/30" onClick={() => { setFormData({...drug, isControlled: !!drug.is_controlled, requiresPrescription: !!drug.requires_prescription}); setEditingId(drug.id); setShowForm(true); }}>
+                            <Edit2 className="w-4 h-4" />
+                          </Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-red-50 text-red-600 dark:hover:bg-red-900/30" onClick={async () => {
+                            if(window.confirm('Are you sure you want to delete this drug?')) {
+                              try {
+                                await PharmacyAPI.deleteDrug(companyId, drug.id, user.id);
+                                fetchDrugs();
+                                toast.success('Drug deleted');
+                              } catch (e) {
+                                toast.error(e.message);
+                              }
+                            }
+                          }}>
+                            <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
                       </td>

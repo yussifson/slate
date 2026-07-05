@@ -101,6 +101,21 @@ class PharmacyAPI {
     }
   }
 
+  async deleteDrug(companyId, drugId, userId) {
+    try {
+      const now = getSafeISO8601();
+      await powerSync.execute(
+        'UPDATE univ_pharmacy_drugs SET is_active = ?, updated_at = ? WHERE id = ?::text AND company_id = ?',
+        [false, now, drugId, companyId]
+      );
+      await this.logAuditAction(companyId, 'DELETE', 'Drug', drugId, null, null, userId);
+      return { success: true, message: 'Drug deleted successfully' };
+    } catch (e) {
+      console.error('[Pharmacy API] Delete drug error:', e);
+      throw new Error(`Failed to delete drug: ${e.message}`);
+    }
+  }
+
   // ========================================
   // INVENTORY MANAGEMENT
   // ========================================
@@ -344,6 +359,20 @@ class PharmacyAPI {
     } catch (e) {
       console.error('[Pharmacy API] Get customers error:', e);
       return [];
+    }
+  }
+
+  async deleteCustomer(companyId, customerId, userId) {
+    try {
+      const now = getSafeISO8601();
+      await powerSync.execute(
+        'UPDATE univ_pharmacy_customers SET is_active = ?, updated_at = ? WHERE id = ?::text AND company_id = ?',
+        [false, now, customerId, companyId]
+      );
+      return { success: true, message: 'Customer deleted successfully' };
+    } catch (e) {
+      console.error('[Pharmacy API] Delete customer error:', e);
+      throw new Error(`Failed to delete customer: ${e.message}`);
     }
   }
 

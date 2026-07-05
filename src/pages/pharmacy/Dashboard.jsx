@@ -33,8 +33,13 @@ export default function Dashboard() {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        const analyticsResult = await PharmacyAPI.getAnalytics(companyId);
-        setAnalytics(analyticsResult);
+        const todayStr = new Date().toISOString().split('T')[0];
+        const todayResult = await powerSync.execute(
+          'SELECT COUNT(*) as total_transactions, SUM(grand_total) as total_sales FROM univ_pharmacy_sales WHERE company_id = ? AND DATE(sale_date) = DATE(?)',
+          [companyId, todayStr]
+        );
+        const todayData = todayResult.rows._array?.[0] || { total_transactions: 0, total_sales: 0 };
+        setAnalytics(todayData);
 
         const inventoryResult = await powerSync.execute(
           'SELECT COUNT(*) as total, COUNT(CASE WHEN quantity_available <= reorder_level THEN 1 END) as low_stock FROM univ_pharmacy_inventory WHERE company_id = ?',
