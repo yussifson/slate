@@ -170,7 +170,12 @@ export default function MeetLandingPage() {
   const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#090E17] flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1121] flex flex-col font-sans relative overflow-hidden">
+      {/* Realistic Background Layers */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 dark:bg-primary/10 blur-[120px]" />
+        <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[120px]" />
+      </div>
       <Helmet>
         <title>Optavel Meet — Free HD Video Meetings for Teams</title>
         <meta name="description" content="Optavel Meet is a free, secure, enterprise-grade video conferencing platform. Start or join HD video meetings instantly — no downloads required. Trusted by teams worldwide." />
@@ -204,7 +209,7 @@ export default function MeetLandingPage() {
         })}</script>
       </Helmet>
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-white/5">
+      <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/50 dark:border-white/5 bg-white/50 dark:bg-[#090E17]/50 backdrop-blur-md">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 flex items-center justify-center">
             <img src="/orbit-logo.svg" alt="Optavel Logo" className="w-full h-full object-contain" />
@@ -220,7 +225,7 @@ export default function MeetLandingPage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col md:flex-row items-center justify-center p-6 md:p-12 gap-12 md:gap-16 max-w-7xl mx-auto w-full">
+      <main className="relative z-10 flex-1 flex flex-col md:flex-row items-center justify-center p-6 md:p-12 gap-12 md:gap-16 max-w-7xl mx-auto w-full">
         {/* Left Side */}
         <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-8 max-w-xl">
           <h1 className="text-4xl md:text-5xl font-normal text-slate-800 dark:text-slate-100 leading-tight">

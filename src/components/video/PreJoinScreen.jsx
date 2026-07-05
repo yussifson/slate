@@ -157,10 +157,15 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
   };
 
   return (
-    <div className="w-screen h-screen bg-white dark:bg-[#090E17] flex flex-col md:flex-row items-center justify-center px-4 md:px-12 gap-8 md:gap-16 overflow-y-auto">
+    <div className="w-screen h-screen bg-slate-50 dark:bg-[#0B1121] flex flex-col md:flex-row items-center justify-center px-4 md:px-12 gap-8 md:gap-16 overflow-y-auto relative overflow-hidden">
+      {/* Realistic Background Layers */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 dark:bg-primary/10 blur-[120px]" />
+        <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[120px]" />
+      </div>
       
       {/* Left Side: Camera Preview */}
-      <div className="flex-1 flex flex-col items-end justify-center w-full max-w-3xl">
+      <div className="relative z-10 flex-1 flex flex-col items-end justify-center w-full max-w-3xl">
         <div className="relative w-full aspect-video bg-primary rounded-[1.5rem] overflow-hidden flex items-center justify-center transition-colors shadow-lg">
           
           {/* Video element is always rendered to preserve srcObject, but hidden when isVideoOn is false */}
@@ -224,7 +229,7 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
       </div>
 
       {/* Right Side: Join Form */}
-      <div className="flex-1 flex flex-col items-start justify-center w-full max-w-md bg-transparent p-6 md:p-10 space-y-8">
+      <div className="relative z-10 flex-1 flex flex-col items-start justify-center w-full max-w-md bg-transparent p-6 md:p-10 space-y-8">
         <div>
           <h1 className="text-[2rem] font-medium text-slate-900 dark:text-white tracking-tight leading-tight">Ready to join?</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1 text-base">{roomName || 'Secure Meeting'}</p>

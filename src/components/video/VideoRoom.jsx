@@ -325,10 +325,15 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
 };
 
  return (
- <div className="flex flex-col h-full bg-background rounded-xl overflow-hidden relative border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 group">
- 
+ <div className="flex flex-col h-full bg-slate-50 dark:bg-[#0B1121] rounded-xl overflow-hidden relative border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 group">
+  {/* Realistic Background Layers */}
+  <div className="absolute inset-0 pointer-events-none z-0">
+    <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 dark:bg-primary/10 blur-[120px]" />
+    <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[120px]" />
+  </div>
+
  {/* Main Layout Area */}
- <div className="flex-1 flex flex-row relative min-w-0 overflow-hidden">
+ <div className="relative z-10 flex-1 flex flex-row relative min-w-0 overflow-hidden">
  
  {/* Video Content Area */}
  <div className="flex-1 flex flex-col relative min-w-0">
@@ -350,7 +355,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
     const sidebarParticipants = allParticipants.filter(id => id !== mainSpeakerId);
 
     return (
-      <div className="flex-1 flex flex-col lg:flex-row p-4 gap-4 overflow-hidden bg-muted/30">
+      <div className="flex-1 flex flex-col lg:flex-row p-4 gap-4 overflow-hidden bg-white/30 dark:bg-black/20 backdrop-blur-sm">
         {/* Main Stage Area */}
         <div className="flex-[3] relative rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-white/10 shadow-inner bg-slate-900">
           {screens.length > 0 ? (
@@ -379,7 +384,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
 
  {/* Chat Sidebar */}
  {showChat && (
- <div className="w-80 border-l border-primary/40 bg-card flex flex-col shrink-0 animate-in slide-in-from-right hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 z-40">
+ <div className="w-80 border-l border-primary/40 bg-white/80 dark:bg-black/60 backdrop-blur-md flex flex-col shrink-0 animate-in slide-in-from-right hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 z-40">
  <div className="h-14 border-b border-primary/40 flex items-center justify-between px-4">
  <h3 className="font-semibold flex items-center gap-2"><MessageSquare className="w-4 h-4" /> Meeting Chat</h3>
  <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full" onClick={() => setShowChat(false)}>
@@ -419,7 +424,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  )}
   {/* AI Sidebar */}
   {(aiResponse || isAiLoading) && !isPipMode && (
-    <div className="w-80 border-l border-primary/40 bg-card flex flex-col shrink-0 animate-in slide-in-from-right hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 z-40">
+    <div className="w-80 border-l border-primary/40 bg-white/80 dark:bg-black/60 backdrop-blur-md flex flex-col shrink-0 animate-in slide-in-from-right hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 z-40">
       <div className="h-14 border-b border-primary/40 flex items-center justify-between px-4">
         <h3 className="font-semibold flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-primary" /> Orbit AI
@@ -560,7 +565,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  `}</style>
 
  {/* Control Bar */}
- <div className={`bg-card border-t border-primary/40 flex items-center justify-center z-10 transition-all ${isPipMode ? 'h-12 px-2 gap-2' : 'h-20 px-6 gap-4'}`}>
+ <div className={`relative z-10 bg-white/80 dark:bg-black/60 backdrop-blur-md border-t border-primary/40 flex items-center justify-center transition-all ${isPipMode ? 'h-12 px-2 gap-2' : 'h-20 px-6 gap-4'}`}>
  <div className="relative">
    {showEmojis && (
      <div className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-card border border-primary/20 shadow-xl rounded-full px-4 py-3 flex gap-3 animate-in fade-in slide-in-from-bottom-4 z-50">
