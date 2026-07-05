@@ -13,7 +13,7 @@ import {
  useParticipant,
  useActiveSpeakerId
 } from '@daily-co/daily-react';
-import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink, MessageSquare, Send, X, UserPlus, Mail, Settings, Check, Copy} from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink, MessageSquare, Send, X, UserPlus, Mail, Settings, Check, Copy, Smile} from 'lucide-react';
 import { Button} from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -46,6 +46,22 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  const [isInviteLoading, setIsInviteLoading] = useState(false);
  const [copiedLink, setCopiedLink] = useState(false);
  const { theme, changeTheme } = useTheme();
+ const [showEmojis, setShowEmojis] = useState(false);
+ const [floatingEmojis, setFloatingEmojis] = useState([]);
+ const EMOJIS = ['👍', '❤️', '👏', '😂', '🎉', '🔥'];
+
+ const sendReaction = (emoji) => {
+   if (!daily) return;
+   const msg = { type: 'reaction', emoji, name: userName || 'Someone' };
+   daily.sendAppMessage(msg, '*');
+   
+   const id = Date.now() + Math.random();
+   setFloatingEmojis(prev => [...prev, { id, emoji }]);
+   setTimeout(() => {
+     setFloatingEmojis(prev => prev.filter(e => e.id !== id));
+   }, 4000);
+   setShowEmojis(false);
+ };
 
  const handleCopyLink = () => {
    navigator.clipboard.writeText(roomUrl);
@@ -54,7 +70,8 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
    setTimeout(() => setCopiedLink(false), 2000);
  };
 
- const handleInvite = async () => {
+ const handleInvite = async (e) => {
+   if (e) e.preventDefault();
    if (!inviteEmail.trim()) return;
    setIsInviteLoading(true);
    try {
@@ -281,15 +298,22 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  const [showChat, setShowChat] = useState(false);
  const [showAiSidebar, setShowAiSidebar] = useState(false);
 
- // Handle incoming Daily text messages
+ // Handle incoming Daily messages
  useDailyEvent('app-message', (ev) => {
- if (ev.data && ev.data.type === 'chat') {
- setChatMessages(prev => [...prev, { from: ev.fromId, name: ev.data.name, text: ev.data.text, time: new Date()}]);
-}
- if (ev.data && ev.data.type === 'transcription') {
- setTranscriptData(prev => [...prev, { name: 'Participant', text: ev.data.text}]);
-}
-});
+  if (ev.data && ev.data.type === 'chat') {
+    setChatMessages(prev => [...prev, { from: ev.fromId, name: ev.data.name, text: ev.data.text, time: new Date()}]);
+  }
+  if (ev.data && ev.data.type === 'reaction') {
+    const id = Date.now() + Math.random();
+    setFloatingEmojis(prev => [...prev, { id, emoji: ev.data.emoji }]);
+    setTimeout(() => {
+      setFloatingEmojis(prev => prev.filter(e => e.id !== id));
+    }, 4000);
+  }
+  if (ev.data && ev.data.type === 'transcription') {
+    setTranscriptData(prev => [...prev, { name: 'Participant', text: ev.data.text}]);
+  }
+ });
 
  const sendChatMessage = () => {
  if (!chatInput.trim() || !daily) return;
@@ -445,14 +469,14 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium">Invite via Email (Novu)</label>
+          <label className="text-sm font-medium">Invite via Email</label>
           <div className="flex gap-2">
             <Input 
               type="email" 
               placeholder="participant@company.com" 
               value={inviteEmail}
               onChange={(e) => setInviteEmail(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleInvite()}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleInvite(e); }}
             />
             <Button onClick={handleInvite} disabled={isInviteLoading || !inviteEmail.trim()}>
               {isInviteLoading ? "Sending..." : "Send Invite"}
@@ -499,8 +523,51 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
     </DialogContent>
   </Dialog>
 
+ {/* Floating Emojis */}
+ {floatingEmojis.map((e) => (
+   <div 
+     key={e.id} 
+     className="absolute bottom-32 left-1/2 -translate-x-1/2 text-5xl pointer-events-none z-50 transition-transform"
+     style={{
+       animation: 'floatUp 3s ease-out forwards'
+     }}
+   >
+     {e.emoji}
+   </div>
+ ))}
+ <style>{`
+   @keyframes floatUp {
+     0% { opacity: 1; transform: translate(-50%, 0) scale(0.5); }
+     20% { transform: translate(-50%, -20px) scale(1.2); }
+     100% { opacity: 0; transform: translate(-50%, -150px) scale(1.5); }
+   }
+ `}</style>
+
  {/* Control Bar */}
  <div className={`bg-card border-t border-primary/40 flex items-center justify-center z-10 transition-all ${isPipMode ? 'h-12 px-2 gap-2' : 'h-20 px-6 gap-4'}`}>
+ <div className="relative">
+   {showEmojis && (
+     <div className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-card border border-primary/20 shadow-xl rounded-full px-4 py-3 flex gap-3 animate-in fade-in slide-in-from-bottom-4 z-50">
+       {EMOJIS.map(emoji => (
+         <button 
+           key={emoji} 
+           onClick={() => sendReaction(emoji)}
+           className="text-2xl hover:scale-125 transition-transform origin-bottom"
+         >
+           {emoji}
+         </button>
+       ))}
+     </div>
+   )}
+   <Button 
+     onClick={() => setShowEmojis(!showEmojis)}
+     variant={showEmojis ? "default" : "secondary"}
+     size="icon"
+     className={`${isPipMode ? 'w-8 h-8' : 'w-12 h-12'} rounded-full`}
+   >
+     <Smile className={isPipMode ? "w-3 h-3" : "w-5 h-5"} />
+   </Button>
+ </div>
  <Button 
  onClick={toggleAudio}
  variant={isMuted ? "destructive" : "secondary"}
@@ -650,9 +717,6 @@ function ParticipantTile({ id, isLocal, className }) {
   return avatarColors[Math.abs(hash) % avatarColors.length];
  }, [displayName]);
 
- const customAvatarColor = React.useMemo(() => {
-  if (participant?.userData) {
-    try {
  const customAvatarUrl = React.useMemo(() => {
   if (participant?.userData) {
     try {
@@ -677,6 +741,16 @@ function ParticipantTile({ id, isLocal, className }) {
 }
 }, [audioState?.track, isLocal]);
 
+ const togglePip = async () => {
+  if (videoRef.current && document.pictureInPictureEnabled) {
+    if (document.pictureInPictureElement === videoRef.current) {
+      await document.exitPictureInPicture();
+    } else {
+      await videoRef.current.requestPictureInPicture();
+    }
+  }
+ };
+
  return (
  <div className={`relative bg-white dark:bg-slate-900 rounded-2xl overflow-hidden group flex items-center justify-center aspect-video shadow-md border border-slate-200 dark:border-white/10 ${className || 'w-full max-w-3xl min-w-[320px] m-2'}`}>
  {videoState?.state === 'playable' ? (
@@ -699,10 +773,18 @@ function ParticipantTile({ id, isLocal, className }) {
  
  {!isLocal && <audio ref={audioRef} autoPlay playsInline />}
  
-  <div className={`absolute bottom-4 left-4 ${finalAvatarColor} px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-sm border border-black/10 dark:border-white/10 transition-all`}>
+  <div className={`absolute bottom-4 left-4 ${finalAvatarColor} px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-sm border border-black/10 dark:border-white/10 transition-all z-10`}>
   <span className="text-white text-xs font-bold tracking-wide">{displayName}</span>
   {audioState?.state !== 'playable' && <MicOff className="w-3.5 h-3.5 text-white/90" />}
   </div>
+
+  {videoState?.state === 'playable' && (
+    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+      <Button variant="secondary" size="icon" className="w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-white border-0" onClick={togglePip} title="Picture in Picture">
+        <ExternalLink className="w-4 h-4" />
+      </Button>
+    </div>
+  )}
  </div>
  );
 }

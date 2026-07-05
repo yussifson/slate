@@ -77,19 +77,30 @@ export const NotificationService = {
    */
   async notifyMeetingInvite(roomUrl, recipientEmail) {
     try {
-      await novu.trigger('meeting_invite', {
-        to: {
-          subscriberId: `meeting-invite-${recipientEmail}`,
-          email: recipientEmail
+      const apiKey = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_NOVU_API_KEY) || 'YOUR_NOVU_API_KEY';
+      
+      const response = await fetch('https://api.novu.co/v1/events/trigger', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `ApiKey ${apiKey}`
         },
-        payload: {
-          roomUrl: roomUrl
-        }
+        body: JSON.stringify({
+          name: 'meeting_invite',
+          to: {
+            subscriberId: `meeting-invite-${recipientEmail}`,
+            email: recipientEmail
+          },
+          payload: { roomUrl }
+        })
       });
-      // Optionally log it if there's a specific company, but for external invites we might just fire and forget.
+
+      if (!response.ok) {
+        throw new Error(`Novu API error: ${response.statusText}`);
+      }
     } catch (e) {
       console.error('[Notification] notifyMeetingInvite failed:', e);
-      throw e; // throw so the UI can catch and show a toast
+      throw e; 
     }
   },
 
