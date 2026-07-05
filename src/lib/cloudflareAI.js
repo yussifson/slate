@@ -100,13 +100,24 @@ async function runAI(model, payload, retryCount = 0) {
  * @param {Array|string} input - Array of {role, content} objects or a prompt string
  */
 export async function generateText(input) {
-  let promptStr = '';
+  let messages = [];
   if (Array.isArray(input)) {
-    promptStr = input.map(m => `<|start_header_id|>${m.role}<|end_header_id|>\n\n${m.content}<|eot_id|>`).join("") + "<|start_header_id|>assistant<|end_header_id|>\n\n";
+    messages = input;
   } else if (typeof input === 'string') {
-    promptStr = `<|start_header_id|>user<|end_header_id|>\n\n${input}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n`;
+    messages = [{ role: "user", content: input }];
   }
-  const result = await runAI(MODELS.text, { prompt: promptStr, max_tokens: 2500 });
+  const result = await runAI(MODELS.text, { messages, max_tokens: 2500 });
+  
+  // Depending on the API format returned, either it's result.response (old format)
+  // or it's inside result.choices[0].message.content (new format)
+  if (result.choices && result.choices.length > 0) {
+    if (result.choices[0].message && result.choices[0].message.content) {
+      return result.choices[0].message.content;
+    }
+    if (result.choices[0].text) {
+      return result.choices[0].text;
+    }
+  }
   return result.response;
 }
 

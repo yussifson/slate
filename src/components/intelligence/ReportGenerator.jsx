@@ -119,20 +119,20 @@ System activity levels indicate normal operational flow. Data is being recorded 
   };
 
   return (
-    <div className="bg-white dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden" style={{ minHeight: '520px' }}>
+    <div className="bg-card dark:bg-slate-950/40 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 shadow-xl shadow-slate-200/20 dark:shadow-none overflow-hidden" style={{ minHeight: '520px' }}>
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-purple-600 flex items-center justify-center shadow-sm">
+      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900/20">
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-md shadow-purple-500/20">
             <FileText className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Automated Report Generator</h3>
-            <p className="text-xs text-slate-500">AI-compiled executive summaries</p>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">Automated Report Generator</h3>
+            <p className="text-xs font-medium text-slate-500 mt-0.5">AI-compiled executive summaries</p>
           </div>
         </div>
-        <Button onClick={generateReport} disabled={isGenerating} className="gap-2 bg-purple-600 hover:bg-purple-700 text-white shadow-sm border-0 text-sm">
-          {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+        <Button onClick={generateReport} disabled={isGenerating} className="gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/25 border-0 font-semibold px-5">
+          {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
           {isGenerating ? 'Compiling…' : 'Generate Weekly Report'}
         </Button>
       </div>

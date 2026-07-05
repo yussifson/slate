@@ -117,25 +117,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
     );
   }
 
-  // Full dashboard mode with Tabs for powerful tools
-  return (
     <div className="space-y-8 pb-20 animate-in fade-in duration-500">
-      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-6 mb-8 mt-2">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-slate-900 dark:bg-white flex items-center justify-center shadow-sm">
-            <Brain className="w-6 h-6 text-white dark:text-slate-900" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              AI Intelligence Hub
-            </h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              Enterprise-grade analytical tools and continuous passive data insights
-            </p>
-          </div>
-        </div>
-      </div>
-
       <Tabs defaultValue="insights" className="w-full">
         <TabsList className="mb-8 w-full flex justify-start gap-6 bg-transparent p-0 border-b border-slate-200 dark:border-slate-800 rounded-none h-auto overflow-x-auto hide-scrollbar">
           <TabsTrigger value="insights" className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-primary pb-3 px-1 transition-all font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"><Sparkles className="w-4 h-4"/> Insights Engine</TabsTrigger>
@@ -159,7 +141,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
             <Button
               onClick={() => runEngine(effectiveVertical)}
               disabled={isRunning}
-              className="relative z-10 gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-xl shadow-orange-500/25 border-0 font-bold px-6 py-5 rounded-xl transition-all hover:scale-105 active:scale-95"
+              className="relative z-10 gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-xl shadow-emerald-500/25 border-0 font-bold px-6 py-5 rounded-xl transition-all hover:scale-105 active:scale-95"
             >
               {isRunning ? (
                 <><RefreshCw className="w-5 h-5 animate-spin" /> Analyzing Workspace...</>
@@ -170,40 +152,44 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                <Brain className="w-5 h-5" />
+            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950/80 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 p-5 flex items-center gap-5 shadow-lg shadow-slate-200/20 dark:shadow-none hover:shadow-xl hover:shadow-slate-200/30 transition-all duration-300 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/10 flex items-center justify-center text-primary relative z-10">
+                <Brain className="w-6 h-6" />
               </div>
-              <div>
-                <p className="text-2xl font-semibold text-card-foreground">{insights.length}</p>
-                <p className="text-xs text-[#71717a]">Total Insights</p>
-              </div>
-            </div>
-            <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
-              <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600">
-                <Shield className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-2xl font-semibold text-card-foreground">{criticalCount}</p>
-                <p className="text-xs text-[#71717a]">Critical</p>
+              <div className="relative z-10">
+                <p className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none mb-1">{insights.length}</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Insights</p>
               </div>
             </div>
-            <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
-              <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
-                <AlertTriangle className="w-5 h-5" />
+            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950/80 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 p-5 flex items-center gap-5 shadow-lg shadow-slate-200/20 dark:shadow-none hover:shadow-xl hover:shadow-slate-200/30 transition-all duration-300 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/10 to-red-500/5 border border-red-500/10 flex items-center justify-center text-red-600 relative z-10">
+                <Shield className="w-6 h-6" />
               </div>
-              <div>
-                <p className="text-2xl font-semibold text-card-foreground">{warningCount}</p>
-                <p className="text-xs text-[#71717a]">Warnings</p>
+              <div className="relative z-10">
+                <p className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none mb-1">{criticalCount}</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Critical</p>
               </div>
             </div>
-            <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
-                <TrendingUp className="w-5 h-5" />
+            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950/80 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 p-5 flex items-center gap-5 shadow-lg shadow-slate-200/20 dark:shadow-none hover:shadow-xl hover:shadow-slate-200/30 transition-all duration-300 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/10 to-amber-500/5 border border-amber-500/10 flex items-center justify-center text-amber-600 relative z-10">
+                <AlertTriangle className="w-6 h-6" />
               </div>
-              <div>
-                <p className="text-2xl font-semibold text-card-foreground">{positiveCount}</p>
-                <p className="text-xs text-[#71717a]">Positive</p>
+              <div className="relative z-10">
+                <p className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none mb-1">{warningCount}</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Warnings</p>
+              </div>
+            </div>
+            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950/80 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 p-5 flex items-center gap-5 shadow-lg shadow-slate-200/20 dark:shadow-none hover:shadow-xl hover:shadow-slate-200/30 transition-all duration-300 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border border-emerald-500/10 flex items-center justify-center text-emerald-600 relative z-10">
+                <TrendingUp className="w-6 h-6" />
+              </div>
+              <div className="relative z-10">
+                <p className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none mb-1">{positiveCount}</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Positive</p>
               </div>
             </div>
           </div>
@@ -263,7 +249,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
                 <Button
                   onClick={() => runEngine(effectiveVertical)}
                   disabled={isRunning}
-                  className="gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg border-0"
+                  className="gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg border-0"
                 >
                   <Zap className="w-4 h-4" />
                   {isRunning ? 'Analyzing...' : 'Generate Insights Now'}

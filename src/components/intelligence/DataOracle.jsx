@@ -94,17 +94,17 @@ export default function DataOracle() {
   };
 
   return (
-    <div className="flex flex-col bg-white dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm" style={{ minHeight: '560px', maxHeight: '72vh' }}>
+    <div className="flex flex-col bg-card dark:bg-slate-950/40 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 overflow-hidden shadow-xl shadow-slate-200/20 dark:shadow-none" style={{ minHeight: '560px', maxHeight: '72vh' }}>
       {/* Header */}
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 shrink-0">
-        <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center shadow-sm">
+      <div className="flex items-center gap-4 px-6 py-5 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900/20 shrink-0">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md shadow-blue-500/20">
           <Database className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Data Oracle</h3>
-          <p className="text-xs text-slate-500">Natural Language Database Interface</p>
+          <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">Data Oracle</h3>
+          <p className="text-xs font-medium text-slate-500 mt-0.5">Natural Language Database Interface</p>
         </div>
-        <div className="ml-auto flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-2.5 py-1 rounded-full">
+        <div className="ml-auto flex items-center gap-1.5 text-xs font-bold tracking-wide uppercase text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800/50 px-3 py-1.5 rounded-full shadow-sm">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           Live
         </div>
