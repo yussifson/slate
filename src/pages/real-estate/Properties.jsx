@@ -12,8 +12,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
-import { REPageHeader, REStatCard, REDataCard, REGridShell } from '@/components/real-estate/RealEstateViewKit';
-
+import { REPageHeader } from '@/components/real-estate/RealEstateViewKit';
+import ViewToggle from '@/components/shared/ViewToggle';
+import { useViewPreference } from '@/hooks/useViewPreference';
 const statusColors = {
   'active': 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-400',
   'pending': 'bg-orange-100 text-orange-800 dark:bg-orange-500/20 dark:text-orange-400',
@@ -32,6 +33,7 @@ export default function Properties() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
+  const [view, setView] = useViewPreference('re_properties', 'grid');
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     address: '',
@@ -145,58 +147,110 @@ export default function Properties() {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
-  return (
-    <div className="space-y-6 p-6">
-      <REPageHeader 
-        title="Properties" 
-        subtitle="Manage and track your property listings"
-        actions={
-          <Button onClick={() => { setShowForm(true); setEditingId(null); }} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
-            <Plus className="w-4 h-4" /> Add Property
-          </Button>
-        }
-      />
-
-      {/* Filters */}
-      <div className="flex gap-4 flex-wrap bg-card/50 p-4 rounded-xl shadow-sm border border-border/50 dark:border-white/5 dark:bg-slate-900/40 backdrop-blur-md transition-all duration-300">
-        <div className="flex-1 min-w-64">
-          <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-            <Input
-              placeholder="Search by address, city..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 bg-background/50 backdrop-blur-sm border-muted-foreground/20 focus:border-primary transition-colors"
-            />
-          </div>
+  const PropertyCard = ({ property }) => (
+    <div className="group bg-card/60 backdrop-blur-sm border border-border/40 rounded-3xl p-6 hover:shadow-xl hover:border-emerald-500/30 transition-all relative overflow-hidden flex flex-col h-full">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500 rounded-bl-full -mr-10 -mt-10 pointer-events-none opacity-90" />
+      
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex-1 pr-12">
+          <h3 className="text-xl font-bold text-foreground group-hover:text-emerald-600 transition-colors line-clamp-1">{property.address}</h3>
+          <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
+            <MapPin className="w-3.5 h-3.5" /> {property.city}, {property.state}
+          </p>
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-40 bg-background/50 backdrop-blur-sm border-muted-foreground/20">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="sold">Sold</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
-      <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-600/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-        <div className="p-4 border-b border-emerald-600/40 bg-muted/50 flex flex-wrap gap-4 items-center">
-          <div className="relative max-w-md flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+      <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+        <Button
+          size="icon"
+          variant="secondary"
+          onClick={() => handleEdit(property)}
+          className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-emerald-500 hover:text-white text-emerald-600 transition-colors border-0 shadow-sm"
+          title="Edit Property"
+        >
+          <Edit className="w-4 h-4" />
+        </Button>
+        <Button
+          size="icon"
+          variant="destructive"
+          onClick={async () => {
+            if(window.confirm('Are you sure you want to delete this property?')) {
+              try {
+                await RealEstateAPI.deleteProperty(companyId, property.id, user.id);
+                const res = await powerSync.execute('SELECT * FROM univ_re_properties WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+                setProperties(res.rows._array || Array.from(res.rows));
+                toast.success('Property deleted');
+              } catch (e) {
+                toast.error(e.message);
+              }
+            }
+          }}
+          className="h-8 w-8 bg-red-100/80 dark:bg-red-900/80 backdrop-blur-sm hover:bg-red-500 text-red-600 hover:text-white transition-colors border-0 shadow-sm"
+          title="Delete Property"
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 mb-6 text-sm flex-1 bg-muted/20 p-4 rounded-2xl border border-border/30 mt-2">
+        <div>
+          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Beds / Baths</p>
+          <p className="font-medium text-foreground">{property.bedrooms} / {property.bathrooms}</p>
+        </div>
+        <div>
+          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Size</p>
+          <p className="font-medium text-foreground">{property.square_feet} sqft</p>
+        </div>
+        <div className="col-span-2">
+          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Price</p>
+          <p className="font-bold text-emerald-600 dark:text-emerald-400 text-lg">${Number(property.price).toLocaleString()}</p>
+        </div>
+      </div>
+      
+      <div className="mt-auto">
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+          property.status === 'active' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' :
+          property.status === 'pending' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' :
+          'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400'
+        }`}>
+          {property.status.toUpperCase()}
+        </span>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-foreground">Properties</h1>
+            <p className="text-muted-foreground mt-2">Manage and track your property listings</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <Button
+              onClick={() => { setShowForm(true); setEditingId(null); }}
+              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Add Property
+            </Button>
+          </div>
+        </div>
+
+        <Card className="p-2 px-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex items-center rounded-2xl shadow-sm gap-4 flex-wrap">
+          <div className="relative flex-1 flex items-center min-w-[200px]">
+            <Search className="w-5 h-5 text-muted-foreground mr-2" />
             <Input
               placeholder="Search by address, city..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 bg-card"
+              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-base flex-1"
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-40 bg-card">
-              <SelectValue />
+            <SelectTrigger className="w-40 border-0 bg-transparent shadow-none focus:ring-0 font-medium">
+              <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Status</SelectItem>
@@ -205,31 +259,83 @@ export default function Properties() {
               <SelectItem value="sold">Sold</SelectItem>
             </SelectContent>
           </Select>
-        </div>
+        </Card>
 
-        <REGridShell empty={filteredProperties.length === 0 && <div className="py-12 text-center text-[#71717a] dark:text-gray-400"><Building2 className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse" /><p className="font-semibold">No properties found.</p></div>}>
-          {filteredProperties.map(property => (
-            <REDataCard 
-              key={property.id}
-              title={property.city || 'Unknown'}
-              subtitle={property.address}
-              iconText={<MapPin className="w-6 h-6" />}
-              badge={property.status}
-              badgeColor={
-                property.status === 'active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                property.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                'bg-slate-100 text-slate-700 border-slate-200'
-              }
-              onEdit={() => handleEdit(property)}
-              onDelete={() => {}} // Assuming delete is handled elsewhere or you can add it
-              metrics={[
-                { label: "Beds/Baths", value: `${property.bedrooms}/${property.bathrooms}` },
-                { label: "Price", value: `$${Number(property.price).toLocaleString()}` }
-              ]}
-            />
-          ))}
-        </REGridShell>
-      </div>
+        {isLoading ? (
+          <div className="text-center py-12 text-muted-foreground">Loading properties...</div>
+        ) : filteredProperties.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground border border-dashed rounded-2xl border-border">No properties found.</div>
+        ) : view === 'grid' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredProperties.map(property => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+        ) : (
+          <Card className="border border-border/50 bg-card/60 backdrop-blur-sm rounded-3xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-muted/50 border-b border-border">
+                  <tr>
+                    <th className="p-4 font-semibold text-foreground">Address</th>
+                    <th className="p-4 font-semibold text-foreground">Details</th>
+                    <th className="p-4 font-semibold text-foreground">Price</th>
+                    <th className="p-4 font-semibold text-foreground">Status</th>
+                    <th className="p-4 font-semibold text-foreground text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/50">
+                  {filteredProperties.map(property => (
+                    <tr key={property.id} className="group hover:bg-muted/30 transition-colors">
+                      <td className="p-4">
+                        <p className="font-bold text-foreground">{property.address}</p>
+                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                          <MapPin className="w-3 h-3" /> {property.city}, {property.state}
+                        </p>
+                      </td>
+                      <td className="p-4 text-muted-foreground">
+                        {property.bedrooms} Beds • {property.bathrooms} Baths • {property.square_feet} sqft
+                      </td>
+                      <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">
+                        ${Number(property.price).toLocaleString()}
+                      </td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                          property.status === 'active' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' :
+                          property.status === 'pending' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' :
+                          'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400'
+                        }`}>
+                          {property.status.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="p-4 text-right">
+                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-emerald-50 text-emerald-600 dark:hover:bg-emerald-900/30" onClick={() => handleEdit(property)}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-red-50 text-red-600 dark:hover:bg-red-900/30" onClick={async () => {
+                            if(window.confirm('Are you sure you want to delete this property?')) {
+                              try {
+                                await RealEstateAPI.deleteProperty(companyId, property.id, user.id);
+                                const res = await powerSync.execute('SELECT * FROM univ_re_properties WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+                                setProperties(res.rows._array || Array.from(res.rows));
+                                toast.success('Property deleted');
+                              } catch (e) {
+                                toast.error(e.message);
+                              }
+                            }
+                          }}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        )}
 
       {/* Form Modal */}
       <Sheet open={showForm} onOpenChange={setShowForm}>

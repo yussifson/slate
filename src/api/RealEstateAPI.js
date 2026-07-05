@@ -116,6 +116,18 @@ export const RealEstateAPI = {
     }
   },
 
+  async deleteProperty(companyId, propertyId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_properties WHERE company_id = ? AND id = ?',
+        [companyId, propertyId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteProperty failed:', e);
+      throw e;
+    }
+  },
+
   // ────────────────────────────────────────────────────────
   // CLIENTS (Buyers/Sellers/Tenants)
   // ────────────────────────────────────────────────────────

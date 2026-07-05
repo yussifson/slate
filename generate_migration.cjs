@@ -14,12 +14,12 @@ ALTER TABLE public.${table} ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "${table}_all_access" ON public.${table};
 
 CREATE POLICY "${table}_all_access" ON public.${table}
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+  FOR ALL USING (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()));
 
 GRANT ALL ON public.${table} TO authenticated, service_role;
 
 `;
 }
 fs.writeFileSync('supabase/migrations/20260705000000_align_appschema_tables.sql', sql);
-console.log('Migration generated successfully. Number of missing tables:', missing.length);
+console.log('Migration generated successfully with explicit type casting.');
