@@ -60,6 +60,7 @@ const SelectContent = React.forwardRef(({ className, children, position = "poppe
  className
  )}
  position={position}
+ side="bottom"
  sideOffset={4}
  {...props}>
  <SelectScrollUpButton />

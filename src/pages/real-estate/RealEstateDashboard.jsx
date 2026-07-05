@@ -209,7 +209,7 @@ export default function RealEstateDashboard() {
       {/* ── KPI Cards ── */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {kpis.map((kpi, i) => (
-          <div key={i} className="bg-card rounded-2xl border border-border/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+          <div key={i} className="group p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden flex flex-col">
             <div className="flex items-start justify-between mb-4">
               <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${kpi.from} ${kpi.to} flex items-center justify-center shadow-md`}>
                 <kpi.icon className="w-5 h-5 text-white" />
@@ -229,7 +229,7 @@ export default function RealEstateDashboard() {
       {/* ── Charts Row ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Revenue Area Chart */}
-        <div className="lg:col-span-2 bg-card rounded-2xl border border-border/50 p-6">
+        <div className="lg:col-span-2 p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-base font-semibold text-foreground">Revenue Trend</h3>
@@ -262,7 +262,7 @@ export default function RealEstateDashboard() {
         </div>
 
         {/* Property Status Donut */}
-        <div className="bg-card rounded-2xl border border-border/50 p-6">
+        <div className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden flex flex-col">
           <div className="mb-6">
             <h3 className="text-base font-semibold text-foreground">Property Status</h3>
             <p className="text-xs text-muted-foreground mt-0.5">Current listing distribution</p>
@@ -292,7 +292,7 @@ export default function RealEstateDashboard() {
       {/* ── Activity Feed + Recent Transactions ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Transactions */}
-        <div className="bg-card rounded-2xl border border-border/50 p-6">
+        <div className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-base font-semibold text-foreground">Recent Sales</h3>
             <Link to="/real-estate/transactions">
@@ -328,7 +328,7 @@ export default function RealEstateDashboard() {
         </div>
 
         {/* Recent Viewings */}
-        <div className="bg-card rounded-2xl border border-border/50 p-6">
+        <div className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 transition-all rounded-3xl relative overflow-hidden flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-base font-semibold text-foreground">Upcoming Viewings</h3>
             <Link to="/real-estate/viewings">
@@ -374,7 +374,7 @@ export default function RealEstateDashboard() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
           {quickNav.map((item, i) => (
             <Link key={i} to={item.href}>
-              <div className="bg-card rounded-2xl border border-border/50 p-4 text-center hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group">
+              <div className="p-4 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-emerald-500/30 hover:-translate-y-0.5 transition-all rounded-3xl text-center cursor-pointer group">
                 <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.from} ${item.to} flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform shadow-sm`}>
                   <item.icon className="w-5 h-5 text-white" />
                 </div>
