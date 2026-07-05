@@ -2,7 +2,7 @@
 
 CREATE TABLE IF NOT EXISTS public.automation_dlq (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -19,7 +19,7 @@ GRANT ALL ON public.automation_dlq TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.automation_rule_versions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -34,570 +34,9 @@ CREATE POLICY "automation_rule_versions_all_access" ON public.automation_rule_ve
 
 GRANT ALL ON public.automation_rule_versions TO authenticated, service_role;
 
-CREATE TABLE IF NOT EXISTS public.audit_logs (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "audit_logs_all_access" ON public.audit_logs;
-
-CREATE POLICY "audit_logs_all_access" ON public.audit_logs
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.audit_logs TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.case_emails (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.case_emails ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "case_emails_all_access" ON public.case_emails;
-
-CREATE POLICY "case_emails_all_access" ON public.case_emails
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.case_emails TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.case_messages (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.case_messages ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "case_messages_all_access" ON public.case_messages;
-
-CREATE POLICY "case_messages_all_access" ON public.case_messages
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.case_messages TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.case_outcomes (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.case_outcomes ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "case_outcomes_all_access" ON public.case_outcomes;
-
-CREATE POLICY "case_outcomes_all_access" ON public.case_outcomes
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.case_outcomes TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.case_pipelines (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.case_pipelines ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "case_pipelines_all_access" ON public.case_pipelines;
-
-CREATE POLICY "case_pipelines_all_access" ON public.case_pipelines
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.case_pipelines TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.case_pipeline_states (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.case_pipeline_states ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "case_pipeline_states_all_access" ON public.case_pipeline_states;
-
-CREATE POLICY "case_pipeline_states_all_access" ON public.case_pipeline_states
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.case_pipeline_states TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.clients (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.clients ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "clients_all_access" ON public.clients;
-
-CREATE POLICY "clients_all_access" ON public.clients
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.clients TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.client_checklists (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.client_checklists ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "client_checklists_all_access" ON public.client_checklists;
-
-CREATE POLICY "client_checklists_all_access" ON public.client_checklists
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.client_checklists TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.client_messages (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.client_messages ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "client_messages_all_access" ON public.client_messages;
-
-CREATE POLICY "client_messages_all_access" ON public.client_messages
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.client_messages TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.companies (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.companies ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "companies_all_access" ON public.companies;
-
-CREATE POLICY "companies_all_access" ON public.companies
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.companies TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.documents (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "documents_all_access" ON public.documents;
-
-CREATE POLICY "documents_all_access" ON public.documents
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.documents TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.expenses (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.expenses ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "expenses_all_access" ON public.expenses;
-
-CREATE POLICY "expenses_all_access" ON public.expenses
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.expenses TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.firm_settings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.firm_settings ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "firm_settings_all_access" ON public.firm_settings;
-
-CREATE POLICY "firm_settings_all_access" ON public.firm_settings
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.firm_settings TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.hearings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.hearings ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "hearings_all_access" ON public.hearings;
-
-CREATE POLICY "hearings_all_access" ON public.hearings
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.hearings TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.h_r_complaints (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.h_r_complaints ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "h_r_complaints_all_access" ON public.h_r_complaints;
-
-CREATE POLICY "h_r_complaints_all_access" ON public.h_r_complaints
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.h_r_complaints TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.invoices (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.invoices ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "invoices_all_access" ON public.invoices;
-
-CREATE POLICY "invoices_all_access" ON public.invoices
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.invoices TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.leads (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.leads ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "leads_all_access" ON public.leads;
-
-CREATE POLICY "leads_all_access" ON public.leads
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.leads TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.leave_requests (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.leave_requests ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "leave_requests_all_access" ON public.leave_requests;
-
-CREATE POLICY "leave_requests_all_access" ON public.leave_requests
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.leave_requests TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.legal_cases (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.legal_cases ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "legal_cases_all_access" ON public.legal_cases;
-
-CREATE POLICY "legal_cases_all_access" ON public.legal_cases
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.legal_cases TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.linked_emails (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.linked_emails ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "linked_emails_all_access" ON public.linked_emails;
-
-CREATE POLICY "linked_emails_all_access" ON public.linked_emails
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.linked_emails TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.notifications (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "notifications_all_access" ON public.notifications;
-
-CREATE POLICY "notifications_all_access" ON public.notifications
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.notifications TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.payroll_slips (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.payroll_slips ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "payroll_slips_all_access" ON public.payroll_slips;
-
-CREATE POLICY "payroll_slips_all_access" ON public.payroll_slips
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.payroll_slips TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.promotions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.promotions ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "promotions_all_access" ON public.promotions;
-
-CREATE POLICY "promotions_all_access" ON public.promotions
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.promotions TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.retainers (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.retainers ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "retainers_all_access" ON public.retainers;
-
-CREATE POLICY "retainers_all_access" ON public.retainers
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.retainers TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.signature_requests (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.signature_requests ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "signature_requests_all_access" ON public.signature_requests;
-
-CREATE POLICY "signature_requests_all_access" ON public.signature_requests
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.signature_requests TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.staff_permissions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.staff_permissions ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "staff_permissions_all_access" ON public.staff_permissions;
-
-CREATE POLICY "staff_permissions_all_access" ON public.staff_permissions
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.staff_permissions TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.staff_records (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.staff_records ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "staff_records_all_access" ON public.staff_records;
-
-CREATE POLICY "staff_records_all_access" ON public.staff_records
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.staff_records TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.module_definitions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.module_definitions ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "module_definitions_all_access" ON public.module_definitions;
-
-CREATE POLICY "module_definitions_all_access" ON public.module_definitions
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.module_definitions TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.field_definitions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.field_definitions ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "field_definitions_all_access" ON public.field_definitions;
-
-CREATE POLICY "field_definitions_all_access" ON public.field_definitions
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.field_definitions TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.dynamic_records (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.dynamic_records ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "dynamic_records_all_access" ON public.dynamic_records;
-
-CREATE POLICY "dynamic_records_all_access" ON public.dynamic_records
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.dynamic_records TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.subscription_invoices (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.subscription_invoices ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "subscription_invoices_all_access" ON public.subscription_invoices;
-
-CREATE POLICY "subscription_invoices_all_access" ON public.subscription_invoices
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.subscription_invoices TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.tasks (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.tasks ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "tasks_all_access" ON public.tasks;
-
-CREATE POLICY "tasks_all_access" ON public.tasks
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.tasks TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.time_entries (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.time_entries ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "time_entries_all_access" ON public.time_entries;
-
-CREATE POLICY "time_entries_all_access" ON public.time_entries
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.time_entries TO authenticated, service_role;
-
 CREATE TABLE IF NOT EXISTS public.univ_opd_queues (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -612,162 +51,9 @@ CREATE POLICY "univ_opd_queues_all_access" ON public.univ_opd_queues
 
 GRANT ALL ON public.univ_opd_queues TO authenticated, service_role;
 
-CREATE TABLE IF NOT EXISTS public.profiles (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "profiles_all_access" ON public.profiles;
-
-CREATE POLICY "profiles_all_access" ON public.profiles
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.profiles TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.hospital_patients (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.hospital_patients ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "hospital_patients_all_access" ON public.hospital_patients;
-
-CREATE POLICY "hospital_patients_all_access" ON public.hospital_patients
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.hospital_patients TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.hospital_admissions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.hospital_admissions ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "hospital_admissions_all_access" ON public.hospital_admissions;
-
-CREATE POLICY "hospital_admissions_all_access" ON public.hospital_admissions
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.hospital_admissions TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.hospital_appointments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.hospital_appointments ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "hospital_appointments_all_access" ON public.hospital_appointments;
-
-CREATE POLICY "hospital_appointments_all_access" ON public.hospital_appointments
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.hospital_appointments TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.hotel_guests (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.hotel_guests ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "hotel_guests_all_access" ON public.hotel_guests;
-
-CREATE POLICY "hotel_guests_all_access" ON public.hotel_guests
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.hotel_guests TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.hotel_bookings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.hotel_bookings ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "hotel_bookings_all_access" ON public.hotel_bookings;
-
-CREATE POLICY "hotel_bookings_all_access" ON public.hotel_bookings
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.hotel_bookings TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.hotel_reservations (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.hotel_reservations ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "hotel_reservations_all_access" ON public.hotel_reservations;
-
-CREATE POLICY "hotel_reservations_all_access" ON public.hotel_reservations
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.hotel_reservations TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.insurance_policyholders (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.insurance_policyholders ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "insurance_policyholders_all_access" ON public.insurance_policyholders;
-
-CREATE POLICY "insurance_policyholders_all_access" ON public.insurance_policyholders
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.insurance_policyholders TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.insurance_claims (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.insurance_claims ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "insurance_claims_all_access" ON public.insurance_claims;
-
-CREATE POLICY "insurance_claims_all_access" ON public.insurance_claims
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.insurance_claims TO authenticated, service_role;
-
 CREATE TABLE IF NOT EXISTS public.insurance_underwriting (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -784,7 +70,7 @@ GRANT ALL ON public.insurance_underwriting TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.insurance_reinsurance (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -801,7 +87,7 @@ GRANT ALL ON public.insurance_reinsurance TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.insurance_agents (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -818,7 +104,7 @@ GRANT ALL ON public.insurance_agents TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.insurance_premiums (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -833,77 +119,9 @@ CREATE POLICY "insurance_premiums_all_access" ON public.insurance_premiums
 
 GRANT ALL ON public.insurance_premiums TO authenticated, service_role;
 
-CREATE TABLE IF NOT EXISTS public.insurance_meetings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.insurance_meetings ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "insurance_meetings_all_access" ON public.insurance_meetings;
-
-CREATE POLICY "insurance_meetings_all_access" ON public.insurance_meetings
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.insurance_meetings TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.retail_customers (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.retail_customers ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "retail_customers_all_access" ON public.retail_customers;
-
-CREATE POLICY "retail_customers_all_access" ON public.retail_customers
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.retail_customers TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.retail_orders (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.retail_orders ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "retail_orders_all_access" ON public.retail_orders;
-
-CREATE POLICY "retail_orders_all_access" ON public.retail_orders
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.retail_orders TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.retail_shifts (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.retail_shifts ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "retail_shifts_all_access" ON public.retail_shifts;
-
-CREATE POLICY "retail_shifts_all_access" ON public.retail_shifts
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.retail_shifts TO authenticated, service_role;
-
 CREATE TABLE IF NOT EXISTS public.retail_cash_drawers (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -918,60 +136,9 @@ CREATE POLICY "retail_cash_drawers_all_access" ON public.retail_cash_drawers
 
 GRANT ALL ON public.retail_cash_drawers TO authenticated, service_role;
 
-CREATE TABLE IF NOT EXISTS public.logistics_shippers (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.logistics_shippers ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "logistics_shippers_all_access" ON public.logistics_shippers;
-
-CREATE POLICY "logistics_shippers_all_access" ON public.logistics_shippers
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.logistics_shippers TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.logistics_shipments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.logistics_shipments ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "logistics_shipments_all_access" ON public.logistics_shipments;
-
-CREATE POLICY "logistics_shipments_all_access" ON public.logistics_shipments
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.logistics_shipments TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.logistics_dispatches (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.logistics_dispatches ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "logistics_dispatches_all_access" ON public.logistics_dispatches;
-
-CREATE POLICY "logistics_dispatches_all_access" ON public.logistics_dispatches
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.logistics_dispatches TO authenticated, service_role;
-
 CREATE TABLE IF NOT EXISTS public.univ_imaging (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -986,77 +153,162 @@ CREATE POLICY "univ_imaging_all_access" ON public.univ_imaging
 
 GRANT ALL ON public.univ_imaging TO authenticated, service_role;
 
-CREATE TABLE IF NOT EXISTS public.hr_employees (
+CREATE TABLE IF NOT EXISTS public.logistics_warehouse_inventory (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-ALTER TABLE public.hr_employees ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.logistics_warehouse_inventory ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "hr_employees_all_access" ON public.hr_employees;
+DROP POLICY IF EXISTS "logistics_warehouse_inventory_all_access" ON public.logistics_warehouse_inventory;
 
-CREATE POLICY "hr_employees_all_access" ON public.hr_employees
+CREATE POLICY "logistics_warehouse_inventory_all_access" ON public.logistics_warehouse_inventory
   FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
   WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
 
-GRANT ALL ON public.hr_employees TO authenticated, service_role;
+GRANT ALL ON public.logistics_warehouse_inventory TO authenticated, service_role;
 
-CREATE TABLE IF NOT EXISTS public.hr_projects (
+CREATE TABLE IF NOT EXISTS public.logistics_warehouse_scans (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-ALTER TABLE public.hr_projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.logistics_warehouse_scans ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "hr_projects_all_access" ON public.hr_projects;
+DROP POLICY IF EXISTS "logistics_warehouse_scans_all_access" ON public.logistics_warehouse_scans;
 
-CREATE POLICY "hr_projects_all_access" ON public.hr_projects
+CREATE POLICY "logistics_warehouse_scans_all_access" ON public.logistics_warehouse_scans
   FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
   WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
 
-GRANT ALL ON public.hr_projects TO authenticated, service_role;
+GRANT ALL ON public.logistics_warehouse_scans TO authenticated, service_role;
 
-CREATE TABLE IF NOT EXISTS public.hr_interviews (
+CREATE TABLE IF NOT EXISTS public.logistics_loads (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-ALTER TABLE public.hr_interviews ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.logistics_loads ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "hr_interviews_all_access" ON public.hr_interviews;
+DROP POLICY IF EXISTS "logistics_loads_all_access" ON public.logistics_loads;
 
-CREATE POLICY "hr_interviews_all_access" ON public.hr_interviews
+CREATE POLICY "logistics_loads_all_access" ON public.logistics_loads
   FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
   WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
 
-GRANT ALL ON public.hr_interviews TO authenticated, service_role;
+GRANT ALL ON public.logistics_loads TO authenticated, service_role;
 
-CREATE TABLE IF NOT EXISTS public.online_assessments (
+CREATE TABLE IF NOT EXISTS public.logistics_load_matches (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-ALTER TABLE public.online_assessments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.logistics_load_matches ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "online_assessments_all_access" ON public.online_assessments;
+DROP POLICY IF EXISTS "logistics_load_matches_all_access" ON public.logistics_load_matches;
 
-CREATE POLICY "online_assessments_all_access" ON public.online_assessments
+CREATE POLICY "logistics_load_matches_all_access" ON public.logistics_load_matches
   FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
   WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
 
-GRANT ALL ON public.online_assessments TO authenticated, service_role;
+GRANT ALL ON public.logistics_load_matches TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.logistics_routes (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.logistics_routes ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "logistics_routes_all_access" ON public.logistics_routes;
+
+CREATE POLICY "logistics_routes_all_access" ON public.logistics_routes
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.logistics_routes TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.logistics_route_stops (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.logistics_route_stops ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "logistics_route_stops_all_access" ON public.logistics_route_stops;
+
+CREATE POLICY "logistics_route_stops_all_access" ON public.logistics_route_stops
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.logistics_route_stops TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.logistics_smart_docs (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.logistics_smart_docs ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "logistics_smart_docs_all_access" ON public.logistics_smart_docs;
+
+CREATE POLICY "logistics_smart_docs_all_access" ON public.logistics_smart_docs
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.logistics_smart_docs TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.logistics_geofences (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.logistics_geofences ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "logistics_geofences_all_access" ON public.logistics_geofences;
+
+CREATE POLICY "logistics_geofences_all_access" ON public.logistics_geofences
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.logistics_geofences TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.logistics_geofence_logs (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.logistics_geofence_logs ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "logistics_geofence_logs_all_access" ON public.logistics_geofence_logs;
+
+CREATE POLICY "logistics_geofence_logs_all_access" ON public.logistics_geofence_logs
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.logistics_geofence_logs TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.online_assessment_results (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1071,26 +323,9 @@ CREATE POLICY "online_assessment_results_all_access" ON public.online_assessment
 
 GRANT ALL ON public.online_assessment_results TO authenticated, service_role;
 
-CREATE TABLE IF NOT EXISTS public.online_certificates (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.online_certificates ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "online_certificates_all_access" ON public.online_certificates;
-
-CREATE POLICY "online_certificates_all_access" ON public.online_certificates
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.online_certificates TO authenticated, service_role;
-
 CREATE TABLE IF NOT EXISTS public.online_notes (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1107,7 +342,7 @@ GRANT ALL ON public.online_notes TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.platform_roles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1124,7 +359,7 @@ GRANT ALL ON public.platform_roles TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.platform_role_permissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1141,7 +376,7 @@ GRANT ALL ON public.platform_role_permissions TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.platform_departments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1158,7 +393,7 @@ GRANT ALL ON public.platform_departments TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_roles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1175,7 +410,7 @@ GRANT ALL ON public.univ_roles TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_case_deadlines (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1192,7 +427,7 @@ GRANT ALL ON public.univ_case_deadlines TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_trust_transactions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1209,7 +444,7 @@ GRANT ALL ON public.univ_trust_transactions TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_hr_departments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1226,7 +461,7 @@ GRANT ALL ON public.univ_hr_departments TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_hr_payroll (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1243,7 +478,7 @@ GRANT ALL ON public.univ_hr_payroll TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_hr_leave (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1260,7 +495,7 @@ GRANT ALL ON public.univ_hr_leave TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_hr_recruitment (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1277,7 +512,7 @@ GRANT ALL ON public.univ_hr_recruitment TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_hr_candidates (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1294,7 +529,7 @@ GRANT ALL ON public.univ_hr_candidates TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_hr_attendance (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1311,7 +546,7 @@ GRANT ALL ON public.univ_hr_attendance TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_reinsurance (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1328,7 +563,7 @@ GRANT ALL ON public.univ_reinsurance TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_medicalclaims (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1345,7 +580,7 @@ GRANT ALL ON public.univ_medicalclaims TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_surgeries (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1362,7 +597,7 @@ GRANT ALL ON public.univ_surgeries TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_ambulance_dispatch (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1377,43 +612,247 @@ CREATE POLICY "univ_ambulance_dispatch_all_access" ON public.univ_ambulance_disp
 
 GRANT ALL ON public.univ_ambulance_dispatch TO authenticated, service_role;
 
-CREATE TABLE IF NOT EXISTS public.univ_pharmacy (
+CREATE TABLE IF NOT EXISTS public.vehicle_registrations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-ALTER TABLE public.univ_pharmacy ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.vehicle_registrations ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "univ_pharmacy_all_access" ON public.univ_pharmacy;
+DROP POLICY IF EXISTS "vehicle_registrations_all_access" ON public.vehicle_registrations;
 
-CREATE POLICY "univ_pharmacy_all_access" ON public.univ_pharmacy
+CREATE POLICY "vehicle_registrations_all_access" ON public.vehicle_registrations
   FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
   WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
 
-GRANT ALL ON public.univ_pharmacy TO authenticated, service_role;
+GRANT ALL ON public.vehicle_registrations TO authenticated, service_role;
 
-CREATE TABLE IF NOT EXISTS public.univ_admissions (
+CREATE TABLE IF NOT EXISTS public.vehicle_insurance (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-ALTER TABLE public.univ_admissions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.vehicle_insurance ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "univ_admissions_all_access" ON public.univ_admissions;
+DROP POLICY IF EXISTS "vehicle_insurance_all_access" ON public.vehicle_insurance;
 
-CREATE POLICY "univ_admissions_all_access" ON public.univ_admissions
+CREATE POLICY "vehicle_insurance_all_access" ON public.vehicle_insurance
   FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
   WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
 
-GRANT ALL ON public.univ_admissions TO authenticated, service_role;
+GRANT ALL ON public.vehicle_insurance TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.vehicle_licenses (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.vehicle_licenses ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "vehicle_licenses_all_access" ON public.vehicle_licenses;
+
+CREATE POLICY "vehicle_licenses_all_access" ON public.vehicle_licenses
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.vehicle_licenses TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.vehicle_service_records (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.vehicle_service_records ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "vehicle_service_records_all_access" ON public.vehicle_service_records;
+
+CREATE POLICY "vehicle_service_records_all_access" ON public.vehicle_service_records
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.vehicle_service_records TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.maintenance_schedules (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.maintenance_schedules ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "maintenance_schedules_all_access" ON public.maintenance_schedules;
+
+CREATE POLICY "maintenance_schedules_all_access" ON public.maintenance_schedules
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.maintenance_schedules TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.preventive_maintenance_plans (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.preventive_maintenance_plans ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "preventive_maintenance_plans_all_access" ON public.preventive_maintenance_plans;
+
+CREATE POLICY "preventive_maintenance_plans_all_access" ON public.preventive_maintenance_plans
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.preventive_maintenance_plans TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.vehicle_breakdowns (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.vehicle_breakdowns ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "vehicle_breakdowns_all_access" ON public.vehicle_breakdowns;
+
+CREATE POLICY "vehicle_breakdowns_all_access" ON public.vehicle_breakdowns
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.vehicle_breakdowns TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.tire_management (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.tire_management ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "tire_management_all_access" ON public.tire_management;
+
+CREATE POLICY "tire_management_all_access" ON public.tire_management
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.tire_management TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.fuel_management (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.fuel_management ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "fuel_management_all_access" ON public.fuel_management;
+
+CREATE POLICY "fuel_management_all_access" ON public.fuel_management
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.fuel_management TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.spare_parts_inventory (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.spare_parts_inventory ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "spare_parts_inventory_all_access" ON public.spare_parts_inventory;
+
+CREATE POLICY "spare_parts_inventory_all_access" ON public.spare_parts_inventory
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.spare_parts_inventory TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.asset_tracking (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.asset_tracking ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "asset_tracking_all_access" ON public.asset_tracking;
+
+CREATE POLICY "asset_tracking_all_access" ON public.asset_tracking
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.asset_tracking TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.vehicle_utilization (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.vehicle_utilization ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "vehicle_utilization_all_access" ON public.vehicle_utilization;
+
+CREATE POLICY "vehicle_utilization_all_access" ON public.vehicle_utilization
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.vehicle_utilization TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.vehicle_downtime (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.vehicle_downtime ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "vehicle_downtime_all_access" ON public.vehicle_downtime;
+
+CREATE POLICY "vehicle_downtime_all_access" ON public.vehicle_downtime
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.vehicle_downtime TO authenticated, service_role;
+
+CREATE TABLE IF NOT EXISTS public.vehicle_inspections (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.vehicle_inspections ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "vehicle_inspections_all_access" ON public.vehicle_inspections;
+
+CREATE POLICY "vehicle_inspections_all_access" ON public.vehicle_inspections
+  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+
+GRANT ALL ON public.vehicle_inspections TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_medical_history (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1430,7 +869,7 @@ GRANT ALL ON public.univ_medical_history TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.workspace_insights (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1447,7 +886,7 @@ GRANT ALL ON public.workspace_insights TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.intelligence_runs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1464,7 +903,7 @@ GRANT ALL ON public.intelligence_runs TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.entity_intelligence (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1481,7 +920,7 @@ GRANT ALL ON public.entity_intelligence TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.insight_feedback (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1498,7 +937,7 @@ GRANT ALL ON public.insight_feedback TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.engine_accuracy (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1515,7 +954,7 @@ GRANT ALL ON public.engine_accuracy TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.component_registry (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1532,7 +971,7 @@ GRANT ALL ON public.component_registry TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.industry_templates (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1549,7 +988,7 @@ GRANT ALL ON public.industry_templates TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.workspace_modules (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1566,7 +1005,7 @@ GRANT ALL ON public.workspace_modules TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.marketplace_review_requests (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1583,7 +1022,7 @@ GRANT ALL ON public.marketplace_review_requests TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_departments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1600,7 +1039,7 @@ GRANT ALL ON public.uni_departments TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_programs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1617,7 +1056,7 @@ GRANT ALL ON public.uni_programs TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_staff (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1634,7 +1073,7 @@ GRANT ALL ON public.uni_staff TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_students (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1651,7 +1090,7 @@ GRANT ALL ON public.uni_students TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_courses (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1668,7 +1107,7 @@ GRANT ALL ON public.uni_courses TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_enrollments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1685,7 +1124,7 @@ GRANT ALL ON public.uni_enrollments TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_lms_materials (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1702,7 +1141,7 @@ GRANT ALL ON public.uni_lms_materials TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_lms_assignments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1719,7 +1158,7 @@ GRANT ALL ON public.uni_lms_assignments TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_lms_submissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1736,7 +1175,7 @@ GRANT ALL ON public.uni_lms_submissions TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_exams (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1753,7 +1192,7 @@ GRANT ALL ON public.uni_exams TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_grades (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1770,7 +1209,7 @@ GRANT ALL ON public.uni_grades TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_applicants (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1787,7 +1226,7 @@ GRANT ALL ON public.uni_applicants TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_fees (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1804,7 +1243,7 @@ GRANT ALL ON public.uni_fees TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_hostel_rooms (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1821,7 +1260,7 @@ GRANT ALL ON public.uni_hostel_rooms TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_library_books (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1838,7 +1277,7 @@ GRANT ALL ON public.uni_library_books TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_research_grants (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1855,7 +1294,7 @@ GRANT ALL ON public.uni_research_grants TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.uni_alumni (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1872,7 +1311,7 @@ GRANT ALL ON public.uni_alumni TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.revenue_forecasts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1889,7 +1328,7 @@ GRANT ALL ON public.revenue_forecasts TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_feature_requests (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1906,7 +1345,7 @@ GRANT ALL ON public.univ_feature_requests TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_feature_announcements (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1923,7 +1362,7 @@ GRANT ALL ON public.univ_feature_announcements TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.univ_company_feature_decisions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1940,7 +1379,7 @@ GRANT ALL ON public.univ_company_feature_decisions TO authenticated, service_rol
 
 CREATE TABLE IF NOT EXISTS public.optavel_deal_rooms (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1957,7 +1396,7 @@ GRANT ALL ON public.optavel_deal_rooms TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.optavel_okrs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1974,7 +1413,7 @@ GRANT ALL ON public.optavel_okrs TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.optavel_decisions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1991,7 +1430,7 @@ GRANT ALL ON public.optavel_decisions TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.optavel_commissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2008,7 +1447,7 @@ GRANT ALL ON public.optavel_commissions TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.optavel_cap_table (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2025,7 +1464,7 @@ GRANT ALL ON public.optavel_cap_table TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.optavel_campaigns (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2042,7 +1481,7 @@ GRANT ALL ON public.optavel_campaigns TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.optavel_marketing_reports (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2059,7 +1498,7 @@ GRANT ALL ON public.optavel_marketing_reports TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.optavel_seo_tracking (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2076,7 +1515,7 @@ GRANT ALL ON public.optavel_seo_tracking TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.optavel_summit_registrations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2093,7 +1532,7 @@ GRANT ALL ON public.optavel_summit_registrations TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.optavel_bugs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2110,7 +1549,7 @@ GRANT ALL ON public.optavel_bugs TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.optavel_sprints (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2127,7 +1566,7 @@ GRANT ALL ON public.optavel_sprints TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.optavel_tasks (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2144,7 +1583,7 @@ GRANT ALL ON public.optavel_tasks TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.optavel_transactions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2161,7 +1600,7 @@ GRANT ALL ON public.optavel_transactions TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.optavel_deal_activities (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2178,7 +1617,7 @@ GRANT ALL ON public.optavel_deal_activities TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.email_sequences (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2195,7 +1634,7 @@ GRANT ALL ON public.email_sequences TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.accounts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2212,7 +1651,7 @@ GRANT ALL ON public.accounts TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.journal_entries (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2229,7 +1668,7 @@ GRANT ALL ON public.journal_entries TO authenticated, service_role;
 
 CREATE TABLE IF NOT EXISTS public.payroll_runs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -2243,701 +1682,4 @@ CREATE POLICY "payroll_runs_all_access" ON public.payroll_runs
   WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
 
 GRANT ALL ON public.payroll_runs TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_support_tickets (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_support_tickets ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_support_tickets_all_access" ON public.univ_support_tickets;
-
-CREATE POLICY "univ_support_tickets_all_access" ON public.univ_support_tickets
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_support_tickets TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.online_orders (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.online_orders ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "online_orders_all_access" ON public.online_orders;
-
-CREATE POLICY "online_orders_all_access" ON public.online_orders
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.online_orders TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.online_settings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.online_settings ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "online_settings_all_access" ON public.online_settings;
-
-CREATE POLICY "online_settings_all_access" ON public.online_settings
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.online_settings TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_assignments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_assignments ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_assignments_all_access" ON public.school_assignments;
-
-CREATE POLICY "school_assignments_all_access" ON public.school_assignments
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_assignments TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_attendance (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_attendance ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_attendance_all_access" ON public.school_attendance;
-
-CREATE POLICY "school_attendance_all_access" ON public.school_attendance
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_attendance TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_canteen (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_canteen ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_canteen_all_access" ON public.school_canteen;
-
-CREATE POLICY "school_canteen_all_access" ON public.school_canteen
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_canteen TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_classes (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_classes ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_classes_all_access" ON public.school_classes;
-
-CREATE POLICY "school_classes_all_access" ON public.school_classes
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_classes TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_complaints (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_complaints ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_complaints_all_access" ON public.school_complaints;
-
-CREATE POLICY "school_complaints_all_access" ON public.school_complaints
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_complaints TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_exams (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_exams ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_exams_all_access" ON public.school_exams;
-
-CREATE POLICY "school_exams_all_access" ON public.school_exams
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_exams TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_fees (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_fees ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_fees_all_access" ON public.school_fees;
-
-CREATE POLICY "school_fees_all_access" ON public.school_fees
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_fees TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_gamification (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_gamification ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_gamification_all_access" ON public.school_gamification;
-
-CREATE POLICY "school_gamification_all_access" ON public.school_gamification
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_gamification TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_grades (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_grades ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_grades_all_access" ON public.school_grades;
-
-CREATE POLICY "school_grades_all_access" ON public.school_grades
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_grades TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_hostel (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_hostel ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_hostel_all_access" ON public.school_hostel;
-
-CREATE POLICY "school_hostel_all_access" ON public.school_hostel
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_hostel TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_library (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_library ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_library_all_access" ON public.school_library;
-
-CREATE POLICY "school_library_all_access" ON public.school_library
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_library TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_notices (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_notices ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_notices_all_access" ON public.school_notices;
-
-CREATE POLICY "school_notices_all_access" ON public.school_notices
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_notices TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_parents (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_parents ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_parents_all_access" ON public.school_parents;
-
-CREATE POLICY "school_parents_all_access" ON public.school_parents
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_parents TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_students (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_students ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_students_all_access" ON public.school_students;
-
-CREATE POLICY "school_students_all_access" ON public.school_students
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_students TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_teachers (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_teachers ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_teachers_all_access" ON public.school_teachers;
-
-CREATE POLICY "school_teachers_all_access" ON public.school_teachers
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_teachers TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.school_transport (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.school_transport ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "school_transport_all_access" ON public.school_transport;
-
-CREATE POLICY "school_transport_all_access" ON public.school_transport
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.school_transport TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_allergies (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_allergies ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_allergies_all_access" ON public.univ_allergies;
-
-CREATE POLICY "univ_allergies_all_access" ON public.univ_allergies
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_allergies TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_beds (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_beds ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_beds_all_access" ON public.univ_beds;
-
-CREATE POLICY "univ_beds_all_access" ON public.univ_beds
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_beds TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_blood_requests (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_blood_requests ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_blood_requests_all_access" ON public.univ_blood_requests;
-
-CREATE POLICY "univ_blood_requests_all_access" ON public.univ_blood_requests
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_blood_requests TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_consents (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_consents ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_consents_all_access" ON public.univ_consents;
-
-CREATE POLICY "univ_consents_all_access" ON public.univ_consents
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_consents TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_discharges (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_discharges ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_discharges_all_access" ON public.univ_discharges;
-
-CREATE POLICY "univ_discharges_all_access" ON public.univ_discharges
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_discharges TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_immunisations (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_immunisations ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_immunisations_all_access" ON public.univ_immunisations;
-
-CREATE POLICY "univ_immunisations_all_access" ON public.univ_immunisations
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_immunisations TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_lab_results (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_lab_results ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_lab_results_all_access" ON public.univ_lab_results;
-
-CREATE POLICY "univ_lab_results_all_access" ON public.univ_lab_results
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_lab_results TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_school_assignment_submissions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_school_assignment_submissions ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_school_assignment_submissions_all_access" ON public.univ_school_assignment_submissions;
-
-CREATE POLICY "univ_school_assignment_submissions_all_access" ON public.univ_school_assignment_submissions
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_school_assignment_submissions TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_school_assignments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_school_assignments ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_school_assignments_all_access" ON public.univ_school_assignments;
-
-CREATE POLICY "univ_school_assignments_all_access" ON public.univ_school_assignments
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_school_assignments TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_school_attendance (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_school_attendance ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_school_attendance_all_access" ON public.univ_school_attendance;
-
-CREATE POLICY "univ_school_attendance_all_access" ON public.univ_school_attendance
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_school_attendance TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_school_course_registrations (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_school_course_registrations ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_school_course_registrations_all_access" ON public.univ_school_course_registrations;
-
-CREATE POLICY "univ_school_course_registrations_all_access" ON public.univ_school_course_registrations
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_school_course_registrations TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_school_discipline (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_school_discipline ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_school_discipline_all_access" ON public.univ_school_discipline;
-
-CREATE POLICY "univ_school_discipline_all_access" ON public.univ_school_discipline
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_school_discipline TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_school_exams (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_school_exams ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_school_exams_all_access" ON public.univ_school_exams;
-
-CREATE POLICY "univ_school_exams_all_access" ON public.univ_school_exams
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_school_exams TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_school_grades (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_school_grades ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_school_grades_all_access" ON public.univ_school_grades;
-
-CREATE POLICY "univ_school_grades_all_access" ON public.univ_school_grades
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_school_grades TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_school_hostel (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_school_hostel ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_school_hostel_all_access" ON public.univ_school_hostel;
-
-CREATE POLICY "univ_school_hostel_all_access" ON public.univ_school_hostel
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_school_hostel TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_school_library_books (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_school_library_books ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_school_library_books_all_access" ON public.univ_school_library_books;
-
-CREATE POLICY "univ_school_library_books_all_access" ON public.univ_school_library_books
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_school_library_books TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_school_library_categories (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_school_library_categories ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_school_library_categories_all_access" ON public.univ_school_library_categories;
-
-CREATE POLICY "univ_school_library_categories_all_access" ON public.univ_school_library_categories
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_school_library_categories TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_school_notices (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_school_notices ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_school_notices_all_access" ON public.univ_school_notices;
-
-CREATE POLICY "univ_school_notices_all_access" ON public.univ_school_notices
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_school_notices TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_school_timetable (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_school_timetable ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_school_timetable_all_access" ON public.univ_school_timetable;
-
-CREATE POLICY "univ_school_timetable_all_access" ON public.univ_school_timetable
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_school_timetable TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_school_transport (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_school_transport ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_school_transport_all_access" ON public.univ_school_transport;
-
-CREATE POLICY "univ_school_transport_all_access" ON public.univ_school_transport
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_school_transport TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_staff_shifts (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_staff_shifts ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_staff_shifts_all_access" ON public.univ_staff_shifts;
-
-CREATE POLICY "univ_staff_shifts_all_access" ON public.univ_staff_shifts
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_staff_shifts TO authenticated, service_role;
-
-CREATE TABLE IF NOT EXISTS public.univ_vitals (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.univ_vitals ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "univ_vitals_all_access" ON public.univ_vitals;
-
-CREATE POLICY "univ_vitals_all_access" ON public.univ_vitals
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
-
-GRANT ALL ON public.univ_vitals TO authenticated, service_role;
 

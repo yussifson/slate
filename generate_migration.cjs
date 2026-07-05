@@ -4,7 +4,7 @@ let sql = '-- Migration for missing DB tables\n\n';
 for (const table of missing) {
   sql += `CREATE TABLE IF NOT EXISTS public.${table} (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    company_id UUID NOT NULL,
+    company_id TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
