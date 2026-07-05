@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Users, Search, Plus, Edit, Trash2, Mail, Phone, DollarSign } from 'lucide-react';
+import ViewToggle from '@/components/shared/ViewToggle';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import { Users, Search, Plus, Edit, Trash2, Mail, Phone, MapPin } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
@@ -32,6 +34,7 @@ export default function Clients() {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
+  const [view, setView] = useViewPreference('re_clients', 'grid');
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -147,134 +150,183 @@ export default function Clients() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-          <div className="text-muted-foreground font-medium">Loading clients...</div>
+  const ClientCard = ({ client }) => (
+    <div className="group bg-card/60 backdrop-blur-sm border border-border/40 rounded-3xl p-6 hover:shadow-xl hover:border-emerald-500/30 transition-all relative overflow-hidden flex flex-col h-full">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500 rounded-bl-full -mr-10 -mt-10 pointer-events-none opacity-90" />
+      
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex-1 pr-12">
+          <h3 className="text-xl font-bold text-foreground group-hover:text-emerald-600 transition-colors line-clamp-1">{client.name}</h3>
+          <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
+            <MapPin className="w-3.5 h-3.5" /> {client.city || 'Location not set'}
+          </p>
         </div>
       </div>
-    );
-  }
 
-  return (
-    <div className="space-y-8 p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">Clients</h1>
-          <p className="text-sm lg:text-base text-slate-500 dark:text-slate-400 mt-1">Manage your buyers, sellers, tenants, and landlords effectively.</p>
-        </div>
-        <Button onClick={() => { setShowForm(true); setEditingId(null); }} className="gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 rounded-full px-6">
-          <Plus className="w-5 h-5" /> Add Client
+      <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+        <Button
+          size="icon"
+          variant="secondary"
+          onClick={() => handleEdit(client)}
+          className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-emerald-500 hover:text-white text-emerald-600 transition-colors border-0 shadow-sm"
+          title="Edit Client"
+        >
+          <Edit className="w-4 h-4" />
+        </Button>
+        <Button
+          size="icon"
+          variant="destructive"
+          onClick={() => handleDelete(client.id)}
+          className="h-8 w-8 bg-red-100/80 dark:bg-red-900/80 backdrop-blur-sm hover:bg-red-500 text-red-600 hover:text-white transition-colors border-0 shadow-sm"
+          title="Delete Client"
+        >
+          <Trash2 className="w-4 h-4" />
         </Button>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-white/10 shadow-sm transition-all duration-300">
-        <div className="flex-1">
-          <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+      <div className="space-y-3 text-sm mb-6 flex-1">
+        {client.email && (
+          <div className="flex items-center gap-3 text-muted-foreground group/link">
+            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover/link:bg-blue-500 group-hover/link:text-white transition-colors">
+              <Mail className="w-4 h-4" />
+            </div>
+            <a href={`mailto:${client.email}`} className="font-medium text-foreground/80 group-hover/link:text-blue-500 transition-colors truncate">
+              {client.email}
+            </a>
+          </div>
+        )}
+        {client.phone && (
+          <div className="flex items-center gap-3 text-muted-foreground group/link">
+            <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover/link:bg-emerald-500 group-hover/link:text-white transition-colors">
+              <Phone className="w-4 h-4" />
+            </div>
+            <a href={`tel:${client.phone}`} className="font-medium text-foreground/80 group-hover/link:text-emerald-500 transition-colors">
+              {client.phone}
+            </a>
+          </div>
+        )}
+      </div>
+      
+      <div className="mt-auto pt-4 border-t border-border/50 flex items-center justify-between">
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${typeColors[client.type] || 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400'}`}>
+          {client.type.toUpperCase()}
+        </span>
+        {client.budget > 0 && (
+          <span className="font-extrabold text-emerald-600 dark:text-emerald-400">
+            ${Number(client.budget).toLocaleString()}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-foreground">Clients</h1>
+            <p className="text-muted-foreground mt-2">Manage your buyers, sellers, tenants, and landlords effectively.</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <Button
+              onClick={() => { setShowForm(true); setEditingId(null); }}
+              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Add Client
+            </Button>
+          </div>
+        </div>
+
+        <Card className="p-2 px-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex items-center rounded-2xl shadow-sm gap-4 flex-wrap">
+          <div className="relative flex-1 flex items-center min-w-[200px]">
+            <Search className="w-5 h-5 text-muted-foreground mr-2" />
             <Input
               placeholder="Search clients by name, email..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 bg-transparent border-slate-200 dark:border-white/10 focus-visible:ring-1 focus-visible:ring-primary/50 transition-all duration-300 h-11"
+              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-base flex-1"
             />
           </div>
-        </div>
-        <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="w-full sm:w-48 bg-transparent border-slate-200 dark:border-white/10 focus:ring-1 focus:ring-primary/50 h-11 transition-all duration-300">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent className="dark:bg-slate-900 dark:border-white/10">
-            <SelectItem value="all">All Types</SelectItem>
-            <SelectItem value="buyer">Buyer</SelectItem>
-            <SelectItem value="seller">Seller</SelectItem>
-            <SelectItem value="tenant">Tenant</SelectItem>
-            <SelectItem value="landlord">Landlord</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Clients Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredClients.map(client => (
-          <Card key={client.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-            <div className={`h-1.5 w-full ${
-              client.type === 'buyer' ? 'bg-gradient-to-r from-orange-400 to-amber-500' :
-              client.type === 'seller' ? 'bg-gradient-to-r from-emerald-400 to-teal-500' :
-              client.type === 'tenant' ? 'bg-gradient-to-r from-blue-400 to-indigo-500' :
-              'bg-gradient-to-r from-purple-400 to-pink-500'
-            }`} />
-            <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <CardTitle className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">{client.name}</CardTitle>
-                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">{client.city || 'Location not set'}</p>
-                </div>
-                <Badge className={`${typeColors[client.type]} px-2.5 py-0.5 shadow-sm font-medium border-0 capitalize`}>{client.type}</Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-              <div className="flex flex-col mb-4">
-                {client.email && (
-                  <div className="flex items-center gap-3 text-sm group/link">
-                    <div className="p-1.5 rounded-md bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 group-hover/link:text-primary transition-colors shadow-sm border border-slate-100 dark:border-slate-800">
-                      <Mail className="w-3.5 h-3.5" />
-                    </div>
-                    <a href={`mailto:${client.email}`} className="text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors truncate font-medium">
-                      {client.email}
-                    </a>
-                  </div>
-                )}
-                {client.phone && (
-                  <div className="flex items-center gap-3 text-sm group/link">
-                    <div className="p-1.5 rounded-md bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 group-hover/link:text-primary transition-colors shadow-sm border border-slate-100 dark:border-slate-800">
-                      <Phone className="w-3.5 h-3.5" />
-                    </div>
-                    <a href={`tel:${client.phone}`} className="text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors font-medium">
-                      {client.phone}
-                    </a>
-                  </div>
-                )}
-              </div>
-
-              {client.budget > 0 && (
-                <div className="flex items-center justify-between gap-3 text-sm pt-3 border-t border-slate-100 dark:border-slate-800/60 mt-auto">
-                  <span className="font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-xs">Budget</span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-extrabold text-emerald-600 dark:text-emerald-400">${Number(client.budget).toLocaleString()}</span>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex gap-2 pt-4 mt-2 border-t border-slate-100 dark:border-slate-800/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Button size="sm" variant="outline" className="flex-1 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" onClick={() => handleEdit(client)}>
-                  <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit
-                </Button>
-                <Button size="sm" variant="ghost" className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-300 transition-colors" onClick={() => handleDelete(client.id)}>
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {filteredClients.length === 0 && (
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-6 shadow-inner">
-            <Users className="w-8 h-8 text-muted-foreground opacity-50" />
-          </div>
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No clients found</h3>
-          <p className="text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-6">You don't have any clients matching your criteria. Try adjusting your filters or add a new client.</p>
-          <Button onClick={() => { setShowForm(true); setEditingId(null); }} variant="outline" className="gap-2 rounded-full dark:border-white/10 dark:hover:bg-white/5 transition-all">
-            <Plus className="w-4 h-4" /> Add Your First Client
-          </Button>
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger className="w-40 border-0 bg-transparent shadow-none focus:ring-0 font-medium">
+              <SelectValue placeholder="All Types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="buyer">Buyer</SelectItem>
+              <SelectItem value="seller">Seller</SelectItem>
+              <SelectItem value="tenant">Tenant</SelectItem>
+              <SelectItem value="landlord">Landlord</SelectItem>
+            </SelectContent>
+          </Select>
         </Card>
-      )}
+
+        {isLoading ? (
+          <div className="text-center py-12 text-muted-foreground">Loading clients...</div>
+        ) : filteredClients.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground border border-dashed rounded-2xl border-border">No clients found.</div>
+        ) : view === 'grid' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredClients.map(client => (
+              <ClientCard key={client.id} client={client} />
+            ))}
+          </div>
+        ) : (
+          <Card className="border border-border/50 bg-card/60 backdrop-blur-sm rounded-3xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-muted/50 border-b border-border">
+                  <tr>
+                    <th className="p-4 font-semibold text-foreground">Name</th>
+                    <th className="p-4 font-semibold text-foreground">Contact</th>
+                    <th className="p-4 font-semibold text-foreground">Type</th>
+                    <th className="p-4 font-semibold text-foreground text-right">Budget</th>
+                    <th className="p-4 font-semibold text-foreground text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/50">
+                  {filteredClients.map(client => (
+                    <tr key={client.id} className="group hover:bg-muted/30 transition-colors">
+                      <td className="p-4">
+                        <p className="font-bold text-foreground">{client.name}</p>
+                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                          <MapPin className="w-3 h-3" /> {client.city || 'Location not set'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex flex-col gap-1">
+                          {client.phone && <span className="text-foreground/80 flex items-center gap-1.5"><Phone className="w-3 h-3 text-muted-foreground" /> {client.phone}</span>}
+                          {client.email && <span className="text-muted-foreground text-xs flex items-center gap-1.5"><Mail className="w-3 h-3" /> {client.email}</span>}
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${typeColors[client.type] || 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400'}`}>
+                          {client.type.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="p-4 text-right font-bold text-emerald-600 dark:text-emerald-400">
+                        {client.budget > 0 ? `$${Number(client.budget).toLocaleString()}` : '-'}
+                      </td>
+                      <td className="p-4 text-right">
+                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-emerald-50 text-emerald-600 dark:hover:bg-emerald-900/30" onClick={() => handleEdit(client)}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-red-50 text-red-600 dark:hover:bg-red-900/30" onClick={() => handleDelete(client.id)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        )}
+      </div>
 
       {/* Form Modal */}
       <Sheet open={showForm} onOpenChange={setShowForm}>

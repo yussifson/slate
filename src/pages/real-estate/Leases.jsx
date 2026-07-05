@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Home, Search, Plus, Calendar, DollarSign, AlertCircle } from 'lucide-react';
+import { Home, Search, Plus, Calendar, DollarSign, AlertCircle, Edit, Trash2 } from 'lucide-react';
+import ViewToggle from '@/components/shared/ViewToggle';
+import { useViewPreference } from '@/hooks/useViewPreference';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
@@ -25,6 +27,7 @@ export default function Leases() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
+  const [view, setView] = useViewPreference('re_leases', 'grid');
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     propertyId: '',
@@ -141,147 +144,171 @@ export default function Leases() {
     setShowForm(true);
   };
 
-  if (isLoading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
-  }
+  const LeaseCard = ({ lease }) => {
+    const status = getLeaseStatus(lease);
+    const badgeColors = {
+      'active': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-400',
+      'expiring-soon': 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400',
+      'expired': 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400',
+    };
+    
+    return (
+      <div className="group bg-card/60 backdrop-blur-sm border border-border/40 rounded-3xl p-6 hover:shadow-xl hover:border-emerald-500/30 transition-all relative overflow-hidden flex flex-col h-full">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500 rounded-bl-full -mr-10 -mt-10 pointer-events-none opacity-90" />
+        
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1 pr-12">
+            <h3 className="text-xl font-bold text-foreground group-hover:text-emerald-600 transition-colors line-clamp-1">{lease.property_address || 'No address'}</h3>
+            <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
+              <span className="w-5 h-5 rounded bg-muted flex items-center justify-center text-xs font-bold text-foreground">
+                {(lease.tenant_name || '?')[0].toUpperCase()}
+              </span>
+              {lease.tenant_name || 'No tenant'}
+            </p>
+          </div>
+        </div>
+
+        <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+          <Button
+            size="icon"
+            variant="secondary"
+            onClick={() => handleEdit(lease)}
+            className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-emerald-500 hover:text-white text-emerald-600 transition-colors border-0 shadow-sm"
+            title="Edit Lease"
+          >
+            <Edit className="w-4 h-4" />
+          </Button>
+          <Button
+            size="icon"
+            variant="destructive"
+            onClick={() => handleDelete(lease.id)}
+            className="h-8 w-8 bg-red-100/80 dark:bg-red-900/80 backdrop-blur-sm hover:bg-red-500 text-red-600 hover:text-white transition-colors border-0 shadow-sm"
+            title="Delete Lease"
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 mb-6 text-sm flex-1 bg-muted/20 p-4 rounded-2xl border border-border/30 mt-2">
+          <div>
+            <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Start Date</p>
+            <p className="font-medium text-foreground">{new Date(lease.start_date).toLocaleDateString()}</p>
+          </div>
+          <div>
+            <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">End Date</p>
+            <p className="font-medium text-foreground">{new Date(lease.end_date).toLocaleDateString()}</p>
+          </div>
+          <div className="col-span-2">
+            <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Monthly Rent</p>
+            <p className="font-bold text-emerald-600 dark:text-emerald-400 text-lg">${Number(lease.monthly_rent || 0).toLocaleString()}</p>
+          </div>
+        </div>
+        
+        <div className="mt-auto">
+          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${badgeColors[status]}`}>
+            {status.replace('-', ' ').toUpperCase()}
+          </span>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <div className="space-y-6 p-6 max-w-7xl mx-auto font-sans">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">Leases</h1>
-          <p className="text-sm text-muted-foreground mt-1">Manage rental agreements and tenants</p>
-        </div>
-        <Button onClick={() => setShowForm(true)} className="gap-2 shadow-sm hover:shadow-md transition-all duration-300 ease-in-out">
-          <Plus className="w-4 h-4" /> Add Lease
-        </Button>
-      </div>
-
-      {/* Filters */}
-      <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-        <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-          <div className="flex-1 min-w-[240px]">
-            <div className="relative group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-300" />
-              <Input
-                placeholder="Search by property, tenant..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 bg-background/50 border-border/50 focus-visible:ring-primary/30 transition-all duration-300"
-              />
-            </div>
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-foreground">Leases</h1>
+            <p className="text-muted-foreground mt-2">Manage rental agreements and tenants</p>
           </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-40 bg-background/50 border-border/50 transition-all duration-300 hover:border-border">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Leases</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="expiring-soon">Expiring Soon</SelectItem>
-              <SelectItem value="expired">Expired</SelectItem>
-            </SelectContent>
-          </Select>
-        </CardContent>
-      </Card>
-
-      {/* Leases Grid */}
-      {filteredLeases.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {filteredLeases.map(lease => {
-            const status = getLeaseStatus(lease);
-            const statusColors = {
-              'active': 'from-emerald-400 to-green-500',
-              'expiring-soon': 'from-amber-400 to-orange-500',
-              'expired': 'from-red-400 to-rose-500',
-            };
-            const badgeColors = {
-              'active': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-400',
-              'expiring-soon': 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400',
-              'expired': 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400',
-            };
-            
-            return (
-              <Card key={lease.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-                <div className={`h-1.5 w-full bg-gradient-to-r ${statusColors[status]}`} />
-                <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 pr-4">
-                      <CardTitle className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 line-clamp-1">{lease.property_address || 'No address'}</CardTitle>
-                      <div className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-md bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-300 shadow-sm border border-slate-200 dark:border-slate-700">
-                          {(lease.tenant_name || '?')[0].toUpperCase()}
-                        </div>
-                        {lease.tenant_name || 'No tenant'}
-                      </div>
-                    </div>
-                    <Badge className={`${badgeColors[status]} px-2.5 py-0.5 shadow-sm font-medium border-0 capitalize whitespace-nowrap`}>
-                      {status.replace('-', ' ')}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-                  <div className="p-4 bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-800/40 dark:to-slate-900/40 rounded-xl border border-slate-200/60 dark:border-slate-700/50">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">Monthly Rent</p>
-                    <p className="text-2xl font-extrabold text-slate-800 dark:text-slate-200 tracking-tight">
-                      ${Number(lease.monthly_rent || 0).toLocaleString()}
-                      <span className="text-sm font-medium text-slate-500 dark:text-slate-500 ml-1">/mo</span>
-                    </p>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4 text-sm flex-1">
-                    <div className="space-y-1">
-                      <p className="text-muted-foreground text-xs uppercase tracking-wider font-medium">Start Date</p>
-                      <p className="font-semibold text-foreground flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-                        {new Date(lease.start_date).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-muted-foreground text-xs uppercase tracking-wider font-medium">End Date</p>
-                      <p className="font-semibold text-foreground flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-                        {new Date(lease.end_date).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2 pt-4 mt-auto border-t border-border/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <Button size="sm" variant="outline" onClick={() => handleEdit(lease)} className="flex-1 transition-colors dark:hover:bg-white/5 dark:border-white/10">
-                      <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={() => handleDelete(lease.id)} className="text-destructive hover:bg-destructive/10 transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <Button
+              onClick={() => { setShowForm(true); setEditingId(null); }}
+              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Add Lease
+            </Button>
+          </div>
         </div>
-      )}
 
-      {filteredLeases.length === 0 && !isLoading && (
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4 transition-transform duration-300 hover:scale-110">
-              <Home className="w-8 h-8 text-primary" />
-            </div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">No leases found</h3>
-            <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
-              {leases.length === 0 
-                ? "Create your first lease to start tracking your rental agreements and tenants." 
-                : "No leases match your current search filters."}
-            </p>
-            {leases.length === 0 && (
-              <Button onClick={() => setShowForm(true)} className="gap-2 shadow-sm hover:shadow-md transition-all duration-300">
-                <Plus className="w-4 h-4" /> Create First Lease
-              </Button>
-            )}
-          </CardContent>
+        <Card className="p-2 px-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex items-center rounded-2xl shadow-sm gap-4 flex-wrap">
+          <div className="relative flex-1 flex items-center min-w-[200px]">
+            <Search className="w-5 h-5 text-muted-foreground mr-2" />
+            <Input
+              placeholder="Search by property, tenant..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-base flex-1"
+            />
         </Card>
-      )}
+
+        {isLoading ? (
+          <div className="text-center py-12 text-muted-foreground">Loading leases...</div>
+        ) : filteredLeases.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground border border-dashed rounded-2xl border-border">No leases found.</div>
+        ) : view === 'grid' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredLeases.map(lease => (
+              <LeaseCard key={lease.id} lease={lease} />
+            ))}
+          </div>
+        ) : (
+          <Card className="border border-border/50 bg-card/60 backdrop-blur-sm rounded-3xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-muted/50 border-b border-border">
+                  <tr>
+                    <th className="p-4 font-semibold text-foreground">Property</th>
+                    <th className="p-4 font-semibold text-foreground">Tenant</th>
+                    <th className="p-4 font-semibold text-foreground">Dates</th>
+                    <th className="p-4 font-semibold text-foreground">Rent</th>
+                    <th className="p-4 font-semibold text-foreground">Status</th>
+                    <th className="p-4 font-semibold text-foreground text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/50">
+                  {filteredLeases.map(lease => {
+                    const status = getLeaseStatus(lease);
+                    const badgeColors = {
+                      'active': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-400',
+                      'expiring-soon': 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400',
+                      'expired': 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400',
+                    };
+                    return (
+                      <tr key={lease.id} className="group hover:bg-muted/30 transition-colors">
+                        <td className="p-4 font-bold text-foreground">{lease.property_address || 'No address'}</td>
+                        <td className="p-4 text-muted-foreground">{lease.tenant_name || 'No tenant'}</td>
+                        <td className="p-4 text-muted-foreground">
+                          {new Date(lease.start_date).toLocaleDateString()} - {new Date(lease.end_date).toLocaleDateString()}
+                        </td>
+                        <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">
+                          ${Number(lease.monthly_rent || 0).toLocaleString()}/mo
+                        </td>
+                        <td className="p-4">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${badgeColors[status]}`}>
+                            {status.replace('-', ' ').toUpperCase()}
+                          </span>
+                        </td>
+                        <td className="p-4 text-right">
+                          <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-emerald-50 text-emerald-600 dark:hover:bg-emerald-900/30" onClick={() => handleEdit(lease)}>
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-red-50 text-red-600 dark:hover:bg-red-900/30" onClick={() => handleDelete(lease.id)}>
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        )}
+      </div>
 
       {/* Form Modal */}
       <Sheet open={showForm} onOpenChange={setShowForm}>

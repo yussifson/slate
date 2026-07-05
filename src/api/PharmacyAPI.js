@@ -74,7 +74,7 @@ class PharmacyAPI {
 
       // Get old value for audit
       const oldResult = await powerSync.execute(
-        'SELECT * FROM univ_pharmacy_drugs WHERE id = ?::text',
+        'SELECT * FROM univ_pharmacy_drugs WHERE id = ?',
         [drugId]
       );
       const oldValue = oldResult.rows._array?.[0] || {};
@@ -105,7 +105,7 @@ class PharmacyAPI {
     try {
       const now = getSafeISO8601();
       await powerSync.execute(
-        'UPDATE univ_pharmacy_drugs SET is_active = ?, updated_at = ? WHERE id = ?::text AND company_id = ?',
+        'UPDATE univ_pharmacy_drugs SET is_active = ?, updated_at = ? WHERE id = ? AND company_id = ?',
         [false, now, drugId, companyId]
       );
       await this.logAuditAction(companyId, 'DELETE', 'Drug', drugId, null, null, userId);
@@ -178,14 +178,14 @@ class PharmacyAPI {
 
       // Get current quantity
       const result = await powerSync.execute(
-        'SELECT quantity_in_stock, quantity_reserved FROM univ_pharmacy_inventory WHERE id = ?::text',
+        'SELECT quantity_in_stock, quantity_reserved FROM univ_pharmacy_inventory WHERE id = ?',
         [inventoryId]
       );
       const current = result.rows._array?.[0] || {};
       const newQuantity = (current.quantity_in_stock || 0) + quantityChange;
 
       await powerSync.execute(
-        'UPDATE univ_pharmacy_inventory SET quantity_in_stock = ?, updated_at = ? WHERE id = ?::text',
+        'UPDATE univ_pharmacy_inventory SET quantity_in_stock = ?, updated_at = ? WHERE id = ?',
         [Math.max(0, newQuantity), now, inventoryId]
       );
 
@@ -366,7 +366,7 @@ class PharmacyAPI {
     try {
       const now = getSafeISO8601();
       await powerSync.execute(
-        'UPDATE univ_pharmacy_customers SET is_active = ?, updated_at = ? WHERE id = ?::text AND company_id = ?',
+        'UPDATE univ_pharmacy_customers SET is_active = ?, updated_at = ? WHERE id = ? AND company_id = ?',
         [false, now, customerId, companyId]
       );
       return { success: true, message: 'Customer deleted successfully' };

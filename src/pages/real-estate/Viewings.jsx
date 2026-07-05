@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Calendar, Clock, MapPin, User, Eye, ChevronLeft, ChevronRight, Plus, Search, Filter, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, MapPin, User, Eye, ChevronLeft, ChevronRight, Plus, Search, Filter, AlertCircle, Edit, Trash2 } from 'lucide-react';
+import ViewToggle from '@/components/shared/ViewToggle';
+import { useViewPreference } from '@/hooks/useViewPreference';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
@@ -32,6 +34,7 @@ export default function Viewings() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
+  const [view, setView] = useViewPreference('re_viewings', 'calendar');
   const [formData, setFormData] = useState({
     propertyId: '', propertyAddress: '', clientId: '', clientName: '',
     agentId: '', agentName: '', viewingDate: '', viewingTime: '', status: 'scheduled', notes: ''
@@ -60,6 +63,29 @@ export default function Viewings() {
 
   const handlePrevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
   const handleNextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this viewing?')) return;
+    try {
+      await RealEstateAPI.deleteViewing(companyId, id, user.id);
+      toast.success('Viewing deleted successfully');
+      setViewings(prev => prev.filter(v => v.id !== id));
+    } catch (e) {
+      console.error('[Viewings] Delete failed:', e);
+      toast.error('Failed to delete viewing');
+    }
+  };
+
+  const handleEdit = (viewing) => {
+    setFormData({
+      propertyId: viewing.property_id || '', propertyAddress: viewing.property_address || '',
+      clientId: viewing.client_id || '', clientName: viewing.client_name || '',
+      agentId: viewing.agent_id || '', agentName: viewing.agent_name || '',
+      viewingDate: viewing.viewing_date || '', viewingTime: viewing.viewing_time || '',
+      status: viewing.status || 'scheduled', notes: viewing.notes || ''
+    });
+    setShowForm(true);
+  };
 
   const renderCalendar = () => {
     const daysInMonth = getDaysInMonth(currentDate);
@@ -104,101 +130,161 @@ export default function Viewings() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
-              <div className="p-2.5 bg-blue-100 dark:bg-blue-900/30 rounded-xl shadow-sm border border-blue-200 dark:border-blue-800/50">
-                <Calendar className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+              <div className="p-2.5 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl shadow-sm border border-emerald-200 dark:border-emerald-800/50">
+                <Calendar className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
               </div>
               Property Viewings
             </h1>
             <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">Schedule and track property showings seamlessly</p>
           </div>
-          <Button onClick={() => setShowForm(true)} className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white shadow-lg shadow-blue-600/20 dark:shadow-blue-900/20 gap-2 transition-all duration-300 rounded-xl">
-            <Plus className="w-5 h-5" /> Schedule Viewing
-          </Button>
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['calendar', 'list']} />
+            <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0">
+              <Plus className="w-5 h-5 mr-2" /> Schedule Viewing
+            </Button>
+          </div>
         </div>
 
-        {/* Calendar View */}
-        <div className="grid grid-cols-3 gap-6 mb-8">
-          <div className="col-span-2">
-            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-              <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2.5 text-lg font-bold tracking-wide">
-                    <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+        {/* Views */}
+        {view === 'calendar' ? (
+          <div className="grid grid-cols-3 gap-6 mb-8">
+            <div className="col-span-2">
+              <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+                <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2.5 text-lg font-bold tracking-wide">
+                      <Calendar className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                      {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                    </CardTitle>
+                    <div className="flex gap-1 bg-slate-100 dark:bg-slate-900/50 rounded-lg p-1 border border-slate-200 dark:border-slate-600/30">
+                      <Button variant="ghost" size="sm" onClick={handlePrevMonth} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 h-8 w-8 p-0 rounded-md transition-colors shadow-sm">
+                        <ChevronLeft className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={handleNextMonth} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 h-8 w-8 p-0 rounded-md transition-colors shadow-sm">
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+                  <div className="grid grid-cols-7 gap-0">
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                      <div key={day} className="py-3 px-2 text-center text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 border-r border-b border-slate-200 dark:border-slate-800">
+                        {day}
+                      </div>
+                    ))}
+                    {renderCalendar()}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Upcoming Viewings Sidebar */}
+            <div>
+              <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+                <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+                  <CardTitle className="flex items-center gap-2.5 text-lg font-bold text-slate-900 dark:text-white tracking-wide">
+                    <div className="p-1.5 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg border border-indigo-200 dark:border-indigo-800/50 shadow-sm">
+                      <Eye className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                    Upcoming
                   </CardTitle>
-                  <div className="flex gap-1 bg-slate-100 dark:bg-slate-900/50 rounded-lg p-1 border border-slate-200 dark:border-slate-600/30">
-                    <Button variant="ghost" size="sm" onClick={handlePrevMonth} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 h-8 w-8 p-0 rounded-md transition-colors shadow-sm">
-                      <ChevronLeft className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={handleNextMonth} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 h-8 w-8 p-0 rounded-md transition-colors shadow-sm">
-                      <ChevronRight className="w-4 h-4" />
-                    </Button>
+                </CardHeader>
+                <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+                  <div className="overflow-y-auto flex-1 custom-scrollbar scrollbar-green">
+                    {upcomingViewings.length === 0 ? (
+                      <div className="p-8 text-center text-slate-500 dark:text-slate-400 flex flex-col items-center justify-center h-full min-h-[200px]">
+                        <div className="flex flex-col mb-4">
+                          <AlertCircle className="w-8 h-8 text-slate-400 dark:text-slate-500" />
+                        </div>
+                        <p className="font-medium">No upcoming viewings</p>
+                        <p className="text-sm mt-1 text-slate-400">Your schedule is clear</p>
+                      </div>
+                    ) : (
+                      upcomingViewings.map(viewing => (
+                        <div key={viewing.id} className="p-5 border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-300 group relative">
+                          <div className="flex items-start justify-between mb-3">
+                            <p className="font-bold text-slate-900 dark:text-white text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{viewing.client_name}</p>
+                            <Badge className={`${statusColors[viewing.status]?.badge} border-0 shadow-sm px-2.5 py-0.5`}>{viewing.status}</Badge>
+                          </div>
+                          <div className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 font-medium">
+                            <div className="flex items-start gap-2.5">
+                              <MapPin className="w-3.5 h-3.5 mt-0.5 text-slate-400 shrink-0" /> 
+                              <span className="leading-snug">{viewing.property_address}</span>
+                            </div>
+                            <div className="flex items-center gap-2.5">
+                              <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" /> 
+                              <span>{viewing.viewing_date} at {viewing.viewing_time}</span>
+                            </div>
+                            <div className="flex items-center gap-2.5">
+                              <User className="w-3.5 h-3.5 text-slate-400 shrink-0" /> 
+                              <span>{viewing.agent_name}</span>
+                            </div>
+                          </div>
+                          <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-white dark:bg-slate-900 p-1 rounded-lg shadow-sm">
+                            <Button size="icon" variant="ghost" className="h-6 w-6 hover:bg-emerald-50 text-emerald-600 dark:hover:bg-emerald-900/30" onClick={() => handleEdit(viewing)}>
+                              <Edit className="w-3 h-3" />
+                            </Button>
+                            <Button size="icon" variant="ghost" className="h-6 w-6 hover:bg-red-50 text-red-600 dark:hover:bg-red-900/30" onClick={() => handleDelete(viewing.id)}>
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-                <div className="grid grid-cols-7 gap-0">
-                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                    <div key={day} className="py-3 px-2 text-center text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 border-r border-b border-slate-200 dark:border-slate-800">
-                      {day}
-                    </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        ) : (
+          <Card className="border border-border/50 bg-card/60 backdrop-blur-sm rounded-3xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-muted/50 border-b border-border">
+                  <tr>
+                    <th className="p-4 font-semibold text-foreground">Client</th>
+                    <th className="p-4 font-semibold text-foreground">Property</th>
+                    <th className="p-4 font-semibold text-foreground">Date & Time</th>
+                    <th className="p-4 font-semibold text-foreground">Agent</th>
+                    <th className="p-4 font-semibold text-foreground">Status</th>
+                    <th className="p-4 font-semibold text-foreground text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/50">
+                  {viewings.map(viewing => (
+                    <tr key={viewing.id} className="group hover:bg-muted/30 transition-colors">
+                      <td className="p-4 font-bold text-foreground">{viewing.client_name}</td>
+                      <td className="p-4 text-muted-foreground">{viewing.property_address}</td>
+                      <td className="p-4 text-muted-foreground">
+                        {new Date(viewing.viewing_date).toLocaleDateString()} at {viewing.viewing_time}
+                      </td>
+                      <td className="p-4 text-muted-foreground">{viewing.agent_name}</td>
+                      <td className="p-4">
+                        <Badge className={`${statusColors[viewing.status]?.badge} border-0 shadow-sm px-2.5 py-0.5`}>
+                          {viewing.status}
+                        </Badge>
+                      </td>
+                      <td className="p-4 text-right">
+                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-emerald-50 text-emerald-600 dark:hover:bg-emerald-900/30" onClick={() => handleEdit(viewing)}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-red-50 text-red-600 dark:hover:bg-red-900/30" onClick={() => handleDelete(viewing.id)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
                   ))}
-                  {renderCalendar()}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Upcoming Viewings Sidebar */}
-          <div>
-            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-              <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-                <CardTitle className="flex items-center gap-2.5 text-lg font-bold text-slate-900 dark:text-white tracking-wide">
-                  <div className="p-1.5 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg border border-indigo-200 dark:border-indigo-800/50 shadow-sm">
-                    <Eye className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                  </div>
-                  Upcoming
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-                <div className="overflow-y-auto flex-1 custom-scrollbar scrollbar-green">
-                  {upcomingViewings.length === 0 ? (
-                    <div className="p-8 text-center text-slate-500 dark:text-slate-400 flex flex-col items-center justify-center h-full min-h-[200px]">
-                      <div className="flex flex-col mb-4">
-                        <AlertCircle className="w-8 h-8 text-slate-400 dark:text-slate-500" />
-                      </div>
-                      <p className="font-medium">No upcoming viewings</p>
-                      <p className="text-sm mt-1 text-slate-400">Your schedule is clear</p>
-                    </div>
-                  ) : (
-                    upcomingViewings.map(viewing => (
-                      <div key={viewing.id} className="p-5 border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-300 group">
-                        <div className="flex items-start justify-between mb-3">
-                          <p className="font-bold text-slate-900 dark:text-white text-sm group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{viewing.client_name}</p>
-                          <Badge className={`${statusColors[viewing.status]?.badge} border-0 shadow-sm px-2.5 py-0.5`}>{viewing.status}</Badge>
-                        </div>
-                        <div className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 font-medium">
-                          <div className="flex items-start gap-2.5">
-                            <MapPin className="w-3.5 h-3.5 mt-0.5 text-slate-400 shrink-0" /> 
-                            <span className="leading-snug">{viewing.property_address}</span>
-                          </div>
-                          <div className="flex items-center gap-2.5">
-                            <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" /> 
-                            <span>{viewing.viewing_date} at {viewing.viewing_time}</span>
-                          </div>
-                          <div className="flex items-center gap-2.5">
-                            <User className="w-3.5 h-3.5 text-slate-400 shrink-0" /> 
-                            <span>{viewing.agent_name}</span>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+                </tbody>
+              </table>
+              {viewings.length === 0 && (
+                <div className="text-center py-12 text-muted-foreground border-t border-border">No viewings found.</div>
+              )}
+            </div>
+          </Card>
+        )}
 
         {/* Form Sheet */}
         <Sheet open={showForm} onOpenChange={setShowForm}>

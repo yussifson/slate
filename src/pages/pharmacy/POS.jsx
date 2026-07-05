@@ -84,6 +84,27 @@ export default function POS() {
     setCart(cart.filter((_, i) => i !== index));
   };
 
+  const updateCartQuantity = (index, delta) => {
+    setCart(cart.map((item, i) => {
+      if (i !== index) return item;
+      const newQuantity = item.quantity + delta;
+      
+      const inv = inventory.find(invItem => invItem.id === item.inventoryId);
+      if (inv && newQuantity > inv.quantity_available) {
+        toast.error('Not enough stock available');
+        return item;
+      }
+      
+      if (newQuantity <= 0) return null; // We filter out nulls below
+      
+      return { 
+        ...item, 
+        quantity: newQuantity, 
+        lineTotal: item.unitPrice * newQuantity 
+      };
+    }).filter(Boolean));
+  };
+
   const subtotal = cart.reduce((sum, item) => sum + item.lineTotal, 0);
   const tax = subtotal * 0.1;
   const total = subtotal + tax;
@@ -172,21 +193,21 @@ export default function POS() {
                       key={drug.id}
                       onClick={() => !isOutOfStock && addToCart(drug)}
                       disabled={isOutOfStock}
-                      className={`text-left p-5 rounded-3xl border transition-all relative overflow-hidden group flex flex-col
+                      className={`text-left p-5 rounded-3xl border-2 transition-all relative overflow-hidden group flex flex-col h-full min-h-[140px]
                         ${isOutOfStock 
                           ? 'bg-muted/30 border-border/40 opacity-70 cursor-not-allowed' 
-                          : 'bg-card border-border/40 hover:shadow-lg hover:border-emerald-500/30'}`}
+                          : 'bg-card border-emerald-500/30 hover:shadow-lg hover:border-emerald-500 hover:-translate-y-1'}`}
                     >
                       {/* Decoration */}
                       <div className={`absolute top-0 right-0 w-24 h-24 rounded-bl-full -mr-8 -mt-8 pointer-events-none transition-colors
                         ${isOutOfStock ? 'bg-muted' : 'bg-emerald-500 opacity-90'}`} />
                       
-                      <div className="flex justify-between items-start mb-2 relative">
-                        <div className="pr-4">
-                          <p className={`font-bold text-lg leading-tight transition-colors ${isOutOfStock ? 'text-muted-foreground' : 'text-foreground group-hover:text-emerald-600'}`}>
+                      <div className="flex justify-between items-start mb-4 relative z-10 w-full">
+                        <div className="pr-10 w-full">
+                          <p className={`font-bold text-lg leading-tight transition-colors break-words ${isOutOfStock ? 'text-muted-foreground' : 'text-foreground group-hover:text-emerald-600'}`}>
                             {drug.drug_name}
                           </p>
-                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{drug.generic_name || 'Generic'}</p>
+                          <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{drug.generic_name || 'Generic'}</p>
                         </div>
                       </div>
 
@@ -251,18 +272,40 @@ export default function POS() {
                         <span className="font-medium">${item.unitPrice.toFixed(2)}</span> × {item.quantity}
                       </p>
                     </div>
-                    <div className="flex items-center gap-3 pl-3">
-                      <span className="font-bold text-sm text-emerald-600 dark:text-emerald-400 w-16 text-right">
-                        ${(item.unitPrice * item.quantity).toFixed(2)}
-                      </span>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => removeFromCart(idx)}
-                        className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-full"
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
+                    <div className="flex items-center gap-2 pl-2">
+                      <div className="flex items-center bg-muted/50 rounded-xl border border-border/50 p-0.5">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => updateCartQuantity(idx, -1)}
+                          className="h-6 w-6 rounded-lg hover:bg-background"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </Button>
+                        <span className="w-6 text-center text-sm font-medium">{item.quantity}</span>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => updateCartQuantity(idx, 1)}
+                          className="h-6 w-6 rounded-lg hover:bg-background"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </Button>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-sm text-emerald-600 dark:text-emerald-400 w-14 text-right">
+                          ${(item.unitPrice * item.quantity).toFixed(2)}
+                        </span>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => removeFromCart(idx)}
+                          className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-full shrink-0"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -342,7 +385,7 @@ export default function POS() {
 
       {/* Receipt Sheet */}
       <Sheet open={showReceipt} onOpenChange={setShowReceipt}>
-        <SheetContent className="w-full max-w-sm overflow-y-auto">
+        <SheetContent aria-describedby={undefined} className="w-full max-w-sm overflow-y-auto">
           <SheetHeader>
             <SheetTitle>Receipt</SheetTitle>
           </SheetHeader>

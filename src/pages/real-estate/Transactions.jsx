@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Banknote, Home, User, DollarSign, CheckCircle, AlertCircle, Plus, MoreVertical, Search, Edit, Trash2 } from 'lucide-react';
+import ViewToggle from '@/components/shared/ViewToggle';
+import { useViewPreference } from '@/hooks/useViewPreference';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
@@ -34,6 +36,7 @@ export default function Transactions() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
+  const [view, setView] = useViewPreference('re_transactions', 'kanban');
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [stats, setStats] = useState({ total: 0, value: 0, closed: 0 });
@@ -156,17 +159,17 @@ export default function Transactions() {
   };
 
   const KanbanColumn = ({ stage, transactions }) => (
-    <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl p-5 min-h-[600px] flex flex-col border border-gray-200/50 dark:border-white/10 flex-shrink-0 w-96 shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out">
-      <div className="mb-5 pb-4 border-b border-gray-100 dark:border-white/10">
+    <div className="bg-card/60 dark:bg-slate-900/60 backdrop-blur-md rounded-2xl p-5 min-h-[600px] flex flex-col border border-border/40 flex-shrink-0 w-96 shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out">
+      <div className="mb-5 pb-4 border-b border-border/50">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-gray-900 dark:text-white text-base flex items-center gap-2">
+          <h3 className="font-semibold text-foreground text-base flex items-center gap-2">
             <span className={`w-2.5 h-2.5 rounded-full ${pipelineStages.find(s => s.id === stage)?.badge}`}></span>
             {pipelineStages.find(s => s.id === stage)?.label}
           </h3>
-          <Badge className="bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground text-xs px-2.5 py-0.5 rounded-full font-medium border-0">{transactions.length}</Badge>
+          <Badge className="bg-emerald-100/50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs px-2.5 py-0.5 rounded-full font-medium border-0">{transactions.length}</Badge>
         </div>
-        <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5 overflow-hidden">
-          <div className="bg-gradient-to-r from-primary to-purple-500 h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${(transactions.length / Math.max(...pipelineStages.map(() => 3), 1)) * 100}%` }}></div>
+        <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+          <div className="bg-gradient-to-r from-emerald-500 to-teal-500 h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${(transactions.length / Math.max(...pipelineStages.map(() => 3), 1)) * 100}%` }}></div>
         </div>
       </div>
       
@@ -222,21 +225,24 @@ export default function Transactions() {
   );
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-purple-50/50 via-white to-indigo-50/50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-6 md:p-8 transition-colors duration-300 ease-in-out">
-      <div className="max-w-[1600px] mx-auto">
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-10">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3 tracking-tight">
-                <div className="p-2.5 bg-primary/10 dark:bg-primary/20 rounded-xl"><Banknote className="w-7 h-7 text-primary dark:text-primary-foreground" /></div>
+              <h1 className="text-4xl font-bold text-foreground flex items-center gap-3">
+                <div className="p-2.5 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl border border-emerald-200 dark:border-emerald-800/50 shadow-sm"><Banknote className="w-7 h-7 text-emerald-600 dark:text-emerald-400" /></div>
                 Sales Pipeline
               </h1>
-              <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm md:text-base font-medium">Track property transactions through the sales pipeline</p>
+              <p className="text-muted-foreground mt-2 font-medium">Track property transactions through the sales pipeline</p>
             </div>
-            <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', sellerName: '', salePrice: 0, closingDate: '', agentName: '', status: 'offer_accepted', notes: '' }); }} className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 dark:shadow-primary/10 gap-2 rounded-xl transition-all duration-300 hover:scale-105">
-              <Plus className="w-5 h-5" /> New Transaction
-            </Button>
+            <div className="flex items-center gap-4">
+              <ViewToggle view={view} onViewChange={setView} allowedViews={['kanban', 'list']} />
+              <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', sellerName: '', salePrice: 0, closingDate: '', agentName: '', status: 'offer_accepted', notes: '' }); }} className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0 gap-2 rounded-xl transition-all duration-300">
+                <Plus className="w-5 h-5" /> New Transaction
+              </Button>
+            </div>
           </div>
 
           {/* Stats */}
@@ -245,10 +251,10 @@ export default function Transactions() {
               <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1 group-hover:text-primary transition-colors">Total Transactions</p>
-                    <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{stats.total}</p>
+                    <p className="text-muted-foreground text-sm font-medium mb-1 group-hover:text-emerald-500 transition-colors">Total Transactions</p>
+                    <p className="text-3xl font-bold text-foreground tracking-tight">{stats.total}</p>
                   </div>
-                  <div className="p-4 bg-primary/10 dark:bg-primary/20 rounded-2xl group-hover:scale-110 transition-transform duration-300"><Banknote className="w-7 h-7 text-primary dark:text-primary-foreground" /></div>
+                  <div className="p-4 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><Banknote className="w-7 h-7 text-emerald-600 dark:text-emerald-400" /></div>
                 </div>
               </CardContent>
             </Card>
@@ -277,18 +283,71 @@ export default function Transactions() {
           </div>
         </div>
 
-        {/* Kanban Board */}
-        <div className="overflow-x-auto pb-4 custom-scrollbar">
-          <div className="flex gap-6 min-w-min">
-            {pipelineStages.map(stage => (
-              <KanbanColumn
-                key={stage.id}
-                stage={stage.id}
-                transactions={getTransactionsByStage(stage.id)}
-              />
-            ))}
+        {/* Views */}
+        {view === 'kanban' ? (
+          <div className="overflow-x-auto pb-4 custom-scrollbar">
+            <div className="flex gap-6 min-w-min">
+              {pipelineStages.map(stage => (
+                <KanbanColumn
+                  key={stage.id}
+                  stage={stage.id}
+                  transactions={getTransactionsByStage(stage.id)}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        ) : (
+          <Card className="border border-border/50 bg-card/60 backdrop-blur-sm rounded-3xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-muted/50 border-b border-border">
+                  <tr>
+                    <th className="p-4 font-semibold text-foreground">Property</th>
+                    <th className="p-4 font-semibold text-foreground">Buyer</th>
+                    <th className="p-4 font-semibold text-foreground">Sale Price</th>
+                    <th className="p-4 font-semibold text-foreground">Closing Date</th>
+                    <th className="p-4 font-semibold text-foreground">Status</th>
+                    <th className="p-4 font-semibold text-foreground text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/50">
+                  {filteredTransactions.map(transaction => (
+                    <tr key={transaction.id} className="group hover:bg-muted/30 transition-colors">
+                      <td className="p-4 font-bold text-foreground">
+                        <div className="cursor-pointer hover:text-emerald-600 transition-colors" onClick={() => setSelectedTransaction(transaction)}>
+                          {transaction.property_address}
+                        </div>
+                      </td>
+                      <td className="p-4 text-muted-foreground">{transaction.buyer_name}</td>
+                      <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">
+                        ${Number(transaction.sale_price || 0).toLocaleString()}
+                      </td>
+                      <td className="p-4 text-muted-foreground">{new Date(transaction.closing_date).toLocaleDateString()}</td>
+                      <td className="p-4">
+                        <Badge className={`${pipelineStages.find(s => s.id === transaction.status)?.badge} border-0 shadow-sm px-2.5 py-0.5`}>
+                          {transaction.status.replace('_', ' ')}
+                        </Badge>
+                      </td>
+                      <td className="p-4 text-right">
+                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-emerald-50 text-emerald-600 dark:hover:bg-emerald-900/30" onClick={() => handleEdit(transaction)}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-red-50 text-red-600 dark:hover:bg-red-900/30" onClick={() => handleDelete(transaction.id)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {filteredTransactions.length === 0 && (
+                <div className="text-center py-12 text-muted-foreground border-t border-border">No transactions found.</div>
+              )}
+            </div>
+          </Card>
+        )}
 
         {/* Transaction Details Sheet */}
         <Sheet open={!!selectedTransaction} onOpenChange={(open) => !open && setSelectedTransaction(null)}>
@@ -300,8 +359,8 @@ export default function Transactions() {
               <div className="space-y-8 mt-8">
                 <div className="bg-gray-50 dark:bg-slate-900/50 rounded-2xl p-6 border border-gray-100 dark:border-white/5">
                   <div className="flex items-start gap-4">
-                    <div className="p-3 bg-primary/10 dark:bg-primary/20 rounded-xl mt-1">
-                      <Home className="w-6 h-6 text-primary dark:text-primary-foreground" />
+                    <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl mt-1 border border-emerald-200/50 dark:border-emerald-800/30">
+                      <Home className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider mb-1">Property</p>
@@ -336,7 +395,7 @@ export default function Transactions() {
                   <div className="space-y-1">
                     <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Agent</p>
                     <p className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs text-primary font-bold">{selectedTransaction.agent_name?.charAt(0) || '?'}</div>
+                      <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-xs text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-200/50 dark:border-emerald-800/30">{selectedTransaction.agent_name?.charAt(0) || '?'}</div>
                       {selectedTransaction.agent_name}
                     </p>
                   </div>
