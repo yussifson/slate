@@ -150,7 +150,7 @@ export default function GenericKanban({
     <div className="flex flex-col gap-4">
       {boardKey && (
         <div className="flex justify-end px-6">
-          <Button onClick={openAddStage} variant="outline" size="sm" className="rounded-xl border-emerald-500/30 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">
+          <Button onClick={openAddStage} variant="outline" size="sm" className="rounded-xl border-primary/30 text-primary hover:bg-primary/5 dark:hover:bg-primary/30/20">
             <Plus className="w-4 h-4 mr-2" /> Add Stage
           </Button>
         </div>
@@ -187,7 +187,7 @@ export default function GenericKanban({
                     <div 
                       ref={provided.innerRef} 
                       {...provided.droppableProps}
-                      className={`flex-1 space-y-4 overflow-y-auto custom-scrollbar p-4 transition-colors ${snapshot.isDraggingOver ? 'bg-emerald-500/5' : ''}`}
+                      className={`flex-1 space-y-4 overflow-y-auto custom-scrollbar p-4 transition-colors ${snapshot.isDraggingOver ? 'bg-primary/5' : ''}`}
                     >
                       {items.map((item, i) => (
                         <Draggable key={item.id} draggableId={item.id} index={i}>
@@ -197,7 +197,7 @@ export default function GenericKanban({
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                                 style={{...provided.draggableProps.style, zIndex: snapshot.isDragging ? 9999 : 1}}
-                                className={`bg-background border border-border/60 shadow-sm p-5 rounded-2xl transition-all cursor-grab active:cursor-grabbing hover:shadow-md hover:border-emerald-500/40 ${snapshot.isDragging ? 'shadow-xl border-emerald-500 ring-2 ring-emerald-500/20 rotate-2' : ''}`}
+                                className={`bg-background border border-border/60 shadow-sm p-5 rounded-2xl transition-all cursor-grab active:cursor-grabbing hover:shadow-md hover:border-primary/40 ${snapshot.isDragging ? 'shadow-xl border-primary ring-2 ring-primary/20 rotate-2' : ''}`}
                               >
                                 <h4 className="font-bold text-sm text-foreground mb-3 leading-snug">{item[titleKey] || 'Untitled'}</h4>
                                 <div className="flex flex-wrap gap-2">
@@ -238,7 +238,7 @@ export default function GenericKanban({
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowStageModal(false)}>Cancel</Button>
-            <Button onClick={handleSaveStage} className="bg-emerald-600 hover:bg-emerald-700 text-white">Save Stage</Button>
+            <Button onClick={handleSaveStage} className="bg-primary hover:bg-primary/90 text-white">Save Stage</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

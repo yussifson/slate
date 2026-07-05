@@ -138,7 +138,7 @@ export default function Inventory() {
             <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
             <Button
               onClick={() => setShowForm(true)}
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
+              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Stock
@@ -211,7 +211,7 @@ export default function Inventory() {
                         <td className="p-4 font-bold">{getDrugName(item.drug_id)}</td>
                         <td className="p-4 text-muted-foreground font-mono text-xs">{item.batch_number}</td>
                         <td className="p-4 font-medium">{item.quantity_in_stock}</td>
-                        <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">{item.quantity_available}</td>
+                        <td className="p-4 font-bold text-primary dark:text-primary/80">{item.quantity_available}</td>
                         <td className={`p-4 ${isExpired ? 'text-red-600 font-bold' : 'text-muted-foreground'}`}>
                           {item.expiry_date}
                         </td>
@@ -243,12 +243,12 @@ export default function Inventory() {
               const isLowStock = item.quantity_available <= 50;
               
               return (
-                <Card key={item.id} className={`p-5 rounded-3xl border shadow-sm transition-all relative overflow-hidden group ${isExpired ? 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-900' : 'bg-card/60 backdrop-blur-sm border-border/40 hover:shadow-lg hover:border-emerald-500/30'}`}>
+                <Card key={item.id} className={`p-5 rounded-3xl border shadow-sm transition-all relative overflow-hidden group ${isExpired ? 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-900' : 'bg-card/60 backdrop-blur-sm border-border/40 hover:shadow-lg hover:border-primary/30'}`}>
                   <div className="absolute top-0 right-0 p-4">
                     {isExpired ? <span className="px-2 py-1 bg-red-100 text-red-800 text-[10px] rounded-full font-bold uppercase tracking-wider">Expired</span>
                     : isExpiringSoon ? <span className="px-2 py-1 bg-orange-100 text-orange-800 text-[10px] rounded-full font-bold uppercase tracking-wider">Expiring</span>
                     : isLowStock ? <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-[10px] rounded-full font-bold uppercase tracking-wider">Low Stock</span>
-                    : <span className="px-2 py-1 bg-emerald-100 text-emerald-800 text-[10px] rounded-full font-bold uppercase tracking-wider">Healthy</span>}
+                    : <span className="px-2 py-1 bg-primary/10 text-primary/40 text-[10px] rounded-full font-bold uppercase tracking-wider">Healthy</span>}
                   </div>
                   {/* Hover actions */}
                   <div className="absolute bottom-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
@@ -259,13 +259,13 @@ export default function Inventory() {
                       <Trash2 className="w-3.5 h-3.5" />
                     </Button>
                   </div>
-                  <h3 className="font-bold text-lg pr-16 mb-1 line-clamp-1 group-hover:text-emerald-600 transition-colors">{getDrugName(item.drug_id)}</h3>
+                  <h3 className="font-bold text-lg pr-16 mb-1 line-clamp-1 group-hover:text-primary transition-colors">{getDrugName(item.drug_id)}</h3>
                   <p className="text-xs text-muted-foreground font-mono mb-4">Batch: {item.batch_number}</p>
                   
                   <div className="grid grid-cols-2 gap-4 bg-muted/30 p-3 rounded-2xl">
                     <div>
                       <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Available</p>
-                      <p className="font-bold text-emerald-600 dark:text-emerald-400 text-lg">{item.quantity_available}</p>
+                      <p className="font-bold text-primary dark:text-primary/80 text-lg">{item.quantity_available}</p>
                     </div>
                     <div>
                       <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">In Stock</p>

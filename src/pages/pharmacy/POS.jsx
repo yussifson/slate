@@ -185,7 +185,7 @@ export default function POS() {
                   placeholder="Search drugs by name or generic..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 h-12 rounded-2xl bg-muted/50 border-0 focus-visible:ring-1 focus-visible:ring-emerald-500 text-base"
+                  className="w-full pl-12 h-12 rounded-2xl bg-muted/50 border-0 focus-visible:ring-1 focus-visible:ring-primary text-base"
                 />
               </div>
 
@@ -199,38 +199,30 @@ export default function POS() {
                       key={drug.id}
                       onClick={() => !isOutOfStock && addToCart(drug)}
                       disabled={isOutOfStock}
-                      className={`text-left p-5 rounded-3xl border-2 transition-all relative overflow-hidden group flex flex-col h-full min-h-[140px]
+                      className={`text-left p-5 rounded-2xl border transition-all flex flex-col justify-between min-h-[140px]
                         ${isOutOfStock 
-                          ? 'bg-muted/30 border-border/40 opacity-70 cursor-not-allowed' 
-                          : 'bg-card border-emerald-500/30 hover:shadow-lg hover:border-emerald-500 hover:-translate-y-1'}`}
+                          ? 'bg-muted/30 border-border/40 opacity-60 cursor-not-allowed' 
+                          : 'bg-card border-border/60 hover:shadow-md hover:border-primary/50 hover:-translate-y-0.5'}`}
                     >
-                      {/* Decoration */}
-                      <div className={`absolute top-0 right-0 w-24 h-24 rounded-bl-full -mr-8 -mt-8 pointer-events-none transition-colors
-                        ${isOutOfStock ? 'bg-muted' : 'bg-emerald-500 opacity-90'}`} />
-                      
-                      <div className="flex justify-between items-start mb-4 relative z-10 w-full">
-                        <div className="pr-10 w-full">
-                          <p className={`font-bold text-lg leading-tight transition-colors break-words ${isOutOfStock ? 'text-muted-foreground' : 'text-foreground group-hover:text-emerald-600'}`}>
-                            {drug.drug_name}
-                          </p>
-                          <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{drug.generic_name || 'Generic'}</p>
-                        </div>
+                      <div className="w-full">
+                        <p className={`font-bold text-lg leading-tight break-words ${isOutOfStock ? 'text-muted-foreground' : 'text-foreground group-hover:text-primary'}`}>
+                          {drug.drug_name}
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">{drug.generic_name || 'Generic'}</p>
                       </div>
 
-                      <div className="mt-auto pt-4">
-                        <div className="flex justify-between items-center bg-muted/40 p-3 rounded-2xl border border-border/30">
-                          <div>
-                            <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground block mb-0.5">Price</span>
-                            <span className={`font-bold text-lg ${isOutOfStock ? 'text-muted-foreground' : 'text-emerald-600 dark:text-emerald-400'}`}>
-                              ${parseFloat(drug.unit_price).toFixed(2)}
-                            </span>
-                          </div>
-                          <div className="text-right">
-                            <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground block mb-0.5">Stock</span>
-                            <span className={`text-xs font-bold px-2 py-1 rounded-lg ${isOutOfStock ? 'bg-red-100 text-red-700' : 'bg-background'}`}>
-                              {inv?.quantity_available || 0} left
-                            </span>
-                          </div>
+                      <div className="flex justify-between items-end mt-4 pt-4 border-t border-border/40 w-full">
+                        <div>
+                          <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground block mb-0.5">Price</span>
+                          <span className={`font-bold text-lg ${isOutOfStock ? 'text-muted-foreground' : 'text-primary'}`}>
+                            ${parseFloat(drug.unit_price).toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground block mb-0.5">Stock</span>
+                          <span className={`text-xs font-bold px-2.5 py-1 rounded-md ${isOutOfStock ? 'bg-red-100 text-red-700' : 'bg-muted/50 border border-border/50 text-foreground'}`}>
+                            {inv?.quantity_available || 0} left
+                          </span>
                         </div>
                       </div>
                     </button>
@@ -244,7 +236,7 @@ export default function POS() {
           <div className="lg:col-span-1">
             <Card className="p-6 border border-border/50 bg-card/60 backdrop-blur-sm rounded-3xl sticky top-6 shadow-sm flex flex-col" style={{ maxHeight: 'calc(100vh - 100px)' }}>
               <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/30/30 flex items-center justify-center text-primary dark:text-primary/80">
                   <ShoppingCart className="w-4 h-4" />
                 </div>
                 Current Order
@@ -253,7 +245,7 @@ export default function POS() {
               <div className="mb-6">
                 <label className="text-xs uppercase tracking-wider font-bold text-muted-foreground block mb-2">Customer</label>
                 <Select value={selectedCustomerId} onValueChange={setSelectedCustomerId}>
-                  <SelectTrigger className="h-12 rounded-xl bg-muted/50 border-0 focus:ring-1 focus:ring-emerald-500">
+                  <SelectTrigger className="h-12 rounded-xl bg-muted/50 border-0 focus:ring-1 focus:ring-primary">
                     <SelectValue placeholder="Select a customer" />
                   </SelectTrigger>
                   <SelectContent>
@@ -276,7 +268,7 @@ export default function POS() {
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold text-foreground break-words">{item.drugName}</p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          <span className="font-medium text-emerald-600 dark:text-emerald-400">${item.unitPrice.toFixed(2)}</span> / unit
+                          <span className="font-medium text-primary">${item.unitPrice.toFixed(2)}</span> / unit
                         </p>
                       </div>
                       <Button
@@ -311,7 +303,7 @@ export default function POS() {
                       
                       <div className="text-right">
                         <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground block">Total</span>
-                        <span className="font-bold text-base text-emerald-600 dark:text-emerald-400">
+                        <span className="font-bold text-base text-primary">
                           ${(item.unitPrice * item.quantity).toFixed(2)}
                         </span>
                       </div>
@@ -334,7 +326,7 @@ export default function POS() {
                       </div>
                       <div className="flex justify-between pt-3 border-t border-border/50">
                         <span className="font-bold text-foreground">Total</span>
-                        <span className="font-bold text-2xl text-emerald-600 dark:text-emerald-400">${total.toFixed(2)}</span>
+                        <span className="font-bold text-2xl text-primary dark:text-primary/80">${total.toFixed(2)}</span>
                       </div>
                     </div>
 
@@ -370,9 +362,9 @@ export default function POS() {
                     </div>
 
                     {amountTendered >= total && total > 0 && (
-                      <div className="mt-4 bg-emerald-100 dark:bg-emerald-900/30 p-3 rounded-xl border border-emerald-200 dark:border-emerald-800 flex justify-between items-center">
-                        <span className="text-sm font-bold text-emerald-900 dark:text-emerald-100">Change</span>
-                        <span className="font-bold text-lg text-emerald-700 dark:text-emerald-400">${change.toFixed(2)}</span>
+                      <div className="mt-4 bg-primary/10 dark:bg-primary/30/30 p-3 rounded-xl border border-primary/20 dark:border-primary/40 flex justify-between items-center">
+                        <span className="text-sm font-bold text-primary/30 dark:text-primary/10">Change</span>
+                        <span className="font-bold text-lg text-primary/90 dark:text-primary/80">${change.toFixed(2)}</span>
                       </div>
                     )}
                   </div>
@@ -381,7 +373,7 @@ export default function POS() {
                 <Button
                   onClick={handleCheckout}
                   disabled={cart.length === 0 || amountTendered < total}
-                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white h-14 rounded-2xl font-bold text-lg shadow-md border-0 disabled:opacity-50"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-14 rounded-2xl font-bold text-lg shadow-md border-0 disabled:opacity-50"
                 >
                   <CreditCard className="w-5 h-5 mr-2" />
                   Checkout

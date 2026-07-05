@@ -65,7 +65,7 @@ export default function Claims() {
   const getStatusColor = (status) => {
     const colors = {
       'Submitted': 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-      'Approved': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
+      'Approved': 'bg-primary/10 text-primary/40 dark:bg-primary/30/30 dark:text-primary/80',
       'Denied': 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
       'Pending': 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400'
     };
@@ -156,7 +156,7 @@ export default function Claims() {
             <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
             <Button
               onClick={() => handleOpenForm()}
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
+              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0"
             >
               <Plus className="w-4 h-4 mr-2" />
               New Claim
@@ -226,7 +226,7 @@ export default function Claims() {
                       <td className="p-4 font-bold text-foreground">{c.claim_number}</td>
                       <td className="p-4 text-muted-foreground">{c.insurance_provider}</td>
                       <td className="p-4 font-medium">${parseFloat(c.claim_amount || 0).toFixed(2)}</td>
-                      <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">${parseFloat(c.approved_amount || 0).toFixed(2)}</td>
+                      <td className="p-4 font-bold text-primary dark:text-primary/80">${parseFloat(c.approved_amount || 0).toFixed(2)}</td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${getStatusColor(c.claim_status)}`}>
                           {c.claim_status}
@@ -274,7 +274,7 @@ export default function Claims() {
                   </div>
                   <div>
                     <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Approved</p>
-                    <p className="font-bold text-emerald-600 dark:text-emerald-400">${parseFloat(c.approved_amount || 0).toFixed(2)}</p>
+                    <p className="font-bold text-primary dark:text-primary/80">${parseFloat(c.approved_amount || 0).toFixed(2)}</p>
                   </div>
                 </div>
 
@@ -374,7 +374,7 @@ export default function Claims() {
               />
             </div>
             <div className="flex gap-2 pt-6">
-              <Button type="submit" className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white">
+              <Button type="submit" className="flex-1 bg-gradient-to-r from-primary to-teal-600 text-white">
                 {editingId ? 'Save Changes' : 'Create Claim'}
               </Button>
               <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
