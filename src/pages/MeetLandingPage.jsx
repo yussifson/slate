@@ -134,20 +134,34 @@ export default function MeetLandingPage() {
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
 
+  const generateShortId = () => {
+    const chars = 'abcdefghijklmnopqrstuvwxyz';
+    const randomStr = (length) => {
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    };
+    return `${randomStr(3)}-${randomStr(3)}-${randomStr(1)}`;
+  };
+
   const handleCreateMeeting = async (type) => {
     setIsCreating(true);
     try {
-      const roomId = crypto.randomUUID();
+      const dbId = crypto.randomUUID();
+      const shortId = generateShortId();
+      
       const { data, error } = await supabase.functions.invoke('create-daily-room', {
-        body: { roomName: roomId, privacy: 'public' },
+        body: { dbId, roomName: shortId, privacy: 'public' },
       });
       if (error) throw error;
 
       if (type === 'instant') {
-        navigate(`/join/${roomId}`);
+        navigate(`/join/${shortId}`);
       } else {
         const { protocol, hostname, port } = window.location;
-        setLaterLink(`${protocol}//${hostname}${port ? ':' + port : ''}/join/${roomId}`);
+        setLaterLink(`${protocol}//${hostname}${port ? ':' + port : ''}/join/${shortId}`);
         setIsDialogOpen(true);
       }
     } catch (err) {

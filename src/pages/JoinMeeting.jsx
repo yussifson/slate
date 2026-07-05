@@ -21,11 +21,15 @@ export default function JoinMeeting() {
 
   const handleJoin = async () => {
     try {
-      const { data: room, error: fetchError } = await supabase
-        .from('video_rooms')
-        .select('*')
-        .eq('id', roomId)
-        .single();
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(roomId);
+      let query = supabase.from('video_rooms').select('*');
+      if (isUUID) {
+        query = query.eq('id', roomId);
+      } else {
+        query = query.eq('daily_room_name', roomId);
+      }
+      
+      const { data: room, error: fetchError } = await query.single();
 
       if (fetchError || !room) {
         throw new Error('Meeting not found or has ended.');

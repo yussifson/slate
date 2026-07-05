@@ -95,11 +95,24 @@ export default function Board() {
  const handleStartCall = async () => {
  setIsCreating(true);
  try {
- const roomId = crypto.randomUUID();
+ const generateShortId = () => {
+    const chars = 'abcdefghijklmnopqrstuvwxyz';
+    const randomStr = (length) => {
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    };
+    return `${randomStr(3)}-${randomStr(3)}-${randomStr(1)}`;
+  };
+
+  const dbId = crypto.randomUUID();
+  const shortId = generateShortId();
  
- // Call our Supabase Edge function to create a Daily room securely
- const { data: dailyData, error: functionError} = await supabase.functions.invoke('create-daily-room', {
- body: { roomName: roomId }
+  // Call our Supabase Edge function to create a Daily room securely
+  const { data: dailyData, error: functionError} = await supabase.functions.invoke('create-daily-room', {
+  body: { dbId, roomName: shortId }
 });
  
  if (functionError) {
@@ -123,14 +136,14 @@ export default function Board() {
 
   // Create new room record directly in Supabase to bypass offline sync delays
   const _payload = {
-   id: roomId,
+   id: dbId,
    company_id: companyId,
    title: `${user?.full_name?.split(' ')[0] || 'User'}'s Instant Meeting`,
    daily_room_url: realUrl,
-   daily_room_name: dailyData.name || roomName,
+   daily_room_name: dailyData.name || shortId,
    host_id: user.id,
    status: 'active',
-   meeting_link: `${customMeetingOrigin}/join/${roomId}`
+   meeting_link: `${customMeetingOrigin}/join/${shortId}`
   };
   
   const { error: dbError } = await supabase.from('video_rooms').upsert(_payload);

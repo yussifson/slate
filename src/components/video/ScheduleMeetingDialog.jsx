@@ -98,10 +98,23 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
     try {
       const scheduledStart = new Date(`${date}T${time}`);
       
-      const roomId = crypto.randomUUID();
+      const generateShortId = () => {
+        const chars = 'abcdefghijklmnopqrstuvwxyz';
+        const randomStr = (length) => {
+          let result = '';
+          for (let i = 0; i < length; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+          }
+          return result;
+        };
+        return `${randomStr(3)}-${randomStr(3)}-${randomStr(1)}`;
+      };
+      
+      const dbId = crypto.randomUUID();
+      const shortId = generateShortId();
       
       const { data: dailyData, error: functionError } = await supabase.functions.invoke('create-daily-room', {
-        body: { roomName: roomId, privacy: isPrivate ? 'private' : 'public' }
+        body: { dbId, roomName: shortId, privacy: isPrivate ? 'private' : 'public' }
       });
 
       if (functionError) throw new Error(functionError.message || 'Failed to create Daily room via edge function');
@@ -122,19 +135,19 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
       const customMeetingOrigin = `${window.location.protocol}//${meetingDomain}${window.location.port ? ':' + window.location.port : ''}`;
 
       const _payload = {
-        id: roomId,
+        id: dbId,
         company_id: companyId,
         title: title,
         description: `Scheduled meeting for ${scheduledStart.toLocaleString()}`,
         daily_room_url: realUrl,
-        daily_room_name: dailyData.name || roomName,
+        daily_room_name: dailyData.name || shortId,
         host_id: user.id,
         status: 'scheduled',
         meeting_type: 'scheduled',
         privacy_type: isPrivate ? 'private' : 'public',
         scheduled_start_time: scheduledStart.toISOString(),
         participants: JSON.stringify(selectedParticipants.map(p => ({ id: p.id, email: p.email, name: p.full_name }))),
-        meeting_link: `${customMeetingOrigin}/join/${roomId}`
+        meeting_link: `${customMeetingOrigin}/join/${shortId}`
       };
 
       const { error: dbError } = await supabase.from('video_rooms').upsert(_payload);

@@ -15,7 +15,7 @@ serve(async (req) => {
   }
 
   try {
-    const { roomName, privacy, companyId } = await req.json()
+    const { roomName, privacy, companyId, dbId } = await req.json()
 
     if (!DAILY_API_KEY) {
       throw new Error('DAILY_API_KEY is missing')
@@ -54,8 +54,11 @@ serve(async (req) => {
     if (supabaseUrl && supabaseServiceKey) {
       const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(roomName);
+      const finalId = dbId ? dbId : (isUUID ? roomName : crypto.randomUUID());
+
       const insertPayload = {
-        id: roomName,
+        id: finalId,
         company_id: companyId || '00000000-0000-0000-0000-000000000000',
         title: 'Meeting Room',
         daily_room_url: room.url,

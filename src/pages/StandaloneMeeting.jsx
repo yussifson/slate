@@ -146,11 +146,15 @@ export default function StandaloneMeeting() {
 
       // Retry up to 5 times with 2s delay to handle Edge Function / DB replication lag
       for (let i = 0; i < 5; i++) {
-        const { data, error: queryError } = await supabase
-          .from('video_rooms')
-          .select('*')
-          .eq('id', roomId)
-          .maybeSingle(); // maybeSingle() returns null (not 406) when no rows found
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(roomId);
+        let query = supabase.from('video_rooms').select('*');
+        if (isUUID) {
+          query = query.eq('id', roomId);
+        } else {
+          query = query.eq('daily_room_name', roomId);
+        }
+        
+        const { data, error: queryError } = await query.maybeSingle();
 
         if (data) {
           room = data;
