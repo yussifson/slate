@@ -336,6 +336,7 @@ export default function POS() {
                 </Button>
               </div>
             </Card>
+          </div>
         </div>
       </div>
 
