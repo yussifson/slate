@@ -129,9 +129,13 @@ export default function StandaloneMeeting() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scheduledData]);
 
-  // Effect 3: Document title — MUST be before any conditional returns
+  // Effect 3: Document title and favicon
   useEffect(() => {
     document.title = roomName ? `${roomName} - Optavel Meet` : 'Joining Room - Optavel Meet';
+    const link = document.querySelector("link[rel~='icon']");
+    if (link) {
+      link.href = '/orbit-logo.svg';
+    }
   }, [roomName]);
 
   // ── Async handler ────────────────────────────────────────────────────────────

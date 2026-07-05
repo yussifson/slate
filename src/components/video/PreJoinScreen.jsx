@@ -157,11 +157,11 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
   };
 
   return (
-    <div className="w-screen h-screen bg-slate-50 dark:bg-[#090E17] flex flex-col md:flex-row items-center justify-center p-4 gap-8 overflow-y-auto">
+    <div className="w-screen h-screen bg-white dark:bg-[#090E17] flex flex-col md:flex-row items-center justify-center px-4 md:px-12 gap-8 md:gap-16 overflow-y-auto">
       
       {/* Left Side: Camera Preview */}
-      <div className="flex flex-col items-center w-full max-w-3xl">
-        <div className="relative w-full aspect-video bg-slate-100 dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-2xl border border-slate-200/60 dark:border-white/10 flex items-center justify-center transition-colors">
+      <div className="flex-1 flex flex-col items-end justify-center w-full max-w-3xl">
+        <div className="relative w-full aspect-video bg-primary rounded-[1.5rem] overflow-hidden flex items-center justify-center transition-colors shadow-lg">
           
           {/* Video element is always rendered to preserve srcObject, but hidden when isVideoOn is false */}
           <video 
@@ -173,11 +173,11 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
           />
           
           {!isVideoOn && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-900 z-10">
-              <div className="w-24 h-24 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-sm border border-slate-200/50 dark:border-white/5">
-                <VideoOff className="w-10 h-10 text-slate-400 dark:text-slate-500" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-primary z-10">
+              <div className="w-24 h-24 bg-black/10 rounded-full flex items-center justify-center mb-6 shadow-sm border border-black/5">
+                <VideoOff className="w-10 h-10 text-white/90" />
               </div>
-              <p className="font-medium text-lg text-slate-600 dark:text-slate-300 tracking-wide">Camera is off</p>
+              <p className="font-medium text-lg text-white/90 tracking-wide">Camera is off</p>
             </div>
           )}
 
@@ -201,22 +201,22 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
               ))}
             </div>
 
-            <div className="flex items-center gap-4 bg-white dark:bg-slate-900 px-4 py-3 rounded-2xl border border-slate-200 dark:border-white/10 shadow-md">
+            <div className="flex items-center gap-4 bg-black/40 backdrop-blur-md px-4 py-3 rounded-[1.2rem] shadow-sm">
               <Button 
                 onClick={toggleMic}
                 variant={isMicOn ? "outline" : "destructive"}
                 size="icon"
-                className={`w-14 h-14 rounded-full shadow-sm transition-all duration-300 ${isMicOn ? 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700' : ''}`}
+                className={`w-12 h-12 rounded-full shadow-sm transition-all duration-300 ${isMicOn ? 'bg-transparent hover:bg-white/10 border-white/20 text-white' : 'border-0'}`}
               >
-                {isMicOn ? <Mic className="w-6 h-6 text-slate-700 dark:text-slate-300" /> : <MicOff className="w-6 h-6" />}
+                {isMicOn ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5 text-white" />}
               </Button>
               <Button 
                 onClick={toggleVideo}
                 variant={isVideoOn ? "outline" : "destructive"}
                 size="icon"
-                className={`w-14 h-14 rounded-full shadow-sm transition-all duration-300 ${isVideoOn ? 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700' : ''}`}
+                className={`w-12 h-12 rounded-full shadow-sm transition-all duration-300 ${isVideoOn ? 'bg-transparent hover:bg-white/10 border-white/20 text-white' : 'border-0'}`}
               >
-                {isVideoOn ? <VideoIcon className="w-6 h-6 text-slate-700 dark:text-slate-300" /> : <VideoOff className="w-6 h-6" />}
+                {isVideoOn ? <VideoIcon className="w-5 h-5" /> : <VideoOff className="w-5 h-5 text-white" />}
               </Button>
             </div>
           </div>
@@ -224,10 +224,10 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
       </div>
 
       {/* Right Side: Join Form */}
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-2xl border border-slate-200/60 dark:border-white/10 p-10 space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-semibold text-slate-900 dark:text-white tracking-tight">Ready to join?</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-2 text-lg">{roomName || 'Secure Meeting'}</p>
+      <div className="flex-1 flex flex-col items-start justify-center w-full max-w-md bg-transparent p-6 md:p-10 space-y-8">
+        <div>
+          <h1 className="text-[2rem] font-medium text-slate-900 dark:text-white tracking-tight leading-tight">Ready to join?</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-1 text-base">{roomName || 'Secure Meeting'}</p>
         </div>
 
         <div className="space-y-5">
@@ -238,14 +238,14 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
               placeholder="e.g. Jane Doe"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
-              className="w-full px-5 py-4 bg-slate-50 dark:bg-black border border-slate-200 dark:border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary text-lg transition-shadow"
+              className="w-full px-5 py-4 bg-white dark:bg-[#111827] border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-base transition-shadow placeholder:text-slate-400"
               autoFocus
               onKeyDown={(e) => { if (e.key === 'Enter' && userName.trim()) handleJoinClick(); }}
             />
           </div>
 
           <Button
-            className="w-full py-7 text-xl rounded-2xl font-semibold shadow-lg shadow-primary/25"
+            className="w-full py-6 text-lg rounded-full font-medium"
             disabled={!userName.trim()}
             onClick={handleJoinClick}
           >

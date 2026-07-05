@@ -727,7 +727,7 @@ function ParticipantTile({ id, isLocal, className }) {
   return null;
  }, [participant?.userData]);
 
- const finalAvatarColor = customAvatarColor || avatarColor;
+ const finalAvatarColor = avatarColor;
 
  useEffect(() => {
  if (videoState?.track && videoRef.current) {

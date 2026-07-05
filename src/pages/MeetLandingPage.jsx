@@ -99,7 +99,14 @@ const slides = [
 // ─── Live Clock Hook ──────────────────────────────────────────────────────────
 function useLiveClock() {
   const [now, setNow] = useState(new Date());
+
   useEffect(() => {
+    // Update favicon
+    const link = document.querySelector("link[rel~='icon']");
+    if (link) {
+      link.href = '/orbit-logo.svg';
+    }
+
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
@@ -199,8 +206,8 @@ export default function MeetLandingPage() {
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-white/5">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-md shadow-primary/30">
-            <Video className="w-5 h-5 text-white" />
+          <div className="w-9 h-9 flex items-center justify-center">
+            <img src="/orbit-logo.svg" alt="Optavel Logo" className="w-full h-full object-contain" />
           </div>
           <span className="text-xl font-semibold tracking-tight text-slate-800 dark:text-slate-100">Optavel Meet</span>
         </div>
