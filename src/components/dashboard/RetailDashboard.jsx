@@ -103,6 +103,7 @@ export default function RetailDashboard({ companyId, company, isAdmin }) {
   const planKey = company?.subscription_plan === 'free' ? 'free_trial' : company?.subscription_plan;
   const plan = SUBSCRIPTION_PLANS[planKey] || SUBSCRIPTION_PLANS.free_trial;
   const chartData = buildMonthlyRevenueChart(stats?.invoices || []);
+  const staff = []; // Fallback to prevent ReferenceError
 
   const { toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);

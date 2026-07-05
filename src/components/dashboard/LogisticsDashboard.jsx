@@ -61,6 +61,7 @@ export default function LogisticsDashboard({ companyId, company, isAdmin }) {
   const currency = company?.currency || "USD";
   const planKey = company?.subscription_plan === 'free' ? 'free_trial' : company?.subscription_plan;
   const plan = SUBSCRIPTION_PLANS[planKey] || SUBSCRIPTION_PLANS.free_trial;
+  const staff = []; // Fallback to prevent ReferenceError
   
   const chartData = React.useMemo(() => {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
