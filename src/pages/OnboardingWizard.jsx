@@ -221,7 +221,7 @@ export default function OnboardingWizard() {
       email: user.email,
       industry_type: finalIndustry || 'law',
       country: country,
-      currency: currency,
+      currency: (currency || 'USD').toUpperCase(),
       status: 'active'
     };
     if (selectedPlan) {
@@ -1086,14 +1086,14 @@ export default function OnboardingWizard() {
 }
 
 // Helper component for role badges
-function Badge({ role, industry}) {
- const roles = INDUSTRIES[industry]?.roles || INDUSTRIES.law.roles;
- const roleDef = roles.find(r => r.value === role);
- const label = roleDef ? roleDef.label : role;
- 
- return (
- <span className="px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wider bg-orange-50 text-orange-700 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 tracking-[0.04em]">
- {label}
- </span>
- );
+function Badge({ role, industry }) {
+  const roles = INDUSTRIES[industry]?.roles || INDUSTRIES.law.roles;
+  const roleDef = roles.find(r => r.value === role);
+  const label = roleDef ? roleDef.label : role;
+  
+  return (
+    <span className="px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wider bg-orange-50 text-orange-700 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 tracking-[0.04em]">
+      {label}
+    </span>
+  );
 }

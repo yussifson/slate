@@ -2,18 +2,12 @@ import React, { useState } from 'react';
 import { FileText, Download, Sparkles, Loader2, Play, CheckCircle, Calendar, TrendingUp, DollarSign, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCompany } from '@/hooks/useCompanyId';
-import { powerSync } from '@/api/PowerSyncConnector';
 import { invokeCloudflareAi } from '@/lib/cloudflareAI';
+import { gatherIndustryMetrics } from '@/lib/intelligence/dataGatherer';
+import html2pdf from 'html2pdf.js';
 import { useToast } from '@/components/ui/use-toast';
 
-async function safeQuery(sql, params = []) {
-  try {
-    const res = await powerSync.execute(sql, params);
-    return res.rows?._array || [];
-  } catch {
-    return null;
-  }
-}
+
 
 export default function ReportGenerator() {
   const { company } = useCompany();
@@ -27,25 +21,18 @@ export default function ReportGenerator() {
     setIsGenerating(true);
     setReport(null);
     try {
-      // Gather stats from whatever tables exist
-      const [profiles, patients, appointments, invoices, employees] = await Promise.all([
-        safeQuery('SELECT COUNT(*) as c FROM profiles WHERE company_id = ?', [companyId]),
-        safeQuery('SELECT COUNT(*) as c FROM univ_patients WHERE company_id = ? AND created_at > datetime("now", "-7 days")', [companyId]),
-        safeQuery('SELECT status, COUNT(*) as c FROM univ_appointments WHERE company_id = ? AND date > datetime("now", "-7 days") GROUP BY status', [companyId]),
-        safeQuery('SELECT COUNT(*) as c, COALESCE(SUM(total_amount), 0) as total FROM univ_invoices WHERE company_id = ? AND status = "paid" AND created_at > datetime("now", "-7 days")', [companyId]),
-        safeQuery('SELECT COUNT(*) as c FROM employees WHERE company_id = ?', [companyId]),
-      ]);
+      const metrics = await gatherIndustryMetrics(companyId, company?.industry_type);
 
-      const teamCount = profiles?.[0]?.c ?? employees?.[0]?.c ?? 0;
+      const teamCount = metrics.team_members || 0;
       const dataContext = {
         company_name: company?.name || 'Your Company',
         industry: company?.industry_type || 'general',
         report_period: 'Last 7 Days',
         team_members: teamCount,
-        new_records: patients?.[0]?.c ?? 0,
-        appointment_breakdown: appointments ?? [],
-        revenue_collected: invoices?.[0]?.total ?? 0,
-        paid_invoices: invoices?.[0]?.c ?? 0,
+        new_records: metrics.new_records || 0,
+        appointment_breakdown: metrics.appointments_or_orders,
+        revenue_collected: metrics.revenue_collected || 0,
+        paid_invoices: metrics.paid_invoices || 0,
       };
 
       const now = new Date();
@@ -97,6 +84,47 @@ System activity levels indicate normal operational flow. Data is being recorded 
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  const exportPDF = () => {
+    const element = document.getElementById('report-content');
+    if (!element) return;
+    
+    // Create a wrapper with branding for the PDF
+    const wrapper = document.createElement('div');
+    wrapper.style.padding = '40px';
+    wrapper.style.fontFamily = 'system-ui, -apple-system, sans-serif';
+    wrapper.style.color = '#1e293b';
+    
+    // Add branding header
+    const header = document.createElement('div');
+    header.style.borderBottom = '2px solid #e2e8f0';
+    header.style.paddingBottom = '20px';
+    header.style.marginBottom = '30px';
+    header.innerHTML = `
+      <h1 style="margin: 0; font-size: 24px; color: #0f172a;">${company?.name || 'Executive'} Report</h1>
+      <p style="margin: 5px 0 0; color: #64748b; font-size: 14px;">Generated via Slate Intelligence Engine</p>
+      <p style="margin: 5px 0 0; color: #64748b; font-size: 14px;">Period: Last 7 Days | Date: ${new Date().toLocaleDateString()}</p>
+    `;
+    wrapper.appendChild(header);
+    
+    // Clone report content
+    const contentClone = element.cloneNode(true);
+    // Remove export button if it's inside (it shouldn't be, but just in case)
+    const btn = contentClone.querySelector('#export-btn-container');
+    if (btn) btn.remove();
+    
+    wrapper.appendChild(contentClone);
+
+    const opt = {
+      margin:       10,
+      filename:     `${company?.name?.replace(/\s+/g, '_') || 'company'}_executive_report.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(wrapper).save();
   };
 
   const renderReport = (text) => {
@@ -180,9 +208,9 @@ System activity levels indicate normal operational flow. Data is being recorded 
                 <CheckCircle className="w-3.5 h-3.5" /> Ready
               </span>
             </div>
-            <div className="space-y-0.5">{renderReport(report)}</div>
-            <div className="mt-6 flex justify-end">
-              <Button variant="outline" className="gap-2 text-sm" size="sm">
+            <div id="report-content" className="space-y-0.5">{renderReport(report)}</div>
+            <div id="export-btn-container" className="mt-6 flex justify-end">
+              <Button onClick={exportPDF} variant="outline" className="gap-2 text-sm" size="sm">
                 <Download className="w-4 h-4" /> Export PDF
               </Button>
             </div>

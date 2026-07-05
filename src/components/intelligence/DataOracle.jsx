@@ -3,6 +3,7 @@ import { Send, Bot, Database, Sparkles, Loader2, User, TrendingUp, Users, Calend
 import { useCompany } from '@/hooks/useCompanyId';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { invokeCloudflareAi } from '@/lib/cloudflareAI';
+import { gatherIndustryMetrics } from '@/lib/intelligence/dataGatherer';
 
 const QUICK_QUESTIONS = [
   { label: 'Total records', icon: Database, q: 'How many total records do we have in the system?' },
@@ -45,21 +46,16 @@ export default function DataOracle() {
     setIsProcessing(true);
 
     try {
-      // Gather whatever data is available — ignore missing tables gracefully
-      const [profiles, patients, appointments, invoices] = await Promise.all([
-        safeQuery('SELECT COUNT(*) as c FROM profiles WHERE company_id = ?', [companyId]),
-        safeQuery('SELECT COUNT(*) as c FROM univ_patients WHERE company_id = ?', [companyId]),
-        safeQuery('SELECT COUNT(*) as c FROM univ_appointments WHERE company_id = ?', [companyId]),
-        safeQuery('SELECT COUNT(*) as c, SUM(total_amount) as total FROM univ_invoices WHERE company_id = ?', [companyId]),
-      ]);
+      const metrics = await gatherIndustryMetrics(companyId, company?.industry_type);
 
       const dataContext = {
         company_name: company?.name || 'Your Company',
         industry: company?.industry_type || 'general',
-        team_members: profiles?.[0]?.c ?? 'unknown',
-        ...(patients !== null && { total_patients: patients[0]?.c ?? 0 }),
-        ...(appointments !== null && { total_appointments: appointments[0]?.c ?? 0 }),
-        ...(invoices !== null && { total_invoices: invoices[0]?.c ?? 0, revenue: invoices[0]?.total ?? 0 }),
+        team_members: metrics.team_members || 'unknown',
+        total_patients_or_customers: metrics.new_records || 0,
+        appointments_or_orders: metrics.appointments_or_orders,
+        total_revenue: metrics.revenue_collected || 0,
+        paid_invoices: metrics.paid_invoices || 0
       };
 
       let answer;
@@ -71,9 +67,8 @@ export default function DataOracle() {
         // Structured fallback if AI call fails
         const parts = [`Based on your **${dataContext.company_name}** database:`];
         if (dataContext.team_members !== 'unknown') parts.push(`- **Team Members:** ${dataContext.team_members}`);
-        if (dataContext.total_patients !== undefined) parts.push(`- **Total Patients:** ${dataContext.total_patients}`);
-        if (dataContext.total_appointments !== undefined) parts.push(`- **Total Appointments:** ${dataContext.total_appointments}`);
-        if (dataContext.revenue !== undefined) parts.push(`- **Total Revenue:** $${Number(dataContext.revenue).toLocaleString()}`);
+        parts.push(`- **Total Clients/Patients:** ${dataContext.total_patients_or_customers}`);
+        parts.push(`- **Total Revenue:** $${Number(dataContext.total_revenue).toLocaleString()}`);
         parts.push(`\nRegarding "${userQ}" — all metrics appear within normal operational ranges. Would you like me to drill deeper into a specific area?`);
         answer = parts.join('\n');
       }

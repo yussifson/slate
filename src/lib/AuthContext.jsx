@@ -290,16 +290,20 @@ export const AuthProvider = ({ children }) => {
             };
             const _keys = Object.keys(_payload);
             const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-            await powerSync.execute(`INSERT INTO profiles (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+            try {
+              await powerSync.execute(`INSERT INTO profiles (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+            } catch (insertErr) {
+              console.warn('[AuthContext] Profile insert skipped (likely already synced):', insertErr);
+            }
             const __resNew = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
             const newProfile = __resNew.rows && __resNew.rows.length > 0 ? __resNew.rows.item(0) : null;
             const insertError = null;
             
-            if (!insertError) {
+            if (!insertError && newProfile) {
               profile = newProfile;
               profileError = null;
             } else {
-              console.error("Failed to insert profile on login:", insertError);
+              console.error("Failed to fetch new profile after insert.");
             }
         }
       } else if (profile && !profile.company_id && sessionUser.user_metadata?.company_id) {
@@ -366,11 +370,12 @@ export const AuthProvider = ({ children }) => {
       setAuthStep("Fetching available workspaces...");
       let availableCompanies = [];
       try {
-        const __resUA = await powerSync.execute(`SELECT company_id FROM univ_accesscontrols WHERE email LIKE ?`, [sessionUser.email]);
+        const emailParam = sessionUser.email ? sessionUser.email : '';
+        const __resUA = await powerSync.execute(`SELECT company_id FROM univ_accesscontrols WHERE email LIKE ?`, [emailParam]);
         const uAccess = __resUA.rows ? (__resUA.rows._array || Array.from(__resUA.rows)) : [];
-        const __resSA = await powerSync.execute(`SELECT company_id FROM staff_records WHERE user_email LIKE ?`, [sessionUser.email]);
+        const __resSA = await powerSync.execute(`SELECT company_id FROM staff_records WHERE user_email LIKE ?`, [emailParam]);
         const sAccess = __resSA.rows ? (__resSA.rows._array || Array.from(__resSA.rows)) : [];
-        const __resPU = await powerSync.execute(`SELECT company_id FROM portal_users WHERE email LIKE ?`, [sessionUser.email]);
+        const __resPU = await powerSync.execute(`SELECT company_id FROM portal_users WHERE email LIKE ?`, [emailParam]);
         const pAccess = __resPU.rows ? (__resPU.rows._array || Array.from(__resPU.rows)) : [];
         
         const cIds = new Set();

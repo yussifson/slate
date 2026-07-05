@@ -70,8 +70,8 @@ export async function storeInsight(companyId, insight) {
     // Insert new
     await powerSync.execute(
       `INSERT INTO workspace_insights (id, company_id, vertical, insight_type, insight_key, entity_type, entity_id, title, body, severity, confidence, data_snapshot, action_label, action_url, is_dismissed, computed_at, expires_at, created_at)
-       VALUES (uuid(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)`,
-      [companyId, insight.vertical, insight.insight_type, insight.insight_key, insight.entity_type || null, insight.entity_id || null, insight.title, insight.body, insight.severity, insight.confidence || null, insight.data_snapshot ? JSON.stringify(insight.data_snapshot) : null, insight.action_label || null, insight.action_url || null, now, insight.expires_at || null, now]
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)`,
+      [crypto.randomUUID(), companyId, insight.vertical, insight.insight_type, insight.insight_key, insight.entity_type || null, insight.entity_id || null, insight.title, insight.body, insight.severity, insight.confidence || null, insight.data_snapshot ? JSON.stringify(insight.data_snapshot) : null, insight.action_label || null, insight.action_url || null, now, insight.expires_at || null, now]
     );
     return 'created';
   }
@@ -83,8 +83,8 @@ export async function storeInsight(companyId, insight) {
 export async function logEngineRun(companyId, vertical, engineName, status, insightsCreated, insightsUpdated, durationMs, errorMessage) {
   await powerSync.execute(
     `INSERT INTO intelligence_runs (id, company_id, vertical, engine_name, status, insights_created, insights_updated, error_message, duration_ms, started_at, completed_at)
-     VALUES (uuid(), ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
-    [companyId, vertical, engineName, status, insightsCreated || 0, insightsUpdated || 0, errorMessage || null, durationMs || 0]
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
+    [crypto.randomUUID(), companyId, vertical, engineName, status, insightsCreated || 0, insightsUpdated || 0, errorMessage || null, durationMs || 0]
   );
 }
 

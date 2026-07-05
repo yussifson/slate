@@ -23,6 +23,12 @@ export default function GenericKanban({
   const [showStageModal, setShowStageModal] = useState(false);
   const [editingStage, setEditingStage] = useState(null);
   const [stageName, setStageName] = useState('');
+  
+  const [localData, setLocalData] = useState(data || []);
+
+  useEffect(() => {
+    setLocalData(data || []);
+  }, [data]);
 
   // Fallback if no boardKey: just extract unique statuses from data or use defaultStages
   useEffect(() => {
@@ -80,8 +86,8 @@ export default function GenericKanban({
         );
       } else {
         await powerSync.execute(
-          'INSERT INTO univ_kanban_boards (id, company_id, board_key, stages) VALUES (uuid_generate_v4(), ?, ?, ?)',
-          [companyId, boardKey, stagesJson]
+          'INSERT INTO univ_kanban_boards (id, company_id, board_key, stages) VALUES (?, ?, ?, ?)',
+          [crypto.randomUUID(), companyId, boardKey, stagesJson]
         );
       }
       toast.success('Stages saved');
@@ -97,6 +103,15 @@ export default function GenericKanban({
     const { source, destination, draggableId } = result;
     if (source.droppableId === destination.droppableId) return; // Reordering in same column not supported yet
     
+    // Optimistic local update to prevent snapback
+    const newData = localData.map(item => {
+      if (item.id === draggableId) {
+        return { ...item, [statusKey]: destination.droppableId };
+      }
+      return item;
+    });
+    setLocalData(newData);
+
     // Call the parent update function
     if (onStatusChange) {
       onStatusChange(draggableId, destination.droppableId);
@@ -161,7 +176,7 @@ export default function GenericKanban({
           {stages.map((status, index) => {
             // Function support for dynamic status matching (e.g. 'Low Stock' computed from quantity)
             // But since this is drag and drop, statuses need to be exact strings that match statusKey
-            const items = (data || []).filter(d => d[statusKey] === status);
+            const items = localData.filter(d => d[statusKey] === status);
             
             return (
               <div key={status} className="flex-shrink-0 w-[320px] bg-muted/20 border border-border/60 rounded-3xl flex flex-col h-full max-h-[80vh] overflow-hidden shadow-sm">
