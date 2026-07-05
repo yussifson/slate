@@ -465,6 +465,7 @@ export default function POS() {
           )}
         </SheetContent>
       </Sheet>
+    </div>
 
       {/* Hidden Print-Only View */}
       {lastReceipt && (
