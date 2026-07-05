@@ -247,7 +247,7 @@ export default function Transactions() {
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
+            <Card className="p-6 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
@@ -258,7 +258,7 @@ export default function Transactions() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
+            <Card className="p-6 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
@@ -269,7 +269,7 @@ export default function Transactions() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="p-6 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
+            <Card className="p-6 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>

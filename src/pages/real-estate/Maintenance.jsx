@@ -94,9 +94,12 @@ export default function Maintenance() {
   const MaintenanceCard = ({ request, priority }) => (
     <div
       onClick={() => setSelectedRequest(request)}
-      className={`p-4 rounded-lg border-2 cursor-pointer transform transition-all hover:shadow-lg hover:scale-105 ${priorityMatrix[request.priority].bg} ${priorityMatrix[request.priority].border}`}
+      className={`relative overflow-hidden p-6 rounded-3xl border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 cursor-pointer transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group flex flex-col`}
     >
-      <div className="flex items-start justify-between mb-3">
+      <div className={`absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent pointer-events-none transition-colors duration-500 z-0 ${priorityMatrix[request.priority].color.replace('text-', 'border-r-').replace('600', '100')} group-hover:${priorityMatrix[request.priority].color.replace('text-', 'border-r-').replace('600', '200')}`} />
+      <div className={`absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-current to-transparent opacity-5 rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 group-hover:opacity-10 ${priorityMatrix[request.priority].color}`} />
+      <div className="relative z-10 flex-1">
+        <div className="flex items-start justify-between mb-3">
         <div className="flex items-start gap-3 flex-1">
           <div className={`p-2 rounded-lg ${priorityMatrix[request.priority].bg} mt-1`}>
             <Wrench className={`w-4 h-4 ${priorityMatrix[request.priority].color}`} />
@@ -118,9 +121,10 @@ export default function Maintenance() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mt-auto">
         <Badge className={statusConfig[request.status]?.badge}>{request.status}</Badge>
         {request.cost && <span className="text-sm font-bold text-orange-600">${request.cost?.toLocaleString()}</span>}
+      </div>
       </div>
     </div>
   );

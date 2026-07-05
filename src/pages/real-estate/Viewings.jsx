@@ -149,7 +149,7 @@ export default function Viewings() {
         {view === 'calendar' ? (
           <div className="grid grid-cols-3 gap-6 mb-8">
             <div className="col-span-2">
-              <Card className="p-0 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col">
+              <Card className="p-6 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
                 <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2.5 text-lg font-bold tracking-wide">
@@ -181,7 +181,7 @@ export default function Viewings() {
 
             {/* Upcoming Viewings Sidebar */}
             <div>
-              <Card className="p-0 border border-border/40 bg-card/60 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all rounded-3xl relative overflow-hidden group flex flex-col h-full">
+              <Card className="p-6 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
                 <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
                   <CardTitle className="flex items-center gap-2.5 text-lg font-bold text-slate-900 dark:text-white tracking-wide">
                     <div className="p-1.5 bg-primary/10 dark:bg-primary/30/30 rounded-lg border border-primary/20 dark:border-primary/40/50 shadow-sm">
