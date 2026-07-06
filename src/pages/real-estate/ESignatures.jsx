@@ -187,55 +187,55 @@ const [formData, setFormData] = useState({
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-50/60 dark:from-emerald-950/30 dark:to-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 rounded-xl shadow-sm hover:shadow-lg hover:border-emerald-400/60 dark:hover:border-emerald-600/60 transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1">
+          <CardHeader className="relative p-4 border-b border-emerald-200/50 dark:border-emerald-800/40 bg-transparent overflow-hidden">
+            <CardTitle className="text-sm font-medium text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
               <FileSignature className="w-4 h-4" />
               Total Requests
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold">{totalSignatures}</div>
-            <p className="text-xs text-muted-foreground mt-1">All signatures</p>
+            <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">{totalSignatures}</div>
+            <p className="text-xs text-emerald-700/70 dark:text-emerald-400/70 mt-1 font-medium">All signatures</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-50/60 dark:from-emerald-950/30 dark:to-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 rounded-xl shadow-sm hover:shadow-lg hover:border-emerald-400/60 dark:hover:border-emerald-600/60 transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1">
+          <CardHeader className="relative p-4 border-b border-emerald-200/50 dark:border-emerald-800/40 bg-transparent overflow-hidden">
+            <CardTitle className="text-sm font-medium text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" />
               Completed
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold text-green-600 dark:text-green-400">{completedSignatures}</div>
-            <p className="text-xs text-muted-foreground mt-1">Signed documents</p>
+            <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">{completedSignatures}</div>
+            <p className="text-xs text-emerald-700/70 dark:text-emerald-400/70 mt-1 font-medium">Signed documents</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+        <Card className="bg-gradient-to-br from-amber-50 to-amber-50/60 dark:from-amber-950/30 dark:to-amber-950/20 border border-amber-200/60 dark:border-amber-800/40 rounded-xl shadow-sm hover:shadow-lg hover:border-amber-400/60 dark:hover:border-amber-600/60 transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1">
+          <CardHeader className="relative p-4 border-b border-amber-200/50 dark:border-amber-800/40 bg-transparent overflow-hidden">
+            <CardTitle className="text-sm font-medium text-amber-700 dark:text-amber-400 flex items-center gap-2">
               <Clock className="w-4 h-4" />
               Pending
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold text-yellow-600 dark:text-yellow-400">{pendingSignatures}</div>
-            <p className="text-xs text-muted-foreground mt-1">Awaiting signature</p>
+            <div className="text-3xl font-bold text-amber-900 dark:text-amber-100">{pendingSignatures}</div>
+            <p className="text-xs text-amber-700/70 dark:text-amber-400/70 mt-1 font-medium">Awaiting signature</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+        <Card className="bg-gradient-to-br from-red-50 to-red-50/60 dark:from-red-950/30 dark:to-red-950/20 border border-red-200/60 dark:border-red-800/40 rounded-xl shadow-sm hover:shadow-lg hover:border-red-400/60 dark:hover:border-red-600/60 transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1">
+          <CardHeader className="relative p-4 border-b border-red-200/50 dark:border-red-800/40 bg-transparent overflow-hidden">
+            <CardTitle className="text-sm font-medium text-red-700 dark:text-red-400 flex items-center gap-2">
               <AlertCircle className="w-4 h-4" />
               Expired
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold text-red-600 dark:text-red-400">{expiredSignatures}</div>
-            <p className="text-xs text-muted-foreground mt-1">Signature requests</p>
+            <div className="text-3xl font-bold text-red-900 dark:text-red-100">{expiredSignatures}</div>
+            <p className="text-xs text-red-700/70 dark:text-red-400/70 mt-1 font-medium">Signature requests</p>
           </CardContent>
         </Card>
       </div>
