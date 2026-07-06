@@ -1339,8 +1339,9 @@ export const RealEstateAPI = {
         `INSERT INTO univ_re_document_templates (id, company_id, template_name, document_type, document_category, 
          required_signatures, version, template_content, description, is_active, created_at, updated_at) 
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, companyId, data.templateName, data.documentType, data.documentCategory, data.requiredSignatures, 
-         data.version, data.content, data.description || '', data.isActive !== false, now, now]
+        [id, companyId, data.templateName, data.documentType, data.documentCategory, 
+         parseInt(data.requiredSignatures) || 0, parseInt(data.version) || 1, 
+         data.content, data.description || '', data.isActive !== false, now, now]
       );
 
       powerSync.execute(
@@ -1365,7 +1366,15 @@ export const RealEstateAPI = {
         const dbKey = toSnakeCase(key);
         if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
           updates.push(`${dbKey} = ?`);
-          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
+          
+          let val = data[key];
+          if (dbKey === 'version' || dbKey === 'required_signatures') {
+             val = parseInt(val, 10) || 0;
+          } else if (typeof val === 'object' && val !== null) {
+             val = JSON.stringify(val);
+          }
+          
+          params.push(val);
         }
       });
 
