@@ -14,7 +14,7 @@ async function run() {
       SELECT table_name 
       FROM information_schema.tables 
       WHERE table_schema = 'public' 
-      AND table_name LIKE 'real_estate_%';
+      AND table_name LIKE 'univ_re_%';
     `
   });
   

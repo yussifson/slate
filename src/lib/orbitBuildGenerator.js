@@ -37,10 +37,10 @@ export async function generateOrbitBuildWorkspace(prompt, companyId) {
 
     // Save to industry_records for backwards compatibility with Sidebar and existing OrbitDashboard
     const _payload = {
-      id: companyId + "_orbitbuild",
+      id: crypto.randomUUID(),
       company_id: companyId,
       industry: "orbit_build",
-      record_type: "orbit_build_config",
+      record_type: "workspace_config",
       data: orbitBuildData,
       status: "active",
       title: "OrbitBuild Architecture"
