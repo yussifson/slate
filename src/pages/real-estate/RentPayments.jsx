@@ -151,54 +151,54 @@ export default function RentPayments() {
 
         {/* Financial Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-gradient-to-br from-emerald-50 via-emerald-25 to-emerald-50 dark:from-emerald-950/30 dark:via-emerald-900/20 dark:to-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40 rounded-xl shadow-sm hover:shadow-[0_12px_24px_rgba(5,150,105,0.15)] dark:hover:shadow-[0_12px_24px_rgba(5,150,105,0.1)] transition-all duration-200 overflow-hidden flex flex-col hover:border-emerald-400/60 dark:hover:border-emerald-600/60">
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-green-100 dark:text-green-200 text-xs font-semibold uppercase mb-1 tracking-wider">Collected</p>
-                  <p className="text-3xl font-bold">${(stats.totalCollected / 1000).toFixed(1)}k</p>
-                  <p className="text-xs text-green-200 dark:text-green-300 mt-2">This period</p>
+                  <p className="text-emerald-700 dark:text-emerald-400 text-xs font-semibold uppercase mb-1 tracking-wider">Collected</p>
+                  <p className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">${(stats.totalCollected / 1000).toFixed(1)}k</p>
+                  <p className="text-xs text-emerald-600 dark:text-emerald-300 mt-2">This period</p>
                 </div>
-                <CheckCircle className="w-8 h-8 opacity-80" />
+                <CheckCircle className="w-8 h-8 text-emerald-700 dark:text-emerald-400" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-gradient-to-br from-amber-50 via-amber-25 to-amber-50 dark:from-amber-950/30 dark:via-amber-900/20 dark:to-amber-950/30 border border-amber-200/60 dark:border-amber-800/40 rounded-xl shadow-sm hover:shadow-[0_12px_24px_rgba(217,119,6,0.15)] dark:hover:shadow-[0_12px_24px_rgba(217,119,6,0.1)] transition-all duration-200 overflow-hidden flex flex-col hover:border-amber-400/60 dark:hover:border-amber-600/60">
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-orange-100 dark:text-orange-200 text-xs font-semibold uppercase mb-1 tracking-wider">Pending</p>
-                  <p className="text-3xl font-bold">${(stats.totalPending / 1000).toFixed(1)}k</p>
-                  <p className="text-xs text-orange-200 dark:text-orange-300 mt-2">Due soon</p>
+                  <p className="text-amber-700 dark:text-amber-400 text-xs font-semibold uppercase mb-1 tracking-wider">Pending</p>
+                  <p className="text-3xl font-bold text-amber-900 dark:text-amber-100">${(stats.totalPending / 1000).toFixed(1)}k</p>
+                  <p className="text-xs text-amber-600 dark:text-amber-300 mt-2">Due soon</p>
                 </div>
-                <Clock className="w-8 h-8 opacity-80" />
+                <Clock className="w-8 h-8 text-amber-700 dark:text-amber-400" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-gradient-to-br from-red-50 via-red-25 to-red-50 dark:from-red-950/30 dark:via-red-900/20 dark:to-red-950/30 border border-red-200/60 dark:border-red-800/40 rounded-xl shadow-sm hover:shadow-[0_12px_24px_rgba(239,68,68,0.15)] dark:hover:shadow-[0_12px_24px_rgba(239,68,68,0.1)] transition-all duration-200 overflow-hidden flex flex-col hover:border-red-400/60 dark:hover:border-red-600/60">
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-red-100 dark:text-red-200 text-xs font-semibold uppercase mb-1 tracking-wider">Overdue</p>
-                  <p className="text-3xl font-bold">${(stats.totalOverdue / 1000).toFixed(1)}k</p>
-                  <p className="text-xs text-red-200 dark:text-red-300 mt-2">{overDuePayments.length} payments</p>
+                  <p className="text-red-700 dark:text-red-400 text-xs font-semibold uppercase mb-1 tracking-wider">Overdue</p>
+                  <p className="text-3xl font-bold text-red-900 dark:text-red-100">${(stats.totalOverdue / 1000).toFixed(1)}k</p>
+                  <p className="text-xs text-red-600 dark:text-red-300 mt-2">{overDuePayments.length} payments</p>
                 </div>
-                <AlertTriangle className="w-8 h-8 opacity-80" />
+                <AlertTriangle className="w-8 h-8 text-red-700 dark:text-red-400" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-gradient-to-br from-emerald-50 via-emerald-25 to-emerald-50 dark:from-emerald-950/30 dark:via-emerald-900/20 dark:to-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40 rounded-xl shadow-sm hover:shadow-[0_12px_24px_rgba(5,150,105,0.15)] dark:hover:shadow-[0_12px_24px_rgba(5,150,105,0.1)] transition-all duration-200 overflow-hidden flex flex-col hover:border-emerald-400/60 dark:hover:border-emerald-600/60">
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-primary/10 dark:text-primary/20 text-xs font-semibold uppercase mb-1 tracking-wider">Collection Rate</p>
-                  <p className="text-3xl font-bold">{stats.collectionRate.toFixed(0)}%</p>
-                  <p className="text-xs text-primary/20 dark:text-primary/40 mt-2">On-time payments</p>
+                  <p className="text-emerald-700 dark:text-emerald-400 text-xs font-semibold uppercase mb-1 tracking-wider">Collection Rate</p>
+                  <p className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">{stats.collectionRate.toFixed(0)}%</p>
+                  <p className="text-xs text-emerald-600 dark:text-emerald-300 mt-2">On-time payments</p>
                 </div>
-                <TrendingUp className="w-8 h-8 opacity-80" />
+                <TrendingUp className="w-8 h-8 text-emerald-700 dark:text-emerald-400" />
               </div>
             </CardContent>
           </Card>
