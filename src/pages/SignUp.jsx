@@ -119,6 +119,8 @@ export default function SignUp() {
     name: companyName,
     subdomain: cleanSubdomain,
     email: email,
+    admin_email: email,
+    created_by: authData?.user?.id || null,
     country: null,
     subscription_plan: urlPlan,
     subscription_status: 'trial',

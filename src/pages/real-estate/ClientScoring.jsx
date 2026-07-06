@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '../../hooks/useCompanyId';
 import { RealEstateAnalytics } from '../../api/RealEstateAnalytics';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 export default function ClientScoring() {
   const [scores, setScores] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [view, setView] = useViewPreference('re_clientscoring', 'grid');
   const companyId = useCompanyId();
 
   useEffect(() => {

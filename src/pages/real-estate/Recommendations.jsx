@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
 import { REPageHeader, REStatCard, REDataCard, REGridShell } from '@/components/real-estate/RealEstateViewKit';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 
 export default function Recommendations() {
@@ -27,6 +29,7 @@ export default function Recommendations() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
+  const [view, setView] = useViewPreference('re_recommendations', 'grid');
     clientId: '',
     recommendedAgentId: '',
     propertyId: '',

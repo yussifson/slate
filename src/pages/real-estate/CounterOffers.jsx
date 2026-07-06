@@ -12,6 +12,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 export default function CounterOffers() {
   const { t } = useTranslation();
@@ -27,6 +29,7 @@ export default function CounterOffers() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
+  const [view, setView] = useViewPreference('re_counteroffers', 'grid');
     originalOfferId: '',
     counterPrice: 0,
     counterAmount: 0,
@@ -165,7 +168,9 @@ export default function CounterOffers() {
           <h1 className="text-3xl font-bold text-foreground">Counter Offers</h1>
           <p className="text-sm text-muted-foreground mt-1">Manage offer negotiations and counter-offers</p>
         </div>
-        <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
           originalOfferId: '',
           counterPrice: 0,
           counterAmount: 0,
@@ -177,7 +182,8 @@ export default function CounterOffers() {
         }); }} className="gap-2">
           <Plus className="w-4 h-4" /> Add Counter
         </Button>
-      </div>
+          </div>
+        </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

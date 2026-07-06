@@ -12,6 +12,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 export default function TrustAccounting() {
   const { t } = useTranslation();
@@ -41,6 +43,7 @@ export default function TrustAccounting() {
     currency: 'USD',
   });
   const [transactionFormData, setTransactionFormData] = useState({
+  const [view, setView] = useViewPreference('re_trustaccounting', 'grid');
     accountId: '',
     transactionType: 'deposit',
     amount: 0,

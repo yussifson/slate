@@ -5,6 +5,8 @@ import { powerSync } from '@/api/PowerSyncConnector';
 import { Building2, Wallet, Wrench, Users, TrendingUp, CheckCircle, Clock } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 function StatCard({ icon: Icon, label, value, color }) {
   return (

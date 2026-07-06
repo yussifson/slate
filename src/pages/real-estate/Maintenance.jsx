@@ -11,6 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
+import GenericKanban from '@/components/views/GenericKanban';
 
 const priorityMatrix = {
   critical: { color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-300', badge: 'bg-orange-100 text-orange-800', label: 'Critical' },
@@ -40,6 +43,7 @@ export default function Maintenance() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [view, setView] = useViewPreference('re_maintenance', 'grid');
   const [stats, setStats] = useState({
     total: 0,
     critical: 0,
@@ -141,9 +145,12 @@ export default function Maintenance() {
             </h1>
             <p className="text-gray-600 mt-1">Manage and prioritize property maintenance tasks</p>
           </div>
-          <Button onClick={() => setShowForm(true)} className="bg-orange-600 hover:bg-orange-700 gap-2">
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
+            <Button onClick={() => setShowForm(true)} className="bg-orange-600 hover:bg-orange-700 gap-2">
             <Plus className="w-4 h-4" /> New Request
-          </Button>
+            </Button>
+          </div>
         </div>
 
         {/* Key Metrics */}

@@ -12,6 +12,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 export default function DocumentTemplates() {
   const { t } = useTranslation();
@@ -29,6 +31,7 @@ export default function DocumentTemplates() {
   const [editingId, setEditingId] = useState(null);
   const [showPreview, setShowPreview] = useState(null);
   const [formData, setFormData] = useState({
+  const [view, setView] = useViewPreference('re_documenttemplates', 'grid');
     templateName: '',
     documentType: 'contract',
     documentCategory: 'sales',
@@ -184,7 +187,9 @@ export default function DocumentTemplates() {
           <h1 className="text-3xl font-bold text-foreground">Document Templates</h1>
           <p className="text-sm text-muted-foreground mt-1">Manage reusable document templates for transactions</p>
         </div>
-        <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
           templateName: '',
           documentType: 'contract',
           documentCategory: 'sales',
@@ -196,7 +201,8 @@ export default function DocumentTemplates() {
         }); }} className="gap-2">
           <Plus className="w-4 h-4" /> Add Template
         </Button>
-      </div>
+          </div>
+        </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -321,38 +327,14 @@ export default function DocumentTemplates() {
                 <p className="font-bold text-primary">{template.required_signatures}</p>
               </div>
 
-              <div className="flex gap-2 pt-2 border-t">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setShowPreview(template)}
-                  className="flex-1"
-                >
-                  <Eye className="w-4 h-4 mr-1" /> Preview
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleEdit(template)}
-                >
-                  <Edit className="w-4 h-4" />
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleDuplicate(template)}
-                >
-                  <Copy className="w-4 h-4" />
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => handleDelete(template.id)}
-                  className="text-destructive"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
+              <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                  <Button size="icon" variant="ghost" onClick={() => handleEdit(template)} className="h-7 w-7 text-primary hover:bg-primary/10 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" title="Edit">
+                    <Edit className="w-3.5 h-3.5" />
+                  </Button>
+                  <Button size="icon" variant="ghost" onClick={() => handleDelete(template.id)} className="h-7 w-7 text-red-600 hover:bg-red-100 hover:text-red-700 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" title="Delete">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
             </CardContent>
           </Card>
         ))}

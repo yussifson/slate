@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { formatCurrency } from '@/lib/constants';
 import { RealEstateAnalytics } from '@/api/RealEstateAnalytics';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 export default function AgentMetrics() {
   const [metrics, setMetrics] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [view, setView] = useViewPreference('re_agentmetrics', 'grid');
   const companyId = useCompanyId();
 
   useEffect(() => {

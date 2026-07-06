@@ -15,6 +15,7 @@ import { toast } from 'react-hot-toast';
 import { REPageHeader } from '@/components/real-estate/RealEstateViewKit';
 import ViewToggle from '@/components/shared/ViewToggle';
 import { useViewPreference } from '@/hooks/useViewPreference';
+import GenericKanban from '@/components/views/GenericKanban';
 
 const statusColors = {
   'active': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30',
@@ -151,9 +152,8 @@ export default function Properties() {
   const PropertyCard = ({ property }) => (
     <div className="group bg-card/40 backdrop-blur-md border border-border/60 rounded-[2rem] p-6 hover:shadow-2xl hover:border-primary/50 transition-all duration-300 relative overflow-hidden flex flex-col h-full hover:-translate-y-1">
       {/* Real Estate Specific Decoration */}
-      <div className="absolute -top-10 -right-10 opacity-[0.03] pointer-events-none group-hover:opacity-[0.07] transition-opacity duration-500 group-hover:scale-110">
-        <Building2 className="w-48 h-48 text-primary" />
-      </div>
+              <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
       
       <div className="flex items-start justify-between mb-5 relative z-10">
         <div className="flex-1 pr-12">
@@ -240,7 +240,7 @@ export default function Properties() {
             <p className="text-muted-foreground mt-2">Manage and track your property listings</p>
           </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
             <Button
               onClick={() => { setShowForm(true); setEditingId(null); }}
               className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0"
@@ -347,7 +347,34 @@ export default function Properties() {
               </table>
             </div>
           </Card>
-        )}
+        ) : view === 'kanban' ? (
+          <GenericKanban
+            data={filteredProperties}
+            statusKey="status"
+            titleKey="address"
+            boardKey="re_properties_board"
+            defaultStages={Object.keys(statusColors).map(s => s.charAt(0).toUpperCase() + s.slice(1))}
+            onStatusChange={async (id, newStatus) => {
+              const propertyToUpdate = properties.find(p => p.id === id);
+              if (propertyToUpdate) {
+                await handleEdit({ ...propertyToUpdate, status: newStatus });
+              }
+            }}
+            onEdit={(item) => handleEdit(item)}
+            onDelete={async (id) => {
+              if(window.confirm('Are you sure you want to delete this property?')) {
+                try {
+                  await RealEstateAPI.deleteProperty(companyId, id, user.id);
+                  const res = await powerSync.execute('SELECT * FROM univ_re_properties WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+                  setProperties(res.rows._array || Array.from(res.rows));
+                  toast.success('Property deleted');
+                } catch (e) {
+                  toast.error(e.message);
+                }
+              }
+            }}
+          />
+        ) : null}
       </div>
 
       {/* Form Modal */}

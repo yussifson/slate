@@ -11,6 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 export default function MarketData() {
   const { t } = useTranslation();
@@ -24,6 +26,7 @@ export default function MarketData() {
   const [search, setSearch] = useState('');
   const [trendFilter, setTrendFilter] = useState('all');
   const [levelFilter, setLevelFilter] = useState('all');
+  const [view, setView] = useViewPreference('re_marketdata', 'grid');
 
   // Fetch market data
   useEffect(() => {

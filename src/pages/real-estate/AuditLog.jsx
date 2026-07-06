@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '../../hooks/useCompanyId';
 import { RealEstateAnalytics } from '../../api/RealEstateAnalytics';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 export default function AuditLog() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
+  const [view, setView] = useViewPreference('re_auditlog', 'grid');
     resourceType: '',
     action: ''
   });

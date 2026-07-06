@@ -84,9 +84,9 @@ export async function assembleWorkspaceFromDescription(workspaceId, userDescript
     // Insert new modules
     for (const m of selectedModules) {
       await powerSync.execute(
-        `INSERT INTO workspace_modules (id, workspace_id, module_key, display_name, config, position, is_active, created_at)
-         VALUES (uuid(), ?, ?, ?, ?, ?, 1, datetime('now'))`,
-        [workspaceId, m.module_key, m.display_name, JSON.stringify(m.config), m.position]
+        `INSERT INTO workspace_modules (id, workspace_id, company_id, module_key, display_name, config, position, is_active, created_at)
+         VALUES (uuid(), ?, ?, ?, ?, ?, ?, 1, datetime('now'))`,
+        [workspaceId, workspaceId, m.module_key, m.display_name, JSON.stringify(m.config), m.position]
       );
     }
   }

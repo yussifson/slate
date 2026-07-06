@@ -6,6 +6,8 @@ import { Home, CreditCard, Wrench, FileText, Calendar, CheckCircle, Clock, Alert
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 function StatCard({ icon: Icon, label, value, color }) {
   return (

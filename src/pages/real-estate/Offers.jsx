@@ -318,12 +318,12 @@ export default function Offers() {
                   </div>
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-border/50 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity relative z-10">
-                  <Button size="sm" variant="ghost" onClick={() => handleEdit(offer)} className="text-primary hover:bg-primary/5 dark:hover:bg-primary/30/20">
-                    <Edit className="w-4 h-4 mr-1.5" /> Edit
+                <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                  <Button size="icon" variant="ghost" onClick={() => handleEdit(offer)} className="h-7 w-7 text-primary hover:bg-primary/10 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" title="Edit">
+                    <Edit className="w-3.5 h-3.5" />
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => handleDelete(offer.id)} className="text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">
-                    <Trash2 className="w-4 h-4" />
+                  <Button size="icon" variant="ghost" onClick={() => handleDelete(offer.id)} className="h-7 w-7 text-red-600 hover:bg-red-100 hover:text-red-700 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" title="Delete">
+                    <Trash2 className="w-3.5 h-3.5" />
                   </Button>
                 </div>
               </Card>

@@ -11,6 +11,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 const roleColors = {
   'admin': 'bg-orange-100 text-orange-800',
@@ -30,6 +32,7 @@ export default function TeamManagement() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
+  const [view, setView] = useViewPreference('re_teammanagement', 'grid');
     name: '',
     email: '',
     phone: '',
@@ -85,6 +88,19 @@ export default function TeamManagement() {
     }
   };
 
+  const handleDelete = async (id) => {
+    if(window.confirm('Remove team member?')) {
+      try {
+        await powerSync.execute('DELETE FROM univ_re_team_members WHERE id = ? AND company_id = ?', [id, companyId]);
+        const res = await powerSync.execute('SELECT * FROM univ_re_team_members WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        setTeam(res.rows._array || Array.from(res.rows));
+        toast.success('Team member removed');
+      } catch (e) {
+        toast.error(e.message);
+      }
+    }
+  };
+
   const handleEdit = (member) => {
     setFormData({
       name: member.name || '',
@@ -117,10 +133,13 @@ export default function TeamManagement() {
           <h1 className="text-3xl font-bold text-foreground">Team Management</h1>
           <p className="text-sm text-muted-foreground mt-1">Manage your team members and roles</p>
         </div>
-        <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ name: '', email: '', phone: '', role: 'agent', commissionRate: 0, licenseNumber: '', licenseExpiry: '' }); }} className="gap-2 bg-orange-600 hover:bg-orange-700">
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ name: '', email: '', phone: '', role: 'agent', commissionRate: 0, licenseNumber: '', licenseExpiry: '' }); }} className="gap-2 bg-orange-600 hover:bg-orange-700">
           <Plus className="w-4 h-4" /> Add Member
         </Button>
-      </div>
+          </div>
+        </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4">
@@ -216,12 +235,12 @@ export default function TeamManagement() {
                 )}
               </div>
 
-              <div className="flex gap-2 pt-2">
-                <Button size="sm" variant="outline" onClick={() => handleEdit(member)} className="flex-1">
-                  <Edit className="w-4 h-4 mr-1" /> Edit
+              <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                <Button size="icon" variant="ghost" onClick={() => handleEdit(member)} className="h-7 w-7 text-primary hover:bg-primary/10 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" title="Edit">
+                  <Edit className="w-3.5 h-3.5" />
                 </Button>
-                <Button size="sm" variant="ghost" className="text-destructive">
-                  <Trash2 className="w-4 h-4" />
+                <Button size="icon" variant="ghost" onClick={() => handleDelete(member.id)} className="h-7 w-7 text-red-600 hover:bg-red-100 hover:text-red-700 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" title="Delete">
+                  <Trash2 className="w-3.5 h-3.5" />
                 </Button>
               </div>
             </CardContent>

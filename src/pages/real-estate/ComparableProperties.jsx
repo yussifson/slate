@@ -12,6 +12,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 export default function ComparableProperties() {
   const { t } = useTranslation();
@@ -27,6 +29,7 @@ export default function ComparableProperties() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
+  const [view, setView] = useViewPreference('re_comparableproperties', 'grid');
     address: '',
     salePrice: 0,
     pricePerSqft: 0,
@@ -167,7 +170,9 @@ export default function ComparableProperties() {
           <h1 className="text-3xl font-bold text-foreground">Comparable Properties</h1>
           <p className="text-sm text-muted-foreground mt-1">Compare properties for valuation and market analysis</p>
         </div>
-        <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
           address: '',
           salePrice: 0,
           pricePerSqft: 0,
@@ -182,7 +187,8 @@ export default function ComparableProperties() {
         }); }} className="gap-2">
           <Plus className="w-4 h-4" /> Add Comparable
         </Button>
-      </div>
+          </div>
+        </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

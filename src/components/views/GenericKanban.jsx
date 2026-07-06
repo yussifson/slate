@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { Plus, Settings, Trash2 } from 'lucide-react';
+import { Plus, Settings, Trash2, Edit, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-hot-toast';
@@ -14,7 +14,10 @@ export default function GenericKanban({
   titleKey, 
   onStatusChange, 
   boardKey,
-  defaultStages = []
+  defaultStages = [],
+  onEdit,
+  onDelete,
+  onView
 }) {
   const powerSync = usePowerSync();
   const companyId = useCompanyId();
@@ -212,9 +215,26 @@ export default function GenericKanban({
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                                 style={{...provided.draggableProps.style, zIndex: snapshot.isDragging ? 9999 : 1}}
-                                className={`bg-background border border-border/60 shadow-sm p-5 rounded-2xl transition-all cursor-grab active:cursor-grabbing hover:shadow-md hover:border-primary/40 ${snapshot.isDragging ? 'shadow-xl border-primary ring-2 ring-primary/20 rotate-2' : ''}`}
+                                className={`bg-background border border-border/60 shadow-sm p-5 rounded-2xl transition-all cursor-grab active:cursor-grabbing hover:shadow-md hover:border-primary/40 group relative overflow-hidden flex flex-col ${snapshot.isDragging ? 'shadow-xl border-primary ring-2 ring-primary/20 rotate-2' : ''}`}
                               >
-                                <h4 className="font-bold text-sm text-foreground mb-3 leading-snug">{item[titleKey] || 'Untitled'}</h4>
+                                <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                  {onView && (
+                                    <Button size="icon" variant="ghost" className="h-7 w-7 text-primary hover:bg-primary/10 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" onClick={() => onView(item)}>
+                                      <Eye className="w-3.5 h-3.5" />
+                                    </Button>
+                                  )}
+                                  {onEdit && (
+                                    <Button size="icon" variant="ghost" className="h-7 w-7 text-primary hover:bg-primary/10 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" onClick={() => onEdit(item)}>
+                                      <Edit className="w-3.5 h-3.5" />
+                                    </Button>
+                                  )}
+                                  {onDelete && (
+                                    <Button size="icon" variant="ghost" className="h-7 w-7 text-red-600 hover:bg-red-100 hover:text-red-700 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" onClick={() => onDelete(item.id)}>
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </Button>
+                                  )}
+                                </div>
+                                <h4 className="font-bold text-sm text-foreground mb-3 pr-20 leading-snug">{item[titleKey] || 'Untitled'}</h4>
                                 <div className="flex flex-wrap gap-2">
                                   {Object.keys(item).filter(k => k !== 'company_id' && k !== 'id' && k !== 'created_at' && k !== statusKey && k !== titleKey).slice(0, 3).map(k => (
                                     <span key={k} className="bg-muted/50 border border-border/40 text-foreground/70 font-semibold text-[10px] px-2.5 py-1 rounded-md capitalize truncate max-w-[120px]">

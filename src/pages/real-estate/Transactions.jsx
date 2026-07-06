@@ -209,12 +209,12 @@ export default function Transactions() {
                 </div>
                 <span className="text-[10px] font-bold bg-white/80 dark:bg-gray-800/80 px-2.5 py-1 rounded-full text-gray-700 dark:text-gray-300 border border-gray-200/50 dark:border-gray-700/50 uppercase tracking-wider shadow-sm">{transaction.status.replace('_', ' ')}</span>
               </div>
-              <div className="flex gap-2 pt-4 mt-2 border-t border-gray-200/50 dark:border-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Button size="sm" variant="outline" className="flex-1 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" onClick={(e) => { e.stopPropagation(); handleEdit(transaction); }}>
-                  <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit
+              <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); handleEdit(transaction); }} className="h-7 w-7 text-primary hover:bg-primary/10 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" title="Edit">
+                  <Edit className="w-3.5 h-3.5" />
                 </Button>
-                <Button size="sm" variant="ghost" className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-300 transition-colors" onClick={(e) => { e.stopPropagation(); handleDelete(transaction.id); }}>
-                  <Trash2 className="w-4 h-4" />
+                <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); handleDelete(transaction.id); }} className="h-7 w-7 text-red-600 hover:bg-red-100 hover:text-red-700 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" title="Delete">
+                  <Trash2 className="w-3.5 h-3.5" />
                 </Button>
               </div>
             </div>

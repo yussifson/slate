@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 const statusConfig = {
   pending: { color: 'text-orange-600', bg: 'bg-orange-50', badge: 'bg-orange-100 text-orange-800' },
@@ -31,6 +33,7 @@ export default function Commissions() {
   const [showDetails, setShowDetails] = useState(false);
   const [selectedCommission, setSelectedCommission] = useState(null);
   const [stats, setStats] = useState({
+  const [view, setView] = useViewPreference('re_commissions', 'grid');
     totalEarned: 0,
     totalPending: 0,
     avgCommission: 0,

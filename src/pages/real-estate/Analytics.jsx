@@ -5,6 +5,8 @@ import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 export default function Analytics() {
   const { t } = useTranslation();
@@ -24,6 +26,7 @@ export default function Analytics() {
     pendingOffers: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [view, setView] = useViewPreference('re_analytics', 'grid');
 
   useEffect(() => {
     const fetchAnalytics = async () => {

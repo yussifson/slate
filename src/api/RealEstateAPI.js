@@ -93,10 +93,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 
@@ -185,10 +187,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 
@@ -275,10 +279,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 
@@ -360,10 +366,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 
@@ -441,10 +449,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 
@@ -522,10 +532,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 
@@ -606,10 +618,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 
@@ -690,10 +704,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 
@@ -1062,10 +1078,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 
@@ -1247,10 +1265,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 
@@ -1340,10 +1360,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 
@@ -1537,10 +1559,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 
@@ -1629,10 +1653,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 
@@ -1727,10 +1753,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 
@@ -1823,10 +1851,12 @@ export const RealEstateAPI = {
       const updates = [];
       const params = [];
 
+      const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
       Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
-          updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        const dbKey = toSnakeCase(key);
+        if (dbKey !== 'id' && dbKey !== 'company_id' && dbKey !== 'created_at' && data[key] !== undefined) {
+          updates.push(`${dbKey} = ?`);
+          params.push(typeof data[key] === 'object' && data[key] !== null ? JSON.stringify(data[key]) : data[key]);
         }
       });
 

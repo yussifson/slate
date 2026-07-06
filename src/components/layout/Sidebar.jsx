@@ -869,7 +869,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  <div className="flex flex-col">
  <span className="font-semibold text-foreground leading-tight tracking-tight mt-0.5">{activeCompanyName}</span>
  <span className="text-[9px] font-extrabold text-[#71717a] dark:text-gray-400 uppercase tracking-widest leading-none mt-1 tracking-[0.04em]">
- {companyData?.tagline || (activeIndustry === 'orbit_build' ? (orbitBuildData?.industry_name || 'Custom Workslate') : industryData.name)}
+  {companyData?.tagline || (activeIndustry === 'orbit_build' ? 'WorkSlate' : industryData.name)}
  </span>
  </div>
  </div>

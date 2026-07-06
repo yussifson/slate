@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 export default function MarketIntelligence() {
   const { t } = useTranslation();
@@ -22,6 +24,7 @@ export default function MarketIntelligence() {
   const [isLoading, setIsLoading] = useState(true);
   const [showCompForm, setShowCompForm] = useState(false);
   const [compFormData, setCompFormData] = useState({
+  const [view, setView] = useViewPreference('re_marketintelligence', 'grid');
     subjectAddress: '',
     subjectPrice: 0,
     comp1Address: '',
@@ -101,10 +104,13 @@ export default function MarketIntelligence() {
           <h1 className="text-3xl font-bold text-foreground">Market Intelligence</h1>
           <p className="text-sm text-muted-foreground mt-1">Market trends and comparable analysis</p>
         </div>
-        <Button onClick={() => setShowCompForm(true)} className="gap-2 bg-orange-600 hover:bg-orange-700">
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <Button onClick={() => setShowCompForm(true)} className="gap-2 bg-orange-600 hover:bg-orange-700">
           <Plus className="w-4 h-4" /> New Analysis
         </Button>
-      </div>
+          </div>
+        </div>
 
       {/* Market Stats */}
       <div className="grid grid-cols-3 gap-4">

@@ -12,6 +12,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 export default function LeaseRenewals() {
   const { t } = useTranslation();
@@ -27,6 +29,7 @@ export default function LeaseRenewals() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
+  const [view, setView] = useViewPreference('re_leaserenewals', 'grid');
     leaseId: '',
     tenantId: '',
     propertyId: '',
@@ -177,7 +180,9 @@ export default function LeaseRenewals() {
           <h1 className="text-3xl font-bold text-foreground">Lease Renewals</h1>
           <p className="text-sm text-muted-foreground mt-1">Manage lease renewal offers and track tenant responses</p>
         </div>
-        <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
           leaseId: '',
           tenantId: '',
           propertyId: '',
@@ -193,7 +198,8 @@ export default function LeaseRenewals() {
         }); }} className="gap-2">
           <Plus className="w-4 h-4" /> Add Renewal
         </Button>
-      </div>
+          </div>
+        </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -338,24 +344,14 @@ export default function LeaseRenewals() {
                 </div>
               )}
 
-              <div className="flex gap-2 pt-2 border-t">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleEdit(renewal)}
-                  className="flex-1"
-                >
-                  <Edit className="w-4 h-4 mr-1" /> Edit
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => handleDelete(renewal.id)}
-                  className="text-destructive"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
+              <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                  <Button size="icon" variant="ghost" onClick={() => handleEdit(renewal)} className="h-7 w-7 text-primary hover:bg-primary/10 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" title="Edit">
+                    <Edit className="w-3.5 h-3.5" />
+                  </Button>
+                  <Button size="icon" variant="ghost" onClick={() => handleDelete(renewal.id)} className="h-7 w-7 text-red-600 hover:bg-red-100 hover:text-red-700 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" title="Delete">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
             </CardContent>
           </Card>
         ))}

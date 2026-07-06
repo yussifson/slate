@@ -129,6 +129,20 @@ export const RealEstateAnalytics = {
     }
   },
 
+  
+  async getClientScoring(companyId) {
+    try {
+      const result = await powerSync.execute(
+        'SELECT * FROM univ_re_client_scoring WHERE company_id = ? ORDER BY last_scored DESC LIMIT 100',
+        [companyId]
+      );
+      return result.rows._array || [];
+    } catch (e) {
+      console.error('[Analytics] getClientScoring failed:', e);
+      return [];
+    }
+  },
+
   // ────────────────────────────────────────────────────────
   // AGENT METRICS
   // ────────────────────────────────────────────────────────
@@ -140,11 +154,11 @@ export const RealEstateAnalytics = {
         `SELECT 
            u.id,
            u.name as agent_name,
-           COUNT(DISTINCT CASE WHEN t.transaction_type = 'sale' THEN t.id END) as listings_sold_count,
+           COUNT(DISTINCT CASE WHEN t.status = 'closed' THEN t.id END) as listings_sold_count,
            COUNT(DISTINCT CASE WHEN p.agent_id = u.id THEN p.id END) as listings_taken_count,
            COUNT(DISTINCT c.id) as client_count,
-           COALESCE(SUM(CASE WHEN t.transaction_type = 'sale' THEN t.transaction_amount ELSE 0 END), 0) as sales_volume,
-           COALESCE(AVG(CASE WHEN t.transaction_type = 'sale' THEN t.transaction_amount ELSE 0 END), 0) as average_sale_price,
+           COALESCE(SUM(CASE WHEN t.status = 'closed' THEN t.sale_price ELSE 0 END), 0) as sales_volume,
+           COALESCE(AVG(CASE WHEN t.status = 'closed' THEN t.sale_price ELSE 0 END), 0) as average_sale_price,
            COALESCE(SUM(cd.total_commission_amount), 0) as commission_earned,
            ROUND(COALESCE(COUNT(DISTINCT CASE WHEN c.repeat_client = true THEN c.id END) * 100.0 / NULLIF(COUNT(DISTINCT c.id), 0), 0), 2) as return_client_rate,
            'monthly' as metric_period
@@ -186,8 +200,8 @@ export const RealEstateAnalytics = {
     try {
       let query = `SELECT 
                      COUNT(*) as total_transactions,
-                     SUM(CASE WHEN transaction_type = 'sale' THEN 1 ELSE 0 END) as sales_count,
-                     SUM(CASE WHEN transaction_type = 'lease' THEN 1 ELSE 0 END) as leases_count,
+                     SUM(CASE WHEN status = 'closed' THEN 1 ELSE 0 END) as sales_count,
+                     SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as leases_count,
                      SUM(transaction_amount) as total_value,
                      AVG(transaction_amount) as avg_transaction_value
                    FROM univ_re_transactions
@@ -311,7 +325,7 @@ export const RealEstateAnalytics = {
       // Sales KPI
       const salesResult = await powerSync.execute(
         `SELECT COUNT(*) as count FROM univ_re_transactions 
-         WHERE company_id = ? AND transaction_type = 'sale' AND YEAR(transaction_date) = YEAR(CURRENT_DATE)`,
+         WHERE company_id = ? AND status = 'closed' AND YEAR(transaction_date) = YEAR(CURRENT_DATE)`,
         [companyId]
       );
 

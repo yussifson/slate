@@ -18,6 +18,8 @@ import {
 } from 'recharts';
 import { generateText } from '@/lib/cloudflareAI';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 const PIE_COLORS = ['#16a34a', '#f97316', '#6b7280'];
 
@@ -40,6 +42,7 @@ export default function RealEstateDashboard() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiInsight, setAiInsight] = useState('');
   const [chartPeriod, setChartPeriod] = useState('6M');
+  const [view, setView] = useViewPreference('re_realestatedashboard', 'grid');
 
   useEffect(() => {
     let active = true;

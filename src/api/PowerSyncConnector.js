@@ -36,6 +36,11 @@ class SupabaseConnector {
             case 'PUT': {
               let payload = { ...op.opData, id: op.id };
               
+              if (op.table === 'industry_records' && op.id && op.id.includes('_orbitbuild')) {
+                console.warn('[v0] PowerSync SKIPPED: Invalid ID for industry_records:', op.id);
+                continue; // Skip this operation to prevent UUID errors and clear the queue
+              }
+              
               // Validate that ID is not empty for UUID-based tables
               const realEstatateTables = ['univ_re_properties', 'univ_re_clients', 'univ_re_viewings', 
                 'univ_re_offers', 'univ_re_transactions', 'univ_re_commissions', 'univ_re_documents', 

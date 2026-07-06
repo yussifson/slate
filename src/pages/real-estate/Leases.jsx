@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Home, Search, Plus, Calendar, DollarSign, AlertCircle, Edit, Trash2 } from 'lucide-react';
 import ViewToggle from '@/components/shared/ViewToggle';
 import { useViewPreference } from '@/hooks/useViewPreference';
+import GenericKanban from '@/components/views/GenericKanban';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
@@ -154,7 +155,8 @@ export default function Leases() {
     
     return (
       <div className="group bg-card/60 backdrop-blur-md border border-border/40 rounded-3xl p-6 hover:shadow-2xl hover:border-primary/50 transition-all relative overflow-hidden flex flex-col h-full hover:-translate-y-1">
-        <div className="absolute bottom-0 right-0 w-32 h-32 bg-primary/10 rounded-tl-[5rem] pointer-events-none z-0 transition-colors duration-500 group-hover:bg-primary/20" />
+                <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
         
         <div className="flex items-start justify-between mb-4 relative z-10">
           <div className="flex-1 pr-12">
@@ -222,7 +224,7 @@ export default function Leases() {
             <p className="text-muted-foreground mt-2">Manage rental agreements and tenants</p>
           </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
             <Button
               onClick={() => { setShowForm(true); setEditingId(null); }}
               className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0"
@@ -319,7 +321,23 @@ export default function Leases() {
               </table>
             </div>
           </Card>
-        )}
+        ) : view === 'kanban' ? (
+          <GenericKanban
+            data={filteredLeases}
+            statusKey="status"
+            titleKey="property_address"
+            boardKey="re_leases_board"
+            defaultStages={['active', 'expiring-soon', 'expired', 'terminated']}
+            onStatusChange={async (id, newStatus) => {
+              const leaseToUpdate = leases.find(l => l.id === id);
+              if (leaseToUpdate) {
+                await handleEdit({ ...leaseToUpdate, status: newStatus });
+              }
+            }}
+            onEdit={(item) => handleEdit(item)}
+            onDelete={(id) => handleDelete(id)}
+          />
+        ) : null}
       </div>
 
       {/* Form Modal */}

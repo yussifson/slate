@@ -12,6 +12,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
+import GenericKanban from '@/components/views/GenericKanban';
 
 const statusColors = {
   'new': 'bg-orange-100 text-orange-800',
@@ -44,6 +47,7 @@ export default function CRMLeads() {
   const [showActivityForm, setShowActivityForm] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [editingId, setEditingId] = useState(null);
+  const [view, setView] = useViewPreference('re_crm_leads', 'grid');
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', email: '', phone: '', leadType: 'buyer',
     source: 'website', status: 'new', budgetMin: 0, budgetMax: 0, notes: '',
@@ -137,6 +141,17 @@ export default function CRMLeads() {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (window.confirm('Delete this lead?')) {
+      try {
+        await RealEstateAPI.deleteCRMLead(companyId, id);
+        const data = await RealEstateAPI.getLeads(companyId);
+        setLeads(data);
+        toast.success('Lead deleted');
+      } catch (e) { toast.error(e.message); }
+    }
+  };
+
   const handleEdit = (lead) => {
     setFormData({
       firstName: lead.first_name || '',
@@ -172,9 +187,12 @@ export default function CRMLeads() {
           <h1 className="text-3xl font-bold text-foreground">CRM - Lead Management</h1>
           <p className="text-sm text-muted-foreground mt-1">Track and manage your property leads</p>
         </div>
-        <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ firstName: '', lastName: '', email: '', phone: '', leadType: 'buyer', source: 'website', status: 'new', budgetMin: 0, budgetMax: 0, notes: '' }); }} className="gap-2 bg-orange-600 hover:bg-orange-700">
-          <Plus className="w-4 h-4" /> Add Lead
-        </Button>
+        <div className="flex items-center gap-4">
+          <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
+          <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ firstName: '', lastName: '', email: '', phone: '', leadType: 'buyer', source: 'website', status: 'new', budgetMin: 0, budgetMax: 0, notes: '' }); }} className="gap-2 bg-orange-600 hover:bg-orange-700">
+            <Plus className="w-4 h-4" /> Add Lead
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -195,10 +213,10 @@ export default function CRMLeads() {
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-orange-100 text-xs font-semibold uppercase mb-1">Qualified</p>
+                <p className="text-orange-600 text-xs font-semibold uppercase mb-1">Qualified</p>
                 <p className="text-3xl font-bold">{stats.qualified}</p>
               </div>
-              <TrendingUp className="w-8 h-8 opacity-70" />
+              <TrendingUp className="w-8 h-8 text-orange-400" />
             </div>
           </CardContent>
         </Card>
@@ -219,10 +237,10 @@ export default function CRMLeads() {
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-green-100 text-xs font-semibold uppercase mb-1">Contacted</p>
+                <p className="text-primary text-xs font-semibold uppercase mb-1">Contacted</p>
                 <p className="text-3xl font-bold">{stats.contacted}</p>
               </div>
-              <MessageSquare className="w-8 h-8 opacity-70" />
+              <MessageSquare className="w-8 h-8 text-primary/60" />
             </div>
           </CardContent>
         </Card>
@@ -248,69 +266,114 @@ export default function CRMLeads() {
         </Select>
       </div>
 
-      {/* Leads Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
-        {filteredLeads.map(lead => (
-          <Card key={lead.id} className="relative group bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-                                <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
-                <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
-<CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <CardTitle className="text-base">{lead.first_name} {lead.last_name}</CardTitle>
-                  <div className="flex gap-2 mt-2">
-                    <Badge className={statusColors[lead.status] || 'bg-gray-100 text-gray-800'}>{lead.status}</Badge>
-                    <Badge className={leadTypeColors[lead.lead_type] || 'bg-gray-100 text-gray-800'}>{lead.lead_type}</Badge>
-                  </div>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-              <div className="space-y-2">
-                {lead.email && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Mail className="w-4 h-4 text-muted-foreground" />
-                    <span>{lead.email}</span>
-                  </div>
-                )}
-                {lead.phone && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Phone className="w-4 h-4 text-muted-foreground" />
-                    <span>{lead.phone}</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="pt-2 border-t">
-                <div className="flex items-center justify-between text-sm mb-2">
-                  <span className="text-muted-foreground">Lead Score:</span>
-                  <span className="font-bold text-orange-600">{lead.lead_score || 0}/100</span>
-                </div>
-                {lead.budget_min && lead.budget_max && (
-                  <p className="text-xs text-muted-foreground">Budget: ${lead.budget_min.toLocaleString()} - ${lead.budget_max.toLocaleString()}</p>
-                )}
-              </div>
-
-              <div className="flex gap-2 pt-2">
-                <Button size="sm" variant="outline" onClick={() => { setSelectedLead(lead); setShowActivityForm(true); }} className="flex-1">
-                  <MessageSquare className="w-4 h-4 mr-1" /> Activity
+      {/* Grid View */}
+      {view === 'grid' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+          {filteredLeads.map(lead => (
+            <Card key={lead.id} className="relative group bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 overflow-hidden flex flex-col">
+              <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
+              <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                <Button size="icon" variant="ghost" onClick={() => { setSelectedLead(lead); setShowActivityForm(true); }} className="h-7 w-7 text-primary hover:bg-primary/10 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" title="Activity">
+                  <MessageSquare className="w-3.5 h-3.5" />
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => handleEdit(lead)}>
-                  <Edit className="w-4 h-4" />
+                <Button size="icon" variant="ghost" onClick={() => handleEdit(lead)} className="h-7 w-7 text-primary hover:bg-primary/10 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" title="Edit">
+                  <Edit className="w-3.5 h-3.5" />
+                </Button>
+                <Button size="icon" variant="ghost" onClick={() => handleDelete(lead.id)} className="h-7 w-7 text-red-600 hover:bg-red-100 hover:text-red-700 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" title="Delete">
+                  <Trash2 className="w-3.5 h-3.5" />
                 </Button>
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+                <div className="flex items-start justify-between pr-20">
+                  <div className="flex-1">
+                    <CardTitle className="text-base">{lead.first_name} {lead.last_name}</CardTitle>
+                    <div className="flex gap-2 mt-2 flex-wrap">
+                      <Badge className={statusColors[lead.status] || 'bg-gray-100 text-gray-800'}>{lead.status}</Badge>
+                      <Badge className={leadTypeColors[lead.lead_type] || 'bg-gray-100 text-gray-800'}>{lead.lead_type}</Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+                <div className="space-y-2">
+                  {lead.email && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <Mail className="w-4 h-4 text-muted-foreground" />
+                      <span>{lead.email}</span>
+                    </div>
+                  )}
+                  {lead.phone && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <Phone className="w-4 h-4 text-muted-foreground" />
+                      <span>{lead.phone}</span>
+                    </div>
+                  )}
+                </div>
 
-      {filteredLeads.length === 0 && (
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
-          <p className="text-muted-foreground">No leads found. Create your first lead!</p>
-        </Card>
+                <div className="pt-2 border-t mt-auto">
+                  <div className="flex items-center justify-between text-sm mb-2">
+                    <span className="text-muted-foreground">Lead Score:</span>
+                    <span className="font-bold text-orange-600">{lead.lead_score || 0}/100</span>
+                  </div>
+                  {lead.budget_min && lead.budget_max && (
+                    <p className="text-xs text-muted-foreground">Budget: ${lead.budget_min.toLocaleString()} - ${lead.budget_max.toLocaleString()}</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+          {filteredLeads.length === 0 && (
+            <div className="col-span-full text-center py-16 text-muted-foreground">
+              <Users className="w-12 h-12 mx-auto mb-4 opacity-30" />
+              <p>No leads found. Create your first lead!</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* List View */}
+      {view === 'list' && (
+        <div className="flex flex-col gap-3">
+          {filteredLeads.map(lead => (
+            <div key={lead.id} className="group relative flex items-center gap-4 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-4 hover:shadow-md hover:border-primary/30 transition-all duration-200">
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-foreground">{lead.first_name} {lead.last_name}</p>
+                <p className="text-sm text-muted-foreground truncate">{lead.email}</p>
+              </div>
+              <Badge className={statusColors[lead.status]}>{lead.status}</Badge>
+              <Badge className={leadTypeColors[lead.lead_type]}>{lead.lead_type}</Badge>
+              <span className="text-sm font-bold text-orange-600 whitespace-nowrap">{lead.lead_score || 0}/100</span>
+              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button size="icon" variant="ghost" onClick={() => { setSelectedLead(lead); setShowActivityForm(true); }} className="h-7 w-7 text-primary hover:bg-primary/10" title="Activity"><MessageSquare className="w-3.5 h-3.5" /></Button>
+                <Button size="icon" variant="ghost" onClick={() => handleEdit(lead)} className="h-7 w-7 text-primary hover:bg-primary/10" title="Edit"><Edit className="w-3.5 h-3.5" /></Button>
+                <Button size="icon" variant="ghost" onClick={() => handleDelete(lead.id)} className="h-7 w-7 text-red-600 hover:bg-red-100" title="Delete"><Trash2 className="w-3.5 h-3.5" /></Button>
+              </div>
+            </div>
+          ))}
+          {filteredLeads.length === 0 && <p className="text-center py-10 text-muted-foreground">No leads found.</p>}
+        </div>
+      )}
+
+      {/* Kanban View */}
+      {view === 'kanban' && (
+        <GenericKanban
+          data={filteredLeads}
+          statusKey="status"
+          titleKey="first_name"
+          boardKey="re_crm_leads_board"
+          defaultStages={Object.keys(statusColors)}
+          onStatusChange={async (id, newStatus) => {
+            try {
+              await RealEstateAPI.updateLead(companyId, id, { status: newStatus }, user.id);
+              const data = await RealEstateAPI.getLeads(companyId);
+              setLeads(data);
+            } catch (e) { toast.error(e.message); }
+          }}
+          onEdit={(item) => handleEdit(item)}
+          onDelete={(id) => handleDelete(id)}
+          onView={(item) => { setSelectedLead(item); setShowActivityForm(true); }}
+        />
       )}
 
       {/* Lead Form */}

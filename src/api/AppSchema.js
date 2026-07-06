@@ -4902,6 +4902,7 @@ export const AppSchema = new Schema({
         created_at: column.text}),
     workspace_modules: new Table({
         id: column.text,
+        company_id: column.text,
         workspace_id: column.text,
         module_key: column.text,
         display_name: column.text,

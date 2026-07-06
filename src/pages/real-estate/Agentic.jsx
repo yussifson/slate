@@ -11,6 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
+import { useViewPreference } from '@/hooks/useViewPreference';
+import ViewToggle from '@/components/shared/ViewToggle';
 
 export default function Agentic() {
   const { t } = useTranslation();
@@ -32,6 +34,7 @@ export default function Agentic() {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
+  const [view, setView] = useViewPreference('re_agentic', 'grid');
   const messagesEndRef = useRef(null);
 
   // Fetch conversations
@@ -257,10 +260,13 @@ export default function Agentic() {
                 <p className="text-xs text-muted-foreground">Powered by advanced analytics</p>
               </div>
             </div>
+          <div className="flex items-center gap-4">
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
             <Button onClick={handleSaveConversation} disabled={isSaving} variant="outline">
               Save Conversation
             </Button>
           </div>
+        </div>
         </div>
 
         {/* Messages Area */}
