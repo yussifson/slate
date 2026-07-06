@@ -161,7 +161,7 @@ export default function RealEstateDashboard() {
     <div className="space-y-6 p-6">
 
       {/* ── Hero Header ── */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary via-primary/90 to-emerald-900 p-10 text-white shadow-xl hover:shadow-2xl transition-shadow">
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary via-primary/90 to-emerald-900 p-10 text-white shadow-md hover:shadow-lg transition-shadow">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-10 -right-10 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-10 -left-10 w-56 h-56 bg-primary/40 rounded-full blur-3xl pointer-events-none" />
@@ -211,21 +211,21 @@ export default function RealEstateDashboard() {
       {/* ── KPI Cards ── */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {kpis.map((kpi, i) => (
-          <div key={i} className="group p-6 border border-border/60 bg-card/40 backdrop-blur-md hover:shadow-2xl hover:border-primary/50 transition-all duration-300 rounded-[2rem] relative overflow-hidden flex flex-col hover:-translate-y-1">
-            <div className="absolute -top-6 -right-6 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-500 group-hover:scale-110 pointer-events-none">
-              <kpi.icon className="w-32 h-32 text-primary" />
+          <div key={i} className="group p-6 border border-emerald-200/50 dark:border-emerald-800/40 bg-gradient-to-br from-emerald-50 via-emerald-25 to-emerald-50 dark:from-emerald-950/30 dark:via-emerald-900/20 dark:to-emerald-950/30 backdrop-blur-md hover:shadow-lg dark:hover:shadow-emerald-950/40 hover:border-emerald-400/60 dark:hover:border-emerald-600/60 transition-all duration-300 rounded-[2rem] relative overflow-hidden flex flex-col hover:-translate-y-1">
+            <div className="absolute -top-6 -right-6 opacity-[0.04] group-hover:opacity-[0.1] transition-opacity duration-500 group-hover:scale-110 pointer-events-none">
+              <kpi.icon className="w-32 h-32 text-emerald-600" />
             </div>
             <div className="flex items-start justify-between mb-5 relative z-10">
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                <kpi.icon className="w-6 h-6 text-primary group-hover:text-white transition-colors duration-300" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/50 dark:to-emerald-800/30 flex items-center justify-center border border-emerald-200/60 dark:border-emerald-800/40 group-hover:from-emerald-600 group-hover:to-emerald-700 group-hover:text-white transition-all duration-300 shadow-sm">
+                <kpi.icon className="w-7 h-7 text-emerald-700 dark:text-emerald-400 group-hover:text-white transition-colors duration-300" />
               </div>
-              <Badge variant="outline" className={`font-bold px-2.5 py-1 uppercase tracking-wider text-[9px] border-0 ${kpi.up ? 'text-emerald-700 bg-emerald-50 dark:bg-emerald-900/30' : 'text-rose-600 bg-rose-50 dark:bg-rose-900/30'}`}>
+              <Badge variant="outline" className={`font-bold px-2.5 py-1 uppercase tracking-wider text-[9px] border-0 ${kpi.up ? 'text-emerald-700 bg-emerald-100 dark:bg-emerald-900/50 dark:text-emerald-300' : 'text-rose-700 bg-rose-100 dark:bg-rose-900/50 dark:text-rose-300'}`}>
                 {kpi.up ? <ArrowUpRight className="w-3 h-3 mr-0.5" /> : <ArrowDownRight className="w-3 h-3 mr-0.5" />}
                 {kpi.trend}
               </Badge>
             </div>
             <div className="relative z-10 mt-auto">
-              <p className="text-3xl font-black text-foreground mb-1 tracking-tight">{kpi.value}</p>
+              <p className="text-3xl font-black text-emerald-900 dark:text-emerald-100 mb-1 tracking-tight">{kpi.value}</p>
               <p className="text-sm font-bold text-foreground">{kpi.label}</p>
               <p className="text-xs font-medium text-muted-foreground mt-0.5 uppercase tracking-wide">{kpi.sub}</p>
             </div>
