@@ -22,6 +22,7 @@ const columns = [
 
 export default function Assignments() {
   const { t } = useTranslation();
+  const { companyId } = useCompanyId();
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
