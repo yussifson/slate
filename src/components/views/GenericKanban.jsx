@@ -100,13 +100,16 @@ export default function GenericKanban({
     }
   };
 
-  const handleDragEnd = (result) => {
+  const handleDragEnd = async (result) => {
     if (!result.destination) return;
     
     const { source, destination, draggableId } = result;
     if (source.droppableId === destination.droppableId) return; // Reordering in same column not supported yet
     
-    // Optimistic local update to prevent snapback
+    // Save previous state for rollback
+    const previousData = [...localData];
+    
+    // Optimistic local update
     const newData = localData.map(item => {
       if (item.id === draggableId) {
         return { ...item, [statusKey]: destination.droppableId };
@@ -117,7 +120,14 @@ export default function GenericKanban({
 
     // Call the parent update function
     if (onStatusChange) {
-      onStatusChange(draggableId, destination.droppableId);
+      try {
+        await onStatusChange(draggableId, destination.droppableId);
+      } catch (e) {
+        // Revert on failure
+        console.error('Kanban status change failed, reverting:', e);
+        setLocalData(previousData);
+        toast.error('Failed to update status');
+      }
     }
   };
 

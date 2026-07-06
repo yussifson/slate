@@ -102,12 +102,12 @@ const [stats, setStats] = useState({
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-100 text-sm font-semibold mb-1">Total Earned</p>
+                  <p className="text-green-700 dark:text-green-400 text-xs font-semibold uppercase tracking-wide mb-1">Total Earned</p>
                   <p className="text-3xl font-bold">${(stats.totalEarned / 1000000).toFixed(2)}M</p>
-                  <p className="text-xs text-green-200 mt-2">Paid commissions</p>
+                  <p className="text-xs text-green-600 dark:text-green-500 mt-2">Paid commissions</p>
                 </div>
-                <div className="p-4 bg-white bg-opacity-20 rounded-lg">
-                  <DollarSign className="w-8 h-8" />
+                <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
+                  <DollarSign className="w-8 h-8 text-green-600 dark:text-green-400" />
                 </div>
               </div>
             </CardContent>
@@ -117,12 +117,12 @@ const [stats, setStats] = useState({
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-orange-100 text-sm font-semibold mb-1">Pending</p>
+                  <p className="text-orange-600 dark:text-orange-400 text-xs font-semibold uppercase tracking-wide mb-1">Pending</p>
                   <p className="text-3xl font-bold">${(stats.totalPending / 1000000).toFixed(2)}M</p>
-                  <p className="text-xs text-orange-200 mt-2">Awaiting payment</p>
+                  <p className="text-xs text-orange-500 dark:text-orange-400 mt-2">Awaiting payment</p>
                 </div>
-                <div className="p-4 bg-white bg-opacity-20 rounded-lg">
-                  <ArrowUpRight className="w-8 h-8" />
+                <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl">
+                  <ArrowUpRight className="w-8 h-8 text-orange-600 dark:text-orange-400" />
                 </div>
               </div>
             </CardContent>
@@ -132,12 +132,12 @@ const [stats, setStats] = useState({
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-100 text-sm font-semibold mb-1">Average</p>
+                  <p className="text-primary dark:text-primary/80 text-xs font-semibold uppercase tracking-wide mb-1">Average</p>
                   <p className="text-3xl font-bold">${(stats.avgCommission / 1000).toFixed(0)}K</p>
-                  <p className="text-xs text-green-200 mt-2">Per commission</p>
+                  <p className="text-xs text-primary/60 dark:text-primary/50 mt-2">Per commission</p>
                 </div>
-                <div className="p-4 bg-white bg-opacity-20 rounded-lg">
-                  <Percent className="w-8 h-8" />
+                <div className="p-3 bg-primary/5 dark:bg-primary/10 rounded-xl">
+                  <Percent className="w-8 h-8 text-primary/60" />
                 </div>
               </div>
             </CardContent>
