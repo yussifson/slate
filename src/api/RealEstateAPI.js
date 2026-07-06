@@ -1954,10 +1954,10 @@ export const RealEstateAPI = {
       const now = getSafeISO8601();
 
       await powerSync.execute(
-        `INSERT INTO univ_re_comparable_properties (id, company_id, comparable_address, price, price_per_sqft,
+        `INSERT INTO univ_re_comparable_properties (id, company_id, subject_property_id, comparable_address, price, price_per_sqft,
          bedrooms, bathrooms, year_built, square_footage, days_on_market, sale_date, similarity_score, notes, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, companyId, data.address, data.salePrice, data.pricePerSqft, data.bedrooms, data.bathrooms,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.subjectPropertyId || null, data.address, data.salePrice, data.pricePerSqft, data.bedrooms, data.bathrooms,
          data.yearBuilt, data.squareFootage, data.daysOnMarket, data.saleDate, data.similarityScore, data.notes, now, now]
       );
       return id;
