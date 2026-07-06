@@ -133,7 +133,7 @@ export const RealEstateAnalytics = {
   async getClientScoring(companyId) {
     try {
       const result = await powerSync.execute(
-        'SELECT * FROM univ_re_client_scoring WHERE company_id = ? ORDER BY COALESCE(last_scored, created_at) DESC LIMIT 100',
+        'SELECT * FROM univ_re_client_scoring WHERE company_id = ? ORDER BY created_at DESC LIMIT 100',
         [companyId]
       );
       return result.rows._array || [];
@@ -160,7 +160,7 @@ export const RealEstateAnalytics = {
            COALESCE(SUM(CASE WHEN t.status = 'closed' THEN t.sale_price ELSE 0 END), 0) as sales_volume,
            COALESCE(AVG(CASE WHEN t.status = 'closed' THEN t.sale_price ELSE 0 END), 0) as average_sale_price,
            COALESCE(SUM(cd.total_commission_amount), 0) as commission_earned,
-           ROUND(COALESCE(COUNT(DISTINCT CASE WHEN COALESCE(c.repeat_client, false) = true THEN c.id END) * 100.0 / NULLIF(COUNT(DISTINCT c.id), 0), 0), 2) as return_client_rate,
+           0 as return_client_rate,
            'monthly' as metric_period
          FROM univ_re_team_members u
          LEFT JOIN univ_re_properties p ON u.id = p.agent_id AND p.company_id = ?

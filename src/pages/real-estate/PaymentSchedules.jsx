@@ -192,42 +192,42 @@ const [formData, setFormData] = useState({
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-50/60 dark:from-emerald-950/30 dark:to-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 rounded-xl shadow-sm hover:shadow-lg hover:border-emerald-400/60 dark:hover:border-emerald-600/60 transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1">
+          <CardHeader className="relative p-4 border-b border-emerald-200/50 dark:border-emerald-800/40 bg-transparent overflow-hidden">
+            <CardTitle className="text-sm font-medium text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
               <Calendar className="w-4 h-4" />
               Total Schedules
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold">{totalSchedules}</div>
-            <p className="text-xs text-muted-foreground mt-1">Active payment plans</p>
+            <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">{totalSchedules}</div>
+            <p className="text-xs text-emerald-700/70 dark:text-emerald-400/70 mt-1 font-medium">Active payment plans</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-50/60 dark:from-emerald-950/30 dark:to-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 rounded-xl shadow-sm hover:shadow-lg hover:border-emerald-400/60 dark:hover:border-emerald-600/60 transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1">
+          <CardHeader className="relative p-4 border-b border-emerald-200/50 dark:border-emerald-800/40 bg-transparent overflow-hidden">
+            <CardTitle className="text-sm font-medium text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
               <Zap className="w-4 h-4" />
               Automated
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold text-green-600 dark:text-green-400">{automatedSchedules}</div>
-            <p className="text-xs text-muted-foreground mt-1">Auto-debit enabled</p>
+            <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">{automatedSchedules}</div>
+            <p className="text-xs text-emerald-700/70 dark:text-emerald-400/70 mt-1 font-medium">Auto-debit enabled</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-50/60 dark:from-emerald-950/30 dark:to-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 rounded-xl shadow-sm hover:shadow-lg hover:border-emerald-400/60 dark:hover:border-emerald-600/60 transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1">
+          <CardHeader className="relative p-4 border-b border-emerald-200/50 dark:border-emerald-800/40 bg-transparent overflow-hidden">
+            <CardTitle className="text-sm font-medium text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
               <DollarSign className="w-4 h-4" />
               Monthly Total
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold">${(totalMonthlyAmount / 1000000).toFixed(1)}M</div>
-            <p className="text-xs text-muted-foreground mt-1">Total rent collected</p>
+            <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">${(totalMonthlyAmount / 1000000).toFixed(1)}M</div>
+            <p className="text-xs text-emerald-700/70 dark:text-emerald-400/70 mt-1 font-medium">Total rent collected</p>
           </CardContent>
         </Card>
       </div>

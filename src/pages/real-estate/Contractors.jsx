@@ -198,42 +198,42 @@ const [formData, setFormData] = useState({
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-50/60 dark:from-emerald-950/30 dark:to-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 rounded-xl shadow-sm hover:shadow-lg hover:border-emerald-400/60 dark:hover:border-emerald-600/60 transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1">
+          <CardHeader className="relative p-4 border-b border-emerald-200/50 dark:border-emerald-800/40 bg-transparent overflow-hidden">
+            <CardTitle className="text-sm font-medium text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
               <Hammer className="w-4 h-4" />
               Total Contractors
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold">{totalContractors}</div>
-            <p className="text-xs text-muted-foreground mt-1">In your network</p>
+            <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">{totalContractors}</div>
+            <p className="text-xs text-emerald-700/70 dark:text-emerald-400/70 mt-1 font-medium">In your network</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-50/60 dark:from-emerald-950/30 dark:to-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 rounded-xl shadow-sm hover:shadow-lg hover:border-emerald-400/60 dark:hover:border-emerald-600/60 transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1">
+          <CardHeader className="relative p-4 border-b border-emerald-200/50 dark:border-emerald-800/40 bg-transparent overflow-hidden">
+            <CardTitle className="text-sm font-medium text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
               <Badge className="w-4 h-4" />
               Licensed
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold text-green-600 dark:text-green-400">{licensed}</div>
-            <p className="text-xs text-muted-foreground mt-1">{((licensed / totalContractors) * 100 || 0).toFixed(0)}% licensed</p>
+            <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">{licensed}</div>
+            <p className="text-xs text-emerald-700/70 dark:text-emerald-400/70 mt-1 font-medium">{((licensed / totalContractors) * 100 || 0).toFixed(0)}% licensed</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+        <Card className="bg-gradient-to-br from-amber-50 to-amber-50/60 dark:from-amber-950/30 dark:to-amber-950/20 border border-amber-200/60 dark:border-amber-800/40 rounded-xl shadow-sm hover:shadow-lg hover:border-amber-400/60 dark:hover:border-amber-600/60 transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1">
+          <CardHeader className="relative p-4 border-b border-amber-200/50 dark:border-amber-800/40 bg-transparent overflow-hidden">
+            <CardTitle className="text-sm font-medium text-amber-700 dark:text-amber-400 flex items-center gap-2">
               <Star className="w-4 h-4" />
               Avg Rating
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold text-yellow-600 dark:text-yellow-400">{avgRating} ⭐</div>
-            <p className="text-xs text-muted-foreground mt-1">Out of 5</p>
+            <div className="text-3xl font-bold text-amber-900 dark:text-amber-100">{avgRating} ⭐</div>
+            <p className="text-xs text-amber-700/70 dark:text-amber-400/70 mt-1 font-medium">Out of 5</p>
           </CardContent>
         </Card>
       </div>
