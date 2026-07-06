@@ -185,18 +185,18 @@ export default function GenericKanban({
       )}
       
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="flex gap-6 p-6 overflow-x-auto min-h-[600px] bg-card shadow-sm rounded-3xl border border-border/40 pb-12 custom-scrollbar">
+        <div className="flex gap-6 p-6 overflow-x-auto min-h-[600px] bg-gradient-to-br from-card to-card/80 shadow-md rounded-3xl border border-emerald-200/30 dark:border-emerald-800/20 pb-12 custom-scrollbar">
           {stages.map((status, index) => {
             // Function support for dynamic status matching (e.g. 'Low Stock' computed from quantity)
             // But since this is drag and drop, statuses need to be exact strings that match statusKey
             const items = localData.filter(d => d[statusKey] === status);
             
             return (
-              <div key={status} className="flex-shrink-0 w-[320px] bg-muted/20 border border-border/60 rounded-3xl flex flex-col h-full max-h-[80vh] overflow-hidden shadow-sm">
-                <div className="flex justify-between items-center p-4 border-b border-border/50 bg-muted/40">
-                  <h3 className="font-extrabold text-foreground uppercase text-xs tracking-wider">{status}</h3>
+              <div key={status} className="flex-shrink-0 w-[320px] bg-gradient-to-br from-emerald-50/50 to-emerald-50/30 dark:from-emerald-950/20 dark:to-emerald-950/10 border border-emerald-200/50 dark:border-emerald-800/30 rounded-3xl flex flex-col h-full max-h-[80vh] overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+                <div className="flex justify-between items-center p-4 border-b border-emerald-200/40 dark:border-emerald-800/30 bg-gradient-to-r from-emerald-100/50 to-emerald-50/30 dark:from-emerald-900/20 dark:to-emerald-900/10">
+                  <h3 className="font-extrabold text-emerald-900 dark:text-emerald-100 uppercase text-xs tracking-wider">{status}</h3>
                   <div className="flex items-center gap-2">
-                    <span className="bg-background text-foreground text-xs font-bold px-2.5 py-0.5 rounded-full border border-border/60 shadow-sm">{items.length}</span>
+                    <span className="bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/50 dark:to-emerald-800/30 text-emerald-900 dark:text-emerald-100 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-200/60 dark:border-emerald-800/40 shadow-sm">{items.length}</span>
                     {boardKey && (
                       <div className="flex items-center gap-1 opacity-0 hover:opacity-100 transition-opacity absolute right-4 group-hover:opacity-100">
                         <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={() => openEditStage(index, status)}>
@@ -225,29 +225,30 @@ export default function GenericKanban({
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                                 style={{...provided.draggableProps.style, zIndex: snapshot.isDragging ? 9999 : 1}}
-                                className={`bg-background border border-border/60 shadow-sm p-5 rounded-2xl transition-all cursor-grab active:cursor-grabbing hover:shadow-md hover:border-primary/40 group relative overflow-hidden flex flex-col ${snapshot.isDragging ? 'shadow-xl border-primary ring-2 ring-primary/20 rotate-2' : ''}`}
+                                className={`bg-gradient-to-br from-background to-background/80 border border-emerald-200/40 dark:border-emerald-800/30 shadow-sm p-5 rounded-2xl transition-all cursor-grab active:cursor-grabbing hover:shadow-md hover:border-emerald-400/50 dark:hover:border-emerald-600/50 group relative overflow-hidden flex flex-col ${snapshot.isDragging ? 'shadow-xl border-emerald-500 ring-2 ring-emerald-400/40 rotate-1' : ''}`}
                               >
+                                <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/0 via-emerald-50/0 to-emerald-100/5 dark:from-emerald-950/0 dark:via-emerald-950/0 dark:to-emerald-950/10 pointer-events-none rounded-2xl" />
                                 <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                                   {onView && (
-                                    <Button size="icon" variant="ghost" className="h-7 w-7 text-primary hover:bg-primary/10 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" onClick={() => onView(item)}>
+                                    <Button size="icon" variant="ghost" className="h-7 w-7 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 bg-white/70 dark:bg-black/50 backdrop-blur-sm shadow-sm" onClick={() => onView(item)}>
                                       <Eye className="w-3.5 h-3.5" />
                                     </Button>
                                   )}
                                   {onEdit && (
-                                    <Button size="icon" variant="ghost" className="h-7 w-7 text-primary hover:bg-primary/10 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" onClick={() => onEdit(item)}>
+                                    <Button size="icon" variant="ghost" className="h-7 w-7 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 bg-white/70 dark:bg-black/50 backdrop-blur-sm shadow-sm" onClick={() => onEdit(item)}>
                                       <Edit className="w-3.5 h-3.5" />
                                     </Button>
                                   )}
                                   {onDelete && (
-                                    <Button size="icon" variant="ghost" className="h-7 w-7 text-red-600 hover:bg-red-100 hover:text-red-700 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm" onClick={() => onDelete(item.id)}>
+                                    <Button size="icon" variant="ghost" className="h-7 w-7 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/40 hover:text-rose-700 bg-white/70 dark:bg-black/50 backdrop-blur-sm shadow-sm" onClick={() => onDelete(item.id)}>
                                       <Trash2 className="w-3.5 h-3.5" />
                                     </Button>
                                   )}
                                 </div>
-                                <h4 className="font-bold text-sm text-foreground mb-3 pr-20 leading-snug">{item[titleKey] || 'Untitled'}</h4>
-                                <div className="flex flex-wrap gap-2">
+                                <h4 className="font-bold text-sm text-foreground mb-3 pr-20 leading-snug relative z-10">{item[titleKey] || 'Untitled'}</h4>
+                                <div className="flex flex-wrap gap-2 relative z-10">
                                   {Object.keys(item).filter(k => k !== 'company_id' && k !== 'id' && k !== 'created_at' && k !== statusKey && k !== titleKey).slice(0, 3).map(k => (
-                                    <span key={k} className="bg-muted/50 border border-border/40 text-foreground/70 font-semibold text-[10px] px-2.5 py-1 rounded-md capitalize truncate max-w-[120px]">
+                                    <span key={k} className="bg-gradient-to-br from-emerald-50/80 to-emerald-50/50 dark:from-emerald-900/30 dark:to-emerald-800/20 border border-emerald-200/60 dark:border-emerald-800/40 text-foreground/80 dark:text-foreground/70 font-semibold text-[10px] px-2.5 py-1 rounded-md capitalize truncate max-w-[120px]">
                                       {String(item[k] || '')}
                                     </span>
                                   ))}
