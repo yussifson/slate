@@ -5426,7 +5426,9 @@ export const AppSchema = new Schema({
         signing_timestamp: column.text,
         expiration_date: column.text,
         require_initials: column.integer,
-        created_at: column.text
+        require_timestamp: column.integer,
+        created_at: column.text,
+        updated_at: column.text
     }),
 
     // Enhanced Offers & Commissions
@@ -5609,7 +5611,10 @@ export const AppSchema = new Schema({
         market_absorption_rate: column.real,
         inventory_level: column.text,
         data_source: column.text,
-        created_at: column.text
+        market_city: column.text,
+        pending_listings_count: column.integer,
+        created_at: column.text,
+        updated_at: column.text
     }),
     univ_re_comparable_properties: new Table({
         id: column.text,
@@ -5630,7 +5635,8 @@ export const AppSchema = new Schema({
         price_adjustment_reason: column.text,
         adjustments: column.text,
         notes: column.text,
-        created_at: column.text
+        created_at: column.text,
+        updated_at: column.text
     }),
 
     // Agent & Client Intelligence
@@ -6012,7 +6018,9 @@ export const AppSchema = new Schema({
         id: column.text,
         company_id: column.text,
         lead_id: column.text,
+        agent_id: column.text,
         activity_type: column.text,
+        duration_minutes: column.integer,
         subject: column.text,
         description: column.text,
         outcome: column.text,

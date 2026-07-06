@@ -1628,10 +1628,10 @@ export const RealEstateAPI = {
       const now = getSafeISO8601();
 
       await powerSync.execute(
-        `INSERT INTO univ_re_e_signatures (id, company_id, document_id, document_name, signer_name, signer_email, 
+        `INSERT INTO univ_re_e_signatures (id, company_id, document_id, signer_id, document_name, signer_name, signer_email, 
          signing_order, expiration_date, require_initials, require_timestamp, signature_status, created_at, updated_at) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, companyId, data.documentId, data.documentName, data.signerName, data.signerEmail, 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.documentId, generateUUID(), data.documentName, data.signerName, data.signerEmail, 
          data.signingOrder || 1, data.expirationDate, data.requireInitials !== false, 
          data.requireTimestamp !== false, 'pending', now, now]
       );
@@ -2047,10 +2047,10 @@ export const RealEstateAPI = {
       const now = getSafeISO8601();
 
       await powerSync.execute(
-        `INSERT INTO univ_re_contractor_reviews (id, company_id, contractor_id, review_title, review_text, rating,
+        `INSERT INTO univ_re_contractor_reviews (id, company_id, contractor_id, reviewer_id, review_title, review_text, rating,
          punctuality_rating, quality_rating, professionalism_rating, would_rehire, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, companyId, data.contractorId, data.reviewTitle, data.reviewText, data.rating,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.contractorId, userId, data.reviewTitle, data.reviewText, data.rating,
          data.punctualityRating, data.qualityRating, data.professionalismRating, data.wouldRehire ? 1 : 0, now, now]
       );
       return id;
