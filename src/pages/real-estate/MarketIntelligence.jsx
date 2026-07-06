@@ -23,8 +23,8 @@ export default function MarketIntelligence() {
   const [comparables, setComparables] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showCompForm, setShowCompForm] = useState(false);
-  const [compFormData, setCompFormData] = useState({
-  const [view, setView] = useViewPreference('re_marketintelligence', 'grid');
+    const [view, setView] = useViewPreference('re_marketintelligence', 'grid');
+const [compFormData, setCompFormData] = useState({
     subjectAddress: '',
     subjectPrice: 0,
     comp1Address: '',

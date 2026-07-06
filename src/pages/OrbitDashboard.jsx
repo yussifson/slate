@@ -85,7 +85,7 @@ export default function OrbitDashboard() {
     );
   }
 
-  const industryName = orbitBuildData?.industry_name || 'Custom Workslate';
+  const industryName = orbitBuildData?.industry_name || 'Workslate';
 
   return (
     <div className="flex-1 h-screen overflow-hidden">

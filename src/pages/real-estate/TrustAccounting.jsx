@@ -42,8 +42,8 @@ export default function TrustAccounting() {
     accountHolderName: '',
     currency: 'USD',
   });
-  const [transactionFormData, setTransactionFormData] = useState({
-  const [view, setView] = useViewPreference('re_trustaccounting', 'grid');
+    const [view, setView] = useViewPreference('re_trustaccounting', 'grid');
+const [transactionFormData, setTransactionFormData] = useState({
     accountId: '',
     transactionType: 'deposit',
     amount: 0,

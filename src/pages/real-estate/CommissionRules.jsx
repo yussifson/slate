@@ -28,8 +28,8 @@ export default function CommissionRules() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({
   const [view, setView] = useViewPreference('re_commissionrules', 'grid');
+const [formData, setFormData] = useState({
     ruleName: '',
     ruleType: 'percentage',
     commissionPercentage: 0,

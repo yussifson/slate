@@ -28,8 +28,8 @@ export default function PaymentSchedules() {
   const [automationFilter, setAutomationFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({
   const [view, setView] = useViewPreference('re_paymentschedules', 'grid');
+const [formData, setFormData] = useState({
     leaseId: '',
     paymentAmount: 0,
     paymentDueDate: 1,

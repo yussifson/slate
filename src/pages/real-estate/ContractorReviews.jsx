@@ -28,8 +28,8 @@ export default function ContractorReviews() {
   const [ratingFilter, setRatingFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({
   const [view, setView] = useViewPreference('re_contractorreviews', 'grid');
+  const [formData, setFormData] = useState({
     contractorId: '',
     reviewTitle: '',
     reviewText: '',

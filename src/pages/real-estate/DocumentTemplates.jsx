@@ -30,8 +30,8 @@ export default function DocumentTemplates() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [showPreview, setShowPreview] = useState(null);
-  const [formData, setFormData] = useState({
   const [view, setView] = useViewPreference('re_documenttemplates', 'grid');
+const [formData, setFormData] = useState({
     templateName: '',
     documentType: 'contract',
     documentCategory: 'sales',

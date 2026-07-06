@@ -28,8 +28,8 @@ export default function EscrowAccounts() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({
   const [view, setView] = useViewPreference('re_escrowaccounts', 'grid');
+const [formData, setFormData] = useState({
     escrowType: 'earnest_money',
     escrowAmount: 0,
     buyerId: '',

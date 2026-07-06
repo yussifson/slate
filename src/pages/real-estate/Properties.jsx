@@ -283,7 +283,7 @@ export default function Properties() {
               <PropertyCard key={property.id} property={property} />
             ))}
           </div>
-        ) : (
+        ) : view === 'list' ? (
           <Card className="border border-border/50 bg-card/60 backdrop-blur-sm rounded-3xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
