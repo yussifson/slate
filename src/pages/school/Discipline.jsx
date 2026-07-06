@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { format } from "date-fns";
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 
 export default function Discipline() {
   const { t } = useTranslation();

@@ -7,6 +7,7 @@ import { powerSync } from '@/api/PowerSyncConnector';
 import { toast } from 'react-hot-toast';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 
 const CLASS_LIST = ['Grade 7B', 'Grade 8C', 'Grade 9A', 'Grade 9B', 'Grade 10A', 'Grade 10B', 'Grade 11A', 'Grade 12A'];
 

@@ -9,6 +9,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 
 export default function Transport() {
   const { t } = useTranslation();

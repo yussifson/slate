@@ -12,6 +12,7 @@ import { powerSync } from '@/api/PowerSyncConnector';
 import { toast } from 'react-hot-toast';
 import { format } from "date-fns";
 import { motion } from 'framer-motion';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 
 const columns = [
   { id: 'todo', title: 'To Do', color: 'bg-emerald-100 border-emerald-300 text-emerald-900' },

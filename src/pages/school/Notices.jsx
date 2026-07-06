@@ -9,6 +9,7 @@ import { powerSync } from '@/api/PowerSyncConnector';
 import { toast } from 'react-hot-toast';
 import { format } from "date-fns";
 import { motion, AnimatePresence } from 'framer-motion';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 
 export default function Notices() {
   const { t } = useTranslation();

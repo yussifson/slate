@@ -11,6 +11,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 
 const statusColors = {
   Upcoming: 'bg-[var(--color-info)]/10 text-[var(--color-info)] border-[var(--color-info)]/20',
