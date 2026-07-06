@@ -5235,7 +5235,8 @@ export const AppSchema = new Schema({
         status: column.text,
         agent_id: column.text,
         agent_name: column.text,
-        notes: column.text
+        notes: column.text,
+        updated_at: column.text
     }),
     univ_re_transactions: new Table({
         id: column.text,
@@ -5299,7 +5300,8 @@ export const AppSchema = new Schema({
         status: column.text,
         terms: column.text,
         agent_id: column.text,
-        agent_name: column.text
+        agent_name: column.text,
+        updated_at: column.text
     }),
     univ_re_rent_payments: new Table({
         id: column.text,

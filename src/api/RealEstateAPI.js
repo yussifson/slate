@@ -541,6 +541,8 @@ export const RealEstateAPI = {
         }
       });
 
+      updates.push('updated_at = ?');
+      params.push(getSafeISO8601());
       params.push(companyId);
       params.push(leaseId);
 
