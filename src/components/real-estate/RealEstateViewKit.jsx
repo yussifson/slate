@@ -39,22 +39,61 @@ export function ViewModeToggle({ viewMode, onChange, className }) {
   );
 }
 
-export function REStatCard({ label, value, icon: Icon, hint, variant = "default" }) {
+export function REStatCard({ label, value, icon: Icon, hint, variant = "default", trend }) {
   const variants = {
-    default: "bg-slate-100 text-emerald-600",
-    warning: "bg-amber-500/10 text-amber-600",
-    danger: "bg-red-500/10 text-red-600",
-    success: "bg-slate-100 text-emerald-600"
+    default: {
+      bg: "bg-gradient-to-br from-emerald-50 via-emerald-25 to-emerald-50 dark:from-emerald-950/30 dark:via-emerald-900/20 dark:to-emerald-950/30",
+      icon: "bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/50 dark:to-emerald-800/30",
+      text: "text-emerald-700 dark:text-emerald-400",
+      border: "border-emerald-200/60 dark:border-emerald-800/40",
+      shadow: "hover:shadow-[0_12px_24px_rgba(5,150,105,0.15)] dark:hover:shadow-[0_12px_24px_rgba(5,150,105,0.1)]"
+    },
+    warning: {
+      bg: "bg-gradient-to-br from-amber-50 via-amber-25 to-amber-50 dark:from-amber-950/30 dark:via-amber-900/20 dark:to-amber-950/30",
+      icon: "bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/50 dark:to-amber-800/30",
+      text: "text-amber-700 dark:text-amber-400",
+      border: "border-amber-200/60 dark:border-amber-800/40",
+      shadow: "hover:shadow-[0_12px_24px_rgba(217,119,6,0.15)] dark:hover:shadow-[0_12px_24px_rgba(217,119,6,0.1)]"
+    },
+    danger: {
+      bg: "bg-gradient-to-br from-red-50 via-red-25 to-red-50 dark:from-red-950/30 dark:via-red-900/20 dark:to-red-950/30",
+      icon: "bg-gradient-to-br from-red-100 to-red-50 dark:from-red-900/50 dark:to-red-800/30",
+      text: "text-red-700 dark:text-red-400",
+      border: "border-red-200/60 dark:border-red-800/40",
+      shadow: "hover:shadow-[0_12px_24px_rgba(239,68,68,0.15)] dark:hover:shadow-[0_12px_24px_rgba(239,68,68,0.1)]"
+    },
+    success: {
+      bg: "bg-gradient-to-br from-emerald-50 via-emerald-25 to-emerald-50 dark:from-emerald-950/30 dark:via-emerald-900/20 dark:to-emerald-950/30",
+      icon: "bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/50 dark:to-emerald-800/30",
+      text: "text-emerald-700 dark:text-emerald-400",
+      border: "border-emerald-200/60 dark:border-emerald-800/40",
+      shadow: "hover:shadow-[0_12px_24px_rgba(5,150,105,0.15)] dark:hover:shadow-[0_12px_24px_rgba(5,150,105,0.1)]"
+    }
   };
+
+  const variantStyle = variants[variant] || variants.default;
+
   return (
-    <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-600/40 p-5 flex items-center gap-4 min-h-[88px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-      <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shrink-0", variants[variant])}>
-        <Icon className="w-6 h-6" />
+    <div className={cn(
+      "bg-card rounded-xl border-[0.5px] p-5 flex items-center gap-4 min-h-[88px] transition-all duration-300 ease-out",
+      variantStyle.bg,
+      variantStyle.border,
+      variantStyle.shadow
+    )}>
+      <div className={cn("w-14 h-14 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 ease-out group-hover:scale-110", variantStyle.icon)}>
+        <Icon className={cn("w-7 h-7 transition-colors duration-300", variantStyle.text)} />
       </div>
-      <div className="min-w-0">
-        <p className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">{value}</p>
-        <p className="text-xs font-medium text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{label}</p>
-        {hint && <p className="text-[11px] text-emerald-600 mt-0.5 font-medium">{hint}</p>}
+      <div className="min-w-0 flex-1">
+        <div className="flex items-baseline gap-2">
+          <p className={cn("text-3xl font-bold tracking-tight tracking-[-0.02em]", variantStyle.text)}>{value}</p>
+          {trend && (
+            <span className={cn("text-xs font-semibold flex items-center gap-0.5", trend.direction === 'up' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400')}>
+              {trend.direction === 'up' ? '↑' : '↓'} {trend.value}%
+            </span>
+          )}
+        </div>
+        <p className={cn("text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mt-1")}>{label}</p>
+        {hint && <p className={cn("text-[11px] font-medium mt-0.5", variantStyle.text)}>{hint}</p>}
       </div>
     </div>
   );
@@ -115,7 +154,7 @@ export function REDataCard({
   subtitle, 
   iconText, 
   badge, 
-  badgeColor = "bg-slate-100 text-emerald-600 border-emerald-600/20",
+  badgeColor = "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border-emerald-200/60 dark:border-emerald-800/40",
   metrics = [], 
   onEdit, 
   onDelete, 
@@ -123,18 +162,18 @@ export function REDataCard({
   iconImage
 }) {
   return (
-    <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-emerald-600/40 rounded-2xl overflow-hidden hover:border-emerald-600/50 transition-all flex flex-col min-h-[260px] text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 p-6">
+    <article className="group relative bg-card border-[0.5px] border-emerald-200/60 dark:border-emerald-800/40 rounded-2xl overflow-hidden hover:border-emerald-400/60 dark:hover:border-emerald-600/60 transition-all duration-300 flex flex-col min-h-[260px] text-center hover:shadow-[0_16px_32px_rgba(5,150,105,0.12)] dark:hover:shadow-[0_16px_32px_rgba(5,150,105,0.08)] p-6">
       <div className="absolute top-3 right-3">
         <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
       </div>
       
       {badge && (
-        <span className={cn("absolute top-3 left-3 text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider border", badgeColor)}>
+        <span className={cn("absolute top-3 left-3 text-[10px] font-semibold px-3 py-1.5 rounded-full uppercase tracking-wider border transition-all duration-300", badgeColor)}>
           {badge}
         </span>
       )}
 
-      <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-tr from-emerald-600/20 to-emerald-600/5 border-4 border-background flex items-center justify-center text-3xl font-black text-emerald-600 mb-4 shrink-0 relative tracking-[-0.02em]">
+      <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/50 dark:to-emerald-800/30 border-4 border-background flex items-center justify-center text-3xl font-black text-emerald-700 dark:text-emerald-400 mb-4 shrink-0 relative tracking-[-0.02em] transition-transform duration-300 group-hover:scale-110">
         {iconImage ? (
           <img src={iconImage} alt="" className="w-full h-full object-cover rounded-full" />
         ) : (
@@ -150,11 +189,11 @@ export function REDataCard({
       </div>
       
       {metrics.length > 0 && (
-        <div className={cn("mt-auto grid gap-4 pt-4 border-t border-emerald-600/40", metrics.length === 2 ? "grid-cols-2" : "grid-cols-1")}>
+        <div className={cn("mt-auto grid gap-4 pt-4 border-t border-emerald-200/60 dark:border-emerald-800/40", metrics.length === 2 ? "grid-cols-2" : "grid-cols-1")}>
           {metrics.map((m, i) => (
-            <div key={i} className={cn("text-center", i > 0 && "border-l border-emerald-600/40")}>
+            <div key={i} className={cn("text-center", i > 0 && "border-l border-emerald-200/60 dark:border-emerald-800/40")}>
               <p className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{m.label}</p>
-              <p className="text-lg font-extrabold text-foreground">{m.value}</p>
+              <p className="text-lg font-extrabold text-emerald-700 dark:text-emerald-300">{m.value}</p>
             </div>
           ))}
         </div>
