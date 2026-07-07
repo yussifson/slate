@@ -90,7 +90,9 @@ export const AppSchema = new Schema({
         po_number: column.text,
         supplier: column.text,
         date: column.text,
-        amount: column.real,
+        total: column.real,
+        items: column.text,
+        notes: column.text,
         status: column.text
     }),
     univ_retail_sales: new Table({

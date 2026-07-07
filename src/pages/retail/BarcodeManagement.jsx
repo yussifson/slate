@@ -69,6 +69,7 @@ export default function BarcodeManagement() {
   };
 
   return (
+    <>
     <div className="p-4 md:p-8 max-w-7xl mx-auto hide-on-print">
       <style>{`
         @media print {
@@ -201,6 +202,7 @@ export default function BarcodeManagement() {
           </Card>
         </div>
       </div>
+    </div>
 
       {/* Hidden Print Container */}
       <div className="print-container hidden">
@@ -224,6 +226,6 @@ export default function BarcodeManagement() {
           return labels;
         })}
       </div>
-    </div>
+    </>
   );
 }

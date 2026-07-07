@@ -34,9 +34,6 @@ export default function Shifts() {
       try {
         const shiftsRes = await powerSync.execute('SELECT * FROM univ_retail_shifts WHERE company_id = ? ORDER BY date DESC, start_time DESC', [companyId]);
         if(active) setDbRecords(shiftsRes.rows._array || Array.from(shiftsRes.rows));
-
-        const staffRes = await powerSync.execute('SELECT * FROM univ_retail_staff WHERE company_id = ?', [companyId]);
-        if(active) setStaffRecords(staffRes.rows._array || Array.from(staffRes.rows));
       } catch(e){}
       setIsLoading(false);
     };
@@ -52,8 +49,7 @@ export default function Shifts() {
 
   const shifts = dbRecords.map(r => ({
     id: r.id,
-    staffId: r.staff_id || '',
-    staffName: r.staff_id ? (staffList.find(s => s.id === r.staff_id)?.name || 'Unknown') : 'Unnamed Staff',
+    staffName: r.employee_name || 'Unnamed Staff',
     role: r.role || 'Cashier',
     date: r.date || new Date().toISOString().split('T')[0],
     startTime: r.start_time || '09:00',
@@ -66,7 +62,7 @@ export default function Shifts() {
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
-    staffId: '', role: 'Cashier', date: '', startTime: '', endTime: '', status: 'Scheduled'
+    staffName: '', role: 'Cashier', date: '', startTime: '', endTime: '', status: 'Scheduled'
   });
 
   // ─── Cash Drawer State ───────────────────────────────────────────
@@ -132,20 +128,19 @@ export default function Shifts() {
 
   const openEdit = (sh) => {
     setEditingId(sh.id);
-    setFormData({ staffId: sh.staffId, role: sh.role, date: sh.date, startTime: sh.startTime, endTime: sh.endTime, status: sh.status });
+    setFormData({ staffName: sh.staffName, role: sh.role, date: sh.date, startTime: sh.startTime, endTime: sh.endTime, status: sh.status });
     setShowModal(true);
   };
 
   const handleSave = async () => {
-    const selectedStaff = staffList.find(s => s.id === formData.staffId);
     try {
       if (editingId) {
-        await powerSync.execute(`UPDATE univ_retail_shifts SET staff_id=?, role=?, date=?, start_time=?, end_time=?, status=? WHERE id=?`, 
-          [formData.staffId, formData.role, formData.date, formData.startTime, formData.endTime, formData.status, editingId]
+        await powerSync.execute(`UPDATE univ_retail_shifts SET employee_name=?, role=?, date=?, start_time=?, end_time=?, status=? WHERE id=?`, 
+          [formData.staffName, formData.role, formData.date, formData.startTime, formData.endTime, formData.status, editingId]
         );
       } else {
-        await powerSync.execute(`INSERT INTO univ_retail_shifts (id, created_at, company_id, staff_id, role, date, start_time, end_time, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
-          [crypto.randomUUID(), companyId, formData.staffId, formData.role, formData.date, formData.startTime, formData.endTime, formData.status]
+        await powerSync.execute(`INSERT INTO univ_retail_shifts (id, created_at, company_id, employee_name, role, date, start_time, end_time, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
+          [crypto.randomUUID(), companyId, formData.staffName, formData.role, formData.date, formData.startTime, formData.endTime, formData.status]
         );
       }
       
@@ -172,7 +167,7 @@ export default function Shifts() {
           <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">Staff Shifts</h1>
           <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">Manage schedules, rosters and cash drawer for your retail staff.</p>
         </div>
-        <Button onClick={() => { setEditingId(null); setFormData({ staffId: '', role: 'Cashier', date: new Date().toISOString().split('T')[0], startTime: '09:00', endTime: '17:00', status: 'Scheduled' }); setShowModal(true); }} className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">
+        <Button onClick={() => { setEditingId(null); setFormData({ staffName: '', role: 'Cashier', date: new Date().toISOString().split('T')[0], startTime: '09:00', endTime: '17:00', status: 'Scheduled' }); setShowModal(true); }} className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">
           <Plus className="w-4 h-4" /> Schedule Shift
         </Button>
       </div>
@@ -255,15 +250,8 @@ export default function Shifts() {
             <h2 className="text-lg font-semibold text-card-foreground">{editingId ? 'Edit Shift' : 'Schedule Shift'}</h2>
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Staff Member</label>
-                <select value={formData.staffId} onChange={e => {
-                  const sId = e.target.value;
-                  const role = staffList.find(s => s.id === sId)?.role || formData.role;
-                  setFormData({ ...formData, staffId: sId, role });
-                }} className="flex h-10 w-full rounded-lg border-[0.5px] border-input bg-background px-3 py-2 text-sm mt-1">
-                  <option value="">Select Staff...</option>
-                  {staffList.map(s => <option key={s.id} value={s.id}>{s.name} ({s.role})</option>)}
-                </select>
+                <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Staff Member Name</label>
+                <Input value={formData.staffName} onChange={e => setFormData({ ...formData, staffName: e.target.value })} className="mt-1" placeholder="e.g. John Doe" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Role</label>

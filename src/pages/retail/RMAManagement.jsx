@@ -102,6 +102,21 @@ export default function RMAManagement() {
         [id, companyId, rmaNumber, newRMA.product_id, newRMA.supplier_id, newRMA.quantity, newRMA.reason]
       );
       
+      const newRmaObj = {
+        id,
+        created_at: new Date().toISOString(),
+        company_id: companyId,
+        rma_number: rmaNumber,
+        product_id: newRMA.product_id,
+        supplier_id: newRMA.supplier_id,
+        quantity: newRMA.quantity,
+        reason: newRMA.reason,
+        status: 'Pending',
+        product_name: products.find(p => p.id === newRMA.product_id)?.name
+      };
+      
+      setRmas(prev => [newRmaObj, ...prev]);
+      
       toast.success(`RMA ${rmaNumber} Created Successfully`);
       setIsDialogOpen(false);
       setNewRMA({ product_id: '', supplier_id: '', quantity: 1, reason: '' });

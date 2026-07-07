@@ -98,12 +98,12 @@ export default function Promotions() {
     try {
       const codeUpper = promoCode.toUpperCase();
       if (editId) {
-        await powerSync.execute(`UPDATE univ_retail_promotions SET promo_code=?, discount=?, status=? WHERE id=?`, 
-          [codeUpper, `${discountValue}${discountType === 'percentage' ? '%' : ''}`, isActive ? 'Active' : 'Inactive', editId]
+        await powerSync.execute(`UPDATE univ_retail_promotions SET promo_code=?, discount_type=?, discount_value=?, status=? WHERE id=?`, 
+          [codeUpper, discountType, Number(discountValue), isActive ? 'Active' : 'Inactive', editId]
         );
       } else {
-        await powerSync.execute(`INSERT INTO univ_retail_promotions (id, created_at, company_id, promo_code, discount, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?)`, 
-          [crypto.randomUUID(), companyId, codeUpper, `${discountValue}${discountType === 'percentage' ? '%' : ''}`, isActive ? 'Active' : 'Inactive']
+        await powerSync.execute(`INSERT INTO univ_retail_promotions (id, created_at, company_id, promo_code, discount_type, discount_value, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)`, 
+          [crypto.randomUUID(), companyId, codeUpper, discountType, Number(discountValue), isActive ? 'Active' : 'Inactive']
         );
       }
       

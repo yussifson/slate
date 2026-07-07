@@ -515,7 +515,7 @@ export default function PurchaseOrders() {
  </div>
 
  {newPO.items.length > 0 && (
- <div className="mt-4 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="mt-4 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 overflow-x-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm">
  <thead className="bg-slate-50 dark:bg-slate-800/50 border-b">
  <tr>
