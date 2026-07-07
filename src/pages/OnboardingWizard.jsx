@@ -58,7 +58,7 @@ export default function OnboardingWizard() {
 
  const [country, setCountry] = useState('United States of America');
  const [currency, setCurrency] = useState('USD');
- const [industry, setIndustry] = useState(user?.company_industry || 'law');
+ const [industry, setIndustry] = useState(user?.company_industry || '');
  const [educationLevel, setEducationLevel] = useState('');
  const [orbitPrompt, setOrbitPrompt] = useState('');
  const [orbitProgress, setOrbitProgress] = useState('');
@@ -594,7 +594,7 @@ export default function OnboardingWizard() {
  <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide tracking-[0.04em]">{t("industry", "Workslate")}</label>
  <Select value={industry} onValueChange={setIndustry}>
  <SelectTrigger className="h-12 bg-card border-primary/40 rounded-xl text-slate-900 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <SelectValue />
+ <SelectValue placeholder="Select your preferred industry" />
  </SelectTrigger>
  <SelectContent className="bg-card text-slate-900 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
   {/* Show all enabled industries based on rollout config */}
@@ -1071,7 +1071,7 @@ export default function OnboardingWizard() {
                       setStep(step + 1);
                     }}
                     disabled={
-                      (step === 1 && !setupMode) || (step === 2 && setupMode === 'custom' && selectedModules.length === 0) || (step === 2 && setupMode === 'orbit' && !orbitPrompt)
+                      (step === 1 && !setupMode) || (step === 1 && !industry) || (step === 2 && setupMode === 'custom' && selectedModules.length === 0) || (step === 2 && setupMode === 'orbit' && !orbitPrompt)
                     }
                     className="h-12 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl flex items-center group transition-all"
                   >
