@@ -1,15 +1,15 @@
 bucket_definitions:
   global:
     data:
-      - SELECT * FROM univ_religion_members WHERE company_id = request.jwt.company_id
-      - SELECT * FROM univ_religion_donations WHERE company_id = request.jwt.company_id
-      - SELECT * FROM univ_religion_events WHERE company_id = request.jwt.company_id
-      - SELECT * FROM univ_religion_groups WHERE company_id = request.jwt.company_id
-      - SELECT * FROM univ_religion_small_groups WHERE company_id = request.jwt.company_id
-      - SELECT * FROM univ_religion_prayers WHERE company_id = request.jwt.company_id
-      - SELECT * FROM univ_religion_sermons WHERE company_id = request.jwt.company_id
-      - SELECT * FROM univ_religion_volunteers WHERE company_id = request.jwt.company_id
-      - SELECT * FROM univ_religion_milestones WHERE company_id = request.jwt.company_id
+      - SELECT * FROM univ_religion_members WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_religion_donations WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_religion_events WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_religion_groups WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_religion_small_groups WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_religion_prayers WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_religion_sermons WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_religion_volunteers WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_religion_milestones WHERE company_id = bucket.company_id
       - SELECT * FROM companies
       - SELECT * FROM subscription_plans
       - SELECT * FROM firm_settings
