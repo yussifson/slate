@@ -2346,6 +2346,8 @@ export const AppSchema = new Schema({
         status: column.text,
         type: column.text,
         notes: column.text,
+        start_time: column.text,
+        end_time: column.text,
         updated_at: column.text}),
     univ_arbitration: new Table({
         id: column.text,

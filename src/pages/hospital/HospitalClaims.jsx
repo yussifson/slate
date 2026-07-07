@@ -136,8 +136,8 @@ export default function HospitalClaims() {
   };
 
   const filtered = claims.filter(c =>
-    c.patient_name?.toLowerCase().includes(search.toLowerCase()) ||
-    c.insurance_provider?.toLowerCase().includes(search.toLowerCase())
+    (c.patient_name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (c.insurance_provider || '').toLowerCase().includes(search.toLowerCase())
   );
 
   if (isLoading) return <div className="flex justify-center p-8">Loading claims data...</div>;
@@ -197,7 +197,9 @@ export default function HospitalClaims() {
             <tbody className="divide-y divide-border">
               {filtered.map(c => (
                 <tr key={c.id} className="hover:bg-muted/50 transition-colors">
-                  <td className="px-6 py-4 text-[#71717a]">{new Date(c.claim_date).toISOString().split('T')[0]}</td>
+                  <td className="px-6 py-4 text-[#71717a]">
+                    {c.claim_date ? (c.claim_date.includes('T') ? c.claim_date.split('T')[0] : c.claim_date.split(' ')[0]) : 'N/A'}
+                  </td>
                   <td className="px-6 py-4 font-semibold text-card-foreground">{c.patient_name}</td>
                   <td className="px-6 py-4">
                     <p className="text-primary font-medium">{c.insurance_provider}</p>

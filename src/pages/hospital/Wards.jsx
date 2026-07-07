@@ -118,11 +118,11 @@ export default function Wards() {
   const [showModal, setShowModal] = useState(false);
   const [showNewWardModal, setShowNewWardModal] = useState(false);
   const [newWardData, setNewWardData] = useState({ name: '', type: 'General', capacity: 10 });
-  const [formData, setFormData] = useState({ patient_id: '', reason: '' });
+  const [formData, setFormData] = useState({ patient_id: '', reason: '', action: 'admit' });
 
   const handleBedClick = (ward, bedNumber, currentAdmission) => {
     setSelectedBed({ ward, bedNumber, currentAdmission });
-    setFormData({ patient_id: '', reason: '' });
+    setFormData({ patient_id: '', reason: '', action: 'admit' });
     setShowModal(true);
   };
 
@@ -138,6 +138,9 @@ export default function Wards() {
       });
     } else {
       // Admit
+      if (formData.action !== 'admit') {
+        return toast.error("This action is coming soon in the next update!");
+      }
       if (!formData.patient_id) return toast.error("Please select a patient");
       mutateAdmission.mutate({
         action: 'admit',
@@ -292,8 +295,10 @@ export default function Wards() {
               <div className="space-y-4">
                 <div>
                   <label className="text-xs font-semibold text-[#71717a] uppercase">Action</label>
-                  <select className="mt-1 w-full rounded-lg border-[0.5px] border-primary/40 bg-background px-3 py-2 text-sm">
-                    <option>Admit Patient</option>
+                  <select value={formData.action} onChange={e => setFormData({ ...formData, action: e.target.value })} className="mt-1 w-full rounded-lg border-[0.5px] border-primary/40 bg-background px-3 py-2 text-sm">
+                    <option value="admit">Admit Patient</option>
+                    <option value="maintenance">Mark for Maintenance</option>
+                    <option value="reserve">Reserve Bed</option>
                   </select>
                 </div>
                 <div>

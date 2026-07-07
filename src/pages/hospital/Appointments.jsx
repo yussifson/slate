@@ -92,15 +92,15 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
       if (payload.id) {
         await powerSync.execute(
           `UPDATE univ_appointments SET 
-             title = ?, attendee_name = ?, client_name = ?, staff_name = ?, date = ?, time = ?, type = ?, status = ?, notes = ?
+             title = ?, attendee_name = ?, client_name = ?, staff_name = ?, date = ?, time = ?, start_time = ?, end_time = ?, type = ?, status = ?, notes = ?
            WHERE id = ?`,
-          [payload.title, payload.attendee_name, payload.client_name, payload.staff_name, payload.date, payload.time, payload.type, payload.status, payload.notes, payload.id]
+          [payload.title, payload.attendee_name, payload.client_name, payload.staff_name, payload.date, payload.time, payload.start_time, payload.end_time, payload.type, payload.status, payload.notes, payload.id]
         );
       } else {
         await powerSync.execute(
-          `INSERT INTO univ_appointments (id, created_at, company_id, title, attendee_name, client_name, staff_name, date, time, type, status, notes)
-           VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [companyId, payload.title, payload.attendee_name, payload.client_name, payload.staff_name, payload.date, payload.time, payload.type, payload.status, payload.notes]
+          `INSERT INTO univ_appointments (id, created_at, company_id, title, attendee_name, client_name, staff_name, date, time, start_time, end_time, type, status, notes)
+           VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [companyId, payload.title, payload.attendee_name, payload.client_name, payload.staff_name, payload.date, payload.time, payload.start_time, payload.end_time, payload.type, payload.status, payload.notes]
         );
       }
     },
@@ -146,6 +146,14 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
       return toast.error("Conflict Detected: Doctor is already booked at this time!");
     }
 
+    const isoStart = formData.date && formData.time ? `${formData.date}T${formData.time}:00Z` : null;
+    let isoEnd = null;
+    if (isoStart) {
+      const d = new Date(isoStart);
+      d.setHours(d.getHours() + 1);
+      isoEnd = d.toISOString();
+    }
+
     let payload = {
       title: formData.patient.trim() || 'Appointment',
       attendee_name: formData.patient.trim(),
@@ -153,6 +161,8 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
       staff_name: formData.doctor,
       date: formData.date,
       time: formData.time,
+      start_time: isoStart,
+      end_time: isoEnd,
       type: formData.type,
       status: 'Scheduled',
       notes: formData.notes
@@ -345,9 +355,9 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
       </div>
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-            <h2 className="text-lg font-semibold text-card-foreground">{t("book_new_appointment", "Book New Appointment")}</h2>
-            <div className="space-y-4">
+          <div className="bg-card rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col p-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <h2 className="text-lg font-semibold text-card-foreground mb-4 shrink-0">{t("book_new_appointment", "Book New Appointment")}</h2>
+            <div className="space-y-4 overflow-y-auto flex-1 pr-2">
               <div>
                 <label className="text-xs font-semibold text-[#71717a] uppercase tracking-[0.04em]">{t("patient_name", "Patient Name")}</label>
                 <Input value={formData.patient} onChange={e => setFormData({ ...formData, patient: e.target.value})} className="mt-1" placeholder="e.g. Ama Ghana" />
@@ -393,7 +403,7 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
                 </div>
               </div>
             </div>
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-3 pt-4 border-t border-primary/20 shrink-0 mt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
               <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleSaveToDb} disabled={mutateRecord.isPending || isGenerating || isSyncing}>
                 {(mutateRecord.isPending || isGenerating || isSyncing) ? 'Processing...' : 'Confirm Booking'}
