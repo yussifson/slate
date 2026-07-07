@@ -276,8 +276,8 @@ export default function RetailDashboard({ companyId, company, isAdmin }) {
           <div className="space-y-4 mb-5">
             <UsageRow label="Staff" used={staff.length} max={plan.maxUsers} />
             <UsageRow label="Storage" used={0} max={plan.maxStorageGB} suffix=" GB" />
-            <UsageRow label="Orders" used={orders.length} max={plan.maxCases} />
-            <UsageRow label="Customers" used={customers.length} max={plan.maxClients} />
+            <UsageRow label="Orders" used={stats?.totalOrders || 0} max={plan.maxCases} />
+            <UsageRow label="Customers" used={customersLength} max={plan.maxClients} />
           </div>
           <div className="pt-4 border-t border-border">
             <div className="flex items-center justify-between">

@@ -154,8 +154,12 @@ export default function PurchaseOrders() {
   };
 
   const handleCreatePO = async () => {
-    if (!newPO.supplierId || newPO.items.length === 0) {
-      toast.error(t("fill_required_fields", "Please select a supplier and add at least one item."));
+    if (!newPO.supplierId) {
+      toast.error(t("select_supplier", "Please select a supplier."));
+      return;
+    }
+    if (newPO.items.length === 0) {
+      toast.error(t("add_items", "Please add at least one item."));
       return;
     }
 
