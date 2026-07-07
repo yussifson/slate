@@ -199,8 +199,8 @@ export default function HospitalBilling() {
   };
 
   const filtered = bills.filter(b =>
-    b.patient_name?.toLowerCase().includes(search.toLowerCase()) ||
-    b.service_provided?.toLowerCase().includes(search.toLowerCase())
+    (b.patient_name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (b.service_provided || '').toLowerCase().includes(search.toLowerCase())
   );
 
   if (isLoading) return <div className="flex justify-center p-8">Loading billing data...</div>;

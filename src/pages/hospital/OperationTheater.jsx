@@ -111,9 +111,9 @@ export default function OperationTheater() {
   });
 
   const filtered = surgeries.filter(s =>
-    s.patient_name?.toLowerCase().includes(search.toLowerCase()) ||
-    s.surgery_name?.toLowerCase().includes(search.toLowerCase()) ||
-    s.surgeon_name?.toLowerCase().includes(search.toLowerCase())
+    (s.patient_name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (s.surgery_name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (s.surgeon_name || '').toLowerCase().includes(search.toLowerCase())
   );
 
   const getStatusColor = (status) => {
@@ -245,9 +245,9 @@ export default function OperationTheater() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl border border-white/10">
-            <h2 className="text-xl font-bold text-card-foreground">Schedule Surgery</h2>
-            <div className="grid grid-cols-2 gap-4">
+          <div className="bg-card rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col p-6 shadow-2xl border border-white/10">
+            <h2 className="text-xl font-bold text-card-foreground shrink-0 mb-4">Schedule Surgery</h2>
+            <div className="grid grid-cols-2 gap-4 overflow-y-auto flex-1 pr-2">
               <div className="col-span-2">
                 <label className="text-xs font-semibold text-[#71717a] uppercase">Patient</label>
                 <select value={formData.patient_id} onChange={e => setFormData({ ...formData, patient_id: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/20 dark:border-white/20 bg-background px-3 py-2 text-sm font-medium">
@@ -290,7 +290,7 @@ export default function OperationTheater() {
                 )}
               </div>
             </div>
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-3 pt-4 shrink-0 mt-4 border-t border-black/10">
               <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setShowModal(false)}>Cancel</Button>
               <Button className="flex-1 bg-pink-600 hover:bg-pink-700 text-white rounded-xl shadow-md" onClick={() => mutateRecord.mutate(formData)} disabled={mutateRecord.isPending}>
                 {mutateRecord.isPending ? 'Scheduling...' : 'Schedule Surgery'}

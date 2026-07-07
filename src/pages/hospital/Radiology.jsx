@@ -110,9 +110,9 @@ export default function Radiology() {
   });
 
   const filtered = scans.filter(s =>
-    s.patient_name?.toLowerCase().includes(search.toLowerCase()) ||
-    s.scan_type?.toLowerCase().includes(search.toLowerCase()) ||
-    s.body_part?.toLowerCase().includes(search.toLowerCase())
+    (s.patient_name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (s.scan_type || '').toLowerCase().includes(search.toLowerCase()) ||
+    (s.body_part || '').toLowerCase().includes(search.toLowerCase())
   );
 
   const getStatusColor = (status) => {

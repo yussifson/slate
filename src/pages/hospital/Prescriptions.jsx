@@ -234,8 +234,8 @@ export default function Prescriptions() {
   };
 
   const filtered = prescriptions.filter(rx =>
-    rx.patient_name?.toLowerCase().includes(search.toLowerCase()) ||
-    rx.drug_name?.toLowerCase().includes(search.toLowerCase())
+    (rx.patient_name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (rx.drug_name || '').toLowerCase().includes(search.toLowerCase())
   );
 
   const openEdit = (rx) => {

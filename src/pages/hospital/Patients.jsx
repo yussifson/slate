@@ -240,7 +240,7 @@ Return ONLY the summary in markdown format.`;
 
   const filtered = patients.filter(p => {
     const fullName = `${p.first_name || ''} ${p.last_name || ''}`.toLowerCase();
-    return fullName.includes(search.toLowerCase()) || p.patient_number?.toLowerCase().includes(search.toLowerCase());
+    return fullName.includes(search.toLowerCase()) || (p.patient_number || '').toLowerCase().includes(search.toLowerCase());
   });
 
   if (isLoading) return <div className="flex items-center justify-center h-64 text-[#71717a] dark:text-gray-400">{t("loading_patients", "Loading patients...")}</div>;

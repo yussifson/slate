@@ -129,8 +129,8 @@ export default function LabResults() {
   };
 
   const filtered = labResults.filter(res =>
-    res.patient_name?.toLowerCase().includes(search.toLowerCase()) ||
-    res.test_type?.toLowerCase().includes(search.toLowerCase())
+    (res.patient_name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (res.test_type || '').toLowerCase().includes(search.toLowerCase())
   );
 
   const openEdit = (res) => {

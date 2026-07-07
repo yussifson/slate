@@ -107,8 +107,8 @@ export default function Telemedicine() {
   });
 
   const filtered = sessions.filter(s =>
-    s.patient_name?.toLowerCase().includes(search.toLowerCase()) ||
-    s.status?.toLowerCase().includes(search.toLowerCase())
+    (s.patient_name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (s.status || '').toLowerCase().includes(search.toLowerCase())
   );
 
   const getStatusColor = (status) => {

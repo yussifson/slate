@@ -114,9 +114,9 @@ export default function AmbulanceDispatch() {
   });
 
   const filtered = dispatches.filter(d =>
-    d.destination?.toLowerCase().includes(search.toLowerCase()) ||
-    d.vehicle_id?.toLowerCase().includes(search.toLowerCase()) ||
-    d.emergency_type?.toLowerCase().includes(search.toLowerCase())
+    (d.destination || '').toLowerCase().includes(search.toLowerCase()) ||
+    (d.vehicle_id || '').toLowerCase().includes(search.toLowerCase()) ||
+    (d.emergency_type || '').toLowerCase().includes(search.toLowerCase())
   );
 
   const getStatusColor = (status) => {

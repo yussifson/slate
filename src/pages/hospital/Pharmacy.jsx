@@ -138,8 +138,8 @@ Return a 1-2 sentence recommendation.`;
   };
 
   let filtered = inventory.filter(d => 
-    d.drug_name?.toLowerCase().includes(search.toLowerCase()) || 
-    d.category?.toLowerCase().includes(search.toLowerCase())
+    (d.drug_name || '').toLowerCase().includes(search.toLowerCase()) || 
+    (d.category || '').toLowerCase().includes(search.toLowerCase())
   );
 
   if (sortByStock) {
