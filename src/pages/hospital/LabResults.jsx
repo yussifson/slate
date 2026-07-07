@@ -34,7 +34,7 @@ export default function LabResults() {
       if (!companyId) return [];
         const res = await powerSync.execute(
           `SELECT l.*, test_name AS test_type, result_value AS result,
-                  p.COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name
+                  COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name
            FROM univ_lab_results l
            LEFT JOIN univ_patients p ON l.patient_id = p.id
            WHERE l.company_id = ? ORDER BY l.created_at DESC`,

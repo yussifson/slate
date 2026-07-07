@@ -24,7 +24,7 @@ export default function HospitalClaims() {
       if (!companyId) return [];
       const res = await powerSync.execute(
         `SELECT c.*, 
-                p.COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name
+                COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name
          FROM univ_medicalclaims c
          LEFT JOIN univ_patients p ON c.patient_id = p.id
          WHERE c.company_id = ?

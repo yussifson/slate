@@ -172,8 +172,8 @@ export const AuthProvider = ({ children }) => {
             .select('name')
             .eq('id', staffRecord.company_id)
             .maybeSingle();
-          if (company) {
-            companyName = company.name;
+          if (company?.name) {
+            companyName = company?.name;
           }
         }
 
@@ -322,18 +322,20 @@ export const AuthProvider = ({ children }) => {
       let companySubdomain = null;
       let companyData = null;
       if (profile?.company_id) {
-        const { data: company, error: companyError } = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [profile.company_id]).then(res => ({ data: res.rows._array[0] || null, error: null }));
+        const { data: company, error: companyError } = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [profile.company_id]).then(res => ({ data: res.rows._array[0] || null, error: null })).catch(() => ({ data: null, error: null }));
         let finalCompany = company || {};
         
         // FALLBACK TO SUPABASE
-        const { data: supaCompany } = await supabase.from('companies').select('*').eq('id', profile.company_id).maybeSingle();
-        if (supaCompany) finalCompany = { ...finalCompany, ...supaCompany };
+        try {
+          const { data: supaCompany } = await supabase.from('companies').select('*').eq('id', profile.company_id).maybeSingle();
+          if (supaCompany) finalCompany = { ...finalCompany, ...supaCompany };
+        } catch(e) { /* offline - use PowerSync data only */ }
         
-        if (finalCompany.id) {
+        if (finalCompany?.id) {
           companyData = finalCompany;
           companySubdomain = finalCompany.subdomain || finalCompany.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
         } else if (companyError) {
-          console.error("Failed to fetch company for redirect:", companyError);
+          console.warn("Failed to fetch company for redirect:", companyError);
         }
       }
 
@@ -355,7 +357,7 @@ export const AuthProvider = ({ children }) => {
           }
           link.href = companyData.favicon_url;
         }
-        if (companyData.name) {
+        if (companyData?.name) {
           let suffix = "Workspace";
           if (companyData.industry_type === 'law') suffix = "Law Management";
           else if (companyData.industry_type === 'school' || companyData.industry_type === 'highschool') suffix = "Education Platform";
@@ -363,7 +365,7 @@ export const AuthProvider = ({ children }) => {
           else if (companyData.industry_type === 'hotel') suffix = "Property Management";
           else if (companyData.industry_type === 'orbit_build') suffix = "Digital Workspace";
           
-          document.title = `${companyData.name} - ${suffix}`;
+          document.title = `${companyData?.name} - ${suffix}`;
         }
       }
 
@@ -431,7 +433,7 @@ export const AuthProvider = ({ children }) => {
         newUser = {
           ...newUser,
           company_id: impersonatedCompany.id,
-          company_name: impersonatedCompany.name,
+          company_name: impersonatedCompany?.name,
           role: 'company_admin', // Treat them as admin of this firm
           is_impersonating: true,
           companies: impersonatedCompany

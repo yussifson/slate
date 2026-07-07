@@ -46,7 +46,10 @@ export async function getVisibleIndustries(isSuperAdmin = false, userId = null) 
     if (!error && data?.value) {
       const rollout = data.value;
       // Only include keys that are enabled (true) or not mentioned (default on)
-      const enabledKeys = ALL_INDUSTRY_KEYS.filter(k => rollout[k] !== false);
+      let enabledKeys = ALL_INDUSTRY_KEYS.filter(k => rollout[k] !== false);
+      if (!isSuperAdmin) {
+        enabledKeys = enabledKeys.filter(k => k !== 'optavel');
+      }
       return buildIndustryMap(enabledKeys);
     }
   } catch (err) {
@@ -79,7 +82,18 @@ export async function getVisiblePlans(tier, userId = null, isSuperAdmin = false)
     const { data, error } = await query;
     if (error) throw error;
 
-    return (data || []).filter(p => {
+    const activePlans = data || [];
+    const hasFree = activePlans.some(p => p.price_monthly === 0);
+    if (!hasFree && tier !== 'law') {
+      activePlans.unshift({
+        id: 'free',
+        name: 'Free',
+        price_monthly: 0,
+        limits: { users: 1, ai_credits_monthly: 100 }
+      });
+    }
+
+    return activePlans.filter(p => {
       // Hide test plan from regular users
       if (!isSuperAdmin) {
         const name = String(p.name || '').trim().toLowerCase();

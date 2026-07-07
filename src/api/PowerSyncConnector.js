@@ -78,6 +78,23 @@ class SupabaseConnector {
               if (op.table === 'univ_appointments') {
                 payload.attendee_name = payload.attendee_name || payload.client_name || payload.title || 'Appointment attendee';
                 payload.title = payload.title || payload.attendee_name || 'Appointment';
+                payload.start_time = payload.time || '09:00';
+              }
+              
+              if (op.table === 'univ_lab_results') {
+                delete payload.document_url;
+              }
+              
+              if (op.table === 'univ_admissions') {
+                payload.bed_number = payload.bed_number || 'TBD';
+              }
+              
+              if (op.table === 'univ_prescriptions') {
+                payload.medication = payload.medication || 'Unspecified';
+              }
+              
+              if (op.table === 'univ_wards') {
+                payload.ward_name = payload.ward_name || 'Ward';
               }
               
               if (op.table === 'companies') {
@@ -124,6 +141,31 @@ class SupabaseConnector {
                 }
                 if (!payload.title && payload.attendee_name) {
                   payload.title = payload.attendee_name;
+                }
+                if (payload.time) {
+                  payload.start_time = payload.time;
+                }
+              }
+              
+              if (op.table === 'univ_lab_results') {
+                delete payload.document_url;
+              }
+              
+              if (op.table === 'univ_admissions') {
+                if (payload.bed_number === '' || payload.bed_number === null) {
+                  payload.bed_number = 'TBD';
+                }
+              }
+              
+              if (op.table === 'univ_prescriptions') {
+                if (payload.medication === '' || payload.medication === null) {
+                  payload.medication = 'Unspecified';
+                }
+              }
+              
+              if (op.table === 'univ_wards') {
+                if (payload.ward_name === '' || payload.ward_name === null) {
+                  payload.ward_name = 'Ward';
                 }
               }
               if (op.table === 'companies') {

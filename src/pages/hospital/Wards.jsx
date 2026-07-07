@@ -292,7 +292,7 @@ export default function Wards() {
               <div className="space-y-4">
                 <div>
                   <label className="text-xs font-semibold text-[#71717a] uppercase">Action</label>
-                  <select disabled className="mt-1 w-full rounded-lg border-[0.5px] border-primary/40 bg-background px-3 py-2 text-sm">
+                  <select className="mt-1 w-full rounded-lg border-[0.5px] border-primary/40 bg-background px-3 py-2 text-sm">
                     <option>Admit Patient</option>
                   </select>
                 </div>

@@ -345,7 +345,7 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
       </div>
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <h2 className="text-lg font-semibold text-card-foreground">{t("book_new_appointment", "Book New Appointment")}</h2>
             <div className="space-y-4">
               <div>
