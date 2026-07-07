@@ -67,7 +67,7 @@ export default function Prayers() {
      );
      toast.success('Prayer request updated successfully!');
    } else {
-     await powerSync.execute(`INSERT INTO univ_religion_prayers (id, created_at, company_id, requestor, prayer, status) VALUES (gen_random_uuid(), NOW(), ?, ?, ?, 'Active')`, 
+     await powerSync.execute(`INSERT INTO univ_religion_prayers (id, created_at, company_id, requestor, prayer, status) VALUES (gen_random_uuid(), datetime('now'), ?, ?, ?, 'Active')`, 
        [companyId, formData.name.trim() || 'Anonymous', formData.request]
      );
      toast.success('Prayer request submitted successfully!');

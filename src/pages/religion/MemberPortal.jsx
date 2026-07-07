@@ -48,7 +48,7 @@ export default function MemberPortal() {
 
  try {
    await powerSync.execute(
-     `INSERT INTO univ_religion_prayers (id, created_at, company_id, requestor, prayer, status) VALUES (gen_random_uuid(), NOW(), ?, ?, ?, 'Active')`,
+     `INSERT INTO univ_religion_prayers (id, created_at, company_id, requestor, prayer, status) VALUES (gen_random_uuid(), datetime('now'), ?, ?, ?, 'Active')`,
      [companyId, user?.name || 'Anonymous', prayerData.title + ' - ' + prayerData.detail]
    );
    toast.success(`Prayer request submitted successfully!`);
