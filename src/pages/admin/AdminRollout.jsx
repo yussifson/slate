@@ -18,6 +18,7 @@ const ALL_PLATFORM_INDUSTRIES = [
   { key: 'hr',          name: 'HR & ERP',                icon: '👥',  description: 'Payroll, leave management, performance reviews' },
   { key: 'retail',      name: 'Retail / POS',            icon: '🛒',  description: 'Point of sale, inventory, purchase orders' },
   { key: 'real_estate', name: 'Real Estate',             icon: '🏠',  description: 'Properties, listings, transactions, leases' },
+  { key: 'pharmacy',    name: 'Pharmacy',                icon: '💊',  description: 'Drug inventory, prescriptions, dispensing logs' },
 ];
 
 export default function AdminRollout() {

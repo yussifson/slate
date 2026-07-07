@@ -2,6 +2,7 @@ import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState} from 'react';
 import { useSubscription} from '@/hooks/useSubscription';
 import { useCompanyId} from '@/hooks/useCompanyId';
+import { useAuth } from '@/lib/AuthContext';
 
 import { supabase} from "@/api/supabaseClient";
 import { useQuery} from '@tanstack/react-query';
@@ -23,6 +24,7 @@ export default function UnivBilling({
  pageName
 }) {
  const { toast} = useToast();
+ const { user } = useAuth();
  const hookCompanyId = useCompanyId();
  const effectiveCompanyId = companyId || hookCompanyId;
 
@@ -35,14 +37,20 @@ export default function UnivBilling({
  const { data: availablePlans = [], isLoading: plansLoading} = useQuery({
  queryKey: ['subscription_plans'],
  queryFn: async () => {
- const market = await detectMarketTier();
- const currentTier = market.tier || 'global';
- const __res = await powerSync.execute(`SELECT * FROM subscription_plans WHERE is_active = ? AND (market_tier = ? OR market_tier IS NULL) ORDER BY price_monthly ASC`, [true, currentTier]);
- const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
- const error = null;
- if (error) throw error;
- return data || [];
-}
+  const isSuperAdmin = user?.role === 'super_admin';
+  const market = await detectMarketTier();
+  const currentTier = market.tier || 'global';
+  // Super admins see all plans including test plan; regular users do not
+  const testPlanFilter = isSuperAdmin
+   ? ''
+   : ` AND lower(name) <> 'test plan' AND coalesce(paystack_plan_code, '') <> 'PLN_3o7pbbfvw6qf9dz'`;
+  const __res = await powerSync.execute(
+   `SELECT * FROM subscription_plans WHERE is_active = ? AND (market_tier = ? OR market_tier IS NULL)${testPlanFilter} ORDER BY price_monthly ASC`,
+   [true, currentTier]
+  );
+  const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+  return data || [];
+ }
 });
 
  const handleSubscribe = async (targetPlan) => {

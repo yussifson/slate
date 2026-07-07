@@ -108,10 +108,12 @@ export default function OnboardingWizard() {
  const [plansLoading, setPlansLoading] = useState(true);
  const [selectedPlanId, setSelectedPlanId] = useState(null);
 
+  const isSuperAdmin = user?.role === 'super_admin';
+
   useEffect(() => {
     const fetchIndustries = async () => {
       try {
-        const industries = await getVisibleIndustries(false, user?.id);
+        const industries = await getVisibleIndustries(isSuperAdmin, user?.id);
         setVisibleIndustries(industries);
       } catch (err) {
         console.error("Failed to load industries:", err);
@@ -120,14 +122,13 @@ export default function OnboardingWizard() {
       }
     };
     fetchIndustries();
-  }, [user?.id]);
+  }, [user?.id, isSuperAdmin]);
 
   useEffect(() => {
     const fetchPlans = async () => {
       try {
         const { tier } = await detectMarketTier();
-        // Use new filtering function that respects is_visible column
-        const visiblePlans = await getVisiblePlans(tier, user?.id);
+        const visiblePlans = await getVisiblePlans(tier, user?.id, isSuperAdmin);
         setPlans(visiblePlans);
       } catch (err) {
         console.error("Failed to load plans:", err);
@@ -136,7 +137,7 @@ export default function OnboardingWizard() {
       }
     };
     fetchPlans();
-  }, [user?.id]);
+  }, [user?.id, isSuperAdmin]);
 
   const handleSelectPlan = async (plan) => {
     if (plan.price_monthly === 0) {
@@ -596,21 +597,23 @@ export default function OnboardingWizard() {
  <SelectValue />
  </SelectTrigger>
  <SelectContent className="bg-card text-slate-900 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- {Object.entries(visibleIndustries).length > 0 ? (
-   Object.entries(visibleIndustries).map(([key, config]) => (
-     <SelectItem key={key} value={key}>
-       {config.name}
-     </SelectItem>
-   ))
- ) : (
-   <>
-     <SelectItem value="law">Law Firm</SelectItem>
-     <SelectItem value="retail">Retail / POS</SelectItem>
-     <SelectItem value="hospital">Hospital & Healthcare</SelectItem>
-     <SelectItem value="school">School & Education</SelectItem>
-   </>
- )}
- </SelectContent>
+  {/* Show all enabled industries based on rollout config */}
+  {(Object.keys(visibleIndustries).length > 0 ? Object.keys(visibleIndustries) : [
+    'law','retail','real_estate','school','hospital','hotel',
+    'logistics','insurance','religion','hr','pharmacy'
+  ]).map(key => {
+    const cfg = visibleIndustries[key];
+    const labels = {
+      law: 'Law Firm', retail: 'Retail / POS', real_estate: 'Real Estate',
+      school: 'School & Education', hospital: 'Hospital & Healthcare',
+      hotel: 'Hotel & Hospitality', logistics: 'Logistics & Delivery',
+      insurance: 'Insurance Agency', religion: 'Religious Organization',
+      hr: 'HR & ERP', pharmacy: 'Pharmacy'
+    };
+    const label = cfg?.name || labels[key] || key;
+    return <SelectItem key={key} value={key}>{label}</SelectItem>;
+  })}
+  </SelectContent>
  </Select>
  
  {industry === 'school' && (

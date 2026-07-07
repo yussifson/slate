@@ -337,11 +337,19 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState(null);
+  const { user } = useAuth();
+  const isSuperAdmin = user?.role === 'super_admin';
 
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const { rows } = await powerSync.execute("SELECT * FROM subscription_plans WHERE is_active = 'true' OR is_active = 1 ORDER BY price_monthly ASC");
+        // Super admins see all plans including test plan; regular users do not
+        const testPlanFilter = isSuperAdmin
+          ? ''
+          : " AND lower(name) <> 'test plan' AND coalesce(paystack_plan_code, '') <> 'PLN_3o7pbbfvw6qf9dz'";
+        const { rows } = await powerSync.execute(
+          `SELECT * FROM subscription_plans WHERE (is_active = 'true' OR is_active = 1)${testPlanFilter} ORDER BY price_monthly ASC`
+        );
         setPlans(rows._array || Array.from(rows));
       } catch (err) {
         console.error("Failed to load plans:", err);
@@ -350,7 +358,7 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
       }
     };
     fetchPlans();
-  }, []);
+  }, [isSuperAdmin]);
 
   const handleUpgrade = async (plan) => {
     setProcessingId(plan.id);
