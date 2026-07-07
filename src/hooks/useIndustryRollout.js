@@ -34,13 +34,6 @@ export function useIndustryRollout(user) {
   const [loading, setLoading] = useState(!_cache);
 
   const fetchRollout = useCallback(async (force = false) => {
-    // Super admins always see everything — no need to fetch
-    if (isSuperAdmin) {
-      setRollout(DEFAULT_ROLLOUT);
-      setLoading(false);
-      return;
-    }
-
     const now = Date.now();
     if (!force && _cache && now - _cacheTs < CACHE_TTL_MS) {
       setRollout(_cache);
@@ -85,7 +78,7 @@ export function useIndustryRollout(user) {
   );
 
   return {
-    enabledIndustries: isSuperAdmin ? DEFAULT_ROLLOUT : rollout,
+    enabledIndustries: rollout,
     isIndustryEnabled,
     loading,
     refetch: () => fetchRollout(true),
