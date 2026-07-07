@@ -106,8 +106,8 @@ Preacher: ${viewRecord.speaker}`;
      );
      toast.success('Sermon catalog updated successfully!');
    } else {
-     await powerSync.execute(`INSERT INTO univ_religion_sermons (id, created_at, company_id, title, speaker, scripture, series, duration, status) VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, 'Active')`, 
-       [companyId, formData.title, formData.preacher, formData.scripture || 'Various Passages', formData.series, formData.duration]
+     await powerSync.execute(`INSERT INTO univ_religion_sermons (id, created_at, company_id, title, speaker, scripture, series, duration, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Active')`, 
+       [crypto.randomUUID(), new Date().toISOString(), companyId, formData.title, formData.preacher, formData.scripture || 'Various Passages', formData.series, formData.duration]
      );
      toast.success('Sermon cataloged successfully!');
    }

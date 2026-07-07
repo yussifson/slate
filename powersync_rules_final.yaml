@@ -1,6 +1,15 @@
 bucket_definitions:
   global:
     data:
+      - SELECT * FROM univ_religion_members WHERE company_id = request.jwt.company_id
+      - SELECT * FROM univ_religion_donations WHERE company_id = request.jwt.company_id
+      - SELECT * FROM univ_religion_events WHERE company_id = request.jwt.company_id
+      - SELECT * FROM univ_religion_groups WHERE company_id = request.jwt.company_id
+      - SELECT * FROM univ_religion_small_groups WHERE company_id = request.jwt.company_id
+      - SELECT * FROM univ_religion_prayers WHERE company_id = request.jwt.company_id
+      - SELECT * FROM univ_religion_sermons WHERE company_id = request.jwt.company_id
+      - SELECT * FROM univ_religion_volunteers WHERE company_id = request.jwt.company_id
+      - SELECT * FROM univ_religion_milestones WHERE company_id = request.jwt.company_id
       - SELECT * FROM companies
       - SELECT * FROM subscription_plans
       - SELECT * FROM firm_settings
@@ -16,8 +25,7 @@ bucket_definitions:
   staff_workspace:
     parameters:
       - SELECT company_id FROM profiles WHERE id = request.user_id() AND role != 'client' AND role != 'student' AND role != 'patient' AND role != 'customer' AND role != 'policyholder' AND role != 'tenant' AND role != 'landlord' AND role != 'learner' AND role != 'employee'
-    data:
-      - SELECT * FROM univ_re_team_members WHERE company_id = bucket.company_id
+    data:      - SELECT * FROM univ_re_team_members WHERE company_id = bucket.company_id
       - SELECT * FROM univ_re_mls_listings WHERE company_id = bucket.company_id
       - SELECT * FROM univ_re_comparable_analysis WHERE company_id = bucket.company_id
       - SELECT * FROM univ_re_market_trends WHERE company_id = bucket.company_id
@@ -105,9 +113,6 @@ bucket_definitions:
       - SELECT * FROM univ_lms_lessons WHERE company_id = bucket.company_id
       - SELECT * FROM univ_parent_portal_access WHERE company_id = bucket.company_id
       - SELECT * FROM univ_patients WHERE company_id = bucket.company_id
-      - SELECT * FROM univ_admissions WHERE company_id = bucket.company_id
-      - SELECT * FROM univ_pharmacy WHERE company_id = bucket.company_id
-      - SELECT * FROM univ_medical_history WHERE company_id = bucket.company_id
       - SELECT * FROM univ_emr WHERE company_id = bucket.company_id
       - SELECT * FROM univ_prescriptions WHERE company_id = bucket.company_id
       - SELECT * FROM univ_labs WHERE company_id = bucket.company_id

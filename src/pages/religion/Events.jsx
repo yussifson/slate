@@ -84,8 +84,8 @@ export default function Events() {
         );
         toast.success('Gathering updated successfully!');
       } else {
-        await powerSync.execute(`INSERT INTO univ_religion_events (id, created_at, company_id, title, date, location, attendees, status) VALUES (uuid(), ?, ?, ?, ?, ?, ?, 'Upcoming')`, 
-          [new Date().toISOString(), companyId, formData.title, dateWithTime, finalLocation, parseInt(formData.attendees) || 0]
+        await powerSync.execute(`INSERT INTO univ_religion_events (id, created_at, company_id, title, date, location, attendees, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'Upcoming')`, 
+          [crypto.randomUUID(), new Date().toISOString(), companyId, formData.title, dateWithTime, finalLocation, parseInt(formData.attendees) || 0]
         );
         toast.success('Gathering scheduled successfully!');
       }

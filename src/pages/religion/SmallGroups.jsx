@@ -70,8 +70,8 @@ export default function SmallGroups() {
      );
      toast.success('Cell group updated successfully!');
    } else {
-     await powerSync.execute(`INSERT INTO univ_religion_small_groups (id, created_at, company_id, name, leader, location, time, members, status) VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, 'Active')`, 
-       [companyId, formData.name, formData.leader, formData.location, formData.time, parseInt(formData.members) || 0]
+     await powerSync.execute(`INSERT INTO univ_religion_small_groups (id, created_at, company_id, name, leader, location, time, members, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Active')`, 
+       [crypto.randomUUID(), new Date().toISOString(), companyId, formData.name, formData.leader, formData.location, formData.time, parseInt(formData.members) || 0]
      );
      toast.success('Cell group configured successfully!');
    }

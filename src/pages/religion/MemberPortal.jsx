@@ -48,8 +48,8 @@ export default function MemberPortal() {
 
  try {
    await powerSync.execute(
-     `INSERT INTO univ_religion_prayers (id, created_at, company_id, requestor, prayer, status) VALUES (uuid(), datetime('now'), ?, ?, ?, 'Active')`,
-     [companyId, user?.name || 'Anonymous', prayerData.title + ' - ' + prayerData.detail]
+     `INSERT INTO univ_religion_prayers (id, created_at, company_id, requestor, prayer, status) VALUES (?, ?, ?, ?, ?, 'Active')`,
+     [crypto.randomUUID(), new Date().toISOString(), companyId, user?.name || 'Anonymous', prayerData.title + ' - ' + prayerData.detail]
    );
    toast.success(`Prayer request submitted successfully!`);
    setShowPrayerModal(false);

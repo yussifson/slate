@@ -109,8 +109,8 @@ Respond ONLY with a raw JSON object containing:
          );
          toast.success('Donation updated successfully!');
        } else {
-         await powerSync.execute(`INSERT INTO univ_religion_donations (id, created_at, company_id, member_name, amount, type, status) VALUES (abs(random()), datetime('now'), ?, ?, ?, ?, 'Completed')`, 
-           [companyId, formData.member_name, parseFloat(formData.amount) || 0, formData.type]
+         await powerSync.execute(`INSERT INTO univ_religion_donations (id, created_at, company_id, member_name, amount, type, status) VALUES (?, ?, ?, ?, ?, ?, 'Completed')`, 
+           [crypto.randomUUID(), new Date().toISOString(), companyId, formData.member_name, parseFloat(formData.amount) || 0, formData.type]
          );
          toast.success('Donation processed successfully!');
        }

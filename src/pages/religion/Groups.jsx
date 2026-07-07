@@ -80,8 +80,8 @@ export default function Groups() {
      );
      toast.success('Group department configured successfully!');
    } else {
-     await powerSync.execute(`INSERT INTO univ_religion_groups (id, created_at, company_id, name, leader, members, schedule, color, icon_type, status) VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, 'Active')`, 
-       [companyId, formData.name, formData.leader, parseInt(formData.members) || 0, formData.schedule, colorStr, formData.schemeIndex]
+     await powerSync.execute(`INSERT INTO univ_religion_groups (id, created_at, company_id, name, leader, members, schedule, color, icon_type, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active')`, 
+       [crypto.randomUUID(), new Date().toISOString(), companyId, formData.name, formData.leader, parseInt(formData.members) || 0, formData.schedule, colorStr, formData.schemeIndex]
      );
      toast.success('Group department configured successfully!');
    }
