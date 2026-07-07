@@ -25,7 +25,8 @@ bucket_definitions:
   staff_workspace:
     parameters:
       - SELECT company_id FROM profiles WHERE id = request.user_id() AND role != 'client' AND role != 'student' AND role != 'patient' AND role != 'customer' AND role != 'policyholder' AND role != 'tenant' AND role != 'landlord' AND role != 'learner' AND role != 'employee'
-    data:      - SELECT * FROM univ_re_team_members WHERE company_id = bucket.company_id
+    data:
+      - SELECT * FROM univ_re_team_members WHERE company_id = bucket.company_id
       - SELECT * FROM univ_re_mls_listings WHERE company_id = bucket.company_id
       - SELECT * FROM univ_re_comparable_analysis WHERE company_id = bucket.company_id
       - SELECT * FROM univ_re_market_trends WHERE company_id = bucket.company_id
