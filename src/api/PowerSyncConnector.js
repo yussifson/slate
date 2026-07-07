@@ -74,6 +74,11 @@ class SupabaseConnector {
                 const allowed = ['id', 'company_id', 'created_at', 'status', 'rule_id'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
+
+              if (op.table === 'univ_appointments') {
+                payload.attendee_name = payload.attendee_name || payload.client_name || payload.title || 'Appointment attendee';
+                payload.title = payload.title || payload.attendee_name || 'Appointment';
+              }
               
               if (op.table === 'companies') {
                 // Strip out columns that might not exist in Supabase to prevent 400 Bad Request errors
@@ -112,6 +117,14 @@ class SupabaseConnector {
               if (op.table === 'automation_logs') {
                 const allowed = ['id', 'company_id', 'created_at', 'status', 'rule_id'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
+              }
+              if (op.table === 'univ_appointments') {
+                if (!payload.attendee_name && (payload.client_name || payload.title)) {
+                  payload.attendee_name = payload.client_name || payload.title;
+                }
+                if (!payload.title && payload.attendee_name) {
+                  payload.title = payload.attendee_name;
+                }
               }
               if (op.table === 'companies') {
                 const safeColumns = [

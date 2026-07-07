@@ -2331,6 +2331,7 @@ export const AppSchema = new Schema({
         created_at: column.text,
         company_id: column.text,
         title: column.text,
+        attendee_name: column.text,
         client_name: column.text,
         client_email: column.text,
         client_phone: column.text,

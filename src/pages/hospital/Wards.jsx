@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { BedDouble, CheckCircle2, AlertTriangle, Settings, Plus, UserPlus } from 'lucide-react';
+import { BedDouble, CheckCircle2, AlertTriangle, Settings, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-hot-toast';
@@ -9,7 +9,6 @@ import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { v4 as uuidv4 } from 'uuid';
 
 const bedColors = {
   Occupied: 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100/50',
@@ -50,7 +49,7 @@ export default function Wards() {
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute(
-        "SELECT a.*, p.COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name FROM univ_admissions a LEFT JOIN univ_patients p ON a.patient_id = p.id WHERE a.company_id = ? AND a.status = 'Active'",
+        "SELECT a.*, COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name FROM univ_admissions a LEFT JOIN univ_patients p ON a.patient_id = p.id WHERE a.company_id = ? AND a.status = 'Active'",
         [companyId]
       );
       return res.rows._array;

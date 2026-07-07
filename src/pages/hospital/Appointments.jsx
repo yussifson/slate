@@ -92,15 +92,15 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
       if (payload.id) {
         await powerSync.execute(
           `UPDATE univ_appointments SET 
-             title = ?, client_name = ?, staff_name = ?, date = ?, time = ?, type = ?, status = ?, notes = ?
+             title = ?, attendee_name = ?, client_name = ?, staff_name = ?, date = ?, time = ?, type = ?, status = ?, notes = ?
            WHERE id = ?`,
-          [payload.title, payload.client_name, payload.staff_name, payload.date, payload.time, payload.type, payload.status, payload.notes, payload.id]
+          [payload.title, payload.attendee_name, payload.client_name, payload.staff_name, payload.date, payload.time, payload.type, payload.status, payload.notes, payload.id]
         );
       } else {
         await powerSync.execute(
-          `INSERT INTO univ_appointments (id, created_at, company_id, title, client_name, staff_name, date, time, type, status, notes)
-           VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [companyId, payload.title, payload.client_name, payload.staff_name, payload.date, payload.time, payload.type, payload.status, payload.notes]
+          `INSERT INTO univ_appointments (id, created_at, company_id, title, attendee_name, client_name, staff_name, date, time, type, status, notes)
+           VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [companyId, payload.title, payload.attendee_name, payload.client_name, payload.staff_name, payload.date, payload.time, payload.type, payload.status, payload.notes]
         );
       }
     },
@@ -148,6 +148,7 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
 
     let payload = {
       title: formData.patient.trim() || 'Appointment',
+      attendee_name: formData.patient.trim(),
       client_name: formData.patient,
       staff_name: formData.doctor,
       date: formData.date,
