@@ -14,7 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SUBSCRIPTION_PLANS, formatCurrency } from "@/lib/constants";
-import { format, isAfter } from "date-fns";
+import { format, isAfter, isValid } from "date-fns";
 import { buildMonthlyRevenueChart } from "@/lib/dashboardCharts";
 import { useToast } from "@/components/ui/use-toast";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from "recharts";
@@ -220,8 +220,8 @@ export default function ReligionDashboard({ companyId, company, isAdmin }) {
               {upcomingEvents.map(e => (
                 <div key={e.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/40 transition-colors">
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex flex-col items-center justify-center text-white shrink-0">
-                    <span className="text-[9px] font-bold uppercase leading-none">{format(new Date(e.date), "MMM")}</span>
-                    <span className="text-sm font-bold leading-none">{format(new Date(e.date), "d")}</span>
+                    <span className="text-[9px] font-bold uppercase leading-none">{e.date && isValid(new Date(e.date)) ? format(new Date(e.date), "MMM") : "-"}</span>
+                    <span className="text-sm font-bold leading-none">{e.date && isValid(new Date(e.date)) ? format(new Date(e.date), "d") : "-"}</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-foreground truncate">{e.title}</p>
