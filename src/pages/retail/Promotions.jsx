@@ -63,8 +63,9 @@ export default function Promotions() {
   const openEditDialog = (p) => {
     setEditId(p.id);
     setPromoCode(p.promo_code || "");
-    setDiscountType(p.discount_type || "percentage");
-    setDiscountValue(p.discount_value || "");
+    const isPercent = (p.discount || '').includes('%');
+    setDiscountType(isPercent ? "percentage" : "fixed");
+    setDiscountValue((p.discount || '').replace(/[^0-9.]/g, ''));
     setIsActive(p.status === 'Active');
     setIsDialogOpen(true);
   };
@@ -97,13 +98,15 @@ export default function Promotions() {
 
     try {
       const codeUpper = promoCode.toUpperCase();
+      const combinedDiscount = discountType === 'percentage' ? `${discountValue}%` : `$${discountValue}`;
+      
       if (editId) {
-        await powerSync.execute(`UPDATE univ_retail_promotions SET promo_code=?, discount_type=?, discount_value=?, status=? WHERE id=?`, 
-          [codeUpper, discountType, Number(discountValue), isActive ? 'Active' : 'Inactive', editId]
+        await powerSync.execute(`UPDATE univ_retail_promotions SET promo_code=?, discount=?, status=? WHERE id=?`, 
+          [codeUpper, combinedDiscount, isActive ? 'Active' : 'Inactive', editId]
         );
       } else {
-        await powerSync.execute(`INSERT INTO univ_retail_promotions (id, created_at, company_id, promo_code, discount_type, discount_value, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)`, 
-          [crypto.randomUUID(), companyId, codeUpper, discountType, Number(discountValue), isActive ? 'Active' : 'Inactive']
+        await powerSync.execute(`INSERT INTO univ_retail_promotions (id, created_at, company_id, promo_code, discount, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?)`, 
+          [crypto.randomUUID(), companyId, codeUpper, combinedDiscount, isActive ? 'Active' : 'Inactive']
         );
       }
       
@@ -192,8 +195,8 @@ export default function Promotions() {
  key={promo.id}
  promo={{
    code: promo.promo_code,
-   discountType: promo.discount_type,
-   discountValue: promo.discount_value,
+   discountType: (promo.discount || '').includes('%') ? 'percentage' : 'fixed',
+   discountValue: (promo.discount || '').replace(/[^0-9.]/g, ''),
    isActive: promo.status === 'Active',
    id: promo.id
  }}
@@ -218,9 +221,9 @@ export default function Promotions() {
  {filteredPromos.map((promo) => (
  <tr key={promo.id} className="hover:bg-muted/40">
  <td className="px-6 py-4 font-semibold text-foreground">{promo.promo_code}</td>
- <td className="px-6 py-4 capitalize text-[#71717a] dark:text-gray-400">{promo.discount_type}</td>
+ <td className="px-6 py-4 capitalize text-[#71717a] dark:text-gray-400">{(promo.discount || '').includes('%') ? 'Percentage' : 'Fixed Amount'}</td>
  <td className="px-6 py-4 text-right font-semibold text-primary">
- {promo.discount_type === "percentage" ? `${promo.discount_value}%` : `$${promo.discount_value}`}
+ {promo.discount}
  </td>
  <td className="px-6 py-4 text-center">
  <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${promo.status === 'Active' ? "bg-slate-100 text-primary" : "bg-muted text-[#71717a] dark:text-gray-400"}`}>

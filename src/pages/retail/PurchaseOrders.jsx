@@ -451,7 +451,7 @@ export default function PurchaseOrders() {
  setNewPO({ supplierId: '', items: [], status: 'draft', notes: ''});
 }
 }}>
- <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+ <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
  <DialogHeader>
  <DialogTitle>{editingPOId ? t("edit_po", "Edit Purchase Order") : t("create_po", "Create Purchase Order")}</DialogTitle>
  <DialogDescription>{t("create_po_desc", "Order new stock from suppliers.")}</DialogDescription>
