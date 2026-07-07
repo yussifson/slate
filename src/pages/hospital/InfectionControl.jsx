@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Search, Plus, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
@@ -89,7 +90,7 @@ export default function InfectionControl() {
           <h1 className="text-2xl font-semibold text-slate-800">Infection Control</h1>
           <p className="text-slate-500">Log and track hospital-acquired infections.</p>
         </div>
-        <Button className="bg-red-600 hover:bg-red-700 text-white">
+        <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={() => setShowModal(true)}>
           <Plus className="w-4 h-4 mr-2" /> Log Infection
         </Button>
       </div>
@@ -145,6 +146,42 @@ export default function InfectionControl() {
           </table>
         </div>
       </div>
+    
+      <Dialog open={showModal} onOpenChange={setShowModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Report Infection Incident</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="text-sm font-medium">Infection Type/Name</label>
+              <Input value={formData.infection_type} onChange={e => setFormData({...formData, infection_type: e.target.value})} placeholder="e.g. MRSA, COVID-19" />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Department</label>
+              <Input value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} placeholder="e.g. ICU" />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Severity</label>
+              <select className="w-full h-10 px-3 py-2 border rounded-md" value={formData.severity} onChange={e => setFormData({...formData, severity: e.target.value})}>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Description</label>
+              <Input value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Details of the incident" />
+            </div>
+            <div className="pt-4 flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button onClick={handleSave}>Report Incident</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }

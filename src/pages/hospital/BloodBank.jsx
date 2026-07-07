@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Search, Plus, Droplet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
@@ -80,7 +81,7 @@ export default function BloodBank() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" className="bg-white">Crossmatch Request</Button>
-          <Button className="bg-red-600 hover:bg-red-700 text-white">
+          <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={() => setShowModal(true)}>
             <Plus className="w-4 h-4 mr-2" /> Receive Blood Unit
           </Button>
         </div>
@@ -135,6 +136,47 @@ export default function BloodBank() {
           </table>
         </div>
       </div>
+    
+      <Dialog open={showModal} onOpenChange={setShowModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Receive Blood Unit</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="text-sm font-medium">Blood Group</label>
+              <select className="w-full h-10 px-3 py-2 border rounded-md" value={formData.blood_group} onChange={e => setFormData({...formData, blood_group: e.target.value})}>
+                <option value="">Select Group...</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Component Type</label>
+              <Input value={formData.component_type} onChange={e => setFormData({...formData, component_type: e.target.value})} placeholder="e.g. Whole Blood, Plasma" />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Quantity (Bags/Units)</label>
+              <Input type="number" value={formData.quantity} onChange={e => setFormData({...formData, quantity: Number(e.target.value)})} placeholder="1" />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Expiry Date</label>
+              <Input type="date" value={formData.expiry_date} onChange={e => setFormData({...formData, expiry_date: e.target.value})} />
+            </div>
+            <div className="pt-4 flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button onClick={handleSave}>Receive Unit</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }

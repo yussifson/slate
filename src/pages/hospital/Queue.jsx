@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Search, Plus, User, Clock, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
@@ -162,6 +163,40 @@ export default function Queue() {
           </table>
         </div>
       </div>
+    
+      <Dialog open={showModal} onOpenChange={setShowModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add to OPD Queue</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="text-sm font-medium">Patient</label>
+              <select className="w-full h-10 px-3 py-2 border rounded-md" value={formData.patient_id} onChange={e => setFormData({...formData, patient_id: e.target.value})}>
+                <option value="">Select Patient...</option>
+                {patientsList.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Department</label>
+              <Input value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} placeholder="e.g. General OPD" />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Doctor (Optional)</label>
+              <Input value={formData.doctor_id} onChange={e => setFormData({...formData, doctor_id: e.target.value})} placeholder="e.g. Dr. Smith" />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Room Number</label>
+              <Input value={formData.room_number} onChange={e => setFormData({...formData, room_number: e.target.value})} placeholder="e.g. Room 102" />
+            </div>
+            <div className="pt-4 flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button onClick={handleSave}>Add to Queue</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }

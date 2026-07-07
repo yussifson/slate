@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Search, Plus, Calendar as CalendarIcon, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
@@ -147,6 +148,41 @@ export default function StaffRoster() {
           </table>
         </div>
       </div>
+    
+      <Dialog open={showModal} onOpenChange={setShowModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Schedule Staff Shift</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="text-sm font-medium">Staff Name</label>
+              <Input value={formData.staff_id} onChange={e => setFormData({...formData, staff_id: e.target.value})} placeholder="e.g. John Doe" />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Department</label>
+              <Input value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} placeholder="e.g. ER, ICU" />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Shift Type</label>
+              <select className="w-full h-10 px-3 py-2 border rounded-md" value={formData.shift_type} onChange={e => setFormData({...formData, shift_type: e.target.value})}>
+                <option value="Morning">Morning</option>
+                <option value="Evening">Evening</option>
+                <option value="Night">Night</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Date</label>
+              <Input type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
+            </div>
+            <div className="pt-4 flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button onClick={handleSave}>Schedule Shift</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }

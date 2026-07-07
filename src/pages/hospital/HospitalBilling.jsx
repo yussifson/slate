@@ -124,8 +124,8 @@ export default function HospitalBilling() {
 
   const createInvoiceMutation = useMutation({
     mutationFn: async (payload) => {
-      const billId = uuidv4();
-      const invoiceId = uuidv4();
+      const billId = crypto.randomUUID();
+      const invoiceId = crypto.randomUUID();
       const amountDue = payload.total_cost - payload.insurance_covered;
 
       // 1. Insert Medical Bill
