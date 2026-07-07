@@ -154,6 +154,13 @@ export default function InfectionControl() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
+              <label className="text-sm font-medium">Patient</label>
+              <select className="w-full h-10 px-3 py-2 border rounded-md bg-white" value={formData.patient_id} onChange={e => setFormData({...formData, patient_id: e.target.value})}>
+                <option value="">Select Patient...</option>
+                {patientsList.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+              </select>
+            </div>
+            <div>
               <label className="text-sm font-medium">Infection Type/Name</label>
               <Input value={formData.infection_type} onChange={e => setFormData({...formData, infection_type: e.target.value})} placeholder="e.g. MRSA, COVID-19" />
             </div>

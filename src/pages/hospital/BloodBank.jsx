@@ -138,7 +138,7 @@ export default function BloodBank() {
       </div>
     
       <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogHeader>
             <DialogTitle>Receive Blood Unit</DialogTitle>
           </DialogHeader>

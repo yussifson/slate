@@ -348,6 +348,14 @@ import HREmployees from './pages/hr/Employees';
 import HRRecruitment from './pages/hr/Recruitment';
 import HRPayroll from './pages/hr/Payroll';
 import HRLeave from './pages/hr/Leave';
+import HRDepartments from './pages/hr/Departments';
+import HRRoles from './pages/hr/Roles';
+import HRAttendance from './pages/hr/Attendance';
+import HRPerformance from './pages/hr/Performance';
+import HRTraining from './pages/hr/Training';
+import HRComplaints from './pages/hr/Complaints';
+import HRPromotions from './pages/hr/Promotions';
+import HRSalary from './pages/hr/Salary';
 
 // Layout
 import AppLayout from './components/layout/AppLayout';
@@ -917,7 +925,21 @@ function PlatformRoutes() {
       <Route path="/logistics-analytics" element={<LogisticsAdvancedAnalytics />} />
       <Route path="/driver-mobile-app" element={<LogisticsDriverMobileApp />} />
 
-      {/* HR Suite */}
+      {/* HR Suite Dedicated Pages */}
+      <Route path="/hr/employees" element={<HREmployees />} />
+      <Route path="/hr/departments" element={<HRDepartments />} />
+      <Route path="/hr/roles" element={<HRRoles />} />
+      <Route path="/hr/leave" element={<HRLeave />} />
+      <Route path="/hr/attendance" element={<HRAttendance />} />
+      <Route path="/hr/payroll" element={<HRPayroll />} />
+      <Route path="/hr/performance" element={<HRPerformance />} />
+      <Route path="/hr/training" element={<HRTraining />} />
+      <Route path="/hr/recruitment" element={<HRRecruitment />} />
+      <Route path="/hr/complaints" element={<HRComplaints />} />
+      <Route path="/hr/promotions" element={<HRPromotions />} />
+      <Route path="/hr/salary" element={<HRSalary />} />
+      
+      {/* Legacy mappings */}
       <Route path="/employees" element={<HREmployees />} />
       <Route path="/recruitment" element={<HRRecruitment />} />
       <Route path="/payroll" element={<HRPayroll />} />

@@ -152,7 +152,7 @@ export default function Referrals() {
       </div>
     
       <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogHeader>
             <DialogTitle>New Referral</DialogTitle>
           </DialogHeader>
