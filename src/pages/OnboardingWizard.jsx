@@ -18,6 +18,7 @@ import { generateOrbitBuildWorkspace } from '@/lib/orbitBuildGenerator';
 import { initiatePaystackSubscription } from "@/lib/paystack";
 import { detectMarketTier } from '@/lib/pricing';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
+import { getVisiblePlans, getVisibleIndustries } from '@/lib/industryVisibility';
 export default function OnboardingWizard() {
  const { t} = useTranslation();
  const { user, refreshUser} = useAuth();
@@ -61,6 +62,8 @@ export default function OnboardingWizard() {
  const [educationLevel, setEducationLevel] = useState('');
  const [orbitPrompt, setOrbitPrompt] = useState('');
  const [orbitProgress, setOrbitProgress] = useState('');
+ const [visibleIndustries, setVisibleIndustries] = useState({});
+ const [industriesLoading, setIndustriesLoading] = useState(true);
 
  useEffect(() => {
  const searchParams = new URLSearchParams(window.location.search);
@@ -106,30 +109,26 @@ export default function OnboardingWizard() {
  const [selectedPlanId, setSelectedPlanId] = useState(null);
 
   useEffect(() => {
+    const fetchIndustries = async () => {
+      try {
+        const industries = await getVisibleIndustries(false, user?.id);
+        setVisibleIndustries(industries);
+      } catch (err) {
+        console.error("Failed to load industries:", err);
+      } finally {
+        setIndustriesLoading(false);
+      }
+    };
+    fetchIndustries();
+  }, [user?.id]);
+
+  useEffect(() => {
     const fetchPlans = async () => {
       try {
         const { tier } = await detectMarketTier();
-        const { data, error } = await supabase
-          .from('subscription_plans')
-          .select('*')
-          .eq('market_tier', tier)
-          .order('price_monthly', { ascending: true });
-          
-        if (error) throw error;
-        // Filter active plans locally if needed, but usually they should all be active
-        const activePlans = (data || []).filter(p => p.is_active === true || p.is_active === 'true' || p.is_active === 1);
-        
-        const hasFree = activePlans.some(p => p.price_monthly === 0);
-        if (!hasFree) {
-          activePlans.unshift({
-            id: 'free',
-            name: 'Free',
-            price_monthly: 0,
-            limits: { users: 1, ai_credits_monthly: 100 }
-          });
-        }
-        
-        setPlans(activePlans);
+        // Use new filtering function that respects is_visible column
+        const visiblePlans = await getVisiblePlans(tier, user?.id);
+        setPlans(visiblePlans);
       } catch (err) {
         console.error("Failed to load plans:", err);
       } finally {
@@ -137,7 +136,7 @@ export default function OnboardingWizard() {
       }
     };
     fetchPlans();
-  }, []);
+  }, [user?.id]);
 
   const handleSelectPlan = async (plan) => {
     if (plan.price_monthly === 0) {
@@ -597,16 +596,20 @@ export default function OnboardingWizard() {
  <SelectValue />
  </SelectTrigger>
  <SelectContent className="bg-card text-slate-900 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
- <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
- <SelectItem value="real_estate">{t("real_estate", "Real Estate")}</SelectItem>
- <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
- <SelectItem value="hospital">{t("hospital_healthcare", "Hospital & Healthcare")}</SelectItem>
- <SelectItem value="hotel">{t("hotel_hospitality", "Hotel & Hospitality")}</SelectItem>
- <SelectItem value="logistics">{t("logistics_delivery", "Logistics & Delivery")}</SelectItem>
- <SelectItem value="insurance">{t("insurance", "Insurance Agency")}</SelectItem>
- <SelectItem value="religion">{t("religion_religion", "Religious Organization")}</SelectItem>
- <SelectItem value="hr">{t("hr_erp", "HR & ERP")}</SelectItem>
+ {Object.entries(visibleIndustries).length > 0 ? (
+   Object.entries(visibleIndustries).map(([key, config]) => (
+     <SelectItem key={key} value={key}>
+       {config.name}
+     </SelectItem>
+   ))
+ ) : (
+   <>
+     <SelectItem value="law">Law Firm</SelectItem>
+     <SelectItem value="retail">Retail / POS</SelectItem>
+     <SelectItem value="hospital">Hospital & Healthcare</SelectItem>
+     <SelectItem value="school">School & Education</SelectItem>
+   </>
+ )}
  </SelectContent>
  </Select>
  
