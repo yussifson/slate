@@ -28,6 +28,16 @@ bucket_definitions:
       - SELECT * FROM univ_religion_volunteers WHERE company_id = bucket.company_id
       - SELECT * FROM univ_religion_milestones WHERE company_id = bucket.company_id
       - SELECT * FROM univ_re_team_members WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_candidates WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_interviews WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_onboarding WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_okrs WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_reviews WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_courses WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_expenses WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_benefits WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_announcements WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_surveys WHERE company_id = bucket.company_id
       - SELECT * FROM univ_re_mls_listings WHERE company_id = bucket.company_id
       - SELECT * FROM univ_re_comparable_analysis WHERE company_id = bucket.company_id
       - SELECT * FROM univ_re_market_trends WHERE company_id = bucket.company_id

@@ -1,6 +1,120 @@
 import { column, Schema, Table } from '@powersync/web';
 
 export const AppSchema = new Schema({
+    univ_erp_candidates: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        job_id: column.text,
+        name: column.text,
+        email: column.text,
+        phone: column.text,
+        resume_url: column.text,
+        stage: column.text,
+        ai_score: column.integer,
+        status: column.text
+    }),
+    univ_erp_interviews: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        candidate_id: column.text,
+        interviewer_id: column.text,
+        interview_date: column.text,
+        type: column.text,
+        feedback: column.text,
+        score: column.integer,
+        status: column.text
+    }),
+    univ_erp_onboarding: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        employee_id: column.text,
+        task_name: column.text,
+        department: column.text,
+        assigned_to: column.text,
+        due_date: column.text,
+        status: column.text
+    }),
+    univ_erp_okrs: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        owner_id: column.text,
+        objective: column.text,
+        key_results: column.text,
+        progress: column.integer,
+        quarter: column.text,
+        status: column.text
+    }),
+    univ_erp_reviews: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        reviewee_id: column.text,
+        reviewer_id: column.text,
+        review_cycle: column.text,
+        feedback: column.text,
+        rating: column.integer,
+        status: column.text
+    }),
+    univ_erp_courses: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        title: column.text,
+        description: column.text,
+        category: column.text,
+        duration: column.text,
+        is_mandatory: column.integer,
+        status: column.text
+    }),
+    univ_erp_expenses: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        employee_id: column.text,
+        amount: column.real,
+        currency: column.text,
+        category: column.text,
+        receipt_url: column.text,
+        description: column.text,
+        status: column.text
+    }),
+    univ_erp_benefits: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        name: column.text,
+        provider: column.text,
+        type: column.text,
+        employer_contribution: column.real,
+        employee_deduction: column.real,
+        status: column.text
+    }),
+    univ_erp_announcements: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        author_id: column.text,
+        title: column.text,
+        content: column.text,
+        priority: column.text,
+        status: column.text
+    }),
+    univ_erp_surveys: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        title: column.text,
+        type: column.text,
+        questions: column.text,
+        start_date: column.text,
+        end_date: column.text,
+        status: column.text
+    }),
+
 
     univ_retail_customers: new Table({
         id: column.text,

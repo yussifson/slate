@@ -152,6 +152,13 @@ import PipelinePage from './pages/PipelinePage';
 import LegalResearch from './pages/LegalResearch';
 import AuditLog from './pages/AuditLog';
 import LeaveManagement from './pages/LeaveManagement';
+
+import ATS from "./pages/hr/ATS";
+import Onboarding from "./pages/hr/Onboarding";
+import Benefits from "./pages/hr/Benefits";
+import Expenses from "./pages/hr/Expenses";
+import Intranet from "./pages/hr/Intranet";
+import HRAnalytics from "./pages/hr/HRAnalytics";
 import PerformanceDashboard from './pages/PerformanceDashboard';
 import CaseOutcomes from './pages/CaseOutcomes';
 import ConflictChecker from './pages/ConflictChecker';
@@ -584,6 +591,12 @@ function PlatformRoutes() {
       <Route path="/export" element={<DataExport />} />
       <Route path="/whatsapp" element={<WhatsAppMessenger />} />
       <Route path="/hr" element={<UnivHRSystem />} />
+      <Route path="/ats" element={<ATS />} />
+      <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/benefits" element={<Benefits />} />
+      <Route path="/expenses" element={<Expenses />} />
+      <Route path="/intranet" element={<Intranet />} />
+      <Route path="/hr-analytics" element={<HRAnalytics />} />
       <Route path="/recruitment" element={<UnivRecruitment />} />
       <Route path="/inventory" element={<UnivInventory />} />
       <Route path="/payroll" element={<UnivPayroll />} />
