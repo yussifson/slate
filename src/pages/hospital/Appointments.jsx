@@ -41,7 +41,10 @@ export default function Appointments() {
         'SELECT * FROM univ_appointments WHERE company_id = ? ORDER BY date DESC, time ASC',
         [companyId]
       );
-      return res.rows._array;
+      return res.rows._array.map(a => ({
+        ...a,
+        time: a.time && a.time.includes('T') ? a.time.split('T')[1].substring(0, 5) : a.time
+      }));
     },
     enabled: !!companyId
   });
@@ -160,7 +163,7 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
       client_name: formData.patient,
       staff_name: formData.doctor,
       date: formData.date,
-      time: formData.time,
+      time: isoStart || formData.time,
       start_time: isoStart,
       end_time: isoEnd,
       type: formData.type,
