@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { v4 as uuidv4 } from 'uuid';
+
 
 export default function Queue() {
   const { t } = useTranslation();
@@ -40,8 +40,8 @@ export default function Queue() {
       const token = Math.floor(100 + Math.random() * 900).toString();
       await powerSync.execute(
         `INSERT INTO univ_opd_queues (id, created_at, company_id, status, token_number, doctor_id, room_number, patient_id, department, updated_at)
-         VALUES (?, datetime('now'), ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-        [uuidv4(), companyId, payload.status, token, payload.doctor_id, payload.room_number, payload.patient_id, payload.department]
+         VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+        [companyId, payload.status, token, payload.doctor_id, payload.room_number, payload.patient_id, payload.department]
       );
     },
     onSuccess: () => {

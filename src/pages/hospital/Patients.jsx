@@ -12,7 +12,7 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { v4 as uuidv4 } from 'uuid';
+
 import { generateText } from '@/lib/cloudflareAI';
 import { Bot, Sparkles } from 'lucide-react';
 import PatientEHR from '@/components/hospital/PatientEHR';

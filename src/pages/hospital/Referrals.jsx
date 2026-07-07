@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { v4 as uuidv4 } from 'uuid';
+
 
 export default function Referrals() {
   const { t } = useTranslation();
@@ -39,8 +39,8 @@ export default function Referrals() {
     mutationFn: async (payload) => {
       await powerSync.execute(
         `INSERT INTO univ_referrals (id, created_at, updated_at, company_id, patient_id, referring_doctor, referred_to, specialty, reason, referral_date, status, notes)
-         VALUES (?, datetime('now'), datetime('now'), ?, ?, ?, ?, ?, ?, datetime('now'), ?, '')`,
-        [uuidv4(), companyId, payload.patient_id, 'Internal Doctor', payload.referred_to, payload.specialty, payload.reason, payload.status]
+         VALUES (uuid(), datetime('now'), datetime('now'), ?, ?, ?, ?, ?, ?, datetime('now'), ?, '')`,
+        [companyId, payload.patient_id, 'Internal Doctor', payload.referred_to, payload.specialty, payload.reason, payload.status]
       );
     },
     onSuccess: () => {

@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { v4 as uuidv4 } from 'uuid';
+
 
 export default function BloodBank() {
   const { t } = useTranslation();
@@ -32,8 +32,8 @@ export default function BloodBank() {
     mutationFn: async (payload) => {
       await powerSync.execute(
         `INSERT INTO univ_blood_bank (id, created_at, company_id, blood_group, unit_number, component_type, donor_name, collection_date, expiry_date, units_available, status, updated_at)
-         VALUES (?, datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-        [uuidv4(), companyId, payload.blood_group, payload.unit_number || 'UNIT-' + Math.floor(Math.random() * 90000), payload.component_type, payload.donor_name, payload.collection_date || new Date().toISOString().split('T')[0], payload.expiry_date || new Date().toISOString().split('T')[0], parseInt(payload.units_available) || 1, payload.status]
+         VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+        [companyId, payload.blood_group, payload.unit_number || 'UNIT-' + Math.floor(Math.random() * 90000), payload.component_type, payload.donor_name, payload.collection_date || new Date().toISOString().split('T')[0], payload.expiry_date || new Date().toISOString().split('T')[0], parseInt(payload.units_available) || 1, payload.status]
       );
     },
     onSuccess: () => {

@@ -12,7 +12,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/lib/AuthContext';
 import { generateText } from '@/lib/cloudflareAI';
 import { Bot, Sparkles, Lock } from 'lucide-react';
-import { v4 as uuidv4 } from 'uuid';
+
 
 export default function HospitalBilling() {
   const { t } = useTranslation();
@@ -25,7 +25,7 @@ export default function HospitalBilling() {
       if (!companyId) return [];
       const res = await powerSync.execute(
         `SELECT b.*, 
-                p.COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name,
+                COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name,
                 p.email as patient_email
          FROM univ_medicalbillings b
          LEFT JOIN univ_patients p ON b.patient_id = p.id

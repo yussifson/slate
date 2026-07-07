@@ -22,7 +22,7 @@ export default function Radiology() {
       if (!companyId) return [];
       const res = await powerSync.execute(
         `SELECT i.*, 
-                p.COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name
+                COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name
          FROM univ_imaging i
          LEFT JOIN univ_patients p ON i.patient_id = p.id
          WHERE i.company_id = ?

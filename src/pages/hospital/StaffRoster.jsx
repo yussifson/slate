@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { v4 as uuidv4 } from 'uuid';
+
 
 export default function StaffRoster() {
   const { t } = useTranslation();
@@ -39,8 +39,8 @@ export default function StaffRoster() {
     mutationFn: async (payload) => {
       await powerSync.execute(
         `INSERT INTO univ_staff_shifts (id, company_id, created_at, updated_at, staff_id, shift_date, shift_type, ward_or_department, on_call)
-         VALUES (?, ?, datetime('now'), datetime('now'), ?, ?, ?, ?, ?)`,
-        [uuidv4(), companyId, payload.staff_id, payload.shift_date, payload.shift_type, payload.ward_or_department, payload.on_call]
+         VALUES (uuid(), ?, datetime('now'), datetime('now'), ?, ?, ?, ?, ?)`,
+        [companyId, payload.staff_id, payload.shift_date, payload.shift_type, payload.ward_or_department, payload.on_call]
       );
     },
     onSuccess: () => {

@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { v4 as uuidv4 } from 'uuid';
+
 
 export default function InfectionControl() {
   const { t } = useTranslation();
@@ -40,8 +40,8 @@ export default function InfectionControl() {
     mutationFn: async (payload) => {
       await powerSync.execute(
         `INSERT INTO univ_infection_logs (id, created_at, company_id, patient_id, ward_id, infection_type, organism, source, detection_date, control_measures, status, reported_by)
-         VALUES (?, datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [uuidv4(), companyId, payload.patient_id, payload.ward_id, payload.infection_type, payload.severity, 'Hospital Acquired', payload.detection_date || new Date().toISOString().split('T')[0], 'Standard Precautions', payload.status, 'System Admin']
+         VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [companyId, payload.patient_id, payload.ward_id, payload.infection_type, payload.severity, 'Hospital Acquired', payload.detection_date || new Date().toISOString().split('T')[0], 'Standard Precautions', payload.status, 'System Admin']
       );
     },
     onSuccess: () => {

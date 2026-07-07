@@ -22,7 +22,7 @@ export default function Telemedicine() {
       if (!companyId) return [];
       const res = await powerSync.execute(
         `SELECT t.*, 
-                p.COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name
+                COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name
          FROM univ_telemedicine t
          LEFT JOIN univ_patients p ON t.patient_id = p.id
          WHERE t.company_id = ?

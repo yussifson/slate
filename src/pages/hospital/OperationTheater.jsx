@@ -22,7 +22,7 @@ export default function OperationTheater() {
       if (!companyId) return [];
       const res = await powerSync.execute(
         `SELECT s.*, 
-                p.COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name
+                COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name
          FROM univ_surgeries s
          LEFT JOIN univ_patients p ON s.patient_id = p.id
          WHERE s.company_id = ?
