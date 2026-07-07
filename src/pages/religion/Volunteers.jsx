@@ -70,7 +70,7 @@ export default function Volunteers() {
      );
      toast.success('Volunteer updated successfully!');
    } else {
-     await powerSync.execute(`INSERT INTO univ_religion_volunteers (id, created_at, company_id, name, group_name, role, availability, next_service, status) VALUES (gen_random_uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, 'Active')`, 
+     await powerSync.execute(`INSERT INTO univ_religion_volunteers (id, created_at, company_id, name, group_name, role, availability, next_service, status) VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, 'Active')`, 
        [companyId, formData.name, formData.group_name, formData.role, formData.availability, formData.nextService]
      );
      toast.success('Volunteer scheduled successfully!');

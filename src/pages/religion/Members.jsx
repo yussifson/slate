@@ -95,7 +95,7 @@ Keep it under 3 sentences and be encouraging but realistic.`;
      toast.success('Member updated successfully!');
    } else {
      const memberId = `MB-${Math.floor(1000 + Math.random() * 9000)}`;
-     await powerSync.execute(`INSERT INTO univ_religion_members (id, created_at, company_id, member_id, name, phone, type, group_name, status) VALUES (gen_random_uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, 'Active')`, 
+     await powerSync.execute(`INSERT INTO univ_religion_members (id, created_at, company_id, member_id, name, phone, type, group_name, status) VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, 'Active')`, 
        [companyId, memberId, formData.name, formData.phone, formData.type, formData.group_name]
      );
      toast.success('Member enrolled successfully!');

@@ -72,7 +72,7 @@ export default function Milestones() {
         );
         toast.success('Milestone updated successfully!');
       } else {
-        await powerSync.execute(`INSERT INTO univ_religion_milestones (id, created_at, company_id, member_id, milestone_type, date, notes) VALUES (gen_random_uuid(), datetime('now'), ?, ?, ?, ?, ?)`, 
+        await powerSync.execute(`INSERT INTO univ_religion_milestones (id, created_at, company_id, member_id, milestone_type, date, notes) VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?)`, 
           [companyId, formData.member_id, formData.milestone_type, formData.date, formData.notes]
         );
         toast.success('Milestone added successfully!');
