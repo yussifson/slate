@@ -3,14 +3,55 @@ import { useState } from 'react';
 import { Search, Plus, Droplet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function BloodBank() {
   const { t } = useTranslation();
   const companyId = useCompanyId();
   const [search, setSearch] = useState('');
+
+  
+  const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    blood_group: 'A+',
+    unit_number: '',
+    component_type: 'Whole Blood',
+    donor_name: '',
+    collection_date: '',
+    expiry_date: '',
+    units_available: 1,
+    status: 'available'
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (payload) => {
+      await powerSync.execute(
+        `INSERT INTO univ_blood_bank (id, created_at, company_id, blood_group, unit_number, component_type, donor_name, collection_date, expiry_date, units_available, status, updated_at)
+         VALUES (?, datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+        [uuidv4(), companyId, payload.blood_group, payload.unit_number || 'UNIT-' + Math.floor(Math.random() * 90000), payload.component_type, payload.donor_name, payload.collection_date || new Date().toISOString().split('T')[0], payload.expiry_date || new Date().toISOString().split('T')[0], parseInt(payload.units_available) || 1, payload.status]
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['univ_blood_bank']);
+      toast.success('Blood unit logged successfully!');
+      setShowModal(false);
+      setFormData({ blood_group: 'A+', unit_number: '', component_type: 'Whole Blood', donor_name: '', collection_date: '', expiry_date: '', units_available: 1, status: 'available' });
+    },
+    onError: (err) => {
+      toast.error('Failed to log blood unit: ' + err.message);
+    }
+  });
+
+  const handleSave = () => {
+    if (!formData.donor_name) return toast.error('Please provide donor name');
+    createMutation.mutate(formData);
+  };
+
 
   const { data: bloodUnits = [], isLoading } = useQuery({
     queryKey: ['univ_blood_bank', companyId],

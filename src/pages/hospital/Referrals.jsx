@@ -6,12 +6,61 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Referrals() {
   const { t } = useTranslation();
   const companyId = useCompanyId();
   const [search, setSearch] = useState('');
+
+  
+  const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    patient_id: '',
+    referred_to: '',
+    specialty: '',
+    reason: '',
+    status: 'pending'
+  });
+
+  const { data: patientsList = [] } = useQuery({
+    queryKey: ['univ_patients_list', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute("SELECT id, COALESCE(first_name, 'Unknown') || ' ' || COALESCE(last_name, 'Patient') as name FROM univ_patients WHERE company_id = ?", [companyId]);
+      return res.rows._array;
+    },
+    enabled: !!companyId
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (payload) => {
+      await powerSync.execute(
+        `INSERT INTO univ_referrals (id, created_at, updated_at, company_id, patient_id, referring_doctor, referred_to, specialty, reason, referral_date, status, notes)
+         VALUES (?, datetime('now'), datetime('now'), ?, ?, ?, ?, ?, ?, datetime('now'), ?, '')`,
+        [uuidv4(), companyId, payload.patient_id, 'Internal Doctor', payload.referred_to, payload.specialty, payload.reason, payload.status]
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['univ_hospital_referrals']);
+      toast.success('Referral created successfully!');
+      setShowModal(false);
+      setFormData({ patient_id: '', referred_to: '', specialty: '', reason: '', status: 'pending' });
+    },
+    onError: (err) => {
+      toast.error('Failed to create referral: ' + err.message);
+    }
+  });
+
+  const handleSave = () => {
+    if (!formData.patient_id || !formData.referred_to || !formData.reason) {
+      return toast.error('Please fill all required fields');
+    }
+    createMutation.mutate(formData);
+  };
+
 
   const { data: referrals = [], isLoading } = useQuery({
     queryKey: ['univ_hospital_referrals', companyId],
@@ -42,7 +91,7 @@ export default function Referrals() {
           <h1 className="text-2xl font-semibold text-slate-800">Referrals</h1>
           <p className="text-slate-500">Manage internal and external patient referrals.</p>
         </div>
-        <Button className="bg-primary text-white">
+        <Button className="bg-primary text-white" onClick={() => setShowModal(true)}>
           <Plus className="w-4 h-4 mr-2" /> New Referral
         </Button>
       </div>

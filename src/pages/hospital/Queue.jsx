@@ -3,14 +3,63 @@ import { useState } from 'react';
 import { Search, Plus, User, Clock, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Queue() {
   const { t } = useTranslation();
   const companyId = useCompanyId();
   const [search, setSearch] = useState('');
+
+  
+  const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    patient_id: '',
+    department: '',
+    doctor_id: '',
+    room_number: '',
+    status: 'waiting'
+  });
+
+  const { data: patientsList = [] } = useQuery({
+    queryKey: ['univ_patients_list', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute("SELECT id, COALESCE(first_name, 'Unknown') || ' ' || COALESCE(last_name, 'Patient') as name FROM univ_patients WHERE company_id = ?", [companyId]);
+      return res.rows._array;
+    },
+    enabled: !!companyId
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (payload) => {
+      const token = Math.floor(100 + Math.random() * 900).toString();
+      await powerSync.execute(
+        `INSERT INTO univ_opd_queues (id, created_at, company_id, status, token_number, doctor_id, room_number, patient_id, department, updated_at)
+         VALUES (?, datetime('now'), ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+        [uuidv4(), companyId, payload.status, token, payload.doctor_id, payload.room_number, payload.patient_id, payload.department]
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['univ_opd_queues']);
+      toast.success('Patient added to OPD Queue!');
+      setShowModal(false);
+      setFormData({ patient_id: '', department: '', doctor_id: '', room_number: '', status: 'waiting' });
+    },
+    onError: (err) => {
+      toast.error('Failed to add to queue: ' + err.message);
+    }
+  });
+
+  const handleSave = () => {
+    if (!formData.patient_id || !formData.department) return toast.error('Please fill required fields');
+    createMutation.mutate(formData);
+  };
+
 
   const { data: queue = [], isLoading } = useQuery({
     queryKey: ['univ_opd_queues', companyId],
@@ -42,7 +91,7 @@ export default function Queue() {
           <h1 className="text-2xl font-semibold text-slate-800">OPD Queue</h1>
           <p className="text-slate-500">Live waiting room and patient queue management.</p>
         </div>
-        <Button className="bg-primary text-white">
+        <Button className="bg-primary text-white" onClick={() => setShowModal(true)}>
           <Plus className="w-4 h-4 mr-2" /> Add to Queue
         </Button>
       </div>

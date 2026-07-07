@@ -3,14 +3,63 @@ import { useState } from 'react';
 import { Search, Plus, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function InfectionControl() {
   const { t } = useTranslation();
   const companyId = useCompanyId();
   const [search, setSearch] = useState('');
+
+  
+  const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    patient_id: '',
+    ward_id: '',
+    infection_type: '',
+    detection_date: '',
+    severity: 'moderate',
+    status: 'active'
+  });
+
+  const { data: patientsList = [] } = useQuery({
+    queryKey: ['univ_patients_list', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute("SELECT id, COALESCE(first_name, 'Unknown') || ' ' || COALESCE(last_name, 'Patient') as name FROM univ_patients WHERE company_id = ?", [companyId]);
+      return res.rows._array;
+    },
+    enabled: !!companyId
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (payload) => {
+      await powerSync.execute(
+        `INSERT INTO univ_infection_logs (id, created_at, company_id, patient_id, ward_id, infection_type, organism, source, detection_date, control_measures, status, reported_by)
+         VALUES (?, datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [uuidv4(), companyId, payload.patient_id, payload.ward_id, payload.infection_type, payload.severity, 'Hospital Acquired', payload.detection_date || new Date().toISOString().split('T')[0], 'Standard Precautions', payload.status, 'System Admin']
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['univ_infection_logs']);
+      toast.success('Infection log recorded!');
+      setShowModal(false);
+      setFormData({ patient_id: '', ward_id: '', infection_type: '', detection_date: '', severity: 'moderate', status: 'active' });
+    },
+    onError: (err) => {
+      toast.error('Failed to log infection: ' + err.message);
+    }
+  });
+
+  const handleSave = () => {
+    if (!formData.patient_id || !formData.infection_type) return toast.error('Please fill required fields');
+    createMutation.mutate(formData);
+  };
+
 
   const { data: logs = [], isLoading } = useQuery({
     queryKey: ['univ_infection_logs', companyId],

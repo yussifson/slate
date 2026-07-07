@@ -3,14 +3,62 @@ import { useState } from 'react';
 import { Search, Plus, Calendar as CalendarIcon, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function StaffRoster() {
   const { t } = useTranslation();
   const companyId = useCompanyId();
   const [search, setSearch] = useState('');
+
+  
+  const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    staff_id: '',
+    ward_or_department: '',
+    shift_date: '',
+    shift_type: 'Morning',
+    on_call: 'false'
+  });
+
+  const { data: staffList = [] } = useQuery({
+    queryKey: ['univ_profiles_list', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute("SELECT id, COALESCE(first_name, 'Unknown') || ' ' || COALESCE(last_name, 'Staff') as name FROM profiles WHERE company_id = ?", [companyId]);
+      return res.rows._array;
+    },
+    enabled: !!companyId
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (payload) => {
+      await powerSync.execute(
+        `INSERT INTO univ_staff_shifts (id, company_id, created_at, updated_at, staff_id, shift_date, shift_type, ward_or_department, on_call)
+         VALUES (?, ?, datetime('now'), datetime('now'), ?, ?, ?, ?, ?)`,
+        [uuidv4(), companyId, payload.staff_id, payload.shift_date, payload.shift_type, payload.ward_or_department, payload.on_call]
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['univ_duty_rosters']);
+      toast.success('Shift assigned successfully!');
+      setShowModal(false);
+      setFormData({ staff_id: '', ward_or_department: '', shift_date: '', shift_type: 'Morning', on_call: 'false' });
+    },
+    onError: (err) => {
+      toast.error('Failed to assign shift: ' + err.message);
+    }
+  });
+
+  const handleSave = () => {
+    if (!formData.staff_id || !formData.shift_date) return toast.error('Please fill required fields');
+    createMutation.mutate(formData);
+  };
+
 
   const { data: roster = [], isLoading } = useQuery({
     queryKey: ['univ_duty_rosters', companyId],
@@ -41,7 +89,7 @@ export default function StaffRoster() {
           <h1 className="text-2xl font-semibold text-slate-800">Staff Duty Roster</h1>
           <p className="text-slate-500">Manage shift scheduling and on-call assignments.</p>
         </div>
-        <Button className="bg-primary text-white">
+        <Button className="bg-primary text-white" onClick={() => setShowModal(true)}>
           <Plus className="w-4 h-4 mr-2" /> Assign Shift
         </Button>
       </div>
