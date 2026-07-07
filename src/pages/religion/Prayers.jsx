@@ -1,6 +1,6 @@
 import { useTranslation} from "react-i18next";
 import { useState, useEffect } from 'react';
-import { Heart, HandHeart, CheckCircle, Search, Trash2, Plus, Sparkles, AlertTriangle} from 'lucide-react';
+import { Heart, HandHeart, CheckCircle, Search, Trash2, Plus, Sparkles, AlertTriangle, MoreVertical, Eye, Edit } from 'lucide-react';
 import { generateText } from '@/lib/cloudflareAI';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';

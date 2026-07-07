@@ -1,6 +1,6 @@
 import { useTranslation} from "react-i18next";
 import { useState, useEffect } from 'react';
-import { Users, MapPin, Clock, Plus, Trash2, Search, Sparkles, MoreVertical, Eye } from 'lucide-react';
+import { Users, MapPin, Clock, Plus, Trash2, Search, Sparkles, MoreVertical, Eye, Edit } from 'lucide-react';
 import { generateText } from '@/lib/cloudflareAI';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
