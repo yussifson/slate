@@ -124,9 +124,6 @@ export default function HospitalBilling() {
 
   const createInvoiceMutation = useMutation({
     mutationFn: async (payload) => {
-      // Create both the medical bill and the main system invoice
-      await powerSync.execute('BEGIN TRANSACTION');
-
       const billId = uuidv4();
       const invoiceId = uuidv4();
       const amountDue = payload.total_cost - payload.insurance_covered;
@@ -146,8 +143,6 @@ export default function HospitalBilling() {
          VALUES (?, datetime('now'), ?, ?, '', ?, ?, 'USD', 'draft', ?, datetime('now'), ?)`,
         [invoiceId, companyId, patient?.name || 'Patient', `INV-${Math.floor(1000 + Math.random() * 9000)}`, amountDue, payload.due_date, `Medical Bill: ${payload.service_provided}`]
       );
-
-      await powerSync.execute('COMMIT');
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['univ_medicalbillings']);
@@ -156,8 +151,7 @@ export default function HospitalBilling() {
       setShowModal(false);
       setFormData({ patient_id: '', service_provided: '', total_cost: '', insurance_covered: '', due_date: '' });
     },
-    onError: async (err) => {
-      await powerSync.execute('ROLLBACK');
+    onError: (err) => {
       toast.error('Failed to generate bill: ' + err.message);
     }
   });
