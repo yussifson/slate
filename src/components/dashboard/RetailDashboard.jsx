@@ -274,7 +274,7 @@ export default function RetailDashboard({ companyId, company, isAdmin }) {
             <span className="text-xs font-medium text-muted-foreground capitalize">{plan.name}</span>
           </div>
           <div className="space-y-4 mb-5">
-            <UsageRow label="Staff" used={staff.length} max={plan.maxUsers} />
+            <UsageRow label="Staff" used={1} max={plan.maxUsers} />
             <UsageRow label="Storage" used={0} max={plan.maxStorageGB} suffix=" GB" />
             <UsageRow label="Orders" used={stats?.totalOrders || 0} max={plan.maxCases} />
             <UsageRow label="Customers" used={customersLength} max={plan.maxClients} />

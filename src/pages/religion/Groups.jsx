@@ -1,6 +1,6 @@
 import { useTranslation} from "react-i18next";
 import { useState, useEffect } from 'react';
-import { Users, Plus, Shield, Music, HeartHandshake, Trash2, Calendar, Search} from 'lucide-react';
+import { Users, Plus, Shield, Music, HeartHandshake, Trash2, Calendar, Search, MoreVertical, Eye, Edit } from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
