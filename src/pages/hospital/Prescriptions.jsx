@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Pill, Search, Plus, FileText, Printer, ShieldCheck, Trash2, MoreVertical, Pencil } from 'lucide-react';
+import { Pill, Search, Plus, ShieldCheck, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
@@ -9,7 +9,6 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { v4 as uuidv4 } from 'uuid';
 import { generateText } from '@/lib/cloudflareAI';
 
 export default function Prescriptions() {
@@ -23,11 +22,11 @@ export default function Prescriptions() {
       if (!companyId) return [];
       const res = await powerSync.execute(
         `SELECT pr.*, 
-                p.COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name,
+                COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, 'Patient') as patient_name,
                 ph.drug_name
          FROM univ_prescriptions pr
          LEFT JOIN univ_patients p ON pr.patient_id = p.id
-         LEFT JOIN univ_pharmacy ph ON pr.medication_id = ph.id
+         LEFT JOIN univ_pharmacy ph ON ph.id = COALESCE(pr.medication_id, pr.medication)
          WHERE pr.company_id = ?
          ORDER BY pr.prescription_date DESC`,
         [companyId]
@@ -98,15 +97,15 @@ export default function Prescriptions() {
       if (payload.id) {
         await powerSync.execute(
           `UPDATE univ_prescriptions SET 
-             patient_id = ?, doctor_id = ?, medication = ?, dosage = ?, frequency = ?, duration = ?
+             patient_id = ?, doctor_name = ?, medication_id = ?, medication = ?, dosage = ?, frequency = ?, duration = ?
            WHERE id = ?`,
-          [payload.patient_id, payload.doctor_id, payload.medication, payload.dosage, payload.frequency, payload.duration, payload.id]
+          [payload.patient_id, payload.doctor_name, payload.medication_id, payload.medication, payload.dosage, payload.frequency, payload.duration, payload.id]
         );
       } else {
         await powerSync.execute(
-          `INSERT INTO univ_prescriptions (id, created_at, company_id, patient_id, doctor_id, medication, dosage, frequency, duration, prescription_date, status)
-           VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, datetime('now'), 'Active')`,
-          [companyId, payload.patient_id, payload.doctor_id, payload.medication, payload.dosage, payload.frequency, payload.duration]
+          `INSERT INTO univ_prescriptions (id, created_at, company_id, patient_id, doctor_name, medication_id, medication, dosage, frequency, duration, prescription_date, status)
+           VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), 'Active')`,
+          [companyId, payload.patient_id, payload.doctor_name, payload.medication_id, payload.medication, payload.dosage, payload.frequency, payload.duration]
         );
       }
     },
@@ -122,7 +121,8 @@ export default function Prescriptions() {
 
   const dispenseRecord = useMutation({
     mutationFn: async (rx) => {
-      const drug = pharmacyList.find(d => d.id === rx.medication_id);
+      const medId = rx.medication_id || rx.medication;
+      const drug = pharmacyList.find(d => d.id === medId);
       if (!drug) throw new Error("Medication not found in inventory.");
       if (drug.stock_level <= 0) throw new Error("Out of stock!");
 
@@ -137,7 +137,7 @@ export default function Prescriptions() {
       // Reduce inventory
       await powerSync.execute(
         `UPDATE univ_pharmacy SET stock_level = stock_level - 1 WHERE id = ?`,
-        [rx.medication_id]
+        [medId]
       );
 
       await powerSync.execute('COMMIT');
@@ -168,14 +168,16 @@ export default function Prescriptions() {
     if (!formData.patient_id) return toast.error("Please select a patient");
     if (!formData.medication_id) return toast.error("Please select a medication");
 
+    const selectedDrug = pharmacyList.find(p => p.id === formData.medication_id);
     mutateRecord.mutate({
       id: editingRx?.id,
       patient_id: formData.patient_id,
-      medication: formData.medication_id,
+      medication_id: formData.medication_id,
+      medication: selectedDrug?.drug_name || formData.medication_id,
       dosage: formData.dosage,
       frequency: formData.frequency,
       duration: formData.duration,
-      doctor_id: formData.doctor
+      doctor_name: formData.doctor
     });
   };
 
@@ -240,11 +242,11 @@ export default function Prescriptions() {
     setEditingRx(rx);
     setFormData({
       patient_id: rx.patient_id || '',
-      medication_id: rx.medication_id || '',
+      medication_id: rx.medication_id || rx.medication || '',
       dosage: rx.dosage || '1 tablet',
       frequency: rx.frequency || '3 times daily',
       duration: rx.duration || '7 days',
-      doctor: rx.doctor_id || 'Dr. John Mensah'
+      doctor: rx.doctor_name || rx.doctor_id || 'Dr. John Mensah'
     });
     setShowModal(true);
   };
@@ -305,7 +307,7 @@ export default function Prescriptions() {
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    <p className="text-foreground font-medium">{rx.doctor_id}</p>
+                    <p className="text-foreground font-medium">{rx.doctor_name || rx.doctor_id}</p>
                   </td>
                   <td className="px-6 py-4 text-center">
                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${rx.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-[#71717a]'}`}>
@@ -432,7 +434,7 @@ export default function Prescriptions() {
               </div>
               <div className="space-y-3 border-t pt-4">
                 <div><h3 className="text-sm font-medium text-[#71717a]">Patient</h3><p className="text-base font-semibold">{viewRx.patient_name}</p></div>
-                <div><h3 className="text-sm font-medium text-[#71717a]">Prescriber</h3><p className="text-base font-semibold">{viewRx.doctor_id}</p></div>
+                <div><h3 className="text-sm font-medium text-[#71717a]">Prescriber</h3><p className="text-base font-semibold">{viewRx.doctor_name || viewRx.doctor_id}</p></div>
                 <div><h3 className="text-sm font-medium text-[#71717a]">Issue Date</h3><p className="text-base">{new Date(viewRx.prescription_date).toLocaleString()}</p></div>
                 {viewRx.dispense_date && <div><h3 className="text-sm font-medium text-[#71717a]">Dispense Date</h3><p className="text-base">{new Date(viewRx.dispense_date).toLocaleString()}</p></div>}
               </div>

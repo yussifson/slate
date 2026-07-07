@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Calendar as CalendarIcon, Clock, User, Stethoscope, Plus, Video, Trash2, CheckCircle, Play, LayoutGrid, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -93,15 +92,15 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
       if (payload.id) {
         await powerSync.execute(
           `UPDATE univ_appointments SET 
-             client_name = ?, doctor_id = ?, date = ?, time = ?, type = ?, status = ?, notes = ?
+             title = ?, client_name = ?, staff_name = ?, date = ?, time = ?, type = ?, status = ?, notes = ?
            WHERE id = ?`,
-          [payload.client_name, payload.doctor_id, payload.date, payload.time, payload.type, payload.status, payload.notes, payload.id]
+          [payload.title, payload.client_name, payload.staff_name, payload.date, payload.time, payload.type, payload.status, payload.notes, payload.id]
         );
       } else {
         await powerSync.execute(
-          `INSERT INTO univ_appointments (id, created_at, company_id, client_name, doctor_id, date, time, type, status, notes)
-           VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [companyId, payload.client_name, payload.doctor_id, payload.date, payload.time, payload.type, payload.status, payload.notes]
+          `INSERT INTO univ_appointments (id, created_at, company_id, title, client_name, staff_name, date, time, type, status, notes)
+           VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [companyId, payload.title, payload.client_name, payload.staff_name, payload.date, payload.time, payload.type, payload.status, payload.notes]
         );
       }
     },
@@ -137,7 +136,7 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
 
     // Double-Booking Conflict Check
     const isConflict = appointments.some(appt => 
-      appt.doctor_id === formData.doctor && 
+      (appt.staff_name || appt.doctor_id) === formData.doctor &&
       appt.date === formData.date && 
       appt.time === formData.time &&
       appt.status !== 'Completed'
@@ -148,8 +147,9 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
     }
 
     let payload = {
+      title: formData.patient.trim() || 'Appointment',
       client_name: formData.patient,
-      doctor_id: formData.doctor,
+      staff_name: formData.doctor,
       date: formData.date,
       time: formData.time,
       type: formData.type,
@@ -243,7 +243,7 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
                     </div>
                     <div>
                       <span className="font-semibold text-sm text-primary hover:underline">{appt.client_name}</span>
-                      <p className="text-xs text-[#71717a] font-medium tracking-[0.04em]">{appt.doctor_id}</p>
+                      <p className="text-xs text-[#71717a] font-medium tracking-[0.04em]">{appt.staff_name || appt.doctor_id}</p>
                     </div>
                     <div className="flex items-center justify-between gap-2 text-xs text-[#71717a] mt-1 border-t border-dashed border-primary/40 pt-2">
                       <div className="flex items-center gap-2"><Clock className="w-3.5 h-3.5" /> <span>{appt.time}</span></div>
@@ -276,7 +276,7 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
                           {appt.time} - {appt.client_name}
                           {appt.no_show_risk_score > 0.7 && <span className="w-2 h-2 rounded-full bg-red-500" title="High No-Show Risk"></span>}
                         </div>
-                        <div className="text-[#71717a] truncate text-[10px]">{appt.doctor_id}</div>
+                        <div className="text-[#71717a] truncate text-[10px]">{appt.staff_name || appt.doctor_id}</div>
                       </div>
                     ))}
                   </div>
@@ -298,7 +298,7 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
                     )}
                   </h2>
                   <div className="flex items-center gap-4 mt-2 text-sm text-[#71717a]">
-                    <span className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-md border-[0.5px]"><Stethoscope className="w-4 h-4" /> {selectedAppt.doctor_id}</span>
+                    <span className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-md border-[0.5px]"><Stethoscope className="w-4 h-4" /> {selectedAppt.staff_name || selectedAppt.doctor_id}</span>
                     <span className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-md border-[0.5px]"><Clock className="w-4 h-4" /> {selectedAppt.time}</span>
                   </div>
                 </div>

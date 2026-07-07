@@ -13,10 +13,13 @@ ALTER TABLE "public"."univ_appointments"
 
 -- 1b. Ensure all required columns exist with proper types
 ALTER TABLE "public"."univ_appointments" 
-  ADD COLUMN IF NOT EXISTS "doctor_id" uuid,
-  ADD COLUMN IF NOT EXISTS "patient_id" uuid,
-  ADD COLUMN IF NOT EXISTS "type" text DEFAULT 'Consultation',
   ADD COLUMN IF NOT EXISTS "staff_name" text,
+  ADD COLUMN IF NOT EXISTS "client_name" text,
+  ADD COLUMN IF NOT EXISTS "doctor_id" text,
+  ADD COLUMN IF NOT EXISTS "patient_id" text,
+  ADD COLUMN IF NOT EXISTS "date" text,
+  ADD COLUMN IF NOT EXISTS "time" text,
+  ADD COLUMN IF NOT EXISTS "type" text DEFAULT 'Consultation',
   ADD COLUMN IF NOT EXISTS "notes" text,
   ADD COLUMN IF NOT EXISTS "updated_at" timestamp with time zone DEFAULT timezone('utc'::text, now());
 
@@ -31,7 +34,7 @@ DROP TRIGGER IF EXISTS update_univ_appointments_modtime ON public.univ_appointme
 CREATE TRIGGER update_univ_appointments_modtime 
   BEFORE UPDATE ON public.univ_appointments 
   FOR EACH ROW 
-  EXECUTE FUNCTION update_univ_updated_at_column();
+  EXECUTE PROCEDURE update_univ_updated_at_column();
 
 -- ========================================
 -- PHASE 2: FIX univ_admissions TABLE
@@ -40,7 +43,7 @@ CREATE TRIGGER update_univ_appointments_modtime
 -- 2a. Ensure univ_admissions has all required columns with proper types
 ALTER TABLE "public"."univ_admissions" 
   ADD COLUMN IF NOT EXISTS "patient_name" text,
-  ADD COLUMN IF NOT EXISTS "ward_id" uuid,
+  ADD COLUMN IF NOT EXISTS "ward_id" text,
   ADD COLUMN IF NOT EXISTS "reason_for_admission" text,
   ADD COLUMN IF NOT EXISTS "attending_doctor_id" uuid,
   ADD COLUMN IF NOT EXISTS "admission_date" timestamp with time zone DEFAULT now(),
@@ -66,7 +69,7 @@ DROP TRIGGER IF EXISTS update_univ_admissions_modtime ON public.univ_admissions;
 CREATE TRIGGER update_univ_admissions_modtime 
   BEFORE UPDATE ON public.univ_admissions 
   FOR EACH ROW 
-  EXECUTE FUNCTION update_univ_updated_at_column();
+  EXECUTE PROCEDURE update_univ_updated_at_column();
 
 -- ========================================
 -- PHASE 3: FIX univ_prescriptions TABLE
@@ -75,28 +78,23 @@ CREATE TRIGGER update_univ_admissions_modtime
 -- 3a. Ensure all required columns exist with proper types (fix UUID issues)
 ALTER TABLE "public"."univ_prescriptions" 
   ADD COLUMN IF NOT EXISTS "medication" text NOT NULL DEFAULT 'Unspecified',
+  ADD COLUMN IF NOT EXISTS "medication_id" text,
   ADD COLUMN IF NOT EXISTS "dosage" text DEFAULT 'As prescribed',
   ADD COLUMN IF NOT EXISTS "frequency" text DEFAULT 'Once daily',
   ADD COLUMN IF NOT EXISTS "duration" text DEFAULT '7 days',
   ADD COLUMN IF NOT EXISTS "prescription_date" timestamp with time zone DEFAULT now(),
+  ADD COLUMN IF NOT EXISTS "dispense_date" text,
   ADD COLUMN IF NOT EXISTS "updated_at" timestamp with time zone DEFAULT timezone('utc'::text, now());
 
--- 3b. Ensure doctor_id and patient_id are properly typed as UUID
-ALTER TABLE "public"."univ_prescriptions" 
-  ALTER COLUMN "doctor_id" TYPE uuid USING 
-    CASE 
-      WHEN doctor_id IS NULL THEN NULL
-      WHEN doctor_id::text ~ '^[0-9a-f-]{36}$' THEN doctor_id::uuid
-      ELSE NULL 
-    END,
-  ALTER COLUMN "patient_id" TYPE uuid USING 
-    CASE 
-      WHEN patient_id IS NULL THEN NULL
-      WHEN patient_id::text ~ '^[0-9a-f-]{36}$' THEN patient_id::uuid
-      ELSE NULL 
-    END;
+-- 3b. Keep doctor_id as text; store display names in doctor_name column
+ALTER TABLE "public"."univ_prescriptions"
+  ADD COLUMN IF NOT EXISTS "doctor_name" text;
+
+ALTER TABLE "public"."univ_prescriptions"
+  ALTER COLUMN "doctor_id" TYPE text USING doctor_id::text;
 
 -- 3c. Fix RLS Policy for univ_prescriptions
+DROP POLICY IF EXISTS "Allow company access on univ_prescriptions" ON public.univ_prescriptions;
 DROP POLICY IF EXISTS "Users can manage their company's prescriptions" ON public.univ_prescriptions;
 CREATE POLICY "Allow company access on univ_prescriptions" ON public.univ_prescriptions 
   FOR ALL 
@@ -107,7 +105,7 @@ DROP TRIGGER IF EXISTS update_univ_prescriptions_modtime ON public.univ_prescrip
 CREATE TRIGGER update_univ_prescriptions_modtime 
   BEFORE UPDATE ON public.univ_prescriptions 
   FOR EACH ROW 
-  EXECUTE FUNCTION update_univ_updated_at_column();
+  EXECUTE PROCEDURE update_univ_updated_at_column();
 
 -- ========================================
 -- PHASE 4: FIX univ_wards TABLE
@@ -122,6 +120,7 @@ ALTER TABLE "public"."univ_wards"
   ADD COLUMN IF NOT EXISTS "updated_at" timestamp with time zone DEFAULT timezone('utc'::text, now());
 
 -- 4b. Fix RLS Policy for univ_wards
+DROP POLICY IF EXISTS "Allow company access on univ_wards" ON public.univ_wards;
 DROP POLICY IF EXISTS "Users can manage their company's wards" ON public.univ_wards;
 CREATE POLICY "Allow company access on univ_wards" ON public.univ_wards 
   FOR ALL 
@@ -132,24 +131,36 @@ DROP TRIGGER IF EXISTS update_univ_wards_modtime ON public.univ_wards;
 CREATE TRIGGER update_univ_wards_modtime 
   BEFORE UPDATE ON public.univ_wards 
   FOR EACH ROW 
-  EXECUTE FUNCTION update_univ_updated_at_column();
+  EXECUTE PROCEDURE update_univ_updated_at_column();
 
 -- ========================================
 -- PHASE 5: POWERSYNC PUBLICATION SETUP
 -- ========================================
 
 -- Ensure all hospital tables are included in the PowerSync publication
--- This allows offline/online sync without data loss
-
-DROP PUBLICATION IF EXISTS hospital_tables CASCADE;
-CREATE PUBLICATION hospital_tables FOR TABLE 
-  univ_appointments, 
-  univ_admissions, 
-  univ_prescriptions, 
-  univ_wards,
-  univ_patients,
-  univ_labs,
-  univ_telemedicine;
+DO $pub$
+DECLARE
+  t TEXT;
+  tables TEXT[] := ARRAY[
+    'univ_appointments', 'univ_admissions', 'univ_prescriptions', 'univ_wards',
+    'univ_patients', 'univ_labs', 'univ_lab_results', 'univ_telemedicine',
+    'univ_pharmacy', 'univ_medical_history', 'univ_imaging', 'univ_surgeries',
+    'univ_ambulance_dispatch', 'univ_medicalclaims', 'univ_medicalbillings',
+    'univ_notifications', 'univ_invoices'
+  ];
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'powersync') THEN
+    CREATE PUBLICATION powersync;
+  END IF;
+  FOREACH t IN ARRAY tables LOOP
+    BEGIN
+      EXECUTE format('ALTER PUBLICATION powersync ADD TABLE public.%I', t);
+    EXCEPTION
+      WHEN duplicate_object THEN NULL;
+      WHEN OTHERS THEN RAISE NOTICE 'Skip % from powersync: %', t, SQLERRM;
+    END;
+  END LOOP;
+END $pub$;
 
 -- ========================================
 -- PHASE 6: DATA VALIDATION & CLEANUP
@@ -160,11 +171,17 @@ UPDATE "public"."univ_appointments"
 SET title = COALESCE(title, 'Appointment') 
 WHERE title IS NULL;
 
--- 6b. Clean up any invalid doctor_id references in univ_prescriptions (non-UUID strings)
-UPDATE "public"."univ_prescriptions" 
-SET doctor_id = NULL 
-WHERE doctor_id IS NOT NULL 
-  AND doctor_id::text NOT SIMILAR TO '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
+-- 6b. Migrate doctor display names from doctor_id into doctor_name before clearing invalid UUIDs
+UPDATE "public"."univ_prescriptions"
+SET doctor_name = doctor_id
+WHERE doctor_name IS NULL
+  AND doctor_id IS NOT NULL
+  AND doctor_id !~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$';
+
+UPDATE "public"."univ_prescriptions"
+SET doctor_id = NULL
+WHERE doctor_id IS NOT NULL
+  AND doctor_id !~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$';
 
 -- 6c. Ensure all admissions have a bed_number
 UPDATE "public"."univ_admissions"
@@ -187,30 +204,6 @@ CREATE INDEX IF NOT EXISTS idx_prescriptions_company_patient
 
 CREATE INDEX IF NOT EXISTS idx_wards_company_bed 
   ON univ_wards(company_id, bed_number);
-
--- ========================================
--- VERIFICATION & LOGGING
--- ========================================
-
--- Log this migration completion
-INSERT INTO public.automations (
-  name, 
-  description, 
-  trigger_key, 
-  is_template, 
-  template_vertical, 
-  steps, 
-  is_active
-) 
-VALUES (
-  'Hospital Data Sync Fix - July 6',
-  'Permanent fix for PowerSync offline/online data persistence in hospital module',
-  'system.migration.hospital_sync',
-  true,
-  'hospital',
-  '[{"action": "system.log", "status": "completed"}]'::jsonb,
-  true
-) ON CONFLICT DO NOTHING;
 
 -- Summary of changes:
 -- ✓ Fixed univ_appointments: title now NOT NULL with default, added required columns

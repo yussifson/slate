@@ -17,7 +17,7 @@ export default function BloodBank() {
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute(
-        `SELECT * FROM univ_blood_bank WHERE company_id = ? ORDER BY blood_type ASC`,
+        `SELECT * FROM univ_blood_bank WHERE company_id = ? ORDER BY blood_group ASC`,
         [companyId]
       );
       return res.rows._array;
@@ -26,7 +26,8 @@ export default function BloodBank() {
   });
 
   const filteredUnits = bloodUnits.filter(u => 
-    (u.blood_type || '').toLowerCase().includes(search.toLowerCase())
+    (u.blood_group || '').toLowerCase().includes(search.toLowerCase()) ||
+    (u.unit_number || '').toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -60,9 +61,10 @@ export default function BloodBank() {
           <table className="w-full text-sm text-left">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-medium">
               <tr>
-                <th className="px-4 py-3">Blood Type</th>
-                <th className="px-4 py-3">Units Available</th>
-                <th className="px-4 py-3">Minimum Threshold</th>
+                <th className="px-4 py-3">Blood Group</th>
+                <th className="px-4 py-3">Unit Number</th>
+                <th className="px-4 py-3">Component</th>
+                <th className="px-4 py-3">Expiry</th>
                 <th className="px-4 py-3">Status</th>
               </tr>
             </thead>
@@ -75,13 +77,14 @@ export default function BloodBank() {
                 filteredUnits.map(unit => (
                   <tr key={unit.id} className="hover:bg-slate-50">
                     <td className="px-4 py-3 font-semibold text-red-600 flex items-center gap-2">
-                      <Droplet className="w-4 h-4" /> {unit.blood_type}
+                      <Droplet className="w-4 h-4" /> {unit.blood_group}
                     </td>
-                    <td className="px-4 py-3 font-mono text-slate-500">{unit.units_available}</td>
-                    <td className="px-4 py-3 text-slate-500">{unit.minimum_threshold}</td>
+                    <td className="px-4 py-3 font-mono text-slate-500">{unit.unit_number}</td>
+                    <td className="px-4 py-3 text-slate-500">{unit.component_type || 'Whole Blood'}</td>
+                    <td className="px-4 py-3 text-slate-500">{unit.expiry_date || '—'}</td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-1 text-xs rounded-full ${unit.units_available > unit.minimum_threshold ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                        {unit.units_available > unit.minimum_threshold ? 'Sufficient' : 'Low Stock'}
+                      <span className={`px-2 py-1 text-xs rounded-full capitalize ${unit.status === 'available' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                        {unit.status || 'unknown'}
                       </span>
                     </td>
                   </tr>

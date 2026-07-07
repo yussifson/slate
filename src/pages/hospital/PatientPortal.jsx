@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from 'react';
-import { Calendar, FileText, Activity, Download, Plus, Pill, Beaker, Bot, Sparkles, Lock } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Calendar, FileText, Activity, Pill, Beaker, Bot, Sparkles, Lock } from 'lucide-react';
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { toast } from 'react-hot-toast';
@@ -25,7 +24,7 @@ export default function PatientPortal() {
     queryFn: async () => {
       if (!companyId || !user?.email) return null;
       const rows = await powerSync.getAll(
-        `SELECT id, COALESCE(first_name, '') || ' ' || COALESCE(last_name, '') as name, date_of_birth, blood_type, gender 
+        `SELECT id, COALESCE(first_name, '') || ' ' || COALESCE(last_name, '') as name, date_of_birth, blood_group, gender
          FROM univ_patients WHERE company_id = ? AND email = ? LIMIT 1`,
         [companyId, user.email]
       );
@@ -39,7 +38,7 @@ export default function PatientPortal() {
     queryKey: ['portal_appts', companyId, patientProfile?.name],
     queryFn: async () => {
       const rows = await powerSync.getAll(
-        `SELECT date, time, type, status, doctor_id as doctor FROM univ_appointments WHERE company_id = ? AND client_name = ? ORDER BY date DESC, time ASC LIMIT 3`,
+        `SELECT date, time, type, status, COALESCE(staff_name, doctor_id) as doctor FROM univ_appointments WHERE company_id = ? AND client_name = ? ORDER BY date DESC, time ASC LIMIT 3`,
         [companyId, patientProfile.name]
       );
       return rows || [];
