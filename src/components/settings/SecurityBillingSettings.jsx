@@ -109,7 +109,7 @@ export function SecuritySettings() {
 }
  setSaving(true);
  try {
- await base44.auth.updateUser({ password: form.new_password});
+ await base44.auth.updatePassword(form.new_password);
  toast({ title: "Password updated successfully"});
  setForm({ new_password: "", confirm_password: ""});
 } catch (err) {

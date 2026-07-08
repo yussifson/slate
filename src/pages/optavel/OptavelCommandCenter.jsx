@@ -56,16 +56,6 @@ const MODULES = [
     solid: 'bg-emerald-600'
   },
   {
-    id: 'hr',
-    title: 'HR & Team',
-    description: 'Directory, Time Off',
-    path: '/optavel/hr',
-    icon: Users,
-    color: 'text-purple-600',
-    bg: 'bg-purple-100',
-    solid: 'bg-purple-600'
-  },
-  {
     id: 'support',
     title: 'Support',
     description: 'Tickets, NPS',
@@ -105,94 +95,82 @@ export default function OptavelCommandCenter() {
     <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 flex flex-col items-center py-6 px-6">
       
       <div className="w-full max-w-7xl">
-        {/* Massive Colorful Header like Pharmacy */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary to-orange-500 p-6 md:p-8 mb-8 shadow-sm text-white">
-          <div className="absolute top-0 right-0 -mt-16 -mr-16 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-10 -mb-16 w-48 h-48 bg-black opacity-10 rounded-full blur-2xl"></div>
+        {/* Hero Banner */}
+        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-600 via-green-600 to-teal-700 p-8 sm:p-10 text-white shadow-2xl shadow-emerald-500/20 mb-8">
+          <div className="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl mix-blend-overlay pointer-events-none" />
+          <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-64 h-64 bg-emerald-900 opacity-20 rounded-full blur-2xl mix-blend-overlay pointer-events-none" />
           
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-inner">
-                <LayoutDashboard className="w-7 h-7 text-white" />
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2.5 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20">
+                  <LayoutDashboard className="w-6 h-6 text-emerald-100" />
+                </div>
+                <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Welcome back, {user?.company_name || user?.user_metadata?.full_name || 'Admin'}</h1>
               </div>
-              <div>
-                <p className="text-white font-bold text-xl md:text-2xl mb-0.5">Welcome back, {user?.user_metadata?.full_name || 'Admin'} 👋</p>
-                <p className="text-white/80 text-sm">{today}</p>
+              <p className="text-emerald-100 text-lg font-medium tracking-wide">Platform Command Center</p>
+              <div className="mt-6 flex items-center gap-4 text-sm font-medium text-emerald-100/80">
+                <span className="flex items-center gap-2">
+                  {today}
+                </span>
               </div>
             </div>
             
-            <div className="text-right">
-              <p className="text-white/80 font-medium text-xs mb-1 uppercase tracking-wider">System Status</p>
-              <div className="text-2xl md:text-3xl font-black tabular-nums">All Systems Operational</div>
+            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 shadow-inner">
+              <div className="text-right">
+                <p className="text-xs text-emerald-200 font-bold uppercase tracking-wider mb-1">System Status</p>
+                <div className="flex items-center gap-2 text-sm font-bold text-white">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_12px_rgba(52,211,153,0.8)]" />
+                  All Systems Operational
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Top Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {/* Active Tasks Card */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
-                <CheckCircle2 className="w-6 h-6" />
-              </div>
-              <div className="flex items-center gap-1 text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-md text-xs font-bold">
-                <ArrowUpRight className="w-3 h-3" />
-                <span>+12%</span>
-              </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          
+          <div className="bg-card rounded-2xl border-0 p-5 flex items-center gap-5 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+              <CheckCircle2 className="w-6 h-6" />
             </div>
-            <h3 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-1">{activeTasks}</h3>
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Active Tasks</p>
-            <p className="text-xs text-slate-500 mt-1">across all projects</p>
+            <div>
+              <p className="text-3xl font-bold text-foreground tracking-[-0.03em]">{activeTasks}</p>
+              <p className="text-sm font-medium text-muted-foreground tracking-tight mt-0.5">Active Tasks</p>
+            </div>
           </div>
           
-          {/* Total Employees Card */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-purple-600 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
-                <UsersIcon className="w-6 h-6" />
-              </div>
-              <div className="flex items-center gap-1 text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-md text-xs font-bold">
-                <ArrowUpRight className="w-3 h-3" />
-                <span>+4%</span>
-              </div>
+          <div className="bg-card rounded-2xl border-0 p-5 flex items-center gap-5 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400">
+              <UsersIcon className="w-6 h-6" />
             </div>
-            <h3 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-1">{totalEmployees}</h3>
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Total Employees</p>
-            <p className="text-xs text-slate-500 mt-1">active staff members</p>
+            <div>
+              <p className="text-3xl font-bold text-foreground tracking-[-0.03em]">{totalEmployees}</p>
+              <p className="text-sm font-medium text-muted-foreground tracking-tight mt-0.5">Total Employees</p>
+            </div>
           </div>
 
-          {/* Open Tickets Card */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-rose-500 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
-                <AlertCircle className="w-6 h-6" />
-              </div>
-              <div className="flex items-center gap-1 text-rose-600 bg-rose-50 dark:bg-rose-900/30 px-2 py-1 rounded-md text-xs font-bold">
-                <ArrowDownRight className="w-3 h-3" />
-                <span>-2%</span>
-              </div>
+          <div className="bg-card rounded-2xl border-0 p-5 flex items-center gap-5 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
+              <AlertCircle className="w-6 h-6" />
             </div>
-            <h3 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-1">{openTickets}</h3>
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Open Support Tickets</p>
-            <p className="text-xs text-slate-500 mt-1">requiring attention</p>
+            <div>
+              <p className="text-3xl font-bold text-foreground tracking-[-0.03em]">{openTickets}</p>
+              <p className="text-sm font-medium text-muted-foreground tracking-tight mt-0.5">Open Tickets</p>
+            </div>
           </div>
 
-          {/* Active Deals Card */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
-                <TrendingUp className="w-6 h-6" />
-              </div>
-              <div className="flex items-center gap-1 text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-md text-xs font-bold">
-                <ArrowUpRight className="w-3 h-3" />
-                <span>+8%</span>
-              </div>
+          <div className="bg-card rounded-2xl border-0 p-5 flex items-center gap-5 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
+              <TrendingUp className="w-6 h-6" />
             </div>
-            <h3 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-1">{activeDeals}</h3>
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Active Deals</p>
-            <p className="text-xs text-slate-500 mt-1">in sales pipeline</p>
+            <div>
+              <p className="text-3xl font-bold text-foreground tracking-[-0.03em]">{activeDeals}</p>
+              <p className="text-sm font-medium text-muted-foreground tracking-tight mt-0.5">Active Deals</p>
+            </div>
           </div>
+
         </div>
 
         {/* Modules Grid */}
