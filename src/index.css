@@ -140,7 +140,7 @@
     scrollbar-width: none;
   }
   
-  .scrollbar-primary::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scrollbar-primary::-webkit-scrollbar { width: 8px; height: 8px; }
   .scrollbar-primary::-webkit-scrollbar-track { background: transparent; }
   .scrollbar-primary::-webkit-scrollbar-thumb { background: hsl(var(--primary)); border-radius: 999px; }
   .scrollbar-primary::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.8); }

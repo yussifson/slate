@@ -76,17 +76,17 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto font-dmsans">
       {/* ── Header ── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 p-8 text-white shadow-lg">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 p-8 text-white shadow-lg">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
         <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
         
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
           <div>
             <h2 className="text-3xl font-bold tracking-tight">Performance Reviews</h2>
-            <p className="text-rose-100 mt-1 opacity-90">{reviews.length} Total Reviews Conducted</p>
+            <p className="text-emerald-100 mt-1 opacity-90">{reviews.length} Total Reviews Conducted</p>
           </div>
           {isAdmin && (
-            <Button className="bg-white text-rose-600 hover:bg-rose-50 rounded-xl font-bold shadow-sm whitespace-nowrap self-start md:self-auto" onClick={() => setShowForm(true)}>
+            <Button className="bg-white text-emerald-700 hover:bg-emerald-50 rounded-xl font-bold shadow-sm whitespace-nowrap self-start md:self-auto" onClick={() => setShowForm(true)}>
               <Plus className="w-4 h-4 mr-2" /> Create Review
             </Button>
           )}
@@ -94,16 +94,16 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
 
         <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 flex items-center gap-5">
-            <div className="w-14 h-14 rounded-full bg-rose-400/30 flex items-center justify-center border border-rose-300/30 shrink-0">
+            <div className="w-14 h-14 rounded-full bg-emerald-500/30 flex items-center justify-center border border-emerald-400/30 shrink-0">
               <Target className="w-7 h-7 text-white" />
             </div>
             <div>
-              <p className="text-sm font-medium text-rose-100 uppercase tracking-wider">Company Avg</p>
-              <p className="text-3xl font-bold mt-0.5">{teamAvg ?? "—"}<span className="text-base font-normal text-rose-200">/10</span></p>
+              <p className="text-sm font-medium text-emerald-100 uppercase tracking-wider">Company Avg</p>
+              <p className="text-3xl font-bold mt-0.5">{teamAvg ?? "—"}<span className="text-base font-normal text-emerald-200">/10</span></p>
             </div>
           </div>
           <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 flex flex-col justify-center">
-            <p className="text-sm font-medium text-rose-100 uppercase tracking-wider mb-2">Score Distribution</p>
+            <p className="text-sm font-medium text-emerald-100 uppercase tracking-wider mb-2">Score Distribution</p>
             <div className="flex items-end gap-1 h-12 w-full">
               {[
                 { label: "0-3", count: reviews.filter(r => r.score != null && r.score <= 3).length },
@@ -116,27 +116,27 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
                 return (
                   <div key={b.label} className="flex-1 flex flex-col justify-end items-center group relative">
                     <div className="w-full bg-white/40 rounded-sm hover:bg-white/80 transition-colors" style={{ height: `${h}%` }} />
-                    <span className="absolute -bottom-5 text-[9px] text-rose-200">{b.label}</span>
+                    <span className="absolute -bottom-5 text-[9px] text-emerald-200">{b.label}</span>
                   </div>
                 );
               })}
             </div>
           </div>
           <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 col-span-1 md:col-span-2 lg:col-span-2">
-            <p className="text-sm font-medium text-rose-100 uppercase tracking-wider mb-3">Top Performers</p>
+            <p className="text-sm font-medium text-emerald-100 uppercase tracking-wider mb-3">Top Performers</p>
             <div className="flex gap-4">
               {topPerformers.length > 0 ? topPerformers.map(r => (
                 <div key={r.id} className="flex-1 bg-white/20 rounded-lg p-3 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-rose-500 text-white font-bold flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center shrink-0">
                     {r.full_name?.charAt(0) || '?'}
                   </div>
                   <div className="min-w-0">
                     <p className="font-bold text-sm truncate">{r.full_name}</p>
-                    <p className="text-xs text-rose-100 font-medium">Score: {r.score}</p>
+                    <p className="text-xs text-emerald-100 font-medium">Score: {r.score}</p>
                   </div>
                 </div>
               )) : (
-                <div className="text-sm text-rose-200">No scored reviews yet.</div>
+                <div className="text-sm text-emerald-200">No scored reviews yet.</div>
               )}
             </div>
           </div>

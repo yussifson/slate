@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef} from "react";
 import { useNavigate} from "react-router-dom";
 import { Search, FileText, User, Users, Calendar, X, ShieldAlert, ArrowRight, Sparkles, Bot} from "lucide-react";
 import { base44} from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function SpotlightSearch() {
  const { t} = useTranslation();
@@ -15,6 +16,8 @@ export default function SpotlightSearch() {
  const [hoveredId, setHoveredId] = useState(null);
  const navigate = useNavigate();
  const inputRef = useRef(null);
+ const { user } = useAuth();
+ const companyId = user?.company_id;
 
  // Keyboard shortcut: CMD+K / CTRL+K
  useEffect(() => {
@@ -68,16 +71,16 @@ export default function SpotlightSearch() {
 
  setResults({
  cases: allCases.filter(c =>
- c.title?.toLowerCase().includes(q) || c.case_number?.toLowerCase().includes(q)
+ c.company_id === companyId && (c.title?.toLowerCase().includes(q) || c.case_number?.toLowerCase().includes(q))
  ).slice(0, 4),
  clients: allClients.filter(c =>
- c.name?.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q)
+ c.company_id === companyId && (c.name?.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q))
  ).slice(0, 4),
  staff: allStaff.filter(s =>
- s.full_name?.toLowerCase().includes(q) || s.user_email?.toLowerCase().includes(q)
+ s.company_id === companyId && (s.full_name?.toLowerCase().includes(q) || s.user_email?.toLowerCase().includes(q))
  ).slice(0, 4),
  other: allTasks.filter(item =>
- item.title?.toLowerCase().includes(q)
+ item.company_id === companyId && item.title?.toLowerCase().includes(q)
  ).slice(0, 4)});
 } catch (err) {
  console.error("Spotlight search failed", err);

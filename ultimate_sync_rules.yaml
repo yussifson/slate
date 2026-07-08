@@ -1,0 +1,382 @@
+  univ_erp_candidates:
+    view_name: univ_erp_candidates
+    columns:
+      - created_at
+      - company_id
+      - job_id
+      - name
+      - email
+      - phone
+      - resume_url
+      - stage
+      - ai_score
+      - status
+
+  univ_erp_interviews:
+    view_name: univ_erp_interviews
+    columns:
+      - created_at
+      - company_id
+      - candidate_id
+      - interviewer_id
+      - interview_date
+      - type
+      - feedback
+      - score
+      - status
+
+  univ_erp_onboarding:
+    view_name: univ_erp_onboarding
+    columns:
+      - created_at
+      - company_id
+      - employee_id
+      - task_name
+      - department
+      - assigned_to
+      - due_date
+      - status
+
+  univ_erp_okrs:
+    view_name: univ_erp_okrs
+    columns:
+      - created_at
+      - company_id
+      - owner_id
+      - objective
+      - key_results
+      - progress
+      - quarter
+      - status
+
+  univ_erp_reviews:
+    view_name: univ_erp_reviews
+    columns:
+      - created_at
+      - company_id
+      - reviewee_id
+      - reviewer_id
+      - review_cycle
+      - feedback
+      - rating
+      - status
+
+  univ_erp_courses:
+    view_name: univ_erp_courses
+    columns:
+      - created_at
+      - company_id
+      - title
+      - description
+      - category
+      - duration
+      - is_mandatory
+      - status
+
+  univ_erp_expenses:
+    view_name: univ_erp_expenses
+    columns:
+      - created_at
+      - company_id
+      - employee_id
+      - amount
+      - currency
+      - category
+      - receipt_url
+      - description
+      - status
+
+  univ_erp_benefits:
+    view_name: univ_erp_benefits
+    columns:
+      - created_at
+      - company_id
+      - name
+      - provider
+      - type
+      - employer_contribution
+      - employee_deduction
+      - status
+
+  univ_erp_announcements:
+    view_name: univ_erp_announcements
+    columns:
+      - created_at
+      - company_id
+      - author_id
+      - title
+      - content
+      - priority
+      - status
+
+  univ_erp_surveys:
+    view_name: univ_erp_surveys
+    columns:
+      - created_at
+      - company_id
+      - title
+      - type
+      - questions
+      - start_date
+      - end_date
+      - status
+
+  univ_erp_promotions:
+    view_name: univ_erp_promotions
+    columns:
+      - created_at
+      - company_id
+      - staff_email
+      - staff_name
+      - from_role
+      - to_role
+      - from_salary
+      - to_salary
+      - effective_date
+      - reason
+      - status
+      - approved_by
+
+  optavel_deal_rooms:
+    view_name: optavel_deal_rooms
+    columns:
+      - company_id
+      - lead_name
+      - value
+      - stage
+      - probability
+      - contact_email
+      - contact_phone
+      - notes
+      - created_at
+      - updated_at
+
+  optavel_okrs:
+    view_name: optavel_okrs
+    columns:
+      - company_id
+      - objective
+      - key_result
+      - owner
+      - due_date
+      - progress
+      - status
+      - created_at
+      - updated_at
+
+  optavel_decisions:
+    view_name: optavel_decisions
+    columns:
+      - company_id
+      - title
+      - description
+      - status
+      - decided_by
+      - created_at
+      - updated_at
+
+  optavel_commissions:
+    view_name: optavel_commissions
+    columns:
+      - company_id
+      - partner_id
+      - amount
+      - status
+      - month
+      - created_at
+      - updated_at
+
+  optavel_cap_table:
+    view_name: optavel_cap_table
+    columns:
+      - company_id
+      - user_id
+      - shareholder_name
+      - equity_percentage
+      - shares
+      - share_class
+      - vesting_schedule
+      - created_at
+      - updated_at
+
+  optavel_campaigns:
+    view_name: optavel_campaigns
+    columns:
+      - company_id
+      - title
+      - channel
+      - status
+      - budget
+      - spent
+      - goal
+      - start_date
+      - end_date
+      - created_at
+      - updated_at
+
+  optavel_marketing_reports:
+    view_name: optavel_marketing_reports
+    columns:
+      - company_id
+      - campaign_id
+      - file_url
+      - file_name
+      - uploaded_by
+      - created_at
+      - updated_at
+
+  optavel_seo_tracking:
+    view_name: optavel_seo_tracking
+    columns:
+      - company_id
+      - keyword
+      - rank
+      - previous_rank
+      - search_volume
+      - url
+      - created_at
+      - updated_at
+
+  optavel_summit_registrations:
+    view_name: optavel_summit_registrations
+    columns:
+      - company_id
+      - name
+      - company
+      - ticket_type
+      - created_at
+      - updated_at
+
+  optavel_bugs:
+    view_name: optavel_bugs
+    columns:
+      - company_id
+      - title
+      - description
+      - severity
+      - status
+      - product
+      - reporter_id
+      - created_at
+      - updated_at
+
+  optavel_sprints:
+    view_name: optavel_sprints
+    columns:
+      - company_id
+      - title
+      - goal
+      - status
+      - start_date
+      - end_date
+      - created_at
+      - updated_at
+
+  optavel_tasks:
+    view_name: optavel_tasks
+    columns:
+      - company_id
+      - title
+      - description
+      - status
+      - priority
+      - assignee_id
+      - sprint_id
+      - created_at
+      - updated_at
+
+  univ_task_comments:
+    view_name: univ_task_comments
+    columns:
+      - task_id
+      - company_id
+      - created_by
+      - comment_text
+      - created_at
+      - updated_at
+      - created_date
+
+  optavel_transactions:
+    view_name: optavel_transactions
+    columns:
+      - company_id
+      - type
+      - amount
+      - category
+      - date
+      - description
+      - created_at
+      - updated_at
+
+  optavel_deal_activities:
+    view_name: optavel_deal_activities
+    columns:
+      - company_id
+      - deal_id
+      - activity_type
+      - notes
+      - created_by
+      - created_at
+
+  optavel_employees:
+    view_name: optavel_employees
+    columns:
+      - company_id
+      - name
+      - role
+      - department
+      - email
+      - phone
+      - onboarding_progress
+      - status
+      - start_date
+      - created_at
+      - updated_at
+
+  optavel_leave_requests:
+    view_name: optavel_leave_requests
+    columns:
+      - company_id
+      - employee_id
+      - type
+      - status
+      - start_date
+      - end_date
+      - created_at
+
+  optavel_support_tickets:
+    view_name: optavel_support_tickets
+    columns:
+      - company_id
+      - title
+      - description
+      - status
+      - severity
+      - customer_name
+      - customer_id
+      - reporter_id
+      - created_at
+      - updated_at
+
+  optavel_nps_responses:
+    view_name: optavel_nps_responses
+    columns:
+      - company_id
+      - customer_id
+      - score
+      - feedback
+      - created_at
+
+  optavel_partners:
+    view_name: optavel_partners
+    columns:
+      - company_id
+      - name
+      - type
+      - status
+      - contact_name
+      - contact_email
+      - revenue_share
+      - created_at
+      - updated_at
+

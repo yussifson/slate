@@ -92,10 +92,12 @@ export default function OptavelCommandCenter() {
   const { data: tasksData } = useQuery('SELECT COUNT(*) as count FROM optavel_tasks WHERE status != ?', ['done']);
   const { data: employeesData } = useQuery('SELECT COUNT(*) as count FROM optavel_employees');
   const { data: ticketsData } = useQuery('SELECT COUNT(*) as count FROM optavel_support_tickets WHERE status != ?', ['resolved']);
+  const { data: dealsData } = useQuery('SELECT COUNT(*) as count FROM optavel_deal_rooms WHERE stage != ?', ['closed_lost']);
 
   const activeTasks = tasksData?.[0]?.count || 0;
   const totalEmployees = employeesData?.[0]?.count || 0;
   const openTickets = ticketsData?.[0]?.count || 0;
+  const activeDeals = dealsData?.[0]?.count || 0;
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 
@@ -127,7 +129,7 @@ export default function OptavelCommandCenter() {
         </div>
 
         {/* Top Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Active Tasks Card */}
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className="flex items-start justify-between mb-4">
@@ -174,6 +176,22 @@ export default function OptavelCommandCenter() {
             <h3 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-1">{openTickets}</h3>
             <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Open Support Tickets</p>
             <p className="text-xs text-slate-500 mt-1">requiring attention</p>
+          </div>
+
+          {/* Active Deals Card */}
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+            <div className="flex items-start justify-between mb-4">
+              <div className="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
+                <TrendingUp className="w-6 h-6" />
+              </div>
+              <div className="flex items-center gap-1 text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-md text-xs font-bold">
+                <ArrowUpRight className="w-3 h-3" />
+                <span>+8%</span>
+              </div>
+            </div>
+            <h3 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-1">{activeDeals}</h3>
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Active Deals</p>
+            <p className="text-xs text-slate-500 mt-1">in sales pipeline</p>
           </div>
         </div>
 
