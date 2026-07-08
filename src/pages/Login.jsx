@@ -284,11 +284,18 @@ export default function Login() {
     // Check if user belongs to this subdomain via Supabase directly (local DB might not be synced yet)
     const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).single();
     
-    // Only go to onboarding if they explicitly have no company_id
-    // Only go to onboarding if they explicitly have no company_id
+    // Only go to onboarding if they explicitly have no company_id anywhere
     if (!profile?.company_id) {
-      if (isElectron) { navigate('/onboarding'); } else { window.location.href = '/onboarding'; }
-      return;
+      let pendingCompanyId = authData?.user?.user_metadata?.company_id;
+      if (!pendingCompanyId) {
+        const { data: staffRec } = await supabase.from('staff_records').select('company_id').ilike('user_email', authData.user.email).maybeSingle();
+        if (staffRec?.company_id) pendingCompanyId = staffRec.company_id;
+      }
+      
+      if (!pendingCompanyId) {
+        if (isElectron) { navigate('/onboarding'); } else { window.location.href = '/onboarding'; }
+        return;
+      }
     }
 
     if (profile?.company_id) {
@@ -348,10 +355,18 @@ export default function Login() {
     // Base domain login
     const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).single();
     
-    // Only go to onboarding if they explicitly have no company_id
+    // Only go to onboarding if they explicitly have no company_id anywhere
     if (!profile?.company_id) {
-      if (isElectron) { navigate('/onboarding'); } else { window.location.href = '/onboarding'; }
-      return;
+      let pendingCompanyId = authData?.user?.user_metadata?.company_id;
+      if (!pendingCompanyId) {
+        const { data: staffRec } = await supabase.from('staff_records').select('company_id').ilike('user_email', authData.user.email).maybeSingle();
+        if (staffRec?.company_id) pendingCompanyId = staffRec.company_id;
+      }
+      
+      if (!pendingCompanyId) {
+        if (isElectron) { navigate('/onboarding'); } else { window.location.href = '/onboarding'; }
+        return;
+      }
     }
     
     // If Super Admin logs into the Base Domain, route directly to the admin command center
