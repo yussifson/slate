@@ -768,7 +768,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     if (item.isDynamic) return "Workspace";
     
     // 1. Platform should ONLY have dashboard and intelligence
-    if (['/', '/intelligence'].includes(p)) {
+    if (['/', '/my-dashboard', '/intelligence'].includes(p) || item.label === 'Dashboard' || item.label === 'My Dashboard') {
       return "Platform";
     }
     

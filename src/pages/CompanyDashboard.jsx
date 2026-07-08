@@ -15,6 +15,7 @@ import LogisticsDashboard from "@/components/dashboard/LogisticsDashboard";
 import GenericDashboard from "@/components/dashboard/GenericDashboard";
 import RealEstateDashboard from "@/pages/real-estate/RealEstateDashboard";
 import PharmacyDashboard from "@/pages/pharmacy/Dashboard";
+import OptavelCommandCenter from "@/pages/optavel/OptavelCommandCenter";
 
 export default function CompanyDashboard() {
   const { user } = useAuth();
@@ -67,6 +68,8 @@ export default function CompanyDashboard() {
     return <RealEstateDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
   } else if (industry === 'pharmacy') {
     return <PharmacyDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
+  } else if (industry === 'software' || industry === 'optavel_software') {
+    return <OptavelCommandCenter />;
   } else {
     return <GenericDashboard companyId={companyId} company={company} isAdmin={isAdmin} industry={industry} />;
   }
