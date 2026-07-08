@@ -364,7 +364,8 @@ import SignUp from './pages/SignUp';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import { SiteDomainResolver } from '@/components/sites/SiteRenderer/SiteDomainResolver';
-
+import SlateSites from './pages/sites/SlateSites';
+import SiteBuilderPage from './pages/sites/SiteBuilderPage';
 import { getSubdomainAndBase } from '@/lib/domainUtils';
 
 // University Pages
@@ -579,6 +580,8 @@ function PlatformRoutes() {
       <Route path="/integrations" element={<AppIntegrations />} />
       <Route path="/automations" element={<Automations />} />
       <Route path="/notifications" element={<NotificationsInbox />} />
+      <Route path="/sites" element={<SlateSites />} />
+      <Route path="/sites/builder" element={<SiteBuilderPage />} />
       <Route path="/client-portal" element={<ClientPortal />} />
       <Route path="/cases/:id" element={<CaseDetail />} />
       <Route path="/my-dashboard" element={<StaffDashboard />} />

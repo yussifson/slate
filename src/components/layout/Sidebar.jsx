@@ -772,8 +772,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     const p = item.path || '';
     if (item.isDynamic) return "Workspace";
     
-    // 1. Platform should ONLY have dashboard and intelligence
-    if (['/', '/my-dashboard', '/intelligence'].includes(p) || item.label === 'Dashboard' || item.label === 'My Dashboard') {
+    // 1. Platform should ONLY have dashboard and intelligence (and now Sites)
+    if (['/', '/my-dashboard', '/intelligence', '/sites'].includes(p) || item.label === 'Dashboard' || item.label === 'My Dashboard') {
       return "Platform";
     }
     
