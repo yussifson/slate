@@ -2,6 +2,7 @@ import { supabase} from '@/api/supabaseClient';
 import { useTranslation} from "react-i18next";
 import { useState, useEffect} from 'react';
 import { powerSync} from "@/api/PowerSyncConnector";
+import { base44 } from "@/api/base44Client";
 import { Input} from '@/components/ui/input';
 import { Button} from '@/components/ui/button';
 import { CheckCircle2, Eye, EyeOff} from 'lucide-react';
@@ -23,10 +24,20 @@ export default function ResetPassword() {
  const [done, setDone] = useState(false);
  const [error, setError] = useState('');
 
- // Supabase sends tokens as URL hash fragments; we need to set the session from them
- useEffect(() => {
- supabase.auth.getSession(); // trigger session loading from hash
-}, []);
+  // Supabase sends tokens as URL hash fragments; we need to set the session from them
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        // If getSession didn't find it immediately, listen for the event
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+          if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+             // Session is established
+          }
+        });
+        return () => subscription.unsubscribe();
+      }
+    });
+  }, []);
 
  const handleSubmit = async (e) => {
  e.preventDefault();
@@ -41,8 +52,7 @@ export default function ResetPassword() {
 }
  setLoading(true);
  try {
- const { error: err} = await supabase.auth.updateUser({ password});
- if (err) throw err;
+ await base44.auth.updatePassword(password);
  setDone(true);
  // Redirect to login after 3 seconds
  setTimeout(() => {
