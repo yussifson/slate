@@ -5,46 +5,21 @@ import { useToast } from '@/components/ui/use-toast';
 import VideoRoom from '@/components/video/VideoRoom';
 import PreJoinScreen from '@/components/video/PreJoinScreen';
 import { useAuth } from '@/lib/AuthContext';
-import { Video, Sparkles, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Video, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
-import { OrbitLoader } from '@/components/ui/orbit-loader';
 
 function MeetLoader({ label = 'Preparing your secure meeting...' }) {
   return (
-    <div className="w-screen h-screen flex flex-col items-center justify-center bg-[#F8FAFC] dark:bg-[#030712] relative overflow-hidden font-sans">
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] rounded-full bg-gradient-to-br from-primary/10 to-blue-500/10 blur-[100px] dark:from-primary/5 dark:to-blue-500/5 mix-blend-multiply dark:mix-blend-screen" 
-        />
+    <div className="w-screen h-screen flex flex-col items-center justify-center bg-white dark:bg-[#090E17]">
+      <div className="w-24 h-24 relative flex items-center justify-center animate-spin" style={{ animationDuration: '3s' }}>
+        <img src="/orbit-logo.svg" alt="Orbit Logo" className="w-full h-full object-contain drop-shadow-xl" />
       </div>
-
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="relative z-10 flex flex-col items-center bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/50 dark:border-white/10 p-12 rounded-[2.5rem] shadow-2xl"
-      >
-        <div className="relative mb-8">
-          <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
-          <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-primary to-blue-600 p-[2px] shadow-lg shadow-primary/30">
-            <div className="w-full h-full bg-white dark:bg-slate-900 rounded-full flex items-center justify-center overflow-hidden">
-              <Video className="w-8 h-8 text-primary animate-pulse" />
-            </div>
-          </div>
-        </div>
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mb-4">Just a moment</h2>
-        <div className="flex items-center gap-3 bg-white/50 dark:bg-black/30 backdrop-blur-md border border-white/50 dark:border-white/10 px-6 py-3 rounded-full shadow-inner">
-          <OrbitLoader size="sm" />
-          <span className="text-sm font-semibold text-primary tracking-wide">{label}</span>
-        </div>
-      </motion.div>
+      <p className="mt-8 text-slate-500 font-medium tracking-wide animate-pulse">{label}</p>
     </div>
   );
 }
 
-// --- Pre-join screen + in-meeting screen ---
+// ─── Pre-join screen + in-meeting screen ──────────────────────────────────────
 function StandaloneMeetingInner({ url, roomName, onLeave, onToast }) {
   const [hasJoined, setHasJoined] = useState(false);
   const [joinConfig, setJoinConfig] = useState({ name: '', micOn: true, videoOn: true });
@@ -64,7 +39,8 @@ function StandaloneMeetingInner({ url, roomName, onLeave, onToast }) {
   }
 
   return (
-    <div className="w-screen h-screen bg-[#F8FAFC] dark:bg-[#030712] overflow-hidden flex flex-col relative font-sans">
+    <div className="w-screen h-screen bg-white dark:bg-[#090E17] overflow-hidden flex flex-col relative">
+      {/* VideoRoom creates its own DailyProvider + callObject internally — do NOT wrap in another DailyProvider */}
       <VideoRoom
         roomUrl={url}
         userName={joinConfig.name}
@@ -79,30 +55,38 @@ function StandaloneMeetingInner({ url, roomName, onLeave, onToast }) {
   );
 }
 
-// --- Main StandaloneMeeting ---
+// ─── Main StandaloneMeeting ────────────────────────────────────────────────────
+// CRITICAL: All hooks MUST be called before any conditional returns (Rules of Hooks).
 export default function StandaloneMeeting() {
   const { roomId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
 
+  // All state declarations first — no hooks after early returns
   const [error, setError] = useState(null);
   const [meetingUrl, setMeetingUrl] = useState(null);
   const [roomName, setRoomName] = useState(null);
   const [scheduledData, setScheduledData] = useState(null);
   const [countdown, setCountdown] = useState('');
 
+  // Try to get current user if logged in, but allow anonymous guests
+  const authResult = useAuth();
+  const user = authResult?.user ?? null;
+
+  // Effect 1: Fetch room on mount — MUST be before any conditional returns
   useEffect(() => {
     if (!roomId) return;
     handleJoin();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
+  // Effect 1b: Change Favicon and Title
   useEffect(() => {
-    const oldHref = window.location.href;
+    document.title = "Orbit Meeting";
     const link = document.querySelector("link[rel~='icon']");
+    const oldHref = link ? link.href : null;
     if (link) {
-      link.href = '/orbit-logo.svg';
+      link.href = "/orbit-logo.svg";
     } else {
       const newLink = document.createElement('link');
       newLink.rel = 'icon';
@@ -115,6 +99,7 @@ export default function StandaloneMeeting() {
     };
   }, []);
 
+  // Effect 2: Countdown timer for scheduled meetings — MUST be before any conditional returns
   useEffect(() => {
     if (!scheduledData) return;
     const targetDate = new Date(scheduledData.scheduled_start_time).getTime();
@@ -142,8 +127,10 @@ export default function StandaloneMeeting() {
     }, 1000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scheduledData]);
 
+  // Effect 3: Document title and favicon
   useEffect(() => {
     document.title = roomName ? `${roomName} - Optavel Meet` : 'Joining Room - Optavel Meet';
     const link = document.querySelector("link[rel~='icon']");
@@ -152,11 +139,13 @@ export default function StandaloneMeeting() {
     }
   }, [roomName]);
 
+  // ── Async handler ────────────────────────────────────────────────────────────
   const handleJoin = async () => {
     try {
       let room = null;
       let lastError = null;
 
+      // Retry up to 5 times with 2s delay to handle Edge Function / DB replication lag
       for (let i = 0; i < 5; i++) {
         const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(roomId);
         let query = supabase.from('video_rooms').select('*');
@@ -174,10 +163,12 @@ export default function StandaloneMeeting() {
           break;
         }
 
+        // If there's a real DB error (not just "no rows"), capture it
         if (queryError && queryError.code !== 'PGRST116') {
           lastError = queryError;
         }
 
+        // Wait before retrying
         if (i < 4) {
           await new Promise((res) => setTimeout(res, 2000));
         }
@@ -191,6 +182,7 @@ export default function StandaloneMeeting() {
         );
       }
 
+      // If scheduled and start time is in the future
       if (room.status === 'scheduled' && room.scheduled_start_time) {
         const targetDate = new Date(room.scheduled_start_time).getTime();
         if (targetDate > new Date().getTime()) {
@@ -229,83 +221,58 @@ export default function StandaloneMeeting() {
     }
   };
 
+  // ── Conditional renders AFTER all hooks ──────────────────────────────────────
+
   if (error) {
     return (
-      <div className="w-screen h-screen flex flex-col items-center justify-center bg-[#F8FAFC] dark:bg-[#030712] relative overflow-hidden font-sans p-6">
-        <div className="absolute inset-0 pointer-events-none z-0">
-          <motion.div 
-            animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] rounded-full bg-gradient-to-br from-rose-500/10 to-orange-500/10 blur-[100px] mix-blend-multiply dark:mix-blend-screen" 
-          />
-        </div>
-        
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          className="relative z-10 w-full max-w-md bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-[2rem] shadow-2xl p-10 flex flex-col items-center text-center"
-        >
-          <div className="w-20 h-20 rounded-full bg-rose-100/50 dark:bg-rose-900/30 flex items-center justify-center mb-6 border border-rose-200 dark:border-rose-800/50 shadow-inner">
-            <AlertCircle className="w-10 h-10 text-rose-600 dark:text-rose-400" />
+      <div className="w-screen h-screen flex flex-col items-center justify-center bg-white dark:bg-[#090E17] p-4">
+        <div className="max-w-md w-full bg-slate-50 dark:bg-slate-900 border border-red-100 dark:border-red-500/20 rounded-2xl p-8 shadow-xl text-center space-y-6">
+          <div className="w-16 h-16 bg-red-50 dark:bg-red-500/10 rounded-full flex items-center justify-center mx-auto">
+            <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mb-3">Meeting Not Found</h1>
-          <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed font-medium">
-            {error}
-          </p>
-          <Button 
-            onClick={() => navigate('/')} 
-            className="w-full rounded-xl h-12 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 font-semibold transition-all shadow-md"
+          <div>
+            <h1 className="text-2xl font-medium text-slate-900 dark:text-white mb-2">Meeting Not Found</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{error}</p>
+          </div>
+          <button
+            onClick={() => navigate('/')}
+            className="w-full py-3 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition-colors"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
-          </Button>
-        </motion.div>
+          </button>
+        </div>
       </div>
     );
   }
 
   if (scheduledData) {
     return (
-      <div className="w-screen h-screen bg-[#F8FAFC] dark:bg-[#030712] flex flex-col items-center justify-center p-6 relative overflow-hidden font-sans">
-        <div className="absolute inset-0 pointer-events-none z-0">
-          <motion.div 
-            animate={{ scale: [1, 1.2, 1], rotate: [0, -90, 0] }}
-            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] rounded-full bg-gradient-to-br from-primary/10 to-teal-500/10 blur-[100px] mix-blend-multiply dark:mix-blend-screen" 
-          />
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          className="relative z-10 max-w-lg w-full bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-[2.5rem] p-10 shadow-2xl text-center space-y-8"
-        >
-          <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-teal-500/20 rounded-full flex items-center justify-center mx-auto shadow-inner border border-white/50 dark:border-white/5">
-            <Sparkles className="w-10 h-10 text-primary dark:text-teal-400 drop-shadow-md" />
+      <div className="w-screen h-screen bg-slate-50 dark:bg-[#090E17] flex flex-col items-center justify-center p-4">
+        <div className="max-w-lg w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-3xl p-10 shadow-2xl text-center space-y-8">
+          <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+            <Sparkles className="w-10 h-10 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">{scheduledData.title}</h1>
-            <p className="text-slate-500 dark:text-slate-400 font-medium text-lg">
+            <h1 className="text-3xl font-medium text-slate-900 dark:text-white mb-2">{scheduledData.title}</h1>
+            <p className="text-slate-500 text-lg">
               Scheduled for {new Date(scheduledData.scheduled_start_time).toLocaleString()}
             </p>
           </div>
-          
-          <div className="py-10 bg-white/50 dark:bg-black/30 rounded-3xl border border-white/60 dark:border-white/5 shadow-inner relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/5 dark:to-white/5 pointer-events-none" />
-            <p className="text-sm font-bold text-primary dark:text-teal-400 mb-3 uppercase tracking-widest drop-shadow-sm">Meeting starts in</p>
-            <div className="text-5xl font-extrabold text-slate-800 dark:text-white tabular-nums tracking-tighter drop-shadow-md">
+          <div className="py-8 bg-slate-50 dark:bg-black/50 rounded-2xl border border-slate-100 dark:border-white/5">
+            <p className="text-sm font-medium text-slate-400 mb-2 uppercase tracking-widest">Meeting starts in</p>
+            <div className="text-5xl font-light text-primary tabular-nums tracking-tight">
               {countdown || 'Loading...'}
             </div>
           </div>
-
-          <Button
+          <button
             onClick={() => navigate('/')}
-            variant="outline"
-            className="w-full h-14 rounded-xl border-white/50 dark:border-white/10 text-slate-700 dark:text-slate-300 font-bold hover:bg-white/80 dark:hover:bg-white/10 transition-colors backdrop-blur-md"
+            className="w-full py-3 rounded-xl border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
           >
             Back to Home
-          </Button>
-        </motion.div>
+          </button>
+        </div>
       </div>
     );
   }
