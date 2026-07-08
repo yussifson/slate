@@ -14,7 +14,7 @@ export default function StaffDashboard() {
   const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry || impersonatedCompany?.industry_type || user?.company_industry || 'law';
 
   switch (activeIndustry) {
-    case 'software':
+    case 'optavel':
       return <SoftwareDashboard />;
     case 'real_estate':
       return <RealEstateDashboard />;
