@@ -739,8 +739,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
       rawNavItems = rawNavItems.map(n => n.path === '/smart-docs' ? { ...n, label: "Smart Docs", icon: "Brain" } : n);
     }
 
-    // Inject Sites for all industries
-    if (!rawNavItems.some(n => n.path === '/sites')) {
+    // Inject Sites for all industries (Super Admins only)
+    if (isSuperAdmin && !rawNavItems.some(n => n.path === '/sites')) {
       rawNavItems.push({ label: "Sites", path: "/sites", icon: "Globe" });
     }
   }
