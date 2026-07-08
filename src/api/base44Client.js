@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { createClient } from '@supabase/supabase-js';
 import { SCHEMA_COLUMNS } from './schemaColumns';
 import { encryptText, decryptText } from '../lib/encryption';
 import { powerSync } from './PowerSyncConnector';
@@ -132,6 +133,19 @@ async function mirrorToSupabase(tableName, record, operation = 'upsert') {
     return;
 }
 
+// Secondary client for background admin operations without session interference
+const adminSupabase = createClient(
+    import.meta.env.VITE_SUPABASE_URL,
+    import.meta.env.VITE_SUPABASE_ANON_KEY,
+    {
+        auth: {
+            autoRefreshToken: false,
+            persistSession: false,
+            detectSessionInUrl: false
+        }
+    }
+);
+
 async function fetchFromSupabase(tableName, filter = {}, sort = []) {
     let query = supabase.from(tableName).select('*');
     for (const [key, value] of Object.entries(filter)) {
@@ -168,6 +182,14 @@ export const base44 = {
                 ? { data: { company_id, role: role || 'lawyer' } }
                 : {};
             const { data, error } = await supabase.auth.signUp({ email, password, options });
+            if (error) throw error;
+            return data;
+        },
+        adminRegister: async ({ email, password, company_id, role }) => {
+            const options = company_id
+                ? { data: { company_id, role: role || 'staff' } }
+                : {};
+            const { data, error } = await adminSupabase.auth.signUp({ email, password, options });
             if (error) throw error;
             return data;
         },

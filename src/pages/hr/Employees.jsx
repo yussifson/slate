@@ -183,7 +183,7 @@ export default function Employees() {
      let authUserId = null;
      if (createAccount) {
        try {
-         const reg = await base44.auth.register({
+         const reg = await base44.auth.adminRegister({
            email: formData.email,
            password: password,
            company_id: user?.company_id,

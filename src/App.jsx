@@ -561,10 +561,6 @@ function PlatformRoutes() {
       <Route path="/optavel/support" element={<OptavelSupport />} />
       <Route path="/optavel/partnerships" element={<OptavelPartnerships />} />
 
-      <Route path="/super-admin" element={<GlobalAnalyticsDashboard />} />
-      <Route path="/enterprise-admin" element={<EnterpriseDashboard />} />
-      <Route path="/feature-insider" element={<FeatureLab />} />
-      <Route path="/feature-vault" element={<FeatureVault />} />
       <Route path="/intelligence" element={<Intelligence />} />
       <Route path="/cases" element={<UnivProject />} />
       <Route path="/clients" element={<Clients />} />
@@ -1249,6 +1245,10 @@ function App() {
                               <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
                               <Route path="/admin/partners" element={<AdminPartners />} />
                               <Route path="/admin/feature-insider" element={<AdminFeatureInsider />} />
+                              <Route path="/super-admin" element={<GlobalAnalyticsDashboard />} />
+                              <Route path="/enterprise-admin" element={<EnterpriseDashboard />} />
+                              <Route path="/feature-insider" element={<FeatureLab />} />
+                              <Route path="/feature-vault" element={<FeatureVault />} />
                             </Route>
                             {PlatformRoutes()}
                           </Route>
