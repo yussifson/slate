@@ -161,7 +161,7 @@ export default function StaffRoster() {
             </div>
             <div>
               <label className="text-sm font-medium">Department</label>
-              <Input value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} placeholder="e.g. ER, ICU" />
+              <Input value={formData.ward_or_department} onChange={e => setFormData({...formData, ward_or_department: e.target.value})} placeholder="e.g. ER, ICU" />
             </div>
             <div>
               <label className="text-sm font-medium">Shift Type</label>
@@ -173,7 +173,7 @@ export default function StaffRoster() {
             </div>
             <div>
               <label className="text-sm font-medium">Date</label>
-              <Input type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
+              <Input type="date" value={formData.shift_date} onChange={e => setFormData({...formData, shift_date: e.target.value})} />
             </div>
             <div className="pt-4 flex justify-end space-x-2">
               <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>

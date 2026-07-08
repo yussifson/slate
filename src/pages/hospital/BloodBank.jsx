@@ -49,7 +49,7 @@ export default function BloodBank() {
   });
 
   const handleSave = () => {
-    if (!formData.donor_name) return toast.error('Please provide donor name');
+    if (!formData.blood_group || !formData.component_type) return toast.error('Please provide blood group and component type');
     createMutation.mutate(formData);
   };
 
