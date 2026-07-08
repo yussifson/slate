@@ -195,40 +195,50 @@ export default function OptavelProductEng() {
 
       {/* Kanban Board */}
       {tab === 'kanban' && (
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-6">
           {COLUMNS.map(col => {
             const colTasks = tasks.filter(t => t.status === col.id);
+            const colGradient = col.color === 'slate' ? 'from-slate-400 to-slate-500' : 
+                               col.color === 'blue' ? 'from-blue-400 to-blue-500' : 
+                               col.color === 'amber' ? 'from-amber-400 to-amber-500' : 
+                               'from-emerald-400 to-emerald-500';
             return (
               <div key={col.id}
-                className={`bg-muted/50 rounded-2xl border-2 transition-all min-h-[300px] ${dragOver === col.id ? 'border-blue-500/50 bg-blue-500/5' : 'border-border'}`}
+                className={`bg-card/30 backdrop-blur-md rounded-2xl border transition-all min-h-[400px] shadow-sm relative overflow-hidden flex flex-col ${dragOver === col.id ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-border/60 hover:border-border/80'}`}
                 onDragOver={e => { e.preventDefault(); setDragOver(col.id); }}
                 onDragLeave={() => setDragOver(null)}
                 onDrop={e => handleDrop(e, col.id)}>
-                <div className="p-4 border-b border-border flex items-center justify-between">
-                  <h3 className="font-bold text-foreground text-sm">{col.label}</h3>
-                  <span className="text-xs bg-muted/80 text-muted-foreground px-2 py-0.5 rounded-full">{colTasks.length}</span>
+                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colGradient}`} />
+                <div className="p-4 border-b border-border/50 flex items-center justify-between bg-card/40">
+                  <h3 className="font-bold text-foreground text-sm tracking-wide">{col.label}</h3>
+                  <span className="text-xs bg-background/80 backdrop-blur-sm text-foreground px-2.5 py-0.5 rounded-full font-semibold shadow-inner border border-border/50">{colTasks.length}</span>
                 </div>
-                <div className="p-3 space-y-2">
+                <div className="p-3 space-y-3 flex-1 overflow-y-auto">
                   {colTasks.map(task => (
                     <div key={task.id}
                       draggable
                       onDragStart={() => setDragging(task.id)}
                       onDragEnd={() => { setDragging(null); setDragOver(null); }}
-                      className="p-3 bg-muted hover:bg-muted/80 rounded-xl border border-border cursor-grab active:cursor-grabbing group transition-all">
+                      className="p-3.5 bg-card hover:bg-muted/60 rounded-xl border border-border/60 shadow-sm hover:shadow-md cursor-grab active:cursor-grabbing group transition-all relative overflow-hidden">
+                      <div className="absolute top-0 bottom-0 left-0 w-1 bg-primary/40 opacity-0 group-hover:opacity-100 transition-opacity" />
                       <div className="flex justify-between items-start">
-                        <p className="text-sm font-medium text-foreground flex-1 min-w-0 pr-2 leading-snug">{task.title}</p>
-                        <button onClick={() => deleteTask(task.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-400 transition-all shrink-0">
+                        <p className="text-sm font-semibold text-foreground flex-1 min-w-0 pr-2 leading-snug">{task.title}</p>
+                        <button onClick={() => deleteTask(task.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-400 transition-all shrink-0 bg-background/50 rounded-md p-1 backdrop-blur-sm">
                           <X className="w-3.5 h-3.5" />
                         </button>
                       </div>
-                      {task.description && <p className="text-xs text-muted-foreground mt-1 truncate">{task.description}</p>}
-                      <div className="flex items-center gap-2 mt-2">
-                        <span className={`text-xs font-semibold capitalize ${PRI_COLORS[task.priority] || 'text-muted-foreground'}`}>{task.priority}</span>
+                      {task.description && <p className="text-xs text-muted-foreground mt-2 line-clamp-2 leading-relaxed">{task.description}</p>}
+                      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/30">
+                        <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-md ${PRI_COLORS[task.priority] ? PRI_COLORS[task.priority].replace('text-', 'bg-').replace('-400', '-500/10 text-').concat('400') : 'bg-muted text-muted-foreground'}`}>
+                          {task.priority}
+                        </span>
                       </div>
                     </div>
                   ))}
                   {colTasks.length === 0 && (
-                    <div className="text-center py-8 text-slate-600 text-xs">Drop tasks here</div>
+                    <div className="h-full min-h-[100px] flex items-center justify-center border-2 border-dashed border-border/40 rounded-xl m-2 bg-muted/20">
+                      <span className="text-muted-foreground/60 text-xs font-medium">Drop tasks here</span>
+                    </div>
                   )}
                 </div>
               </div>

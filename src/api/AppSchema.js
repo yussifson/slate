@@ -6301,6 +6301,9 @@ export const AppSchema = new Schema({
         value: column.real,
         stage: column.text,
         probability: column.integer,
+        contact_email: column.text,
+        contact_phone: column.text,
+        notes: column.text,
         created_at: column.text,
         updated_at: column.text
     }),
@@ -6309,6 +6312,8 @@ export const AppSchema = new Schema({
         company_id: column.text,
         objective: column.text,
         key_result: column.text,
+        owner: column.text,
+        due_date: column.text,
         progress: column.real,
         status: column.text,
         created_at: column.text,
@@ -6318,7 +6323,9 @@ export const AppSchema = new Schema({
         id: column.text,
         company_id: column.text,
         title: column.text,
+        description: column.text,
         status: column.text,
+        decided_by: column.text,
         created_at: column.text,
         updated_at: column.text
     }),
@@ -6336,8 +6343,10 @@ export const AppSchema = new Schema({
         id: column.text,
         company_id: column.text,
         user_id: column.text,
+        shareholder_name: column.text,
         equity_percentage: column.real,
         shares: column.integer,
+        share_class: column.text,
         vesting_schedule: column.text,
         created_at: column.text,
         updated_at: column.text
@@ -6346,9 +6355,13 @@ export const AppSchema = new Schema({
         id: column.text,
         company_id: column.text,
         title: column.text,
+        channel: column.text,
         status: column.text,
         budget: column.real,
         spent: column.real,
+        goal: column.text,
+        start_date: column.text,
+        end_date: column.text,
         created_at: column.text,
         updated_at: column.text
     }),
@@ -6367,7 +6380,9 @@ export const AppSchema = new Schema({
         company_id: column.text,
         keyword: column.text,
         rank: column.integer,
+        previous_rank: column.integer,
         search_volume: column.integer,
+        url: column.text,
         created_at: column.text,
         updated_at: column.text
     }),
@@ -6384,6 +6399,7 @@ export const AppSchema = new Schema({
         id: column.text,
         company_id: column.text,
         title: column.text,
+        description: column.text,
         severity: column.text,
         status: column.text,
         product: column.text,
@@ -6395,6 +6411,7 @@ export const AppSchema = new Schema({
         id: column.text,
         company_id: column.text,
         title: column.text,
+        goal: column.text,
         status: column.text,
         start_date: column.text,
         end_date: column.text,
@@ -6409,6 +6426,7 @@ export const AppSchema = new Schema({
         status: column.text,
         priority: column.text,
         assignee_id: column.text,
+        sprint_id: column.text,
         created_at: column.text
     }),
     univ_task_comments: new Table({
@@ -6447,12 +6465,13 @@ export const AppSchema = new Schema({
     optavel_transactions: new Table({
         id: column.text,
         company_id: column.text,
-        amount: column.real,
         type: column.text,
+        amount: column.real,
         category: column.text,
         date: column.text,
         description: column.text,
-        created_at: column.text
+        created_at: column.text,
+        updated_at: column.text
     }),
     optavel_deal_activities: new Table({
         id: column.text,
