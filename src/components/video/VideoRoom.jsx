@@ -48,7 +48,37 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  const { theme, changeTheme } = useTheme();
  const [showEmojis, setShowEmojis] = useState(false);
  const [floatingEmojis, setFloatingEmojis] = useState([]);
- const EMOJIS = ['👍', '❤️', '👏', '😂', '🎉', '🔥'];
+  const EMOJIS = ['👍', '❤️', '👏', '😂', '🎉', '🔥'];
+  const [activeBg, setActiveBg] = useState('none');
+  const [isApplyingBg, setIsApplyingBg] = useState(false);
+
+  const applyVirtualBackground = async (bg) => {
+    if (!daily) return;
+    setIsApplyingBg(true);
+    setActiveBg(bg.id);
+    try {
+      if (bg.type === 'none') {
+        await daily.updateInputSettings({
+          video: { processor: { type: 'none' } }
+        });
+      } else if (bg.type === 'background-blur') {
+        await daily.updateInputSettings({
+          video: { processor: { type: 'background-blur', config: { strength: 0.5 } } }
+        });
+      } else {
+        await daily.updateInputSettings({
+          video: { processor: { type: 'background-image', config: { source: bg.url } } }
+        });
+      }
+      toast({ title: 'Background Applied', description: `Virtual background changed to ${bg.label}.` });
+    } catch (err) {
+      console.error(err);
+      toast({ title: 'Background Error', description: 'Failed to apply virtual background.', variant: 'destructive' });
+      setActiveBg('none');
+    } finally {
+      setIsApplyingBg(false);
+    }
+  };
 
   const addEmojiBurst = useCallback((emoji) => {
     const count = Math.floor(Math.random() * 4) + 4; // 4 to 7 emojis
@@ -86,23 +116,27 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
    setTimeout(() => setCopiedLink(false), 2000);
  };
 
- const handleInvite = async (e) => {
-   if (e) e.preventDefault();
-   if (!inviteEmail.trim()) return;
-   setIsInviteLoading(true);
-   try {
-     const { NotificationService } = await import('@/api/NotificationService');
-     await NotificationService.notifyMeetingInvite(roomUrl, inviteEmail.trim());
-     toast({ title: "Invite Sent", description: `Meeting invite securely sent to ${inviteEmail}.` });
-     setInviteEmail("");
-     setShowInvite(false);
-   } catch (error) {
-     console.error(error);
-     toast({ title: "Invite Failed", description: "Failed to send email invite via Novu.", variant: "destructive" });
-   } finally {
-     setIsInviteLoading(false);
-   }
- };
+  const handleInvite = async (e) => {
+    if (e) e.preventDefault();
+    if (!inviteEmail.trim()) return;
+    setIsInviteLoading(true);
+    try {
+      const { NotificationService } = await import('@/api/NotificationService');
+      await NotificationService.notifyMeetingInvite(roomUrl, inviteEmail.trim());
+      toast({ title: "Invite Sent", description: `Meeting invite securely sent to ${inviteEmail}.` });
+      setInviteEmail("");
+      setShowInvite(false);
+    } catch (error) {
+      console.warn("API invite failed, using mailto fallback:", error);
+      const subject = encodeURIComponent("You're invited to a video meeting on Orbit");
+      const body = encodeURIComponent(`Please join my video meeting using this secure link:\n\n${roomUrl}\n\nPowered by Orbit Intelligence.`);
+      window.location.href = `mailto:${inviteEmail.trim()}?subject=${subject}&body=${body}`;
+      toast({ title: "Opening Email Client", description: "Could not send via server. Opening your email app to send the invite." });
+      setShowInvite(false);
+    } finally {
+      setIsInviteLoading(false);
+    }
+  };
 
   useDailyEvent('joined-meeting', useCallback(() => {
    setJoined(true);
@@ -184,25 +218,25 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  return false;
 };
 
- const toggleAudio = async () => {
- if (!ensureJoined()) return;
- try {
- await daily.setLocalAudio(isMuted);
-} catch (err) {
- console.error(err);
- toast({ title: 'Microphone error', description: err?.message || 'Could not access microphone.', variant: 'destructive'});
-}
-};
+  const toggleAudio = async () => {
+    if (!ensureJoined()) return;
+    try {
+      await daily.setLocalAudio(!daily.localAudio());
+    } catch (err) {
+      console.error(err);
+      toast({ title: 'Microphone error', description: err?.message || 'Could not access microphone.', variant: 'destructive'});
+    }
+  };
 
- const toggleVideo = async () => {
- if (!ensureJoined()) return;
- try {
- await daily.setLocalVideo(isVideoOff);
-} catch (err) {
- console.error(err);
- toast({ title: 'Camera error', description: err?.message || 'Could not access camera.', variant: 'destructive'});
-}
-};
+  const toggleVideo = async () => {
+    if (!ensureJoined()) return;
+    try {
+      await daily.setLocalVideo(!daily.localVideo());
+    } catch (err) {
+      console.error(err);
+      toast({ title: 'Camera error', description: err?.message || 'Could not access camera.', variant: 'destructive'});
+    }
+  };
 
  const toggleScreenShare = async () => {
  if (!ensureJoined()) return;
@@ -737,6 +771,26 @@ const avatarColors = [
 ];
 const vectorAvatars = Array.from({ length: 10 }, (_, i) => `https://api.dicebear.com/7.x/micah/svg?seed=OptavelUser${i + 1}&backgroundColor=transparent`);
 
+const VIRTUAL_BACKGROUNDS = [
+  { id: 'none', label: 'None', type: 'none' },
+  { id: 'blur', label: 'Blur', type: 'background-blur' },
+  { id: 'bg1', label: 'Modern Office', type: 'background-image', url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg2', label: 'Minimalist Room', type: 'background-image', url: 'https://images.unsplash.com/photo-1600607688969-a5bfcd64bd2b?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg3', label: 'Cyberpunk City', type: 'background-image', url: 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg4', label: 'Orbit Space Station', type: 'background-image', url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg5', label: 'Luxury Library', type: 'background-image', url: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg6', label: 'Mountain Retreat', type: 'background-image', url: 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg7', label: 'Neon Glow', type: 'background-image', url: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg8', label: 'Abstract Fluid', type: 'background-image', url: 'https://images.unsplash.com/photo-1557672172-298e090bd0f1?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg9', label: 'Geometric Design', type: 'background-image', url: 'https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg10', label: 'Cozy Cafe', type: 'background-image', url: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg11', label: 'Tech Server Room', type: 'background-image', url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg12', label: 'Sunset Beach', type: 'background-image', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg13', label: 'Zen Garden', type: 'background-image', url: 'https://images.unsplash.com/photo-1596700140228-568eb90956b9?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg14', label: 'Skyscraper View', type: 'background-image', url: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg15', label: 'Deep Ocean', type: 'background-image', url: 'https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=600&auto=format&fit=crop' }
+];
+
 function ParticipantTile({ id, isLocal, className }) {
  const videoState = useVideoTrack(id);
  const audioState = useAudioTrack(id);
@@ -870,7 +924,22 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
 
    if (cancelled) return;
 
-   const callObject = DailyIframe.createCallObject();
+   const callObject = DailyIframe.createCallObject({
+    dailyConfig: {
+      experimentalGetUserMediaConstraintsModifier: (constraints) => {
+        if (constraints.audio) {
+          constraints.audio.noiseSuppression = true;
+          constraints.audio.echoCancellation = true;
+          constraints.audio.autoGainControl = true;
+        }
+        if (constraints.video) {
+          constraints.video.width = { ideal: 1280 };
+          constraints.video.height = { ideal: 720 };
+        }
+        return constraints;
+      }
+    }
+   });
    callRef.current = callObject;
 
    const joinOpts = { url: roomUrl, audioSource: initialAudio, videoSource: initialVideo };

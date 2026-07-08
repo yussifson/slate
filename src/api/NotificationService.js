@@ -78,6 +78,9 @@ export const NotificationService = {
   async notifyMeetingInvite(roomUrl, recipientEmail) {
     try {
       const apiKey = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_NOVU_API_KEY) || 'YOUR_NOVU_API_KEY';
+      if (apiKey === 'YOUR_NOVU_API_KEY') {
+        throw new Error('Novu API key not configured. Using fallback.');
+      }
       
       const response = await fetch('https://api.novu.co/v1/events/trigger', {
         method: 'POST',
