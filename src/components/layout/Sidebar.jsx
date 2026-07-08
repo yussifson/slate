@@ -772,8 +772,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     const p = item.path || '';
     if (item.isDynamic) return "Workspace";
     
-    // 1. Platform should ONLY have dashboard and intelligence (and now Sites)
-    if (['/', '/my-dashboard', '/intelligence', '/sites'].includes(p) || item.label === 'Dashboard' || item.label === 'My Dashboard') {
+    // 1. Platform should ONLY have dashboard and intelligence
+    if (['/', '/my-dashboard', '/intelligence'].includes(p) || item.label === 'Dashboard' || item.label === 'My Dashboard') {
       return "Platform";
     }
     
@@ -791,7 +791,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     }
     
     // 3. New Category for settings, admin, marketplace, etc.
-    if (['/settings', '/integrations', '/feature-insider', '/feature-vault', '/marketplace', '/firm-setup', '/super-admin', '/enterprise-admin', '/branch-manager', '/client-portal', '/slate/create'].includes(p) || p.startsWith('/admin')) {
+    if (['/settings', '/integrations', '/feature-insider', '/feature-vault', '/marketplace', '/firm-setup', '/super-admin', '/enterprise-admin', '/branch-manager', '/client-portal', '/slate/create', '/sites'].includes(p) || p.startsWith('/admin')) {
       return "System Administration";
     }
     
