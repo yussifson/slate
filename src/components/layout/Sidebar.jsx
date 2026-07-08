@@ -414,7 +414,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 }));
 
   // Inject Branch Manager
-  if (['admin', 'enterprise_admin', 'super_admin'].includes(user?.role)) {
+  if (isAdmin) {
     filteredCompanyNav = [...filteredCompanyNav, { label: "Branch Manager", path: "/branch-manager", icon: "Network" }];
   }
 
@@ -692,15 +692,14 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     if (isAdmin && !isSuperAdmin) {
       rawNavItems.push({ label: "Firm Setup", icon: "Settings", path: "/admin" });
     }
-    if (isSuperAdmin) {
-      rawNavItems.push({ label: "Global Admin", icon: "ShieldAlert", path: "/super-admin" });
-      rawNavItems.push({ label: "Enterprise Admin", icon: "Building2", path: "/enterprise-admin" });
-  } else if (user?.role === "enterprise_admin" || isAdmin) {
-      rawNavItems.push({ label: "Enterprise Admin", icon: "Building2", path: "/enterprise-admin" });
-  }
-
-    if (!rawNavItems.some(n => n.path === '/feature-insider')) {
-      rawNavItems.push({ label: "Feature Insider", path: "/feature-insider", icon: "FlaskConical" });
+    
+    if (isAdmin) {
+      if (!rawNavItems.some(n => n.path === '/enterprise-admin')) {
+        rawNavItems.push({ label: "Enterprise Admin", icon: "Building2", path: "/enterprise-admin" });
+      }
+      if (!rawNavItems.some(n => n.path === '/feature-insider')) {
+        rawNavItems.push({ label: "Feature Insider", path: "/feature-insider", icon: "FlaskConical" });
+      }
     }
   }
 

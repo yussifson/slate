@@ -19,7 +19,6 @@ import { VideoProvider } from '@/lib/VideoContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import EnterpriseDashboard from './pages/EnterpriseDashboard';
 import Intelligence from '@/pages/Intelligence';
-import GlobalAnalyticsDashboard from '@/pages/GlobalAnalyticsDashboard';
 // React imported at the top
 import { PowerSyncContext } from '@powersync/react';
 import { HelmetProvider } from 'react-helmet-async';
@@ -1245,7 +1244,6 @@ function App() {
                               <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
                               <Route path="/admin/partners" element={<AdminPartners />} />
                               <Route path="/admin/feature-insider" element={<AdminFeatureInsider />} />
-                              <Route path="/super-admin" element={<GlobalAnalyticsDashboard />} />
                               <Route path="/enterprise-admin" element={<EnterpriseDashboard />} />
                               <Route path="/feature-insider" element={<FeatureLab />} />
                               <Route path="/feature-vault" element={<FeatureVault />} />
