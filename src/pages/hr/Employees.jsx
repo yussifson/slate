@@ -139,8 +139,19 @@ export default function Employees() {
  setIsSubmitting(true);
  try {
    if (editTargetId) {
-     const emp = employees.find(e => e.id === editTargetId);
-     const payload = { ...formData, employeeId: emp.employeeId};
+      const emp = employees.find(e => e.id === editTargetId);
+      const payload = { 
+        name: formData.name,
+        department: formData.departmentId,
+        reports_to: formData.reportsTo,
+        role: formData.role,
+        email: formData.email,
+        phone: formData.phone,
+        salary: formData.salary,
+        start_date: formData.startDate,
+        employee_id: emp.employeeId,
+        updated_at: new Date().toISOString()
+      };
      
      
         const _k = Object.keys(payload);
@@ -185,7 +196,22 @@ export default function Employees() {
      }
      
      const newId = crypto.randomUUID();
-     const payload = { id: newId, company_id: user?.company_id, ...formData, role: finalRole, departmentId: finalDeptId, employeeId, user_id: authUserId || null, created_at: new Date().toISOString() };
+      const payload = { 
+        id: newId, 
+        company_id: user?.company_id, 
+        name: formData.name,
+        department: finalDeptId,
+        reports_to: formData.reportsTo,
+        role: finalRole,
+        email: formData.email,
+        phone: formData.phone,
+        salary: formData.salary,
+        start_date: formData.startDate,
+        employee_id: employeeId,
+        user_id: authUserId || null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
     
      const _k = Object.keys(payload);
      const _v = Object.values(payload);
