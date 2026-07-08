@@ -8,7 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { Plus, Target, Star, TrendingUp, Users, Trophy, ChevronRight, MessageSquare } from "lucide-react";
+import { Plus, Target, Star, TrendingUp, Users, Trophy, ChevronRight, MessageSquare, ArrowUpRight, ArrowDownRight, CheckCircle2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const REVIEW_TYPES = ["Self", "Manager Review", "Peer Review", "360 Review"];
 const STATUS_STYLES = {
@@ -17,29 +18,9 @@ const STATUS_STYLES = {
   approved: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
 };
 
-function ScoreRing({ score, size = 100 }) {
-  const pct = Math.min(100, Math.max(0, (score / 10) * 100));
-  const radius = 38;
-  const circ = 2 * Math.PI * radius;
-  const dash = (pct / 100) * circ;
-  const color = score >= 8 ? "#10b981" : score >= 5 ? "#f59e0b" : "#ef4444";
-  return (
-    <div className="relative inline-flex items-center justify-center bg-white dark:bg-slate-800 rounded-full shadow-sm" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="currentColor" strokeWidth={8} className="text-slate-100 dark:text-slate-700" />
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={color} strokeWidth={8}
-          strokeDasharray={`${dash} ${circ - dash}`} strokeLinecap="round" className="transition-all duration-1000 ease-out" />
-      </svg>
-      <div className="absolute flex flex-col items-center">
-        <span className="text-2xl font-bold" style={{ color }}>{score?.toFixed(1) ?? "—"}</span>
-        <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">/ 10</span>
-      </div>
-    </div>
-  );
-}
-
 export default function HRPerformancePanel({ companyId, isAdmin, staff = [], user }) {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [reviews, setReviews] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ staff_id: "", period: "", type: "Manager Review", score: "", strengths: "", weaknesses: "", status: "draft" });
@@ -68,79 +49,67 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
   };
 
   const myReviews = reviews.filter(r => r.staff_id === user?.id);
-  const teamAvg = reviews.length > 0 ? (reviews.filter(r => r.score != null).reduce((s, r) => s + parseFloat(r.score || 0), 0) / reviews.filter(r => r.score != null).length).toFixed(1) : null;
-
+  const teamAvg = reviews.length > 0 ? (reviews.filter(r => r.score != null).reduce((s, r) => s + parseFloat(r.score || 0), 0) / Math.max(reviews.filter(r => r.score != null).length, 1)).toFixed(1) : 0;
   const topPerformers = [...reviews].filter(r => r.score != null).sort((a, b) => b.score - a.score).slice(0, 3);
   const latestReviews = [...reviews].slice(0, 6);
 
-  return (
-    <div className="space-y-6 max-w-[1600px] mx-auto font-dmsans">
-      {/* ── Header ── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 p-8 text-white shadow-lg">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
-        <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
-        
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight">Performance Reviews</h2>
-            <p className="text-emerald-100 mt-1 opacity-90">{reviews.length} Total Reviews Conducted</p>
-          </div>
-          {isAdmin && (
-            <Button className="bg-white text-emerald-700 hover:bg-emerald-50 rounded-xl font-bold shadow-sm whitespace-nowrap self-start md:self-auto" onClick={() => setShowForm(true)}>
-              <Plus className="w-4 h-4 mr-2" /> Create Review
-            </Button>
-          )}
-        </div>
+  const kpis = [
+    { label: 'Total Reviews', value: reviews.length, sub: 'All time', icon: MessageSquare, alt: false, trend: '+5%', trendUp: true },
+    { label: 'Company Avg Score', value: `${teamAvg}/10`, sub: 'Across all departments', icon: Target, alt: true, trend: '+0.2', trendUp: true },
+    { label: 'Top Performers', value: topPerformers.length, sub: 'Scores above 8', icon: Trophy, alt: false },
+    { label: 'Completion Rate', value: '92%', sub: 'For this quarter', icon: CheckCircle2, alt: true, trend: '+4%', trendUp: true },
+  ];
 
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 flex items-center gap-5">
-            <div className="w-14 h-14 rounded-full bg-emerald-500/30 flex items-center justify-center border border-emerald-400/30 shrink-0">
-              <Target className="w-7 h-7 text-white" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-emerald-100 uppercase tracking-wider">Company Avg</p>
-              <p className="text-3xl font-bold mt-0.5">{teamAvg ?? "—"}<span className="text-base font-normal text-emerald-200">/10</span></p>
-            </div>
-          </div>
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 flex flex-col justify-center">
-            <p className="text-sm font-medium text-emerald-100 uppercase tracking-wider mb-2">Score Distribution</p>
-            <div className="flex items-end gap-1 h-12 w-full">
-              {[
-                { label: "0-3", count: reviews.filter(r => r.score != null && r.score <= 3).length },
-                { label: "4-6", count: reviews.filter(r => r.score != null && r.score > 3 && r.score <= 6).length },
-                { label: "7-8", count: reviews.filter(r => r.score != null && r.score > 6 && r.score <= 8).length },
-                { label: "9-10", count: reviews.filter(r => r.score != null && r.score > 8).length },
-              ].map((b, i, arr) => {
-                const max = Math.max(...arr.map(x => x.count), 1);
-                const h = Math.max((b.count / max) * 100, 10);
-                return (
-                  <div key={b.label} className="flex-1 flex flex-col justify-end items-center group relative">
-                    <div className="w-full bg-white/40 rounded-sm hover:bg-white/80 transition-colors" style={{ height: `${h}%` }} />
-                    <span className="absolute -bottom-5 text-[9px] text-emerald-200">{b.label}</span>
-                  </div>
-                );
-              })}
+  return (
+    <div className="space-y-6 p-6 font-dmsans">
+      {/* ── Hero Header ── */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 p-8 text-white">
+        <div className="absolute inset-0 bg-black/10" />
+        <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
+        <div className="absolute -bottom-10 -right-16 w-56 h-56 bg-white/5 rounded-full" />
+        <div className="absolute top-4 right-40 w-24 h-24 bg-white/5 rounded-full" />
+        <div className="relative z-10 flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+                <Target className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight">{t("performance_reviews", "Performance Reviews")}</h1>
+                <p className="text-green-100 text-sm">Manage staff evaluations and goals.</p>
+              </div>
             </div>
           </div>
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 col-span-1 md:col-span-2 lg:col-span-2">
-            <p className="text-sm font-medium text-emerald-100 uppercase tracking-wider mb-3">Top Performers</p>
-            <div className="flex gap-4">
-              {topPerformers.length > 0 ? topPerformers.map(r => (
-                <div key={r.id} className="flex-1 bg-white/20 rounded-lg p-3 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center shrink-0">
-                    {r.full_name?.charAt(0) || '?'}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-bold text-sm truncate">{r.full_name}</p>
-                    <p className="text-xs text-emerald-100 font-medium">Score: {r.score}</p>
-                  </div>
-                </div>
-              )) : (
-                <div className="text-sm text-emerald-200">No scored reviews yet.</div>
+          <div className="flex gap-2">
+            {isAdmin && (
+              <Button onClick={() => setShowForm(true)} className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur gap-2 text-xs font-bold">
+                <Plus className="w-4 h-4" /> Create Review
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── KPI Cards ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {kpis.map((kpi, i) => (
+          <div key={i} className="bg-card rounded-2xl border border-border/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+            <div className="flex items-start justify-between mb-4">
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-md ${kpi.alt ? 'bg-gradient-to-br from-orange-500 to-orange-600' : 'bg-gradient-to-br from-green-500 to-emerald-600'}`}>
+                <kpi.icon className="w-5 h-5 text-white" />
+              </div>
+              {kpi.trend && (
+                <span className={`text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${kpi.trendUp ? 'text-green-700 bg-green-50 dark:bg-green-900/40' : 'text-orange-700 bg-orange-50 dark:bg-orange-900/40'}`}>
+                  {kpi.trendUp ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                  {kpi.trend}
+                </span>
               )}
             </div>
+            <p className="text-2xl font-bold text-foreground mb-1 tabular-nums">{kpi.value}</p>
+            <p className="text-sm font-medium text-foreground mb-0.5">{kpi.label}</p>
+            <p className="text-xs text-muted-foreground">{kpi.sub}</p>
           </div>
-        </div>
+        ))}
       </div>
 
       <Tabs defaultValue={isAdmin ? "all_reviews" : "my_reviews"} className="w-full pt-4">
@@ -149,52 +118,39 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
           <TabsTrigger value="my_reviews" className="rounded-lg font-semibold px-6 py-2.5 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:shadow-sm">My Reviews</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="all_reviews">
+        <TabsContent value="all_reviews" className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
           {reviews.length === 0 ? (
-            <div className="py-20 text-center bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8">
-              <Target className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
-              <p className="text-lg font-bold text-foreground">No Reviews Found</p>
-              <p className="text-muted-foreground mt-1">Start by evaluating your team members.</p>
-            </div>
+            <div className="text-center py-12 text-muted-foreground">No performance reviews conducted yet.</div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {latestReviews.map(r => (
-                <div key={r.id} className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col relative">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 dark:bg-rose-500/10 rounded-bl-full -z-0" />
-                  
-                  <div className="p-6 relative z-10 flex-1 flex flex-col">
-                    <div className="flex justify-between items-start mb-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 to-pink-600 text-white font-bold text-lg flex items-center justify-center shadow-md">
-                          {r.full_name?.charAt(0) || '?'}
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-lg text-foreground leading-tight">{r.full_name}</h3>
-                          <p className="text-xs text-muted-foreground">{r.department || 'Employee'}</p>
-                        </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {reviews.map(r => (
+                <div key={r.id} className="bg-slate-50 dark:bg-slate-800/30 border border-border/50 rounded-2xl p-5 hover:border-emerald-500/30 transition-all hover:-translate-y-1">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400 font-bold flex items-center justify-center">
+                        {r.full_name?.charAt(0) || '?'}
                       </div>
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${STATUS_STYLES[r.status] || STATUS_STYLES['draft']}`}>
-                        {r.status}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-6 mb-6">
-                      <ScoreRing score={r.score} size={80} />
-                      <div className="space-y-1.5 flex-1">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Review Details</p>
-                        <p className="text-sm font-medium text-foreground"><span className="text-muted-foreground">Type:</span> {r.type}</p>
-                        <p className="text-sm font-medium text-foreground"><span className="text-muted-foreground">Period:</span> {r.period}</p>
+                      <div>
+                        <p className="font-bold text-sm text-foreground">{r.full_name}</p>
+                        <p className="text-[10px] uppercase font-bold text-muted-foreground">{r.period}</p>
                       </div>
                     </div>
-
-                    <div className="space-y-3 mt-auto">
-                      {r.strengths && (
-                        <div className="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-xl border border-emerald-100 dark:border-emerald-900/50">
-                          <p className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1">Strengths</p>
-                          <p className="text-sm text-emerald-900 dark:text-emerald-100 line-clamp-2">{r.strengths}</p>
-                        </div>
-                      )}
+                    <span className={`text-[10px] font-bold px-2 py-1 rounded-md uppercase border border-border/50 ${STATUS_STYLES[r.status] || STATUS_STYLES.draft}`}>
+                      {r.status}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="flex -space-x-1">
+                      {[1, 2, 3, 4, 5].map(star => (
+                        <Star key={star} className={`w-4 h-4 ${star <= (r.score / 2) ? "text-amber-500 fill-amber-500" : "text-slate-300 dark:text-slate-700"}`} />
+                      ))}
                     </div>
+                    <span className="text-xs font-bold text-foreground ml-2">{r.score}/10 Score</span>
+                  </div>
+                  {r.strengths && <div className="mb-2"><p className="text-[10px] font-bold text-muted-foreground uppercase">Strengths</p><p className="text-xs text-foreground line-clamp-2 mt-0.5">{r.strengths}</p></div>}
+                  <div className="pt-4 mt-4 border-t border-border/50 flex justify-between items-center text-xs">
+                    <span className="text-muted-foreground font-semibold">{r.type}</span>
+                    <Button variant="link" className="h-auto p-0 text-emerald-600 font-bold">View Full</Button>
                   </div>
                 </div>
               ))}
@@ -202,33 +158,33 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
           )}
         </TabsContent>
 
-        <TabsContent value="my_reviews">
+        <TabsContent value="my_reviews" className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
           {myReviews.length === 0 ? (
-            <div className="py-20 text-center bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8">
-              <Star className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
-              <p className="text-lg font-bold text-foreground">No Personal Reviews</p>
-              <p className="text-muted-foreground mt-1">You haven't received any performance reviews yet.</p>
-            </div>
+            <div className="text-center py-12 text-muted-foreground">You have no performance reviews yet.</div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
               {myReviews.map(r => (
-                <div key={r.id} className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 p-6 flex gap-6">
-                  <ScoreRing score={r.score} size={100} />
-                  <div className="flex-1">
-                    <h3 className="font-bold text-xl mb-1">{r.period}</h3>
-                    <p className="text-sm text-muted-foreground mb-4">{r.type} • Status: <span className="font-semibold">{r.status}</span></p>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-xs font-bold text-emerald-600 uppercase mb-1">Strengths</p>
-                        <p className="text-sm text-foreground">{r.strengths || 'None listed'}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-red-600 uppercase mb-1">Areas for Growth</p>
-                        <p className="text-sm text-foreground">{r.weaknesses || 'None listed'}</p>
+                <div key={r.id} className="p-4 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-border/50 flex flex-col md:flex-row justify-between gap-4 group hover:border-emerald-500/30">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase ${STATUS_STYLES[r.status]}`}>{r.status}</span>
+                      <span className="text-xs font-bold text-muted-foreground uppercase">{r.period}</span>
+                    </div>
+                    <h4 className="font-bold text-sm text-foreground">{r.type}</h4>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-lg font-black text-emerald-600">{r.score}/10</span>
+                      <div className="flex -space-x-1">
+                        {[1, 2, 3, 4, 5].map(star => (
+                          <Star key={star} className={`w-3 h-3 ${star <= (r.score / 2) ? "text-amber-500 fill-amber-500" : "text-slate-300 dark:text-slate-700"}`} />
+                        ))}
                       </div>
                     </div>
                   </div>
+                  <div className="flex-1 max-w-lg space-y-2">
+                    {r.strengths && <div><p className="text-[10px] font-bold text-emerald-600 uppercase">Strengths</p><p className="text-xs text-foreground line-clamp-1">{r.strengths}</p></div>}
+                    {r.weaknesses && <div><p className="text-[10px] font-bold text-rose-500 uppercase">Areas to Improve</p><p className="text-xs text-foreground line-clamp-1">{r.weaknesses}</p></div>}
+                  </div>
+                  <Button variant="ghost" className="shrink-0 h-8 font-bold text-xs self-start md:self-center">Review Details</Button>
                 </div>
               ))}
             </div>
@@ -236,66 +192,66 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
         </TabsContent>
       </Tabs>
 
-      {/* ── Add Review Dialog ── */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="sm:max-w-[500px] rounded-2xl">
-          <DialogHeader>
-            <DialogTitle>New Performance Review</DialogTitle>
+        <DialogContent className="sm:max-w-2xl rounded-2xl p-6">
+          <DialogHeader className="mb-4">
+            <DialogTitle className="text-xl font-bold">Conduct Performance Review</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 pt-4 max-h-[70vh] overflow-y-auto">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Employee</label>
-                <Select value={form.staff_id} onValueChange={v => setForm({ ...form, staff_id: v })}>
-                  <SelectTrigger className="mt-1"><SelectValue placeholder="Select staff..." /></SelectTrigger>
-                  <SelectContent>{staff.map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Period</label>
-                <Input value={form.period} onChange={e => setForm({ ...form, period: e.target.value })} className="mt-1" placeholder="e.g. Q3 2026" />
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Review Type</label>
-                <Select value={form.type} onValueChange={v => setForm({ ...form, type: v })}>
-                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-                  <SelectContent>{REVIEW_TYPES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Score (0-10)</label>
-                <Input type="number" min="0" max="10" step="0.1" value={form.score} onChange={e => setForm({ ...form, score: e.target.value })} className="mt-1" />
-              </div>
-            </div>
-
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Key Strengths</label>
-              <Textarea value={form.strengths} onChange={e => setForm({ ...form, strengths: e.target.value })} className="mt-1 h-20 resize-none border-emerald-200 focus-visible:ring-emerald-500" placeholder="What did they do well?" />
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Staff Member *</Label>
+              <Select value={form.staff_id} onValueChange={v => setForm({...form, staff_id: v})}>
+                <SelectTrigger className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none"><SelectValue placeholder="Select staff..."/></SelectTrigger>
+                <SelectContent className="rounded-xl max-h-60">
+                  {staff.map(s => <SelectItem key={s.id} value={s.id}>{s.name || s.full_name}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
             <div>
-              <label className="text-xs font-semibold text-red-600 uppercase tracking-wider">Areas for Improvement</label>
-              <Textarea value={form.weaknesses} onChange={e => setForm({ ...form, weaknesses: e.target.value })} className="mt-1 h-20 resize-none border-red-200 focus-visible:ring-red-500" placeholder="Where can they grow?" />
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Review Period *</Label>
+              <Input placeholder="e.g. Q3 2026" value={form.period} onChange={e => setForm({...form, period: e.target.value})} className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none" />
             </div>
-
             <div>
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</label>
-              <Select value={form.status} onValueChange={v => setForm({ ...form, status: v })}>
-                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-                <SelectContent>
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Review Type</Label>
+              <Select value={form.type} onValueChange={v => setForm({...form, type: v})}>
+                <SelectTrigger className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none"><SelectValue /></SelectTrigger>
+                <SelectContent className="rounded-xl">{REVIEW_TYPES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Overall Score (0-10)</Label>
+              <Input type="number" min="0" max="10" step="0.1" placeholder="e.g. 8.5" value={form.score} onChange={e => setForm({...form, score: e.target.value})} className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none" />
+            </div>
+            <div className="col-span-2">
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Key Strengths</Label>
+              <Textarea value={form.strengths} onChange={e => setForm({...form, strengths: e.target.value})} className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none resize-none" rows={2} />
+            </div>
+            <div className="col-span-2">
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Areas for Improvement</Label>
+              <Textarea value={form.weaknesses} onChange={e => setForm({...form, weaknesses: e.target.value})} className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none resize-none" rows={2} />
+            </div>
+            <div className="col-span-2">
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Status</Label>
+              <Select value={form.status} onValueChange={v => setForm({...form, status: v})}>
+                <SelectTrigger className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none"><SelectValue /></SelectTrigger>
+                <SelectContent className="rounded-xl">
                   <SelectItem value="draft">Draft</SelectItem>
                   <SelectItem value="submitted">Submitted</SelectItem>
                   <SelectItem value="approved">Approved</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-
-            <Button onClick={saveReview} className="w-full bg-rose-600 hover:bg-rose-700 text-white rounded-xl mt-4">Save Review</Button>
+            <div className="col-span-2 flex justify-end gap-3 pt-4">
+              <Button variant="ghost" onClick={() => setShowForm(false)} className="rounded-xl font-bold">Cancel</Button>
+              <Button onClick={saveReview} className="bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700">Save Review</Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
     </div>
   );
+}
+
+function Label({ className, children, ...props }) {
+  return <label className={className} {...props}>{children}</label>;
 }

@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { MapPin, CheckCircle2, XCircle, AlertTriangle, Users, LogIn, LogOut, Timer, Map, CalendarClock, Target } from "lucide-react";
+import { MapPin, CheckCircle2, XCircle, AlertTriangle, Users, LogIn, LogOut, Timer, CalendarClock, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 function avatarInitials(name) {
@@ -44,6 +45,7 @@ function StatusBadge({ status }) {
 export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const today = new Date().toISOString().split("T")[0];
 
   const [todayRecords, setTodayRecords] = useState([]);
@@ -73,7 +75,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
     if (!companyId) return;
     try {
       const res = await powerSync.execute(
-        "SELECT a.*, s.name as full_name FROM hr_attendance a LEFT JOIN univ_hr_employees s ON a.staff_id = s.id WHERE a.company_id = ? ORDER BY a.date DESC, a.clock_in DESC LIMIT 200",
+        "SELECT a.*, s.name as full_name FROM hr_attendance a LEFT JOIN univ_hr_employees s ON a.staff_id = s.id WHERE a.company_id = ? ORDER BY a.date DESC, a.clock_in DESC",
         [companyId]
       );
       setHistoryRecords(res.rows?._array || []);
@@ -154,214 +156,201 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
     return true;
   });
 
+  const kpis = [
+    { label: 'Total Staff', value: staff.length, sub: 'Active roster', icon: Users, alt: false, trend: '', trendUp: true },
+    { label: 'Present Today', value: totalPresent, sub: 'Checked in on time', icon: CheckCircle2, alt: true, trend: `${Math.round((totalPresent/Math.max(1, staff.length))*100)}%`, trendUp: true },
+    { label: 'Late Today', value: totalLate, sub: 'Checked in after 9 AM', icon: AlertTriangle, alt: false, trend: totalLate > 0 ? `${totalLate} late` : 'On track', trendUp: totalLate === 0 },
+    { label: 'Absent Today', value: totalAbsent, sub: 'Not checked in', icon: XCircle, alt: true },
+  ];
+
   return (
-    <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-slate-900/50 h-[calc(100vh-4rem)] p-4 lg:p-8 font-dmsans flex flex-col">
-      <div className="max-w-[1600px] w-full mx-auto flex flex-col h-full space-y-6">
-        
-        {/* ── Header ── */}
-        <div className="flex items-center justify-between flex-wrap gap-4 shrink-0">
+    <div className="space-y-6 p-6 font-dmsans">
+      {/* ── Hero Header ── */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 p-8 text-white">
+        <div className="absolute inset-0 bg-black/10" />
+        <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
+        <div className="absolute -bottom-10 -right-16 w-56 h-56 bg-white/5 rounded-full" />
+        <div className="absolute top-4 right-40 w-24 h-24 bg-white/5 rounded-full" />
+        <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-              <CalendarClock className="w-6 h-6 text-primary" /> Time & Attendance
-            </h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Manage daily check-ins, remote tracking, and attendance history.</p>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+                <CalendarClock className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight">{t("time_and_attendance", "Time & Attendance")}</h1>
+                <p className="text-green-100 text-sm">Manage daily check-ins and remote tracking.</p>
+              </div>
+            </div>
           </div>
-          
-          {/* My Action Button */}
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             {!myRecord ? (
-              <Button onClick={clockIn} disabled={clockingIn} className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-sm gap-2 font-bold px-6 h-10">
+              <Button onClick={clockIn} disabled={clockingIn} className="bg-white text-green-700 hover:bg-green-50 rounded-xl shadow-sm gap-2 font-bold px-6 h-10">
                 <LogIn className="w-4 h-4" /> {clockingIn ? gpsStatus || "Processing..." : "Clock In"}
               </Button>
             ) : !myRecord.clock_out ? (
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm font-bold text-muted-foreground border-[0.5px] border-black/9 dark:border-white/8">
-                  <Timer className="w-4 h-4 text-emerald-500" />
+                <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur rounded-xl text-sm font-bold text-white border border-white/20">
+                  <Timer className="w-4 h-4" />
                   Clocked in at {formatTime(myRecord.clock_in)}
                 </div>
-                <Button onClick={clockOut} className="bg-slate-800 hover:bg-slate-900 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl shadow-sm gap-2 font-bold px-6 h-10">
+                <Button onClick={clockOut} className="bg-white text-green-700 hover:bg-green-50 rounded-xl shadow-sm gap-2 font-bold px-6 h-10">
                   <LogOut className="w-4 h-4" /> Clock Out
                 </Button>
               </div>
             ) : (
-              <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-xl text-sm font-bold border border-emerald-100 dark:border-emerald-800 shadow-sm">
+              <div className="flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur text-white rounded-xl text-sm font-bold border border-white/20 shadow-sm">
                 <CheckCircle2 className="w-4 h-4" /> Shift Completed
               </div>
             )}
           </div>
         </div>
+      </div>
 
-        {/* ── Stats Summary ── */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 shrink-0">
-          <div className="bg-white dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-6 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
-            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
-              <Users className="w-6 h-6 text-primary" />
+      {/* ── KPI Cards ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {kpis.map((kpi, i) => (
+          <div key={i} className="bg-card rounded-2xl border border-border/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+            <div className="flex items-start justify-between mb-4">
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-md ${kpi.alt ? 'bg-gradient-to-br from-orange-500 to-orange-600' : 'bg-gradient-to-br from-green-500 to-emerald-600'}`}>
+                <kpi.icon className="w-5 h-5 text-white" />
+              </div>
+              {kpi.trend && (
+                <span className={`text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${kpi.trendUp ? 'text-green-700 bg-green-50 dark:bg-green-900/40' : 'text-orange-700 bg-orange-50 dark:bg-orange-900/40'}`}>
+                  {kpi.trendUp ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                  {kpi.trend}
+                </span>
+              )}
             </div>
-            <div>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Total Staff</p>
-              <p className="text-3xl font-black text-foreground mt-0.5">{staff.length}</p>
-            </div>
+            <p className="text-2xl font-bold text-foreground mb-1 tabular-nums">{kpi.value}</p>
+            <p className="text-sm font-medium text-foreground mb-0.5">{kpi.label}</p>
+            <p className={`text-xs ${(!kpi.trendUp && kpi.icon === AlertTriangle) ? 'text-orange-500' : 'text-muted-foreground'}`}>{kpi.sub}</p>
           </div>
-          <div className="bg-white dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-6 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center border border-emerald-100 dark:border-emerald-800/50 shrink-0">
-              <CheckCircle2 className="w-6 h-6 text-emerald-500" />
-            </div>
-            <div>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Present</p>
-              <p className="text-3xl font-black text-foreground mt-0.5">{totalPresent}</p>
-            </div>
-          </div>
-          <div className="bg-white dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-6 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
-            <div className="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center border border-amber-100 dark:border-amber-800/50 shrink-0">
-              <AlertTriangle className="w-6 h-6 text-amber-500" />
-            </div>
-            <div>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Late</p>
-              <p className="text-3xl font-black text-foreground mt-0.5">{totalLate}</p>
-            </div>
-          </div>
-          <div className="bg-white dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-6 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
-            <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-900/20 flex items-center justify-center border border-rose-100 dark:border-rose-800/50 shrink-0">
-              <XCircle className="w-6 h-6 text-rose-500" />
-            </div>
-            <div>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Absent</p>
-              <p className="text-3xl font-black text-foreground mt-0.5">{totalAbsent}</p>
-            </div>
-          </div>
-        </div>
+        ))}
+      </div>
 
-        {/* ── Main Content ── */}
-        <div className="flex-1 min-h-0 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border-[0.5px] border-black/9 dark:border-white/8 flex flex-col overflow-hidden">
-          <Tabs defaultValue="today" className="flex-1 flex flex-col min-h-0">
-            <div className="px-6 pt-4 border-b border-border/50 shrink-0 flex items-center justify-between">
-              <TabsList className="bg-slate-100/50 dark:bg-slate-800/50 p-1 rounded-xl h-auto flex gap-1">
-                <TabsTrigger value="today" className="rounded-lg px-6 py-2 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-primary data-[state=active]:shadow-sm">Today's Board</TabsTrigger>
-                <TabsTrigger value="history" className="rounded-lg px-6 py-2 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-primary data-[state=active]:shadow-sm">Attendance History</TabsTrigger>
-              </TabsList>
-            </div>
+      <Tabs defaultValue="today" className="w-full pt-4">
+        <TabsList className="bg-muted p-1 rounded-xl mb-6 inline-flex">
+          <TabsTrigger value="today" className="rounded-lg font-semibold px-6 py-2.5 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:shadow-sm">Today's Board</TabsTrigger>
+          <TabsTrigger value="history" className="rounded-lg font-semibold px-6 py-2.5 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:shadow-sm">Attendance History</TabsTrigger>
+        </TabsList>
 
-            <TabsContent value="today" className="flex-1 overflow-y-auto custom-scrollbar p-6 m-0 outline-none bg-slate-50/30 dark:bg-slate-950/30">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                {boardData.map(s => (
-                  <div key={s.id} className="bg-white dark:bg-slate-900 border border-border/50 rounded-2xl p-5 flex flex-col shadow-sm hover:shadow-md hover:-translate-y-1 transition-all group relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-primary/5 to-transparent rounded-bl-full pointer-events-none" />
-                    
-                    <div className="flex justify-between items-start mb-4 relative z-10">
-                      <div className="flex gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center font-bold text-foreground shadow-inner shrink-0">
-                          {avatarInitials(s.name || s.full_name)}
-                        </div>
-                        <div>
-                          <p className="font-bold text-foreground leading-tight">{s.name || s.full_name}</p>
-                          <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider mt-0.5">{s.role || "Staff"}</p>
-                        </div>
-                      </div>
+        <TabsContent value="today" className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {boardData.map(s => (
+              <div key={s.id} className="bg-slate-50 dark:bg-slate-800/30 border border-border/50 rounded-2xl p-5 flex flex-col hover:border-emerald-500/30 hover:-translate-y-1 transition-all group relative overflow-hidden">
+                <div className="flex justify-between items-start mb-4 relative z-10">
+                  <div className="flex gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 flex items-center justify-center font-bold text-foreground shadow-sm border border-border/50 shrink-0">
+                      {avatarInitials(s.name || s.full_name)}
+                    </div>
+                    <div>
+                      <p className="font-bold text-foreground text-sm leading-tight">{s.name || s.full_name}</p>
+                      <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider mt-0.5">{s.role || "Staff"}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {s.record ? (
+                  <div className="space-y-3 mt-auto relative z-10">
+                    <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-2 rounded-lg border border-border/50">
+                      <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5"><LogIn className="w-3.5 h-3.5"/> In</span>
+                      <span className="text-xs font-bold text-foreground">{formatTime(s.record.clock_in)}</span>
+                    </div>
+                    <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-2 rounded-lg border border-border/50">
+                      <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5"><LogOut className="w-3.5 h-3.5"/> Out</span>
+                      <span className="text-xs font-bold text-foreground">{formatTime(s.record.clock_out)}</span>
                     </div>
                     
-                    {s.record ? (
-                      <div className="space-y-3 mt-auto relative z-10">
-                        <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg border border-border/50">
-                          <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5"><LogIn className="w-3.5 h-3.5"/> In</span>
-                          <span className="text-xs font-bold text-foreground">{formatTime(s.record.clock_in)}</span>
-                        </div>
-                        <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg border border-border/50">
-                          <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5"><LogOut className="w-3.5 h-3.5"/> Out</span>
-                          <span className="text-xs font-bold text-foreground">{formatTime(s.record.clock_out)}</span>
-                        </div>
-                        
-                        <div className="flex justify-between items-center pt-2">
-                          <StatusBadge status={s.record.status} />
-                          {s.record.location_lat && (
-                            <span className="flex items-center gap-1 text-[10px] font-bold text-primary bg-primary/10 px-2 py-1 rounded-full" title="GPS Verified">
-                              <MapPin className="w-3 h-3" /> GPS
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="mt-auto pt-6 pb-2 text-center relative z-10">
-                        <StatusBadge status="absent" />
-                        <p className="text-xs text-muted-foreground mt-3 font-medium">No check-in recorded yet.</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="history" className="flex-1 flex flex-col min-h-0 p-0 m-0 outline-none">
-              <div className="p-4 border-b border-border/50 flex flex-wrap gap-4 bg-slate-50/50 dark:bg-slate-900/50">
-                <Select value={historyFilter.status} onValueChange={v => setHistoryFilter({...historyFilter, status: v})}>
-                  <SelectTrigger className="w-[180px] bg-white dark:bg-slate-900 rounded-xl border-border/50 font-semibold"><SelectValue placeholder="All Status" /></SelectTrigger>
-                  <SelectContent className="rounded-xl">
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="present">Present</SelectItem>
-                    <SelectItem value="late">Late</SelectItem>
-                    <SelectItem value="absent">Absent</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={historyFilter.staff_id} onValueChange={v => setHistoryFilter({...historyFilter, staff_id: v})}>
-                  <SelectTrigger className="w-[200px] bg-white dark:bg-slate-900 rounded-xl border-border/50 font-semibold"><SelectValue placeholder="All Staff" /></SelectTrigger>
-                  <SelectContent className="rounded-xl max-h-60">
-                    <SelectItem value="all">All Staff</SelectItem>
-                    {staff.map(s => <SelectItem key={s.id} value={s.id}>{s.name || s.full_name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-                <Input type="date" value={historyFilter.date} onChange={e => setHistoryFilter({...historyFilter, date: e.target.value})} className="w-[160px] bg-white dark:bg-slate-900 rounded-xl border-border/50 font-semibold" />
-                <Button variant="ghost" onClick={() => setHistoryFilter({status:"all", staff_id:"all", date:""})} className="rounded-xl font-bold">Clear Filters</Button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-slate-50/30 dark:bg-slate-950/30">
-                {filteredHistory.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Target className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
-                    <p className="text-muted-foreground font-medium">No history records match your filters.</p>
+                    <div className="flex justify-between items-center pt-2">
+                      <StatusBadge status={s.record.status} />
+                      {s.record.location_lat && (
+                        <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-full border border-emerald-100 dark:border-emerald-800" title="GPS Verified">
+                          <MapPin className="w-3 h-3" /> GPS
+                        </span>
+                      )}
+                    </div>
                   </div>
                 ) : (
-                  <div className="bg-white dark:bg-slate-900 rounded-xl border border-border/50 overflow-hidden shadow-sm">
-                    <table className="w-full text-left text-sm">
-                      <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-border/50">
-                        <tr>
-                          <th className="p-4 font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Date</th>
-                          <th className="p-4 font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Staff</th>
-                          <th className="p-4 font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Clock In</th>
-                          <th className="p-4 font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Clock Out</th>
-                          <th className="p-4 font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Hours</th>
-                          <th className="p-4 font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-border/50">
-                        {filteredHistory.map(r => {
-                          const sname = r.full_name || staff.find(st => st.id === r.staff_id)?.name || "Unknown";
-                          return (
-                            <tr key={r.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                              <td className="p-4 font-semibold text-foreground">{r.date}</td>
-                              <td className="p-4">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-xs">
-                                    {avatarInitials(sname)}
-                                  </div>
-                                  <span className="font-bold text-foreground">{sname}</span>
-                                </div>
-                              </td>
-                              <td className="p-4 font-medium text-foreground">{formatTime(r.clock_in)}</td>
-                              <td className="p-4 font-medium text-foreground">{formatTime(r.clock_out)}</td>
-                              <td className="p-4 font-bold text-foreground">{hoursWorked(r.clock_in, r.clock_out) || "—"}</td>
-                              <td className="p-4"><StatusBadge status={r.status} /></td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                  <div className="mt-auto pt-6 pb-2 text-center relative z-10">
+                    <StatusBadge status="absent" />
+                    <p className="text-xs text-muted-foreground mt-3 font-medium">No check-in recorded yet.</p>
                   </div>
                 )}
               </div>
-            </TabsContent>
-          </Tabs>
-        </div>
+            ))}
+          </div>
+        </TabsContent>
 
-      </div>
+        <TabsContent value="history" className="bg-card border border-border/50 rounded-2xl p-0 shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-border/50 flex flex-wrap gap-4 bg-slate-50/50 dark:bg-slate-800/30">
+            <Select value={historyFilter.status} onValueChange={v => setHistoryFilter({...historyFilter, status: v})}>
+              <SelectTrigger className="w-[180px] bg-white dark:bg-slate-900 rounded-xl border-border/50 font-semibold"><SelectValue placeholder="All Status" /></SelectTrigger>
+              <SelectContent className="rounded-xl">
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="present">Present</SelectItem>
+                <SelectItem value="late">Late</SelectItem>
+                <SelectItem value="absent">Absent</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={historyFilter.staff_id} onValueChange={v => setHistoryFilter({...historyFilter, staff_id: v})}>
+              <SelectTrigger className="w-[200px] bg-white dark:bg-slate-900 rounded-xl border-border/50 font-semibold"><SelectValue placeholder="All Staff" /></SelectTrigger>
+              <SelectContent className="rounded-xl max-h-60">
+                <SelectItem value="all">All Staff</SelectItem>
+                {staff.map(s => <SelectItem key={s.id} value={s.id}>{s.name || s.full_name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Input type="date" value={historyFilter.date} onChange={e => setHistoryFilter({...historyFilter, date: e.target.value})} className="w-[160px] bg-white dark:bg-slate-900 rounded-xl border-border/50 font-semibold" />
+            <Button variant="ghost" onClick={() => setHistoryFilter({status:"all", staff_id:"all", date:""})} className="rounded-xl font-bold">Clear Filters</Button>
+          </div>
+
+          <div className="p-6">
+            {filteredHistory.length === 0 ? (
+              <div className="text-center py-12">
+                <CalendarClock className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+                <p className="text-muted-foreground font-medium">No history records match your filters.</p>
+              </div>
+            ) : (
+              <div className="bg-white dark:bg-slate-900 rounded-xl border border-border/50 overflow-hidden shadow-sm">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-border/50">
+                    <tr>
+                      <th className="p-4 font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Date</th>
+                      <th className="p-4 font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Staff</th>
+                      <th className="p-4 font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Clock In</th>
+                      <th className="p-4 font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Clock Out</th>
+                      <th className="p-4 font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Hours</th>
+                      <th className="p-4 font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/50">
+                    {filteredHistory.map(r => {
+                      const sname = r.full_name || staff.find(st => st.id === r.staff_id)?.name || "Unknown";
+                      return (
+                        <tr key={r.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                          <td className="p-4 font-semibold text-foreground">{r.date}</td>
+                          <td className="p-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-xs">
+                                {avatarInitials(sname)}
+                              </div>
+                              <span className="font-bold text-foreground">{sname}</span>
+                            </div>
+                          </td>
+                          <td className="p-4 font-medium text-foreground">{formatTime(r.clock_in)}</td>
+                          <td className="p-4 font-medium text-foreground">{formatTime(r.clock_out)}</td>
+                          <td className="p-4 font-bold text-foreground">{hoursWorked(r.clock_in, r.clock_out) || "—"}</td>
+                          <td className="p-4"><StatusBadge status={r.status} /></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
