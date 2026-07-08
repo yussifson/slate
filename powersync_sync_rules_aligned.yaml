@@ -17,6 +17,21 @@ bucket_definitions:
     parameters:
       - SELECT company_id FROM profiles WHERE id = request.user_id() AND role != 'client' AND role != 'student' AND role != 'patient' AND role != 'customer' AND role != 'policyholder' AND role != 'tenant' AND role != 'landlord' AND role != 'learner' AND role != 'employee'
     data:
+      - SELECT * FROM optavel_employees WHERE company_id = bucket.company_id
+      - SELECT * FROM optavel_leave_requests WHERE company_id = bucket.company_id
+      - SELECT * FROM optavel_support_tickets WHERE company_id = bucket.company_id
+      - SELECT * FROM optavel_nps_responses WHERE company_id = bucket.company_id
+      - SELECT * FROM optavel_partners WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_candidates WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_interviews WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_onboarding WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_okrs WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_reviews WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_courses WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_expenses WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_benefits WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_announcements WHERE company_id = bucket.company_id
+      - SELECT * FROM univ_erp_surveys WHERE company_id = bucket.company_id
       - SELECT * FROM univ_erp_promotions WHERE company_id = bucket.company_id
       - SELECT * FROM profiles WHERE company_id = bucket.company_id
       - SELECT * FROM audit_logs WHERE company_id = bucket.company_id
