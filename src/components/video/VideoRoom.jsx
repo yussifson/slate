@@ -925,20 +925,7 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
    if (cancelled) return;
 
    const callObject = DailyIframe.createCallObject({
-    dailyConfig: {
-      experimentalGetUserMediaConstraintsModifier: (constraints) => {
-        if (constraints.audio) {
-          constraints.audio.noiseSuppression = true;
-          constraints.audio.echoCancellation = true;
-          constraints.audio.autoGainControl = true;
-        }
-        if (constraints.video) {
-          constraints.video.width = { ideal: 1280 };
-          constraints.video.height = { ideal: 720 };
-        }
-        return constraints;
-      }
-    }
+    dailyConfig: {}
    });
    callRef.current = callObject;
 
@@ -957,7 +944,11 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
    } catch (camErr) {
     console.warn('Camera/Mic permission denied or joining error.', camErr);
     if (cancelled) return;
-    try { await callObject.join({ url: roomUrl, userName: joinOpts.userName, token: joinOpts.token }); } catch (e) { console.error(e); }
+    try { 
+      const joinPayload = { url: roomUrl, userName: joinOpts.userName };
+      if (joinOpts.token) joinPayload.token = joinOpts.token;
+      await callObject.join(joinPayload); 
+    } catch (e) { console.error(e); }
    }
 
    if (cancelled) return;
