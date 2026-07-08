@@ -211,7 +211,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
 }, [toast]));
 
  const ensureJoined = () => {
- if (daily && daily.meetingState() === 'joined-meeting') return true;
+ if (joined || (daily && daily.meetingState() === 'joined-meeting')) return true;
  toast({
  title: 'Connecting…',
  description: 'Wait until the call has connected before using camera or mic.'});
