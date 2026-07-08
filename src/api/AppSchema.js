@@ -6427,7 +6427,8 @@ export const AppSchema = new Schema({
         priority: column.text,
         assignee_id: column.text,
         sprint_id: column.text,
-        created_at: column.text
+        created_at: column.text,
+        updated_at: column.text
     }),
     univ_task_comments: new Table({
         id: column.text,
@@ -6488,10 +6489,13 @@ export const AppSchema = new Schema({
         name: column.text,
         role: column.text,
         department: column.text,
+        email: column.text,
+        phone: column.text,
         onboarding_progress: column.integer,
         status: column.text,
         start_date: column.text,
-        created_at: column.text
+        created_at: column.text,
+        updated_at: column.text
     }),
     optavel_leave_requests: new Table({
         id: column.text,
@@ -6510,6 +6514,7 @@ export const AppSchema = new Schema({
         description: column.text,
         status: column.text,
         severity: column.text,
+        customer_name: column.text,
         customer_id: column.text,
         reporter_id: column.text,
         created_at: column.text,
@@ -6529,8 +6534,11 @@ export const AppSchema = new Schema({
         name: column.text,
         type: column.text,
         status: column.text,
+        contact_name: column.text,
+        contact_email: column.text,
         revenue_share: column.real,
-        created_at: column.text
+        created_at: column.text,
+        updated_at: column.text
     }),
     univ_time_tracking: new Table({
         id: column.text,
