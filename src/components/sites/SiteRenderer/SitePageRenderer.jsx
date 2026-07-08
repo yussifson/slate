@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, Suspense } from 'react';
+import React, { useEffect, useRef, Suspense } from 'react';
 
 /**
  * SitePageRenderer — Renders a page's section array using a dynamic section registry.
@@ -22,7 +22,7 @@ async function loadSectionComponent(type) {
 
   try {
     // Primary: ask the registry
-    const registry = await import('../SiteSections/index.js');
+    const registry = await import('../SiteSections/index.jsx');
     if (registry.getSectionComponent) {
       const comp = registry.getSectionComponent(type);
       componentCache[type] = comp || null;
