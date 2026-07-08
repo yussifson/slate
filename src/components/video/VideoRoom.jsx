@@ -791,10 +791,6 @@ const avatarColors = [
   'bg-amber-500', 'bg-teal-500', 'bg-cyan-500'
 ];
 const vectorAvatars = Array.from({ length: 10 }, (_, i) => `https://api.dicebear.com/7.x/micah/svg?seed=OptavelUser${i + 1}&backgroundColor=transparent`);
-];
-const vectorAvatars = Array.from({ length: 10 }, (_, i) => `https://api.dicebear.com/7.x/micah/svg?seed=OptavelUser${i + 1}&backgroundColor=transparent`);
-
-
 function ParticipantTile({ id, isLocal, className }) {
  const videoState = useVideoTrack(id);
  const audioState = useAudioTrack(id);
