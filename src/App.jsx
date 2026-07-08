@@ -1228,6 +1228,7 @@ function App() {
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
                         <Route element={<ProtectedRoute />}>
+                          <Route path="/onboarding" element={<OnboardingWizard />} />
                           <Route element={<AppLayout />}>
                             <Route element={<SuperAdminRoute />}>
                               <Route path="/admin" element={<AdminOverview />} />
@@ -1251,7 +1252,6 @@ function App() {
                             {PlatformRoutes()}
                           </Route>
                           <Route path="/intake" element={<IntakeForm />} />
-                          <Route path="/onboarding" element={<OnboardingWizard />} />
                           <Route path="*" element={<PageNotFound />} />
                         </Route>
                       </Routes>
