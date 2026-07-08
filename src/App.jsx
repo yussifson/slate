@@ -1245,10 +1245,10 @@ function App() {
                               <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
                               <Route path="/admin/partners" element={<AdminPartners />} />
                               <Route path="/admin/feature-insider" element={<AdminFeatureInsider />} />
-                              <Route path="/enterprise-admin" element={<EnterpriseDashboard />} />
-                              <Route path="/feature-insider" element={<FeatureLab />} />
-                              <Route path="/feature-vault" element={<FeatureVault />} />
                             </Route>
+                            <Route path="/enterprise-admin" element={<EnterpriseDashboard />} />
+                            <Route path="/feature-insider" element={<FeatureLab />} />
+                            <Route path="/feature-vault" element={<FeatureVault />} />
                             {PlatformRoutes()}
                           </Route>
                           <Route path="/intake" element={<IntakeForm />} />

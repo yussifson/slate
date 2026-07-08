@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/AuthContext";
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const isAdmin = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
+  const isAdmin = ["super_admin", "company_admin", "admin", "managing_partner"].includes(user?.role);
 
   const savedModulesStr = localStorage.getItem(`active_modules_${user?.company_id}`);
   const activeModules = savedModulesStr ? JSON.parse(savedModulesStr) : null;
