@@ -12,14 +12,14 @@ import { format, isAfter, isBefore, addDays, startOfMonth, endOfMonth } from "da
 
 function StatCard({ icon: IconComp, label, value, sub, color = "bg-slate-50 dark:bg-slate-800/50 text-primary" }) {
   return (
-    <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
-        <IconComp className="w-5 h-5" />
+    <div className="bg-card rounded-2xl border-0 p-5 flex items-center gap-5 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300">
+      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${color}`}>
+        <IconComp className="w-6 h-6" />
       </div>
       <div>
-        <p className="text-2xl font-semibold text-foreground tracking-[-0.02em]">{value}</p>
-        <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{label}</p>
-        {sub && <p className="text-[11px] text-[#71717a] dark:text-gray-400 mt-0.5">{sub}</p>}
+        <p className="text-3xl font-bold text-foreground tracking-[-0.03em]">{value}</p>
+        <p className="text-sm font-medium text-muted-foreground tracking-tight mt-0.5">{label}</p>
+        {sub && <p className="text-xs text-muted-foreground/70 mt-1">{sub}</p>}
       </div>
     </div>
   );
@@ -87,29 +87,63 @@ export default function StaffDashboard() {
   const activeCases = cases.filter(c => ["open", "in_progress", "pending_hearing"].includes(c.status));
 
   return (
-    <div className="space-y-6 school-page-enter font-dmsans">
-      <PageHeader
-        title={`Welcome back, ${user?.full_name?.split(" ")[0] || "Counselor"}`}
-        subtitle={`${format(today, "EEEE, MMMM d, yyyy")} · Your personal workspace`}
-      />
+    <div className="space-y-8 school-page-enter font-dmsans max-w-7xl mx-auto pb-12">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-600 via-green-600 to-teal-700 p-8 sm:p-10 text-white shadow-2xl shadow-emerald-500/20">
+        <div className="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl mix-blend-overlay pointer-events-none" />
+        <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-64 h-64 bg-emerald-900 opacity-20 rounded-full blur-2xl mix-blend-overlay pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2.5 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20">
+                <Briefcase className="w-6 h-6 text-emerald-100" />
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Welcome back, {user?.full_name?.split(" ")[0] || "Counselor"}</h1>
+            </div>
+            <p className="text-emerald-100 text-lg font-medium tracking-wide">Your personal workspace overview</p>
+            <div className="mt-6 flex items-center gap-4 text-sm font-medium text-emerald-100/80">
+              <span className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 opacity-70" />
+                {format(today, "EEEE, MMMM d, yyyy")}
+              </span>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 shadow-inner">
+            <div className="text-right">
+              <p className="text-xs text-emerald-200 font-bold uppercase tracking-wider mb-1">Status</p>
+              <div className="flex items-center gap-2 text-sm font-bold text-white">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_12px_rgba(52,211,153,0.8)]" />
+                Online & Synced
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Briefcase} label="Active Cases" value={activeCases.length} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
-        <StatCard icon={CheckSquare} label="Pending Tasks" value={pendingTasks.length} sub={overdueTasks.length > 0 ? `${overdueTasks.length} overdue` : undefined} color="bg-amber-50 text-amber-600" />
-        <StatCard icon={Clock} label="Hours This Month" value={totalHours.toFixed(1)} sub={`${billedHours.toFixed(1)}h billed`} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
-        <StatCard icon={TrendingUp} label="Billed Amount" value={formatCurrency(billedAmount, user?.company_currency || "GHS")} sub="This month" color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard icon={Briefcase} label="Active Cases" value={activeCases.length} color="bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" />
+        <StatCard icon={CheckSquare} label="Pending Tasks" value={pendingTasks.length} sub={overdueTasks.length > 0 ? `${overdueTasks.length} overdue` : undefined} color="bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400" />
+        <StatCard icon={Clock} label="Hours This Month" value={totalHours.toFixed(1)} sub={`${billedHours.toFixed(1)}h billed`} color="bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" />
+        <StatCard icon={TrendingUp} label="Billed Amount" value={formatCurrency(billedAmount, user?.company_currency || "GHS")} sub="This month" color="bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400" />
       </div>
       {/* Hours vs Target */}
-      <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-        <div className="flex items-center justify-between mb-3">
+      <div className="bg-card rounded-3xl border-0 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 dark:bg-emerald-500/5 rounded-full blur-3xl -mr-32 -mt-32 transition-transform duration-500 group-hover:scale-110 pointer-events-none" />
+        
+        <div className="relative z-10 flex items-center justify-between mb-5">
           <div>
-            <h3 className="text-sm font-semibold">{t("billable_hours", "Billable Hours —")} {format(today, "MMMM yyyy")}</h3>
-            <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{totalHours.toFixed(1)}{t("h_logged_target", "h logged · Target:")} {TARGET_HOURS}h</p>
+            <h3 className="text-xl font-bold tracking-tight text-foreground">{t("billable_hours", "Billable Hours")} — {format(today, "MMMM yyyy")}</h3>
+            <p className="text-sm font-medium text-muted-foreground mt-1">{totalHours.toFixed(1)}{t("h_logged_target", "h logged · Target:")} {TARGET_HOURS}h</p>
           </div>
-          <span className="text-lg font-semibold text-primary">{hoursProgress.toFixed(0)}%</span>
+          <div className="bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-4 py-2 rounded-xl font-bold text-lg">
+            {hoursProgress.toFixed(0)}%
+          </div>
         </div>
-        <Progress value={hoursProgress} className="h-3" />
-        <div className="flex justify-between mt-2 text-[11px] text-[#71717a] dark:text-gray-400">
+        <Progress value={hoursProgress} className="h-4 rounded-full bg-slate-100 dark:bg-slate-800 [&>div]:bg-emerald-500" />
+        <div className="flex justify-between mt-3 text-sm font-medium text-muted-foreground">
           <span>{totalHours.toFixed(1)}{t("h_logged", "h logged")}</span>
           <span>{(TARGET_HOURS - totalHours).toFixed(1)}{t("h_remaining", "h remaining")}</span>
         </div>
@@ -134,10 +168,10 @@ export default function StaffDashboard() {
           </div>
         )}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
         {/* Tasks */}
-        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-          <div className="p-4 border-b border-primary/40 flex items-center justify-between">
+        <div className="bg-card rounded-3xl border-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col h-[500px]">
+          <div className="p-6 border-b border-border/50 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CheckSquare className="w-4 h-4 text-primary" />
               <h3 className="text-sm font-semibold">{t("my_tasks", "My Tasks")}</h3>
@@ -148,7 +182,7 @@ export default function StaffDashboard() {
               </Badge>
             )}
           </div>
-          <div className="divide-y divide-border-[0.5px] border-black/9 dark:border-white/8 max-h-80 overflow-y-auto">
+          <div className="divide-y divide-border/50 overflow-y-auto flex-1">
             {loadingTasks ? (
               <div className="p-5 md:p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("loading", "Loading...")}</div>
             ) : pendingTasks.length === 0 ? (
@@ -187,12 +221,12 @@ export default function StaffDashboard() {
         </div>
 
         {/* Upcoming Hearings */}
-        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-          <div className="p-4 border-b border-primary/40 flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-primary" />
-            <h3 className="text-sm font-semibold">{t("upcoming_hearings", "Upcoming Hearings")}</h3>
+        <div className="bg-card rounded-3xl border-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col h-[500px]">
+          <div className="p-6 border-b border-border/50 flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            <h3 className="text-sm font-bold">{t("upcoming_hearings", "Upcoming Hearings")}</h3>
           </div>
-          <div className="divide-y divide-border-[0.5px] border-black/9 dark:border-white/8 max-h-80 overflow-y-auto">
+          <div className="divide-y divide-border/50 overflow-y-auto flex-1">
             {upcomingHearings.length === 0 ? (
               <div className="p-5 md:p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_upcoming_hearings", "No upcoming hearings")}</div>
             ) : upcomingHearings.map(h => {
