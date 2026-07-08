@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { getSubdomainAndBase } from '@/lib/domainUtils';
 import SlateSiteRenderer from './SlateSiteRenderer';
-import { PageLoader } from '@/components/ui/PageLoader';
+import { PageLoader } from '@/components/ui/orbit-loader';
 
 /**
  * SiteDomainResolver wraps the entire app routing.
