@@ -1,210 +1,137 @@
 import React, { useState } from 'react';
-import { Users, UserPlus, FileSignature, CheckCircle, Briefcase, Plus, Loader2 } from 'lucide-react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Users, UserPlus, Clock, X, Briefcase, Plus, Heart } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useAuth } from '@/lib/AuthContext';
 import { v4 as uuidv4 } from 'uuid';
+import { toast } from 'react-hot-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+
+const CARD = 'bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6';
+const HEAD = 'text-lg font-bold text-white flex items-center gap-2 mb-5';
 
 export default function OptavelHR() {
   const { user } = useAuth();
   const companyId = user?.profile?.company_id || user?.company_id;
   const queryClient = useQueryClient();
 
-  const [newEmpName, setNewEmpName] = useState('');
-  const [newEmpRole, setNewEmpRole] = useState('');
+  const [empModal, setEmpModal] = useState(false);
+  const [empForm, setEmpForm] = useState({ name: '', role: '', department: '', email: '', phone: '', status: 'active', start_date: new Date().toISOString().split('T')[0] });
 
-  const { data: employees = [], isLoading } = useQuery({
+  const { data: employees = [] } = useQuery({
     queryKey: ['optavel_employees', companyId],
     queryFn: async () => {
       if (!companyId) return [];
-      const res = await powerSync.execute(
-        `SELECT * FROM optavel_employees WHERE company_id = ? ORDER BY created_at DESC`,
-        [companyId]
-      );
+      const res = await powerSync.execute(`SELECT * FROM optavel_employees WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
       return res.rows._array;
     },
     enabled: !!companyId
   });
 
-  const { data: capTable = [] } = useQuery({
-    queryKey: ['optavel_cap_table', companyId],
-    queryFn: async () => {
-      if (!companyId) return [];
-      const res = await powerSync.execute(
-        `SELECT * FROM optavel_cap_table WHERE company_id = ? ORDER BY equity_percentage DESC`,
-        [companyId]
-      );
-      return res.rows._array;
-    },
-    enabled: !!companyId
-  });
+  const submitEmp = async () => {
+    if (!empForm.name) return toast.error('Name is required');
+    await powerSync.execute(
+      `INSERT INTO optavel_employees (id, company_id, name, role, department, email, phone, onboarding_progress, status, start_date, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [uuidv4(), companyId, empForm.name, empForm.role, empForm.department, empForm.email, empForm.phone, 0, empForm.status, empForm.start_date, new Date().toISOString(), new Date().toISOString()]
+    );
+    toast.success('Employee added!');
+    setEmpModal(false);
+    setEmpForm({ name: '', role: '', department: '', email: '', phone: '', status: 'active', start_date: new Date().toISOString().split('T')[0] });
+    queryClient.invalidateQueries(['optavel_employees']);
+  };
 
-  const addEmployee = useMutation({
-    mutationFn: async () => {
-      if (!newEmpName || !newEmpRole) return;
-      const id = uuidv4();
-      await powerSync.execute(
-        `INSERT INTO optavel_employees (id, company_id, name, role, department, onboarding_progress, status, start_date) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, companyId, newEmpName, newEmpRole, 'Engineering', 20, 'onboarding', new Date().toISOString()]
-      );
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['optavel_employees']);
-      setNewEmpName('');
-      setNewEmpRole('');
-    }
-  });
+  const deleteEmp = async (id) => {
+    await powerSync.execute(`DELETE FROM optavel_employees WHERE id=?`, [id]);
+    queryClient.invalidateQueries(['optavel_employees']);
+  };
 
-  const completeOnboarding = useMutation({
-    mutationFn: async (id) => {
-      await powerSync.execute(
-        `UPDATE optavel_employees SET onboarding_progress = 100, status = 'active' WHERE id = ?`,
-        [id]
-      );
-    },
-    onSuccess: () => queryClient.invalidateQueries(['optavel_employees'])
-  });
-
-  const onboardingList = employees.filter(e => e.status === 'onboarding');
-  const activeList = employees.filter(e => e.status === 'active');
+  const activeEmp = employees.filter(e => e.status === 'active').length;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-200 p-8 font-sans">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-          <Users className="w-8 h-8 text-emerald-500" />
-          HR & Team
-        </h1>
-        <p className="text-slate-400 mt-1">Team Directory, Equity Vesting, and Onboarding Workflows.</p>
+    <div className="min-h-screen p-6 md:p-8" style={{ background: 'radial-gradient(ellipse at top left, #1d102e 0%, #0a0f1e 50%, #000 100%)' }}>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
+            <div className="p-2 bg-pink-500/20 rounded-xl"><Heart className="w-7 h-7 text-pink-400" /></div>
+            HR & Team
+          </h1>
+          <p className="text-slate-400 mt-1 text-sm">Directory · Onboarding · Time Off</p>
+        </div>
+        <Button onClick={() => setEmpModal(true)} className="bg-pink-600 hover:bg-pink-700 text-white gap-2">
+          <UserPlus className="w-4 h-4" /> Add Employee
+        </Button>
       </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        {/* New Employee Form */}
-        <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-6 lg:col-span-3">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-            <UserPlus className="w-5 h-5 text-emerald-500" /> Add New Team Member
-          </h2>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <input 
-              type="text" placeholder="Full Name" 
-              className="bg-white dark:bg-black/50 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-2.5 flex-1 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-              value={newEmpName} onChange={e => setNewEmpName(e.target.value)}
-            />
-            <input 
-              type="text" placeholder="Role / Title" 
-              className="bg-white dark:bg-black/50 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-2.5 flex-1 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-              value={newEmpRole} onChange={e => setNewEmpRole(e.target.value)}
-            />
-            <Button onClick={() => addEmployee.mutate()} disabled={addEmployee.isLoading} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-6">
-              {addEmployee.isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
-              Add Member
-            </Button>
-          </div>
-        </div>
 
-        {/* Directory List */}
-        <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-6 lg:col-span-2">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-            <Briefcase className="w-5 h-5 text-blue-400" /> Active Team Directory
-          </h2>
-          <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-            {isLoading ? (
-              <p className="text-sm text-slate-500 text-center py-4">Loading directory...</p>
-            ) : activeList.length === 0 ? (
-              <p className="text-sm text-slate-500 text-center py-8 border border-dashed border-slate-300 dark:border-white/10 rounded-xl">No active team members yet.</p>
-            ) : (
-              activeList.map(emp => (
-                <div key={emp.id} className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 rounded-xl flex justify-between items-center shadow-sm">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-blue-500 flex items-center justify-center text-white font-bold shadow-sm">
-                      {emp.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-slate-900 dark:text-white">{emp.name}</h3>
-                      <p className="text-xs text-slate-500">{emp.role} • {emp.department}</p>
-                    </div>
-                  </div>
-                  <span className="px-3 py-1 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold rounded-full">Active</span>
-                </div>
-              ))
-            )}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {[
+          { label: 'Total Headcount', val: employees.length, color: 'pink' },
+          { label: 'Active', val: activeEmp, color: 'emerald' },
+          { label: 'On Leave', val: '0', color: 'blue' },
+          { label: 'Open Roles', val: '2', color: 'amber' },
+        ].map(({ label, val, color }) => (
+          <div key={label} className={`${CARD}`}>
+            <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-2">{label}</p>
+            <p className={`text-2xl font-black text-${color}-400`}>{val}</p>
           </div>
-        </div>
+        ))}
+      </div>
 
-        {/* Onboarding & Cap Table */}
-        <div className="space-y-6">
-          <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-6">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-              <UserPlus className="w-5 h-5 text-amber-400" /> Active Onboarding
-            </h2>
-            <div className="space-y-3">
-              {onboardingList.length === 0 ? (
-                <p className="text-sm text-slate-500 text-center py-4">No pending onboarding.</p>
-              ) : (
-                onboardingList.map(emp => (
-                  <div key={emp.id} className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 rounded-xl shadow-sm">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-semibold text-slate-900 dark:text-white">{emp.name}</h3>
-                        <p className="text-xs text-slate-400">{emp.role}</p>
-                      </div>
-                      <button onClick={() => completeOnboarding.mutate(emp.id)} className="text-slate-400 hover:text-emerald-500 transition-colors" title="Mark Onboarding Complete">
-                        <CheckCircle className="w-5 h-5" />
-                      </button>
-                    </div>
-                    <div className="mt-3 w-full bg-slate-100 dark:bg-slate-950 rounded-full h-1.5 overflow-hidden">
-                      <div className="h-1.5 rounded-full bg-amber-500 transition-all duration-500" style={{ width: `${emp.onboarding_progress}%` }}></div>
-                    </div>
-                    <p className="text-xs text-right mt-1 text-slate-500">{emp.onboarding_progress}% Complete</p>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-6">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-              <FileSignature className="w-5 h-5 text-emerald-400" /> Cap Table
-            </h2>
-            <div className="space-y-4">
-              {capTable.length === 0 ? (
-                <>
-                  <div>
-                    <div className="flex justify-between text-sm mb-2">
-                      <span className="font-medium text-slate-900 dark:text-white">Founders Pool</span>
-                      <span className="text-emerald-500 font-bold">95%</span>
-                    </div>
-                    <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2">
-                      <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '95%' }}></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-sm mb-2">
-                      <span className="font-medium text-slate-900 dark:text-white">Growth Pool</span>
-                      <span className="text-emerald-500 font-bold">5%</span>
-                    </div>
-                    <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2">
-                      <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '5%' }}></div>
-                    </div>
-                  </div>
-                </>
-              ) : capTable.map(entry => (
-                <div key={entry.id}>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="font-medium text-slate-900 dark:text-white">User {entry.user_id?.slice(0,5)}</span>
-                    <span className="text-emerald-500 font-bold">{entry.equity_percentage}%</span>
-                  </div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2">
-                    <div className="bg-emerald-500 h-2 rounded-full" style={{ width: `${entry.equity_percentage}%` }}></div>
-                  </div>
-                </div>
+      <div className={CARD}>
+        <div className={HEAD}><Users className="w-5 h-5 text-pink-400" /> Employee Directory</div>
+        {employees.length === 0 ? (
+          <div className="text-center py-16 text-slate-500">No employees yet. Time to hire!</div>
+        ) : (
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs text-slate-500 uppercase tracking-wider border-b border-white/5">
+                <th className="pb-3 pr-4">Name</th><th className="pb-3 pr-4">Role & Dept</th><th className="pb-3 pr-4">Contact</th><th className="pb-3 pr-4">Status</th><th className="pb-3">Del</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {employees.map(emp => (
+                <tr key={emp.id} className="group">
+                  <td className="py-3 pr-4 font-semibold text-white">{emp.name}</td>
+                  <td className="py-3 pr-4">
+                    <p className="text-white">{emp.role}</p>
+                    <p className="text-xs text-slate-400">{emp.department}</p>
+                  </td>
+                  <td className="py-3 pr-4">
+                    {emp.email && <p className="text-slate-300 text-xs">✉ {emp.email}</p>}
+                    {emp.phone && <p className="text-slate-400 text-xs">📞 {emp.phone}</p>}
+                  </td>
+                  <td className="py-3 pr-4">
+                    <span className={`text-xs px-2 py-1 rounded-full border font-semibold capitalize ${emp.status === 'active' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-500/20 text-slate-400 border-slate-500/30'}`}>{emp.status}</span>
+                  </td>
+                  <td className="py-3">
+                    <button onClick={() => deleteEmp(emp.id)} className="text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"><X className="w-4 h-4" /></button>
+                  </td>
+                </tr>
               ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      <Dialog open={empModal} onOpenChange={setEmpModal}>
+        <DialogContent className="bg-[#0f172a] border border-white/10 text-white">
+          <DialogHeader><DialogTitle>Add Employee</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-2">
+            <div><Label className="text-slate-300">Name *</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Full name" value={empForm.name} onChange={e => setEmpForm({...empForm, name: e.target.value})} /></div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><Label className="text-slate-300">Role</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Job title" value={empForm.role} onChange={e => setEmpForm({...empForm, role: e.target.value})} /></div>
+              <div><Label className="text-slate-300">Department</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="e.g. Engineering" value={empForm.department} onChange={e => setEmpForm({...empForm, department: e.target.value})} /></div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><Label className="text-slate-300">Email</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="email@company.com" value={empForm.email} onChange={e => setEmpForm({...empForm, email: e.target.value})} /></div>
+              <div><Label className="text-slate-300">Phone</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Phone" value={empForm.phone} onChange={e => setEmpForm({...empForm, phone: e.target.value})} /></div>
             </div>
           </div>
-        </div>
-      </div>
+          <DialogFooter><Button onClick={submitEmp} className="bg-pink-600 hover:bg-pink-700 text-white">Add Employee</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

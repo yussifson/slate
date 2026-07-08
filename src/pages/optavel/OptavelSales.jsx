@@ -1,38 +1,54 @@
 import React, { useState } from 'react';
-import { TrendingUp, Users, DollarSign, Target, Plus, MessageSquare, Phone, Mail, FileText, ChevronRight } from 'lucide-react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { TrendingUp, DollarSign, Plus, X, MessageSquare, Phone, Mail, FileText, ChevronRight } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useAuth } from '@/lib/AuthContext';
 import { v4 as uuidv4 } from 'uuid';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { toast } from 'react-hot-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+
+const CARD = 'bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5';
 
 const STAGES = [
-  { id: 'lead', title: 'New Lead' },
-  { id: 'contacted', title: 'Contacted' },
-  { id: 'demo', title: 'Demo Scheduled' },
-  { id: 'negotiating', title: 'Negotiating' },
-  { id: 'closed_won', title: 'Closed Won' }
+  { id: 'lead', label: 'New Lead', color: 'slate' },
+  { id: 'contacted', label: 'Contacted', color: 'blue' },
+  { id: 'demo', label: 'Demo', color: 'violet' },
+  { id: 'negotiating', label: 'Negotiating', color: 'amber' },
+  { id: 'closed_won', label: 'Won ✓', color: 'emerald' },
 ];
+
+const STAGE_STYLE = {
+  lead: 'border-slate-500/30 bg-slate-500/5',
+  contacted: 'border-blue-500/30 bg-blue-500/5',
+  demo: 'border-violet-500/30 bg-violet-500/5',
+  negotiating: 'border-amber-500/30 bg-amber-500/5',
+  closed_won: 'border-emerald-500/30 bg-emerald-500/5',
+};
+
+const ACT_ICONS = { call: Phone, email: Mail, note: FileText, meeting: MessageSquare };
 
 export default function OptavelSales() {
   const { user } = useAuth();
   const companyId = user?.profile?.company_id || user?.company_id;
   const queryClient = useQueryClient();
 
-  const [newDealName, setNewDealName] = useState('');
-  const [newDealValue, setNewDealValue] = useState('');
-  const [selectedDealId, setSelectedDealId] = useState(null);
-  const [newActivityNote, setNewActivityNote] = useState('');
-  const [newActivityType, setNewActivityType] = useState('call');
+  const [dealModal, setDealModal] = useState(false);
+  const [activityModal, setActivityModal] = useState(false);
+  const [selectedDeal, setSelectedDeal] = useState(null);
+  const [dragging, setDragging] = useState(null);
+  const [dragOver, setDragOver] = useState(null);
+
+  const [dealForm, setDealForm] = useState({ lead_name: '', value: '', contact_email: '', contact_phone: '', notes: '' });
+  const [actForm, setActForm] = useState({ activity_type: 'call', notes: '' });
 
   const { data: deals = [] } = useQuery({
-    queryKey: ['optavel_deal_rooms', companyId],
+    queryKey: ['optavel_deals', companyId],
     queryFn: async () => {
       if (!companyId) return [];
-      const res = await powerSync.execute(
-        `SELECT * FROM optavel_deal_rooms WHERE company_id = ? ORDER BY created_at DESC`,
-        [companyId]
-      );
+      const res = await powerSync.execute(`SELECT * FROM optavel_deal_rooms WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
       return res.rows._array;
     },
     enabled: !!companyId
@@ -42,257 +58,210 @@ export default function OptavelSales() {
     queryKey: ['optavel_deal_activities', companyId],
     queryFn: async () => {
       if (!companyId) return [];
-      const res = await powerSync.execute(
-        `SELECT * FROM optavel_deal_activities WHERE company_id = ? ORDER BY created_at DESC`,
-        [companyId]
-      );
+      const res = await powerSync.execute(`SELECT * FROM optavel_deal_activities WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
       return res.rows._array;
     },
     enabled: !!companyId
   });
 
-  const createDeal = useMutation({
-    mutationFn: async () => {
-      if (!newDealName || !newDealValue) return;
-      const id = uuidv4();
-      await powerSync.execute(
-        `INSERT INTO optavel_deal_rooms (id, company_id, lead_name, value, stage, probability) VALUES (?, ?, ?, ?, ?, ?)`,
-        [id, companyId, newDealName, parseFloat(newDealValue), 'lead', 10]
-      );
-    },
-    onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [] });
-      setNewDealName('');
-      setNewDealValue('');
-    }
-  });
-
-  const updateDealStage = useMutation({
-    mutationFn: async ({ id, stage }) => {
-      await powerSync.execute(`UPDATE optavel_deal_rooms SET stage = ? WHERE id = ?`, [stage, id]);
-    },
-    onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [] });
-    }
-  });
-
-  const addActivity = useMutation({
-    mutationFn: async () => {
-      if (!selectedDealId || !newActivityNote) return;
-      const id = uuidv4();
-      await powerSync.execute(
-        `INSERT INTO optavel_deal_activities (id, company_id, deal_id, activity_type, notes) VALUES (?, ?, ?, ?, ?)`,
-        [id, companyId, selectedDealId, newActivityType, newActivityNote]
-      );
-    },
-    onError: (e) => { console.error('Mutation Error:', e); alert('Error: ' + e.message); },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [] });
-      setNewActivityNote('');
-    }
-  });
-
-  const onDragEnd = (result) => {
-    const { destination, source, draggableId } = result;
-
-    if (!destination) return;
-    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
-
-    updateDealStage.mutate({ id: draggableId, stage: destination.droppableId });
+  const createDeal = async () => {
+    if (!dealForm.lead_name || !dealForm.value) return toast.error('Lead name and value required');
+    await powerSync.execute(
+      `INSERT INTO optavel_deal_rooms (id, company_id, lead_name, value, stage, probability, contact_email, contact_phone, notes, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+      [uuidv4(), companyId, dealForm.lead_name, parseFloat(dealForm.value), 'lead', 10, dealForm.contact_email, dealForm.contact_phone, dealForm.notes, new Date().toISOString(), new Date().toISOString()]
+    );
+    toast.success('Deal created!');
+    setDealModal(false);
+    setDealForm({ lead_name:'', value:'', contact_email:'', contact_phone:'', notes:'' });
+    queryClient.invalidateQueries(['optavel_deals']);
   };
 
-  const totalPipeline = deals.filter(d => d.stage !== 'closed_won').reduce((sum, d) => sum + (d.value || 0), 0);
-  const activeDeals = deals.filter(d => d.stage !== 'closed_won').length;
-  
-  const selectedDeal = deals.find(d => d.id === selectedDealId);
-  const dealActivities = activities.filter(a => a.deal_id === selectedDealId);
-
-  const getActivityIcon = (type) => {
-    switch (type) {
-      case 'call': return <Phone className="w-4 h-4 text-emerald-500" />;
-      case 'email': return <Mail className="w-4 h-4 text-amber-500" />;
-      case 'meeting': return <Users className="w-4 h-4 text-blue-500" />;
-      default: return <MessageSquare className="w-4 h-4 text-slate-500" />;
-    }
+  const logActivity = async () => {
+    if (!actForm.notes) return toast.error('Notes are required');
+    await powerSync.execute(
+      `INSERT INTO optavel_deal_activities (id, company_id, deal_id, activity_type, notes, created_by, created_at) VALUES (?,?,?,?,?,?,?)`,
+      [uuidv4(), companyId, selectedDeal?.id, actForm.activity_type, actForm.notes, user.id, new Date().toISOString()]
+    );
+    toast.success('Activity logged!');
+    setActivityModal(false);
+    setActForm({ activity_type: 'call', notes: '' });
+    queryClient.invalidateQueries(['optavel_deal_activities']);
   };
+
+  const moveStage = async (dealId, newStage) => {
+    await powerSync.execute(`UPDATE optavel_deal_rooms SET stage=?, updated_at=? WHERE id=?`, [newStage, new Date().toISOString(), dealId]);
+    queryClient.invalidateQueries(['optavel_deals']);
+  };
+
+  const deleteDeal = async (id) => {
+    await powerSync.execute(`DELETE FROM optavel_deal_rooms WHERE id=?`, [id]);
+    if (selectedDeal?.id === id) setSelectedDeal(null);
+    queryClient.invalidateQueries(['optavel_deals']);
+    toast.success('Deal removed');
+  };
+
+  const handleDrop = (e, stageId) => {
+    e.preventDefault();
+    if (dragging) moveStage(dragging, stageId);
+    setDragging(null); setDragOver(null);
+  };
+
+  const pipelineValue = deals.filter(d => d.stage !== 'closed_won').reduce((s, d) => s + (Number(d.value)||0), 0);
+  const wonValue = deals.filter(d => d.stage === 'closed_won').reduce((s, d) => s + (Number(d.value)||0), 0);
+  const winRate = deals.length ? Math.round((deals.filter(d => d.stage === 'closed_won').length / deals.length) * 100) : 0;
+  const dealActivities = activities.filter(a => a.deal_id === selectedDeal?.id);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-200 p-8 font-sans flex flex-col">
-      <div className="mb-8 shrink-0">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-          <TrendingUp className="w-8 h-8 text-emerald-500" />
-          Sales & Pipeline
-        </h1>
-        <p className="text-slate-400 mt-1">Live Deal Rooms, Kanban CRM, and Activity Feed.</p>
+    <div className="min-h-screen p-6 md:p-8" style={{ background: 'radial-gradient(ellipse at top, #0d2a1a 0%, #0a0f1e 50%, #000 100%)' }}>
+      {/* Header */}
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
+            <div className="p-2 bg-emerald-500/20 rounded-xl"><TrendingUp className="w-7 h-7 text-emerald-400" /></div>
+            Sales Pipeline
+          </h1>
+          <p className="text-slate-400 mt-1 text-sm">CRM · Deal Rooms · Activity Log</p>
+        </div>
+        <Button onClick={() => setDealModal(true)} className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2">
+          <Plus className="w-4 h-4" /> New Deal
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 shrink-0">
-        <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-xl p-5 shadow-sm">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-sm font-medium text-slate-400">Total Pipeline</span>
-            <DollarSign className="w-5 h-5 text-emerald-400" />
+      {/* KPIs */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {[
+          { label: 'Pipeline Value', val: `$${pipelineValue.toLocaleString()}`, color: 'emerald' },
+          { label: 'Won Revenue', val: `$${wonValue.toLocaleString()}`, color: 'blue' },
+          { label: 'Win Rate', val: `${winRate}%`, color: 'violet' },
+          { label: 'Total Deals', val: deals.length, color: 'amber' },
+        ].map(({ label, val, color }) => (
+          <div key={label} className={`${CARD}`}>
+            <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-2">{label}</p>
+            <p className={`text-2xl font-black text-${color}-400`}>{val}</p>
           </div>
-          <h3 className="text-3xl font-bold text-slate-900 dark:text-white">${totalPipeline.toLocaleString()}</h3>
-        </div>
-        <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-xl p-5 shadow-sm">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-sm font-medium text-slate-400">Active Deals</span>
-            <Target className="w-5 h-5 text-emerald-400" />
-          </div>
-          <h3 className="text-3xl font-bold text-slate-900 dark:text-white">{activeDeals}</h3>
-        </div>
-        <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-xl p-5 shadow-sm">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-sm font-medium text-slate-400">Add New Deal</span>
-            <FileText className="w-5 h-5 text-amber-400" />
-          </div>
-          <div className="flex gap-2 mt-2">
-            <input 
-              type="text" placeholder="Lead name..." 
-              className="bg-white dark:bg-black/50 border border-slate-300 dark:border-white/10 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-emerald-500 w-full"
-              value={newDealName} onChange={e => setNewDealName(e.target.value)}
-            />
-            <input 
-              type="number" placeholder="Value..." 
-              className="bg-white dark:bg-black/50 border border-slate-300 dark:border-white/10 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-emerald-500 w-24"
-              value={newDealValue} onChange={e => setNewDealValue(e.target.value)}
-            />
-            <button onClick={() => createDeal.mutate()} className="p-1.5 bg-emerald-500 hover:bg-emerald-600 rounded-lg text-white">
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
+        ))}
       </div>
 
-      <div className="flex gap-6 flex-1 min-h-[600px] overflow-hidden">
-        {/* Kanban Board */}
-        <div className={`flex flex-col flex-1 transition-all ${selectedDealId ? 'hidden lg:flex lg:w-2/3' : 'w-full'}`}>
-          <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-6 flex flex-col h-full">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Kanban Pipeline</h2>
-            
-            <DragDropContext onDragEnd={onDragEnd}>
-              <div className="flex gap-4 h-full overflow-x-auto pb-2 custom-scrollbar">
-                {STAGES.map(stage => {
-                  const stageDeals = deals.filter(d => d.stage === stage.id);
-                  return (
-                    <div key={stage.id} className="w-72 flex flex-col flex-shrink-0 bg-slate-100 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/5">
-                      <div className="p-3 border-b border-slate-200 dark:border-white/5 flex justify-between items-center">
-                        <h3 className="font-semibold text-slate-900 dark:text-white">{stage.title}</h3>
-                        <span className="text-slate-500 text-xs bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded-full">{stageDeals.length}</span>
+      <div className="flex gap-6">
+        {/* Pipeline Kanban */}
+        <div className="flex-1 overflow-x-auto">
+          <div className="flex gap-4 min-w-max pb-4">
+            {STAGES.map(stage => {
+              const stageDeal = deals.filter(d => d.stage === stage.id);
+              const stageVal = stageDeal.reduce((s, d) => s + (Number(d.value)||0), 0);
+              return (
+                <div key={stage.id}
+                  className={`w-60 rounded-2xl border-2 transition-all min-h-[400px] ${dragOver === stage.id ? `border-emerald-500/50 bg-emerald-500/5` : `border-white/8 bg-white/3`}`}
+                  onDragOver={e => { e.preventDefault(); setDragOver(stage.id); }}
+                  onDragLeave={() => setDragOver(null)}
+                  onDrop={e => handleDrop(e, stage.id)}>
+                  <div className="p-3 border-b border-white/5">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-white text-xs">{stage.label}</h3>
+                      <span className="text-xs text-slate-400">{stageDeal.length}</span>
+                    </div>
+                    <p className="text-xs text-emerald-400 font-bold mt-0.5">${stageVal.toLocaleString()}</p>
+                  </div>
+                  <div className="p-2 space-y-2">
+                    {stageDeal.map(deal => (
+                      <div key={deal.id}
+                        draggable
+                        onDragStart={() => setDragging(deal.id)}
+                        onDragEnd={() => { setDragging(null); setDragOver(null); }}
+                        onClick={() => setSelectedDeal(deal)}
+                        className={`p-3 rounded-xl border cursor-grab active:cursor-grabbing group transition-all hover:bg-white/10 ${selectedDeal?.id === deal.id ? 'ring-2 ring-emerald-500' : ''} ${STAGE_STYLE[deal.stage] || 'border-white/10 bg-white/5'}`}>
+                        <div className="flex justify-between items-start">
+                          <p className="text-xs font-bold text-white leading-snug flex-1 min-w-0 pr-2">{deal.lead_name}</p>
+                          <button onClick={e => { e.stopPropagation(); deleteDeal(deal.id); }} className="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-red-400 transition-all shrink-0">
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                        <p className="text-sm font-black text-emerald-400 mt-1">${Number(deal.value||0).toLocaleString()}</p>
+                        {deal.contact_email && <p className="text-xs text-slate-500 mt-1 truncate">{deal.contact_email}</p>}
+                        <button onClick={e => { e.stopPropagation(); setSelectedDeal(deal); setActivityModal(true); }}
+                          className="mt-2 text-xs text-slate-400 hover:text-white flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                          <Plus className="w-3 h-3" /> Log Activity
+                        </button>
                       </div>
-                      <Droppable droppableId={stage.id}>
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            className={`flex-1 p-2 overflow-y-auto custom-scrollbar transition-colors ${
-                              snapshot.isDraggingOver ? 'bg-slate-200/50 dark:bg-slate-800/50' : ''
-                            }`}
-                          >
-                            {stageDeals.map((deal, index) => (
-                              <Draggable key={deal.id} draggableId={deal.id} index={index}>
-                                {(provided, snapshot) => (
-                                  <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    onClick={() => setSelectedDealId(deal.id)}
-                                    className={`mb-2 bg-white dark:bg-slate-950 p-3 rounded-xl border ${
-                                      selectedDealId === deal.id ? 'border-emerald-500 ring-1 ring-emerald-500 shadow-md' :
-                                      snapshot.isDragging ? 'border-emerald-400 shadow-lg scale-[1.02]' : 'border-slate-200 dark:border-white/10 hover:border-emerald-500/50 hover:shadow-sm'
-                                    } transition-all cursor-pointer`}
-                                  >
-                                    <div className="flex justify-between items-start mb-1">
-                                      <h4 className="font-semibold text-slate-900 dark:text-white text-sm">{deal.lead_name}</h4>
-                                      <ChevronRight className={`w-4 h-4 text-slate-400 ${selectedDealId === deal.id ? 'text-emerald-500' : ''}`} />
-                                    </div>
-                                    <p className="text-emerald-500 dark:text-emerald-400 font-mono text-sm font-semibold">${(deal.value || 0).toLocaleString()}</p>
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
+                    ))}
+                    {stageDeal.length === 0 && <div className="text-center py-8 text-slate-700 text-xs">Drop deals here</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Deal Detail Panel */}
+        {selectedDeal && (
+          <div className="w-72 shrink-0">
+            <div className={`${CARD} sticky top-6`}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-white text-sm">{selectedDeal.lead_name}</h3>
+                <button onClick={() => setSelectedDeal(null)} className="text-slate-400 hover:text-white"><X className="w-4 h-4" /></button>
+              </div>
+              <p className="text-2xl font-black text-emerald-400 mb-4">${Number(selectedDeal.value||0).toLocaleString()}</p>
+              {selectedDeal.contact_email && <p className="text-xs text-slate-400 mb-1">📧 {selectedDeal.contact_email}</p>}
+              {selectedDeal.contact_phone && <p className="text-xs text-slate-400 mb-1">📞 {selectedDeal.contact_phone}</p>}
+              {selectedDeal.notes && <p className="text-xs text-slate-500 mt-2 mb-3 border-t border-white/5 pt-3">{selectedDeal.notes}</p>}
+              <Button size="sm" onClick={() => setActivityModal(true)} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white gap-2 text-xs mt-3">
+                <Plus className="w-3 h-3" /> Log Activity
+              </Button>
+              <div className="mt-4 space-y-2 max-h-60 overflow-y-auto">
+                <p className="text-xs text-slate-500 uppercase tracking-widest font-semibold">Activity Log</p>
+                {dealActivities.length === 0 ? (
+                  <p className="text-xs text-slate-600">No activities yet.</p>
+                ) : dealActivities.map(act => {
+                  const Icon = ACT_ICONS[act.activity_type] || FileText;
+                  return (
+                    <div key={act.id} className="flex gap-2 p-2 bg-white/5 rounded-lg">
+                      <Icon className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" />
+                      <div>
+                        <p className="text-xs text-white font-medium capitalize">{act.activity_type}</p>
+                        <p className="text-xs text-slate-400">{act.notes}</p>
+                        <p className="text-xs text-slate-600 mt-0.5">{act.created_at?.split('T')[0]}</p>
+                      </div>
                     </div>
                   );
                 })}
-              </div>
-            </DragDropContext>
-          </div>
-        </div>
-
-        {/* Deal Room Sidebar */}
-        {selectedDealId && selectedDeal && (
-          <div className="w-full lg:w-1/3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-6 flex flex-col h-full animate-in slide-in-from-right-4">
-            <div className="flex justify-between items-start mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{selectedDeal.lead_name}</h2>
-                <p className="text-emerald-500 font-mono text-lg font-semibold mt-1">${(selectedDeal.value || 0).toLocaleString()}</p>
-              </div>
-              <button 
-                onClick={() => setSelectedDealId(null)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-white"
-              >
-                Close
-              </button>
-            </div>
-
-            <div className="bg-white dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-white/5 p-4 mb-6">
-              <h3 className="font-semibold text-slate-900 dark:text-white mb-3 text-sm">Add Activity</h3>
-              <div className="space-y-3">
-                <select 
-                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-                  value={newActivityType} onChange={e => setNewActivityType(e.target.value)}
-                >
-                  <option value="call">Phone Call</option>
-                  <option value="email">Email Sent</option>
-                  <option value="meeting">Meeting Held</option>
-                  <option value="note">Internal Note</option>
-                </select>
-                <textarea 
-                  placeholder="Notes..." 
-                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 min-h-[80px]"
-                  value={newActivityNote} onChange={e => setNewActivityNote(e.target.value)}
-                />
-                <button 
-                  onClick={() => addActivity.mutate()} 
-                  className="w-full py-2 bg-emerald-500 hover:bg-emerald-600 transition-colors rounded-lg text-white font-medium shadow-sm shadow-emerald-500/20"
-                >
-                  Save Activity
-                </button>
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto">
-              <h3 className="font-semibold text-slate-900 dark:text-white mb-4 text-sm sticky top-0 bg-slate-50 dark:bg-slate-900 py-2">Activity Feed</h3>
-              <div className="space-y-4">
-                {dealActivities.length === 0 ? (
-                  <p className="text-sm text-slate-500 text-center py-4">No activities logged yet.</p>
-                ) : (
-                  dealActivities.map(act => (
-                    <div key={act.id} className="flex gap-3">
-                      <div className="mt-1 flex-shrink-0 w-8 h-8 rounded-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/10 flex items-center justify-center">
-                        {getActivityIcon(act.activity_type)}
-                      </div>
-                      <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 p-3 rounded-xl flex-1 shadow-sm">
-                        <div className="flex justify-between items-start mb-1">
-                          <span className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">{act.activity_type}</span>
-                          <span className="text-xs text-slate-400">{new Date(act.created_at).toLocaleDateString()}</span>
-                        </div>
-                        <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{act.notes}</p>
-                      </div>
-                    </div>
-                  ))
-                )}
               </div>
             </div>
           </div>
         )}
       </div>
+
+      {/* New Deal Modal */}
+      <Dialog open={dealModal} onOpenChange={setDealModal}>
+        <DialogContent className="bg-[#0f172a] border border-white/10 text-white" aria-describedby={undefined}>
+          <DialogHeader><DialogTitle>Create Deal Room</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-2">
+            <div><Label className="text-slate-300">Lead / Company Name *</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Acme Corp" value={dealForm.lead_name} onChange={e => setDealForm({...dealForm, lead_name: e.target.value})} /></div>
+            <div><Label className="text-slate-300">Deal Value ($) *</Label><Input type="number" className="bg-white/5 border-white/10 text-white mt-1" placeholder="50000" value={dealForm.value} onChange={e => setDealForm({...dealForm, value: e.target.value})} /></div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><Label className="text-slate-300">Email</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="contact@acme.com" value={dealForm.contact_email} onChange={e => setDealForm({...dealForm, contact_email: e.target.value})} /></div>
+              <div><Label className="text-slate-300">Phone</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="+1 555 0000" value={dealForm.contact_phone} onChange={e => setDealForm({...dealForm, contact_phone: e.target.value})} /></div>
+            </div>
+            <div><Label className="text-slate-300">Notes</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Context about this deal" value={dealForm.notes} onChange={e => setDealForm({...dealForm, notes: e.target.value})} /></div>
+          </div>
+          <DialogFooter><Button onClick={createDeal} className="bg-emerald-600 hover:bg-emerald-700 text-white">Create Deal</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Activity Modal */}
+      <Dialog open={activityModal} onOpenChange={setActivityModal}>
+        <DialogContent className="bg-[#0f172a] border border-white/10 text-white" aria-describedby={undefined}>
+          <DialogHeader><DialogTitle>Log Activity — {selectedDeal?.lead_name}</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-2">
+            <div><Label className="text-slate-300">Activity Type</Label>
+              <select className="w-full mt-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white text-sm" value={actForm.activity_type} onChange={e => setActForm({...actForm, activity_type: e.target.value})}>
+                <option value="call">📞 Call</option><option value="email">📧 Email</option><option value="meeting">💬 Meeting</option><option value="note">📝 Note</option>
+              </select>
+            </div>
+            <div><Label className="text-slate-300">Notes *</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="What happened?" value={actForm.notes} onChange={e => setActForm({...actForm, notes: e.target.value})} /></div>
+          </div>
+          <DialogFooter><Button onClick={logActivity} className="bg-emerald-600 hover:bg-emerald-700 text-white">Log Activity</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

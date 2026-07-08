@@ -1,22 +1,27 @@
 import { useTranslation} from "react-i18next";
 import { useState, useEffect } from 'react';
-import { DollarSign, Search, Plus, Download, Trash2, FileText, MoreVertical, Edit, Eye} from 'lucide-react';
+import { DollarSign, Search, Plus, Download, Trash2, FileText, Edit, Eye, TrendingDown, TrendingUp, CheckCircle2, Clock } from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
+import { useMutateIndustryRecord } from '@/hooks/useIndustryData';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { toast} from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem} from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
-import { Link} from 'react-router-dom';
+
+const STATUS_STYLES = {
+  Pending:   'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
+  Processed: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
+  Failed:    'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400',
+};
 
 export default function Payroll() {
  const { t} = useTranslation();
- 
   const powerSync = usePowerSync();
   const companyId = useCompanyId();
+  const mutateRecord = useMutateIndustryRecord();
+
   const [dbRecords, setDbRecords] = useState([]);
   const [isDbLoading, setIsDbLoading] = useState(true);
   useEffect(() => {
@@ -32,8 +37,7 @@ export default function Payroll() {
     if (companyId) fetchPr();
     return () => { active = false; };
   }, [companyId]);
-        
- 
+
   const [staffRecords, setStaffRecords] = useState([]);
   useEffect(() => {
     let active = true;
@@ -46,7 +50,7 @@ export default function Payroll() {
     if (companyId) fetchStaff();
     return () => { active = false; };
   }, [companyId]);
-        
+
  const staffList = staffRecords.map(r => ({
   id: r.id,
   name: r.name || 'Unnamed Staff',
@@ -79,35 +83,30 @@ export default function Payroll() {
 });
 
  const handleCreateOrUpdatePayroll = () => {
- if (!formData.staffRecordId) {
- return toast.error("Please select an employee");
-}
- 
+ if (!formData.staffRecordId) return toast.error("Please select an employee");
  const gross = parseFloat(formData.grossPay) || 0;
  const ded = parseFloat(formData.deductions) || 0;
  const netPay = gross - ded;
 
- const selectedStaff = staffList.find(s => s.id === formData.staffRecordId);
-
- 
-  if (editTargetId) {
-    powerSync.execute(`UPDATE univ_hr_payroll SET employee_id=?, period=?, basic_salary=?, deductions=?, net_salary=? WHERE id=?`, 
-      [formData.staffRecordId, formData.period, gross, ded, netPay, editTargetId]
-    ).then(() => {
-      toast.success('Payroll record updated!');
-      setShowModal(false);
-      setEditTargetId(null);
-      setFormData({ staffRecordId: '', period: 'May 2026', grossPay: 0, deductions: 0});
-    }).catch(err => toast.error('Failed: ' + err.message));
-  } else {
-    powerSync.execute(`INSERT INTO univ_hr_payroll (id, company_id, created_at, employee_id, period, basic_salary, deductions, net_salary, status) VALUES (uuid(), ?, datetime('now'), ?, ?, ?, ?, ?, ?)`, 
-      [companyId, formData.staffRecordId, formData.period, gross, ded, netPay, 'Pending']
-    ).then(() => {
-      toast.success('Payroll record added!');
-      setShowModal(false);
-      setFormData({ staffRecordId: '', period: 'May 2026', grossPay: 0, deductions: 0});
-    }).catch(err => toast.error('Failed: ' + err.message));
-  }
+ if (editTargetId) {
+   powerSync.execute(`UPDATE univ_hr_payroll SET employee_id=?, period=?, basic_salary=?, deductions=?, net_salary=? WHERE id=?`, 
+     [formData.staffRecordId, formData.period, gross, ded, netPay, editTargetId]
+   ).then(() => {
+     toast.success('Payroll record updated!');
+     setShowModal(false);
+     setEditTargetId(null);
+     setDbRecords(prev => prev.map(r => r.id === editTargetId ? { ...r, employee_id: formData.staffRecordId, period: formData.period, basic_salary: gross, deductions: ded, net_salary: netPay } : r));
+     setFormData({ staffRecordId: '', period: 'May 2026', grossPay: 0, deductions: 0});
+   }).catch(err => toast.error('Failed: ' + err.message));
+ } else {
+   powerSync.execute(`INSERT INTO univ_hr_payroll (id, company_id, created_at, employee_id, period, basic_salary, deductions, net_salary, status) VALUES (uuid(), ?, datetime('now'), ?, ?, ?, ?, ?, ?)`, 
+     [companyId, formData.staffRecordId, formData.period, gross, ded, netPay, 'Pending']
+   ).then(() => {
+     toast.success('Payroll record added!');
+     setShowModal(false);
+     setFormData({ staffRecordId: '', period: 'May 2026', grossPay: 0, deductions: 0});
+   }).catch(err => toast.error('Failed: ' + err.message));
+ }
 };
 
  const openEdit = (pay) => {
@@ -127,26 +126,23 @@ export default function Payroll() {
  setShowModal(true);
 };
 
- const handleUpdateStatus = (payroll, newStatus) => {
- const payload = { ...payroll};
- delete payload.id;
- delete payload.status;
- 
- mutateRecord.mutate({
- id: payroll.id,
- recordType: 'payroll_run',
- payload,
- status: newStatus,
- searchText: `${payroll.employeeName} ${payroll.employeeId} ${payroll.period}`
-}, {
- onSuccess: () => toast.success(`Payroll marked as ${newStatus}`)
-});
+ const handleUpdateStatus = (pay, newStatus) => {
+   powerSync.execute(`UPDATE univ_hr_payroll SET status = ? WHERE id = ?`, [newStatus, pay.id])
+     .then(() => {
+       setDbRecords(prev => prev.map(r => r.id === pay.id ? { ...r, status: newStatus } : r));
+       toast.success(`Payroll marked as ${newStatus}`);
+     })
+     .catch(err => toast.error('Failed: ' + err.message));
 };
 
  const handleDelete = () => {
  if (!deleteTargetId) return;
  powerSync.execute(`DELETE FROM univ_hr_payroll WHERE id = ?`, [deleteTargetId])
-      .then(() => { toast.success('Payroll record deleted'); setDeleteTargetId(null); })
+      .then(() => { 
+        setDbRecords(prev => prev.filter(r => r.id !== deleteTargetId));
+        toast.success('Payroll record deleted'); 
+        setDeleteTargetId(null); 
+      })
       .catch(err => toast.error('Failed: ' + err.message));
 };
 
@@ -158,212 +154,246 @@ export default function Payroll() {
  const totalPayroll = payrolls.reduce((sum, p) => sum + (Number(p.netPay) || 0), 0);
  const processed = payrolls.filter(p => p.status === 'Processed').length;
  const pending = payrolls.filter(p => p.status === 'Pending').length;
+ const totalDeductions = payrolls.reduce((sum, p) => sum + (Number(p.deductions) || 0), 0);
 
  return (
- <div className="space-y-6 school-page-enter font-dmsans">
- <div className="flex items-center justify-between">
- <div>
- <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("payroll", "Payroll")}</h1>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
- "manage_employee_salaries_and_c",
- "Manage employee salaries and compensation"
- )}</p>
- </div>
- <div className="flex gap-2">
- <Button variant="outline" className="gap-2">
- <Download className="w-4 h-4" /> {t("export", "Export")}
- </Button>
- <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white">
- <Plus className="w-4 h-4" /> {t("add_payslip", "Add Payslip")}
- </Button>
- </div>
- </div>
- <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mb-1">{t("total_payroll", "Total Payroll")}</p>
- <h2 className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${totalPayroll.toLocaleString()}</h2>
- </div>
- <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary">
- <DollarSign className="w-6 h-6" />
- </div>
- </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mb-1">{t("processed", "Processed")}</p>
- <h2 className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{processed}</h2>
- </div>
- <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary">
- <FileText className="w-6 h-6" />
- </div>
- </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mb-1">{t("pending", "Pending")}</p>
- <h2 className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{pending}</h2>
- </div>
- <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
- <DollarSign className="w-6 h-6" />
- </div>
- </div>
- </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-4 border-b border-primary/40 bg-muted/50">
- <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
- <Input placeholder="Search employee..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
- </div>
- </div>
- <div className="overflow-x-auto">
- {isDbLoading ? (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_payroll_data", "Loading payroll data...")}</div>
- ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
- <DollarSign className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
- <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_payroll_records", "No payroll records")}</p>
- <p className="text-xs mt-1 tracking-[0.04em]">{t("add_a_payslip_to_get_started", "Add a payslip to get started.")}</p>
- </div>
- ) : (
- <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <tr>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("employee", "Employee")}</th>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("period", "Period")}</th>
- <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("gross_pay", "Gross Pay")}</th>
- <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("deductions", "Deductions")}</th>
- <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("net_pay", "Net Pay")}</th>
- <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-border">
- {filtered.map(pay => {
- return (
- <tr key={pay.id} className="hover:bg-muted/50 transition-colors">
- <td className="px-6 py-4">
- <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Link to="/employees" className="hover:underline text-primary">{pay.employeeName}</Link>
- </p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{pay.employeeId}</p>
- </td>
- <td className="px-6 py-4 text-foreground font-medium">{pay.period}</td>
- <td className="px-6 py-4 text-right text-[#71717a] dark:text-gray-400">${pay.grossPay?.toLocaleString()}</td>
- <td className="px-6 py-4 text-right text-red-500">-${pay.deductions?.toLocaleString()}</td>
- <td className="px-6 py-4 text-right font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${pay.netPay?.toLocaleString()}</td>
- <td className="px-6 py-4 text-center">
- <select
- value={pay.status}
- onChange={e => handleUpdateStatus(pay, e.target.value)}
- className={`rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input px-2 py-1 text-xs font-semibold ${
- pay.status === 'Processed' ? 'bg-slate-100 text-primary/90 dark:bg-primary/20 dark:text-primary-foreground' : 
- pay.status === 'Failed' ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'
-}`}
- >
- <option value="Pending">{t("pending", "Pending")}</option>
- <option value="Processed">{t("processed", "Processed")}</option>
- <option value="Failed">{t("failed", "Failed")}</option>
- </select>
- </td>
- <td className="px-6 py-4 text-right">
- <DropdownMenu>
- <DropdownMenuTrigger asChild>
- <Button variant="ghost" className="h-8 w-8 p-0">
- <span className="sr-only">{t("open_menu", "Open menu")}</span>
- <MoreVertical className="h-4 w-4" />
- </Button>
- </DropdownMenuTrigger>
- <DropdownMenuContent align="end">
- <DropdownMenuItem onClick={() => setViewTargetId(pay.id)}>
- <Eye className="mr-2 h-4 w-4" />
- {t("view_details", "View Details")}
- </DropdownMenuItem>
- <DropdownMenuItem onClick={() => openEdit(pay)}>
- <Edit className="mr-2 h-4 w-4" />
- {t("edit", "Edit")}
- </DropdownMenuItem>
- <DropdownMenuItem onClick={() => setDeleteTargetId(pay.id)} className="text-red-600">
- <Trash2 className="mr-2 h-4 w-4" />
- {t("delete", "Delete")}
- </DropdownMenuItem>
- </DropdownMenuContent>
- </DropdownMenu>
- </td>
- </tr>
- );
-})}
- </tbody>
- </table>
- )}
- </div>
- </div>
- {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Payslip' : 'Add Payslip'}</h2>
- <div className="space-y-3">
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("employee", "Employee")}</label>
- <select value={formData.staffRecordId} onChange={e => setFormData({...formData, staffRecordId: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground">
- <option value="">Select Employee...</option>
- {staffList.map(s => <option key={s.id} value={s.id}>{s.name} ({s.employeeId})</option>)}
- </select>
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("period", "Period")}</label>
- <Input value={formData.period} onChange={e => setFormData({...formData, period: e.target.value})} placeholder="May 2026" className="mt-1" />
- </div>
- <div className="grid grid-cols-2 gap-3">
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("gross_pay", "Gross Pay ($)")}</label>
- <Input type="number" value={formData.grossPay} onChange={e => setFormData({...formData, grossPay: e.target.value})} className="mt-1" />
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("deductions", "Deductions ($)")}</label>
- <Input type="number" value={formData.deductions} onChange={e => setFormData({...formData, deductions: e.target.value})} className="mt-1" />
- </div>
- </div>
- </div>
- <div className="flex gap-3 pt-4">
- <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
- <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateOrUpdatePayroll}>{editTargetId ? 'Save Changes' : 'Save Payslip'}</Button>
- </div>
- </div>
- </div>
- )}
- {viewTargetId && (
- <Sheet open={!!viewTargetId} onOpenChange={() => setViewTargetId(null)}>
- <SheetContent className="overflow-y-auto">
- <SheetHeader>
- <SheetTitle>{t("payslip_details", "Payslip Details")}</SheetTitle>
- <SheetDescription>{t("read_only_view_of_payslip_reco", "Read-only view of payslip record.")}</SheetDescription>
- </SheetHeader>
- <div className="mt-6 space-y-4">
- {(() => {
- const pay = payrolls.find(p => p.id === viewTargetId);
- if (!pay) return null;
- return (
- <div className="space-y-4 text-sm">
- <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("employee", "Employee:")}</span> <p className="font-medium"><Link to="/employees" className="hover:underline text-primary">{pay.employeeName}</Link></p></div>
- <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("employee_id", "Employee ID:")}</span> <p className="font-medium">{pay.employeeId}</p></div>
- <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("period", "Period:")}</span> <p className="font-medium">{pay.period}</p></div>
- <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("gross_pay", "Gross Pay:")}</span> <p className="font-medium">${pay.grossPay?.toLocaleString()}</p></div>
- <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("deductions", "Deductions:")}</span> <p className="font-medium text-red-500">-${pay.deductions?.toLocaleString()}</p></div>
- <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("net_pay", "Net Pay:")}</span> <p className="font-medium text-primary font-semibold">${pay.netPay?.toLocaleString()}</p></div>
- <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("status", "Status:")}</span> <p className="font-medium">{pay.status}</p></div>
- </div>
- );
+ <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-slate-900/50 h-full p-4 lg:p-8 font-dmsans">
+  <div className="max-w-[1600px] mx-auto space-y-6">
+
+    {/* ── Header ── */}
+    <div className="flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <h1 className="text-2xl font-bold text-foreground tracking-tight">{t("payroll", "Payroll")}</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">{t("manage_employee_salaries_and_c", "Manage employee salaries and compensation")}</p>
+      </div>
+      <div className="flex items-center gap-2">
+        <Button variant="outline" className="gap-2 rounded-xl">
+          <Download className="w-4 h-4" /> Export
+        </Button>
+        <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-sm">
+          <Plus className="w-4 h-4" /> {t("add_payslip", "Add Payslip")}
+        </Button>
+      </div>
+    </div>
+
+    {/* ── Metric Cards ── */}
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {[
+        { label: 'Total Payroll', value: `$${totalPayroll.toLocaleString()}`, icon: DollarSign, gradient: 'from-blue-500 to-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20' },
+        { label: 'Processed', value: processed, icon: CheckCircle2, gradient: 'from-emerald-500 to-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
+        { label: 'Pending', value: pending, icon: Clock, gradient: 'from-amber-500 to-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20' },
+        { label: 'Total Deductions', value: `$${totalDeductions.toLocaleString()}`, icon: TrendingDown, gradient: 'from-red-500 to-red-600', bg: 'bg-red-50 dark:bg-red-900/20' },
+      ].map(({ label, value, icon: Icon, gradient, bg }) => (
+        <div key={label} className={`${bg} rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 p-5 flex items-center gap-4 hover:shadow-md transition-all duration-200`}>
+          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-sm`}>
+            <Icon className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-foreground tracking-tight">{value}</p>
+            <p className="text-xs text-muted-foreground font-medium mt-0.5">{label}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* ── Search ── */}
+    <div className="relative max-w-sm">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+      <Input placeholder="Search employee..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white dark:bg-slate-900 rounded-xl border-[0.5px] border-black/9 dark:border-white/8" />
+    </div>
+
+    {/* ── Payslip Cards ── */}
+    {isDbLoading ? (
+      <div className="py-16 text-center text-muted-foreground">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        Loading payroll data...
+      </div>
+    ) : filtered.length === 0 ? (
+      <div className="py-16 text-center text-muted-foreground bg-white dark:bg-slate-900 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8">
+        <DollarSign className="w-14 h-14 mx-auto mb-3 opacity-20 text-primary" />
+        <p className="font-semibold text-lg text-foreground">{t("no_payroll_records", "No payroll records")}</p>
+        <p className="text-sm mt-1">{t("add_a_payslip_to_get_started", "Add a payslip to get started.")}</p>
+      </div>
+    ) : (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {filtered.map(pay => {
+          const statusStyle = STATUS_STYLES[pay.status] || STATUS_STYLES['Pending'];
+          const initials = pay.employeeName?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
+          const gross = Number(pay.grossPay) || 0;
+          const deductions = Number(pay.deductions) || 0;
+          const net = Number(pay.netPay) || 0;
+          const deductionPct = gross > 0 ? Math.round((deductions / gross) * 100) : 0;
+          return (
+            <div key={pay.id} className="group bg-white dark:bg-slate-900 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+              {/* Top accent */}
+              <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 to-indigo-600" />
+
+              {/* Card Header */}
+              <div className="p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-base shadow-md shrink-0">
+                      {initials}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground leading-tight">{pay.employeeName}</h3>
+                      <span className="text-[10px] font-bold tracking-wider text-muted-foreground bg-slate-100 dark:bg-slate-800 rounded-full px-2 py-0.5">{pay.employeeId}</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end gap-1.5">
+                    <span className={`text-[10px] font-bold tracking-wide px-2.5 py-1 rounded-full ${statusStyle}`}>{pay.status}</span>
+                    <span className="text-[10px] font-semibold text-muted-foreground bg-slate-100 dark:bg-slate-800 rounded-full px-2 py-0.5">{pay.period}</span>
+                  </div>
+                </div>
+
+                {/* Salary breakdown */}
+                <div className="mt-4 space-y-3">
+                  <div className="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-muted-foreground font-medium flex items-center gap-1.5"><TrendingUp className="w-3.5 h-3.5 text-blue-500" /> Gross Pay</span>
+                      <span className="font-bold text-foreground">${gross.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-muted-foreground font-medium flex items-center gap-1.5"><TrendingDown className="w-3.5 h-3.5 text-red-500" /> Deductions ({deductionPct}%)</span>
+                      <span className="font-bold text-red-600 dark:text-red-400">-${deductions.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800/40">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-emerald-700 dark:text-emerald-400 font-semibold">Net Pay</span>
+                      <span className="font-bold text-emerald-700 dark:text-emerald-400 text-lg">${net.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Status select */}
+                <select
+                  value={pay.status}
+                  onChange={e => handleUpdateStatus(pay, e.target.value)}
+                  className="mt-3 w-full rounded-xl border-[0.5px] border-black/9 dark:border-white/8 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30">
+                  <option value="Pending">Pending</option>
+                  <option value="Processed">Processed</option>
+                  <option value="Failed">Failed</option>
+                </select>
+              </div>
+
+              {/* ── Action Buttons ── */}
+              <div className="px-5 pb-5 flex gap-2 mt-auto">
+                <button onClick={() => setViewTargetId(pay.id)}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800/40 transition-colors">
+                  <Eye className="w-3.5 h-3.5" /> View
+                </button>
+                <button onClick={() => openEdit(pay)}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/40 transition-colors">
+                  <Edit className="w-3.5 h-3.5" /> Edit
+                </button>
+                <button onClick={() => setDeleteTargetId(pay.id)}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800/40 transition-colors">
+                  <Trash2 className="w-3.5 h-3.5" /> Delete
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    )}
+  </div>
+
+  {/* ── Add / Edit Modal ── */}
+  {showModal && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+  <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-2xl border-[0.5px] border-black/9 dark:border-white/8">
+    <div className="p-6 border-b border-border/50">
+      <h2 className="text-lg font-bold text-foreground">{editTargetId ? 'Edit Payslip' : 'Add Payslip'}</h2>
+    </div>
+  <div className="space-y-4 p-6">
+  <div>
+  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("employee", "Employee")}</label>
+  <select value={formData.staffRecordId} onChange={e => setFormData({...formData, staffRecordId: e.target.value})} className="mt-1 w-full rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground">
+  <option value="">Select Employee...</option>
+  {staffList.map(s => <option key={s.id} value={s.id}>{s.name} ({s.employeeId})</option>)}
+  </select>
+  </div>
+  <div>
+  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("period", "Period")}</label>
+  <Input value={formData.period} onChange={e => setFormData({...formData, period: e.target.value})} placeholder="May 2026" className="mt-1" />
+  </div>
+  <div className="grid grid-cols-2 gap-3">
+  <div>
+  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("gross_pay", "Gross Pay ($)")}</label>
+  <Input type="number" value={formData.grossPay} onChange={e => setFormData({...formData, grossPay: e.target.value})} className="mt-1" />
+  </div>
+  <div>
+  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("deductions", "Deductions ($)")}</label>
+  <Input type="number" value={formData.deductions} onChange={e => setFormData({...formData, deductions: e.target.value})} className="mt-1" />
+  </div>
+  </div>
+  {(parseFloat(formData.grossPay) > 0) && (
+    <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl flex justify-between">
+      <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">Net Pay Preview</span>
+      <span className="font-bold text-emerald-700 dark:text-emerald-400">${(parseFloat(formData.grossPay) - parseFloat(formData.deductions || 0)).toLocaleString()}</span>
+    </div>
+  )}
+  </div>
+  <div className="flex gap-3 p-6 border-t border-border/50">
+  <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
+  <Button className="flex-1 bg-primary hover:bg-primary/90 text-white rounded-xl" onClick={handleCreateOrUpdatePayroll}>{editTargetId ? 'Save Changes' : 'Save Payslip'}</Button>
+  </div>
+  </div>
+  </div>
+  )}
+
+  {/* ── View Sheet ── */}
+  {viewTargetId && (
+  <Sheet open={!!viewTargetId} onOpenChange={() => setViewTargetId(null)}>
+  <SheetContent className="overflow-y-auto w-full sm:max-w-md">
+  <SheetHeader>
+  <SheetTitle>{t("payslip_details", "Payslip Details")}</SheetTitle>
+  <SheetDescription>{t("read_only_view_of_payslip_reco", "Read-only view of payslip record.")}</SheetDescription>
+  </SheetHeader>
+  <div className="mt-6 space-y-5">
+  {(() => {
+  const pay = payrolls.find(p => p.id === viewTargetId);
+  if (!pay) return null;
+  const initials = pay.employeeName?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md">{initials}</div>
+        <div>
+          <h3 className="text-lg font-bold text-foreground">{pay.employeeName}</h3>
+          <span className="text-xs text-muted-foreground">{pay.period}</span>
+        </div>
+      </div>
+      {[
+        { label: 'Employee ID', value: pay.employeeId },
+        { label: 'Status', value: pay.status },
+        { label: 'Gross Pay', value: `$${Number(pay.grossPay).toLocaleString()}` },
+        { label: 'Deductions', value: `-$${Number(pay.deductions).toLocaleString()}` },
+        { label: 'Net Pay', value: `$${Number(pay.netPay).toLocaleString()}` },
+      ].map(({ label, value }) => (
+        <div key={label} className="flex justify-between py-2 border-b border-border/30">
+          <span className="text-sm text-muted-foreground font-medium">{label}</span>
+          <span className="text-sm font-bold text-foreground">{value}</span>
+        </div>
+      ))}
+    </div>
+  );
 })()}
- </div>
- </SheetContent>
- </Sheet>
- )}
- <ConfirmationModal
- isOpen={deleteTargetId !== null}
- onClose={() => setDeleteTargetId(null)}
- onConfirm={handleDelete}
- title="Delete Payslip"
- message="Are you sure you want to completely remove this payslip record?"
- />
+  </div>
+  </SheetContent>
+  </Sheet>
+  )}
+
+  <ConfirmationModal
+  isOpen={deleteTargetId !== null}
+  onClose={() => setDeleteTargetId(null)}
+  onConfirm={handleDelete}
+  title="Delete Payslip"
+  message="Are you sure you want to completely remove this payslip record?"
+  />
  </div>
  );
 }
