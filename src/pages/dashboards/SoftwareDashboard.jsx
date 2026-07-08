@@ -10,14 +10,16 @@ import { format } from "date-fns";
 
 function StatCard({ icon: IconComp, label, value, sub, color = "bg-slate-50 dark:bg-slate-800/50 text-primary" }) {
   return (
-    <div className="bg-card rounded-2xl border-0 p-5 flex items-center gap-5 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300">
-      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${color}`}>
-        <IconComp className="w-6 h-6" />
+    <div className="bg-card rounded-2xl border border-border/50 p-6 flex flex-col justify-between hover:border-primary/20 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 min-h-[140px]">
+      <div className="flex items-start justify-between">
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color} shadow-sm border border-black/5 dark:border-white/5`}>
+          <IconComp className="w-5 h-5" />
+        </div>
       </div>
-      <div>
-        <p className="text-3xl font-bold text-foreground tracking-[-0.03em]">{value}</p>
-        <p className="text-sm font-medium text-muted-foreground tracking-tight mt-0.5">{label}</p>
-        {sub && <p className="text-xs text-muted-foreground/70 mt-1">{sub}</p>}
+      <div className="mt-4">
+        <p className="text-3xl font-black text-foreground tracking-tight">{value}</p>
+        <p className="text-sm font-semibold text-muted-foreground mt-1 tracking-wide">{label}</p>
+        {sub && <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mt-2">{sub}</p>}
       </div>
     </div>
   );
@@ -82,37 +84,23 @@ export default function SoftwareDashboard() {
 
   return (
     <div className="space-y-8 school-page-enter font-dmsans max-w-7xl mx-auto pb-12">
-      {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-600 via-green-600 to-teal-700 p-8 sm:p-10 text-white shadow-2xl shadow-emerald-500/20">
-        <div className="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl mix-blend-overlay pointer-events-none" />
-        <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-64 h-64 bg-emerald-900 opacity-20 rounded-full blur-2xl mix-blend-overlay pointer-events-none" />
-        
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2.5 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20">
-                <Code2 className="w-6 h-6 text-emerald-100" />
-              </div>
-              <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Software Engineering</h1>
+      {/* Sleek Hero Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pt-4">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
+              <Code2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <p className="text-emerald-100 text-lg font-medium tracking-wide">Development & Product Overview</p>
-            <div className="mt-6 flex items-center gap-4 text-sm font-medium text-emerald-100/80">
-              <span className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 opacity-70" />
-                {format(today, "EEEE, MMMM d, yyyy")}
-              </span>
-            </div>
+            <h1 className="text-3xl font-black tracking-tight text-foreground">Software Engineering</h1>
           </div>
-          
-          <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 shadow-inner">
-            <div className="text-right">
-              <p className="text-xs text-emerald-200 font-bold uppercase tracking-wider mb-1">Status</p>
-              <div className="flex items-center gap-2 text-sm font-bold text-white">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_12px_rgba(52,211,153,0.8)]" />
-                Build Passing
-              </div>
-            </div>
-          </div>
+          <p className="text-muted-foreground font-medium flex items-center gap-2">
+            Development & Product Overview
+            <span className="text-border mx-2">•</span>
+            <span className="flex items-center gap-1.5 text-sm">
+              <Calendar className="w-4 h-4 opacity-70" />
+              {format(today, "EEEE, MMMM d, yyyy")}
+            </span>
+          </p>
         </div>
       </div>
 
