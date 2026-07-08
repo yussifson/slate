@@ -8,19 +8,25 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
 
-function StatCard({ icon: IconComp, label, value, sub, color = "bg-slate-50 dark:bg-slate-800/50 text-primary" }) {
+import { ArrowUpRight, ArrowDownRight, CheckCircle2, AlertCircle } from "lucide-react";
+
+function StatCard({ icon: IconComp, label, value, sub, colorClass, iconColorClass, trend, trendColor = "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30" }) {
   return (
-    <div className="bg-card rounded-2xl border border-border/50 p-6 flex flex-col justify-between hover:border-primary/20 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 min-h-[140px]">
-      <div className="flex items-start justify-between">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color} shadow-sm border border-black/5 dark:border-white/5`}>
-          <IconComp className="w-5 h-5" />
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group h-full">
+      <div className="flex items-start justify-between mb-4">
+        <div className={`w-12 h-12 rounded-xl ${colorClass} flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform`}>
+          <IconComp className="w-6 h-6" />
         </div>
+        {trend && (
+          <div className={`flex items-center gap-1 ${trendColor} px-2 py-1 rounded-md text-xs font-bold`}>
+            <ArrowUpRight className="w-3 h-3" />
+            <span>{trend}</span>
+          </div>
+        )}
       </div>
-      <div className="mt-4">
-        <p className="text-3xl font-black text-foreground tracking-tight">{value}</p>
-        <p className="text-sm font-semibold text-muted-foreground mt-1 tracking-wide">{label}</p>
-        {sub && <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mt-2">{sub}</p>}
-      </div>
+      <h3 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-1">{value}</h3>
+      <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">{label}</p>
+      {sub && <p className="text-xs text-slate-500 mt-1">{sub}</p>}
     </div>
   );
 }
@@ -84,32 +90,37 @@ export default function SoftwareDashboard() {
 
   return (
     <div className="space-y-8 school-page-enter font-dmsans max-w-7xl mx-auto pb-12">
-      {/* Sleek Hero Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pt-4">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
-              <Code2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+      <div className="w-full">
+        {/* Massive Colorful Header */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-500 p-6 md:p-8 mb-8 shadow-sm text-white">
+          <div className="absolute top-0 right-0 -mt-16 -mr-16 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-10 -mb-16 w-48 h-48 bg-black opacity-10 rounded-full blur-2xl"></div>
+          
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-inner">
+                <Code2 className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <p className="text-white font-bold text-xl md:text-2xl mb-0.5">My Dashboard, {user?.user_metadata?.full_name || 'Engineer'} 👋</p>
+                <p className="text-white/80 text-sm">Personal Engineering Overview • {format(today, "EEEE, MMMM d, yyyy")}</p>
+              </div>
             </div>
-            <h1 className="text-3xl font-black tracking-tight text-foreground">Software Engineering</h1>
+            
+            <div className="text-right">
+              <p className="text-white/80 font-medium text-xs mb-1 uppercase tracking-wider">Status</p>
+              <div className="text-2xl md:text-3xl font-black tabular-nums">Ready to Code</div>
+            </div>
           </div>
-          <p className="text-muted-foreground font-medium flex items-center gap-2">
-            Development & Product Overview
-            <span className="text-border mx-2">•</span>
-            <span className="flex items-center gap-1.5 text-sm">
-              <Calendar className="w-4 h-4 opacity-70" />
-              {format(today, "EEEE, MMMM d, yyyy")}
-            </span>
-          </p>
         </div>
-      </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard icon={CheckSquare} label="My Pending Tasks" value={pendingTasks.length} color="bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" />
-        <StatCard icon={Bug} label="Open Bugs" value={openBugs.length} color="bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400" />
-        <StatCard icon={PlayCircle} label="Active Sprints" value={activeSprints.length} color="bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" />
-        <StatCard icon={TrendingUp} label="Velocity" value={velocity} sub="Tasks done this sprint" color="bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" />
+        {/* Top Stats Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <StatCard icon={CheckSquare} label="My Pending Tasks" value={pendingTasks.length} sub="tasks across your active projects" colorClass="bg-blue-600" trend="+5%" />
+          <StatCard icon={Bug} label="Open Bugs" value={openBugs.length} sub="assigned directly to you" colorClass="bg-rose-500" trend="-1%" trendColor="text-rose-600 bg-rose-50 dark:bg-rose-900/30" />
+          <StatCard icon={PlayCircle} label="Active Sprints" value={activeSprints.length} sub="sprints currently running" colorClass="bg-purple-600" />
+          <StatCard icon={TrendingUp} label="Velocity" value={velocity} sub="tasks completed this sprint" colorClass="bg-emerald-500" trend="+12%" />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
