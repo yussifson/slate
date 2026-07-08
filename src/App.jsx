@@ -361,9 +361,8 @@ import HRSalary from './pages/hr/Salary';
 import AppLayout from './components/layout/AppLayout';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
-import NativeOnboarding from './pages/auth/NativeOnboarding';
-import ForgotPassword from './pages/auth/ForgotPassword';
-import ResetPassword from './pages/auth/ResetPassword';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import { SiteDomainResolver } from '@/components/sites/SiteRenderer/SiteDomainResolver';
 
 import { getSubdomainAndBase } from '@/lib/domainUtils';
