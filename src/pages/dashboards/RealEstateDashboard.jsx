@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { powerSync } from "@/lib/powersync";
+import { powerSync } from '@/api/PowerSyncConnector';
 import { useAuth } from "@/lib/AuthContext";
 import { Home, Calendar as CalendarIcon, DollarSign, Target, Briefcase, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
