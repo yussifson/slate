@@ -1,0 +1,183 @@
+{
+  "industry": "law",
+  "siteName": "Smith & Associates Law Firm",
+  "siteTagline": "Justice. Integrity. Results.",
+  "siteDescription": "Experienced attorneys providing aggressive legal representation in personal injury, criminal defense, and family law.",
+  "theme": {
+    "primaryColor": "#1e3a5f",
+    "secondaryColor": "#c9a84c",
+    "backgroundColor": "#ffffff",
+    "textColor": "#1a1a2a",
+    "fontFamily": "Playfair Display",
+    "headingFont": "Playfair Display",
+    "borderRadius": "8px",
+    "darkMode": false,
+    "buttonStyle": "rounded"
+  },
+  "pages": [
+    {
+      "title": "Home",
+      "slug": "/",
+      "isHome": true,
+      "type": "home",
+      "sections": [
+        {
+          "id": "hero-law-001",
+          "type": "hero",
+          "data": {
+            "headline": "Experienced Attorneys Fighting for You",
+            "subheadline": "With over 25 years of combined experience, our attorneys deliver aggressive legal representation and compassionate counsel when you need it most.",
+            "ctaText": "Schedule Free Consultation",
+            "ctaLink": "/contact",
+            "ctaSecondaryText": "View Practice Areas",
+            "ctaSecondaryLink": "/practice-areas",
+            "backgroundType": "gradient",
+            "backgroundImage": null
+          }
+        },
+        {
+          "id": "stats-law-001",
+          "type": "stats",
+          "data": {
+            "headline": "Our Track Record Speaks for Itself",
+            "stats": [
+              { "value": "$50M+", "label": "Recovered for Clients", "icon": "💰" },
+              { "value": "1,200+", "label": "Cases Won", "icon": "⚖️" },
+              { "value": "98%", "label": "Client Satisfaction", "icon": "⭐" },
+              { "value": "25+", "label": "Years Experience", "icon": "🏆" }
+            ]
+          }
+        },
+        {
+          "id": "features-law-001",
+          "type": "features",
+          "data": {
+            "headline": "Our Practice Areas",
+            "subheadline": "We handle complex legal matters across multiple disciplines",
+            "features": [
+              { "icon": "🚗", "title": "Personal Injury", "description": "Auto accidents, slip and fall, wrongful death. We fight to get you maximum compensation." },
+              { "icon": "🔒", "title": "Criminal Defense", "description": "From misdemeanors to federal charges, we protect your rights and freedom aggressively." },
+              { "icon": "👨‍👩‍👧", "title": "Family Law", "description": "Divorce, custody, adoption. We guide you through life's most challenging transitions." },
+              { "icon": "🏢", "title": "Business Law", "description": "Contracts, disputes, employment. Protect your business with experienced legal counsel." },
+              { "icon": "🏠", "title": "Real Estate", "description": "Transactions, disputes, zoning. Expert guidance for all your real estate legal needs." },
+              { "icon": "📋", "title": "Estate Planning", "description": "Wills, trusts, probate. Secure your legacy and protect your family's future." }
+            ]
+          }
+        },
+        {
+          "id": "testimonials-law-001",
+          "type": "testimonials",
+          "data": {
+            "headline": "What Our Clients Say",
+            "testimonials": [
+              { "name": "Michael R.", "role": "Personal Injury Client", "company": "", "text": "After my accident, I didn't know where to turn. Smith & Associates got me 3x what the insurance company offered. They truly fought for me.", "rating": 5 },
+              { "name": "Jennifer K.", "role": "Family Law Client", "company": "", "text": "During the most difficult time of my life, they were professional, compassionate, and won me primary custody. I can't thank them enough.", "rating": 5 },
+              { "name": "David T.", "role": "Business Owner", "company": "TechStart LLC", "text": "Their business law team protected my company from a frivolous lawsuit and saved us over $200,000. Absolutely exceptional.", "rating": 5 }
+            ]
+          }
+        },
+        {
+          "id": "cta-law-001",
+          "type": "cta",
+          "data": {
+            "headline": "Your First Consultation is Free",
+            "subheadline": "Don't wait. The sooner you talk to an attorney, the better your chances. Call us or fill out our form for a free case evaluation.",
+            "ctaText": "Get Free Consultation",
+            "ctaLink": "/contact",
+            "backgroundType": "primary"
+          }
+        }
+      ]
+    },
+    {
+      "title": "About Us",
+      "slug": "/about",
+      "isHome": false,
+      "type": "about",
+      "sections": [
+        {
+          "id": "hero-about-001",
+          "type": "hero",
+          "data": {
+            "headline": "A Legacy of Legal Excellence",
+            "subheadline": "Founded in 1999, Smith & Associates has built a reputation as one of the region's most trusted law firms.",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "timeline-about-001",
+          "type": "timeline",
+          "data": {
+            "headline": "Our Story",
+            "items": [
+              { "year": "1999", "title": "Founded", "description": "James Smith opens the firm with a vision of making quality legal representation accessible to everyone." },
+              { "year": "2005", "title": "Expansion", "description": "We grew to 12 attorneys and opened our second office." },
+              { "year": "2012", "title": "Top 100 Law Firms", "description": "Named among the state's Top 100 law firms for five consecutive years." },
+              { "year": "2020", "title": "Digital Innovation", "description": "Launched virtual consultation services, making legal help accessible statewide." },
+              { "year": "2024", "title": "25 Years Strong", "description": "Celebrating 25 years and over $50 million recovered for our clients." }
+            ]
+          }
+        },
+        {
+          "id": "team-about-001",
+          "type": "team",
+          "data": {
+            "headline": "Meet Our Attorneys",
+            "subheadline": "Experienced, passionate, and dedicated to your success",
+            "members": [
+              { "name": "James Smith", "role": "Founding Partner", "bio": "25 years of experience in personal injury and business law. Former prosecutor." },
+              { "name": "Sarah Johnson", "role": "Senior Partner", "bio": "Nationally recognized family law attorney and mediator." },
+              { "name": "Marcus Williams", "role": "Criminal Defense Partner", "bio": "Former public defender with 15 years of courtroom experience." }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Contact",
+      "slug": "/contact",
+      "isHome": false,
+      "type": "contact",
+      "sections": [
+        {
+          "id": "hero-contact-001",
+          "type": "hero",
+          "data": {
+            "headline": "Get Your Free Consultation",
+            "subheadline": "Our attorneys are available 24/7 for urgent matters. Fill out the form below or call us directly.",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "form-contact-001",
+          "type": "form",
+          "data": {
+            "headline": "Tell Us About Your Case",
+            "subheadline": "All information is confidential and protected by attorney-client privilege.",
+            "formId": "law-consultation",
+            "fields": [
+              { "label": "Full Name", "type": "text", "required": true, "placeholder": "John Smith" },
+              { "label": "Email Address", "type": "email", "required": true, "placeholder": "john@example.com" },
+              { "label": "Phone Number", "type": "tel", "required": true, "placeholder": "(555) 000-0000" },
+              { "label": "Practice Area", "type": "select", "required": true, "options": ["Personal Injury", "Criminal Defense", "Family Law", "Business Law", "Real Estate", "Estate Planning", "Other"] },
+              { "label": "Tell Us About Your Situation", "type": "textarea", "required": true, "placeholder": "Briefly describe your legal matter..." }
+            ],
+            "submitText": "Request Free Consultation",
+            "successMessage": "Thank you! An attorney will contact you within 24 hours."
+          }
+        },
+        {
+          "id": "contact-info-001",
+          "type": "contact",
+          "data": {
+            "headline": "Visit Our Office",
+            "email": "info@smithassociates.com",
+            "phone": "(555) 123-4567",
+            "address": "123 Legal Drive, Suite 400, Downtown, NY 10001",
+            "hours": "Mon–Fri: 8am–8pm | Sat: 9am–5pm | 24/7 Emergency Line"
+          }
+        }
+      ]
+    }
+  ]
+}

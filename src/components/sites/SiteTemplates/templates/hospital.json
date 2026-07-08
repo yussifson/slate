@@ -1,0 +1,187 @@
+{
+  "industry": "hospital",
+  "siteName": "Healing Hands Medical Center",
+  "siteTagline": "Compassionate Care. Advanced Medicine.",
+  "siteDescription": "A full-service hospital providing world-class medical care with compassion and innovation.",
+  "theme": {
+    "primaryColor": "#0d6efd",
+    "secondaryColor": "#20c997",
+    "backgroundColor": "#f8fafc",
+    "textColor": "#1a1a2a",
+    "fontFamily": "Inter",
+    "headingFont": "Inter",
+    "borderRadius": "12px",
+    "darkMode": false,
+    "buttonStyle": "rounded"
+  },
+  "pages": [
+    {
+      "title": "Home",
+      "slug": "/",
+      "isHome": true,
+      "type": "home",
+      "sections": [
+        {
+          "id": "hero-hospital-001",
+          "type": "hero",
+          "data": {
+            "headline": "Your Health is Our Priority",
+            "subheadline": "Expert medical care from board-certified physicians in a compassionate, state-of-the-art facility. Book your appointment today.",
+            "ctaText": "Book an Appointment",
+            "ctaLink": "/appointments",
+            "ctaSecondaryText": "Find a Doctor",
+            "ctaSecondaryLink": "/doctors",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "features-hospital-001",
+          "type": "features",
+          "data": {
+            "headline": "Our Medical Services",
+            "subheadline": "Comprehensive healthcare services under one roof",
+            "features": [
+              { "icon": "🏥", "title": "Emergency Care", "description": "24/7 emergency services with rapid response teams ready to handle any medical crisis." },
+              { "icon": "❤️", "title": "Cardiology", "description": "Advanced cardiac care including catheterization, bypass surgery, and heart failure management." },
+              { "icon": "🧠", "title": "Neurology", "description": "Expert care for stroke, epilepsy, Parkinson's disease, and complex neurological conditions." },
+              { "icon": "🦴", "title": "Orthopedics", "description": "Joint replacement, sports medicine, and minimally invasive orthopedic surgery." },
+              { "icon": "🤱", "title": "Maternity", "description": "Full labor and delivery services with neonatal intensive care for high-risk pregnancies." },
+              { "icon": "🔬", "title": "Oncology", "description": "Comprehensive cancer care including chemotherapy, radiation therapy, and immunotherapy." }
+            ]
+          }
+        },
+        {
+          "id": "stats-hospital-001",
+          "type": "stats",
+          "data": {
+            "headline": "Trusted by Thousands",
+            "stats": [
+              { "value": "50,000+", "label": "Patients Served Annually", "icon": "👥" },
+              { "value": "200+", "label": "Board-Certified Physicians", "icon": "👨‍⚕️" },
+              { "value": "98%", "label": "Patient Satisfaction Score", "icon": "⭐" },
+              { "value": "24/7", "label": "Emergency Services", "icon": "🚨" }
+            ]
+          }
+        },
+        {
+          "id": "booking-hospital-001",
+          "type": "booking",
+          "data": {
+            "headline": "Book Your Appointment Online",
+            "subheadline": "Select your preferred doctor, date, and time. Same-day appointments often available.",
+            "ctaText": "Schedule Now",
+            "bookingUrl": "/appointments"
+          }
+        },
+        {
+          "id": "testimonials-hospital-001",
+          "type": "testimonials",
+          "data": {
+            "headline": "Patient Stories",
+            "testimonials": [
+              { "name": "Sarah M.", "role": "Cardiac Patient", "company": "", "text": "The cardiology team literally saved my life. Their quick response during my heart attack and exceptional follow-up care has given me a second chance at life.", "rating": 5 },
+              { "name": "Robert K.", "role": "Orthopedic Patient", "company": "", "text": "My knee replacement surgery was seamless. The surgical team, recovery staff, and physical therapists were all outstanding. I'm walking pain-free for the first time in years.", "rating": 5 },
+              { "name": "Maria T.", "role": "Maternity Patient", "company": "", "text": "The maternity ward is incredible. The nurses were so supportive during my delivery. The level of care for both me and my newborn exceeded all expectations.", "rating": 5 }
+            ]
+          }
+        },
+        {
+          "id": "cta-hospital-001",
+          "type": "cta",
+          "data": {
+            "headline": "Medical Emergency? Call Us Immediately",
+            "subheadline": "Our 24/7 emergency team is always ready. For life-threatening situations, call 911 or visit our ER directly.",
+            "ctaText": "Call (555) 911-HELP",
+            "ctaLink": "tel:5559114357",
+            "backgroundType": "primary"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Appointments",
+      "slug": "/appointments",
+      "isHome": false,
+      "type": "booking",
+      "sections": [
+        {
+          "id": "hero-appt-001",
+          "type": "hero",
+          "data": {
+            "headline": "Schedule Your Appointment",
+            "subheadline": "Book online or call us. Same-day appointments available for urgent needs.",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "form-appt-001",
+          "type": "form",
+          "data": {
+            "headline": "Request an Appointment",
+            "formId": "hospital-appointment",
+            "fields": [
+              { "label": "Full Name", "type": "text", "required": true, "placeholder": "Your full name" },
+              { "label": "Date of Birth", "type": "date", "required": true },
+              { "label": "Email", "type": "email", "required": true },
+              { "label": "Phone", "type": "tel", "required": true },
+              { "label": "Department", "type": "select", "required": true, "options": ["General Medicine", "Cardiology", "Neurology", "Orthopedics", "Maternity", "Oncology", "Emergency", "Pediatrics"] },
+              { "label": "Preferred Date", "type": "date", "required": true },
+              { "label": "Insurance Provider", "type": "text", "required": false, "placeholder": "Insurance company name" },
+              { "label": "Reason for Visit", "type": "textarea", "required": true, "placeholder": "Brief description of your symptoms or reason for visit" }
+            ],
+            "submitText": "Book Appointment",
+            "successMessage": "Appointment request received! We will confirm within 2 hours."
+          }
+        },
+        {
+          "id": "contact-appt-001",
+          "type": "contact",
+          "data": {
+            "headline": "Contact Us Directly",
+            "email": "appointments@healinghands.com",
+            "phone": "(555) 200-CARE",
+            "address": "456 Medical Campus Drive, Health City, CA 90210",
+            "hours": "Appointments: Mon–Sat 7am–9pm | Emergency: 24/7"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Contact",
+      "slug": "/contact",
+      "isHome": false,
+      "type": "contact",
+      "sections": [
+        {
+          "id": "form-contact-h-001",
+          "type": "form",
+          "data": {
+            "headline": "Get in Touch",
+            "subheadline": "Questions about our services, billing, or medical records? We're here to help.",
+            "formId": "hospital-contact",
+            "fields": [
+              { "label": "Name", "type": "text", "required": true },
+              { "label": "Email", "type": "email", "required": true },
+              { "label": "Phone", "type": "tel", "required": false },
+              { "label": "Subject", "type": "select", "required": true, "options": ["General Inquiry", "Billing Question", "Medical Records", "Appointment", "Feedback", "Other"] },
+              { "label": "Message", "type": "textarea", "required": true }
+            ],
+            "submitText": "Send Message",
+            "successMessage": "Thank you! We'll respond within 1 business day."
+          }
+        },
+        {
+          "id": "contact-h-001",
+          "type": "contact",
+          "data": {
+            "headline": "Find Us",
+            "email": "info@healinghands.com",
+            "phone": "(555) 200-CARE",
+            "address": "456 Medical Campus Drive, Health City, CA 90210",
+            "hours": "Mon–Fri: 7am–10pm | Sat–Sun: 8am–8pm | ER: 24/7"
+          }
+        }
+      ]
+    }
+  ]
+}

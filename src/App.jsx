@@ -361,8 +361,10 @@ import HRSalary from './pages/hr/Salary';
 import AppLayout from './components/layout/AppLayout';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
+import NativeOnboarding from './pages/auth/NativeOnboarding';
+import ForgotPassword from './pages/auth/ForgotPassword';
+import ResetPassword from './pages/auth/ResetPassword';
+import { SiteDomainResolver } from '@/components/sites/SiteRenderer/SiteDomainResolver';
 
 import { getSubdomainAndBase } from '@/lib/domainUtils';
 
@@ -1144,6 +1146,7 @@ function App() {
           <VideoProvider>
             <QueryClientProvider client={queryClientInstance}>
             <Router>
+              <SiteDomainResolver>
               <GlobalSystemListener />
               <ErrorBoundary>
                 {isMeetDomain ? (
@@ -1259,6 +1262,7 @@ function App() {
                   </React.Suspense>
                 )}
               </ErrorBoundary>
+              </SiteDomainResolver>
               <Toaster />
               <SonnerToaster />
               <HotToaster position="top-right" />

@@ -1,0 +1,137 @@
+{
+  "industry": "hotel",
+  "siteName": "The Grand Meridian Hotel",
+  "siteTagline": "Where Luxury Meets Home",
+  "siteDescription": "A 5-star boutique hotel offering unparalleled comfort, exquisite dining, and world-class amenities in the heart of the city.",
+  "theme": {
+    "primaryColor": "#1a1a2e",
+    "secondaryColor": "#c9a87d",
+    "backgroundColor": "#faf8f5",
+    "textColor": "#1a1a2e",
+    "fontFamily": "Cormorant Garamond",
+    "headingFont": "Cormorant Garamond",
+    "borderRadius": "6px",
+    "darkMode": false,
+    "buttonStyle": "sharp"
+  },
+  "pages": [
+    {
+      "title": "Home",
+      "slug": "/",
+      "isHome": true,
+      "type": "home",
+      "sections": [
+        {
+          "id": "hero-hotel-001",
+          "type": "hero",
+          "data": {
+            "headline": "An Extraordinary Stay Awaits",
+            "subheadline": "Experience the pinnacle of luxury hospitality with breathtaking views, curated amenities, and service that anticipates your every need.",
+            "ctaText": "Book Your Stay",
+            "ctaLink": "/reservations",
+            "ctaSecondaryText": "Explore Rooms",
+            "ctaSecondaryLink": "/rooms",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "features-hotel-001",
+          "type": "features",
+          "data": {
+            "headline": "World-Class Amenities",
+            "subheadline": "Every detail crafted for your comfort and enjoyment",
+            "features": [
+              { "icon": "🛎️", "title": "24/7 Concierge", "description": "Our dedicated team is at your service around the clock to fulfill any request." },
+              { "icon": "🍽️", "title": "Fine Dining", "description": "Three acclaimed restaurants helmed by Michelin-trained chefs." },
+              { "icon": "🧖", "title": "Luxury Spa", "description": "A 10,000 sq ft spa offering signature treatments and wellness therapies." },
+              { "icon": "🏊", "title": "Infinity Pool", "description": "Rooftop infinity pool with panoramic city views, open year-round." },
+              { "icon": "💼", "title": "Business Center", "description": "State-of-the-art meeting rooms and business services for corporate travelers." },
+              { "icon": "🚗", "title": "Valet Parking", "description": "Complimentary valet service with secure underground parking." }
+            ]
+          }
+        },
+        {
+          "id": "stats-hotel-001",
+          "type": "stats",
+          "data": {
+            "headline": "The Grand Meridian in Numbers",
+            "stats": [
+              { "value": "350", "label": "Luxury Rooms & Suites", "icon": "🛏️" },
+              { "value": "4.9★", "label": "Average Guest Rating", "icon": "⭐" },
+              { "value": "1988", "label": "Year Established", "icon": "🏛️" },
+              { "value": "95%", "label": "Return Guest Rate", "icon": "💎" }
+            ]
+          }
+        },
+        {
+          "id": "gallery-hotel-001",
+          "type": "gallery",
+          "data": {
+            "headline": "Gallery",
+            "images": []
+          }
+        },
+        {
+          "id": "testimonials-hotel-001",
+          "type": "testimonials",
+          "data": {
+            "headline": "Guest Experiences",
+            "testimonials": [
+              { "name": "Victoria H.", "role": "Business Traveler", "company": "Fortune 500", "text": "I travel 200 days a year. The Grand Meridian is the only hotel that makes me feel like I'm home. The suite, the dining, the spa — flawless in every way.", "rating": 5 },
+              { "name": "Laurent & Sophie D.", "role": "Honeymoon Couple", "company": "", "text": "Our honeymoon suite exceeded every expectation. The staff filled our room with rose petals and champagne. We will return every anniversary.", "rating": 5 },
+              { "name": "David C.", "role": "Conference Organizer", "company": "Global Events Co.", "text": "Hosted our annual leadership summit here. The event team is exceptional, the AV facilities are top-tier, and the catering was Michelin-quality.", "rating": 5 }
+            ]
+          }
+        },
+        {
+          "id": "cta-hotel-001",
+          "type": "cta",
+          "data": {
+            "headline": "Book Direct for the Best Rate",
+            "subheadline": "Enjoy exclusive perks when you book directly: complimentary breakfast, early check-in, room upgrades when available.",
+            "ctaText": "Reserve Now",
+            "ctaLink": "/reservations",
+            "backgroundType": "primary"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Reservations",
+      "slug": "/reservations",
+      "isHome": false,
+      "type": "booking",
+      "sections": [
+        {
+          "id": "hero-res-hotel-001",
+          "type": "hero",
+          "data": {
+            "headline": "Reserve Your Room",
+            "subheadline": "Select your dates and preferred room category. Best rates guaranteed when booking direct.",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "form-res-hotel-001",
+          "type": "form",
+          "data": {
+            "headline": "Book Your Stay",
+            "formId": "hotel-reservation",
+            "fields": [
+              { "label": "Full Name", "type": "text", "required": true },
+              { "label": "Email", "type": "email", "required": true },
+              { "label": "Phone", "type": "tel", "required": true },
+              { "label": "Check-In Date", "type": "date", "required": true },
+              { "label": "Check-Out Date", "type": "date", "required": true },
+              { "label": "Room Type", "type": "select", "required": true, "options": ["Deluxe Room (King)", "Deluxe Room (Twin)", "Junior Suite", "Executive Suite", "Presidential Suite"] },
+              { "label": "Number of Guests", "type": "select", "required": true, "options": ["1 guest", "2 guests", "3 guests", "4 guests"] },
+              { "label": "Special Requests", "type": "textarea", "required": false, "placeholder": "Anniversary setup, dietary needs, accessibility requirements..." }
+            ],
+            "submitText": "Request Reservation",
+            "successMessage": "Reservation request received! Our reservations team will confirm within 2 hours."
+          }
+        }
+      ]
+    }
+  ]
+}

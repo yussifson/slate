@@ -1,0 +1,145 @@
+{
+  "industry": "school",
+  "siteName": "Westbrook Academy",
+  "siteTagline": "Inspiring Minds. Building Futures.",
+  "siteDescription": "A leading private academy committed to academic excellence, character development, and preparing students for tomorrow's world.",
+  "theme": {
+    "primaryColor": "#1565c0",
+    "secondaryColor": "#fdd835",
+    "backgroundColor": "#ffffff",
+    "textColor": "#1a1a2a",
+    "fontFamily": "Inter",
+    "headingFont": "Inter",
+    "borderRadius": "12px",
+    "darkMode": false,
+    "buttonStyle": "rounded"
+  },
+  "pages": [
+    {
+      "title": "Home",
+      "slug": "/",
+      "isHome": true,
+      "type": "home",
+      "sections": [
+        {
+          "id": "hero-school-001",
+          "type": "hero",
+          "data": {
+            "headline": "Where Every Student Thrives",
+            "subheadline": "At Westbrook Academy, we believe in the limitless potential of every child. Our expert educators, innovative curriculum, and nurturing environment set students up for lifelong success.",
+            "ctaText": "Apply for Admission",
+            "ctaLink": "/admissions",
+            "ctaSecondaryText": "Explore Programs",
+            "ctaSecondaryLink": "/programs",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "features-school-001",
+          "type": "features",
+          "data": {
+            "headline": "A World-Class Education",
+            "subheadline": "Everything your child needs to excel academically and beyond",
+            "features": [
+              { "icon": "📚", "title": "Academic Excellence", "description": "98% of our graduates attend top universities. Our curriculum is designed to challenge and inspire." },
+              { "icon": "🎨", "title": "Arts & Culture", "description": "Robust arts program including music, drama, visual arts, and cultural appreciation." },
+              { "icon": "⚽", "title": "Sports & Athletics", "description": "20+ sports programs with professional coaching and state-of-the-art facilities." },
+              { "icon": "💻", "title": "STEM Innovation", "description": "Dedicated innovation labs, coding bootcamps, robotics, and science research programs." },
+              { "icon": "🌍", "title": "Global Citizenship", "description": "Exchange programs, model UN, and international partnerships that broaden horizons." },
+              { "icon": "🤝", "title": "Character Development", "description": "Leadership programs, community service, and mentorship to build strong values." }
+            ]
+          }
+        },
+        {
+          "id": "stats-school-001",
+          "type": "stats",
+          "data": {
+            "headline": "Our Track Record of Excellence",
+            "stats": [
+              { "value": "98%", "label": "University Acceptance Rate", "icon": "🎓" },
+              { "value": "1:12", "label": "Teacher-to-Student Ratio", "icon": "👨‍🏫" },
+              { "value": "45+", "label": "Years of Excellence", "icon": "🏆" },
+              { "value": "2,400+", "label": "Students Enrolled", "icon": "👥" }
+            ]
+          }
+        },
+        {
+          "id": "testimonials-school-001",
+          "type": "testimonials",
+          "data": {
+            "headline": "What Parents & Alumni Say",
+            "testimonials": [
+              { "name": "Dr. Patricia M.", "role": "Parent of 2 Students", "company": "", "text": "Westbrook transformed my children. The teachers genuinely care, the programs are outstanding, and I've watched my daughter grow from a shy student into a confident leader.", "rating": 5 },
+              { "name": "James O. '18", "role": "Alumni — Harvard Graduate", "company": "", "text": "Westbrook prepared me for Harvard better than any other school could have. The critical thinking skills, the debate team, and the incredible teachers shaped who I am today.", "rating": 5 },
+              { "name": "The Reynolds Family", "role": "Parents", "company": "", "text": "All three of our children attend Westbrook. The sense of community is unlike any school we've experienced. It truly feels like an extended family.", "rating": 5 }
+            ]
+          }
+        },
+        {
+          "id": "cta-school-001",
+          "type": "cta",
+          "data": {
+            "headline": "Open Enrollment Now",
+            "subheadline": "Applications for the upcoming academic year are now open. Schedule a campus tour and discover the Westbrook difference.",
+            "ctaText": "Apply Now",
+            "ctaLink": "/admissions",
+            "backgroundType": "primary"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Admissions",
+      "slug": "/admissions",
+      "isHome": false,
+      "type": "admissions",
+      "sections": [
+        {
+          "id": "hero-adm-001",
+          "type": "hero",
+          "data": {
+            "headline": "Join the Westbrook Family",
+            "subheadline": "We welcome applications from motivated students who are ready to grow, learn, and lead.",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "form-adm-001",
+          "type": "form",
+          "data": {
+            "headline": "Start Your Application",
+            "subheadline": "Complete the form below and our admissions team will contact you within 48 hours.",
+            "formId": "school-admissions",
+            "fields": [
+              { "label": "Parent / Guardian Name", "type": "text", "required": true },
+              { "label": "Email", "type": "email", "required": true },
+              { "label": "Phone", "type": "tel", "required": true },
+              { "label": "Student's Name", "type": "text", "required": true },
+              { "label": "Date of Birth", "type": "date", "required": true },
+              { "label": "Grade Applying For", "type": "select", "required": true, "options": ["KG1", "KG2", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"] },
+              { "label": "Current School", "type": "text", "required": false },
+              { "label": "How Did You Hear About Us?", "type": "select", "required": false, "options": ["Google Search", "Social Media", "Friend/Family Referral", "Open Day", "Online Ad", "Other"] },
+              { "label": "Any Additional Information", "type": "textarea", "required": false }
+            ],
+            "submitText": "Submit Application",
+            "successMessage": "Thank you! Our admissions team will contact you within 48 hours to discuss next steps."
+          }
+        },
+        {
+          "id": "faq-adm-001",
+          "type": "faq",
+          "data": {
+            "headline": "Admissions FAQs",
+            "faqs": [
+              { "question": "What age groups do you accept?", "answer": "We welcome students from KG1 (age 4) through Grade 12 (age 18). We have dedicated campuses for primary and secondary students." },
+              { "question": "What is the application process?", "answer": "1. Submit the online application form. 2. Attend an assessment session. 3. Interview with our admissions panel. 4. Receive your decision within 5 business days." },
+              { "question": "Do you offer scholarships?", "answer": "Yes. We offer merit-based scholarships covering 25-100% of tuition for exceptionally talented students. Academic, arts, and sports scholarships are available." },
+              { "question": "Is there a waiting list?", "answer": "Some grades have limited spaces and a waiting list. We recommend applying early to secure your preferred place." },
+              { "question": "Do you accept international students?", "answer": "Absolutely. We welcome students from around the world and offer ESL support for students still developing English proficiency." }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

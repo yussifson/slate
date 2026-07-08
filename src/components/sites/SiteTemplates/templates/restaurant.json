@@ -1,0 +1,141 @@
+{
+  "industry": "restaurant",
+  "siteName": "La Bella Cucina",
+  "siteTagline": "Authentic Italian. Every Bite, a Memory.",
+  "siteDescription": "Family-owned Italian restaurant serving handcrafted pasta, wood-fired pizza, and an unforgettable dining experience since 1988.",
+  "theme": {
+    "primaryColor": "#b5451b",
+    "secondaryColor": "#f4c542",
+    "backgroundColor": "#fdf6ee",
+    "textColor": "#2c1810",
+    "fontFamily": "Lora",
+    "headingFont": "Lora",
+    "borderRadius": "8px",
+    "darkMode": false,
+    "buttonStyle": "rounded"
+  },
+  "pages": [
+    {
+      "title": "Home",
+      "slug": "/",
+      "isHome": true,
+      "type": "home",
+      "sections": [
+        {
+          "id": "hero-rest-001",
+          "type": "hero",
+          "data": {
+            "headline": "Taste of Italy, Heart of Home",
+            "subheadline": "Three generations of authentic Italian recipes, handmade pasta, and wood-fired flavors. Reserve your table today.",
+            "ctaText": "Reserve a Table",
+            "ctaLink": "/reservations",
+            "ctaSecondaryText": "View Our Menu",
+            "ctaSecondaryLink": "/menu",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "menu-rest-001",
+          "type": "menu",
+          "data": {
+            "headline": "Our Menu",
+            "categories": [
+              {
+                "name": "Antipasti",
+                "items": [
+                  { "name": "Bruschetta al Pomodoro", "description": "Toasted bread with fresh tomatoes, garlic, and basil", "price": "$12" },
+                  { "name": "Burrata Caprese", "description": "Fresh burrata, heirloom tomatoes, basil oil, sea salt", "price": "$16" },
+                  { "name": "Arancini Siciliani", "description": "Saffron risotto balls filled with mozzarella and ragu", "price": "$14" }
+                ]
+              },
+              {
+                "name": "Pasta",
+                "items": [
+                  { "name": "Tagliatelle al Ragu", "description": "Hand-rolled egg pasta with slow-braised Bolognese", "price": "$28" },
+                  { "name": "Cacio e Pepe", "description": "Tonnarelli pasta, Pecorino Romano, black pepper", "price": "$24" },
+                  { "name": "Pappardelle al Cinghiale", "description": "Wild boar ragu, rosemary, juniper, pappardelle", "price": "$32" }
+                ]
+              },
+              {
+                "name": "Pizza al Forno",
+                "items": [
+                  { "name": "Margherita DOC", "description": "San Marzano tomato, fior di latte, fresh basil, EVOO", "price": "$22" },
+                  { "name": "Diavola", "description": "Spicy Calabrian salami, mozzarella, tomato, chili oil", "price": "$26" },
+                  { "name": "Tartufo e Funghi", "description": "Black truffle cream, wild mushrooms, fontina, thyme", "price": "$34" }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "gallery-rest-001",
+          "type": "gallery",
+          "data": {
+            "headline": "A Feast for the Eyes",
+            "images": []
+          }
+        },
+        {
+          "id": "testimonials-rest-001",
+          "type": "testimonials",
+          "data": {
+            "headline": "What Our Guests Say",
+            "testimonials": [
+              { "name": "Isabella P.", "role": "Regular Guest", "company": "", "text": "The tagliatelle al ragu brought me back to Florence. Absolutely authentic. This is our family's special occasion restaurant — we've been coming for 15 years.", "rating": 5 },
+              { "name": "Thomas A.", "role": "Food Critic", "company": "City Dining Magazine", "text": "La Bella Cucina sets the standard for Italian dining in this city. The pasta is made daily, the wine list is exceptional, and the service is warm and attentive.", "rating": 5 },
+              { "name": "Mia & James", "role": "Anniversary Dinner", "company": "", "text": "We celebrated our 10th anniversary here. Chef Marco came out personally, the truffle pasta was divine, and they surprised us with a beautiful dessert. Magical evening.", "rating": 5 }
+            ]
+          }
+        },
+        {
+          "id": "cta-rest-001",
+          "type": "cta",
+          "data": {
+            "headline": "Join Us for a Memorable Evening",
+            "subheadline": "Reservations recommended for weekends. Private dining available for parties of 10+.",
+            "ctaText": "Reserve Your Table",
+            "ctaLink": "/reservations",
+            "backgroundType": "primary"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Reservations",
+      "slug": "/reservations",
+      "isHome": false,
+      "type": "booking",
+      "sections": [
+        {
+          "id": "hero-res-001",
+          "type": "hero",
+          "data": {
+            "headline": "Reserve Your Table",
+            "subheadline": "Join us for an unforgettable dining experience. Book online or call us.",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "form-res-001",
+          "type": "form",
+          "data": {
+            "headline": "Make a Reservation",
+            "formId": "restaurant-reservation",
+            "fields": [
+              { "label": "Your Name", "type": "text", "required": true },
+              { "label": "Email", "type": "email", "required": true },
+              { "label": "Phone", "type": "tel", "required": true },
+              { "label": "Date", "type": "date", "required": true },
+              { "label": "Time", "type": "select", "required": true, "options": ["12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM", "6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM", "8:30 PM"] },
+              { "label": "Party Size", "type": "select", "required": true, "options": ["1-2 guests", "3-4 guests", "5-6 guests", "7-8 guests", "9+ guests (contact us)"] },
+              { "label": "Special Occasion?", "type": "select", "required": false, "options": ["None", "Birthday", "Anniversary", "Business Dinner", "Proposal", "Other"] },
+              { "label": "Special Requests", "type": "textarea", "required": false, "placeholder": "Dietary restrictions, allergies, special arrangements..." }
+            ],
+            "submitText": "Reserve Table",
+            "successMessage": "Reservation received! We will confirm within 30 minutes."
+          }
+        }
+      ]
+    }
+  ]
+}

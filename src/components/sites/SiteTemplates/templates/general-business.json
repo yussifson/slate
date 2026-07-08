@@ -1,0 +1,172 @@
+{
+  "industry": "general",
+  "siteName": "Apex Business Solutions",
+  "siteTagline": "Smart Solutions. Real Results.",
+  "siteDescription": "A professional services company dedicated to helping businesses grow with strategic consulting, efficient processes, and measurable outcomes.",
+  "theme": {
+    "primaryColor": "#6366f1",
+    "secondaryColor": "#8b5cf6",
+    "backgroundColor": "#ffffff",
+    "textColor": "#111827",
+    "fontFamily": "Inter",
+    "headingFont": "Inter",
+    "borderRadius": "12px",
+    "darkMode": false,
+    "buttonStyle": "rounded"
+  },
+  "pages": [
+    {
+      "title": "Home",
+      "slug": "/",
+      "isHome": true,
+      "type": "home",
+      "sections": [
+        {
+          "id": "hero-gen-001",
+          "type": "hero",
+          "data": {
+            "headline": "Grow Your Business with Confidence",
+            "subheadline": "We help businesses like yours streamline operations, scale efficiently, and achieve sustainable growth. Let's build your next chapter together.",
+            "ctaText": "Get Started Today",
+            "ctaLink": "/contact",
+            "ctaSecondaryText": "Learn More",
+            "ctaSecondaryLink": "/about",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "features-gen-001",
+          "type": "features",
+          "data": {
+            "headline": "Our Services",
+            "subheadline": "Comprehensive solutions tailored to your business needs",
+            "features": [
+              { "icon": "📊", "title": "Strategic Consulting", "description": "Expert guidance to navigate challenges, identify opportunities, and chart a clear path to growth." },
+              { "icon": "⚙️", "title": "Process Optimization", "description": "We analyze and streamline your operations to reduce costs and increase productivity." },
+              { "icon": "📈", "title": "Business Development", "description": "Open new markets, forge partnerships, and build revenue streams that scale." },
+              { "icon": "🎯", "title": "Marketing Strategy", "description": "Data-driven marketing that reaches the right audience and converts them into loyal customers." },
+              { "icon": "💼", "title": "HR & People Ops", "description": "Build high-performing teams with the right hiring, culture, and retention strategies." },
+              { "icon": "🔒", "title": "Risk Management", "description": "Protect your business with comprehensive risk assessments and mitigation strategies." }
+            ]
+          }
+        },
+        {
+          "id": "stats-gen-001",
+          "type": "stats",
+          "data": {
+            "headline": "Proven Results",
+            "stats": [
+              { "value": "500+", "label": "Businesses Helped", "icon": "🏢" },
+              { "value": "40%", "label": "Average Revenue Increase", "icon": "📈" },
+              { "value": "12", "label": "Years in Business", "icon": "🏆" },
+              { "value": "95%", "label": "Client Satisfaction", "icon": "⭐" }
+            ]
+          }
+        },
+        {
+          "id": "testimonials-gen-001",
+          "type": "testimonials",
+          "data": {
+            "headline": "What Our Clients Say",
+            "testimonials": [
+              { "name": "Rachel D.", "role": "CEO", "company": "Meridian Group", "text": "Working with Apex transformed how we operate. They identified inefficiencies we hadn't even noticed, and our productivity jumped 45% within three months. Exceptional team.", "rating": 5 },
+              { "name": "Sam O.", "role": "Director", "company": "BlueWave Logistics", "text": "The strategic roadmap they created for us has been a game-changer. We've entered two new markets and grown revenue by 60% over 18 months. Highly recommend.", "rating": 5 },
+              { "name": "Elena M.", "role": "Founder", "company": "Luma Wellness", "text": "Apex helped us scale from a 5-person startup to a 50-person company without losing our culture. Their HR expertise is invaluable for any growing business.", "rating": 5 }
+            ]
+          }
+        },
+        {
+          "id": "cta-gen-001",
+          "type": "cta",
+          "data": {
+            "headline": "Ready to Take Your Business to the Next Level?",
+            "subheadline": "Schedule a free 30-minute discovery call with one of our senior consultants.",
+            "ctaText": "Book Free Consultation",
+            "ctaLink": "/contact",
+            "backgroundType": "gradient"
+          }
+        }
+      ]
+    },
+    {
+      "title": "About",
+      "slug": "/about",
+      "isHome": false,
+      "type": "about",
+      "sections": [
+        {
+          "id": "hero-about-gen-001",
+          "type": "hero",
+          "data": {
+            "headline": "About Apex Business Solutions",
+            "subheadline": "Founded on the belief that every business deserves expert guidance, we've been helping companies thrive for over 12 years.",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "team-gen-001",
+          "type": "team",
+          "data": {
+            "headline": "Meet Our Team",
+            "subheadline": "Experienced professionals dedicated to your success",
+            "members": [
+              { "name": "Alexandra Chen", "role": "Founder & CEO", "bio": "15 years of consulting experience at McKinsey and her own ventures. Harvard MBA." },
+              { "name": "David Park", "role": "Head of Strategy", "bio": "Former strategy director at three Fortune 500 companies. Expert in market expansion." },
+              { "name": "Maria Santos", "role": "Head of Operations", "bio": "Operations expert who has helped 100+ companies streamline their workflows and reduce costs." }
+            ]
+          }
+        },
+        {
+          "id": "faq-gen-001",
+          "type": "faq",
+          "data": {
+            "headline": "Frequently Asked Questions",
+            "faqs": [
+              { "question": "How do you typically engage with a new client?", "answer": "We start with a free 30-minute discovery call to understand your challenges. We then propose a tailored engagement plan with clear deliverables and timelines." },
+              { "question": "How long does a typical project take?", "answer": "Projects vary from 4-week sprints (process audits) to 12-month strategic engagements. We'll recommend the right scope after understanding your goals." },
+              { "question": "Do you work with startups or only established businesses?", "answer": "Both! We have tailored programs for early-stage startups and comprehensive services for established businesses looking to scale or pivot." },
+              { "question": "What industries do you specialize in?", "answer": "We serve businesses across technology, healthcare, retail, finance, and professional services. Our frameworks are adaptable to any industry." }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Contact",
+      "slug": "/contact",
+      "isHome": false,
+      "type": "contact",
+      "sections": [
+        {
+          "id": "form-gen-001",
+          "type": "form",
+          "data": {
+            "headline": "Let's Talk",
+            "subheadline": "Tell us about your business and challenges. We'll respond within one business day.",
+            "formId": "general-contact",
+            "fields": [
+              { "label": "Full Name", "type": "text", "required": true },
+              { "label": "Company", "type": "text", "required": false },
+              { "label": "Email", "type": "email", "required": true },
+              { "label": "Phone", "type": "tel", "required": false },
+              { "label": "What can we help you with?", "type": "textarea", "required": true, "placeholder": "Describe your biggest business challenge or what you're trying to achieve..." }
+            ],
+            "submitText": "Send Message",
+            "successMessage": "Thanks! We'll be in touch within 1 business day."
+          }
+        },
+        {
+          "id": "contact-gen-001",
+          "type": "contact",
+          "data": {
+            "headline": "Our Office",
+            "email": "hello@apexbusiness.com",
+            "phone": "(555) 400-APEX",
+            "address": "200 Business Boulevard, Suite 800, Metro City, TX 75001",
+            "hours": "Mon–Fri: 9am–6pm"
+          }
+        }
+      ]
+    }
+  ]
+}

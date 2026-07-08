@@ -1,0 +1,152 @@
+{
+  "industry": "agency",
+  "siteName": "Pixel & Pulse Studio",
+  "siteTagline": "We Build Brands That Matter.",
+  "siteDescription": "A full-service digital agency specializing in branding, web design, and growth marketing for ambitious businesses.",
+  "theme": {
+    "primaryColor": "#6c63ff",
+    "secondaryColor": "#ff6584",
+    "backgroundColor": "#09090b",
+    "textColor": "#fafafa",
+    "fontFamily": "Outfit",
+    "headingFont": "Outfit",
+    "borderRadius": "16px",
+    "darkMode": true,
+    "buttonStyle": "rounded"
+  },
+  "pages": [
+    {
+      "title": "Home",
+      "slug": "/",
+      "isHome": true,
+      "type": "home",
+      "sections": [
+        {
+          "id": "hero-agency-001",
+          "type": "hero",
+          "data": {
+            "headline": "Strategy. Design. Growth.",
+            "subheadline": "We partner with ambitious companies to craft bold brands, stunning digital experiences, and marketing strategies that drive real results.",
+            "ctaText": "Start a Project",
+            "ctaLink": "/contact",
+            "ctaSecondaryText": "View Our Work",
+            "ctaSecondaryLink": "/portfolio",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "features-agency-001",
+          "type": "features",
+          "data": {
+            "headline": "What We Do",
+            "subheadline": "End-to-end digital services that move your business forward",
+            "features": [
+              { "icon": "🎨", "title": "Brand Identity", "description": "Logo, visual system, brand guidelines. We create identities that are instantly recognizable and deeply memorable." },
+              { "icon": "💻", "title": "Web Design & Dev", "description": "Conversion-optimized websites that look stunning, load fast, and drive results." },
+              { "icon": "📈", "title": "Digital Marketing", "description": "SEO, paid media, email marketing, and social strategy that compounds over time." },
+              { "icon": "📱", "title": "Mobile Apps", "description": "Native iOS & Android apps designed with your users in mind, built to scale." },
+              { "icon": "🎬", "title": "Content Creation", "description": "Video production, photography, copywriting — content that resonates and converts." },
+              { "icon": "🤖", "title": "AI & Automation", "description": "We integrate AI tools that save you time and give you a competitive edge." }
+            ]
+          }
+        },
+        {
+          "id": "logos-agency-001",
+          "type": "logos",
+          "data": {
+            "headline": "Trusted by 200+ Brands",
+            "logos": [
+              { "name": "TechCorp" }, { "name": "Nexus Co" }, { "name": "Bloom Health" },
+              { "name": "RiseUp" }, { "name": "ClearPath" }, { "name": "Orbit Labs" }
+            ]
+          }
+        },
+        {
+          "id": "stats-agency-001",
+          "type": "stats",
+          "data": {
+            "headline": "Results We're Proud Of",
+            "stats": [
+              { "value": "200+", "label": "Projects Delivered", "icon": "🚀" },
+              { "value": "4.2x", "label": "Average ROI for Clients", "icon": "📊" },
+              { "value": "98%", "label": "Client Retention Rate", "icon": "🤝" },
+              { "value": "12", "label": "Industry Awards", "icon": "🏆" }
+            ]
+          }
+        },
+        {
+          "id": "testimonials-agency-001",
+          "type": "testimonials",
+          "data": {
+            "headline": "Clients Love Working With Us",
+            "testimonials": [
+              { "name": "Priya S.", "role": "CEO", "company": "TechStartup Inc.", "text": "Pixel & Pulse didn't just build us a website — they built our brand from the ground up. Revenue grew 3x in 6 months after launch. The team is world-class.", "rating": 5 },
+              { "name": "Marcus T.", "role": "CMO", "company": "Bloom Health", "text": "Their marketing strategy tripled our organic traffic in 90 days. They're not just an agency — they're a true growth partner who is invested in your success.", "rating": 5 },
+              { "name": "Sarah K.", "role": "Founder", "company": "ClearPath App", "text": "The app they designed for us has a 4.8 star rating on the App Store. Users constantly compliment the UX. The team's attention to detail is unmatched.", "rating": 5 }
+            ]
+          }
+        },
+        {
+          "id": "pricing-agency-001",
+          "type": "pricing",
+          "data": {
+            "headline": "Transparent Pricing",
+            "subheadline": "No surprises. Clear value at every tier.",
+            "plans": [
+              { "name": "Starter", "price": "$2,500", "period": "one-time", "description": "Perfect for new businesses", "features": ["Brand identity (logo + colors)", "5-page website", "Basic SEO setup", "3 months support"], "ctaText": "Get Started", "ctaLink": "/contact", "featured": false },
+              { "name": "Growth", "price": "$5,000", "period": "one-time", "description": "For businesses ready to scale", "features": ["Full brand system", "10-page custom website", "E-commerce setup", "SEO + analytics", "Social media kit", "6 months support"], "ctaText": "Most Popular", "ctaLink": "/contact", "featured": true },
+              { "name": "Enterprise", "price": "Custom", "period": "", "description": "For ambitious organizations", "features": ["Everything in Growth", "Custom app development", "Marketing retainer", "Dedicated account manager", "Priority support"], "ctaText": "Contact Us", "ctaLink": "/contact", "featured": false }
+            ]
+          }
+        },
+        {
+          "id": "cta-agency-001",
+          "type": "cta",
+          "data": {
+            "headline": "Ready to Build Something Great?",
+            "subheadline": "Let's talk about your project. Free 30-minute strategy call, no obligation.",
+            "ctaText": "Book Free Strategy Call",
+            "ctaLink": "/contact",
+            "backgroundType": "gradient"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Contact",
+      "slug": "/contact",
+      "isHome": false,
+      "type": "contact",
+      "sections": [
+        {
+          "id": "hero-contact-agency-001",
+          "type": "hero",
+          "data": {
+            "headline": "Let's Build Something Amazing",
+            "subheadline": "Tell us about your project. We'll respond within 24 hours with ideas and a proposal.",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "form-agency-001",
+          "type": "form",
+          "data": {
+            "headline": "Start the Conversation",
+            "formId": "agency-contact",
+            "fields": [
+              { "label": "Your Name", "type": "text", "required": true },
+              { "label": "Company Name", "type": "text", "required": false },
+              { "label": "Email", "type": "email", "required": true },
+              { "label": "Phone", "type": "tel", "required": false },
+              { "label": "Service Needed", "type": "select", "required": true, "options": ["Brand Identity", "Web Design & Development", "Digital Marketing", "Mobile App", "Content Creation", "Full Package", "Other"] },
+              { "label": "Budget Range", "type": "select", "required": true, "options": ["Under $5,000", "$5,000–$15,000", "$15,000–$50,000", "$50,000+", "Let's discuss"] },
+              { "label": "Tell Us About Your Project", "type": "textarea", "required": true, "placeholder": "What are you building? What problem are you solving? What does success look like?" }
+            ],
+            "submitText": "Send Project Brief",
+            "successMessage": "Received! We'll review and respond within 24 hours with initial thoughts."
+          }
+        }
+      ]
+    }
+  ]
+}

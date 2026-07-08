@@ -1,0 +1,127 @@
+{
+  "industry": "retail",
+  "siteName": "Urban Thread Co.",
+  "siteTagline": "Style Without Compromise.",
+  "siteDescription": "Modern clothing and lifestyle brand offering premium quality at accessible prices. Shop online or visit our stores.",
+  "theme": {
+    "primaryColor": "#111827",
+    "secondaryColor": "#f97316",
+    "backgroundColor": "#ffffff",
+    "textColor": "#111827",
+    "fontFamily": "Inter",
+    "headingFont": "Inter",
+    "borderRadius": "8px",
+    "darkMode": false,
+    "buttonStyle": "rounded"
+  },
+  "pages": [
+    {
+      "title": "Home",
+      "slug": "/",
+      "isHome": true,
+      "type": "home",
+      "sections": [
+        {
+          "id": "hero-retail-001",
+          "type": "hero",
+          "data": {
+            "headline": "New Season. New You.",
+            "subheadline": "Discover the latest collection. Premium quality, sustainable materials, and designs that move with you.",
+            "ctaText": "Shop Now",
+            "ctaLink": "/shop",
+            "ctaSecondaryText": "View New Arrivals",
+            "ctaSecondaryLink": "/new-arrivals",
+            "backgroundType": "gradient"
+          }
+        },
+        {
+          "id": "products-retail-001",
+          "type": "products",
+          "data": {
+            "headline": "Featured Products",
+            "products": [
+              { "name": "Essential Crew Tee", "price": "$35", "description": "100% organic cotton. Available in 12 colors.", "category": "Tops" },
+              { "name": "Slim Chino Pants", "price": "$89", "description": "Wrinkle-resistant fabric. Office to weekend.", "category": "Bottoms" },
+              { "name": "Packable Rain Jacket", "price": "$145", "description": "Waterproof, packable, and stylish. 5 colors.", "category": "Outerwear" },
+              { "name": "Canvas Sneakers", "price": "$75", "description": "Recycled materials. Vulcanized sole.", "category": "Footwear" }
+            ]
+          }
+        },
+        {
+          "id": "features-retail-001",
+          "type": "features",
+          "data": {
+            "headline": "Why Urban Thread?",
+            "subheadline": "We believe great style should never cost the earth",
+            "features": [
+              { "icon": "🌱", "title": "Sustainable Materials", "description": "90% of our products use certified organic or recycled materials." },
+              { "icon": "🚚", "title": "Free Shipping", "description": "Free standard shipping on all orders over $50. Returns are always free." },
+              { "icon": "🔄", "title": "60-Day Returns", "description": "Not happy? Return any unworn item within 60 days for a full refund." },
+              { "icon": "⭐", "title": "Premium Quality", "description": "Every item goes through our 50-point quality check before it ships to you." }
+            ]
+          }
+        },
+        {
+          "id": "testimonials-retail-001",
+          "type": "testimonials",
+          "data": {
+            "headline": "Loved by 50,000+ Customers",
+            "testimonials": [
+              { "name": "Alex T.", "role": "Verified Buyer", "company": "", "text": "Finally a brand that gets it right. The quality is incredible for the price, and I love that they care about sustainability. My Essential Tee has survived 100 washes perfectly.", "rating": 5 },
+              { "name": "Jordan M.", "role": "Verified Buyer", "company": "", "text": "I ordered 3 pairs of the chinos in different colors. Best work pants I've ever owned. The fit is perfect straight out of the package — no tailoring needed.", "rating": 5 },
+              { "name": "Casey L.", "role": "Verified Buyer", "company": "", "text": "The customer service team is exceptional. Had a sizing question and they responded in minutes. Product arrived next day, packaged beautifully. 10/10 brand.", "rating": 5 }
+            ]
+          }
+        },
+        {
+          "id": "cta-retail-001",
+          "type": "cta",
+          "data": {
+            "headline": "Get 20% Off Your First Order",
+            "subheadline": "Sign up for our newsletter and receive an exclusive welcome discount. No spam, ever.",
+            "ctaText": "Claim Your Discount",
+            "ctaLink": "/signup",
+            "backgroundType": "primary"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Contact",
+      "slug": "/contact",
+      "isHome": false,
+      "type": "contact",
+      "sections": [
+        {
+          "id": "form-retail-contact-001",
+          "type": "form",
+          "data": {
+            "headline": "Get in Touch",
+            "subheadline": "Order issues, product questions, or just want to say hi — we're here.",
+            "formId": "retail-contact",
+            "fields": [
+              { "label": "Name", "type": "text", "required": true },
+              { "label": "Email", "type": "email", "required": true },
+              { "label": "Order Number (if applicable)", "type": "text", "required": false },
+              { "label": "Subject", "type": "select", "required": true, "options": ["Order Issue", "Returns & Exchanges", "Product Question", "Wholesale Inquiry", "Press Inquiry", "Other"] },
+              { "label": "Message", "type": "textarea", "required": true }
+            ],
+            "submitText": "Send Message",
+            "successMessage": "Thanks! We typically respond within 4 business hours."
+          }
+        },
+        {
+          "id": "contact-retail-001",
+          "type": "contact",
+          "data": {
+            "headline": "Find Us",
+            "email": "hello@urbanthreadco.com",
+            "phone": "(555) 555-STYLE",
+            "address": "789 Fashion Row, Design District, LA 90001",
+            "hours": "Mon–Fri: 9am–6pm PST | Sat: 10am–4pm PST"
+          }
+        }
+      ]
+    }
+  ]
+}
