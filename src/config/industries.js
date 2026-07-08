@@ -1028,7 +1028,21 @@ export const getIndustryNav = (industryKey, educationLevel) => {
 
 export const getIndustryRoles = (industryKey) => {
   const ind = INDUSTRIES[industryKey] || INDUSTRIES.law;
-  return ind.roles;
+  const roles = ind.roles ? [...ind.roles] : [];
+  
+  // Ensure "Company Admin" is always a default feature across all industries
+  if (!roles.find(r => r.value === 'company_admin')) {
+    roles.unshift({ value: 'company_admin', label: 'Company Admin' });
+  } else {
+    // Optionally update the label so it explicitly says Company Admin 
+    // instead of a confusing alias like "Managing Partner" for cross-industry clarity
+    const idx = roles.findIndex(r => r.value === 'company_admin');
+    if (idx !== -1 && roles[idx].label !== 'Company Admin') {
+      roles[idx] = { ...roles[idx], label: 'Company Admin' };
+    }
+  }
+
+  return roles;
 };
 
 export const clientNav = [

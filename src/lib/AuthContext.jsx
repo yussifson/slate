@@ -211,8 +211,8 @@ export const AuthProvider = ({ children }) => {
           }
         } else if (profile) {
           // If the profile already exists, but its role or company is different from staff_records, sync them!
-          // Do not let a local staff_record downgrade a global admin/super_admin
-          const isGlobalAdmin = ['super_admin', 'admin'].includes(profile.role);
+          // Do not let a local staff_record downgrade a global admin, super_admin, or company_admin
+          const isGlobalAdmin = ['super_admin', 'admin', 'company_admin'].includes(profile.role);
           const shouldUpdateRole = !isGlobalAdmin && (profile.role !== staffRecord.role);
 
           if (
@@ -448,10 +448,14 @@ export const AuthProvider = ({ children }) => {
       };
 
       let baseRole = profile?.role || sessionUser.user_metadata?.role;
-        
+      let effectiveStaffRole = staffRecord?.role;
+      if (effectiveStaffRole === 'Company Admin' || effectiveStaffRole === 'Managing Partner') {
+        effectiveStaffRole = 'company_admin';
+      }
+      
       newUser = { 
         ...newUser,
-        role: ['super_admin', 'admin'].includes(baseRole) ? baseRole : (staffRecord?.role || baseRole || 'lawyer'),
+        role: ['super_admin', 'admin', 'company_admin'].includes(baseRole) ? baseRole : (effectiveStaffRole || baseRole || 'lawyer'),
         company_logo_url: cleanLogo(companyData?.logo_url || null),
         company_name: companyData?.name || newUser?.company_name || sessionUser.user_metadata?.company_name || "Slate",
         company_industry: companyData?.industry_type || newUser?.industry_type || localStorage.getItem('slate_onboarding_industry') || 'law',
