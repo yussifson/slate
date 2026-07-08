@@ -6,7 +6,7 @@ import RealEstateDashboard from "./dashboards/RealEstateDashboard";
 import HospitalDashboard from "./dashboards/HospitalDashboard";
 import SchoolDashboard from "./dashboards/SchoolDashboard";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/api/supabaseClient";
 
 export default function StaffDashboard() {
   const { user, impersonatedCompany } = useAuth();
