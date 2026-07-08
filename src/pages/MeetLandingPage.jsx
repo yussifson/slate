@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/api/supabaseClient';
-import { Video, Keyboard, Sparkles, Copy, Plus, Link as LinkIcon, ChevronLeft, ChevronRight, Calendar, ShieldCheck, Users } from 'lucide-react';
+import { Video, Keyboard, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Copy, Plus, Link as LinkIcon, ChevronLeft, ChevronRight, Calendar, ShieldCheck, Users } from 'lucide-react';
 
-// --- Carousel Slides ---
+// ─── Carousel Slides ─────────────────────────────────────────────────────────
+// Each slide has a render function (not static JSX) so they re-render correctly
 const slides = [
   {
     id: 0,
@@ -18,46 +19,22 @@ const slides = [
     description: 'Click New meeting to get a link you can send to people you want to meet with',
     render: () => (
       <div className="relative flex flex-col items-center justify-center w-full h-full select-none">
-        {/* Animated Mesh Gradients */}
-        <motion.div 
-          animate={{ scale: [1, 1.1, 1], rotate: [0, 90, 0] }} 
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          className="absolute w-[120%] h-[120%] rounded-full bg-blue-500/20 blur-[60px]" 
-        />
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], rotate: [0, -90, 0] }} 
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute w-64 h-64 rounded-full bg-cyan-400/20 blur-[40px] mix-blend-screen" 
-        />
-        
-        {/* Glass Orb */}
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="relative w-40 h-40 rounded-full border border-white/20 dark:border-white/10 bg-white/10 dark:bg-black/10 backdrop-blur-xl flex items-center justify-center shadow-2xl overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/40 to-cyan-400/40 opacity-50" />
-          <LinkIcon className="w-14 h-14 text-blue-600 dark:text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.5)] z-10" strokeWidth={1.5} />
-        </motion.div>
-
-        {/* Floating badges with spring animation */}
-        <motion.div 
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.2, type: "spring" }}
-          className="absolute top-10 right-4 bg-white/40 dark:bg-black/40 backdrop-blur-md border border-white/40 dark:border-white/10 rounded-2xl px-4 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.1)] flex items-center gap-2"
-        >
-          <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
-          <span className="text-xs font-semibold text-slate-800 dark:text-cyan-100 tracking-wide">Link Ready</span>
-        </motion.div>
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4, type: "spring" }}
-          className="absolute bottom-10 left-0 bg-white/40 dark:bg-black/40 backdrop-blur-md border border-white/40 dark:border-white/10 rounded-2xl px-4 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
-        >
-          <span className="text-xs font-medium text-slate-700 dark:text-slate-300 font-mono tracking-tight">meet.optavel.com/join/...</span>
-        </motion.div>
+        {/* Outer ring */}
+        <div className="absolute w-64 h-64 rounded-full border-2 border-blue-100 dark:border-blue-900/40 animate-pulse" />
+        {/* Mid ring */}
+        <div className="absolute w-44 h-44 rounded-full bg-blue-50 dark:bg-blue-900/20" />
+        {/* Inner glowing circle */}
+        <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-blue-400 flex items-center justify-center shadow-2xl shadow-blue-500/40">
+          <LinkIcon className="w-14 h-14 text-white" strokeWidth={1.5} />
+        </div>
+        {/* Floating badges */}
+        <div className="absolute top-6 right-10 bg-white dark:bg-slate-800 border border-blue-100 dark:border-blue-900/30 rounded-xl px-3 py-1.5 shadow-lg flex items-center gap-1.5">
+          <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+          <span className="text-xs font-semibold text-blue-600 dark:text-blue-300">Link Ready</span>
+        </div>
+        <div className="absolute bottom-10 left-6 bg-white dark:bg-slate-800 border border-blue-100 dark:border-blue-900/30 rounded-xl px-3 py-1.5 shadow-lg">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 font-mono">meet.optavel.com/join/...</span>
+        </div>
       </div>
     ),
   },
@@ -67,34 +44,23 @@ const slides = [
     description: 'Click New meeting to schedule meetings for later, then share the link before your event.',
     render: () => (
       <div className="relative flex flex-col items-center justify-center w-full h-full select-none">
-        {/* Animated Mesh Gradients */}
-        <motion.div 
-          animate={{ scale: [1, 1.1, 1], rotate: [0, -90, 0] }} 
-          transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-          className="absolute w-[120%] h-[120%] rounded-full bg-emerald-500/20 blur-[60px]" 
-        />
-        
-        {/* Glass Orb */}
-        <motion.div 
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: "spring", bounce: 0.5 }}
-          className="relative w-40 h-40 rounded-[2rem] border border-white/20 dark:border-white/10 bg-white/10 dark:bg-black/10 backdrop-blur-xl flex items-center justify-center shadow-2xl rotate-3 overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-gradient-to-tr from-emerald-600/40 to-teal-400/40 opacity-50" />
-          <Calendar className="w-14 h-14 text-emerald-600 dark:text-teal-400 drop-shadow-[0_0_15px_rgba(45,212,191,0.5)] z-10 -rotate-3" strokeWidth={1.5} />
-        </motion.div>
-
+        {/* Outer ring */}
+        <div className="absolute w-64 h-64 rounded-full border-2 border-emerald-100 dark:border-emerald-900/40 animate-pulse" />
+        {/* Mid ring */}
+        <div className="absolute w-44 h-44 rounded-full bg-emerald-50 dark:bg-emerald-900/20" />
+        {/* Calendar icon circle */}
+        <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shadow-2xl shadow-emerald-500/40">
+          <Calendar className="w-14 h-14 text-white" strokeWidth={1.5} />
+        </div>
         {/* Floating time badge */}
-        <motion.div 
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="absolute top-8 right-0 bg-white/40 dark:bg-black/40 backdrop-blur-md border border-white/40 dark:border-white/10 rounded-2xl px-4 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.1)] text-center transform rotate-6"
-        >
-          <span className="text-[10px] font-medium text-slate-500 dark:text-teal-200/70 uppercase tracking-wider block mb-1">Reminder sent</span>
-          <span className="text-sm font-bold text-slate-800 dark:text-white">10:00 AM Mon</span>
-        </motion.div>
+        <div className="absolute top-4 right-8 bg-white dark:bg-slate-800 border border-emerald-100 dark:border-emerald-900/30 rounded-xl px-3 py-1.5 shadow-lg flex items-center gap-2">
+          <Calendar className="w-3 h-3 text-emerald-500" />
+          <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-300">Scheduled</span>
+        </div>
+        <div className="absolute bottom-8 left-4 bg-white dark:bg-slate-800 border border-emerald-100 dark:border-emerald-900/30 rounded-xl px-3 py-2 shadow-lg text-center">
+          <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider block">Reminder sent</span>
+          <span className="text-xs font-bold text-slate-700 dark:text-slate-200">10:00 AM · Mon</span>
+        </div>
       </div>
     ),
   },
@@ -104,53 +70,33 @@ const slides = [
     description: 'No one can join unless invited or admitted by the host. End-to-end encrypted.',
     render: () => (
       <div className="relative flex flex-col items-center justify-center w-full h-full select-none">
-        {/* Animated Mesh Gradients */}
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }} 
-          transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-          className="absolute w-[120%] h-[120%] rounded-full bg-violet-500/20 blur-[60px]" 
-        />
-        
-        {/* Glass Shield */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative w-40 h-40 rounded-full border border-white/20 dark:border-white/10 bg-white/10 dark:bg-black/10 backdrop-blur-xl flex items-center justify-center shadow-2xl overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-gradient-to-tr from-violet-600/40 to-fuchsia-400/40 opacity-50" />
-          <ShieldCheck className="w-16 h-16 text-violet-600 dark:text-fuchsia-400 drop-shadow-[0_0_15px_rgba(192,38,211,0.5)] z-10" strokeWidth={1.5} />
-        </motion.div>
-
-        {/* Encrypted badge */}
-        <motion.div 
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2, type: "spring" }}
-          className="absolute top-4 right-2 bg-white/40 dark:bg-black/40 backdrop-blur-md border border-white/40 dark:border-white/10 rounded-2xl px-4 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.1)] flex items-center gap-2"
-        >
-          <ShieldCheck className="w-4 h-4 text-violet-600 dark:text-fuchsia-400" />
-          <span className="text-xs font-semibold text-slate-800 dark:text-fuchsia-100">End-to-end</span>
-        </motion.div>
-
+        {/* Outer ring */}
+        <div className="absolute w-64 h-64 rounded-full border-2 border-primary/10 animate-pulse" />
+        {/* Mid ring */}
+        <div className="absolute w-44 h-44 rounded-full bg-primary/5" />
+        {/* Shield icon circle */}
+        <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-2xl shadow-primary/40">
+          <ShieldCheck className="w-14 h-14 text-white" strokeWidth={1.5} />
+        </div>
         {/* Avatars below */}
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="absolute bottom-6 flex -space-x-4 hover:space-x-1 transition-all duration-300"
-        >
-          {['from-blue-400 to-blue-600', 'from-rose-400 to-rose-600', 'from-amber-400 to-amber-600', 'from-emerald-400 to-emerald-600'].map((c, i) => (
-            <div key={i} className={`w-10 h-10 rounded-full bg-gradient-to-br ${c} border-2 border-white/50 dark:border-black/50 backdrop-blur-md flex items-center justify-center shadow-lg transition-transform hover:-translate-y-2 hover:scale-110`}>
-              <Users className="w-4 h-4 text-white drop-shadow-md" />
+        <div className="absolute bottom-6 flex -space-x-3">
+          {['bg-blue-400', 'bg-rose-400', 'bg-amber-400', 'bg-emerald-400'].map((c, i) => (
+            <div key={i} className={`w-9 h-9 rounded-full ${c} border-2 border-white dark:border-slate-900 flex items-center justify-center`}>
+              <Users className="w-4 h-4 text-white" />
             </div>
           ))}
-        </motion.div>
+        </div>
+        {/* Encrypted badge */}
+        <div className="absolute top-4 right-6 bg-white dark:bg-slate-800 border border-primary/20 rounded-xl px-3 py-1.5 shadow-lg flex items-center gap-1.5">
+          <ShieldCheck className="w-3 h-3 text-primary" />
+          <span className="text-xs font-semibold text-primary">End-to-end</span>
+        </div>
       </div>
     ),
   },
 ];
 
-// --- Live Clock Hook ---
+// ─── Live Clock Hook ──────────────────────────────────────────────────────────
 function useLiveClock() {
   const [now, setNow] = useState(new Date());
 
@@ -238,38 +184,54 @@ export default function MeetLandingPage() {
   const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#030712] flex flex-col font-sans relative overflow-hidden transition-colors duration-500">
-      {/* Fluid Dynamics Background Layer */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <motion.div 
-          animate={{ scale: [1, 1.1, 1], rotate: [0, 90, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-[30%] -left-[10%] w-[80vw] h-[80vw] rounded-full bg-gradient-to-br from-primary/20 to-blue-500/10 blur-[120px] dark:from-primary/10 dark:to-blue-500/5 mix-blend-multiply dark:mix-blend-screen" 
-        />
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], rotate: [0, -90, 0] }}
-          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-[20%] -right-[10%] w-[70vw] h-[70vw] rounded-full bg-gradient-to-tr from-cyan-400/20 to-emerald-400/10 blur-[140px] dark:from-cyan-400/10 dark:to-emerald-400/5 mix-blend-multiply dark:mix-blend-screen" 
-        />
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1121] flex flex-col font-sans relative overflow-hidden">
+      {/* Realistic Background Layers */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 dark:bg-primary/10 blur-[120px]" />
+        <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[120px]" />
       </div>
-
       <Helmet>
-        <title>Optavel Meet - Premium HD Video Meetings</title>
-        <meta name="description" content="Start or join HD video meetings instantly with Fluid Dynamics UI." />
+        <title>Optavel Meet — Free HD Video Meetings for Teams</title>
+        <meta name="description" content="Optavel Meet is a free, secure, enterprise-grade video conferencing platform. Start or join HD video meetings instantly — no downloads required. Trusted by teams worldwide." />
+        <meta name="keywords" content="Optavel Meet, video meeting, online video call, video conferencing, free video call, HD video call, team meeting, virtual meeting, enterprise video, secure video call, Google Meet alternative, Zoom alternative" />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="Optavel" />
+        <link rel="canonical" href="https://meet.optavel.com/" />
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://meet.optavel.com/" />
+        <meta property="og:title" content="Optavel Meet — Free HD Video Meetings for Teams" />
+        <meta property="og:description" content="Start or join a free HD video meeting in seconds. Secure, enterprise-grade video conferencing by Optavel — no downloads, no friction." />
+        <meta property="og:site_name" content="Optavel Meet" />
+        <meta property="og:locale" content="en_US" />
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Optavel Meet — Free HD Video Meetings for Teams" />
+        <meta name="twitter:description" content="Start or join a free HD video meeting in seconds. Secure, enterprise-grade video conferencing by Optavel — no downloads, no friction." />
+        <meta name="twitter:site" content="@optavel" />
+        {/* Structured Data */}
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "Optavel Meet",
+          "url": "https://meet.optavel.com",
+          "description": "Free, secure, enterprise-grade HD video conferencing. Start or join meetings instantly — no downloads required.",
+          "applicationCategory": "CommunicationApplication",
+          "operatingSystem": "Any",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "provider": { "@type": "Organization", "name": "Optavel", "url": "https://optavel.com" }
+        })}</script>
       </Helmet>
-
       {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-5 md:px-10 border-b border-white/20 dark:border-white/5 bg-white/40 dark:bg-black/20 backdrop-blur-2xl shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-100 dark:border-white/10">
-            <img src="/orbit-logo.svg" alt="Optavel Logo" className="w-6 h-6 object-contain" />
+      <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/50 dark:border-white/5 bg-white/50 dark:bg-[#090E17]/50 backdrop-blur-md">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 flex items-center justify-center">
+            <img src="/orbit-logo.svg" alt="Optavel Logo" className="w-full h-full object-contain" />
           </div>
-          <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">
-            Optavel Meet
-          </span>
+          <span className="text-xl font-semibold tracking-tight text-slate-800 dark:text-slate-100">Optavel Meet</span>
         </div>
         {/* Live real-time clock */}
-        <div className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300 tabular-nums bg-white/50 dark:bg-black/30 px-4 py-2 rounded-full border border-white/40 dark:border-white/10 backdrop-blur-md shadow-sm">
+        <div className="flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 tabular-nums">
           <span>{timeStr}</span>
           <span className="text-slate-300 dark:text-slate-600">•</span>
           <span>{dateStr}</span>
@@ -277,208 +239,185 @@ export default function MeetLandingPage() {
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 flex-1 flex flex-col lg:flex-row items-center justify-center p-6 md:p-12 lg:p-20 gap-12 lg:gap-20 max-w-[1400px] mx-auto w-full">
-        
-        {/* Left Side: Copy & Actions */}
-        <motion.div 
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left space-y-8 w-full"
-        >
-          <div className="space-y-4 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 text-primary text-sm font-semibold tracking-wide mb-2">
-              <Sparkles className="w-4 h-4" /> Optavel OS Exclusive
-            </div>
-            <h1 className="text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white leading-[1.1] tracking-tight">
-              Premium video meetings.<br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-500 to-cyan-400">Beautifully fluid.</span>
-            </h1>
-            <p className="text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-medium max-w-xl">
-              Immerse yourself in secure, enterprise-grade video conferencing powered by Fluid Dynamics UI.
-            </p>
-          </div>
+      <main className="relative z-10 flex-1 flex flex-col md:flex-row items-center justify-center p-6 md:p-12 gap-12 md:gap-16 max-w-7xl mx-auto w-full">
+        {/* Left Side */}
+        <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-8 max-w-xl">
+          <h1 className="text-4xl md:text-5xl font-normal text-slate-800 dark:text-slate-100 leading-tight">
+            Premium video meetings.<br />Now free for everyone.
+          </h1>
+          <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
+            We re-engineered the service we built for secure business meetings, Optavel Meet, to make it free and available for all.
+          </p>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4 w-full pt-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full pt-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   size="lg"
                   disabled={isCreating}
-                  className="w-full sm:w-auto h-14 px-8 gap-3 text-base font-semibold rounded-2xl bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white shadow-xl shadow-primary/30 transition-all hover:scale-105 active:scale-95 border border-white/20"
+                  className="w-full sm:w-auto h-12 px-6 gap-2 text-base rounded-xl shadow-md shadow-primary/20"
                 >
                   {isCreating ? <OrbitLoader /> : <Video className="w-5 h-5" />}
-                  New Meeting
+                  New meeting
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-72 p-2 shadow-2xl border-white/20 dark:border-white/10 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl">
+              <DropdownMenuContent align="start" className="w-64 p-2 shadow-xl border-slate-100 dark:border-white/10 rounded-xl">
                 <DropdownMenuItem
                   onClick={() => handleCreateMeeting('later')}
-                  className="flex items-center gap-3 p-3.5 cursor-pointer rounded-xl hover:bg-slate-100/50 dark:hover:bg-white/10 transition-colors"
+                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50 dark:hover:bg-white/5"
                 >
-                  <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
-                    <LinkIcon className="w-4 h-4" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-slate-800 dark:text-slate-100">Create for later</span>
-                    <span className="text-xs text-slate-500 dark:text-slate-400">Get a link to share</span>
-                  </div>
+                  <LinkIcon className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+                  <span className="font-medium text-slate-700 dark:text-slate-200">Create a meeting for later</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => handleCreateMeeting('instant')}
-                  className="flex items-center gap-3 p-3.5 cursor-pointer rounded-xl hover:bg-slate-100/50 dark:hover:bg-white/10 transition-colors mt-1"
+                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50 dark:hover:bg-white/5"
                 >
-                  <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
-                    <Plus className="w-4 h-4" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-slate-800 dark:text-slate-100">Start instantly</span>
-                    <span className="text-xs text-slate-500 dark:text-slate-400">Jump right into a room</span>
-                  </div>
+                  <Plus className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+                  <span className="font-medium text-slate-700 dark:text-slate-200">Start an instant meeting</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <form onSubmit={handleJoin} className="relative w-full sm:w-80 group">
+            <form onSubmit={handleJoin} className="relative w-full sm:w-72">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Keyboard className="h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
+                <Keyboard className="h-5 w-5 text-slate-400" />
               </div>
               <input
                 type="text"
                 value={meetingCode}
                 onChange={(e) => setMeetingCode(e.target.value)}
                 placeholder="Enter a code or link"
-                className="block w-full h-14 pl-12 pr-20 py-3 border border-white/40 dark:border-white/10 rounded-2xl bg-white/40 dark:bg-black/20 backdrop-blur-md placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary focus:bg-white dark:focus:bg-slate-900 sm:text-base font-medium shadow-sm transition-all"
+                className="block w-full pl-11 pr-14 py-3 border border-slate-200 dark:border-white/10 rounded-xl leading-5 bg-transparent placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition-colors"
               />
-              <AnimatePresence>
-                {meetingCode && (
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    type="submit"
-                    className="absolute inset-y-2 right-2 px-4 flex items-center justify-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors text-sm shadow-md"
-                  >
-                    Join
-                  </motion.button>
-                )}
-              </AnimatePresence>
+              {meetingCode && (
+                <button
+                  type="submit"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-primary font-semibold hover:text-primary/80 transition-colors text-sm"
+                >
+                  Join
+                </button>
+              )}
             </form>
           </div>
-        </motion.div>
 
-        {/* Right Side: Fluid Glass Carousel */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9, rotateY: -15 }}
-          animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          className="flex-1 w-full max-w-lg hidden lg:flex flex-col items-center justify-center relative perspective-[1000px]"
-        >
-          {/* Main Glass Container */}
-          <div className="relative w-full aspect-square max-w-[500px] rounded-[3rem] bg-white/30 dark:bg-black/30 backdrop-blur-2xl border border-white/50 dark:border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col p-8 transform-gpu hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] transition-shadow duration-500">
-            
-            <div className="flex-1 relative flex items-center justify-center">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentSlide}
-                  initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 1.05, y: -10 }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
-                  className="absolute inset-0 flex flex-col"
+          <div className="border-t border-slate-100 dark:border-white/10 w-full pt-5 mt-2">
+            <p className="text-sm text-slate-500">
+              <a href="#" className="text-primary hover:underline font-medium">Learn more</a> about Optavel Meet
+            </p>
+          </div>
+        </div>
+
+        {/* Right Side: Enlarged Carousel */}
+        <div className="flex-1 hidden md:flex items-center justify-center relative min-h-[520px]">
+          {/* Prev button */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-0 z-10 w-10 h-10 rounded-full bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-md border border-slate-100 dark:border-white/10 flex items-center justify-center transition-all"
+          >
+            <ChevronLeft className="w-5 h-5 text-slate-500" />
+          </button>
+
+          <div className="flex flex-col items-center text-center w-full max-w-md px-12">
+            {/* Illustration frame — larger, taller */}
+            <div className="w-full h-[340px] relative mb-8">
+              {slides.map((slide) => (
+                <div
+                  key={slide.id}
+                  className={`absolute inset-0 transition-all duration-700 ${
+                    slide.id === currentSlide ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-95 z-0'
+                  }`}
                 >
-                  <div className="flex-1 relative">
-                    {slides[currentSlide].render()}
-                  </div>
-                  <div className="h-32 text-center mt-6">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">
-                      {slides[currentSlide].title}
-                    </h2>
-                    <p className="text-base text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-                      {slides[currentSlide].description}
-                    </p>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                  {slide.render()}
+                </div>
+              ))}
             </div>
 
-            {/* Navigation & Indicators */}
-            <div className="absolute bottom-8 left-0 right-0 flex justify-between items-center px-10">
-              <button
-                onClick={prevSlide}
-                className="w-10 h-10 rounded-full bg-white/50 dark:bg-black/50 hover:bg-white dark:hover:bg-slate-800 backdrop-blur-md shadow-md border border-white/50 dark:border-white/10 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
-              >
-                <ChevronLeft className="w-5 h-5 text-slate-700 dark:text-slate-300" />
-              </button>
+            {/* Text area with fixed height to prevent layout shift */}
+            <div className="h-28">
+              <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2 tracking-tight">
+                {slides[currentSlide].title}
+              </h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-xs mx-auto">
+                {slides[currentSlide].description}
+              </p>
+            </div>
 
-              <div className="flex gap-2.5">
-                {slides.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentSlide(i)}
-                    className={`h-2.5 rounded-full transition-all duration-500 ease-out ${
-                      i === currentSlide
-                        ? 'bg-primary w-8 shadow-sm shadow-primary/50'
-                        : 'bg-slate-300 dark:bg-slate-700 w-2.5 hover:bg-slate-400 dark:hover:bg-slate-500'
-                    }`}
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={nextSlide}
-                className="w-10 h-10 rounded-full bg-white/50 dark:bg-black/50 hover:bg-white dark:hover:bg-slate-800 backdrop-blur-md shadow-md border border-white/50 dark:border-white/10 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
-              >
-                <ChevronRight className="w-5 h-5 text-slate-700 dark:text-slate-300" />
-              </button>
+            {/* Pill indicators */}
+            <div className="flex gap-2 mt-2">
+              {slides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentSlide(i)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    i === currentSlide
+                      ? 'bg-primary w-6'
+                      : 'bg-slate-200 dark:bg-slate-700 w-2 hover:bg-slate-300 dark:hover:bg-slate-600'
+                  }`}
+                />
+              ))}
             </div>
           </div>
-        </motion.div>
+
+          {/* Next button */}
+          <button
+            onClick={nextSlide}
+            className="absolute right-0 z-10 w-10 h-10 rounded-full bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-md border border-slate-100 dark:border-white/10 flex items-center justify-center transition-all"
+          >
+            <ChevronRight className="w-5 h-5 text-slate-500" />
+          </button>
+        </div>
       </main>
 
-      {/* Share Link Dialog (Glassmorphic) */}
+      {/* Share Link Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md p-0 border border-white/20 shadow-2xl rounded-[2rem] overflow-hidden bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl">
+        <DialogContent className="sm:max-w-md p-0 border-none shadow-2xl rounded-2xl overflow-hidden bg-white dark:bg-slate-900">
           <DialogTitle className="sr-only">Meeting Link Created</DialogTitle>
           <DialogDescription className="sr-only">Your meeting link is ready to be copied.</DialogDescription>
           
-          <div className="relative w-full p-10 text-center flex flex-col items-center">
-            {/* Soft background glow */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-b from-primary/20 to-transparent blur-[40px] pointer-events-none" />
-
-            <div className="w-16 h-16 bg-gradient-to-br from-primary to-blue-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-primary/30 shrink-0 transform rotate-3">
-              <Video className="w-8 h-8 -rotate-3" />
+          <div className="relative w-full bg-gradient-to-b from-primary/10 to-transparent p-8 md:p-10 text-center flex flex-col items-center">
+            {/* Sparkles Background */}
+            <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+              <Sparkles className="w-32 h-32 text-primary transform rotate-12" />
             </div>
 
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">Ready to meet?</h2>
-            <p className="text-slate-600 dark:text-slate-300 mb-8 max-w-sm text-base leading-relaxed font-medium">
-              Copy this link and send it to your team. Save it for later if you need to.
+            {/* Icon */}
+            <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mb-6 shadow-lg shadow-primary/30 shrink-0">
+              <Video className="w-8 h-8" />
+            </div>
+
+            {/* Text */}
+            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2 tracking-tight">Here's your meeting link</h2>
+            <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-sm text-sm leading-relaxed">
+              Copy this link and send it to people you want to meet with. Save it so you can use it later.
             </p>
 
-            <div className="w-full bg-slate-50 dark:bg-black/30 border border-slate-200 dark:border-white/10 rounded-2xl p-2 flex items-center gap-2 shadow-inner">
-              <div className="flex-1 min-w-0 px-3 py-2 text-left">
-                <span className="text-sm text-primary dark:text-cyan-400 font-semibold truncate block w-full tracking-wide">
-                  {laterLink}
-                </span>
+            {/* Link Box */}
+            <div className="w-full bg-white dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-left shadow-sm">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Join Link</p>
+              <div className="flex items-center gap-2">
+                <div className="flex-1 min-w-0 bg-slate-50 dark:bg-black/50 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/5 overflow-hidden">
+                  <span className="text-sm text-primary font-medium truncate block w-full">{laterLink}</span>
+                </div>
+                <Button
+                  type="button"
+                  className="rounded-xl shrink-0 gap-2 bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20 transition-all hover:scale-105 px-4"
+                  onClick={() => {
+                    navigator.clipboard.writeText(laterLink);
+                    toast({ title: 'Copied!', description: 'Meeting link copied to clipboard.' });
+                  }}
+                >
+                  <Copy className="h-4 w-4" />
+                  Copy
+                </Button>
               </div>
-              <Button
-                type="button"
-                size="sm"
-                className="rounded-xl h-10 px-5 gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-semibold shadow-md transition-all hover:scale-105 active:scale-95 shrink-0"
-                onClick={() => {
-                  navigator.clipboard.writeText(laterLink);
-                  toast({ title: 'Copied!', description: 'Link saved to clipboard.' });
-                }}
-              >
-                <Copy className="h-4 w-4" />
-                Copy
-              </Button>
             </div>
 
+            {/* Done Button */}
             <Button
               onClick={() => setIsDialogOpen(false)}
               variant="ghost"
-              className="mt-6 w-full rounded-xl h-12 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 font-semibold"
+              className="mt-6 w-full sm:w-auto px-10 text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full"
             >
               Done
             </Button>
