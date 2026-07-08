@@ -27,10 +27,16 @@ export default function Milestones() {
       try {
         const res = await powerSync.execute('SELECT m.*, u.name as member_name FROM univ_religion_milestones m LEFT JOIN univ_religion_members u ON m.member_id = u.id WHERE m.company_id = ? ORDER BY m.created_at DESC', [companyId]);
         if(active) setMilestones(res.rows._array || Array.from(res.rows));
-
-        const memRes = await powerSync.execute('SELECT id, name FROM univ_religion_members WHERE company_id = ? ORDER BY name ASC', [companyId]);
+      } catch(e) {
+        console.error("Error fetching milestones:", e);
+      }
+      
+      try {
+        const memRes = await powerSync.execute('SELECT * FROM univ_religion_members WHERE company_id = ? ORDER BY name ASC', [companyId]);
         if(active) setMembers(memRes.rows._array || Array.from(memRes.rows));
-      } catch(e){}
+      } catch(e) {
+        console.error("Error fetching members:", e);
+      }
       setIsDbLoading(false);
     };
     if (companyId) fetchAll();
