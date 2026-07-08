@@ -321,6 +321,21 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  support: ["/my-dashboard", "/", "/tasks", "/documents", "/calendar", "/whatsapp", "/email-inbox", "/chat"]
 };
 
+ const INDUSTRY_BASE_PERMISSIONS = {
+  law: ["/", "/my-dashboard", "/cases", "/clients", "/documents", "/tasks", "/email-inbox", "/chat", "/board", "/calendar"],
+  software: ["/", "/my-dashboard", "/sprints", "/bugs", "/product-tasks", "/product-docs", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
+  real_estate: ["/", "/my-dashboard", "/properties", "/viewings", "/deals", "/clients", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
+  hospital: ["/", "/my-dashboard", "/patients", "/appointments", "/wards", "/prescriptions", "/lab-results", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
+  school: ["/", "/my-dashboard", "/classes", "/students", "/attendance", "/grades", "/assignments", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
+  accounting: ["/", "/my-dashboard", "/invoices", "/billing", "/clients", "/reports", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
+  insurance: ["/", "/my-dashboard", "/policies", "/claims", "/clients", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
+  logistics: ["/", "/my-dashboard", "/shipments", "/dispatch", "/fleet", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
+  retail: ["/", "/my-dashboard", "/retail-dashboard", "/pos", "/retail-inventory", "/products", "/orders", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
+  hotel: ["/", "/my-dashboard", "/rooms", "/reservations", "/front-desk", "/guests", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
+  hr: ["/", "/my-dashboard", "/employees", "/team", "/recruitment", "/leave", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
+  default: ["/", "/my-dashboard", "/documents", "/tasks", "/email-inbox", "/chat", "/board", "/calendar"]
+ };
+
  const FEATURE_PATHS = {
  'Dashboard': ['/'],
  'Access Control': ['/admin/users', '/settings'],
@@ -368,7 +383,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  return paths;
 }, [univAccessData, industryNavRaw]);
 
- const allowedPaths = isAdmin ? null : (univAllowedPaths || ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);
+ const allowedPaths = isAdmin ? null : (univAllowedPaths || ROLE_PERMISSIONS[user?.role] || INDUSTRY_BASE_PERMISSIONS[activeIndustry] || INDUSTRY_BASE_PERMISSIONS.default);
 
  const coreOrbitNav = [
  { label: "Dashboard", path: "/", icon: "Sparkles"},
@@ -400,16 +415,19 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const isSuiteAdmin = ["super_admin", "admin"].includes(user?.role);
 
   let filteredCompanyNav = (isSuiteAdmin && location.pathname.startsWith('/admin')) ? adminNav : (isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
+ // Core features everyone gets
+ const corePaths = ['/', '/my-dashboard', '/email-inbox', '/chat', '/board', '/settings', '/time-tracking'];
+ 
  // If activeModules is explicitly set (Custom Selection mode)
  if (activeModules && !['/', '/settings', '/integrations', '/admin', '/email-inbox', '/chat', '/board', '/hr', '/roles', '/departments'].includes(item.path)) {
- // If it's not in the active modules, completely hide it
- if (!activeModules.includes(item.path)) return false;
- // If it IS in the active modules, bypass role restrictions so the user can actually see what they selected!
- return true;
-}
- // If no activeModules override (Template mode), fallback to role permissions
+   // If it's not in the active modules, completely hide it from everyone
+   if (!activeModules.includes(item.path)) return false;
+ }
+ 
+ // Evaluate RBAC permissions
  if (isAdmin) return true;
- if (!allowedPaths) return true;
+ if (corePaths.includes(item.path)) return true;
+ if (!allowedPaths) return true; // If totally undefined for some reason, allow (though shouldn't happen)
  return allowedPaths.includes(item.path);
 }));
 

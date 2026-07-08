@@ -194,8 +194,12 @@ export default function Employees() {
      let authUserId = null;
      if (createAccount) {
        try {
+         const rawLoginEmail = formData.email.trim().toLowerCase();
+         const [localPart, domain] = rawLoginEmail.split('@');
+         const proxyEmail = `${localPart}+firm${(user?.company_id || '').replace(/-/g, '')}@${domain}`;
+
          const reg = await base44.auth.adminRegister({
-           email: formData.email,
+           email: proxyEmail,
            password: password,
            company_id: user?.company_id,
            role: finalRole

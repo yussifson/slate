@@ -105,14 +105,18 @@ export default function OptavelProductEng() {
 
   const submitSprint = async () => {
     if (!sprintForm.title) return toast.error('Title is required');
-    await powerSync.execute(
-      `INSERT INTO optavel_sprints (id, company_id, title, goal, status, start_date, end_date, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?)`,
-      [uuidv4(), companyId, sprintForm.title, sprintForm.goal, 'active', sprintForm.start_date, sprintForm.end_date, new Date().toISOString(), new Date().toISOString()]
-    );
-    toast.success('Sprint started!');
-    setSprintModal(false);
-    setSprintForm({ title: '', goal: '', start_date: '', end_date: '' });
-    queryClient.invalidateQueries(['optavel_sprints']);
+    try {
+      await powerSync.execute(
+        `INSERT INTO optavel_sprints (id, company_id, title, goal, status, start_date, end_date, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?)`,
+        [uuidv4(), companyId, sprintForm.title, sprintForm.goal, 'active', sprintForm.start_date || null, sprintForm.end_date || null, new Date().toISOString(), new Date().toISOString()]
+      );
+      toast.success('Sprint started!');
+      setSprintModal(false);
+      setSprintForm({ title: '', goal: '', start_date: '', end_date: '' });
+      queryClient.invalidateQueries(['optavel_sprints']);
+    } catch (e) {
+      toast.error('Failed to save sprint: ' + e.message);
+    }
   };
 
   const moveTask = async (taskId, newStatus) => {

@@ -305,16 +305,10 @@ export default function Login() {
       }
       
       if (companySubdomain && companySubdomain !== currentSubdomain && !workspace) {
-        if (isElectron) { 
-          navigate('/'); 
-        } else {
-          const port = window.location.port ? `:${window.location.port}` : '';
-          let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
-          if (authData?.session?.access_token && authData?.session?.refresh_token) {
-            url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
-          }
-          window.location.href = url; 
-        }
+        // Strict multi-tenant boundary: Do not allow logging into another company's subdomain
+        await supabase.auth.signOut();
+        setError("You are not authorized to access this workspace.");
+        setLoading(false);
         return;
       } else if (companySubdomain && workspace && !currentSubdomain) {
         // We are on root, redirecting to the workspace
