@@ -59,30 +59,44 @@ export default function SoftwareDashboard() {
     enabled: !!companyId
   });
 
+  const { data: allTasks = [] } = useQuery({
+    queryKey: ['optavel_all_tasks', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute(`SELECT * FROM optavel_tasks WHERE company_id = ?`, [companyId]);
+      return res.rows._array;
+    },
+    enabled: !!companyId
+  });
+
   const pendingTasks = tasks.filter(t => t.status !== 'completed' && t.status !== 'done');
-  const openBugs = bugs.filter(b => b.status === 'open' || b.status === 'in_progress');
+  const openBugs = bugs.filter(b => b.status === 'open' || b.status === 'in_progress' || b.status === 'todo');
   const activeSprints = sprints;
 
-  // Mock progress for now
-  const sprintProgress = 65;
+  // Calculate real progress and velocity
+  const activeSprint = activeSprints[0];
+  const sprintTasks = allTasks.filter(t => t.sprint_id === activeSprint?.id);
+  const completedSprintTasks = sprintTasks.filter(t => t.status === 'completed' || t.status === 'done');
+  const sprintProgress = sprintTasks.length > 0 ? Math.round((completedSprintTasks.length / sprintTasks.length) * 100) : 0;
+  const velocity = completedSprintTasks.length;
 
   return (
     <div className="space-y-8 school-page-enter font-dmsans max-w-7xl mx-auto pb-12">
       {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-indigo-600 via-blue-600 to-cyan-700 p-8 sm:p-10 text-white shadow-2xl shadow-blue-500/20">
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-600 via-green-600 to-teal-700 p-8 sm:p-10 text-white shadow-2xl shadow-emerald-500/20">
         <div className="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl mix-blend-overlay pointer-events-none" />
-        <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-64 h-64 bg-indigo-900 opacity-20 rounded-full blur-2xl mix-blend-overlay pointer-events-none" />
+        <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-64 h-64 bg-emerald-900 opacity-20 rounded-full blur-2xl mix-blend-overlay pointer-events-none" />
         
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2.5 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20">
-                <Code2 className="w-6 h-6 text-blue-100" />
+                <Code2 className="w-6 h-6 text-emerald-100" />
               </div>
               <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Software Engineering</h1>
             </div>
-            <p className="text-blue-100 text-lg font-medium tracking-wide">Development & Product Overview</p>
-            <div className="mt-6 flex items-center gap-4 text-sm font-medium text-blue-100/80">
+            <p className="text-emerald-100 text-lg font-medium tracking-wide">Development & Product Overview</p>
+            <div className="mt-6 flex items-center gap-4 text-sm font-medium text-emerald-100/80">
               <span className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 opacity-70" />
                 {format(today, "EEEE, MMMM d, yyyy")}
@@ -92,9 +106,9 @@ export default function SoftwareDashboard() {
           
           <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 shadow-inner">
             <div className="text-right">
-              <p className="text-xs text-blue-200 font-bold uppercase tracking-wider mb-1">Status</p>
+              <p className="text-xs text-emerald-200 font-bold uppercase tracking-wider mb-1">Status</p>
               <div className="flex items-center gap-2 text-sm font-bold text-white">
-                <span className="w-2.5 h-2.5 rounded-full bg-blue-400 animate-pulse shadow-[0_0_12px_rgba(96,165,250,0.8)]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_12px_rgba(52,211,153,0.8)]" />
                 Build Passing
               </div>
             </div>
@@ -104,10 +118,10 @@ export default function SoftwareDashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard icon={CheckSquare} label="My Pending Tasks" value={pendingTasks.length} color="bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400" />
+        <StatCard icon={CheckSquare} label="My Pending Tasks" value={pendingTasks.length} color="bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" />
         <StatCard icon={Bug} label="Open Bugs" value={openBugs.length} color="bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400" />
         <StatCard icon={PlayCircle} label="Active Sprints" value={activeSprints.length} color="bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" />
-        <StatCard icon={TrendingUp} label="Velocity" value="24" sub="Points this sprint" color="bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" />
+        <StatCard icon={TrendingUp} label="Velocity" value={velocity} sub="Tasks done this sprint" color="bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
@@ -124,11 +138,11 @@ export default function SoftwareDashboard() {
               <div className="p-5 text-center text-sm text-muted-foreground">{t("no_pending_tasks", "No pending tasks 🎉")}</div>
             ) : pendingTasks.map(task => (
                 <div key={task.id} className="px-6 py-4 flex items-start gap-3">
-                  <div className={`w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 bg-indigo-500`} />
+                  <div className={`w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 bg-emerald-500`} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium">{task.title}</p>
                     <div className="flex flex-wrap gap-2.5 mt-1">
-                      <Badge variant="outline" className="text-[10px] uppercase">{task.status}</Badge>
+                      <Badge variant="outline" className="text-[10px] uppercase bg-slate-50">{task.status}</Badge>
                       <Badge variant="outline" className="text-[10px] uppercase">{task.priority}</Badge>
                     </div>
                   </div>
