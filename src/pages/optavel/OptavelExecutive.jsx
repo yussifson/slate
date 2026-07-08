@@ -11,8 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar } from 'recharts';
 
-const CARD = 'bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6';
-const HEAD = 'text-lg font-bold text-white flex items-center gap-2 mb-5';
+const CARD = 'bg-card border border-border rounded-2xl p-6 shadow-sm';
+const HEAD = 'text-lg font-bold text-foreground flex items-center gap-2 mb-5';
 
 export default function OptavelExecutive() {
   const { user } = useAuth();
@@ -125,25 +125,25 @@ export default function OptavelExecutive() {
   const totalEquity = capTable.reduce((s, r) => s + (Number(r.equity_percentage)||0), 0);
   const avgProgress = okrs.length ? Math.round(okrs.reduce((s, o) => s + (Number(o.progress)||0), 0) / okrs.length) : 0;
 
-  const statusColor = (s) => ({ on_track: 'text-emerald-400 bg-emerald-400/10', at_risk: 'text-amber-400 bg-amber-400/10', off_track: 'text-red-400 bg-red-400/10' }[s] || 'text-slate-400 bg-white/5');
+  const statusColor = (s) => ({ on_track: 'text-emerald-400 bg-emerald-400/10', at_risk: 'text-amber-400 bg-amber-400/10', off_track: 'text-red-400 bg-red-400/10' }[s] || 'text-muted-foreground bg-muted');
 
   return (
-    <div className="min-h-screen p-6 md:p-8" style={{ background: 'radial-gradient(ellipse at top left, #0d1f3c 0%, #0a0f1e 60%, #000 100%)' }}>
+    <div className="min-h-screen p-6 md:p-8 bg-background text-foreground" >
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-            <div className="p-2 bg-violet-500/20 rounded-xl"><BarChart2 className="w-7 h-7 text-violet-400" /></div>
+          <h1 className="text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-xl"><BarChart2 className="w-7 h-7 text-primary" /></div>
             Executive Command
           </h1>
-          <p className="text-slate-400 mt-1 text-sm">OKRs · Decisions · Revenue · Cap Table</p>
+          <p className="text-muted-foreground mt-1 text-sm">OKRs · Decisions · Revenue · Cap Table</p>
         </div>
         <div className="flex gap-3">
-          <Button onClick={() => setDecisionModal(true)} variant="outline" className="border-white/10 text-white hover:bg-white/10 gap-2">
+          <Button onClick={() => setDecisionModal(true)} variant="outline" className="border-border text-foreground hover:bg-muted/80 gap-2">
             <CheckCircle className="w-4 h-4 text-blue-400" /> Log Decision
           </Button>
           <Button onClick={() => { setEditOkr(null); setOkrForm({ objective:'', key_result:'', owner:'', due_date:'', progress:0, status:'on_track' }); setOkrModal(true); }}
-            className="bg-violet-600 hover:bg-violet-700 text-white gap-2">
+            className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
             <Plus className="w-4 h-4" /> New OKR
           </Button>
         </div>
@@ -159,7 +159,7 @@ export default function OptavelExecutive() {
         ].map(({ label, val, icon: Icon, color }) => (
           <div key={label} className={`${CARD} relative overflow-hidden`}>
             <div className={`absolute -right-4 -top-4 w-20 h-20 rounded-full bg-${color}-500/10 blur-xl`} />
-            <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-2">{label}</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-2">{label}</p>
             <p className={`text-3xl font-black text-${color}-400`}>{val}</p>
           </div>
         ))}
@@ -168,35 +168,35 @@ export default function OptavelExecutive() {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* OKRs */}
         <div className={`${CARD} xl:col-span-2`}>
-          <div className={HEAD}><Target className="w-5 h-5 text-violet-400" /> Company Objectives (OKRs)</div>
+          <div className={HEAD}><Target className="w-5 h-5 text-primary" /> Company Objectives (OKRs)</div>
           <div className="space-y-4">
             {okrs.length === 0 ? (
-              <div className="text-center py-10 text-slate-500">No OKRs yet. Create your first company objective.</div>
+              <div className="text-center py-10 text-muted-foreground">No OKRs yet. Create your first company objective.</div>
             ) : okrs.map(okr => (
-              <div key={okr.id} className="p-4 bg-white/5 rounded-xl border border-white/5 group">
+              <div key={okr.id} className="p-4 bg-muted rounded-xl border border-border group">
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-white text-sm mb-0.5 truncate">{okr.objective}</h4>
-                    {okr.key_result && <p className="text-xs text-slate-500 truncate">KR: {okr.key_result}</p>}
+                    <h4 className="font-bold text-foreground text-sm mb-0.5 truncate">{okr.objective}</h4>
+                    {okr.key_result && <p className="text-xs text-muted-foreground truncate">KR: {okr.key_result}</p>}
                     <div className="flex items-center gap-2 mt-1">
-                      {okr.owner && <span className="text-xs text-slate-500">👤 {okr.owner}</span>}
-                      {okr.due_date && <span className="text-xs text-slate-500">📅 {okr.due_date}</span>}
+                      {okr.owner && <span className="text-xs text-muted-foreground">👤 {okr.owner}</span>}
+                      {okr.due_date && <span className="text-xs text-muted-foreground">📅 {okr.due_date}</span>}
                     </div>
                   </div>
                   <div className="flex items-center gap-1 ml-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => updateOkrProgress(okr.id, -10)} className="p-1 text-slate-400 hover:text-white rounded"><ChevronDown className="w-4 h-4" /></button>
-                    <button onClick={() => updateOkrProgress(okr.id, 10)} className="p-1 text-slate-400 hover:text-white rounded"><ChevronUp className="w-4 h-4" /></button>
+                    <button onClick={() => updateOkrProgress(okr.id, -10)} className="p-1 text-muted-foreground hover:text-foreground rounded"><ChevronDown className="w-4 h-4" /></button>
+                    <button onClick={() => updateOkrProgress(okr.id, 10)} className="p-1 text-muted-foreground hover:text-foreground rounded"><ChevronUp className="w-4 h-4" /></button>
                     <button onClick={() => { setEditOkr(okr); setOkrForm({ objective: okr.objective, key_result: okr.key_result||'', owner: okr.owner||'', due_date: okr.due_date||'', progress: okr.progress||0, status: okr.status||'on_track' }); setOkrModal(true); }}
-                      className="p-1 text-slate-400 hover:text-violet-400 rounded"><Edit2 className="w-4 h-4" /></button>
-                    <button onClick={() => deleteOkr(okr.id)} className="p-1 text-slate-400 hover:text-red-400 rounded"><Trash2 className="w-4 h-4" /></button>
+                      className="p-1 text-muted-foreground hover:text-violet-400 rounded"><Edit2 className="w-4 h-4" /></button>
+                    <button onClick={() => deleteOkr(okr.id)} className="p-1 text-muted-foreground hover:text-red-400 rounded"><Trash2 className="w-4 h-4" /></button>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex-1 bg-white/5 rounded-full h-2.5 overflow-hidden">
+                  <div className="flex-1 bg-muted rounded-full h-2.5 overflow-hidden">
                     <div className="h-full rounded-full bg-gradient-to-r from-violet-500 to-emerald-500 transition-all duration-700"
                       style={{ width: `${Math.min(100, Number(okr.progress)||0)}%` }} />
                   </div>
-                  <span className="text-sm font-black text-white w-10 text-right">{Number(okr.progress)||0}%</span>
+                  <span className="text-sm font-black text-foreground w-10 text-right">{Number(okr.progress)||0}%</span>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-semibold capitalize ${statusColor(okr.status)}`}>
                     {(okr.status||'').replace('_',' ')}
                   </span>
@@ -208,7 +208,7 @@ export default function OptavelExecutive() {
 
         {/* Revenue Chart */}
         <div className={CARD}>
-          <div className={HEAD}><TrendingUp className="w-5 h-5 text-emerald-400" /> Revenue vs Expense</div>
+          <div className={HEAD}><TrendingUp className="w-5 h-5 text-primary" /> Revenue vs Expense</div>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -219,7 +219,7 @@ export default function OptavelExecutive() {
               <Bar dataKey="expense" fill="#8b5cf6" radius={[4,4,0,0]} name="Expense" />
             </BarChart>
           </ResponsiveContainer>
-          <div className="flex gap-4 mt-3 text-xs text-slate-400">
+          <div className="flex gap-4 mt-3 text-xs text-muted-foreground">
             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />Revenue</span>
             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-violet-400 inline-block" />Expense</span>
           </div>
@@ -230,15 +230,15 @@ export default function OptavelExecutive() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
         {/* Decision Log */}
         <div className={CARD}>
-          <div className={HEAD}><CheckCircle className="w-5 h-5 text-blue-400" /> Strategic Decision Log</div>
+          <div className={HEAD}><CheckCircle className="w-5 h-5 text-primary" /> Strategic Decision Log</div>
           <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
             {decisions.length === 0 ? (
-              <div className="text-center py-8 text-slate-500">No decisions logged yet.</div>
+              <div className="text-center py-8 text-muted-foreground">No decisions logged yet.</div>
             ) : decisions.map(d => (
-              <div key={d.id} className="p-3 bg-white/5 rounded-xl border border-white/5 group flex justify-between items-center">
+              <div key={d.id} className="p-3 bg-muted rounded-xl border border-border group flex justify-between items-center">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-white truncate">{d.title}</p>
-                  {d.description && <p className="text-xs text-slate-500 truncate">{d.description}</p>}
+                  <p className="text-sm font-semibold text-foreground truncate">{d.title}</p>
+                  {d.description && <p className="text-xs text-muted-foreground truncate">{d.description}</p>}
                   {d.decided_by && <p className="text-xs text-slate-600 mt-0.5">By: {d.decided_by}</p>}
                 </div>
                 <div className="flex items-center gap-2 ml-3">
@@ -255,22 +255,22 @@ export default function OptavelExecutive() {
 
         {/* Cap Table */}
         <div className={CARD}>
-          <div className={HEAD}><DollarSign className="w-5 h-5 text-amber-400" /> Cap Table</div>
+          <div className={HEAD}><DollarSign className="w-5 h-5 text-primary" /> Cap Table</div>
           {capTable.length === 0 ? (
-            <div className="text-center py-8 text-slate-500">No shareholders recorded.</div>
+            <div className="text-center py-8 text-muted-foreground">No shareholders recorded.</div>
           ) : (
             <div className="space-y-3">
               {capTable.map(row => (
                 <div key={row.id} className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white font-bold text-xs shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-foreground font-bold text-xs shrink-0">
                     {(row.shareholder_name||row.user_id||'?')[0].toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between text-sm mb-1">
-                      <span className="font-semibold text-white truncate">{row.shareholder_name || row.user_id || 'Unknown'}</span>
+                      <span className="font-semibold text-foreground truncate">{row.shareholder_name || row.user_id || 'Unknown'}</span>
                       <span className="text-amber-400 font-black">{Number(row.equity_percentage).toFixed(1)}%</span>
                     </div>
-                    <div className="w-full bg-white/5 rounded-full h-1.5">
+                    <div className="w-full bg-muted rounded-full h-1.5">
                       <div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500"
                         style={{ width: `${totalEquity > 0 ? (Number(row.equity_percentage)/totalEquity)*100 : 0}%` }} />
                     </div>
@@ -285,45 +285,45 @@ export default function OptavelExecutive() {
 
       {/* OKR Modal */}
       <Dialog open={okrModal} onOpenChange={setOkrModal}>
-        <DialogContent className="bg-[#0f172a] border border-white/10 text-white" aria-describedby={undefined}>
+        <DialogContent className="bg-background border border-border text-foreground" aria-describedby={undefined}>
           <DialogHeader><DialogTitle>{editOkr ? 'Edit OKR' : 'Create Company Objective'}</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
-            <div><Label className="text-slate-300">Objective *</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="e.g. Reach $1M ARR by Q4" value={okrForm.objective} onChange={e => setOkrForm({...okrForm, objective: e.target.value})} /></div>
-            <div><Label className="text-slate-300">Key Result</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="e.g. 20 new enterprise clients" value={okrForm.key_result} onChange={e => setOkrForm({...okrForm, key_result: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Objective *</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="e.g. Reach $1M ARR by Q4" value={okrForm.objective} onChange={e => setOkrForm({...okrForm, objective: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Key Result</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="e.g. 20 new enterprise clients" value={okrForm.key_result} onChange={e => setOkrForm({...okrForm, key_result: e.target.value})} /></div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-slate-300">Owner</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Team or person" value={okrForm.owner} onChange={e => setOkrForm({...okrForm, owner: e.target.value})} /></div>
-              <div><Label className="text-slate-300">Due Date</Label><Input type="date" className="bg-white/5 border-white/10 text-white mt-1" value={okrForm.due_date} onChange={e => setOkrForm({...okrForm, due_date: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">Owner</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="Team or person" value={okrForm.owner} onChange={e => setOkrForm({...okrForm, owner: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">Due Date</Label><Input type="date" className="bg-muted border-border text-foreground mt-1" value={okrForm.due_date} onChange={e => setOkrForm({...okrForm, due_date: e.target.value})} /></div>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-slate-300">Progress ({okrForm.progress}%)</Label><Input type="range" min="0" max="100" className="mt-2 w-full accent-violet-500" value={okrForm.progress} onChange={e => setOkrForm({...okrForm, progress: e.target.value})} /></div>
-              <div><Label className="text-slate-300">Status</Label>
-                <select className="w-full mt-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white text-sm" value={okrForm.status} onChange={e => setOkrForm({...okrForm, status: e.target.value})}>
+              <div><Label className="text-muted-foreground">Progress ({okrForm.progress}%)</Label><Input type="range" min="0" max="100" className="mt-2 w-full accent-violet-500" value={okrForm.progress} onChange={e => setOkrForm({...okrForm, progress: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">Status</Label>
+                <select className="w-full mt-1 bg-muted border border-border rounded-md px-3 py-2 text-foreground text-sm" value={okrForm.status} onChange={e => setOkrForm({...okrForm, status: e.target.value})}>
                   <option value="on_track">On Track</option><option value="at_risk">At Risk</option><option value="off_track">Off Track</option>
                 </select>
               </div>
             </div>
           </div>
-          <DialogFooter><Button onClick={submitOkr} className="bg-violet-600 hover:bg-violet-700 text-white">{editOkr ? 'Update OKR' : 'Create OKR'}</Button></DialogFooter>
+          <DialogFooter><Button onClick={submitOkr} className="bg-primary hover:bg-primary/90 text-primary-foreground">{editOkr ? 'Update OKR' : 'Create OKR'}</Button></DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Decision Modal */}
       <Dialog open={decisionModal} onOpenChange={setDecisionModal}>
-        <DialogContent className="bg-[#0f172a] border border-white/10 text-white" aria-describedby={undefined}>
+        <DialogContent className="bg-background border border-border text-foreground" aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Log Strategic Decision</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
-            <div><Label className="text-slate-300">Decision Title *</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="e.g. Approve Q3 hiring plan" value={decisionForm.title} onChange={e => setDecisionForm({...decisionForm, title: e.target.value})} /></div>
-            <div><Label className="text-slate-300">Details / Context</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Why was this decided?" value={decisionForm.description} onChange={e => setDecisionForm({...decisionForm, description: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Decision Title *</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="e.g. Approve Q3 hiring plan" value={decisionForm.title} onChange={e => setDecisionForm({...decisionForm, title: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Details / Context</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="Why was this decided?" value={decisionForm.description} onChange={e => setDecisionForm({...decisionForm, description: e.target.value})} /></div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-slate-300">Decided By</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Name or role" value={decisionForm.decided_by} onChange={e => setDecisionForm({...decisionForm, decided_by: e.target.value})} /></div>
-              <div><Label className="text-slate-300">Status</Label>
-                <select className="w-full mt-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white text-sm" value={decisionForm.status} onChange={e => setDecisionForm({...decisionForm, status: e.target.value})}>
+              <div><Label className="text-muted-foreground">Decided By</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="Name or role" value={decisionForm.decided_by} onChange={e => setDecisionForm({...decisionForm, decided_by: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">Status</Label>
+                <select className="w-full mt-1 bg-muted border border-border rounded-md px-3 py-2 text-foreground text-sm" value={decisionForm.status} onChange={e => setDecisionForm({...decisionForm, status: e.target.value})}>
                   <option value="approved">Approved</option><option value="rejected">Rejected</option><option value="pending">Pending</option>
                 </select>
               </div>
             </div>
           </div>
-          <DialogFooter><Button onClick={submitDecision} className="bg-blue-600 hover:bg-blue-700 text-white">Log Decision</Button></DialogFooter>
+          <DialogFooter><Button onClick={submitDecision} className="bg-primary hover:bg-primary/90 text-primary-foreground">Log Decision</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

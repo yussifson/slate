@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-const CARD = 'bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5';
+const CARD = 'bg-card border border-border rounded-2xl p-5 shadow-sm';
 
 const STAGES = [
   { id: 'lead', label: 'New Lead', color: 'slate' },
@@ -112,17 +112,17 @@ export default function OptavelSales() {
   const dealActivities = activities.filter(a => a.deal_id === selectedDeal?.id);
 
   return (
-    <div className="min-h-screen p-6 md:p-8" style={{ background: 'radial-gradient(ellipse at top, #0d2a1a 0%, #0a0f1e 50%, #000 100%)' }}>
+    <div className="min-h-screen p-6 md:p-8 bg-background text-foreground" >
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-            <div className="p-2 bg-emerald-500/20 rounded-xl"><TrendingUp className="w-7 h-7 text-emerald-400" /></div>
+          <h1 className="text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-xl"><TrendingUp className="w-7 h-7 text-primary" /></div>
             Sales Pipeline
           </h1>
-          <p className="text-slate-400 mt-1 text-sm">CRM · Deal Rooms · Activity Log</p>
+          <p className="text-muted-foreground mt-1 text-sm">CRM · Deal Rooms · Activity Log</p>
         </div>
-        <Button onClick={() => setDealModal(true)} className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2">
+        <Button onClick={() => setDealModal(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
           <Plus className="w-4 h-4" /> New Deal
         </Button>
       </div>
@@ -136,7 +136,7 @@ export default function OptavelSales() {
           { label: 'Total Deals', val: deals.length, color: 'amber' },
         ].map(({ label, val, color }) => (
           <div key={label} className={`${CARD}`}>
-            <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-2">{label}</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-2">{label}</p>
             <p className={`text-2xl font-black text-${color}-400`}>{val}</p>
           </div>
         ))}
@@ -151,14 +151,14 @@ export default function OptavelSales() {
               const stageVal = stageDeal.reduce((s, d) => s + (Number(d.value)||0), 0);
               return (
                 <div key={stage.id}
-                  className={`w-60 rounded-2xl border-2 transition-all min-h-[400px] ${dragOver === stage.id ? `border-emerald-500/50 bg-emerald-500/5` : `border-white/8 bg-white/3`}`}
+                  className={`w-60 rounded-2xl border-2 transition-all min-h-[400px] ${dragOver === stage.id ? `border-emerald-500/50 bg-emerald-500/5` : `border-white/8 bg-muted/50`}`}
                   onDragOver={e => { e.preventDefault(); setDragOver(stage.id); }}
                   onDragLeave={() => setDragOver(null)}
                   onDrop={e => handleDrop(e, stage.id)}>
-                  <div className="p-3 border-b border-white/5">
+                  <div className="p-3 border-b border-border">
                     <div className="flex items-center justify-between">
-                      <h3 className="font-bold text-white text-xs">{stage.label}</h3>
-                      <span className="text-xs text-slate-400">{stageDeal.length}</span>
+                      <h3 className="font-bold text-foreground text-xs">{stage.label}</h3>
+                      <span className="text-xs text-muted-foreground">{stageDeal.length}</span>
                     </div>
                     <p className="text-xs text-emerald-400 font-bold mt-0.5">${stageVal.toLocaleString()}</p>
                   </div>
@@ -169,17 +169,17 @@ export default function OptavelSales() {
                         onDragStart={() => setDragging(deal.id)}
                         onDragEnd={() => { setDragging(null); setDragOver(null); }}
                         onClick={() => setSelectedDeal(deal)}
-                        className={`p-3 rounded-xl border cursor-grab active:cursor-grabbing group transition-all hover:bg-white/10 ${selectedDeal?.id === deal.id ? 'ring-2 ring-emerald-500' : ''} ${STAGE_STYLE[deal.stage] || 'border-white/10 bg-white/5'}`}>
+                        className={`p-3 rounded-xl border cursor-grab active:cursor-grabbing group transition-all hover:bg-muted/80 ${selectedDeal?.id === deal.id ? 'ring-2 ring-emerald-500' : ''} ${STAGE_STYLE[deal.stage] || 'border-border bg-muted'}`}>
                         <div className="flex justify-between items-start">
-                          <p className="text-xs font-bold text-white leading-snug flex-1 min-w-0 pr-2">{deal.lead_name}</p>
-                          <button onClick={e => { e.stopPropagation(); deleteDeal(deal.id); }} className="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-red-400 transition-all shrink-0">
+                          <p className="text-xs font-bold text-foreground leading-snug flex-1 min-w-0 pr-2">{deal.lead_name}</p>
+                          <button onClick={e => { e.stopPropagation(); deleteDeal(deal.id); }} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-400 transition-all shrink-0">
                             <X className="w-3 h-3" />
                           </button>
                         </div>
                         <p className="text-sm font-black text-emerald-400 mt-1">${Number(deal.value||0).toLocaleString()}</p>
-                        {deal.contact_email && <p className="text-xs text-slate-500 mt-1 truncate">{deal.contact_email}</p>}
+                        {deal.contact_email && <p className="text-xs text-muted-foreground mt-1 truncate">{deal.contact_email}</p>}
                         <button onClick={e => { e.stopPropagation(); setSelectedDeal(deal); setActivityModal(true); }}
-                          className="mt-2 text-xs text-slate-400 hover:text-white flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                          className="mt-2 text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
                           <Plus className="w-3 h-3" /> Log Activity
                         </button>
                       </div>
@@ -197,28 +197,28 @@ export default function OptavelSales() {
           <div className="w-72 shrink-0">
             <div className={`${CARD} sticky top-6`}>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-white text-sm">{selectedDeal.lead_name}</h3>
-                <button onClick={() => setSelectedDeal(null)} className="text-slate-400 hover:text-white"><X className="w-4 h-4" /></button>
+                <h3 className="font-bold text-foreground text-sm">{selectedDeal.lead_name}</h3>
+                <button onClick={() => setSelectedDeal(null)} className="text-muted-foreground hover:text-foreground"><X className="w-4 h-4" /></button>
               </div>
               <p className="text-2xl font-black text-emerald-400 mb-4">${Number(selectedDeal.value||0).toLocaleString()}</p>
-              {selectedDeal.contact_email && <p className="text-xs text-slate-400 mb-1">📧 {selectedDeal.contact_email}</p>}
-              {selectedDeal.contact_phone && <p className="text-xs text-slate-400 mb-1">📞 {selectedDeal.contact_phone}</p>}
-              {selectedDeal.notes && <p className="text-xs text-slate-500 mt-2 mb-3 border-t border-white/5 pt-3">{selectedDeal.notes}</p>}
-              <Button size="sm" onClick={() => setActivityModal(true)} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white gap-2 text-xs mt-3">
+              {selectedDeal.contact_email && <p className="text-xs text-muted-foreground mb-1">📧 {selectedDeal.contact_email}</p>}
+              {selectedDeal.contact_phone && <p className="text-xs text-muted-foreground mb-1">📞 {selectedDeal.contact_phone}</p>}
+              {selectedDeal.notes && <p className="text-xs text-muted-foreground mt-2 mb-3 border-t border-border pt-3">{selectedDeal.notes}</p>}
+              <Button size="sm" onClick={() => setActivityModal(true)} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground gap-2 text-xs mt-3">
                 <Plus className="w-3 h-3" /> Log Activity
               </Button>
               <div className="mt-4 space-y-2 max-h-60 overflow-y-auto">
-                <p className="text-xs text-slate-500 uppercase tracking-widest font-semibold">Activity Log</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">Activity Log</p>
                 {dealActivities.length === 0 ? (
                   <p className="text-xs text-slate-600">No activities yet.</p>
                 ) : dealActivities.map(act => {
                   const Icon = ACT_ICONS[act.activity_type] || FileText;
                   return (
-                    <div key={act.id} className="flex gap-2 p-2 bg-white/5 rounded-lg">
-                      <Icon className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" />
+                    <div key={act.id} className="flex gap-2 p-2 bg-muted rounded-lg">
+                      <Icon className="w-3.5 h-3.5 text-muted-foreground mt-0.5 shrink-0" />
                       <div>
-                        <p className="text-xs text-white font-medium capitalize">{act.activity_type}</p>
-                        <p className="text-xs text-slate-400">{act.notes}</p>
+                        <p className="text-xs text-foreground font-medium capitalize">{act.activity_type}</p>
+                        <p className="text-xs text-muted-foreground">{act.notes}</p>
                         <p className="text-xs text-slate-600 mt-0.5">{act.created_at?.split('T')[0]}</p>
                       </div>
                     </div>
@@ -232,34 +232,34 @@ export default function OptavelSales() {
 
       {/* New Deal Modal */}
       <Dialog open={dealModal} onOpenChange={setDealModal}>
-        <DialogContent className="bg-[#0f172a] border border-white/10 text-white" aria-describedby={undefined}>
+        <DialogContent className="bg-background border border-border text-foreground" aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Create Deal Room</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
-            <div><Label className="text-slate-300">Lead / Company Name *</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Acme Corp" value={dealForm.lead_name} onChange={e => setDealForm({...dealForm, lead_name: e.target.value})} /></div>
-            <div><Label className="text-slate-300">Deal Value ($) *</Label><Input type="number" className="bg-white/5 border-white/10 text-white mt-1" placeholder="50000" value={dealForm.value} onChange={e => setDealForm({...dealForm, value: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Lead / Company Name *</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="Acme Corp" value={dealForm.lead_name} onChange={e => setDealForm({...dealForm, lead_name: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Deal Value ($) *</Label><Input type="number" className="bg-muted border-border text-foreground mt-1" placeholder="50000" value={dealForm.value} onChange={e => setDealForm({...dealForm, value: e.target.value})} /></div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-slate-300">Email</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="contact@acme.com" value={dealForm.contact_email} onChange={e => setDealForm({...dealForm, contact_email: e.target.value})} /></div>
-              <div><Label className="text-slate-300">Phone</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="+1 555 0000" value={dealForm.contact_phone} onChange={e => setDealForm({...dealForm, contact_phone: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">Email</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="contact@acme.com" value={dealForm.contact_email} onChange={e => setDealForm({...dealForm, contact_email: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">Phone</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="+1 555 0000" value={dealForm.contact_phone} onChange={e => setDealForm({...dealForm, contact_phone: e.target.value})} /></div>
             </div>
-            <div><Label className="text-slate-300">Notes</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Context about this deal" value={dealForm.notes} onChange={e => setDealForm({...dealForm, notes: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Notes</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="Context about this deal" value={dealForm.notes} onChange={e => setDealForm({...dealForm, notes: e.target.value})} /></div>
           </div>
-          <DialogFooter><Button onClick={createDeal} className="bg-emerald-600 hover:bg-emerald-700 text-white">Create Deal</Button></DialogFooter>
+          <DialogFooter><Button onClick={createDeal} className="bg-primary hover:bg-primary/90 text-primary-foreground">Create Deal</Button></DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Activity Modal */}
       <Dialog open={activityModal} onOpenChange={setActivityModal}>
-        <DialogContent className="bg-[#0f172a] border border-white/10 text-white" aria-describedby={undefined}>
+        <DialogContent className="bg-background border border-border text-foreground" aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Log Activity — {selectedDeal?.lead_name}</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
-            <div><Label className="text-slate-300">Activity Type</Label>
-              <select className="w-full mt-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white text-sm" value={actForm.activity_type} onChange={e => setActForm({...actForm, activity_type: e.target.value})}>
+            <div><Label className="text-muted-foreground">Activity Type</Label>
+              <select className="w-full mt-1 bg-muted border border-border rounded-md px-3 py-2 text-foreground text-sm" value={actForm.activity_type} onChange={e => setActForm({...actForm, activity_type: e.target.value})}>
                 <option value="call">📞 Call</option><option value="email">📧 Email</option><option value="meeting">💬 Meeting</option><option value="note">📝 Note</option>
               </select>
             </div>
-            <div><Label className="text-slate-300">Notes *</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="What happened?" value={actForm.notes} onChange={e => setActForm({...actForm, notes: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Notes *</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="What happened?" value={actForm.notes} onChange={e => setActForm({...actForm, notes: e.target.value})} /></div>
           </div>
-          <DialogFooter><Button onClick={logActivity} className="bg-emerald-600 hover:bg-emerald-700 text-white">Log Activity</Button></DialogFooter>
+          <DialogFooter><Button onClick={logActivity} className="bg-primary hover:bg-primary/90 text-primary-foreground">Log Activity</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

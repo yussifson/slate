@@ -10,8 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-const CARD = 'bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6';
-const HEAD = 'text-lg font-bold text-white flex items-center gap-2 mb-5';
+const CARD = 'bg-card border border-border rounded-2xl p-6 shadow-sm';
+const HEAD = 'text-lg font-bold text-foreground flex items-center gap-2 mb-5';
 
 export default function OptavelPartnerships() {
   const { user } = useAuth();
@@ -49,16 +49,16 @@ export default function OptavelPartnerships() {
   };
 
   return (
-    <div className="min-h-screen p-6 md:p-8" style={{ background: 'radial-gradient(ellipse at top right, #2d1b00 0%, #0a0f1e 50%, #000 100%)' }}>
+    <div className="min-h-screen p-6 md:p-8 bg-background text-foreground" >
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-            <div className="p-2 bg-amber-500/20 rounded-xl"><Handshake className="w-7 h-7 text-amber-400" /></div>
+          <h1 className="text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-xl"><Handshake className="w-7 h-7 text-primary" /></div>
             Partnerships
           </h1>
-          <p className="text-slate-400 mt-1 text-sm">Channel · Resellers · Integrations</p>
+          <p className="text-muted-foreground mt-1 text-sm">Channel · Resellers · Integrations</p>
         </div>
-        <Button onClick={() => setPartnerModal(true)} className="bg-amber-600 hover:bg-amber-700 text-white gap-2">
+        <Button onClick={() => setPartnerModal(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
           <Plus className="w-4 h-4" /> Add Partner
         </Button>
       </div>
@@ -71,38 +71,38 @@ export default function OptavelPartnerships() {
           { label: 'Commissions Due', val: '$0', color: 'red' },
         ].map(({ label, val, color }) => (
           <div key={label} className={`${CARD}`}>
-            <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-2">{label}</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-2">{label}</p>
             <p className={`text-2xl font-black text-${color}-400`}>{val}</p>
           </div>
         ))}
       </div>
 
       <div className={CARD}>
-        <div className={HEAD}><Globe className="w-5 h-5 text-amber-400" /> Partner Directory</div>
+        <div className={HEAD}><Globe className="w-5 h-5 text-primary" /> Partner Directory</div>
         {partners.length === 0 ? (
-          <div className="text-center py-16 text-slate-500">No partners yet. Build your ecosystem!</div>
+          <div className="text-center py-16 text-muted-foreground">No partners yet. Build your ecosystem!</div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-xs text-slate-500 uppercase tracking-wider border-b border-white/5">
+              <tr className="text-left text-xs text-muted-foreground uppercase tracking-wider border-b border-border">
                 <th className="pb-3 pr-4">Partner</th><th className="pb-3 pr-4">Type</th><th className="pb-3 pr-4">Contact</th><th className="pb-3 pr-4">Rev Share</th><th className="pb-3 pr-4">Status</th><th className="pb-3">Del</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
               {partners.map(p => (
                 <tr key={p.id} className="group">
-                  <td className="py-3 pr-4 font-semibold text-white">{p.name}</td>
-                  <td className="py-3 pr-4 capitalize text-slate-300">{p.type}</td>
-                  <td className="py-3 pr-4 text-xs text-slate-400">
+                  <td className="py-3 pr-4 font-semibold text-foreground">{p.name}</td>
+                  <td className="py-3 pr-4 capitalize text-muted-foreground">{p.type}</td>
+                  <td className="py-3 pr-4 text-xs text-muted-foreground">
                     {p.contact_name && <span>{p.contact_name}<br/></span>}
                     {p.contact_email && <span>{p.contact_email}</span>}
                   </td>
                   <td className="py-3 pr-4 font-bold text-amber-400">{p.revenue_share}%</td>
                   <td className="py-3 pr-4">
-                    <span className={`text-xs px-2 py-1 rounded-full border font-semibold capitalize ${p.status === 'active' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-500/20 text-slate-400 border-slate-500/30'}`}>{p.status}</span>
+                    <span className={`text-xs px-2 py-1 rounded-full border font-semibold capitalize ${p.status === 'active' ? 'bg-primary/10 text-emerald-400 border-emerald-500/30' : 'bg-slate-500/20 text-muted-foreground border-slate-500/30'}`}>{p.status}</span>
                   </td>
                   <td className="py-3">
-                    <button onClick={() => deletePartner(p.id)} className="text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"><X className="w-4 h-4" /></button>
+                    <button onClick={() => deletePartner(p.id)} className="text-muted-foreground hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"><X className="w-4 h-4" /></button>
                   </td>
                 </tr>
               ))}
@@ -112,29 +112,29 @@ export default function OptavelPartnerships() {
       </div>
 
       <Dialog open={partnerModal} onOpenChange={setPartnerModal}>
-        <DialogContent className="bg-[#0f172a] border border-white/10 text-white">
+        <DialogContent className="bg-background border border-border text-foreground">
           <DialogHeader><DialogTitle>Add Partner</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
-            <div><Label className="text-slate-300">Partner Name *</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="e.g. Acme Agency" value={partnerForm.name} onChange={e => setPartnerForm({...partnerForm, name: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Partner Name *</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="e.g. Acme Agency" value={partnerForm.name} onChange={e => setPartnerForm({...partnerForm, name: e.target.value})} /></div>
             <div className="grid grid-cols-3 gap-3">
-              <div><Label className="text-slate-300">Type</Label>
-                <select className="w-full mt-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white text-sm" value={partnerForm.type} onChange={e => setPartnerForm({...partnerForm, type: e.target.value})}>
+              <div><Label className="text-muted-foreground">Type</Label>
+                <select className="w-full mt-1 bg-muted border border-border rounded-md px-3 py-2 text-foreground text-sm" value={partnerForm.type} onChange={e => setPartnerForm({...partnerForm, type: e.target.value})}>
                   <option value="agency">Agency</option><option value="reseller">Reseller</option><option value="integration">Integration</option>
                 </select>
               </div>
-              <div><Label className="text-slate-300">Rev Share %</Label><Input type="number" className="bg-white/5 border-white/10 text-white mt-1" placeholder="20" value={partnerForm.revenue_share} onChange={e => setPartnerForm({...partnerForm, revenue_share: e.target.value})} /></div>
-              <div><Label className="text-slate-300">Status</Label>
-                <select className="w-full mt-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white text-sm" value={partnerForm.status} onChange={e => setPartnerForm({...partnerForm, status: e.target.value})}>
+              <div><Label className="text-muted-foreground">Rev Share %</Label><Input type="number" className="bg-muted border-border text-foreground mt-1" placeholder="20" value={partnerForm.revenue_share} onChange={e => setPartnerForm({...partnerForm, revenue_share: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">Status</Label>
+                <select className="w-full mt-1 bg-muted border border-border rounded-md px-3 py-2 text-foreground text-sm" value={partnerForm.status} onChange={e => setPartnerForm({...partnerForm, status: e.target.value})}>
                   <option value="active">Active</option><option value="inactive">Inactive</option>
                 </select>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-slate-300">Contact Name</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="John Doe" value={partnerForm.contact_name} onChange={e => setPartnerForm({...partnerForm, contact_name: e.target.value})} /></div>
-              <div><Label className="text-slate-300">Contact Email</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="john@acme.com" value={partnerForm.contact_email} onChange={e => setPartnerForm({...partnerForm, contact_email: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">Contact Name</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="John Doe" value={partnerForm.contact_name} onChange={e => setPartnerForm({...partnerForm, contact_name: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">Contact Email</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="john@acme.com" value={partnerForm.contact_email} onChange={e => setPartnerForm({...partnerForm, contact_email: e.target.value})} /></div>
             </div>
           </div>
-          <DialogFooter><Button onClick={submitPartner} className="bg-amber-600 hover:bg-amber-700 text-white">Add Partner</Button></DialogFooter>
+          <DialogFooter><Button onClick={submitPartner} className="bg-primary hover:bg-primary/90 text-primary-foreground">Add Partner</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

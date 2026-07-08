@@ -10,8 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-const CARD = 'bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6';
-const HEAD = 'text-lg font-bold text-white flex items-center gap-2 mb-5';
+const CARD = 'bg-card border border-border rounded-2xl p-6 shadow-sm';
+const HEAD = 'text-lg font-bold text-foreground flex items-center gap-2 mb-5';
 
 const COLUMNS = [
   { id: 'todo', label: 'To Do', color: 'slate' },
@@ -21,16 +21,16 @@ const COLUMNS = [
 ];
 
 const SEV_COLORS = {
-  critical: 'bg-red-500/20 text-red-400 border-red-500/30',
+  critical: 'bg-primary/10 text-red-400 border-red-500/30',
   high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-  medium: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-  low: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
+  medium: 'bg-primary/10 text-amber-400 border-amber-500/30',
+  low: 'bg-slate-500/20 text-muted-foreground border-slate-500/30',
 };
 
 const PRI_COLORS = {
   high: 'text-red-400',
   medium: 'text-amber-400',
-  low: 'text-slate-400',
+  low: 'text-muted-foreground',
 };
 
 export default function OptavelProductEng() {
@@ -145,24 +145,24 @@ export default function OptavelProductEng() {
   const activeSprint = sprints.find(s => s.status === 'active');
 
   return (
-    <div className="min-h-screen p-6 md:p-8" style={{ background: 'radial-gradient(ellipse at top right, #0d1f3c 0%, #0a0f1e 60%, #000 100%)' }}>
+    <div className="min-h-screen p-6 md:p-8 bg-background text-foreground" >
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-            <div className="p-2 bg-blue-500/20 rounded-xl"><Code className="w-7 h-7 text-blue-400" /></div>
+          <h1 className="text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-xl"><Code className="w-7 h-7 text-primary" /></div>
             Product & Engineering
           </h1>
-          <p className="text-slate-400 mt-1 text-sm">Sprint Board · Bug Tracker · Sprint Management</p>
+          <p className="text-muted-foreground mt-1 text-sm">Sprint Board · Bug Tracker · Sprint Management</p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => setSprintModal(true)} variant="outline" className="border-white/10 text-white hover:bg-white/10 gap-2 text-sm">
+          <Button onClick={() => setSprintModal(true)} variant="outline" className="border-border text-foreground hover:bg-muted/80 gap-2 text-sm">
             <Zap className="w-4 h-4 text-amber-400" /> New Sprint
           </Button>
-          <Button onClick={() => setBugModal(true)} variant="outline" className="border-white/10 text-white hover:bg-white/10 gap-2 text-sm">
+          <Button onClick={() => setBugModal(true)} variant="outline" className="border-border text-foreground hover:bg-muted/80 gap-2 text-sm">
             <Bug className="w-4 h-4 text-red-400" /> Report Bug
           </Button>
-          <Button onClick={() => setTaskModal(true)} className="bg-blue-600 hover:bg-blue-700 text-white gap-2 text-sm">
+          <Button onClick={() => setTaskModal(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 text-sm">
             <Plus className="w-4 h-4" /> Add Task
           </Button>
         </div>
@@ -177,17 +177,17 @@ export default function OptavelProductEng() {
           { label: 'Active Sprint', val: activeSprint ? activeSprint.title : 'None', color: 'emerald', text: true },
         ].map(({ label, val, color, text }) => (
           <div key={label} className={`${CARD}`}>
-            <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-2">{label}</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-2">{label}</p>
             <p className={`${text ? 'text-base' : 'text-3xl'} font-black text-${color}-400 truncate`}>{val}</p>
           </div>
         ))}
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 bg-white/5 p-1 rounded-xl w-fit border border-white/10">
+      <div className="flex gap-1 mb-6 bg-muted p-1 rounded-xl w-fit border border-border">
         {[['kanban','Sprint Board'], ['bugs','Bug Tracker'], ['sprints','Sprints']].map(([id, label]) => (
           <button key={id} onClick={() => setTab(id)}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${tab === id ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}>
+            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${tab === id ? 'bg-blue-600 text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
             {label}
           </button>
         ))}
@@ -200,13 +200,13 @@ export default function OptavelProductEng() {
             const colTasks = tasks.filter(t => t.status === col.id);
             return (
               <div key={col.id}
-                className={`bg-white/3 rounded-2xl border-2 transition-all min-h-[300px] ${dragOver === col.id ? 'border-blue-500/50 bg-blue-500/5' : 'border-white/5'}`}
+                className={`bg-muted/50 rounded-2xl border-2 transition-all min-h-[300px] ${dragOver === col.id ? 'border-blue-500/50 bg-blue-500/5' : 'border-border'}`}
                 onDragOver={e => { e.preventDefault(); setDragOver(col.id); }}
                 onDragLeave={() => setDragOver(null)}
                 onDrop={e => handleDrop(e, col.id)}>
-                <div className="p-4 border-b border-white/5 flex items-center justify-between">
-                  <h3 className="font-bold text-white text-sm">{col.label}</h3>
-                  <span className="text-xs bg-white/10 text-slate-300 px-2 py-0.5 rounded-full">{colTasks.length}</span>
+                <div className="p-4 border-b border-border flex items-center justify-between">
+                  <h3 className="font-bold text-foreground text-sm">{col.label}</h3>
+                  <span className="text-xs bg-muted/80 text-muted-foreground px-2 py-0.5 rounded-full">{colTasks.length}</span>
                 </div>
                 <div className="p-3 space-y-2">
                   {colTasks.map(task => (
@@ -214,16 +214,16 @@ export default function OptavelProductEng() {
                       draggable
                       onDragStart={() => setDragging(task.id)}
                       onDragEnd={() => { setDragging(null); setDragOver(null); }}
-                      className="p-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 cursor-grab active:cursor-grabbing group transition-all">
+                      className="p-3 bg-muted hover:bg-muted/80 rounded-xl border border-border cursor-grab active:cursor-grabbing group transition-all">
                       <div className="flex justify-between items-start">
-                        <p className="text-sm font-medium text-white flex-1 min-w-0 pr-2 leading-snug">{task.title}</p>
-                        <button onClick={() => deleteTask(task.id)} className="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-red-400 transition-all shrink-0">
+                        <p className="text-sm font-medium text-foreground flex-1 min-w-0 pr-2 leading-snug">{task.title}</p>
+                        <button onClick={() => deleteTask(task.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-400 transition-all shrink-0">
                           <X className="w-3.5 h-3.5" />
                         </button>
                       </div>
-                      {task.description && <p className="text-xs text-slate-500 mt-1 truncate">{task.description}</p>}
+                      {task.description && <p className="text-xs text-muted-foreground mt-1 truncate">{task.description}</p>}
                       <div className="flex items-center gap-2 mt-2">
-                        <span className={`text-xs font-semibold capitalize ${PRI_COLORS[task.priority] || 'text-slate-400'}`}>{task.priority}</span>
+                        <span className={`text-xs font-semibold capitalize ${PRI_COLORS[task.priority] || 'text-muted-foreground'}`}>{task.priority}</span>
                       </div>
                     </div>
                   ))}
@@ -240,13 +240,13 @@ export default function OptavelProductEng() {
       {/* Bug Tracker */}
       {tab === 'bugs' && (
         <div className={CARD}>
-          <div className={HEAD}><Bug className="w-5 h-5 text-red-400" /> Bug Tracker</div>
+          <div className={HEAD}><Bug className="w-5 h-5 text-primary" /> Bug Tracker</div>
           {bugs.length === 0 ? (
-            <div className="text-center py-12 text-slate-500">No bugs reported. 🎉 Codebase is clean!</div>
+            <div className="text-center py-12 text-muted-foreground">No bugs reported. 🎉 Codebase is clean!</div>
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs text-slate-500 uppercase tracking-wider border-b border-white/5">
+                <tr className="text-left text-xs text-muted-foreground uppercase tracking-wider border-b border-border">
                   <th className="pb-3 pr-4">Bug</th><th className="pb-3 pr-4">Severity</th><th className="pb-3 pr-4">Product</th><th className="pb-3 pr-4">Status</th><th className="pb-3">Actions</th>
                 </tr>
               </thead>
@@ -254,21 +254,21 @@ export default function OptavelProductEng() {
                 {bugs.map(bug => (
                   <tr key={bug.id} className="group">
                     <td className="py-3 pr-4">
-                      <p className="font-semibold text-white">{bug.title}</p>
-                      {bug.description && <p className="text-xs text-slate-500 truncate max-w-xs">{bug.description}</p>}
+                      <p className="font-semibold text-foreground">{bug.title}</p>
+                      {bug.description && <p className="text-xs text-muted-foreground truncate max-w-xs">{bug.description}</p>}
                     </td>
                     <td className="py-3 pr-4">
-                      <span className={`text-xs px-2 py-1 rounded-full border font-semibold capitalize ${SEV_COLORS[bug.severity] || 'bg-white/5 text-slate-400 border-white/10'}`}>{bug.severity}</span>
+                      <span className={`text-xs px-2 py-1 rounded-full border font-semibold capitalize ${SEV_COLORS[bug.severity] || 'bg-muted text-muted-foreground border-border'}`}>{bug.severity}</span>
                     </td>
-                    <td className="py-3 pr-4 text-slate-300 text-xs">{bug.product}</td>
+                    <td className="py-3 pr-4 text-muted-foreground text-xs">{bug.product}</td>
                     <td className="py-3 pr-4">
                       <select value={bug.status} onChange={e => updateBugStatus(bug.id, e.target.value)}
-                        className="bg-white/5 border border-white/10 rounded-md px-2 py-1 text-xs text-white">
+                        className="bg-muted border border-border rounded-md px-2 py-1 text-xs text-foreground">
                         <option value="open">Open</option><option value="in_progress">In Progress</option><option value="resolved">Resolved</option><option value="closed">Closed</option>
                       </select>
                     </td>
                     <td className="py-3">
-                      <button onClick={() => deleteBug(bug.id)} className="text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">
+                      <button onClick={() => deleteBug(bug.id)} className="text-muted-foreground hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">
                         <X className="w-4 h-4" />
                       </button>
                     </td>
@@ -284,7 +284,7 @@ export default function OptavelProductEng() {
       {tab === 'sprints' && (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {sprints.length === 0 ? (
-            <div className="col-span-3 text-center py-16 text-slate-500">No sprints yet. Create your first sprint.</div>
+            <div className="col-span-3 text-center py-16 text-muted-foreground">No sprints yet. Create your first sprint.</div>
           ) : sprints.map(sprint => {
             const sprintTasks = tasks.filter(t => t.sprint_id === sprint.id);
             const done = sprintTasks.filter(t => t.status === 'done').length;
@@ -293,19 +293,19 @@ export default function OptavelProductEng() {
               <div key={sprint.id} className={`${CARD}`}>
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h3 className="font-bold text-white">{sprint.title}</h3>
-                    {sprint.goal && <p className="text-xs text-slate-400 mt-0.5">{sprint.goal}</p>}
+                    <h3 className="font-bold text-foreground">{sprint.title}</h3>
+                    {sprint.goal && <p className="text-xs text-muted-foreground mt-0.5">{sprint.goal}</p>}
                   </div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${sprint.status === 'active' ? 'bg-emerald-400/10 text-emerald-400' : 'bg-white/5 text-slate-400'}`}>{sprint.status}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${sprint.status === 'active' ? 'bg-emerald-400/10 text-emerald-400' : 'bg-muted text-muted-foreground'}`}>{sprint.status}</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-slate-500 mb-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
                   <Clock className="w-3.5 h-3.5" />
                   {sprint.start_date && sprint.end_date ? `${sprint.start_date} → ${sprint.end_date}` : 'Dates not set'}
                 </div>
-                <div className="mb-1 flex justify-between text-xs text-slate-400">
+                <div className="mb-1 flex justify-between text-xs text-muted-foreground">
                   <span>{done}/{sprintTasks.length} tasks done</span><span>{prog}%</span>
                 </div>
-                <div className="w-full bg-white/5 rounded-full h-2">
+                <div className="w-full bg-muted rounded-full h-2">
                   <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-emerald-500" style={{ width: `${prog}%` }} />
                 </div>
               </div>
@@ -316,67 +316,67 @@ export default function OptavelProductEng() {
 
       {/* Task Modal */}
       <Dialog open={taskModal} onOpenChange={setTaskModal}>
-        <DialogContent className="bg-[#0f172a] border border-white/10 text-white" aria-describedby={undefined}>
+        <DialogContent className="bg-background border border-border text-foreground" aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Create Task</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
-            <div><Label className="text-slate-300">Title *</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Task name" value={taskForm.title} onChange={e => setTaskForm({...taskForm, title: e.target.value})} /></div>
-            <div><Label className="text-slate-300">Description</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Details" value={taskForm.description} onChange={e => setTaskForm({...taskForm, description: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Title *</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="Task name" value={taskForm.title} onChange={e => setTaskForm({...taskForm, title: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Description</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="Details" value={taskForm.description} onChange={e => setTaskForm({...taskForm, description: e.target.value})} /></div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-slate-300">Priority</Label>
-                <select className="w-full mt-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white text-sm" value={taskForm.priority} onChange={e => setTaskForm({...taskForm, priority: e.target.value})}>
+              <div><Label className="text-muted-foreground">Priority</Label>
+                <select className="w-full mt-1 bg-muted border border-border rounded-md px-3 py-2 text-foreground text-sm" value={taskForm.priority} onChange={e => setTaskForm({...taskForm, priority: e.target.value})}>
                   <option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option>
                 </select>
               </div>
-              <div><Label className="text-slate-300">Status</Label>
-                <select className="w-full mt-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white text-sm" value={taskForm.status} onChange={e => setTaskForm({...taskForm, status: e.target.value})}>
+              <div><Label className="text-muted-foreground">Status</Label>
+                <select className="w-full mt-1 bg-muted border border-border rounded-md px-3 py-2 text-foreground text-sm" value={taskForm.status} onChange={e => setTaskForm({...taskForm, status: e.target.value})}>
                   <option value="todo">To Do</option><option value="in_progress">In Progress</option><option value="review">Review</option><option value="done">Done</option>
                 </select>
               </div>
             </div>
-            <div><Label className="text-slate-300">Sprint</Label>
-              <select className="w-full mt-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white text-sm" value={taskForm.sprint_id} onChange={e => setTaskForm({...taskForm, sprint_id: e.target.value})}>
+            <div><Label className="text-muted-foreground">Sprint</Label>
+              <select className="w-full mt-1 bg-muted border border-border rounded-md px-3 py-2 text-foreground text-sm" value={taskForm.sprint_id} onChange={e => setTaskForm({...taskForm, sprint_id: e.target.value})}>
                 <option value="">No Sprint</option>
                 {sprints.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
               </select>
             </div>
           </div>
-          <DialogFooter><Button onClick={submitTask} className="bg-blue-600 hover:bg-blue-700 text-white">Create Task</Button></DialogFooter>
+          <DialogFooter><Button onClick={submitTask} className="bg-primary hover:bg-primary/90 text-primary-foreground">Create Task</Button></DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Bug Modal */}
       <Dialog open={bugModal} onOpenChange={setBugModal}>
-        <DialogContent className="bg-[#0f172a] border border-white/10 text-white" aria-describedby={undefined}>
+        <DialogContent className="bg-background border border-border text-foreground" aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Report Bug</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
-            <div><Label className="text-slate-300">Bug Title *</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Describe the bug" value={bugForm.title} onChange={e => setBugForm({...bugForm, title: e.target.value})} /></div>
-            <div><Label className="text-slate-300">Steps to Reproduce</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="What causes this?" value={bugForm.description} onChange={e => setBugForm({...bugForm, description: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Bug Title *</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="Describe the bug" value={bugForm.title} onChange={e => setBugForm({...bugForm, title: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Steps to Reproduce</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="What causes this?" value={bugForm.description} onChange={e => setBugForm({...bugForm, description: e.target.value})} /></div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-slate-300">Severity</Label>
-                <select className="w-full mt-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white text-sm" value={bugForm.severity} onChange={e => setBugForm({...bugForm, severity: e.target.value})}>
+              <div><Label className="text-muted-foreground">Severity</Label>
+                <select className="w-full mt-1 bg-muted border border-border rounded-md px-3 py-2 text-foreground text-sm" value={bugForm.severity} onChange={e => setBugForm({...bugForm, severity: e.target.value})}>
                   <option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option>
                 </select>
               </div>
-              <div><Label className="text-slate-300">Product</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Slate, API, etc." value={bugForm.product} onChange={e => setBugForm({...bugForm, product: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">Product</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="Slate, API, etc." value={bugForm.product} onChange={e => setBugForm({...bugForm, product: e.target.value})} /></div>
             </div>
           </div>
-          <DialogFooter><Button onClick={submitBug} className="bg-red-600 hover:bg-red-700 text-white">Report Bug</Button></DialogFooter>
+          <DialogFooter><Button onClick={submitBug} className="bg-primary hover:bg-primary/90 text-primary-foreground">Report Bug</Button></DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Sprint Modal */}
       <Dialog open={sprintModal} onOpenChange={setSprintModal}>
-        <DialogContent className="bg-[#0f172a] border border-white/10 text-white" aria-describedby={undefined}>
+        <DialogContent className="bg-background border border-border text-foreground" aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Create Sprint</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
-            <div><Label className="text-slate-300">Sprint Name *</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="e.g. Sprint 12" value={sprintForm.title} onChange={e => setSprintForm({...sprintForm, title: e.target.value})} /></div>
-            <div><Label className="text-slate-300">Sprint Goal</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="What's the goal?" value={sprintForm.goal} onChange={e => setSprintForm({...sprintForm, goal: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Sprint Name *</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="e.g. Sprint 12" value={sprintForm.title} onChange={e => setSprintForm({...sprintForm, title: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Sprint Goal</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="What's the goal?" value={sprintForm.goal} onChange={e => setSprintForm({...sprintForm, goal: e.target.value})} /></div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-slate-300">Start Date</Label><Input type="date" className="bg-white/5 border-white/10 text-white mt-1" value={sprintForm.start_date} onChange={e => setSprintForm({...sprintForm, start_date: e.target.value})} /></div>
-              <div><Label className="text-slate-300">End Date</Label><Input type="date" className="bg-white/5 border-white/10 text-white mt-1" value={sprintForm.end_date} onChange={e => setSprintForm({...sprintForm, end_date: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">Start Date</Label><Input type="date" className="bg-muted border-border text-foreground mt-1" value={sprintForm.start_date} onChange={e => setSprintForm({...sprintForm, start_date: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">End Date</Label><Input type="date" className="bg-muted border-border text-foreground mt-1" value={sprintForm.end_date} onChange={e => setSprintForm({...sprintForm, end_date: e.target.value})} /></div>
             </div>
           </div>
-          <DialogFooter><Button onClick={submitSprint} className="bg-amber-600 hover:bg-amber-700 text-white">Start Sprint</Button></DialogFooter>
+          <DialogFooter><Button onClick={submitSprint} className="bg-primary hover:bg-primary/90 text-primary-foreground">Start Sprint</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

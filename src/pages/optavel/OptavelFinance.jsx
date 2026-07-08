@@ -10,8 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-const CARD = 'bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6';
-const HEAD = 'text-lg font-bold text-white flex items-center gap-2 mb-5';
+const CARD = 'bg-card border border-border rounded-2xl p-6 shadow-sm';
+const HEAD = 'text-lg font-bold text-foreground flex items-center gap-2 mb-5';
 
 export default function OptavelFinance() {
   const { user } = useAuth();
@@ -55,16 +55,16 @@ export default function OptavelFinance() {
   const netIncome = totalIncome - totalExpense;
 
   return (
-    <div className="min-h-screen p-6 md:p-8" style={{ background: 'radial-gradient(ellipse at bottom, #0f2922 0%, #0a0f1e 50%, #000 100%)' }}>
+    <div className="min-h-screen p-6 md:p-8 bg-background text-foreground" >
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-            <div className="p-2 bg-emerald-500/20 rounded-xl"><DollarSign className="w-7 h-7 text-emerald-400" /></div>
+          <h1 className="text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-xl"><DollarSign className="w-7 h-7 text-primary" /></div>
             Finance & Ledger
           </h1>
-          <p className="text-slate-400 mt-1 text-sm">Revenue · Expenses · Cashflow</p>
+          <p className="text-muted-foreground mt-1 text-sm">Revenue · Expenses · Cashflow</p>
         </div>
-        <Button onClick={() => setTxModal(true)} className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2">
+        <Button onClick={() => setTxModal(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
           <Plus className="w-4 h-4" /> New Transaction
         </Button>
       </div>
@@ -77,34 +77,34 @@ export default function OptavelFinance() {
           { label: 'Runway (Est)', val: '12 mos', color: 'blue' },
         ].map(({ label, val, color }) => (
           <div key={label} className={`${CARD}`}>
-            <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-2">{label}</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-2">{label}</p>
             <p className={`text-2xl font-black text-${color}-400`}>{val}</p>
           </div>
         ))}
       </div>
 
       <div className={CARD}>
-        <div className={HEAD}><BarChart2 className="w-5 h-5 text-emerald-400" /> Transaction Ledger</div>
+        <div className={HEAD}><BarChart2 className="w-5 h-5 text-primary" /> Transaction Ledger</div>
         {transactions.length === 0 ? (
-          <div className="text-center py-16 text-slate-500">No transactions yet.</div>
+          <div className="text-center py-16 text-muted-foreground">No transactions yet.</div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-xs text-slate-500 uppercase tracking-wider border-b border-white/5">
+              <tr className="text-left text-xs text-muted-foreground uppercase tracking-wider border-b border-border">
                 <th className="pb-3 pr-4">Date</th><th className="pb-3 pr-4">Description</th><th className="pb-3 pr-4">Category</th><th className="pb-3 pr-4">Amount</th><th className="pb-3">Del</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
               {transactions.map(tx => (
                 <tr key={tx.id} className="group">
-                  <td className="py-3 pr-4 text-slate-300">{tx.date}</td>
-                  <td className="py-3 pr-4 font-medium text-white">{tx.description}</td>
-                  <td className="py-3 pr-4 capitalize text-slate-400">{tx.category}</td>
+                  <td className="py-3 pr-4 text-muted-foreground">{tx.date}</td>
+                  <td className="py-3 pr-4 font-medium text-foreground">{tx.description}</td>
+                  <td className="py-3 pr-4 capitalize text-muted-foreground">{tx.category}</td>
                   <td className={`py-3 pr-4 font-bold ${tx.type === 'income' ? 'text-emerald-400' : 'text-red-400'}`}>
                     {tx.type === 'income' ? '+' : '-'}${Number(tx.amount).toLocaleString()}
                   </td>
                   <td className="py-3">
-                    <button onClick={() => deleteTx(tx.id)} className="text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"><X className="w-4 h-4" /></button>
+                    <button onClick={() => deleteTx(tx.id)} className="text-muted-foreground hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"><X className="w-4 h-4" /></button>
                   </td>
                 </tr>
               ))}
@@ -114,24 +114,24 @@ export default function OptavelFinance() {
       </div>
 
       <Dialog open={txModal} onOpenChange={setTxModal}>
-        <DialogContent className="bg-[#0f172a] border border-white/10 text-white">
+        <DialogContent className="bg-background border border-border text-foreground">
           <DialogHeader><DialogTitle>Log Transaction</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-slate-300">Type</Label>
-                <select className="w-full mt-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white text-sm" value={txForm.type} onChange={e => setTxForm({...txForm, type: e.target.value})}>
+              <div><Label className="text-muted-foreground">Type</Label>
+                <select className="w-full mt-1 bg-muted border border-border rounded-md px-3 py-2 text-foreground text-sm" value={txForm.type} onChange={e => setTxForm({...txForm, type: e.target.value})}>
                   <option value="income">Income</option><option value="expense">Expense</option>
                 </select>
               </div>
-              <div><Label className="text-slate-300">Amount ($) *</Label><Input type="number" className="bg-white/5 border-white/10 text-white mt-1" placeholder="1000" value={txForm.amount} onChange={e => setTxForm({...txForm, amount: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">Amount ($) *</Label><Input type="number" className="bg-muted border-border text-foreground mt-1" placeholder="1000" value={txForm.amount} onChange={e => setTxForm({...txForm, amount: e.target.value})} /></div>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-slate-300">Category</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="Software, Salaries, etc." value={txForm.category} onChange={e => setTxForm({...txForm, category: e.target.value})} /></div>
-              <div><Label className="text-slate-300">Date</Label><Input type="date" className="bg-white/5 border-white/10 text-white mt-1" value={txForm.date} onChange={e => setTxForm({...txForm, date: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">Category</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="Software, Salaries, etc." value={txForm.category} onChange={e => setTxForm({...txForm, category: e.target.value})} /></div>
+              <div><Label className="text-muted-foreground">Date</Label><Input type="date" className="bg-muted border-border text-foreground mt-1" value={txForm.date} onChange={e => setTxForm({...txForm, date: e.target.value})} /></div>
             </div>
-            <div><Label className="text-slate-300">Description</Label><Input className="bg-white/5 border-white/10 text-white mt-1" placeholder="What was this for?" value={txForm.description} onChange={e => setTxForm({...txForm, description: e.target.value})} /></div>
+            <div><Label className="text-muted-foreground">Description</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="What was this for?" value={txForm.description} onChange={e => setTxForm({...txForm, description: e.target.value})} /></div>
           </div>
-          <DialogFooter><Button onClick={submitTx} className="bg-emerald-600 hover:bg-emerald-700 text-white">Save Transaction</Button></DialogFooter>
+          <DialogFooter><Button onClick={submitTx} className="bg-primary hover:bg-primary/90 text-primary-foreground">Save Transaction</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
