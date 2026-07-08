@@ -332,6 +332,7 @@ const RouteOptimization = React.lazy(() => import('./pages/logistics/RouteOptimi
 const LoadBoard = React.lazy(() => import('./pages/logistics/LoadBoard'));
 const GeofenceAlerts = React.lazy(() => import('./pages/logistics/GeofenceAlerts'));
 import LogisticsShipments from './pages/logistics/Shipments';
+import Pickups from './pages/logistics/Pickups';
 import LogisticsFleet from './pages/logistics/Fleet';
 import LogisticsDrivers from './pages/logistics/Drivers';
 import LogisticsTrackingPortal from './pages/logistics/TrackingPortal';
@@ -947,11 +948,10 @@ function PlatformRoutes() {
       <Route path="/disciplinary" element={<GenericModulePage />} />
       <Route path="/dispatch" element={<GenericModulePage />} />
       <Route path="/shifts" element={<Shifts />} />
-      <Route path="/benefits" element={<GenericModulePage />} />
-      <Route path="/routes" element={<GenericModulePage />} />
+      <Route path="/fleet" element={<GenericModulePage />} />
+      <Route path="/pickups" element={<Pickups />} />
       <Route path="/training" element={<GenericModulePage />} />
       <Route path="/loyalty" element={<Loyalty />} />
-      <Route path="/pickups" element={<GenericModulePage />} />
       <Route path="/orders" element={<Orders />} />
       <Route path="/time-tracking" element={<TimeTracking />} />
       {/* High School (SHS) Routes */}

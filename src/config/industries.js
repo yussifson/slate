@@ -675,15 +675,13 @@ export const INDUSTRIES = {
       { label: 'Drivers', path: '/drivers', icon: 'Truck' },
 
       { section: 'Routing', label: 'Dispatch', path: '/dispatch-board', icon: 'LayoutGrid' },
-      { label: 'Routes', path: '/ai-routes', icon: 'Zap' },
-      { label: 'Geofences', path: '/geofences', icon: 'BellRing' },
 
-      { section: 'Warehouse', label: 'Inventory', path: '/warehouse', icon: 'Warehouse' },
+      { label: 'Inventory', path: '/warehouse', icon: 'Warehouse' },
 
-      { section: 'Business', label: 'Customers', path: '/clients', icon: 'Users' },
+      { label: 'Customers', path: '/clients', icon: 'Users' },
       { label: 'Billing', path: '/billing', icon: 'Receipt' },
       
-      { section: 'Analytics', label: 'Analytics', path: '/logistics-analytics', icon: 'BarChart2' },
+      { label: 'Analytics', path: '/logistics-analytics', icon: 'BarChart2' },
       { label: 'Reports', path: '/reports', icon: 'FileText' },
       
       { section: 'System', label: 'Team', path: '/team', icon: 'UserCog' },
