@@ -554,7 +554,7 @@ return (
  <FadeIn>
  <div className="hidden md:inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-xs font-semibold text-slate-600 mb-8  tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <span className="flex h-2 w-2 rounded-full bg-primary" />
- {t("trusted_by_500_enterprise_team", "Trusted by 500+ Enterprise Teams  •")} <span className="font-semibold text-primary flex items-center gap-2"><Sparkles className="w-3 h-3"/> {t("powered_by_orbit_ai", "Powered by Orbit AI")}</span>
+ {t("trusted_by_500_enterprise_team", "Trusted by 500+ Enterprise Teams  •")} <span className="font-semibold text-primary flex items-center gap-2"><Sparkles className="w-3 h-3"/> {t("powered_by_orbit_ai", "Powered by Orbit Intelligence")}</span>
  </div>
  </FadeIn>
 
