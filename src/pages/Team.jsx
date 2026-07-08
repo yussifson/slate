@@ -331,6 +331,7 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew, industryRole
               <Select value={form.role} onValueChange={(v) => handleChange("role", v)}>
                 <SelectTrigger className="mt-1"><SelectValue placeholder="Select Role..." /></SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="company_admin">Company Admin (System Role)</SelectItem>
                   {roleRecords.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
                 </SelectContent>
               </Select>

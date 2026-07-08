@@ -488,7 +488,7 @@ export default function Integrations() {
  </div>
  {/* Top Filter Bar */}
  <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900/50 dark:backdrop-blur-xl rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 p-4 flex flex-col md:flex-row gap-4 items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
+ <div className="flex gap-2 overflow-x-auto w-full md:w-auto md:flex-1 min-w-0 pb-2 md:pb-0 hide-scrollbar">
  {categories.map(cat => {
  return (
  <button

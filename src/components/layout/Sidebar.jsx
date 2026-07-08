@@ -786,7 +786,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     }
     
     // 3. New Category for settings, admin, marketplace, etc.
-    if (['/settings', '/feature-insider', '/feature-vault', '/marketplace', '/firm-setup', '/super-admin', '/enterprise-admin', '/branch-manager', '/client-portal', '/slate/create'].includes(p) || p.startsWith('/admin')) {
+    if (['/settings', '/integrations', '/feature-insider', '/feature-vault', '/marketplace', '/firm-setup', '/super-admin', '/enterprise-admin', '/branch-manager', '/client-portal', '/slate/create'].includes(p) || p.startsWith('/admin')) {
       return "System Administration";
     }
     
