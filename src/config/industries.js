@@ -946,7 +946,6 @@ export const INDUSTRIES = {
       { label: 'Marketing', path: '/optavel/marketing', icon: 'Megaphone' },
       { label: 'Sales', path: '/optavel/sales', icon: 'TrendingUp' },
       { label: 'Finance', path: '/optavel/finance', icon: 'DollarSign' },
-      { label: 'HR & Team', path: '/optavel/hr', icon: 'Users' },
       { label: 'Support', path: '/optavel/support', icon: 'LifeBuoy' },
       { label: 'Partnerships', path: '/optavel/partnerships', icon: 'Handshake' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },

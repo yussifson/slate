@@ -687,9 +687,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  
  // Put AI pages FIRST, then dynamic modules, custom pages, and FINALLY the baseNav (Chat, Board, Settings)
  // Extract dashboard from baseNav to put it at the very top
- const dashboardNav = baseNav.filter(item => item.label === "Dashboard" || item.path === "/");
- const intelligenceNav = [{ label: "Intelligence", icon: "Brain", path: "/intelligence"}];
- const remainingBaseNav = baseNav.filter(item => item.label !== "Dashboard" && item.path !== "/");
+  const dashboardNav = baseNav.filter(item => item.label === "Dashboard" || item.label === "My Dashboard" || item.path === "/" || item.path === "/my-dashboard");
+  const intelligenceNav = [{ label: "Intelligence", icon: "Brain", path: "/intelligence"}];
+  const remainingBaseNav = baseNav.filter(item => item.label !== "Dashboard" && item.label !== "My Dashboard" && item.path !== "/" && item.path !== "/my-dashboard");
  
  let rawNavItems = [];
 
