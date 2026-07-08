@@ -102,51 +102,45 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     } catch(e) {}
   }, [location.pathname, companyId]);
 
-  const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
-  const [rolePermissions, setRolePermissions] = useState(isAdmin ? null : undefined);
+  const { data: liveRoleRecord } = useQuery({
+    queryKey: ['live_employee_role', user?.id, companyId],
+    queryFn: async () => {
+      if (!user?.id || !companyId) return null;
+      const empRes = await powerSync.execute('SELECT role FROM univ_hr_employees WHERE user_id = ? AND company_id = ? LIMIT 1', [user.id, companyId]);
+      if (empRes.rows?.length > 0) return empRes.rows._array[0].role;
+      return user?.role; // Fallback to auth token
+    },
+    enabled: !!user?.id && !!companyId
+  });
 
-  useEffect(() => {
-    let active = true;
-    const fetchPermissions = async () => {
-      if (!user?.id || !companyId || isAdmin) {
-        if(active) setRolePermissions(null); // Admins see everything
-        return;
-      }
+  const activeRoleName = liveRoleRecord || user?.role;
+  const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(activeRoleName);
+  
+  const { data: customRolePermissions, isLoading: isLoadingPermissions } = useQuery({
+    queryKey: ['role_permissions', activeRoleName, companyId],
+    queryFn: async () => {
+      if (isAdmin) return null; // Admins get null (allow all)
+      if (!activeRoleName || !companyId) return undefined;
+      
       try {
-        // 1. Get employee record for current user
-        const empRes = await powerSync.execute('SELECT role FROM univ_hr_employees WHERE user_id = ? AND company_id = ? LIMIT 1', [user.id, companyId]);
-        if (empRes.rows?.length > 0) {
-          const roleId = empRes.rows._array[0].role;
-          if (roleId) {
-            // 2. Get permissions for role
-            const permRes = await powerSync.execute('SELECT feature_path FROM platform_role_permissions WHERE role_id = ?', [roleId]);
-            if(active) setRolePermissions(permRes.rows._array.map(p => p.feature_path));
-          } else {
-            if(active) setRolePermissions([]); // No role assigned = no access
+        // 1. Resolve role name to role UUID
+        const roleRes = await powerSync.execute('SELECT id FROM platform_roles WHERE company_id = ? AND name = ? LIMIT 1', [companyId, activeRoleName]);
+        if (roleRes.rows?.length > 0) {
+          const roleId = roleRes.rows._array[0].id;
+          
+          // 2. Fetch permissions for that UUID
+          const permRes = await powerSync.execute('SELECT feature_path FROM platform_role_permissions WHERE role_id = ?', [roleId]);
+          if (permRes.rows?.length > 0) {
+            return permRes.rows._array.map(p => p.feature_path);
           }
-        } else {
-          if(active) setRolePermissions([]); // Not an employee record = no access (strict fallback)
         }
-      } catch (e) { console.error(e); }
-    };
-    fetchPermissions();
-    return () => { active = false; };
-  }, [user?.id, companyId, isAdmin]);
-
-  // Filter function
-  const filterByRole = (navItems) => {
-    if (rolePermissions === undefined) return []; // Still loading, show nothing to prevent flashing
-    if (rolePermissions === null) return navItems; // Admin or unfiltered access
-    
-    return navItems.filter(item => {
-      // Always allow main dashboard
-      if (item.path === '/') return true;
-      // Allow settings if they explicitly have settings permission
-      if (item.path === '/settings' && !rolePermissions.includes('/settings')) return false;
-      // Check if path is in permissions
-      return rolePermissions.includes(item.path);
-    });
-  };
+      } catch (e) {
+        console.error("Failed to resolve custom role permissions", e);
+      }
+      return undefined; // undefined signals "no custom permissions found, use fallback"
+    },
+    enabled: !!activeRoleName && !!companyId && !isAdmin
+  });
 
  const { activeRoomUrl} = useVideo();
  const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry || impersonatedCompany?.industry_type || user?.company_industry || 'law';
@@ -210,8 +204,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const activeEducationLevel = impersonatedCompany?.industry || impersonatedCompany?.industry_type || companyData?.industry_type || 'primary';
 
  const industryData = INDUSTRIES[activeIndustry] || INDUSTRIES.law;
- const industryNavRaw = getIndustryNav(activeIndustry, activeEducationLevel);
-  const industryNav = filterByRole(industryNavRaw);
+  const industryNavRaw = getIndustryNav(activeIndustry, activeEducationLevel);
+  const industryNav = industryNavRaw;
  
  const savedModulesStr = localStorage.getItem(`active_modules_${companyId}`);
  const localModules = savedModulesStr ? JSON.parse(savedModulesStr) : null;
@@ -355,18 +349,18 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 };
 
  const { data: univAccessData} = useQuery({
- queryKey: ['univ_role', user?.role, companyId],
+ queryKey: ['univ_role', activeRoleName, companyId],
  queryFn: async () => {
- if (!user?.role || !companyId) return null;
+ if (!activeRoleName || !companyId) return null;
  const { data} = await supabase
  .from('univ_roles')
  .select('permissions')
  .eq('company_id', companyId)
- .eq('role_name', user.role)
+ .eq('role_name', activeRoleName)
  .maybeSingle();
  return data;
 },
- enabled: !!user?.role && !!companyId && !isAdmin
+ enabled: !!activeRoleName && !!companyId && !isAdmin
 });
 
  const univAllowedPaths = React.useMemo(() => {
@@ -383,7 +377,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  return paths;
 }, [univAccessData, industryNavRaw]);
 
- const allowedPaths = isAdmin ? null : (univAllowedPaths || ROLE_PERMISSIONS[user?.role] || INDUSTRY_BASE_PERMISSIONS[activeIndustry] || INDUSTRY_BASE_PERMISSIONS.default);
+ const allowedPaths = isAdmin ? null : (customRolePermissions || univAllowedPaths || ROLE_PERMISSIONS[activeRoleName] || INDUSTRY_BASE_PERMISSIONS[activeIndustry] || INDUSTRY_BASE_PERMISSIONS.default);
 
  const coreOrbitNav = [
  { label: "Dashboard", path: "/", icon: "Sparkles"},
@@ -412,7 +406,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     { label: "Feature Insider", path: "/admin/feature-insider", icon: "FlaskConical"}
  ];
 
- const isSuiteAdmin = ["super_admin", "admin"].includes(user?.role);
+ const isSuiteAdmin = ["super_admin", "admin"].includes(activeRoleName);
 
   let filteredCompanyNav = (isSuiteAdmin && location.pathname.startsWith('/admin')) ? adminNav : (isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
  // Core features everyone gets
@@ -426,6 +420,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  
  // Evaluate RBAC permissions
  if (isAdmin) return true;
+ if (isLoadingPermissions) return false; // Hide items while fetching permissions to avoid flash
  if (corePaths.includes(item.path)) return true;
  if (!allowedPaths) return true; // If totally undefined for some reason, allow (though shouldn't happen)
  return allowedPaths.includes(item.path);
