@@ -89,10 +89,10 @@ const MODULES = [
 
 export default function OptavelCommandCenter() {
   const { user } = useAuth();
-  const { data: tasksData } = useQuery('SELECT COUNT(*) as count FROM optavel_tasks WHERE status != ?', ['done']);
-  const { data: employeesData } = useQuery('SELECT COUNT(*) as count FROM optavel_employees');
-  const { data: ticketsData } = useQuery('SELECT COUNT(*) as count FROM optavel_support_tickets WHERE status != ?', ['resolved']);
-  const { data: dealsData } = useQuery('SELECT COUNT(*) as count FROM optavel_deal_rooms WHERE stage != ?', ['closed_lost']);
+  const { data: tasksData } = useQuery('SELECT COUNT(*) as count FROM optavel_tasks WHERE status != ? AND company_id = ?', ['done', user?.company_id]);
+  const { data: employeesData } = useQuery('SELECT COUNT(*) as count FROM optavel_employees WHERE company_id = ?', [user?.company_id]);
+  const { data: ticketsData } = useQuery('SELECT COUNT(*) as count FROM optavel_support_tickets WHERE status != ? AND company_id = ?', ['resolved', user?.company_id]);
+  const { data: dealsData } = useQuery('SELECT COUNT(*) as count FROM optavel_deal_rooms WHERE stage != ? AND company_id = ?', ['closed_lost', user?.company_id]);
 
   const activeTasks = tasksData?.[0]?.count || 0;
   const totalEmployees = employeesData?.[0]?.count || 0;

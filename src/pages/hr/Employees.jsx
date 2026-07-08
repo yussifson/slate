@@ -545,6 +545,7 @@ export default function Employees() {
       className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
       >
       <option value="">Select Role...</option>
+      <option value="company_admin">Company Admin (System Role)</option>
          {roleRecords.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
       </select>
   </div>
