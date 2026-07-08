@@ -22,8 +22,29 @@ import { useToast} from "@/components/ui/use-toast";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { useTheme } from "@/lib/ThemeContext";
 
+// Export VIRTUAL_BACKGROUNDS so PreJoinScreen can use them
+export const VIRTUAL_BACKGROUNDS = [
+  { id: 'none', label: 'None', type: 'none' },
+  { id: 'blur', label: 'Blur', type: 'background-blur' },
+  { id: 'bg1', label: 'Modern Office', type: 'background-image', url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg2', label: 'Minimalist Room', type: 'background-image', url: 'https://images.unsplash.com/photo-1600607688969-a5bfcd64bd2b?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg3', label: 'Cyberpunk City', type: 'background-image', url: 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg4', label: 'Orbit Space Station', type: 'background-image', url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg5', label: 'Luxury Library', type: 'background-image', url: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg6', label: 'Mountain Retreat', type: 'background-image', url: 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg7', label: 'Neon Glow', type: 'background-image', url: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg8', label: 'Abstract Fluid', type: 'background-image', url: 'https://images.unsplash.com/photo-1557672172-298e090bd0f1?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg9', label: 'Geometric Design', type: 'background-image', url: 'https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg10', label: 'Cozy Cafe', type: 'background-image', url: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg11', label: 'Tech Server Room', type: 'background-image', url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg12', label: 'Sunset Beach', type: 'background-image', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg13', label: 'Zen Garden', type: 'background-image', url: 'https://images.unsplash.com/photo-1596700140228-568eb90956b9?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg14', label: 'Skyscraper View', type: 'background-image', url: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=600&auto=format&fit=crop' },
+  { id: 'bg15', label: 'Deep Ocean', type: 'background-image', url: 'https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=600&auto=format&fit=crop' }
+];
+
 // Inner component that actually uses the Daily hooks
-function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
+function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBackground}) {
  const { t} = useTranslation();
  const daily = useDaily();
  const localSessionId = useLocalSessionId();
@@ -49,7 +70,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  const [showEmojis, setShowEmojis] = useState(false);
  const [floatingEmojis, setFloatingEmojis] = useState([]);
   const EMOJIS = ['👍', '❤️', '👏', '😂', '🎉', '🔥'];
-  const [activeBg, setActiveBg] = useState('none');
+  const [activeBg, setActiveBg] = useState(initialBackground?.id || 'none');
   const [isApplyingBg, setIsApplyingBg] = useState(false);
 
   const applyVirtualBackground = async (bg) => {
@@ -371,15 +392,15 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
 };
 
  return (
- <div className="flex flex-col h-full bg-slate-50 dark:bg-[#0B1121] rounded-xl overflow-hidden relative border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 group">
-  {/* Realistic Background Layers */}
-  <div className="absolute inset-0 pointer-events-none z-0">
-    <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 dark:bg-primary/10 blur-[120px]" />
-    <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[120px]" />
+ <div className="flex flex-col h-full bg-[#F8FAFC] dark:bg-[#030712] rounded-[2.5rem] overflow-hidden relative border border-white/50 dark:border-white/10 shadow-2xl group font-sans">
+  {/* Fluid Dynamics Background Layers */}
+  <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+    <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-gradient-to-br from-primary/20 to-blue-500/10 dark:from-primary/10 dark:to-blue-500/5 blur-[120px] mix-blend-multiply dark:mix-blend-screen" />
+    <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-tr from-cyan-400/20 to-emerald-400/10 dark:from-cyan-400/10 dark:to-emerald-400/5 blur-[140px] mix-blend-multiply dark:mix-blend-screen" />
   </div>
 
  {/* Main Layout Area */}
- <div className="relative z-10 flex-1 flex flex-row relative min-w-0 overflow-hidden">
+ <div className="relative z-10 flex-1 flex flex-row relative min-w-0 overflow-hidden bg-transparent">
  
  {/* Video Content Area */}
  <div className="flex-1 flex flex-col relative min-w-0">
@@ -401,9 +422,9 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
     const sidebarParticipants = allParticipants.filter(id => id !== mainSpeakerId);
 
     return (
-      <div className="flex-1 flex flex-col lg:flex-row p-4 gap-4 overflow-hidden bg-white/30 dark:bg-black/20 backdrop-blur-sm">
+      <div className="flex-1 flex flex-col lg:flex-row p-6 gap-6 overflow-hidden bg-transparent pb-32">
         {/* Main Stage Area */}
-        <div className="flex-[3] relative rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-white/10 shadow-inner bg-slate-900">
+        <div className="flex-[3] relative rounded-[2.5rem] flex items-center justify-center overflow-hidden border border-white/50 dark:border-white/10 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] bg-white/10 dark:bg-black/20 backdrop-blur-2xl">
           {screens.length > 0 ? (
             screens.map(screen => (
               <ScreenShareTile key={screen.screenId} screen={screen} className="w-full h-full absolute inset-0" />
@@ -413,9 +434,9 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
           ) : null}
         </div>
         {/* Participant Sidebar */}
-        <div className="flex-1 lg:max-w-[320px] flex lg:flex-col gap-4 overflow-x-auto lg:overflow-y-auto min-h-[140px] lg:min-h-0 items-center lg:items-stretch content-start">
+        <div className="flex-1 lg:max-w-[340px] flex lg:flex-col gap-6 overflow-x-auto lg:overflow-y-auto min-h-[160px] lg:min-h-0 items-center lg:items-stretch content-start pb-4 lg:pb-0 scrollbar-hide">
           {sidebarParticipants.map(id => (
-            <ParticipantTile key={id} id={id} isLocal={id === localSessionId} className="w-64 min-w-[16rem] lg:w-full lg:min-w-0 shrink-0 m-0" />
+            <ParticipantTile key={id} id={id} isLocal={id === localSessionId} className="w-64 min-w-[16rem] lg:w-full lg:min-w-0 shrink-0 m-0 rounded-[2rem] shadow-xl border border-white/50 dark:border-white/10" />
           ))}
           {allParticipants.length === 0 && (
             <div key="loader" className="flex items-center justify-center w-full h-full text-slate-400">
@@ -615,8 +636,8 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
    }
  `}</style>
 
- {/* Control Bar */}
- <div className={`relative z-10 bg-white/80 dark:bg-black/60 backdrop-blur-md border-t border-primary/40 flex items-center justify-center transition-all ${isPipMode ? 'h-12 px-2 gap-2' : 'h-20 px-6 gap-4'}`}>
+ {/* Control Bar - Fluid Dock */}
+ <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 z-50 bg-white/40 dark:bg-black/50 backdrop-blur-3xl border border-white/50 dark:border-white/10 rounded-full shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] flex items-center justify-center transition-all ${isPipMode ? 'px-3 py-2 gap-2' : 'px-6 py-4 gap-4 hover:scale-105'}`}>
  <div className="relative">
    {showEmojis && (
      <div className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-card border border-primary/20 shadow-xl rounded-full px-4 py-3 flex gap-3 animate-in fade-in slide-in-from-bottom-4 z-50">
@@ -740,7 +761,7 @@ function ScreenShareTile({ screen, className }) {
 }, [screen.screenAudio?.track, screen.local]);
 
  return (
- <div className={`relative bg-slate-800 rounded-xl overflow-hidden group flex items-center justify-center ${className || ''}`}>
+ <div className={`relative bg-black/80 rounded-[2.5rem] overflow-hidden group flex items-center justify-center shadow-2xl ${className || ''}`}>
  {screen.screenVideo?.state === 'playable' ? (
  <video 
  ref={videoRef}
@@ -770,26 +791,9 @@ const avatarColors = [
   'bg-amber-500', 'bg-teal-500', 'bg-cyan-500'
 ];
 const vectorAvatars = Array.from({ length: 10 }, (_, i) => `https://api.dicebear.com/7.x/micah/svg?seed=OptavelUser${i + 1}&backgroundColor=transparent`);
-
-const VIRTUAL_BACKGROUNDS = [
-  { id: 'none', label: 'None', type: 'none' },
-  { id: 'blur', label: 'Blur', type: 'background-blur' },
-  { id: 'bg1', label: 'Modern Office', type: 'background-image', url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=600&auto=format&fit=crop' },
-  { id: 'bg2', label: 'Minimalist Room', type: 'background-image', url: 'https://images.unsplash.com/photo-1600607688969-a5bfcd64bd2b?q=80&w=600&auto=format&fit=crop' },
-  { id: 'bg3', label: 'Cyberpunk City', type: 'background-image', url: 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?q=80&w=600&auto=format&fit=crop' },
-  { id: 'bg4', label: 'Orbit Space Station', type: 'background-image', url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop' },
-  { id: 'bg5', label: 'Luxury Library', type: 'background-image', url: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=600&auto=format&fit=crop' },
-  { id: 'bg6', label: 'Mountain Retreat', type: 'background-image', url: 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?q=80&w=600&auto=format&fit=crop' },
-  { id: 'bg7', label: 'Neon Glow', type: 'background-image', url: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=600&auto=format&fit=crop' },
-  { id: 'bg8', label: 'Abstract Fluid', type: 'background-image', url: 'https://images.unsplash.com/photo-1557672172-298e090bd0f1?q=80&w=600&auto=format&fit=crop' },
-  { id: 'bg9', label: 'Geometric Design', type: 'background-image', url: 'https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?q=80&w=600&auto=format&fit=crop' },
-  { id: 'bg10', label: 'Cozy Cafe', type: 'background-image', url: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=600&auto=format&fit=crop' },
-  { id: 'bg11', label: 'Tech Server Room', type: 'background-image', url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=600&auto=format&fit=crop' },
-  { id: 'bg12', label: 'Sunset Beach', type: 'background-image', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop' },
-  { id: 'bg13', label: 'Zen Garden', type: 'background-image', url: 'https://images.unsplash.com/photo-1596700140228-568eb90956b9?q=80&w=600&auto=format&fit=crop' },
-  { id: 'bg14', label: 'Skyscraper View', type: 'background-image', url: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=600&auto=format&fit=crop' },
-  { id: 'bg15', label: 'Deep Ocean', type: 'background-image', url: 'https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=600&auto=format&fit=crop' }
 ];
+const vectorAvatars = Array.from({ length: 10 }, (_, i) => `https://api.dicebear.com/7.x/micah/svg?seed=OptavelUser${i + 1}&backgroundColor=transparent`);
+
 
 function ParticipantTile({ id, isLocal, className }) {
  const videoState = useVideoTrack(id);
@@ -854,7 +858,7 @@ function ParticipantTile({ id, isLocal, className }) {
  };
 
  return (
- <div className={`relative bg-white dark:bg-slate-900 rounded-2xl overflow-hidden group flex items-center justify-center aspect-video shadow-md border border-slate-200 dark:border-white/10 ${className || 'w-full max-w-3xl min-w-[320px] m-2'}`}>
+ <div className={`relative bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl rounded-[2.5rem] overflow-hidden group flex items-center justify-center aspect-video shadow-2xl border border-white/50 dark:border-white/10 ${className || 'w-full max-w-3xl min-w-[320px] m-2'}`}>
  {videoState?.state === 'playable' ? (
  <video 
  ref={videoRef}
@@ -892,7 +896,7 @@ function ParticipantTile({ id, isLocal, className }) {
 }
 
 // Wrapper to initialize Daily provider
-export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePipMode, userName, initialAudio = true, initialVideo = true }) {
+export default function VideoRoom({ roomUrl, userName, token, initialAudio = true, initialVideo = true, initialBackground, onLeave, isPipMode, togglePipMode }) {
  const [daily, setDaily] = useState(null);
  // Keep a ref so the cleanup closure always has access to the latest callObject
  // without triggering re-renders on creation
@@ -940,6 +944,18 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
    try {
     await callObject.startCamera();
     if (cancelled) return;
+    
+    // Apply background instantly before joining
+    if (initialBackground && initialBackground.type !== 'none') {
+        try {
+           if (initialBackground.type === 'background-blur') {
+             await callObject.updateInputSettings({ video: { processor: { type: 'background-blur', config: { strength: 0.5 } } } });
+           } else {
+             await callObject.updateInputSettings({ video: { processor: { type: 'background-image', config: { source: initialBackground.url } } } });
+           }
+        } catch(e) { console.error("Initial bg fail", e); }
+    }
+
     await callObject.join(joinOpts);
    } catch (camErr) {
     console.warn('Camera/Mic permission denied or joining error.', camErr);
@@ -988,7 +1004,7 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
 
  return (
   <DailyProvider callObject={daily}>
-   <VideoRoomInner roomUrl={roomUrl} onLeave={onLeave} isPipMode={isPipMode} togglePipMode={togglePipMode} />
+   <VideoRoomInner roomUrl={roomUrl} onLeave={onLeave} isPipMode={isPipMode} togglePipMode={togglePipMode} initialBackground={initialBackground} />
   </DailyProvider>
  );
 }
