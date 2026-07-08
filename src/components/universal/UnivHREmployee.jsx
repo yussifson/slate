@@ -87,13 +87,18 @@ export default function UnivHREmployee() {
  const save = async (e) => {
  e.preventDefault();
  try {
+ let backendRole = form.role_title;
+ if (backendRole === 'Company Admin' || backendRole === 'Managing Partner') {
+   backendRole = 'company_admin';
+ }
+
  const payload = {
    name: `${form.first_name} ${form.last_name}`.trim(),
    first_name: form.first_name,
    last_name: form.last_name,
    email: form.email,
    phone: form.phone,
-   role: form.role_title,
+   role: backendRole,
    department: form.department,
    status: form.status,
    salary: form.salary ? Number(form.salary) : null,
@@ -116,7 +121,7 @@ export default function UnivHREmployee() {
    const { user, error: regError } = await registerSchoolUser(
      form.email,
      password,
-     form.role_title || 'staff',
+     backendRole || 'staff',
      companyId,
      `${form.first_name} ${form.last_name}`
    );

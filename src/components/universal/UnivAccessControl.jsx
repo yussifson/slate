@@ -116,6 +116,10 @@ export default function UnivAccessControl() {
  payload.resource = 'Managed by Role';
  payload.permission_level = 'Managed by Role';
 
+ if (payload.role === 'Company Admin' || payload.role === 'Managing Partner') {
+   payload.role = 'company_admin';
+ }
+
  if (!editingUserId) {
  // Register auth user first
  const { registerSchoolUser} = await import('@/api/authUtils');
