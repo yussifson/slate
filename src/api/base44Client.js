@@ -147,25 +147,61 @@ const adminSupabase = createClient(
 );
 
 async function fetchFromSupabase(tableName, filter = {}, sort = []) {
-    let query = supabase.from(tableName).select('*');
-    for (const [key, value] of Object.entries(filter)) {
-        if (value === undefined || value === null) continue;
-        if (Array.isArray(value)) query = query.in(key, value);
-        else query = query.eq(key, value);
-    }
-    if (sort) {
-        if (typeof sort === 'string') {
-            const direction = sort.startsWith('-') ? { ascending: false } : { ascending: true };
-            const field = sort.startsWith('-') ? sort.slice(1) : sort;
-            query = query.order(field, direction);
-        } else if (Array.isArray(sort) && sort.length > 0) {
-            const s = sort[0];
-            query = query.order(s.field, { ascending: s.direction === 'asc' });
+    try {
+        let queryStr = `SELECT * FROM ${tableName}`;
+        const params = [];
+        
+        const filterEntries = Object.entries(filter).filter(([_, v]) => v !== undefined && v !== null);
+        if (filterEntries.length > 0) {
+            queryStr += ' WHERE ';
+            const clauses = [];
+            for (const [key, value] of filterEntries) {
+                if (Array.isArray(value)) {
+                    clauses.push(`${key} IN (${value.map(() => '?').join(', ')})`);
+                    params.push(...value);
+                } else {
+                    clauses.push(`${key} = ?`);
+                    params.push(value);
+                }
+            }
+            queryStr += clauses.join(' AND ');
         }
+
+        if (sort) {
+            if (typeof sort === 'string') {
+                const direction = sort.startsWith('-') ? 'DESC' : 'ASC';
+                const field = sort.startsWith('-') ? sort.slice(1) : sort;
+                queryStr += ` ORDER BY ${field} ${direction}`;
+            } else if (Array.isArray(sort) && sort.length > 0) {
+                const s = sort[0];
+                queryStr += ` ORDER BY ${s.field} ${s.direction === 'asc' ? 'ASC' : 'DESC'}`;
+            }
+        }
+
+        const res = await powerSync.execute(queryStr, params);
+        return res.rows._array || [];
+    } catch (err) {
+        console.warn(`PowerSync query failed for ${tableName}, falling back to Supabase:`, err.message);
+        let query = supabase.from(tableName).select('*');
+        for (const [key, value] of Object.entries(filter)) {
+            if (value === undefined || value === null) continue;
+            if (Array.isArray(value)) query = query.in(key, value);
+            else query = query.eq(key, value);
+        }
+        if (sort) {
+            if (typeof sort === 'string') {
+                const direction = sort.startsWith('-') ? { ascending: false } : { ascending: true };
+                const field = sort.startsWith('-') ? sort.slice(1) : sort;
+                query = query.order(field, direction);
+            } else if (Array.isArray(sort) && sort.length > 0) {
+                const s = sort[0];
+                query = query.order(s.field, { ascending: s.direction === 'asc' });
+            }
+        }
+        const { data, error } = await query;
+        if (error) throw error;
+        return data || [];
     }
-    const { data, error } = await query;
-    if (error) throw error;
-    return data || [];
 }
 
 export const base44 = {
