@@ -15,6 +15,8 @@ import FirmFeaturesManager from '@/components/superadmin/FirmFeaturesManager';
 import { useNotifications } from '@/hooks/useNotifications';
 import { supabase } from '@/api/supabaseClient';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { ChevronDown, Building2 } from "lucide-react";
 
 export default function AdminFirms() {
   const { t } = useTranslation();
@@ -296,24 +298,41 @@ export default function AdminFirms() {
                         <span className="text-[10px] font-semibold text-slate-400 capitalize">({c.subscription_status})</span>
                         
                         {/* Industry Switcher */}
-                        <select
-                          value={c.industry_type || 'firm'}
-                          onChange={async (e) => {
-                            const newIndustry = e.target.value;
-                            try {
-                              await powerSync.execute('UPDATE companies SET industry_type = ? WHERE id = ?', [newIndustry, c.id]);
-                              toast({ title: "Industry updated", description: `${c.name} is now a ${newIndustry} workspace.` });
-                            } catch (err) {
-                              console.error("Failed to update industry:", err);
-                              toast({ title: "Failed to update industry", description: err.message, variant: "destructive" });
-                            }
-                          }}
-                          className="ml-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-2 py-0.5 text-[10px] focus:ring-1 focus:ring-primary outline-none"
-                        >
-                          {INDUSTRIES.map(ind => (
-                            <option key={ind} value={ind}>{ind.charAt(0).toUpperCase() + ind.slice(1)}</option>
-                          ))}
-                        </select>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="ml-auto flex items-center gap-1.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-all rounded-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider outline-none">
+                              <Building2 className="w-3 h-3" />
+                              {c.industry_type === 'optavel' ? 'OptaVel OS' : (c.industry_type || 'firm')}
+                              <ChevronDown className="w-3 h-3 opacity-70" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48 max-h-[300px] overflow-y-auto bg-background/95 backdrop-blur-md border-border/50 shadow-xl rounded-xl p-1">
+                            <div className="px-2 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border/50 mb-1">
+                              Switch Industry
+                            </div>
+                            {INDUSTRIES.map(ind => (
+                              <DropdownMenuItem 
+                                key={ind}
+                                onClick={async () => {
+                                  try {
+                                    // Make sure to push the update to Supabase permanently!
+                                    const { error } = await supabase.from('companies').update({ industry_type: ind }).eq('id', c.id);
+                                    if (error) throw error;
+                                    // Also update local PowerSync immediately so UI reflects without waiting for sync
+                                    await powerSync.execute('UPDATE companies SET industry_type = ? WHERE id = ?', [ind, c.id]);
+                                    toast({ title: "Industry updated", description: `${c.name} is now a ${ind === 'optavel' ? 'OptaVel OS' : ind} workspace.` });
+                                  } catch (err) {
+                                    console.error("Failed to update industry:", err);
+                                    toast({ title: "Failed to update industry", description: err.message, variant: "destructive" });
+                                  }
+                                }}
+                                className={`text-xs cursor-pointer rounded-lg px-2.5 py-1.5 transition-all ${c.industry_type === ind ? 'bg-primary text-primary-foreground font-bold' : 'hover:bg-muted font-medium'}`}
+                              >
+                                {ind === 'optavel' ? 'OptaVel OS' : ind.charAt(0).toUpperCase() + ind.slice(1)}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </div>
                     

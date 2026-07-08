@@ -2,40 +2,35 @@ import React, { useState, useEffect, useCallback } from "react";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
-import {
-  Plus, BookOpen, Award, Clock, CheckCircle2, AlertTriangle,
-  Users, GraduationCap, RefreshCw, TrendingUp
-} from "lucide-react";
+import { Plus, BookOpen, Award, Clock, CheckCircle2, AlertTriangle, Users, GraduationCap, PlayCircle } from "lucide-react";
 
 const CATEGORIES = ["Compliance", "Technical", "Leadership", "Safety", "Onboarding", "Product", "Soft Skills"];
-const STATUS_COLORS = {
-  not_started: "bg-slate-100 text-slate-600",
-  in_progress: "bg-blue-100 text-blue-700",
-  completed:   "bg-green-100 text-green-700",
-  expired:     "bg-red-100 text-red-700",
+
+const STATUS_STYLES = {
+  not_started: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
+  in_progress: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400",
+  completed:   "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+  expired:     "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
 };
 
-function ProgressRing({ pct, size = 56 }) {
-  const r = 20;
+function ProgressRing({ pct, size = 64 }) {
+  const r = 24;
   const circ = 2 * Math.PI * r;
   const dash = (Math.min(100, pct) / 100) * circ;
-  const color = pct >= 80 ? "#22c55e" : pct >= 40 ? "#f59e0b" : "#94a3b8";
+  const color = pct >= 80 ? "#10b981" : pct >= 40 ? "#f59e0b" : "#94a3b8";
   return (
-    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
+    <div className="relative inline-flex items-center justify-center bg-white dark:bg-slate-800 rounded-full shadow-sm" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="currentColor" strokeWidth={5} className="text-muted/30" />
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={5}
-          strokeDasharray={`${dash} ${circ - dash}`} strokeLinecap="round" />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="currentColor" strokeWidth={6} className="text-slate-100 dark:text-slate-700" />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={6}
+          strokeDasharray={`${dash} ${circ - dash}`} strokeLinecap="round" className="transition-all duration-1000 ease-out" />
       </svg>
-      <span className="absolute text-xs font-bold" style={{ color }}>{pct}%</span>
+      <span className="absolute text-sm font-bold text-foreground">{pct}%</span>
     </div>
   );
 }
@@ -88,7 +83,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
     toast({ title: "Staff enrolled in course" });
   };
 
-  const updateStatus = async (recordId, status, completedAt) => {
+  const updateStatus = async (recordId, status) => {
     await powerSync.execute(
       "UPDATE hr_training_records SET status = ?, completed_at = ? WHERE id = ?",
       [status, status === "completed" ? new Date().toISOString() : null, recordId]
@@ -98,335 +93,242 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
     toast({ title: `Marked as ${status}` });
   };
 
-  // Analytics
   const completedCount = records.filter(r => r.status === "completed").length;
-  const inProgressCount = records.filter(r => r.status === "in_progress").length;
-  const notStartedCount = records.filter(r => r.status === "not_started").length;
   const overallPct = records.length > 0 ? Math.round((completedCount / records.length) * 100) : 0;
 
-  const expiringRecords = records.filter(r => {
-    if (!r.expiry_date || r.status === "completed") return false;
-    const days = Math.ceil((new Date(r.expiry_date) - new Date()) / 86400000);
-    return days >= 0 && days <= 30;
-  });
-
-  const categoryData = CATEGORIES.map(cat => ({
-    name: cat,
-    total: records.filter(r => r.category === cat).length,
-    completed: records.filter(r => r.category === cat && r.status === "completed").length,
-  })).filter(d => d.total > 0);
-
-  // Per-staff completion
   const staffCompletion = staff.map(s => {
     const myRecords = records.filter(r => r.staff_id === s.id);
     const done = myRecords.filter(r => r.status === "completed").length;
-    return { name: s.full_name, total: myRecords.length, completed: done, pct: myRecords.length > 0 ? Math.round((done / myRecords.length) * 100) : 0 };
+    return { name: s.full_name, total: myRecords.length, completed: done, pct: myRecords.length > 0 ? Math.round((done / myRecords.length) * 100) : 0, avatar: s.full_name?.charAt(0) || '?' };
   }).filter(s => s.total > 0).sort((a, b) => b.pct - a.pct);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-primary p-6 text-primary-foreground">
-        <div className="absolute inset-0 bg-black/10" />
-        <div className="absolute -top-4 -right-4 w-32 h-32 bg-white/10 rounded-full" />
+    <div className="space-y-6 max-w-[1600px] mx-auto font-dmsans">
+      {/* ── Header ── */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-white shadow-lg">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
+        
         <div className="relative z-10">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-xl font-bold">Training & Learning</h2>
-              <p className="text-primary-foreground/80 text-sm">{courses.length} courses · {records.length} enrollments · {overallPct}% overall completion</p>
+              <h2 className="text-3xl font-bold tracking-tight">Training & Learning Hub</h2>
+              <p className="text-blue-100 mt-1 opacity-90">{courses.length} Active Courses · {records.length} Total Enrollments</p>
             </div>
             {isAdmin && (
-              <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30" onClick={() => setShowEnrollForm(true)}>
-                  <Users className="w-4 h-4 mr-1" /> Enroll Staff
+              <div className="flex gap-3">
+                <Button className="bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-md rounded-xl" onClick={() => setShowEnrollForm(true)}>
+                  <Users className="w-4 h-4 mr-2" /> Enroll Staff
                 </Button>
-                <Button size="sm" className="bg-background text-primary hover:bg-background/90" onClick={() => setShowCourseForm(true)}>
-                  <Plus className="w-4 h-4 mr-1" /> New Course
+                <Button className="bg-white text-blue-700 hover:bg-blue-50 rounded-xl font-bold shadow-sm" onClick={() => setShowCourseForm(true)}>
+                  <Plus className="w-4 h-4 mr-2" /> New Course
                 </Button>
               </div>
             )}
           </div>
 
-          {/* Summary KPIs */}
-          <div className="grid grid-cols-4 gap-3">
-            {[
-              { label: "Courses", value: courses.length, icon: BookOpen },
-              { label: "Completed", value: completedCount, icon: CheckCircle2 },
-              { label: "In Progress", value: inProgressCount, icon: Clock },
-              { label: "Not Started", value: notStartedCount, icon: RefreshCw },
-            ].map(({ label, value, icon: Icon }) => (
-              <div key={label} className="bg-white/15 rounded-xl p-3 text-center">
-                <Icon className="w-4 h-4 mx-auto mb-1 text-primary-foreground/90" />
-                <p className="text-xl font-bold">{value}</p>
-                <p className="text-xs text-primary-foreground/90">{label}</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 flex items-center gap-5">
+              <ProgressRing pct={overallPct} size={72} />
+              <div>
+                <p className="text-sm font-medium text-blue-100 uppercase tracking-wider">Overall Completion</p>
+                <p className="text-2xl font-bold mt-0.5">{completedCount} of {records.length}</p>
               </div>
-            ))}
+            </div>
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 flex items-center gap-5">
+              <div className="w-16 h-16 rounded-full bg-blue-500/30 flex items-center justify-center border border-blue-400/30">
+                <BookOpen className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-blue-100 uppercase tracking-wider">Courses Available</p>
+                <p className="text-2xl font-bold mt-0.5">{courses.length}</p>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 flex items-center gap-5">
+              <div className="w-16 h-16 rounded-full bg-blue-500/30 flex items-center justify-center border border-blue-400/30">
+                <Award className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-blue-100 uppercase tracking-wider">Top Learner</p>
+                <p className="text-lg font-bold mt-0.5 line-clamp-1">{staffCompletion.length > 0 ? staffCompletion[0].name : 'N/A'}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Expiry Alerts */}
-      {expiringRecords.length > 0 && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-900/20 p-4">
-          <p className="flex items-center gap-2 text-sm font-semibold text-amber-800 mb-2">
-            <AlertTriangle className="w-4 h-4" />{expiringRecords.length} training records expiring within 30 days
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {expiringRecords.map(r => (
-              <span key={r.id} className="text-xs bg-white border border-amber-200 px-3 py-1.5 rounded-lg text-amber-800">
-                {r.full_name} · {r.course_title} · {r.expiry_date}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <Tabs defaultValue="records">
-        <TabsList className="bg-muted/50 p-1 rounded-xl">
-          <TabsTrigger value="records" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">
-            <GraduationCap className="w-4 h-4 mr-1.5" />Training Records
-          </TabsTrigger>
-          <TabsTrigger value="courses" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">
-            <BookOpen className="w-4 h-4 mr-1.5" />Courses ({courses.length})
-          </TabsTrigger>
-          <TabsTrigger value="analytics" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">
-            <TrendingUp className="w-4 h-4 mr-1.5" />Analytics
-          </TabsTrigger>
+      {/* ── Main Content Tabs ── */}
+      <Tabs defaultValue="courses" className="w-full">
+        <TabsList className="bg-muted p-1 rounded-xl mb-6">
+          <TabsTrigger value="courses" className="rounded-lg font-semibold px-6 py-2.5 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:shadow-sm">Courses</TabsTrigger>
+          <TabsTrigger value="enrollments" className="rounded-lg font-semibold px-6 py-2.5 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:shadow-sm">Enrollments</TabsTrigger>
+          <TabsTrigger value="leaderboard" className="rounded-lg font-semibold px-6 py-2.5 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:shadow-sm">Leaderboard</TabsTrigger>
         </TabsList>
 
-        {/* TRAINING RECORDS */}
-        <TabsContent value="records" className="mt-4">
-          {records.length === 0 ? (
-            <div className="text-center py-16 text-muted-foreground">
-              <GraduationCap className="w-12 h-12 mx-auto mb-3 opacity-20" />
-              <p className="text-sm">No training records yet. Enroll staff to get started.</p>
-            </div>
-          ) : (
-            <div className="rounded-xl border border-border overflow-hidden">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-muted/50 border-b border-border">
-                    <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Employee</th>
-                    <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Course</th>
-                    <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Category</th>
-                    <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Status</th>
-                    <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Expiry</th>
-                    <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {records.map((r, i) => {
-                    const daysLeft = r.expiry_date ? Math.ceil((new Date(r.expiry_date) - new Date()) / 86400000) : null;
-                    return (
-                      <tr key={r.id} className={`border-b border-border last:border-0 hover:bg-muted/30 ${i % 2 === 0 ? "" : "bg-muted/10"}`}>
-                        <td className="px-4 py-3 font-medium">{r.full_name || "Unknown"}</td>
-                        <td className="px-4 py-3">
-                          <span className="text-foreground">{r.course_title}</span>
-                          {r.is_mandatory ? <Badge className="ml-2 text-[10px] bg-red-100 text-red-700 px-1.5">Mandatory</Badge> : null}
-                        </td>
-                        <td className="px-4 py-3 text-muted-foreground">{r.category}</td>
-                        <td className="px-4 py-3">
-                          <Badge className={STATUS_COLORS[r.status] || "bg-slate-100 text-slate-600"}>{r.status?.replace("_", " ")}</Badge>
-                        </td>
-                        <td className="px-4 py-3">
-                          {daysLeft != null ? (
-                            <span className={`text-xs font-medium ${daysLeft <= 30 ? "text-amber-600" : daysLeft < 0 ? "text-red-600" : "text-muted-foreground"}`}>
-                              {daysLeft < 0 ? "Expired" : `${daysLeft}d left`}
-                            </span>
-                          ) : "—"}
-                        </td>
-                        <td className="px-4 py-3">
-                          {isAdmin && r.status !== "completed" && (
-                            <Button size="sm" variant="ghost" className="h-7 text-xs text-primary hover:bg-primary/10" onClick={() => setShowUpdateForm(r)}>
-                              Update Status
-                            </Button>
-                          )}
-                          {r.status === "completed" && (
-                            <span className="flex items-center gap-1 text-xs text-green-600"><CheckCircle2 className="w-3 h-3" />Done</span>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </TabsContent>
-
-        {/* COURSES */}
-        <TabsContent value="courses" className="mt-4">
+        {/* ── Courses Tab ── */}
+        <TabsContent value="courses">
           {courses.length === 0 ? (
-            <div className="text-center py-16 text-muted-foreground">
-              <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-20" />
-              <p className="text-sm">No courses yet</p>
+            <div className="py-20 text-center bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8">
+              <GraduationCap className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
+              <p className="text-lg font-bold text-foreground">No Courses Found</p>
+              <p className="text-muted-foreground mt-1">Create your first training module to get started.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {courses.map(course => {
-                const enrolled = records.filter(r => r.course_id === course.id).length;
-                const completed = records.filter(r => r.course_id === course.id && r.status === "completed").length;
-                const pct = enrolled > 0 ? Math.round((completed / enrolled) * 100) : 0;
-                return (
-                  <div key={course.id} className="bg-card border border-border rounded-2xl p-5 hover:shadow-lg transition-all">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                        <BookOpen className="w-5 h-5 text-primary-foreground" />
-                      </div>
-                      <div className="flex flex-col items-end gap-1">
-                        <ProgressRing pct={pct} size={48} />
-                        {course.is_mandatory ? <Badge className="text-[10px] bg-red-100 text-red-700 px-1.5">Mandatory</Badge> : null}
-                      </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {courses.map(c => (
+                <div key={c.id} className="group bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+                  <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-500" />
+                  <div className="p-6 flex-1 flex flex-col">
+                    <div className="flex justify-between items-start mb-4">
+                      <span className="text-[10px] font-bold tracking-wider text-blue-700 bg-blue-100 dark:text-blue-400 dark:bg-blue-900/40 px-2.5 py-1 rounded-full uppercase">{c.category}</span>
+                      {c.is_mandatory === 1 && (
+                        <span className="text-[10px] font-bold tracking-wider text-red-700 bg-red-100 dark:text-red-400 dark:bg-red-900/40 px-2.5 py-1 rounded-full uppercase flex items-center gap-1"><AlertTriangle className="w-3 h-3"/> Mandatory</span>
+                      )}
                     </div>
-                    <h3 className="font-bold text-foreground text-sm mb-1">{course.title}</h3>
-                    <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{course.description}</p>
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <Badge className="bg-muted text-muted-foreground">{course.category}</Badge>
-                      <span className="flex items-center gap-1"><Users className="w-3 h-3" />{enrolled} enrolled</span>
+                    <h3 className="font-bold text-xl text-foreground mb-2 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{c.title}</h3>
+                    <p className="text-sm text-muted-foreground line-clamp-3 mb-6 flex-1">{c.description || "No description provided."}</p>
+                    <div className="flex items-center justify-between text-sm text-muted-foreground font-medium pt-4 border-t border-border/50">
+                      <span className="flex items-center gap-1.5"><Users className="w-4 h-4"/> {records.filter(r => r.course_id === c.id).length} Enrolled</span>
+                      <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"><CheckCircle2 className="w-4 h-4"/> {records.filter(r => r.course_id === c.id && r.status === "completed").length} Done</span>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           )}
         </TabsContent>
 
-        {/* ANALYTICS */}
-        <TabsContent value="analytics" className="mt-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Completion by Category */}
-            <div className="bg-card border border-border rounded-2xl p-6">
-              <h3 className="font-semibold text-foreground mb-1">Completion by Category</h3>
-              <p className="text-xs text-muted-foreground mb-4">Training records completed per category</p>
-              {categoryData.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">No data yet</p>
-              ) : (
-                <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={categoryData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                    <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} />
-                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} allowDecimals={false} />
-                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }} />
-                    <Bar dataKey="total" fill="#94a3b8" radius={[4, 4, 0, 0]} name="Enrolled" />
-                    <Bar dataKey="completed" fill="#10b981" radius={[4, 4, 0, 0]} name="Completed" />
-                  </BarChart>
-                </ResponsiveContainer>
-              )}
-            </div>
-
-            {/* Per-staff completion leaderboard */}
-            <div className="bg-card border border-border rounded-2xl p-6">
-              <h3 className="font-semibold text-foreground mb-1 flex items-center gap-2">
-                <Award className="w-4 h-4 text-amber-500" />Training Leaderboard
-              </h3>
-              <p className="text-xs text-muted-foreground mb-4">Employees ranked by training completion</p>
-              {staffCompletion.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">No enrollments yet</p>
-              ) : (
-                <div className="space-y-3">
-                  {staffCompletion.map((s, i) => (
-                    <div key={s.name} className="flex items-center gap-3">
-                      <span className={`w-6 text-xs font-bold ${i === 0 ? "text-amber-500" : i === 1 ? "text-slate-400" : i === 2 ? "text-amber-700" : "text-muted-foreground"}`}>{i + 1}</span>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm font-medium text-foreground">{s.name}</span>
-                          <span className="text-xs text-muted-foreground">{s.completed}/{s.total}</span>
-                        </div>
-                        <div className="w-full bg-muted rounded-full h-1.5">
-                          <div className={`h-1.5 rounded-full transition-all ${s.pct >= 80 ? "bg-primary" : s.pct >= 40 ? "bg-amber-500" : "bg-slate-400"}`} style={{ width: `${s.pct}%` }} />
-                        </div>
-                      </div>
-                      <ProgressRing pct={s.pct} size={40} />
+        {/* ── Enrollments Tab ── */}
+        <TabsContent value="enrollments">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {records.map(r => (
+              <div key={r.id} className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm flex flex-col overflow-hidden">
+                <div className="p-5 flex-1">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary font-bold">
+                      {r.full_name?.charAt(0)}
                     </div>
-                  ))}
+                    <div>
+                      <p className="font-bold text-foreground text-sm leading-tight">{r.full_name}</p>
+                      <p className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                  <h4 className="font-bold text-base text-foreground mb-3">{r.course_title}</h4>
+                  
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Status</p>
+                    <select
+                      value={r.status}
+                      onChange={e => updateStatus(r.id, e.target.value)}
+                      className={`w-full appearance-none px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer border-none outline-none focus:ring-2 focus:ring-primary/20 ${STATUS_STYLES[r.status] || STATUS_STYLES['not_started']}`}
+                    >
+                      <option value="not_started">Not Started</option>
+                      <option value="in_progress">In Progress</option>
+                      <option value="completed">Completed</option>
+                      <option value="expired">Expired</option>
+                    </select>
+                  </div>
                 </div>
-              )}
+                {r.status !== 'completed' && r.status !== 'expired' && (
+                  <div className="p-4 bg-slate-50 dark:bg-slate-800/50 mt-auto border-t border-border/50">
+                    <Button onClick={() => updateStatus(r.id, 'completed')} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs h-9">
+                      <CheckCircle2 className="w-4 h-4 mr-2"/> Mark Completed
+                    </Button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </TabsContent>
+
+        {/* ── Leaderboard Tab ── */}
+        <TabsContent value="leaderboard">
+          <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-border/50 flex items-center gap-3">
+              <Award className="w-6 h-6 text-amber-500" />
+              <h3 className="text-lg font-bold">Top Learners</h3>
+            </div>
+            <div className="divide-y divide-border/50">
+              {staffCompletion.map((s, idx) => (
+                <div key={idx} className="p-4 flex items-center gap-4 hover:bg-muted/50 transition-colors">
+                  <div className="w-8 text-center font-bold text-muted-foreground">#{idx + 1}</div>
+                  <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 flex items-center justify-center font-bold">
+                    {s.avatar}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-bold text-foreground">{s.name}</p>
+                    <p className="text-xs text-muted-foreground">{s.completed} of {s.total} courses completed</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{s.pct}%</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </TabsContent>
       </Tabs>
 
-      {/* New Course Dialog */}
+      {/* ── New Course Dialog ── */}
       <Dialog open={showCourseForm} onOpenChange={setShowCourseForm}>
-        <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>Create Training Course</DialogTitle></DialogHeader>
-          <div className="space-y-4 py-2">
-            <div><Label>Course Title *</Label><Input placeholder="e.g. Workplace Safety Certification" value={courseForm.title} onChange={e => setCourseForm(f => ({ ...f, title: e.target.value }))} /></div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>Category</Label>
-                <Select value={courseForm.category} onValueChange={v => setCourseForm(f => ({ ...f, category: v }))}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent position="popper" className="z-[9999] max-h-60">{CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Mandatory?</Label>
-                <Select value={String(courseForm.is_mandatory)} onValueChange={v => setCourseForm(f => ({ ...f, is_mandatory: parseInt(v) }))}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent position="popper" className="z-[9999] max-h-60">
-                    <SelectItem value="0">Optional</SelectItem>
-                    <SelectItem value="1">Mandatory</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+        <DialogContent className="sm:max-w-md rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>Create New Course</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Title</label>
+              <Input value={courseForm.title} onChange={e => setCourseForm({ ...courseForm, title: e.target.value })} className="mt-1" placeholder="e.g. Data Privacy 101" />
             </div>
-            <div><Label>Description</Label><Textarea placeholder="What will employees learn?" rows={3} value={courseForm.description} onChange={e => setCourseForm(f => ({ ...f, description: e.target.value }))} /></div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowCourseForm(false)}>Cancel</Button>
-              <Button onClick={saveCourse}>Create Course</Button>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Description</label>
+              <Textarea value={courseForm.description} onChange={e => setCourseForm({ ...courseForm, description: e.target.value })} className="mt-1 h-24" placeholder="Course overview..." />
             </div>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Category</label>
+              <Select value={courseForm.category} onValueChange={v => setCourseForm({ ...courseForm, category: v })}>
+                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                <SelectContent>{CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center gap-2 pt-2">
+              <input type="checkbox" id="mandatory" checked={courseForm.is_mandatory === 1} onChange={e => setCourseForm({ ...courseForm, is_mandatory: e.target.checked ? 1 : 0 })} className="w-4 h-4 rounded text-blue-600" />
+              <label htmlFor="mandatory" className="text-sm font-semibold text-foreground cursor-pointer">This course is mandatory</label>
+            </div>
+            <Button onClick={saveCourse} className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl mt-2">Create Course</Button>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Enroll Dialog */}
+      {/* ── Enroll Dialog ── */}
       <Dialog open={showEnrollForm} onOpenChange={setShowEnrollForm}>
-        <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>Enroll Staff in Course</DialogTitle></DialogHeader>
-          <div className="space-y-4 py-2">
+        <DialogContent className="sm:max-w-md rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>Enroll Staff</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
             <div>
-              <Label>Employee *</Label>
-              <Select value={enrollForm.staff_id} onValueChange={v => setEnrollForm(f => ({ ...f, staff_id: v }))}>
-                <SelectTrigger><SelectValue placeholder="Select employee" /></SelectTrigger>
-                <SelectContent position="popper" className="z-[9999] max-h-60">{staff.map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}</SelectContent>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Staff Member</label>
+              <Select value={enrollForm.staff_id} onValueChange={v => setEnrollForm({ ...enrollForm, staff_id: v })}>
+                <SelectTrigger className="mt-1"><SelectValue placeholder="Select staff..." /></SelectTrigger>
+                <SelectContent>{staff.map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Course *</Label>
-              <Select value={enrollForm.course_id} onValueChange={v => setEnrollForm(f => ({ ...f, course_id: v }))}>
-                <SelectTrigger><SelectValue placeholder="Select course" /></SelectTrigger>
-                <SelectContent position="popper" className="z-[9999] max-h-60">{courses.map(c => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}</SelectContent>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Course</label>
+              <Select value={enrollForm.course_id} onValueChange={v => setEnrollForm({ ...enrollForm, course_id: v })}>
+                <SelectTrigger className="mt-1"><SelectValue placeholder="Select course..." /></SelectTrigger>
+                <SelectContent>{courses.map(c => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}</SelectContent>
               </Select>
             </div>
-            <div><Label>Certification Expiry (optional)</Label><Input type="date" value={enrollForm.expiry_date} onChange={e => setEnrollForm(f => ({ ...f, expiry_date: e.target.value }))} /></div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowEnrollForm(false)}>Cancel</Button>
-              <Button onClick={enrollStaff}>Enroll</Button>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Deadline (Optional)</label>
+              <Input type="date" value={enrollForm.expiry_date} onChange={e => setEnrollForm({ ...enrollForm, expiry_date: e.target.value })} className="mt-1" />
             </div>
+            <Button onClick={enrollStaff} className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl mt-2">Enroll Staff</Button>
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Update Status Dialog */}
-      {showUpdateForm && (
-        <Dialog open={!!showUpdateForm} onOpenChange={() => setShowUpdateForm(null)}>
-          <DialogContent className="max-w-sm">
-            <DialogHeader><DialogTitle>Update Training Status</DialogTitle></DialogHeader>
-            <div className="space-y-4 py-2">
-              <p className="text-sm text-muted-foreground"><strong>{showUpdateForm.full_name}</strong> · {showUpdateForm.course_title}</p>
-              <div className="flex flex-col gap-2">
-                <Button variant="outline" className="justify-start gap-2" onClick={() => updateStatus(showUpdateForm.id, "in_progress")}>
-                  <Clock className="w-4 h-4 text-blue-500" />Mark as In Progress
-                </Button>
-                <Button className="justify-start gap-2 bg-green-600 hover:bg-green-700" onClick={() => updateStatus(showUpdateForm.id, "completed")}>
-                  <CheckCircle2 className="w-4 h-4" />Mark as Completed
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
     </div>
   );
 }

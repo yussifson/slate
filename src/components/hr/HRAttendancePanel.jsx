@@ -3,15 +3,10 @@ import { powerSync } from "@/api/PowerSyncConnector";
 import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import {
-  MapPin, Clock, CheckCircle2, XCircle, AlertTriangle,
-  Users, LogIn, LogOut, Calendar, Filter, Timer
-} from "lucide-react";
+import { MapPin, CheckCircle2, XCircle, AlertTriangle, Users, LogIn, LogOut, Timer, Map } from "lucide-react";
 
 function avatarInitials(name) {
   if (!name) return "?";
@@ -30,16 +25,16 @@ function formatTime(iso) {
 }
 
 const STATUS_STYLES = {
-  present: { cls: "bg-green-100 text-green-700", label: "Present", icon: CheckCircle2 },
-  late:    { cls: "bg-amber-100 text-amber-700",  label: "Late",    icon: AlertTriangle },
-  absent:  { cls: "bg-red-100 text-red-700",    label: "Absent",   icon: XCircle },
+  present: { bg: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400", label: "Present", icon: CheckCircle2 },
+  late:    { bg: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",  label: "Late",    icon: AlertTriangle },
+  absent:  { bg: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",    label: "Absent",   icon: XCircle },
 };
 
 function StatusBadge({ status }) {
   const s = STATUS_STYLES[status] || STATUS_STYLES.absent;
   const Icon = s.icon;
   return (
-    <span className={`flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${s.cls}`}>
+    <span className={`flex items-center gap-1.5 text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full uppercase ${s.bg}`}>
       <Icon className="w-3 h-3" />{s.label}
     </span>
   );
@@ -122,7 +117,6 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
     toast({ title: "Clocked out. Have a great evening!" });
   };
 
-  // Merge staff list with today's attendance
   const boardData = staff.map(s => {
     const record = todayRecords.find(r => r.staff_id === s.id);
     return { ...s, record };
@@ -140,139 +134,188 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
   });
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-primary p-6 text-primary-foreground">
-        <div className="absolute inset-0 bg-black/10" />
-        <div className="absolute -top-4 -right-4 w-32 h-32 bg-white/10 rounded-full" />
-        <div className="relative z-10">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-xl font-bold">Attendance</h2>
-              <p className="text-primary-foreground/80 text-sm">{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</p>
-            </div>
-            <div className="flex gap-6 text-center">
-              <div><p className="text-2xl font-bold">{totalPresent}</p><p className="text-xs text-primary-foreground/90">Present</p></div>
-              <div><p className="text-2xl font-bold">{totalLate}</p><p className="text-xs text-primary-foreground/90">Late</p></div>
-              <div><p className="text-2xl font-bold">{totalAbsent}</p><p className="text-xs text-primary-foreground/90">Absent</p></div>
-            </div>
+    <div className="space-y-6 max-w-[1600px] mx-auto font-dmsans">
+      {/* ── Header ── */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-600 p-8 text-white shadow-lg">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
+        
+        <div className="relative z-10 flex flex-col md:flex-row gap-6 justify-between mb-8">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight">Time & Attendance</h2>
+            <p className="text-teal-50 mt-1 opacity-90">{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</p>
           </div>
 
           {/* My Clock In/Out */}
-          <div className="bg-white/15 backdrop-blur rounded-xl p-4 flex items-center justify-between">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-6 border border-white/20 shadow-inner">
             <div>
-              <p className="font-semibold text-sm">My Attendance Today</p>
-              <p className="text-primary-foreground/80 text-xs mt-0.5">
+              <p className="font-bold text-sm uppercase tracking-wider text-teal-100">My Attendance</p>
+              <p className="text-white text-sm font-medium mt-1">
                 {myRecord ? (
-                  <>In: {formatTime(myRecord.clock_in)} {myRecord.clock_out ? `· Out: ${formatTime(myRecord.clock_out)}` : "· Still clocked in"}</>
+                  <>In: {formatTime(myRecord.clock_in)} {myRecord.clock_out ? `· Out: ${formatTime(myRecord.clock_out)}` : "· Still Active"}</>
                 ) : "Not clocked in yet"}
               </p>
-              {gpsStatus && <p className="text-primary-foreground/90 text-xs mt-1 flex items-center gap-1"><MapPin className="w-3 h-3" />{gpsStatus}</p>}
+              {gpsStatus && <p className="text-teal-200 text-xs mt-1.5 flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" />{gpsStatus}</p>}
             </div>
-            {!myRecord ? (
-              <Button size="sm" className="bg-background text-primary hover:bg-background/90 gap-2" onClick={clockIn} disabled={clockingIn}>
-                <LogIn className="w-4 h-4" />{clockingIn ? "Clocking in..." : "Clock In"}
-              </Button>
-            ) : !myRecord.clock_out ? (
-              <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30 gap-2" onClick={clockOut}>
-                <LogOut className="w-4 h-4" />Clock Out
-              </Button>
-            ) : (
-              <span className="text-xs bg-white/20 px-3 py-1.5 rounded-full flex items-center gap-1">
-                <Timer className="w-3.5 h-3.5" />{hoursWorked(myRecord.clock_in, myRecord.clock_out)}h worked
-              </span>
-            )}
+            <div className="shrink-0 w-full sm:w-auto">
+              {!myRecord ? (
+                <Button className="w-full sm:w-auto bg-white text-teal-700 hover:bg-teal-50 rounded-xl font-bold shadow-sm h-11" onClick={clockIn} disabled={clockingIn}>
+                  <LogIn className="w-4 h-4 mr-2" />{clockingIn ? "Clocking in..." : "Clock In"}
+                </Button>
+              ) : !myRecord.clock_out ? (
+                <Button variant="outline" className="w-full sm:w-auto bg-transparent border-white/40 text-white hover:bg-white/20 rounded-xl font-bold h-11" onClick={clockOut}>
+                  <LogOut className="w-4 h-4 mr-2" />Clock Out
+                </Button>
+              ) : (
+                <span className="text-sm bg-white/20 px-4 py-2.5 rounded-xl font-bold flex items-center gap-2">
+                  <Timer className="w-4 h-4" />{hoursWorked(myRecord.clock_in, myRecord.clock_out)}h Logged
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="relative z-10 grid grid-cols-3 gap-4 md:gap-6">
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 flex flex-col items-center justify-center text-center">
+            <p className="text-sm font-medium text-teal-100 uppercase tracking-wider">Present</p>
+            <p className="text-3xl font-bold mt-1">{totalPresent}</p>
+          </div>
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 flex flex-col items-center justify-center text-center">
+            <p className="text-sm font-medium text-teal-100 uppercase tracking-wider">Late</p>
+            <p className="text-3xl font-bold mt-1">{totalLate}</p>
+          </div>
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 flex flex-col items-center justify-center text-center">
+            <p className="text-sm font-medium text-teal-100 uppercase tracking-wider">Absent</p>
+            <p className="text-3xl font-bold mt-1">{totalAbsent}</p>
           </div>
         </div>
       </div>
 
-      <Tabs defaultValue="today">
-        <TabsList className="bg-muted/50 p-1 rounded-xl">
-          <TabsTrigger value="today" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">Today's Board</TabsTrigger>
-          <TabsTrigger value="history" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">History</TabsTrigger>
+      <Tabs defaultValue="today" className="w-full pt-4">
+        <TabsList className="bg-muted p-1 rounded-xl mb-6 inline-flex">
+          <TabsTrigger value="today" className="rounded-lg font-semibold px-6 py-2.5 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:shadow-sm">Today's Board</TabsTrigger>
+          <TabsTrigger value="history" className="rounded-lg font-semibold px-6 py-2.5 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:shadow-sm">Attendance History</TabsTrigger>
         </TabsList>
 
-        {/* TODAY */}
-        <TabsContent value="today" className="mt-4">
+        {/* ── Today's Board ── */}
+        <TabsContent value="today">
           {staff.length === 0 ? (
-            <div className="text-center py-16 text-muted-foreground"><Users className="w-12 h-12 mx-auto mb-3 opacity-20" /><p className="text-sm">No staff found</p></div>
+            <div className="text-center py-20 bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8">
+              <Users className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
+              <p className="text-lg font-bold text-foreground">No Staff Found</p>
+            </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {boardData.map(member => (
-                <div key={member.id} className="bg-card border border-border rounded-xl p-4 flex items-center gap-3 hover:shadow-md transition-all">
-                  <div className="w-11 h-11 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm flex-shrink-0">
-                    {avatarInitials(member.full_name)}
+                <div key={member.id} className="bg-white dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center text-foreground font-bold text-sm shadow-inner shrink-0">
+                        {avatarInitials(member.full_name)}
+                      </div>
+                      <div>
+                        <p className="font-bold text-foreground leading-tight truncate max-w-[120px]">{member.full_name}</p>
+                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">{member.department || 'Staff'}</p>
+                      </div>
+                    </div>
+                    <StatusBadge status={member.record?.status || "absent"} />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-foreground truncate">{member.full_name}</p>
-                    <p className="text-xs text-muted-foreground">{member.record ? `In: ${formatTime(member.record.clock_in)}` : "Not yet clocked in"}</p>
+
+                  <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 grid grid-cols-2 gap-2 text-xs border border-border/50">
+                    <div>
+                      <p className="text-muted-foreground font-medium mb-0.5">Clock In</p>
+                      <p className="font-bold text-foreground">{member.record ? formatTime(member.record.clock_in) : "—"}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground font-medium mb-0.5">Clock Out</p>
+                      <p className="font-bold text-foreground">{member.record?.clock_out ? formatTime(member.record.clock_out) : "—"}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between mt-auto pt-1">
+                    {member.record?.location_lat ? (
+                      <span className="flex items-center gap-1.5 text-xs font-semibold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/20 px-2 py-1 rounded-lg">
+                        <Map className="w-3.5 h-3.5" /> Location verified
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                        <Map className="w-3.5 h-3.5 opacity-50" /> No location data
+                      </span>
+                    )}
                     {member.record?.clock_out && (
-                      <p className="text-xs text-muted-foreground">Out: {formatTime(member.record.clock_out)} · {hoursWorked(member.record.clock_in, member.record.clock_out)}h</p>
-                    )}
-                    {member.record?.location_lat && (
-                      <p className="text-xs text-primary flex items-center gap-1"><MapPin className="w-2.5 h-2.5" />GPS tracked</p>
+                      <span className="text-xs font-bold text-foreground">{hoursWorked(member.record.clock_in, member.record.clock_out)}h</span>
                     )}
                   </div>
-                  <StatusBadge status={member.record?.status || "absent"} />
                 </div>
               ))}
             </div>
           )}
         </TabsContent>
 
-        {/* HISTORY */}
-        <TabsContent value="history" className="mt-4">
-          <div className="flex gap-3 mb-4 flex-wrap">
-            <Select value={historyFilter.status} onValueChange={v => setHistoryFilter(f => ({ ...f, status: v }))}>
-              <SelectTrigger className="w-36"><SelectValue placeholder="Status" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="present">Present</SelectItem>
-                <SelectItem value="late">Late</SelectItem>
-                <SelectItem value="absent">Absent</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={historyFilter.staff_id} onValueChange={v => setHistoryFilter(f => ({ ...f, staff_id: v }))}>
-              <SelectTrigger className="w-48"><SelectValue placeholder="Staff Member" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Staff</SelectItem>
-                {staff.map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <Input type="date" className="w-44" value={historyFilter.date} onChange={e => setHistoryFilter(f => ({ ...f, date: e.target.value }))} />
-          </div>
+        {/* ── History ── */}
+        <TabsContent value="history">
+          <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm overflow-hidden p-1">
+            <div className="p-4 border-b border-border/50 flex flex-wrap gap-4 bg-muted/20">
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">Status</label>
+                <Select value={historyFilter.status} onValueChange={v => setHistoryFilter(f => ({ ...f, status: v }))}>
+                  <SelectTrigger className="w-40 rounded-xl bg-white dark:bg-slate-900"><SelectValue placeholder="Status" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectItem value="present">Present</SelectItem>
+                    <SelectItem value="late">Late</SelectItem>
+                    <SelectItem value="absent">Absent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">Staff Member</label>
+                <Select value={historyFilter.staff_id} onValueChange={v => setHistoryFilter(f => ({ ...f, staff_id: v }))}>
+                  <SelectTrigger className="w-48 rounded-xl bg-white dark:bg-slate-900"><SelectValue placeholder="Staff Member" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Staff</SelectItem>
+                    {staff.map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">Date</label>
+                <Input type="date" className="w-44 rounded-xl bg-white dark:bg-slate-900" value={historyFilter.date} onChange={e => setHistoryFilter(f => ({ ...f, date: e.target.value }))} />
+              </div>
+            </div>
 
-          <div className="rounded-xl border border-border overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-muted/50 border-b border-border">
-                  <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Staff</th>
-                  <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Date</th>
-                  <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Clock In</th>
-                  <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Clock Out</th>
-                  <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Hours</th>
-                  <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Status</th>
-                  <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Location</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredHistory.length === 0 ? (
-                  <tr><td colSpan={7} className="text-center py-10 text-muted-foreground text-sm">No records found</td></tr>
-                ) : filteredHistory.map((r, i) => (
-                  <tr key={r.id} className={`border-b border-border last:border-0 hover:bg-muted/30 ${i % 2 === 0 ? "" : "bg-muted/10"}`}>
-                    <td className="px-4 py-3 font-medium">{r.full_name || "Unknown"}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{r.date}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{formatTime(r.clock_in)}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{formatTime(r.clock_out)}</td>
-                    <td className="px-4 py-3 font-medium">{hoursWorked(r.clock_in, r.clock_out) ? `${hoursWorked(r.clock_in, r.clock_out)}h` : "—"}</td>
-                    <td className="px-4 py-3"><StatusBadge status={r.status} /></td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground">
-                      {r.location_lat ? <span className="flex items-center gap-1 text-teal-600"><MapPin className="w-3 h-3" />GPS</span> : "—"}
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border bg-slate-50/50 dark:bg-slate-900/50">
+                    <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Staff</th>
+                    <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Date</th>
+                    <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Clock In</th>
+                    <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Clock Out</th>
+                    <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Hours</th>
+                    <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</th>
+                    <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Location</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-border/50">
+                  {filteredHistory.length === 0 ? (
+                    <tr><td colSpan={7} className="text-center py-16 text-muted-foreground font-medium">No records match your filters</td></tr>
+                  ) : filteredHistory.map(r => (
+                    <tr key={r.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                      <td className="px-6 py-4 font-bold text-foreground">{r.full_name || "Unknown"}</td>
+                      <td className="px-6 py-4 text-muted-foreground font-medium">{r.date}</td>
+                      <td className="px-6 py-4 font-semibold text-foreground">{formatTime(r.clock_in)}</td>
+                      <td className="px-6 py-4 font-semibold text-foreground">{formatTime(r.clock_out)}</td>
+                      <td className="px-6 py-4 font-bold text-emerald-600 dark:text-emerald-400">{hoursWorked(r.clock_in, r.clock_out) ? `${hoursWorked(r.clock_in, r.clock_out)}h` : "—"}</td>
+                      <td className="px-6 py-4"><StatusBadge status={r.status} /></td>
+                      <td className="px-6 py-4 text-xs font-medium">
+                        {r.location_lat ? <span className="flex items-center gap-1.5 text-teal-600 dark:text-teal-400"><MapPin className="w-3.5 h-3.5" />Verified</span> : <span className="text-muted-foreground">—</span>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </TabsContent>
       </Tabs>
