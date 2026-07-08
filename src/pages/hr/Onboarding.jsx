@@ -111,8 +111,8 @@ export default function Onboarding() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/50 p-6 font-dmsans">
-      <div className="w-full space-y-8">
+    <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-slate-900/50 h-[calc(100vh-4rem)] p-4 lg:p-8 font-dmsans flex flex-col">
+      <div className="max-w-[1600px] w-full mx-auto flex flex-col h-full space-y-6">
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-white/40 dark:bg-black/20 backdrop-blur-xl border border-white/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">

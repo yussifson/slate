@@ -114,6 +114,22 @@ export const AppSchema = new Schema({
         end_date: column.text,
         status: column.text
     }),
+    univ_erp_promotions: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        staff_email: column.text,
+        staff_name: column.text,
+        from_role: column.text,
+        to_role: column.text,
+        from_salary: column.real,
+        to_salary: column.real,
+        effective_date: column.text,
+        reason: column.text,
+        status: column.text,
+        approved_by: column.text
+    }),
+
 
 
     univ_retail_customers: new Table({

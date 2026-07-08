@@ -104,25 +104,24 @@ export default function OptavelCommandCenter() {
       
       <div className="w-full max-w-7xl">
         {/* Massive Colorful Header like Pharmacy */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary via-emerald-500 to-blue-600 p-8 md:p-10 mb-8 shadow-lg shadow-primary/20 text-white">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary to-orange-500 p-6 md:p-8 mb-8 shadow-sm text-white">
           <div className="absolute top-0 right-0 -mt-16 -mr-16 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 left-10 -mb-16 w-48 h-48 bg-black opacity-10 rounded-full blur-2xl"></div>
           
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-5">
-              <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-inner">
-                <LayoutDashboard className="w-8 h-8 text-white" />
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-inner">
+                <LayoutDashboard className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">Command Center</h1>
-                <p className="text-primary-foreground/90 font-medium text-lg">Welcome back, {user?.user_metadata?.full_name || 'Admin'} 👋</p>
-                <p className="text-primary-foreground/70 text-sm mt-1">{today}</p>
+                <p className="text-white font-bold text-xl md:text-2xl mb-0.5">Welcome back, {user?.user_metadata?.full_name || 'Admin'} 👋</p>
+                <p className="text-white/80 text-sm">{today}</p>
               </div>
             </div>
             
             <div className="text-right">
-              <p className="text-primary-foreground/80 font-medium text-sm mb-1 uppercase tracking-wider">System Status</p>
-              <div className="text-4xl font-black tabular-nums">All Systems Operational</div>
+              <p className="text-white/80 font-medium text-xs mb-1 uppercase tracking-wider">System Status</p>
+              <div className="text-2xl md:text-3xl font-black tabular-nums">All Systems Operational</div>
             </div>
           </div>
         </div>
