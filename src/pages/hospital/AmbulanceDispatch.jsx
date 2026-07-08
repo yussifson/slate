@@ -27,7 +27,7 @@ export default function AmbulanceDispatch() {
          ORDER BY dispatch_time DESC`,
         [companyId]
       );
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });

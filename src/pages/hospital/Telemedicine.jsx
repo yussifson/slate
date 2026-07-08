@@ -29,7 +29,7 @@ export default function Telemedicine() {
          ORDER BY t.scheduled_time DESC`,
         [companyId]
       );
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });
@@ -39,7 +39,7 @@ export default function Telemedicine() {
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute("SELECT id, COALESCE(first_name, 'Unknown') || ' ' || COALESCE(last_name, 'Patient') as name FROM univ_patients WHERE company_id = ?", [companyId]);
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });

@@ -62,7 +62,7 @@ export default function BloodBank() {
         `SELECT * FROM univ_blood_bank WHERE company_id = ? ORDER BY blood_group ASC`,
         [companyId]
       );
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });

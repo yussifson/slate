@@ -38,7 +38,7 @@ export default function Wards() {
           'SELECT *, ward_name AS name FROM univ_wards WHERE company_id = ? ORDER BY ward_name ASC',
           [companyId]
         );
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });
@@ -52,7 +52,7 @@ export default function Wards() {
         "SELECT a.*, COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name FROM univ_admissions a LEFT JOIN univ_patients p ON a.patient_id = p.id WHERE a.company_id = ? AND a.status = 'Active'",
         [companyId]
       );
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });
@@ -63,7 +63,7 @@ export default function Wards() {
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute("SELECT id, COALESCE(first_name, 'Unknown') || ' ' || COALESCE(last_name, 'Patient') as name FROM univ_patients WHERE company_id = ?", [companyId]);
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });

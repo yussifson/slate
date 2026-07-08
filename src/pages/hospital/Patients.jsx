@@ -49,7 +49,7 @@ export default function Patients() {
         'SELECT * FROM univ_patients WHERE company_id = ? ORDER BY created_at DESC',
         [companyId]
       );
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });
@@ -62,7 +62,7 @@ export default function Patients() {
         'SELECT * FROM univ_medical_history WHERE company_id = ? ORDER BY record_date DESC',
         [companyId]
       );
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });
@@ -72,7 +72,7 @@ export default function Patients() {
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute('SELECT * FROM univ_appointments WHERE company_id = ?', [companyId]);
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });
@@ -82,7 +82,7 @@ export default function Patients() {
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute('SELECT * FROM univ_admissions WHERE company_id = ?', [companyId]);
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });
@@ -92,7 +92,7 @@ export default function Patients() {
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute('SELECT * FROM univ_prescriptions WHERE company_id = ?', [companyId]);
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });

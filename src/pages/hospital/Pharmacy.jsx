@@ -26,7 +26,7 @@ export default function Pharmacy() {
         'SELECT * FROM univ_pharmacy WHERE company_id = ? ORDER BY drug_name ASC',
         [companyId]
       );
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });

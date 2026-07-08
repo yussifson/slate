@@ -31,7 +31,7 @@ export default function StaffRoster() {
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute("SELECT id, COALESCE(first_name, 'Unknown') || ' ' || COALESCE(last_name, 'Staff') as name FROM profiles WHERE company_id = ?", [companyId]);
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });
@@ -72,7 +72,7 @@ export default function StaffRoster() {
          WHERE r.company_id = ? ORDER BY r.shift_date ASC`,
         [companyId]
       );
-      return res.rows._array;
+      return res.rows._array || Array.from(res.rows);
     },
     enabled: !!companyId
   });
