@@ -47,9 +47,6 @@ export async function getVisibleIndustries(isSuperAdmin = false, userId = null) 
       const rollout = data.value;
       // Only include keys that are enabled (true) or not mentioned (default on)
       let enabledKeys = ALL_INDUSTRY_KEYS.filter(k => rollout[k] !== false);
-      if (!isSuperAdmin) {
-        enabledKeys = enabledKeys.filter(k => k !== 'optavel');
-      }
       return buildIndustryMap(enabledKeys);
     }
   } catch (err) {

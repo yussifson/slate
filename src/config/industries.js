@@ -909,7 +909,7 @@ export const INDUSTRIES = {
   },
 
   optavel: {
-    name: 'Optavel OS',
+    name: 'Software',
     icon: '🚀',
     terms: {
       client: 'Customer', clients: 'Customers',
