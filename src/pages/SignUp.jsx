@@ -19,6 +19,16 @@ export default function SignUp() {
  const isElectron = isDesktopApp();
  const { isAuthenticated, user, isLoadingAuth} = useAuth();
  
+ const { baseDomain, currentSubdomain } = getSubdomainAndBase();
+ const isRootAccount = typeof window !== 'undefined' && window.location.hostname.startsWith('account.');
+ const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+ const showOptavelButtonOnly = !!currentSubdomain && !isRootAccount && !isLocalhost && !isElectron;
+
+ const handleOptavelSSO = () => {
+   const idpDomain = `https://account.${baseDomain}`;
+   const redirectUri = encodeURIComponent(window.location.origin + '/auth/callback');
+   window.location.href = `${idpDomain}/sso?redirect_uri=${redirectUri}`;
+ };
  const [username, setUsername] = useState('');
  const [companyName, setCompanyName] = useState('');
  const [subdomain, setSubdomain] = useState('');
@@ -279,18 +289,47 @@ export default function SignUp() {
 
   <div className="relative flex items-center mb-6">
     <div className="flex-grow border-t border-slate-200"></div>
-    <span className="flex-shrink-0 mx-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">Or sign up with email</span>
+    <span className="flex-shrink-0 mx-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">
+      {showOptavelButtonOnly ? 'Or use Optavel SSO' : 'Or continue with email'}
+    </span>
     <div className="flex-grow border-t border-slate-200"></div>
   </div>
- 
- <form className="space-y-3" onSubmit={handleSignUp}>
- {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
- {success && <div className="rounded-xl bg-slate-50 p-3 text-xs text-primary border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 font-medium tracking-[0.04em]">{success}</div>}
+
+  {showOptavelButtonOnly ? (
+    <div className="space-y-6">
+      <button
+        onClick={handleOptavelSSO}
+        type="button"
+        className="flex items-center justify-center gap-3 h-12 w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-base font-semibold transition-all active:scale-95 shadow-md hover:shadow-lg"
+      >
+        <Logo hideText={true} className="w-5 h-5 text-white" />
+        Continue with Optavel
+      </button>
+      <div className="text-center text-sm text-muted-foreground">
+        Securely sign up using a global Optavel identity.
+      </div>
+      <div className="text-center mt-6">
+        <span className="text-xs text-slate-500 font-medium tracking-[0.04em]">{t("already_have_an_account", "Already have an account?")} </span>
+        {isElectron ? (
+          <Button variant="link" onClick={() => navigate('/login')} className="text-xs font-semibold text-primary p-0 h-auto hover:underline tracking-[0.04em]">
+            {t("sign_in", "Sign In")}
+          </Button>
+        ) : (
+          <a href="/login" className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
+            {t("sign_in", "Sign In")}
+          </a>
+        )}
+      </div>
+    </div>
+  ) : (
+  <form className="space-y-4" onSubmit={handleSignUp}>
+  {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
  
  <div className="space-y-4">
  <div>
- <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("username", "Your Name")}</label>
+ <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("full_name", "Full Name")}</label>
  <Input
+ type="text"
  required
  placeholder="John Doe"
  value={username}
@@ -298,7 +337,6 @@ export default function SignUp() {
  className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
-
  <div>
  <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("email", "Email Address")}</label>
  <Input
@@ -310,36 +348,6 @@ export default function SignUp() {
  className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
-
- <div className="grid grid-cols-2 gap-4">
- <div>
- <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
- {t("organization_name", "Organization")}
- </label>
- <Input
- required
- placeholder="Acme Corp"
- value={companyName}
- onChange={(e) => setCompanyName(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
- />
- </div>
-
- <div>
- <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
- {t("subdomain", "Subdomain")}
- </label>
- <Input
- required
- placeholder="acmecorp"
- value={subdomain}
- onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
- />
- </div>
- </div>
-
- <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("password", "Password")}</label>
  <Input
@@ -363,23 +371,26 @@ export default function SignUp() {
  />
  </div>
  </div>
- </div>
 
- <Button 
- type="submit" 
- className="w-full h-10 bg-gradient-to-b from-primary/90 to-primary hover:from-primary hover:to-primary text-white font-semibold rounded-xl -primary/20 transition-all hover:-translate-y-0.5 mt-2 text-sm active:scale-[0.98]"
- disabled={loading}
- >
- {loading ? 'Creating...' : 'Create workspace'}
+ <Button type="submit" className="w-full h-12 text-base font-medium transition-all active:scale-[0.98]" disabled={loading}>
+ {loading ? t("creating_account", "Creating account...") : t("create_workspace", "Create Workslate")}
  </Button>
- </form>
 
- <div className="text-center mt-4 pb-12 lg:pb-0">
+ <div className="text-center mt-6">
  <span className="text-xs text-slate-500 font-medium tracking-[0.04em]">{t("already_have_an_account", "Already have an account?")} </span>
- <a href="/login" className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
- {t("sign_in", "Sign in")}
- </a>
- </div>
+        {isElectron ? (
+          <Button variant="link" onClick={() => navigate('/login')} className="text-xs font-semibold text-primary p-0 h-auto hover:underline tracking-[0.04em]">
+            {t("sign_in", "Sign In")}
+          </Button>
+        ) : (
+          <a href="/login" className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
+            {t("sign_in", "Sign In")}
+          </a>
+        )}
+      </div>
+
+ </form>
+ )}
  </div>
  </div>
  {/* Right Side: Marketing Visual */}

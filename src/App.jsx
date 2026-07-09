@@ -364,6 +364,7 @@ import SignUp from './pages/SignUp';
 import ForceResetPassword from './pages/ForceResetPassword';
 import SSOGateway from './pages/auth/SSOGateway';
 import SSOCallback from './pages/auth/SSOCallback';
+import AccountPortal from './pages/auth/AccountPortal';
 import MainDashboard from './pages/MainDashboard';
 import ResetPassword from './pages/ResetPassword';
 import { SiteDomainResolver } from '@/components/sites/SiteRenderer/SiteDomainResolver';
@@ -1144,6 +1145,7 @@ function App() {
   const isNativeApp = isDesktopApp();
   const isBaseDomain = currentSubdomain === null;
   const isMeetDomain = currentSubdomain === 'meet' || window.location.hostname.startsWith('meet.');
+  const isAccountDomain = currentSubdomain === 'account' || window.location.hostname.startsWith('account.');
 
   useEffect(() => {
     initPowerSync().catch(console.error);
@@ -1191,8 +1193,22 @@ function App() {
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                   </React.Suspense>
+                ) : isAccountDomain ? (
+                  /* ── ACCOUNT DOMAIN: Global Identity Portal ── */
+                  <React.Suspense fallback={<PageLoader label="Loading Account..." />}>
+                    <Routes>
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/signup" element={<SignUp />} />
+                      <Route path="/sso" element={<SSOGateway />} />
+                      <Route path="/auth/callback" element={<SSOCallback />} />
+                      <Route element={<ProtectedRoute />}>
+                        <Route path="/" element={<AccountPortal />} />
+                        <Route path="*" element={<Navigate to="/" replace />} />
+                      </Route>
+                    </Routes>
+                  </React.Suspense>
                 ) : (
-                  /* â”€â”€ ALL OTHER DOMAINS: workspace / marketing / app routes â”€â”€ */
+                  /* ── ALL OTHER DOMAINS: workspace / marketing / app routes ── */
                   <React.Suspense fallback={<PageLoader label="Loading Module..." />}>
                     {isBaseDomain ? (
                       /* Storefront Routes for the Base Domain */

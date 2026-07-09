@@ -57,28 +57,22 @@ export default function Login() {
  const [checkingSubdomain, setCheckingSubdomain] = useState(!!currentSubdomain);
  const [invalidSubdomain, setInvalidSubdomain] = useState(false);
 
+ const isRootAccount = typeof window !== 'undefined' && window.location.hostname.startsWith('account.');
+ const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+ const showOptavelButtonOnly = !isRootAccount && !isLocalhost && !isElectron;
+
+ const handleOptavelSSO = () => {
+   const idpDomain = `https://account.${baseDomain}`;
+   const redirectUri = encodeURIComponent(window.location.origin + '/auth/callback');
+   window.location.href = `${idpDomain}/sso?redirect_uri=${redirectUri}`;
+ };
+
  // Auto-redirect if already authenticated or if mobile user needs onboarding
  useEffect(() => {
   const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 768;
   if (isMobileDevice && !localStorage.getItem('slate_has_seen_onboarding')) {
     navigate('/welcome', { replace: true });
     return;
-  }
-
-  // IdP Redirect Logic: If we are on a subdomain (e.g. preloom.optavel.com) and NOT authenticated,
-  // redirect to the central IdP (account.optavel.com) for SSO.
-  if (currentSubdomain && !isAuthenticated && !isLoadingAuth) {
-    const isRootAccount = window.location.hostname.startsWith('account.');
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    
-    // Only redirect if we are NOT on the root account portal and NOT local (unless we want to test local SSO)
-    if (!isRootAccount && !isLocalhost && !isElectron) {
-      // In production, this goes to account.optavel.com. For testing we might just use the base domain.
-      const idpDomain = `https://account.${baseDomain}`;
-      const redirectUri = encodeURIComponent(window.location.origin + '/auth/callback');
-      window.location.href = `${idpDomain}/sso?redirect_uri=${redirectUri}`;
-      return;
-    }
   }
 
   if (!isLoadingAuth && isAuthenticated && user) {
@@ -526,47 +520,64 @@ export default function Login() {
 
   <div className="relative flex items-center mb-6">
     <div className="flex-grow border-t border-slate-200"></div>
-    <span className="flex-shrink-0 mx-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">Or continue with email</span>
+    <span className="flex-shrink-0 mx-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">
+      {showOptavelButtonOnly ? 'Or use Optavel SSO' : 'Or continue with email'}
+    </span>
     <div className="flex-grow border-t border-slate-200"></div>
   </div>
 
-  <form className="space-y-4" onSubmit={handleLogin}>
-  {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
- 
- <div className="space-y-4">
- <div>
- <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("email", "Email Address")}</label>
- <Input
- type="email"
- required
- placeholder="john@example.com"
- value={email}
- onChange={(e) => setEmail(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
- />
- </div>
- <div>
- <div className="flex items-center justify-between mb-1.5">
- <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest tracking-[0.04em]">{t("password", "Password")}</label>
- <Link to="/forgot-password" className="text-[11px] font-semibold text-primary hover:underline">{t("forgot_password", "Forgot password?")}</Link>
- </div>
- <Input
- type="password"
- required
- placeholder="••••••••••••"
- value={password}
- onChange={(e) => setPassword(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
- />
- </div>
- </div>
+  {showOptavelButtonOnly ? (
+    <div className="space-y-6">
+      <button
+        onClick={handleOptavelSSO}
+        type="button"
+        className="flex items-center justify-center gap-3 h-12 w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-base font-semibold transition-all active:scale-95 shadow-md hover:shadow-lg"
+      >
+        <Logo hideText={true} className="w-5 h-5 text-white" />
+        Continue with Optavel
+      </button>
+      <div className="text-center text-sm text-muted-foreground">
+        Securely sign in using your global Optavel identity.
+      </div>
+    </div>
+  ) : (
+    <form className="space-y-4" onSubmit={handleLogin}>
+      {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
+    
+      <div className="space-y-4">
+        <div>
+          <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("email", "Email Address")}</label>
+          <Input
+            type="email"
+            required
+            placeholder="john@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+          />
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest tracking-[0.04em]">{t("password", "Password")}</label>
+            <Link to="/forgot-password" className="text-[11px] font-semibold text-primary hover:underline">{t("forgot_password", "Forgot password?")}</Link>
+          </div>
+          <Input
+            type="password"
+            required
+            placeholder="••••••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+          />
+        </div>
+      </div>
 
- <Button type="submit" className="w-full h-12 text-base font-medium transition-all active:scale-[0.98]" disabled={loading}>
- {loading ? 'Signing in...' : 'Sign in to workspace'}
- </Button>
+      <Button type="submit" className="w-full h-12 text-base font-medium transition-all active:scale-[0.98]" disabled={loading}>
+        {loading ? 'Signing in...' : 'Sign in to workspace'}
+      </Button>
 
- <div className="text-center mt-6">
- <span className="text-xs text-slate-500 font-medium tracking-[0.04em]">{t("don_t_have_an_account", "Don't have an account?")} </span>
+      <div className="text-center mt-6">
+        <span className="text-xs text-slate-500 font-medium tracking-[0.04em]">{t("don_t_have_an_account", "Don't have an account?")} </span>
         {isElectron ? (
           <Link to="/signup" className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
             {t("create_workspace", "Create Workslate")}
@@ -577,8 +588,8 @@ export default function Login() {
           </a>
         )}
       </div>
-
- </form>
+    </form>
+  )}
  </div>
  </div>
  {/* Right Side: Marketing Visual */}
