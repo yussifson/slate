@@ -68,7 +68,7 @@ export default function AccountPortalLayout() {
 
       {/* Sidebar Navigation */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 bg-card border-r border-border transform transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col
+        fixed inset-y-0 left-0 z-40 bg-card border-r-2 border-primary/50 transform transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col
         ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl w-64' : '-translate-x-full md:shadow-none'}
         ${isDesktopCollapsed ? 'md:w-20' : 'md:w-64'}
       `}>
@@ -160,7 +160,7 @@ export default function AccountPortalLayout() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto bg-white dark:bg-[#202124] relative h-full">
+      <main className="flex-1 overflow-y-auto bg-transparent relative h-full">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12 pb-32">
            <Outlet />
         </div>

@@ -266,7 +266,7 @@ export default function SignUp() {
   <div className="h-[100dvh] w-full overflow-y-auto bg-white">
   <div className="min-h-full flex flex-col lg:flex-row bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Left Side: Form */}
- <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12 pb-24">
+ <div className="flex-1 flex flex-col pt-12 lg:pt-20 px-8 lg:px-16 pb-12">
  <div className="max-w-lg w-full mx-auto">
  <div className="flex flex-col mb-8">
  <Logo className="w-10 h-10" />
