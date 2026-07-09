@@ -376,7 +376,6 @@ export default function SignUp() {
       </a>
     )}
   </div>
- )}
  </div>
  </div>
  {/* Right Side: Marketing Visual */}
