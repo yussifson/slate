@@ -16,8 +16,8 @@ export default function SignUp() {
  const { t} = useTranslation();
  const navigate = useNavigate();
  const location = useLocation();
- const isElectron = isDesktopApp();
- const { isAuthenticated, user, isLoadingAuth} = useAuth();
+  const isElectron = isDesktopApp();
+  const { isAuthenticated, user, profile, isLoadingAuth} = useAuth();
  
  const { baseDomain, currentSubdomain } = getSubdomainAndBase();
  const isRootAccount = typeof window !== 'undefined' && window.location.hostname.startsWith('account.');
@@ -39,28 +39,28 @@ export default function SignUp() {
  const [success, setSuccess] = useState('');
  const [loading, setLoading] = useState(false);
 
- // Auto-redirect if already authenticated and NOT currently registering
- useEffect(() => {
-  const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 768;
-  if (isMobileDevice && !localStorage.getItem('slate_has_seen_onboarding')) {
-    navigate('/welcome', { replace: true });
-    return;
-  }
+  // Auto-redirect if already authenticated and NOT currently registering, AND they have a company
+  useEffect(() => {
+   const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 768;
+   if (isMobileDevice && !localStorage.getItem('slate_has_seen_onboarding')) {
+     navigate('/welcome', { replace: true });
+     return;
+   }
 
- if (!isLoadingAuth && isAuthenticated && user && !loading && !success) {
-        if (isElectron) {
-          if (user.role === 'student') navigate('/student-portal');
-          else if (user.role === 'parent') navigate('/parent-portal');
-          else if (user.role === 'super_admin') navigate('/admin');
-          else navigate('/');
-        } else {
-          if (user.role === 'student') window.location.href = '/student-portal';
-          else if (user.role === 'parent') window.location.href = '/parent-portal';
-          else if (user.role === 'super_admin') window.location.href = '/admin';
-          else window.location.href = '/';
-        }
-}
-}, [isAuthenticated, isLoadingAuth, user, loading, success]);
+  if (!isLoadingAuth && isAuthenticated && user && profile?.company_id && !loading && !success) {
+         if (isElectron) {
+           if (user.role === 'student') navigate('/student-portal');
+           else if (user.role === 'parent') navigate('/parent-portal');
+           else if (user.role === 'super_admin') navigate('/admin');
+           else navigate('/');
+         } else {
+           if (user.role === 'student') window.location.href = '/student-portal';
+           else if (user.role === 'parent') window.location.href = '/parent-portal';
+           else if (user.role === 'super_admin') window.location.href = '/admin';
+           else window.location.href = '/';
+         }
+  }
+  }, [isAuthenticated, isLoadingAuth, user, profile, loading, success]);
 
  // Disconnect Auth Pages from Dashboard Theme Switcher
  useEffect(() => {
@@ -120,35 +120,49 @@ export default function SignUp() {
  throw new Error("Passwords do not match");
 }
 
- // 1. Sign up the user
- const cleanSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
- if (!cleanSubdomain) throw new Error("Please enter a valid subdomain");
+  // 1. Sign up the user (or use existing authenticated user)
+  const cleanSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
+  if (!cleanSubdomain) throw new Error("Please enter a valid subdomain");
 
- const { data: authData, error: authError} = await supabase.auth.signUp({
- email,
- password,
- options: {
- data: {
- full_name: username,
- company_name: companyName,
- subdomain: cleanSubdomain
-}
-}
-});
+  let authData = { user, session: null };
+  let authError = null;
+  let targetEmail = email;
+  let targetUserId = user?.id;
 
- if (authError) throw authError;
+  if (!isAuthenticated) {
+    const res = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: username,
+          company_name: companyName,
+          subdomain: cleanSubdomain
+        }
+      }
+    });
+    authData = res.data;
+    authError = res.error;
 
- const user = authData.user;
- if (!user) throw new Error("Could not create user account.");
- 
- if (user.identities && user.identities.length === 0) {
- throw new Error("This email is already registered. Please sign in instead.");
-}
+    if (authError) throw authError;
 
- if (!authData.session) {
- setSuccess("Registration successful! Please check your email to confirm your account before logging in.");
- return;
-}
+    const newUser = authData.user;
+    if (!newUser) throw new Error("Could not create user account.");
+    
+    if (newUser.identities && newUser.identities.length === 0) {
+      throw new Error("This email is already registered. Please sign in instead.");
+    }
+    
+    targetUserId = newUser.id;
+  } else {
+    // Already authenticated via SSO/Google/Apple
+    targetEmail = user.email;
+  }
+
+  if (!isAuthenticated && !authData.session) {
+  setSuccess("Registration successful! Please check your email to confirm your account before logging in.");
+  return;
+ }
 
  // Parse URL parameters for pricing plans
  const searchParams = new URLSearchParams(window.location.search);
@@ -158,12 +172,12 @@ export default function SignUp() {
  // 2. Create the company
   const companyId = crypto.randomUUID();
   const payloadData = {
-    id: companyId,
-    name: companyName,
-    subdomain: cleanSubdomain,
-    email: email,
-    admin_email: email,
-    created_by: authData?.user?.id || null,
+     id: companyId,
+     name: companyName,
+     subdomain: cleanSubdomain,
+     email: targetEmail,
+     admin_email: targetEmail,
+     created_by: targetUserId || null,
     country: null,
     subscription_plan: urlPlan,
     subscription_status: 'trial',
@@ -177,9 +191,9 @@ export default function SignUp() {
 
  // 3. Update the profile
   const profPayload = {
-    company_id: companyData.id,
-    company_name: companyData.name,
-    full_name: username
+     company_id: companyData.id,
+     company_name: companyData.name,
+     full_name: isAuthenticated ? (user?.user_metadata?.full_name || username) : username
   };
   
   // Prevent downgrading super admins
@@ -187,17 +201,17 @@ export default function SignUp() {
     profPayload.role = 'company_admin';
   }
 
-  const profKeys = Object.keys(profPayload);
-  const profVals = Object.values(profPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-  await powerSync.execute(`UPDATE profiles SET ${profKeys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [...profVals, user.id]);
+   const profKeys = Object.keys(profPayload);
+   const profVals = Object.values(profPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+   await powerSync.execute(`UPDATE profiles SET ${profKeys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [...profVals, targetUserId]);
 
   // Trigger Welcome Notification (Novu Webhook)
   try {
     const notifPayload = {
-      id: crypto.randomUUID(),
-      company_id: companyData.id,
-      recipient_email: email,
-      recipient_name: username,
+       id: crypto.randomUUID(),
+       company_id: companyData.id,
+       recipient_email: targetEmail,
+       recipient_name: isAuthenticated ? (user?.user_metadata?.full_name || username) : username,
       title: "Welcome to Optalflow / Slate!",
       message: "Your account has been successfully created. We're excited to have you onboard. Please complete your setup in the onboarding portal.",
       type: 'info',
@@ -221,10 +235,13 @@ export default function SignUp() {
  let url = `${window.location.protocol}//${targetHost}/onboarding`;
  const finalUrl = new URL(url);
  
- if (authData?.session?.access_token && authData?.session?.refresh_token) {
-   finalUrl.searchParams.set('access_token', authData.session.access_token);
-   finalUrl.searchParams.set('refresh_token', authData.session.refresh_token);
- }
+  if (authData?.session?.access_token && authData?.session?.refresh_token) {
+    finalUrl.searchParams.set('access_token', authData.session.access_token);
+    finalUrl.searchParams.set('refresh_token', authData.session.refresh_token);
+  } else if (isAuthenticated) {
+    // If already authenticated via SSO, no need to pass tokens in URL
+    // since the session is already active in local storage
+  }
  
  const pendingPrompt = localStorage.getItem('pendingOrbitPrompt');
  if (pendingPrompt) {
@@ -245,8 +262,9 @@ export default function SignUp() {
 }
 };
 
- return (
- <div className="min-h-screen flex flex-col lg:flex-row bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+  return (
+  <div className="h-[100dvh] w-full overflow-y-auto bg-white">
+  <div className="min-h-full flex flex-col lg:flex-row bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Left Side: Form */}
  <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12">
  <div className="max-w-md w-full mx-auto">
@@ -255,14 +273,19 @@ export default function SignUp() {
  <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>
  </div>
  
- <div className="mb-8">
- <h1 className="text-2xl font-semibold text-slate-900 tracking-[-0.02em]">{t("create_an_account", "Create your account")}</h1>
- <p className="text-xs text-slate-500 font-medium mt-1 tracking-[0.04em]">{t(
- "create_an_account_to_start_man",
- "Create an account to start managing your business"
- )}</p>
- </div>
+  <div className="mb-8">
+  <h1 className="text-2xl font-semibold text-slate-900 tracking-[-0.02em]">
+    {isAuthenticated ? t("complete_workslate_setup", "Complete your Workslate setup") : t("create_an_account", "Create your account")}
+  </h1>
+  <p className="text-xs text-slate-500 font-medium mt-1 tracking-[0.04em]">
+    {isAuthenticated 
+      ? t("just_a_few_more_details", "Just a few more details to get your workspace ready.")
+      : t("create_an_account_to_start_man", "Create an account to start managing your business")
+    }
+  </p>
+  </div>
  
+  {!isAuthenticated && (
   <div className="flex flex-col gap-3 mb-6">
     <div className="h-11 flex justify-center items-center w-full overflow-hidden rounded-xl border border-primary/20 bg-white hover:bg-slate-50 transition-colors">
       <GoogleLogin
@@ -285,91 +308,115 @@ export default function SignUp() {
       </svg>
       Continue with Apple
     </button>
+    <button
+      onClick={handleOptavelSSO}
+      type="button"
+      className="flex items-center justify-center gap-2 h-11 w-full bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-sm font-semibold transition-colors"
+    >
+      <Logo hideText={true} className="w-5 h-5 text-primary" />
+      Continue with Optavel
+    </button>
   </div>
 
   <div className="relative flex items-center mb-6">
     <div className="flex-grow border-t border-slate-200"></div>
     <span className="flex-shrink-0 mx-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">
-      {showOptavelButtonOnly ? 'Or use Optavel SSO' : 'Or continue with email'}
+      Or continue with email
     </span>
     <div className="flex-grow border-t border-slate-200"></div>
   </div>
 
-  {showOptavelButtonOnly ? (
-    <div className="space-y-6">
-      <button
-        onClick={handleOptavelSSO}
-        type="button"
-        className="flex items-center justify-center gap-3 h-12 w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-base font-semibold transition-all active:scale-95 shadow-md hover:shadow-lg"
-      >
-        <Logo hideText={true} className="w-5 h-5 text-white" />
-        Continue with Optavel
-      </button>
-      <div className="text-center text-sm text-muted-foreground">
-        Securely sign up using a global Optavel identity.
-      </div>
-      <div className="text-center mt-6">
-        <span className="text-xs text-slate-500 font-medium tracking-[0.04em]">{t("already_have_an_account", "Already have an account?")} </span>
-        {isElectron ? (
-          <Button variant="link" onClick={() => navigate('/login')} className="text-xs font-semibold text-primary p-0 h-auto hover:underline tracking-[0.04em]">
-            {t("sign_in", "Sign In")}
-          </Button>
-        ) : (
-          <a href="/login" className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
-            {t("sign_in", "Sign In")}
-          </a>
-        )}
-      </div>
-    </div>
-  ) : (
   <form className="space-y-4" onSubmit={handleSignUp}>
   {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
  
  <div className="space-y-4">
- <div>
- <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("full_name", "Full Name")}</label>
- <Input
- type="text"
- required
- placeholder="John Doe"
- value={username}
- onChange={(e) => setUsername(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
- />
+ {!isAuthenticated && (
+   <>
+     <div>
+     <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("full_name", "Full Name")}</label>
+     <Input
+     type="text"
+     required
+     placeholder="John Doe"
+     value={username}
+     onChange={(e) => setUsername(e.target.value)}
+     className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+     />
+     </div>
+     <div>
+     <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("email", "Email Address")}</label>
+     <Input
+     type="email"
+     required
+     placeholder="john@example.com"
+     value={email}
+     onChange={(e) => setEmail(e.target.value)}
+     className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+     />
+     </div>
+     <div>
+     <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("password", "Password")}</label>
+     <Input
+     type="password"
+     required
+     placeholder="••••••••••••"
+     value={password}
+     onChange={(e) => setPassword(e.target.value)}
+     className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+     />
+     </div>
+     <div>
+     <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("confirm_password", "Confirm Password")}</label>
+     <Input
+     type="password"
+     required
+     placeholder="••••••••••••"
+     value={confirmPassword}
+     onChange={(e) => setConfirmPassword(e.target.value)}
+     className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+     />
+     </div>
+   </>
+ )}
+ 
+ {/* Company Details Input - ALWAYS SHOW */}
+ <div className="pt-2 border-t border-slate-100">
+   <div className="mb-4">
+     <h3 className="text-sm font-semibold text-slate-800">{t("workslate_details", "Workslate Details")}</h3>
+     <p className="text-xs text-slate-500">{t("workslate_details_desc", "This will be the dedicated workspace for your team.")}</p>
+   </div>
+   
+   <div className="space-y-4">
+     <div>
+       <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("company_name", "Company Name")}</label>
+       <Input
+         type="text"
+         required
+         placeholder="Acme Corp"
+         value={companyName}
+         onChange={(e) => setCompanyName(e.target.value)}
+         className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+       />
+     </div>
+     <div>
+       <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("subdomain", "Workspace Web Address")}</label>
+       <div className="relative flex items-center">
+         <Input
+           type="text"
+           required
+           placeholder="acme"
+           value={subdomain}
+           onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+           className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 pr-32 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+         />
+         <div className="absolute right-3 text-xs font-semibold text-slate-400 pointer-events-none">
+           .optavel.com
+         </div>
+       </div>
+     </div>
+   </div>
  </div>
- <div>
- <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("email", "Email Address")}</label>
- <Input
- type="email"
- required
- placeholder="john@example.com"
- value={email}
- onChange={(e) => setEmail(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
- />
- </div>
- <div>
- <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("password", "Password")}</label>
- <Input
- type="password"
- required
- placeholder="••••••••••••"
- value={password}
- onChange={(e) => setPassword(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
- />
- </div>
- <div>
- <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("confirm_password", "Confirm Password")}</label>
- <Input
- type="password"
- required
- placeholder="••••••••••••"
- value={confirmPassword}
- onChange={(e) => setConfirmPassword(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
- />
- </div>
+
  </div>
 
  <Button type="submit" className="w-full h-12 text-base font-medium transition-all active:scale-[0.98]" disabled={loading}>
@@ -453,5 +500,7 @@ export default function SignUp() {
  </div>
  </div>
  </div>
+ </div>
+  </div>
  );
 }

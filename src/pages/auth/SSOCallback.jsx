@@ -26,12 +26,22 @@ export default function SSOCallback() {
 
       try {
         // Establish the local session for this specific subdomain
-        const { error: sessionError } = await supabase.auth.setSession({
+        const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
           access_token: accessToken,
           refresh_token: refreshToken
         });
 
         if (sessionError) throw sessionError;
+
+        // Check if user has a company
+        const userId = sessionData?.session?.user?.id;
+        if (userId) {
+          const { data: profile } = await supabase.from('profiles').select('company_id').eq('id', userId).single();
+          if (!profile?.company_id && !sessionData?.session?.user?.user_metadata?.company_id) {
+             navigate("/signup", { replace: true });
+             return;
+          }
+        }
 
         // Clear the URL hash for security so it isn't copied/pasted, and redirect to dashboard
         navigate("/", { replace: true });

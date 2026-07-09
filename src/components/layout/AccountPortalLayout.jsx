@@ -69,31 +69,37 @@ export default function AccountPortalLayout() {
       {/* Sidebar Navigation */}
       <aside className={`
         fixed inset-y-0 left-0 z-40 bg-[#F8F9FA] dark:bg-[#1A1B1E] border-r border-gray-200 dark:border-gray-800 transform transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col
-        ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl w-72' : '-translate-x-full md:shadow-none'}
-        ${isDesktopCollapsed ? 'md:w-20' : 'md:w-72'}
+        ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl w-64' : '-translate-x-full md:shadow-none'}
+        ${isDesktopCollapsed ? 'md:w-20' : 'md:w-64'}
       `}>
         {/* Desktop Logo Area */}
         <div className="hidden md:flex items-center justify-between px-5 h-20 pt-4">
           {!isDesktopCollapsed && (
-            <div className="flex items-center gap-3 overflow-hidden">
-              <Logo className="w-9 h-9 shrink-0" />
-              <span className="text-xl font-medium tracking-tight text-gray-800 dark:text-gray-100 whitespace-nowrap">Optavel</span>
+            <div className="flex items-center justify-between w-full overflow-hidden">
+              <div className="flex items-center gap-3">
+                <Logo className="w-9 h-9 shrink-0" />
+                <span className="text-xl font-medium tracking-tight text-gray-800 dark:text-gray-100 whitespace-nowrap">Optavel</span>
+              </div>
+              <button 
+                onClick={() => setIsDesktopCollapsed(true)}
+                className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <PanelLeftClose className="w-5 h-5" />
+              </button>
             </div>
           )}
           {isDesktopCollapsed && (
              <div className="w-full flex justify-center">
-                <Logo className="w-9 h-9 shrink-0" />
+                <button 
+                  onClick={() => setIsDesktopCollapsed(false)}
+                  className="text-gray-400 hover:text-primary transition-colors p-2 rounded-xl hover:bg-primary/10"
+                  title="Expand sidebar"
+                >
+                  <PanelLeftOpen className="w-6 h-6" />
+                </button>
              </div>
           )}
         </div>
-        
-        {/* Collapse Toggle (Desktop Only) */}
-        <button 
-           onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
-           className="hidden md:flex absolute -right-3 top-24 z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-1 text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition-all"
-        >
-           {isDesktopCollapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
-        </button>
 
         <div className="flex flex-col flex-1 overflow-hidden">
           <nav className="flex-1 px-3 py-4 md:py-6 space-y-1 overflow-y-auto scrollbar-hide">

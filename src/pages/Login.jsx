@@ -333,7 +333,7 @@ export default function Login() {
       }
       
       if (!pendingCompanyId) {
-        if (isElectron) { navigate('/onboarding'); } else { window.location.href = '/onboarding'; }
+        if (isElectron) { navigate('/signup'); } else { window.location.href = '/signup'; }
         return;
       }
     }
@@ -404,7 +404,7 @@ export default function Login() {
       }
       
       if (!pendingCompanyId) {
-        if (isElectron) { navigate('/onboarding'); } else { window.location.href = '/onboarding'; }
+        if (isElectron) { navigate('/signup'); } else { window.location.href = '/signup'; }
         return;
       }
     }
@@ -475,7 +475,8 @@ export default function Login() {
 }
 
  return (
- <div className="min-h-screen flex flex-col lg:flex-row bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+  <div className="h-[100dvh] w-full overflow-y-auto bg-white">
+ <div className="min-h-full flex flex-col lg:flex-row bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Left Side: Form */}
  <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12">
  <div className="max-w-md w-full mx-auto">
@@ -516,31 +517,24 @@ export default function Login() {
       </svg>
       Sign in with Apple
     </button>
+    <button
+      onClick={handleOptavelSSO}
+      type="button"
+      className="flex items-center justify-center gap-2 h-11 w-full bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-sm font-semibold transition-colors"
+    >
+      <Logo hideText={true} className="w-5 h-5 text-primary" />
+      Continue with Optavel
+    </button>
   </div>
 
   <div className="relative flex items-center mb-6">
     <div className="flex-grow border-t border-slate-200"></div>
     <span className="flex-shrink-0 mx-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">
-      {showOptavelButtonOnly ? 'Or use Optavel SSO' : 'Or continue with email'}
+      Or continue with email
     </span>
     <div className="flex-grow border-t border-slate-200"></div>
   </div>
 
-  {showOptavelButtonOnly ? (
-    <div className="space-y-6">
-      <button
-        onClick={handleOptavelSSO}
-        type="button"
-        className="flex items-center justify-center gap-3 h-12 w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-base font-semibold transition-all active:scale-95 shadow-md hover:shadow-lg"
-      >
-        <Logo hideText={true} className="w-5 h-5 text-white" />
-        Continue with Optavel
-      </button>
-      <div className="text-center text-sm text-muted-foreground">
-        Securely sign in using your global Optavel identity.
-      </div>
-    </div>
-  ) : (
     <form className="space-y-4" onSubmit={handleLogin}>
       {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
     
@@ -623,5 +617,6 @@ export default function Login() {
  </div>
  </div>
  </div>
+  </div>
  );
 }
