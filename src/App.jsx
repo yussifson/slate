@@ -361,7 +361,10 @@ import HRSalary from './pages/hr/Salary';
 import AppLayout from './components/layout/AppLayout';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
-import ForgotPassword from './pages/ForgotPassword';
+import ForceResetPassword from './pages/ForceResetPassword';
+import SSOGateway from './pages/auth/SSOGateway';
+import SSOCallback from './pages/auth/SSOCallback';
+import MainDashboard from './pages/MainDashboard';
 import ResetPassword from './pages/ResetPassword';
 import { SiteDomainResolver } from '@/components/sites/SiteRenderer/SiteDomainResolver';
 import SlateSites from './pages/sites/SlateSites';
@@ -954,6 +957,11 @@ function PlatformRoutes() {
       <Route path="/fleet" element={<GenericModulePage />} />
       <Route path="/pickups" element={<Pickups />} />
       <Route path="/training" element={<GenericModulePage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/sso" element={<SSOGateway />} />
+        <Route path="/auth/callback" element={<SSOCallback />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/loyalty" element={<Loyalty />} />
       <Route path="/orders" element={<Orders />} />
       <Route path="/time-tracking" element={<TimeTracking />} />
@@ -1207,6 +1215,8 @@ function App() {
                         </Route>
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
+                        <Route path="/sso" element={<SSOGateway />} />
+                        <Route path="/auth/callback" element={<SSOCallback />} />
                         <Route path="/welcome" element={<NativeOnboarding />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
@@ -1242,6 +1252,8 @@ function App() {
                       <Routes>
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
+                        <Route path="/sso" element={<SSOGateway />} />
+                        <Route path="/auth/callback" element={<SSOCallback />} />
                         <Route path="/welcome" element={<NativeOnboarding />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/reset-password" element={<ResetPassword />} />

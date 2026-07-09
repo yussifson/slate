@@ -65,6 +65,22 @@ export default function Login() {
     return;
   }
 
+  // IdP Redirect Logic: If we are on a subdomain (e.g. preloom.optavel.com) and NOT authenticated,
+  // redirect to the central IdP (account.optavel.com) for SSO.
+  if (currentSubdomain && !isAuthenticated && !isLoadingAuth) {
+    const isRootAccount = window.location.hostname.startsWith('account.');
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
+    // Only redirect if we are NOT on the root account portal and NOT local (unless we want to test local SSO)
+    if (!isRootAccount && !isLocalhost && !isElectron) {
+      // In production, this goes to account.optavel.com. For testing we might just use the base domain.
+      const idpDomain = `https://account.${baseDomain}`;
+      const redirectUri = encodeURIComponent(window.location.origin + '/auth/callback');
+      window.location.href = `${idpDomain}/sso?redirect_uri=${redirectUri}`;
+      return;
+    }
+  }
+
   if (!isLoadingAuth && isAuthenticated && user) {
       if (isElectron) {
         if (user.role === 'student') navigate('/student-portal');

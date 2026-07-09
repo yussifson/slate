@@ -596,9 +596,9 @@ export const AuthProvider = ({ children }) => {
         if (currentUser && currentUser.id === targetUserId) {
           console.warn("Received FORCE_LOGOUT signal from super admin. Logging out...");
           isExplicitLogoutRef.current = true;
-          // Clear local storage and sign out from Supabase
+          // Clear local storage and sign out from Supabase (locally to preserve SSO for other apps)
           try { localStorage.removeItem('slate_cached_user'); } catch(e) {}
-          await supabase.auth.signOut();
+          await supabase.auth.signOut({ scope: 'local' });
           
           // Force a full page reload so they are kicked to the login screen
           window.location.reload();
@@ -620,7 +620,14 @@ export const AuthProvider = ({ children }) => {
 
   const logout = useCallback(async (shouldRedirect = true) => {
     isExplicitLogoutRef.current = true;
-    await supabase.auth.signOut();
+    
+    const isRootAccount = window.location.hostname.startsWith('account.');
+    if (isRootAccount) {
+      await supabase.auth.signOut();
+    } else {
+      await supabase.auth.signOut({ scope: 'local' });
+    }
+    
     setUser(null);
     setIsAuthenticated(false);
     

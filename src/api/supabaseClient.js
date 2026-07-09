@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import { getSubdomainAndBase, isDesktopApp } from '../lib/domainUtils';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -53,39 +52,6 @@ const customFetch = async (url, options) => {
     throw error;
   } finally {
     clearTimeout(timeoutId);
-  }
-};
-
-// Custom storage adapter to use cookies for cross-subdomain SSO
-const createCookieStorage = () => {
-  if (typeof document === 'undefined') return undefined; // SSR safe
-  
-  // Do not use cookies on native apps (Capacitor/Electron)
-  if (isDesktopApp()) return undefined; 
-
-  const { baseDomain, isCustomDomain } = getSubdomainAndBase();
-  // We cannot set cross-subdomain cookies for custom domains easily without advanced routing,
-  // and we don't need to for localhost.
-  const domainAttr = (baseDomain === 'localhost' || isCustomDomain) 
-    ? '' 
-    : `; domain=.${baseDomain}`;
-
-  return {
-    getItem: (key) => {
-      const match = document.cookie.match(new RegExp('(^| )' + encodeURIComponent(key) + '=([^;]+)'));
-      return match ? decodeURIComponent(match[2]) : null;
-    },
-    setItem: (key, value) => {
-      // 365 days expiration
-      const expires = new Date(Date.now() + 365 * 864e5).toUTCString();
-      document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(value)}; expires=${expires}; path=/${domainAttr}; SameSite=Lax; Secure`;
-    },
-    removeItem: (key) => {
-      document.cookie = `${encodeURIComponent(key)}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${domainAttr}; SameSite=Lax; Secure`;
-    }
-  };
-};
-
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     // Bypass Web Locks to prevent deadlocks in React Strict Mode
@@ -96,8 +62,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     // This stops the endless _recoverAndRefresh retry storm when loading offline.
     autoRefreshToken: typeof navigator !== 'undefined' ? navigator.onLine : true,
     detectSessionInUrl: true,
-    persistSession: true,
-    storage: createCookieStorage() || (typeof window !== 'undefined' ? window.localStorage : undefined)
+    persistSession: true
   },
   global: {
     fetch: customFetch
