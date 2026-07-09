@@ -472,7 +472,7 @@ export default function Login() {
  <div>
  <div className="flex items-center justify-between mb-1.5">
  <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest tracking-[0.04em]">{t("password", "Password")}</label>
- <a href="#" className="text-[11px] font-semibold text-primary hover:underline">{t("forgot_password", "Forgot password?")}</a>
+ <Link to="/forgot-password" className="text-[11px] font-semibold text-primary hover:underline">{t("forgot_password", "Forgot password?")}</Link>
  </div>
  <Input
  type="password"
