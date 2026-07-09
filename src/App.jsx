@@ -365,6 +365,8 @@ import ForceResetPassword from './pages/ForceResetPassword';
 import SSOGateway from './pages/auth/SSOGateway';
 import SSOCallback from './pages/auth/SSOCallback';
 import AccountPortal from './pages/auth/AccountPortal';
+import AccountLogin from './pages/auth/AccountLogin';
+import AccountSignUp from './pages/auth/AccountSignUp';
 import ResetPassword from './pages/ResetPassword';
 import { SiteDomainResolver } from '@/components/sites/SiteRenderer/SiteDomainResolver';
 import SlateSites from './pages/sites/SlateSites';
@@ -1196,8 +1198,8 @@ function App() {
                   /* ── ACCOUNT DOMAIN: Global Identity Portal ── */
                   <React.Suspense fallback={<PageLoader label="Loading Account..." />}>
                     <Routes>
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/signup" element={<SignUp />} />
+                      <Route path="/login" element={<AccountLogin />} />
+                      <Route path="/signup" element={<AccountSignUp />} />
                       <Route path="/sso" element={<SSOGateway />} />
                       <Route path="/auth/callback" element={<SSOCallback />} />
                       <Route element={<ProtectedRoute />}>
