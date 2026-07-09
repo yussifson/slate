@@ -485,13 +485,13 @@ export default function Login() {
  ) : (
    <>
      <Logo className="w-10 h-10" />
-     <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>
+     {!isRootAccount && <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>}
    </>
  )}
  </div>
  
   <div className="mb-8">
-  <h1 className="text-2xl font-semibold text-slate-900 tracking-[-0.02em]">{branding.name !== 'Slate' ? `Sign in to ${branding.name}` : t("welcome_back", "Welcome back")}</h1>
+  <h1 className="text-2xl font-semibold text-slate-900 tracking-[-0.02em]">{isRootAccount ? 'Optavel Account' : branding.name !== 'Slate' ? `Sign in to ${branding.name}` : t("welcome_back", "Welcome back")}</h1>
   </div>
   
   <div className="flex flex-col gap-3 mb-6">
@@ -573,18 +573,18 @@ export default function Login() {
       </div>
 
       <Button type="submit" className="w-full h-12 text-base font-medium transition-all active:scale-[0.98]" disabled={loading}>
-        {loading ? 'Signing in...' : 'Sign in to workspace'}
+        {loading ? 'Signing in...' : isRootAccount ? 'Sign in to Optavel' : 'Sign in to workspace'}
       </Button>
 
       <div className="text-center mt-6">
         <span className="text-xs text-slate-500 font-medium tracking-[0.04em]">{t("don_t_have_an_account", "Don't have an account?")} </span>
         {isElectron ? (
           <Link to="/signup" className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
-            {t("create_workspace", "Create Workslate")}
+            {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
           </Link>
         ) : (
           <a href={`${getMainAppUrl()}/signup`} className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
-            {t("create_workspace", "Create Workslate")}
+            {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
           </a>
         )}
       </div>
@@ -608,7 +608,7 @@ export default function Login() {
  </div>
  
  <p className="text-slate-800 font-medium text-2xl md:text-3xl mb-12 relative z-10 leading-relaxed tracking-tight tracking-[-0.02em]">
- {randomQuote.quote}
+ {isRootAccount ? randomQuote.quote.replace(/Slate/g, 'Optavel') : randomQuote.quote}
  </p>
  
  <div className="flex items-center gap-5 pt-8 relative z-10">
