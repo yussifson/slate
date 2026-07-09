@@ -18,6 +18,7 @@ import { useQueryClient} from "@tanstack/react-query";
 import { useToast} from "@/components/ui/use-toast";
 import ThemeToggle from "./ThemeToggle";
 import UnivNotificationCenter from "@/components/universal/UnivNotificationCenter";
+import AppLauncher from "./AppLauncher";
 
 import { useCompany} from "@/hooks/useCompanyId";
 import { INDUSTRIES} from "@/config/industries";
@@ -151,6 +152,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
 
       {/* Premium Theme Toggle & Notifications */}
+      <AppLauncher />
       <ThemeToggle />
       <UnivNotificationCenter />
 
@@ -198,6 +200,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
  {/* Right: AI & Notifications */}
  <div className="flex items-center gap-1">
+ <AppLauncher />
  <button onClick={toggleAI} className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors active:scale-95", isAIOpen ? "bg-primary/10 text-primary" : "text-[#8E8E93]")}>
  <Sparkles className="w-[18px] h-[18px]" strokeWidth={2.5} />
  </button>
