@@ -392,15 +392,15 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
 };
 
  return (
- <div className="flex flex-col h-full bg-[#F8FAFC] dark:bg-[#030712] rounded-[2.5rem] overflow-hidden relative border border-white/50 dark:border-white/10 shadow-2xl group font-sans">
-  {/* Fluid Dynamics Background Layers */}
-  <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-    <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-gradient-to-br from-primary/20 to-blue-500/10 dark:from-primary/10 dark:to-blue-500/5 blur-[120px] mix-blend-multiply dark:mix-blend-screen" />
-    <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-tr from-cyan-400/20 to-emerald-400/10 dark:from-cyan-400/10 dark:to-emerald-400/5 blur-[140px] mix-blend-multiply dark:mix-blend-screen" />
+ <div className="flex flex-col h-full bg-slate-50 dark:bg-[#0B1121] rounded-xl overflow-hidden relative border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 group font-sans">
+  {/* Realistic Background Layers */}
+  <div className="absolute inset-0 pointer-events-none z-0">
+    <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 dark:bg-primary/10 blur-[120px]" />
+    <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[120px]" />
   </div>
 
  {/* Main Layout Area */}
- <div className="relative z-10 flex-1 flex flex-row relative min-w-0 overflow-hidden bg-transparent">
+ <div className="relative z-10 flex-1 flex flex-row relative min-w-0 overflow-hidden">
  
  {/* Video Content Area */}
  <div className="flex-1 flex flex-col relative min-w-0">
@@ -422,9 +422,9 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
     const sidebarParticipants = allParticipants.filter(id => id !== mainSpeakerId);
 
     return (
-      <div className="flex-1 flex flex-col lg:flex-row p-6 gap-6 overflow-hidden bg-transparent pb-32">
+      <div className="flex-1 flex flex-col lg:flex-row p-4 gap-4 overflow-hidden bg-white/30 dark:bg-black/20 backdrop-blur-sm">
         {/* Main Stage Area */}
-        <div className="flex-[3] relative rounded-[2.5rem] flex items-center justify-center overflow-hidden border border-white/50 dark:border-white/10 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] bg-white/10 dark:bg-black/20 backdrop-blur-2xl">
+        <div className="flex-[3] relative rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-white/10 shadow-inner bg-slate-900">
           {screens.length > 0 ? (
             screens.map(screen => (
               <ScreenShareTile key={screen.screenId} screen={screen} className="w-full h-full absolute inset-0" />
@@ -434,9 +434,9 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
           ) : null}
         </div>
         {/* Participant Sidebar */}
-        <div className="flex-1 lg:max-w-[340px] flex lg:flex-col gap-6 overflow-x-auto lg:overflow-y-auto min-h-[160px] lg:min-h-0 items-center lg:items-stretch content-start pb-4 lg:pb-0 scrollbar-hide">
+        <div className="flex-1 lg:max-w-[320px] flex lg:flex-col gap-4 overflow-x-auto lg:overflow-y-auto min-h-[140px] lg:min-h-0 items-center lg:items-stretch content-start">
           {sidebarParticipants.map(id => (
-            <ParticipantTile key={id} id={id} isLocal={id === localSessionId} className="w-64 min-w-[16rem] lg:w-full lg:min-w-0 shrink-0 m-0 rounded-[2rem] shadow-xl border border-white/50 dark:border-white/10" />
+            <ParticipantTile key={id} id={id} isLocal={id === localSessionId} className="w-64 min-w-[16rem] lg:w-full lg:min-w-0 shrink-0 m-0" />
           ))}
           {allParticipants.length === 0 && (
             <div key="loader" className="flex items-center justify-center w-full h-full text-slate-400">
@@ -451,7 +451,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
 
  {/* Chat Sidebar */}
  {showChat && (
- <div className="w-80 border-l border-primary/40 bg-white/80 dark:bg-black/60 backdrop-blur-md flex flex-col shrink-0 animate-in slide-in-from-right hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 z-40">
+ <div className="w-80 border-l border-primary/40 bg-card flex flex-col shrink-0 animate-in slide-in-from-right hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 z-40">
  <div className="h-14 border-b border-primary/40 flex items-center justify-between px-4">
  <h3 className="font-semibold flex items-center gap-2"><MessageSquare className="w-4 h-4" /> Meeting Chat</h3>
  <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full" onClick={() => setShowChat(false)}>
@@ -491,7 +491,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  )}
   {/* AI Sidebar */}
   {(aiResponse || isAiLoading) && !isPipMode && (
-    <div className="w-80 border-l border-primary/40 bg-white/80 dark:bg-black/60 backdrop-blur-md flex flex-col shrink-0 animate-in slide-in-from-right hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 z-40">
+    <div className="w-80 border-l border-primary/40 bg-card flex flex-col shrink-0 animate-in slide-in-from-right hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 z-40">
       <div className="h-14 border-b border-primary/40 flex items-center justify-between px-4">
         <h3 className="font-semibold flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-primary" /> Orbit AI
@@ -636,8 +636,8 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
    }
  `}</style>
 
- {/* Control Bar - Fluid Dock */}
- <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 z-50 bg-white/40 dark:bg-black/50 backdrop-blur-3xl border border-white/50 dark:border-white/10 rounded-full shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] flex items-center justify-center transition-all ${isPipMode ? 'px-3 py-2 gap-2' : 'px-6 py-4 gap-4 hover:scale-105'}`}>
+ {/* Control Bar */}
+ <div className={`relative z-10 bg-white/80 dark:bg-black/60 backdrop-blur-md border-t border-primary/40 flex items-center justify-center transition-all ${isPipMode ? 'h-12 px-2 gap-2' : 'h-20 px-6 gap-4'}`}>
  <div className="relative">
    {showEmojis && (
      <div className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-card border border-primary/20 shadow-xl rounded-full px-4 py-3 flex gap-3 animate-in fade-in slide-in-from-bottom-4 z-50">
@@ -761,7 +761,7 @@ function ScreenShareTile({ screen, className }) {
 }, [screen.screenAudio?.track, screen.local]);
 
  return (
- <div className={`relative bg-black/80 rounded-[2.5rem] overflow-hidden group flex items-center justify-center shadow-2xl ${className || ''}`}>
+ <div className={`relative bg-slate-800 rounded-xl overflow-hidden group flex items-center justify-center ${className || ''}`}>
  {screen.screenVideo?.state === 'playable' ? (
  <video 
  ref={videoRef}
@@ -854,7 +854,7 @@ function ParticipantTile({ id, isLocal, className }) {
  };
 
  return (
- <div className={`relative bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl rounded-[2.5rem] overflow-hidden group flex items-center justify-center aspect-video shadow-2xl border border-white/50 dark:border-white/10 ${className || 'w-full max-w-3xl min-w-[320px] m-2'}`}>
+ <div className={`relative bg-white dark:bg-slate-900 rounded-2xl overflow-hidden group flex items-center justify-center aspect-video shadow-md border border-slate-200 dark:border-white/10 ${className || 'w-full max-w-3xl min-w-[320px] m-2'}`}>
  {videoState?.state === 'playable' ? (
  <video 
  ref={videoRef}
