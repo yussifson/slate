@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { User, Mail, Camera } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from "@/api/supabaseClient";
@@ -10,6 +10,55 @@ export default function AccountPersonalInfo() {
   const [lastName, setLastName] = useState(profile?.last_name || '');
   const [isEditingName, setIsEditingName] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}-${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile-pictures')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile-pictures')
+        .getPublicUrl(filePath);
+
+      const { error: updateError } = await supabase.from('profiles').update({
+        avatar_url: publicUrl
+      }).eq('id', user.id);
+      
+      if (updateError) throw updateError;
+      
+      // Update local storage
+      const cached = localStorage.getItem('slate_cached_user');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        parsed.avatar_url = publicUrl;
+        localStorage.setItem('slate_cached_user', JSON.stringify(parsed));
+      }
+      
+      // Force refresh for context
+      window.location.reload();
+    } catch (err) {
+      alert("Error uploading avatar: " + err.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleSaveName = async () => {
     if (!firstName.trim()) return;
@@ -68,17 +117,37 @@ export default function AccountPersonalInfo() {
           
           <div className="divide-y divide-gray-100 dark:divide-gray-800">
             {/* Profile Picture */}
-            <div className="p-6 md:px-8 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer group">
+            <div 
+              className={`p-6 md:px-8 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer group ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+              onClick={handleAvatarClick}
+            >
+               <input 
+                 type="file" 
+                 ref={fileInputRef} 
+                 className="hidden" 
+                 accept="image/*"
+                 onChange={handleFileChange}
+               />
                <div className="flex-1 grid grid-cols-[120px_1fr] md:grid-cols-[160px_1fr] items-center">
                   <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Profile picture</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-300">A picture helps personalize your account</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-300">
+                    {isUploading ? 'Uploading...' : 'A picture helps personalize your account'}
+                  </div>
                </div>
                <div className="relative">
-                 <div className="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-medium">
-                   {getInitials()}
-                 </div>
+                 {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Avatar" className="w-14 h-14 rounded-full object-cover shadow-sm" />
+                 ) : (
+                    <div className="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-medium">
+                      {getInitials()}
+                    </div>
+                 )}
                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-sm border border-gray-200 dark:border-gray-700">
-                    <Camera className="w-3 h-3 text-gray-600 dark:text-gray-300" />
+                    {isUploading ? (
+                      <div className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Camera className="w-3 h-3 text-gray-600 dark:text-gray-300" />
+                    )}
                  </div>
                </div>
             </div>

@@ -24,8 +24,12 @@ export default function AccountPortal() {
       {/* Large Header Section */}
       <div className="flex flex-col items-center text-center mb-12">
         <div className="relative mb-6 group cursor-pointer">
-          <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-blue-600 text-white flex items-center justify-center text-4xl font-medium shadow-lg ring-4 ring-white dark:ring-[#202124] relative z-10 transition-transform group-hover:scale-105 duration-300">
-            {initials}
+          <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-blue-600 text-white flex items-center justify-center text-4xl font-medium shadow-lg ring-4 ring-white dark:ring-[#202124] relative z-10 transition-transform group-hover:scale-105 duration-300 overflow-hidden">
+            {profile?.avatar_url ? (
+               <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+               initials
+            )}
           </div>
           {/* Subtle colorful ring behind avatar */}
           <div className="absolute inset-[-4px] rounded-full bg-gradient-to-tr from-blue-500 via-indigo-500 to-purple-500 opacity-20 blur-md group-hover:opacity-40 transition-opacity duration-300 z-0"></div>

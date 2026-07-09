@@ -368,6 +368,8 @@ import AccountPortalLayout from './components/layout/AccountPortalLayout';
 import AccountPortal from './pages/auth/AccountPortal';
 import AccountSecurity from './pages/auth/AccountSecurity';
 import AccountPersonalInfo from './pages/auth/AccountPersonalInfo';
+import AccountPayments from './pages/auth/AccountPayments';
+import AccountDevices from './pages/auth/AccountDevices';
 import AccountLogin from './pages/auth/AccountLogin';
 import AccountSignUp from './pages/auth/AccountSignUp';
 import ResetPassword from './pages/ResetPassword';
@@ -1210,6 +1212,8 @@ function App() {
                            <Route path="/" element={<AccountPortal />} />
                            <Route path="/security" element={<AccountSecurity />} />
                            <Route path="/personal-info" element={<AccountPersonalInfo />} />
+                           <Route path="/subscriptions" element={<AccountPayments />} />
+                           <Route path="/devices" element={<AccountDevices />} />
                            {/* Catch all for inner layout routes that don't exist */}
                            <Route path="*" element={<Navigate to="/" replace />} />
                         </Route>

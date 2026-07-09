@@ -1,19 +1,27 @@
-import React from 'react';
-import { ShieldCheck, KeyRound, Smartphone, Activity } from 'lucide-react';
+import React, { useState } from 'react';
+import { ShieldCheck, KeyRound, Smartphone, Activity, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from "@/api/supabaseClient";
 
 export default function AccountSecurity() {
   const { user } = useAuth();
+  const [resetStatus, setResetStatus] = useState('idle'); // idle, loading, success, error
+  const [resetMessage, setResetMessage] = useState('');
 
   const handlePasswordReset = async () => {
+    if (resetStatus === 'loading' || resetStatus === 'success') return;
+    setResetStatus('loading');
+    setResetMessage('');
     try {
-      await supabase.auth.resetPasswordForEmail(user?.email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(user?.email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
-      alert('Password reset email sent! Check your inbox.');
+      if (error) throw error;
+      setResetStatus('success');
+      setResetMessage('Reset email sent! Check your inbox.');
     } catch (error) {
-      alert('Error sending reset email: ' + error.message);
+      setResetStatus('error');
+      setResetMessage(error.message);
     }
   };
 
@@ -55,17 +63,34 @@ export default function AccountSecurity() {
           </div>
           
           <div className="divide-y divide-gray-100 dark:divide-gray-800">
-            <div className="p-6 md:px-8 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer" onClick={handlePasswordReset}>
-               <div>
-                  <div className="text-gray-900 dark:text-white font-medium mb-1 flex items-center gap-2">
-                    <KeyRound className="w-4 h-4 text-gray-500" />
-                    Password
-                  </div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Last changed recently</div>
+            <div className={`p-6 md:px-8 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${resetStatus !== 'loading' ? 'cursor-pointer' : ''}`} onClick={handlePasswordReset}>
+               <div className="flex items-center justify-between">
+                 <div>
+                    <div className="text-gray-900 dark:text-white font-medium mb-1 flex items-center gap-2">
+                      <KeyRound className="w-4 h-4 text-gray-500" />
+                      Password
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Last changed recently</div>
+                 </div>
+                 {resetStatus === 'loading' ? (
+                    <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                 ) : (
+                    <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                 )}
                </div>
-               <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-               </svg>
+               
+               {resetStatus === 'success' && (
+                 <div className="mt-3 text-sm text-green-600 dark:text-green-400 font-medium flex items-center gap-1.5">
+                   <CheckCircle2 className="w-4 h-4" /> {resetMessage}
+                 </div>
+               )}
+               {resetStatus === 'error' && (
+                 <div className="mt-3 text-sm text-red-600 dark:text-red-400 font-medium flex items-center gap-1.5">
+                   <AlertCircle className="w-4 h-4" /> {resetMessage}
+                 </div>
+               )}
             </div>
             
             <div className="p-6 md:px-8 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
