@@ -9,6 +9,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { supabase } from '@/api/supabaseClient';
+import { registerSchoolUser } from '@/api/authUtils';
 
 const CARD = 'bg-card border border-border rounded-2xl p-6 shadow-sm';
 const HEAD = 'text-lg font-bold text-foreground flex items-center gap-2 mb-5';
@@ -20,6 +22,10 @@ export default function OptavelHR() {
 
   const [empModal, setEmpModal] = useState(false);
   const [empForm, setEmpForm] = useState({ name: '', role: '', department: '', email: '', phone: '', status: 'active', start_date: new Date().toISOString().split('T')[0] });
+  const [createLogin, setCreateLogin] = useState(false);
+  const [loginMethod, setLoginMethod] = useState('invite'); // 'invite' | 'password'
+  const [defaultPassword, setDefaultPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: employees = [] } = useQuery({
     queryKey: ['optavel_employees', companyId],
@@ -33,14 +39,59 @@ export default function OptavelHR() {
 
   const submitEmp = async () => {
     if (!empForm.name) return toast.error('Name is required');
-    await powerSync.execute(
-      `INSERT INTO optavel_employees (id, company_id, name, role, department, email, phone, onboarding_progress, status, start_date, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
-      [uuidv4(), companyId, empForm.name, empForm.role, empForm.department, empForm.email, empForm.phone, 0, empForm.status, empForm.start_date, new Date().toISOString(), new Date().toISOString()]
-    );
-    toast.success('Employee added!');
-    setEmpModal(false);
-    setEmpForm({ name: '', role: '', department: '', email: '', phone: '', status: 'active', start_date: new Date().toISOString().split('T')[0] });
-    queryClient.invalidateQueries(['optavel_employees']);
+    if (createLogin && !empForm.email) return toast.error('Email is required to create a login');
+    if (createLogin && loginMethod === 'password' && defaultPassword.length < 6) return toast.error('Password must be at least 6 characters');
+
+    setIsSubmitting(true);
+    try {
+      if (createLogin) {
+        // Register the user in Supabase Auth
+        const tempPassword = loginMethod === 'password' ? defaultPassword : Math.random().toString(36).slice(-8) + 'A1!';
+        const forceReset = loginMethod === 'password'; // Force reset only if admin set a default password
+        
+        const { user: newUser, error: regError } = await registerSchoolUser(
+          empForm.email,
+          tempPassword,
+          'employee', // Default role
+          companyId,
+          empForm.name,
+          forceReset
+        );
+
+        if (regError && regError.message !== 'already registered in this firm') {
+          throw regError;
+        }
+
+        if (loginMethod === 'invite') {
+          // Send the Supabase password reset email as the "Invite"
+          const { currentSubdomain, baseDomain } = await import('@/lib/domainUtils').then(m => m.getSubdomainAndBase());
+          const port = window.location.port ? `:${window.location.port}` : '';
+          const base = currentSubdomain
+            ? `${window.location.protocol}//${currentSubdomain}.${baseDomain}${port}`
+            : `${window.location.protocol}//${baseDomain}${port}`;
+
+          await supabase.auth.resetPasswordForEmail(empForm.email, {
+            redirectTo: `${base}/reset-password`
+          });
+        }
+      }
+
+      await powerSync.execute(
+        `INSERT INTO optavel_employees (id, company_id, name, role, department, email, phone, onboarding_progress, status, start_date, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+        [uuidv4(), companyId, empForm.name, empForm.role, empForm.department, empForm.email, empForm.phone, 0, empForm.status, empForm.start_date, new Date().toISOString(), new Date().toISOString()]
+      );
+
+      toast.success(createLogin ? (loginMethod === 'invite' ? 'Employee added & invite sent!' : 'Employee added & password set!') : 'Employee added!');
+      setEmpModal(false);
+      setEmpForm({ name: '', role: '', department: '', email: '', phone: '', status: 'active', start_date: new Date().toISOString().split('T')[0] });
+      setCreateLogin(false);
+      setDefaultPassword('');
+      queryClient.invalidateQueries(['optavel_employees']);
+    } catch (err) {
+      toast.error(err.message || 'Failed to add employee');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const deleteEmp = async (id) => {
@@ -128,8 +179,47 @@ export default function OptavelHR() {
               <div><Label className="text-muted-foreground">Email</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="email@company.com" value={empForm.email} onChange={e => setEmpForm({...empForm, email: e.target.value})} /></div>
               <div><Label className="text-muted-foreground">Phone</Label><Input className="bg-muted border-border text-foreground mt-1" placeholder="Phone" value={empForm.phone} onChange={e => setEmpForm({...empForm, phone: e.target.value})} /></div>
             </div>
+
+            <div className="border border-border rounded-xl p-4 bg-muted/30 mt-4">
+              <label className="flex items-center gap-2 text-sm font-semibold text-foreground cursor-pointer">
+                <input type="checkbox" className="rounded border-border bg-card text-primary" checked={createLogin} onChange={e => setCreateLogin(e.target.checked)} />
+                Create Platform Login
+              </label>
+              
+              {createLogin && (
+                <div className="mt-4 space-y-4 pl-6 border-l-2 border-border ml-2">
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                      <input type="radio" name="loginMethod" className="text-primary" checked={loginMethod === 'invite'} onChange={() => setLoginMethod('invite')} />
+                      Send Invite Link via Email
+                    </label>
+                    <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                      <input type="radio" name="loginMethod" className="text-primary" checked={loginMethod === 'password'} onChange={() => setLoginMethod('password')} />
+                      Set Default Password
+                    </label>
+                  </div>
+                  
+                  {loginMethod === 'password' && (
+                    <div>
+                      <Label className="text-muted-foreground text-xs">Default Password</Label>
+                      <Input 
+                        type="password" 
+                        placeholder="••••••••" 
+                        className="bg-muted border-border text-foreground mt-1 h-9 max-w-xs" 
+                        value={defaultPassword} 
+                        onChange={e => setDefaultPassword(e.target.value)} 
+                      />
+                      <p className="text-[10px] text-muted-foreground mt-1">User will be forced to change this on their first login.</p>
+                    </div>
+                  )}
+                  {loginMethod === 'invite' && (
+                    <p className="text-xs text-muted-foreground">A secure link will be emailed allowing them to set up their account.</p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-          <DialogFooter><Button onClick={submitEmp} className="bg-primary hover:bg-primary/90 text-primary-foreground">Add Employee</Button></DialogFooter>
+          <DialogFooter><Button onClick={submitEmp} disabled={isSubmitting} className="bg-primary hover:bg-primary/90 text-primary-foreground">{isSubmitting ? 'Adding...' : 'Add Employee'}</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

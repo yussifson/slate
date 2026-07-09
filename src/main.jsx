@@ -7,6 +7,7 @@ import { registerSW } from 'virtual:pwa-register'
 import i18n from '@/i18n/config.js'
 import { I18nextProvider } from 'react-i18next'
 import { CapacitorUpdater } from '@capgo/capacitor-updater';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 CapacitorUpdater.notifyAppReady();
 
@@ -48,7 +49,9 @@ window.addEventListener('unhandledrejection', async (event) => {
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ErrorBoundary>
     <I18nextProvider i18n={i18n}>
-      <App />
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your-client-id-here'}>
+        <App />
+      </GoogleOAuthProvider>
     </I18nextProvider>
   </ErrorBoundary>
 )

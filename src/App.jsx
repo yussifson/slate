@@ -1058,7 +1058,7 @@ function GlobalSystemListener() {
 }
 
 function ProtectedRoute() {
-  const { isAuthenticated, isLoadingAuth, authChecked, user } = useAuth();
+  const { isAuthenticated, isLoadingAuth, authChecked, user, authData } = useAuth();
   
   // Show spinner while auth is loading OR while auth hasn't been checked yet
   if (isLoadingAuth || !authChecked) {
@@ -1094,6 +1094,11 @@ function ProtectedRoute() {
 
   if (!user?.company_id && user?.role !== 'super_admin' && window.location.pathname !== '/onboarding') {
     return <Navigate to="/onboarding" replace />;
+  }
+
+  // Intercept forced password reset
+  if (authData?.user?.user_metadata?.force_password_reset && window.location.pathname !== '/force-reset-password') {
+    return <Navigate to="/force-reset-password" replace />;
   }
 
   // â”€â”€ PORTAL USER REDIRECT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -1136,6 +1141,13 @@ function App() {
     initPowerSync().catch(console.error);
     if (isNativeApp) {
       CapacitorUpdater.notifyAppReady().catch(console.error);
+    }
+    
+    // Intercept Supabase password recovery links that lost their path
+    if (window.location.hash && window.location.hash.includes('type=recovery')) {
+      if (window.location.pathname !== '/reset-password') {
+        window.location.href = `/reset-password${window.location.hash}`;
+      }
     }
   }, [isNativeApp]);
 
@@ -1199,6 +1211,7 @@ function App() {
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
                         <Route element={<ProtectedRoute />}>
+                          <Route path="/force-reset-password" element={<ForceResetPassword />} />
                           <Route path="/onboarding" element={<OnboardingWizard />} />
                           {/* Super Admin Base Domain Dashboard */}
                           <Route element={<AppLayout />}>
@@ -1233,6 +1246,7 @@ function App() {
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
                         <Route element={<ProtectedRoute />}>
+                          <Route path="/force-reset-password" element={<ForceResetPassword />} />
                           <Route path="/onboarding" element={<OnboardingWizard />} />
                           <Route element={<AppLayout />}>
                             <Route element={<SuperAdminRoute />}>

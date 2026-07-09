@@ -28,9 +28,10 @@ export const generateSaltedEmail = (realEmail, companyId) => {
  * @param {string} role - The role to assign
  * @param {string} companyId - The current workspace ID
  * @param {string} fullName - The full name of the user
+ * @param {boolean} forcePasswordReset - Whether the user must reset password on first login
  * @returns {object} { user, error }
  */
-export const registerSchoolUser = async (realEmail, password, role, companyId, fullName) => {
+export const registerSchoolUser = async (realEmail, password, role, companyId, fullName, forcePasswordReset = false) => {
   try {
     const cleanEmail = realEmail.trim().toLowerCase();
     
@@ -51,7 +52,8 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
       user_password: password,
       user_role: role,
       user_company_id: companyId,
-      user_full_name: fullName
+      user_full_name: fullName,
+      user_metadata: { force_password_reset: forcePasswordReset }
     });
     
     if (error) {
@@ -60,7 +62,7 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
          const { data: fallbackData, error: fallbackError } = await supabaseAdmin.auth.signUp({
            email: cleanEmail,
            password: password,
-           options: { data: { role: role, company_id: companyId, full_name: fullName } }
+           options: { data: { role: role, company_id: companyId, full_name: fullName, force_password_reset: forcePasswordReset } }
          });
          if (fallbackError) return { error: fallbackError };
          return { user: fallbackData.user };

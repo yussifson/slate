@@ -36,6 +36,9 @@ export default function FirmStaffManager({ firm, onClose }) {
   const queryClient = useQueryClient();
   const [invite, setInvite] = useState(emptyInvite);
   const [inviting, setInviting] = useState(false);
+  const [createLogin, setCreateLogin] = useState(false);
+  const [loginMethod, setLoginMethod] = useState('invite'); // 'invite' | 'password'
+  const [defaultPassword, setDefaultPassword] = useState('');
 
   const { data: staffRecords = [], isLoading } = useQuery({
     queryKey: ["firm-staff", firm.id],
@@ -62,21 +65,44 @@ export default function FirmStaffManager({ firm, onClose }) {
 
   const handleInvite = async () => {
     if (!invite.user_email || !invite.full_name) return;
+    if (createLogin && loginMethod === 'password' && defaultPassword.length < 6) {
+      return toast({ title: "Validation Error", description: "Password must be at least 6 characters.", variant: "destructive" });
+    }
+    
     setInviting(true);
     try {
-      // Register user to the platform with a temporary password
-      const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
-      const { registerSchoolUser } = await import('@/api/authUtils');
-      const { user, error } = await registerSchoolUser(
-        invite.user_email, 
-        tempPassword, 
-        invite.role, 
-        firm.id, 
-        invite.full_name
-      );
-      
-      if (error && error.message !== 'already registered in this firm') {
-        throw error;
+      let tempPassword = "";
+      if (createLogin) {
+        // Register user to the platform with a temporary password
+        tempPassword = loginMethod === 'password' ? defaultPassword : Math.random().toString(36).slice(-8) + 'A1!';
+        const forceReset = loginMethod === 'password';
+        
+        const { registerSchoolUser } = await import('@/api/authUtils');
+        const { user, error } = await registerSchoolUser(
+          invite.user_email, 
+          tempPassword, 
+          invite.role, 
+          firm.id, 
+          invite.full_name,
+          forceReset
+        );
+        
+        if (error && error.message !== 'already registered in this firm') {
+          throw error;
+        }
+
+        if (loginMethod === 'invite') {
+          const { supabase } = await import('@/api/supabaseClient');
+          const { currentSubdomain, baseDomain } = await import('@/lib/domainUtils').then(m => m.getSubdomainAndBase());
+          const port = window.location.port ? `:${window.location.port}` : '';
+          const base = currentSubdomain
+            ? `${window.location.protocol}//${currentSubdomain}.${baseDomain}${port}`
+            : `${window.location.protocol}//${baseDomain}${port}`;
+
+          await supabase.auth.resetPasswordForEmail(invite.user_email, {
+            redirectTo: `${base}/reset-password`
+          });
+        }
       }
 
       // Create their staff record
@@ -90,12 +116,22 @@ export default function FirmStaffManager({ firm, onClose }) {
         status: "active",
         currency: firm.currency || "GHS"});
       queryClient.invalidateQueries({ queryKey: ["firm-staff", firm.id] });
+      
+      let successMsg = `Their temporary password is: ${tempPassword}. Please share it with them.`;
+      if (createLogin && loginMethod === 'invite') {
+        successMsg = `A setup link has been emailed to ${invite.user_email}.`;
+      } else if (!createLogin) {
+        successMsg = `Added to team directory without platform access.`;
+      }
+
       toast({ 
         title: `✓ Invited ${invite.full_name}`, 
-        description: `Their temporary password is: ${tempPassword}. Please share it with them.`,
+        description: successMsg,
         duration: 10000 
       });
       setInvite(emptyInvite);
+      setCreateLogin(false);
+      setDefaultPassword('');
     } catch (err) {
       toast({ title: "Invite failed", description: err?.message || "Please try again.", variant: "destructive" });
     }
@@ -170,11 +206,50 @@ export default function FirmStaffManager({ firm, onClose }) {
                 />
               </div>
             )}
+            
+            <div className="col-span-2 border border-primary/20 rounded-xl p-4 bg-muted/30 mt-2">
+              <label className="flex items-center gap-2 text-sm font-semibold text-foreground cursor-pointer">
+                <input type="checkbox" className="rounded border-primary/30 bg-card text-primary" checked={createLogin} onChange={e => setCreateLogin(e.target.checked)} />
+                Create Platform Login
+              </label>
+              
+              {createLogin && (
+                <div className="mt-4 space-y-4 pl-6 border-l-2 border-primary/20 ml-2">
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                      <input type="radio" name="firmLoginMethod" className="text-primary" checked={loginMethod === 'invite'} onChange={() => setLoginMethod('invite')} />
+                      Send Invite Link via Email
+                    </label>
+                    <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                      <input type="radio" name="firmLoginMethod" className="text-primary" checked={loginMethod === 'password'} onChange={() => setLoginMethod('password')} />
+                      Set Default Password
+                    </label>
+                  </div>
+                  
+                  {loginMethod === 'password' && (
+                    <div>
+                      <Label className="text-muted-foreground text-xs">Default Password</Label>
+                      <Input 
+                        type="password" 
+                        placeholder="••••••••" 
+                        className="bg-muted border-primary/20 text-foreground mt-1 h-8 max-w-xs text-sm" 
+                        value={defaultPassword} 
+                        onChange={e => setDefaultPassword(e.target.value)} 
+                      />
+                      <p className="text-[10px] text-muted-foreground mt-1">User will be forced to change this on their first login.</p>
+                    </div>
+                  )}
+                  {loginMethod === 'invite' && (
+                    <p className="text-xs text-muted-foreground">A secure link will be emailed allowing them to set up their account.</p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
           <div className="flex justify-end">
             <Button size="sm" onClick={handleInvite} disabled={inviting || !invite.user_email || !invite.full_name} className="gap-2.5">
               <Mail className="w-3.5 h-3.5" />
-              {inviting ? "Sending invite..." : "Send Invite & Create Login"}
+              {inviting ? "Processing..." : (createLogin ? "Add & Create Login" : "Add to Directory")}
             </Button>
           </div>
           <p className="text-[10px] text-[#71717a] dark:text-gray-400">{t(

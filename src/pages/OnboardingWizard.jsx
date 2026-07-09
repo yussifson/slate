@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/
 import {Scale, Building2, Users, Briefcase, ArrowRight, ArrowLeft, Check, Sparkles, X} from "lucide-react";
 import confetti from 'canvas-confetti';
 import { useToast} from '@/components/ui/use-toast';
+import { useNavigate as useHookNavigate } from "react-router-dom";
+import { registerSchoolUser } from '@/api/authUtils';
 import { getSubdomainAndBase, isDesktopApp} from '@/lib/domainUtils';
 import { getTerm, INDUSTRIES} from '@/config/industries';
 import { COUNTRIES_CURRENCIES } from '@/config/countries';
@@ -370,6 +372,34 @@ export default function OnboardingWizard() {
    
    const { error: staffErr } = await supabase.from('staff_records').insert(staffInserts);
    if (staffErr) console.error("Failed to save staff records:", staffErr);
+
+   // Create Auth Logins and send Invite Emails
+   const { currentSubdomain, baseDomain } = getSubdomainAndBase();
+   const port = window.location.port ? `:${window.location.port}` : '';
+   const base = currentSubdomain
+     ? `${window.location.protocol}//${currentSubdomain}.${baseDomain}${port}`
+     : `${window.location.protocol}//${baseDomain}${port}`;
+
+   for (const staff of invitedStaff) {
+     try {
+       const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
+       const { error: regError } = await registerSchoolUser(
+         staff.email,
+         tempPassword,
+         staff.role,
+         companyIdToUse,
+         staff.name,
+         false
+       );
+       if (!regError || regError.message === 'already registered in this firm') {
+         await supabase.auth.resetPasswordForEmail(staff.email, {
+           redirectTo: `${base}/reset-password`
+         });
+       }
+     } catch (e) {
+       console.error("Failed to register staff:", e);
+     }
+   }
  }
 
  // 3. Remove first client/case creation (replaced by pricing plans logic)

@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Logo} from '@/components/ui/Logo';
 import { getSubdomainAndBase, isDesktopApp } from '@/lib/domainUtils';
+import { GoogleLogin } from '@react-oauth/google';
 import { useAuth} from '@/lib/AuthContext';
 
 export default function SignUp() {
@@ -65,6 +66,38 @@ export default function SignUp() {
  root.style.colorScheme = '';
 };
 }, []);
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setLoading(true);
+      setError('');
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: 'google',
+        token: credentialResponse.credential,
+      });
+      if (error) throw error;
+      
+      // If successful, auth state changes and App.jsx routing handles the rest.
+      // They will be redirected to Onboarding to complete their profile.
+    } catch (err) {
+      setError("Google Sign-In failed: " + err.message);
+      setLoading(false);
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'apple',
+      });
+      if (error) throw error;
+    } catch (err) {
+      setError("Apple Sign-In failed: " + err.message);
+      setLoading(false);
+    }
+  };
 
  const handleSignUp = async (e) => {
  e.preventDefault();
@@ -219,6 +252,36 @@ export default function SignUp() {
  "Create an account to start managing your business"
  )}</p>
  </div>
+ 
+  <div className="flex flex-col gap-3 mb-6">
+    <div className="h-11 flex justify-center items-center w-full overflow-hidden rounded-xl border border-primary/20 bg-white hover:bg-slate-50 transition-colors">
+      <GoogleLogin
+        onSuccess={handleGoogleSuccess}
+        onError={() => setError("Google login failed")}
+        shape="rectangular"
+        size="large"
+        theme="outline"
+        text="signup_with"
+        width="100%"
+      />
+    </div>
+    <button 
+      onClick={handleAppleSignIn}
+      type="button"
+      className="flex items-center justify-center gap-2 h-11 w-full bg-black hover:bg-gray-900 text-white rounded-xl text-sm font-medium transition-colors"
+    >
+      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M16.365 21.43c-1.39.95-2.81 1.05-4.14.04-1.36-.97-2.73-1.01-4.22.04-1.63 1.1-3.23.95-4.62-.54-1.22-1.29-2.3-3.26-3.08-5.72-.81-2.58-.87-5.01-.22-7.14.65-2.12 1.83-3.79 3.5-4.8 1.48-.89 3.09-1.04 4.54-.53 1.43.49 2.53 1.05 3.73 1.05 1.14 0 2.45-.63 4.12-1.18 1.87-.61 3.66-.45 5.15.54 1.17.76 2.05 1.83 2.55 3.04-1.6.93-2.45 2.37-2.37 4.18.09 1.94 1.17 3.44 2.89 4.25-1.1 2.3-2.5 4.39-4.22 6.01l-.23.23c-1.21 1.15-2.31 1.6-3.38.53z" />
+      </svg>
+      Continue with Apple
+    </button>
+  </div>
+
+  <div className="relative flex items-center mb-6">
+    <div className="flex-grow border-t border-slate-200"></div>
+    <span className="flex-shrink-0 mx-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">Or sign up with email</span>
+    <div className="flex-grow border-t border-slate-200"></div>
+  </div>
  
  <form className="space-y-3" onSubmit={handleSignUp}>
  {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
