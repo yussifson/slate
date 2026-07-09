@@ -105,9 +105,9 @@ export default function Login() {
 };
 }, []);
 
- useEffect(() => {
- const fetchBranding = async () => {
-     if (currentSubdomain) {
+  useEffect(() => {
+  const fetchBranding = async () => {
+      if (currentSubdomain && !isRootAccount) {
      // ... existing code for subdomain ...
      try {
        // Use RPC to bypass RLS securely for public branding info
