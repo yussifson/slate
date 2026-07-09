@@ -266,8 +266,8 @@ export default function SignUp() {
   <div className="h-[100dvh] w-full overflow-y-auto bg-white">
   <div className="min-h-full flex flex-col lg:flex-row bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Left Side: Form */}
- <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12">
- <div className="max-w-md w-full mx-auto">
+ <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12 pb-24">
+ <div className="max-w-lg w-full mx-auto">
  <div className="flex flex-col mb-8">
  <Logo className="w-10 h-10" />
  <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>
@@ -285,9 +285,17 @@ export default function SignUp() {
   </p>
   </div>
  
-  {!isAuthenticated && (
+  {!isAuthenticated ? (
   <div className="flex flex-col gap-3 mb-6">
-    <div className="h-11 flex justify-center items-center w-full overflow-hidden rounded-xl border border-primary/20 bg-white hover:bg-slate-50 transition-colors">
+    <button
+      onClick={handleOptavelSSO}
+      type="button"
+      className="flex items-center justify-center gap-2 h-12 w-full bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-base font-semibold transition-colors shadow-sm"
+    >
+      <Logo hideText={true} className="w-5 h-5 text-primary" />
+      Continue with Optavel
+    </button>
+    <div className="h-12 flex justify-center items-center w-full overflow-hidden rounded-xl border border-primary/20 bg-white hover:bg-slate-50 transition-colors shadow-sm">
       <GoogleLogin
         onSuccess={handleGoogleSuccess}
         onError={() => setError("Google login failed")}
@@ -301,142 +309,73 @@ export default function SignUp() {
     <button 
       onClick={handleAppleSignIn}
       type="button"
-      className="flex items-center justify-center gap-2 h-11 w-full bg-black hover:bg-gray-900 text-white rounded-xl text-sm font-medium transition-colors"
+      className="flex items-center justify-center gap-2 h-12 w-full bg-black hover:bg-gray-900 text-white rounded-xl text-base font-medium transition-colors shadow-sm"
     >
-      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
         <path d="M16.365 21.43c-1.39.95-2.81 1.05-4.14.04-1.36-.97-2.73-1.01-4.22.04-1.63 1.1-3.23.95-4.62-.54-1.22-1.29-2.3-3.26-3.08-5.72-.81-2.58-.87-5.01-.22-7.14.65-2.12 1.83-3.79 3.5-4.8 1.48-.89 3.09-1.04 4.54-.53 1.43.49 2.53 1.05 3.73 1.05 1.14 0 2.45-.63 4.12-1.18 1.87-.61 3.66-.45 5.15.54 1.17.76 2.05 1.83 2.55 3.04-1.6.93-2.45 2.37-2.37 4.18.09 1.94 1.17 3.44 2.89 4.25-1.1 2.3-2.5 4.39-4.22 6.01l-.23.23c-1.21 1.15-2.31 1.6-3.38.53z" />
       </svg>
       Continue with Apple
     </button>
-    <button
-      onClick={handleOptavelSSO}
-      type="button"
-      className="flex items-center justify-center gap-2 h-11 w-full bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-sm font-semibold transition-colors"
-    >
-      <Logo hideText={true} className="w-5 h-5 text-primary" />
-      Continue with Optavel
-    </button>
   </div>
-
-  <div className="relative flex items-center mb-6">
-    <div className="flex-grow border-t border-slate-200"></div>
-    <span className="flex-shrink-0 mx-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">
-      Or continue with email
-    </span>
-    <div className="flex-grow border-t border-slate-200"></div>
-  </div>
-
+  ) : (
   <form className="space-y-4" onSubmit={handleSignUp}>
   {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
  
- <div className="space-y-4">
- {!isAuthenticated && (
-   <>
-     <div>
-     <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("full_name", "Full Name")}</label>
-     <Input
-     type="text"
-     required
-     placeholder="John Doe"
-     value={username}
-     onChange={(e) => setUsername(e.target.value)}
-     className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-     />
-     </div>
-     <div>
-     <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("email", "Email Address")}</label>
-     <Input
-     type="email"
-     required
-     placeholder="john@example.com"
-     value={email}
-     onChange={(e) => setEmail(e.target.value)}
-     className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-     />
-     </div>
-     <div>
-     <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("password", "Password")}</label>
-     <Input
-     type="password"
-     required
-     placeholder="••••••••••••"
-     value={password}
-     onChange={(e) => setPassword(e.target.value)}
-     className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-     />
-     </div>
-     <div>
-     <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("confirm_password", "Confirm Password")}</label>
-     <Input
-     type="password"
-     required
-     placeholder="••••••••••••"
-     value={confirmPassword}
-     onChange={(e) => setConfirmPassword(e.target.value)}
-     className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-     />
-     </div>
-   </>
- )}
- 
- {/* Company Details Input - ALWAYS SHOW */}
- <div className="pt-2 border-t border-slate-100">
-   <div className="mb-4">
-     <h3 className="text-sm font-semibold text-slate-800">{t("workslate_details", "Workslate Details")}</h3>
-     <p className="text-xs text-slate-500">{t("workslate_details_desc", "This will be the dedicated workspace for your team.")}</p>
-   </div>
-   
-   <div className="space-y-4">
-     <div>
-       <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("company_name", "Company Name")}</label>
-       <Input
-         type="text"
-         required
-         placeholder="Acme Corp"
-         value={companyName}
-         onChange={(e) => setCompanyName(e.target.value)}
-         className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-       />
-     </div>
-     <div>
-       <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("subdomain", "Workspace Web Address")}</label>
-       <div className="relative flex items-center">
-         <Input
-           type="text"
-           required
-           placeholder="acme"
-           value={subdomain}
-           onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-           className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 pr-32 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-         />
-         <div className="absolute right-3 text-xs font-semibold text-slate-400 pointer-events-none">
-           .optavel.com
-         </div>
-       </div>
-     </div>
-   </div>
- </div>
-
- </div>
-
- <Button type="submit" className="w-full h-12 text-base font-medium transition-all active:scale-[0.98]" disabled={loading}>
- {loading ? t("creating_account", "Creating account...") : t("create_workspace", "Create Workslate")}
- </Button>
-
- <div className="text-center mt-6">
- <span className="text-xs text-slate-500 font-medium tracking-[0.04em]">{t("already_have_an_account", "Already have an account?")} </span>
-        {isElectron ? (
-          <Button variant="link" onClick={() => navigate('/login')} className="text-xs font-semibold text-primary p-0 h-auto hover:underline tracking-[0.04em]">
-            {t("sign_in", "Sign In")}
-          </Button>
-        ) : (
-          <a href="/login" className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
-            {t("sign_in", "Sign In")}
-          </a>
-        )}
+  <div className="pt-2 border-t border-slate-100">
+    <div className="mb-4">
+      <h3 className="text-sm font-semibold text-slate-800">{t("workslate_details", "Workslate Details")}</h3>
+      <p className="text-xs text-slate-500">{t("workslate_details_desc", "This will be the dedicated workspace for your team.")}</p>
+    </div>
+    
+    <div className="space-y-4">
+      <div>
+        <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("company_name", "Company Name")}</label>
+        <Input
+          type="text"
+          required
+          placeholder="Acme Corp"
+          value={companyName}
+          onChange={(e) => setCompanyName(e.target.value)}
+          className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+        />
       </div>
+      <div>
+        <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("subdomain", "Workspace Web Address")}</label>
+        <div className="relative flex items-center">
+          <Input
+            type="text"
+            required
+            placeholder="acme"
+            value={subdomain}
+            onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+            className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 pr-32 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+          />
+          <div className="absolute right-3 text-xs font-semibold text-slate-400 pointer-events-none">
+            .optavel.com
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
- </form>
+  <Button type="submit" className="w-full h-12 text-base font-medium transition-all active:scale-[0.98]" disabled={loading}>
+    {loading ? t("creating_account", "Creating account...") : t("create_workspace", "Create Workslate")}
+  </Button>
+  </form>
+  )}
+
+  <div className="text-center mt-10">
+    <span className="text-sm text-slate-500 font-medium tracking-[0.04em]">{t("already_have_an_account", "Already have an account?")} </span>
+    {isElectron ? (
+      <Button variant="link" onClick={() => navigate('/login')} className="text-sm font-semibold text-primary p-0 h-auto hover:underline tracking-[0.04em]">
+        {t("sign_in", "Sign In")}
+      </Button>
+    ) : (
+      <a href="/login" className="text-sm font-semibold text-primary hover:underline tracking-[0.04em]">
+        {t("sign_in", "Sign In")}
+      </a>
+    )}
+  </div>
  )}
  </div>
  </div>

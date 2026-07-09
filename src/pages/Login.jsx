@@ -478,8 +478,8 @@ export default function Login() {
   <div className="h-[100dvh] w-full overflow-y-auto bg-white">
  <div className="min-h-full flex flex-col lg:flex-row bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Left Side: Form */}
- <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12">
- <div className="max-w-md w-full mx-auto">
+ <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12 pb-24">
+ <div className="max-w-lg w-full mx-auto">
  <div className="flex flex-col mb-8">
  {branding.logo_url ? (
    <img src={branding.logo_url} alt="Logo" className="h-10 object-contain w-fit" />
@@ -496,7 +496,15 @@ export default function Login() {
   </div>
   
   <div className="flex flex-col gap-3 mb-6">
-    <div className="h-11 flex justify-center items-center w-full overflow-hidden rounded-xl border border-primary/20 bg-white hover:bg-slate-50 transition-colors">
+    <button
+      onClick={handleOptavelSSO}
+      type="button"
+      className="flex items-center justify-center gap-2 h-12 w-full bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-base font-semibold transition-colors shadow-sm"
+    >
+      <Logo hideText={true} className="w-5 h-5 text-primary" />
+      Continue with Optavel
+    </button>
+    <div className="h-12 flex justify-center items-center w-full overflow-hidden rounded-xl border border-primary/20 bg-white hover:bg-slate-50 transition-colors shadow-sm">
       <GoogleLogin
         onSuccess={handleGoogleSuccess}
         onError={() => setError("Google login failed")}
@@ -510,80 +518,27 @@ export default function Login() {
     <button 
       onClick={handleAppleSignIn}
       type="button"
-      className="flex items-center justify-center gap-2 h-11 w-full bg-black hover:bg-gray-900 text-white rounded-xl text-sm font-medium transition-colors"
+      className="flex items-center justify-center gap-2 h-12 w-full bg-black hover:bg-gray-900 text-white rounded-xl text-base font-medium transition-colors shadow-sm"
     >
-      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
         <path d="M16.365 21.43c-1.39.95-2.81 1.05-4.14.04-1.36-.97-2.73-1.01-4.22.04-1.63 1.1-3.23.95-4.62-.54-1.22-1.29-2.3-3.26-3.08-5.72-.81-2.58-.87-5.01-.22-7.14.65-2.12 1.83-3.79 3.5-4.8 1.48-.89 3.09-1.04 4.54-.53 1.43.49 2.53 1.05 3.73 1.05 1.14 0 2.45-.63 4.12-1.18 1.87-.61 3.66-.45 5.15.54 1.17.76 2.05 1.83 2.55 3.04-1.6.93-2.45 2.37-2.37 4.18.09 1.94 1.17 3.44 2.89 4.25-1.1 2.3-2.5 4.39-4.22 6.01l-.23.23c-1.21 1.15-2.31 1.6-3.38.53z" />
       </svg>
       Sign in with Apple
     </button>
-    <button
-      onClick={handleOptavelSSO}
-      type="button"
-      className="flex items-center justify-center gap-2 h-11 w-full bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-sm font-semibold transition-colors"
-    >
-      <Logo hideText={true} className="w-5 h-5 text-primary" />
-      Continue with Optavel
-    </button>
   </div>
 
-  <div className="relative flex items-center mb-6">
-    <div className="flex-grow border-t border-slate-200"></div>
-    <span className="flex-shrink-0 mx-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">
-      Or continue with email
-    </span>
-    <div className="flex-grow border-t border-slate-200"></div>
+  <div className="text-center mt-10">
+    <span className="text-sm text-slate-500 font-medium tracking-[0.04em]">{t("don_t_have_an_account", "Don't have an account?")} </span>
+    {isElectron ? (
+      <Link to="/signup" className="text-sm font-semibold text-primary hover:underline tracking-[0.04em]">
+        {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
+      </Link>
+    ) : (
+      <a href={`${getMainAppUrl()}/signup`} className="text-sm font-semibold text-primary hover:underline tracking-[0.04em]">
+        {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
+      </a>
+    )}
   </div>
-
-    <form className="space-y-4" onSubmit={handleLogin}>
-      {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
-    
-      <div className="space-y-4">
-        <div>
-          <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("email", "Email Address")}</label>
-          <Input
-            type="email"
-            required
-            placeholder="john@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-          />
-        </div>
-        <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest tracking-[0.04em]">{t("password", "Password")}</label>
-            <Link to="/forgot-password" className="text-[11px] font-semibold text-primary hover:underline">{t("forgot_password", "Forgot password?")}</Link>
-          </div>
-          <Input
-            type="password"
-            required
-            placeholder="••••••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-          />
-        </div>
-      </div>
-
-      <Button type="submit" className="w-full h-12 text-base font-medium transition-all active:scale-[0.98]" disabled={loading}>
-        {loading ? 'Signing in...' : isRootAccount ? 'Sign in to Optavel' : 'Sign in to workspace'}
-      </Button>
-
-      <div className="text-center mt-6">
-        <span className="text-xs text-slate-500 font-medium tracking-[0.04em]">{t("don_t_have_an_account", "Don't have an account?")} </span>
-        {isElectron ? (
-          <Link to="/signup" className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
-            {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
-          </Link>
-        ) : (
-          <a href={`${getMainAppUrl()}/signup`} className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
-            {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
-          </a>
-        )}
-      </div>
-    </form>
-  )}
  </div>
  </div>
  {/* Right Side: Marketing Visual */}

@@ -1,4 +1,5 @@
 import React from 'react'
+import { getSubdomainAndBase } from '@/lib/domainUtils'
 
 const SIZE_MAP = {
   sm: { dim: 16, stroke: 1.5, r: 6 },
@@ -62,6 +63,15 @@ export function LoadingOverlay({ visible, size = 'md', label = 'Loading', blur =
 }
 
 export function PageLoader({ label = 'Loading...' }) {
+  let isRootAccount = false;
+  try {
+    const domainData = getSubdomainAndBase();
+    isRootAccount = domainData.isRootAccount;
+  } catch (e) {}
+  
+  const logoSrc = isRootAccount ? "/optavel-favicon.svg" : "/slate-favicon.svg";
+  const logoAlt = isRootAccount ? "Optavel Logo" : "Slate Logo";
+
   return (
     <div
       role="status"
@@ -88,8 +98,8 @@ export function PageLoader({ label = 'Loading...' }) {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <img 
-            src="/optavel-favicon.svg" 
-            alt="Optavel Logo" 
+            src={logoSrc} 
+            alt={logoAlt} 
             style={{ 
               width: '100%', height: '100%', objectFit: 'contain',
               animation: 'logo-breathe 2.5s ease-in-out infinite' 

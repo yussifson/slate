@@ -62,12 +62,16 @@ export const ThemeProvider = ({ children }) => {
   // Sync with user database theme once user session resolves
   // Sync with user database theme once user session resolves
   useEffect(() => {
-    // Only sync from user_metadata if we don't have a local storage preference yet
-    // Otherwise, this overrides the user's active theme choice upon refresh
-    if (!localStorage.getItem('theme') && user && user.user_metadata?.theme) {
+    if (user && user.user_metadata?.theme) {
       const userTheme = user.user_metadata.theme;
-      if (userTheme !== theme) {
-        setThemeState(userTheme);
+      const syncedUserId = localStorage.getItem('theme_synced_user_id');
+      
+      // If we haven't synced this user's theme to this device yet, apply it
+      if (syncedUserId !== user.id) {
+        if (userTheme !== theme) {
+          setThemeState(userTheme);
+        }
+        localStorage.setItem('theme_synced_user_id', user.id);
       }
     }
   }, [user]);
@@ -80,6 +84,7 @@ export const ThemeProvider = ({ children }) => {
     // If user is authenticated, save the preference in Supabase auth user_metadata
     if (user && !isUpdatingRef.current) {
       isUpdatingRef.current = true;
+      localStorage.setItem('theme_synced_user_id', user.id);
       try {
         const { error } = await supabase.auth.updateUser({
           data: { theme: newTheme }
