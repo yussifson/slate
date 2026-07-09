@@ -3,26 +3,18 @@ import { ShieldCheck, KeyRound, Smartphone, Activity, CheckCircle2, AlertCircle 
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from "@/api/supabaseClient";
 
+import { useNavigate } from 'react-router-dom';
+
 export default function AccountSecurity() {
   const { user } = useAuth();
-  const [resetStatus, setResetStatus] = useState('idle'); // idle, loading, success, error
-  const [resetMessage, setResetMessage] = useState('');
+  const navigate = useNavigate();
 
-  const handlePasswordReset = async () => {
-    if (resetStatus === 'loading' || resetStatus === 'success') return;
-    setResetStatus('loading');
-    setResetMessage('');
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(user?.email, {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
-      if (error) throw error;
-      setResetStatus('success');
-      setResetMessage('Reset email sent! Check your inbox.');
-    } catch (error) {
-      setResetStatus('error');
-      setResetMessage(error.message);
-    }
+  const handleDetailsClick = () => {
+     alert("No security actions are currently required for your account.");
+  };
+
+  const handle2FAClick = () => {
+     alert("2-Step Verification is coming soon to Optavel!");
   };
 
   return (
@@ -47,7 +39,7 @@ export default function AccountSecurity() {
                  The Security Checkup checked your account and found no recommended actions.
                </p>
              </div>
-             <button className="whitespace-nowrap px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-full transition-colors">
+             <button onClick={handleDetailsClick} className="whitespace-nowrap px-4 py-2 text-sm font-medium text-primary bg-primary/10 hover:bg-primary/20 rounded-full transition-colors">
                See details
              </button>
           </div>
@@ -63,7 +55,7 @@ export default function AccountSecurity() {
           </div>
           
           <div className="divide-y divide-gray-100 dark:divide-gray-800">
-            <div className={`p-6 md:px-8 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${resetStatus !== 'loading' ? 'cursor-pointer' : ''}`} onClick={handlePasswordReset}>
+            <div className={`p-6 md:px-8 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer`} onClick={() => navigate('/forgot-password')}>
                <div className="flex items-center justify-between">
                  <div>
                     <div className="text-gray-900 dark:text-white font-medium mb-1 flex items-center gap-2">
@@ -72,28 +64,13 @@ export default function AccountSecurity() {
                     </div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">Last changed recently</div>
                  </div>
-                 {resetStatus === 'loading' ? (
-                    <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-                 ) : (
-                    <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                 )}
+                 <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                 </svg>
                </div>
-               
-               {resetStatus === 'success' && (
-                 <div className="mt-3 text-sm text-green-600 dark:text-green-400 font-medium flex items-center gap-1.5">
-                   <CheckCircle2 className="w-4 h-4" /> {resetMessage}
-                 </div>
-               )}
-               {resetStatus === 'error' && (
-                 <div className="mt-3 text-sm text-red-600 dark:text-red-400 font-medium flex items-center gap-1.5">
-                   <AlertCircle className="w-4 h-4" /> {resetMessage}
-                 </div>
-               )}
             </div>
             
-            <div className="p-6 md:px-8 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
+            <div className="p-6 md:px-8 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer" onClick={handle2FAClick}>
                <div>
                   <div className="text-gray-900 dark:text-white font-medium mb-1 flex items-center gap-2">
                     <Smartphone className="w-4 h-4 text-gray-500" />

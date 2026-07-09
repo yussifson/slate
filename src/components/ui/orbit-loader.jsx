@@ -88,8 +88,8 @@ export function PageLoader({ label = 'Loading...' }) {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <img 
-            src="/slate-logo.png" 
-            alt="Slate Logo" 
+            src="/optavel-favicon.svg" 
+            alt="Optavel Logo" 
             style={{ 
               width: '100%', height: '100%', objectFit: 'contain',
               animation: 'logo-breathe 2.5s ease-in-out infinite' 

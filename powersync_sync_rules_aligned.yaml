@@ -83,6 +83,11 @@ bucket_definitions:
       - SELECT * FROM field_definitions WHERE company_id = bucket.company_id
       - SELECT * FROM dynamic_records WHERE company_id = bucket.company_id
       - SELECT * FROM video_rooms WHERE company_id = bucket.company_id
+      - SELECT * FROM clipad_spaces WHERE company_id = bucket.company_id
+      - SELECT v.* FROM clipad_videos v JOIN clipad_spaces s ON v.space_id = s.id WHERE s.company_id = bucket.company_id
+      - SELECT c.* FROM clipad_video_comments c JOIN clipad_videos v ON c.video_id = v.id JOIN clipad_spaces s ON v.space_id = s.id WHERE s.company_id = bucket.company_id
+      - SELECT r.* FROM clipad_video_reactions r JOIN clipad_videos v ON r.video_id = v.id JOIN clipad_spaces s ON v.space_id = s.id WHERE s.company_id = bucket.company_id
+      - SELECT m.* FROM clipad_meeting_records m JOIN clipad_spaces s ON m.space_id = s.id WHERE s.company_id = bucket.company_id
       - SELECT * FROM chat_rooms WHERE company_id = bucket.company_id
       - SELECT * FROM chat_participants WHERE company_id = bucket.company_id
       - SELECT * FROM online_courses WHERE company_id = bucket.company_id

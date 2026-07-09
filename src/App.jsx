@@ -373,6 +373,7 @@ import AccountDevices from './pages/auth/AccountDevices';
 import AccountLogin from './pages/auth/AccountLogin';
 import AccountSignUp from './pages/auth/AccountSignUp';
 import ResetPassword from './pages/ResetPassword';
+import ForgotPassword from './pages/ForgotPassword';
 import { SiteDomainResolver } from '@/components/sites/SiteRenderer/SiteDomainResolver';
 import SlateSites from './pages/sites/SlateSites';
 import SiteBuilderPage from './pages/sites/SiteBuilderPage';

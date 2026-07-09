@@ -10,8 +10,7 @@ export default function AccountSignUp() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -69,8 +68,7 @@ export default function AccountSignUp() {
         password,
         options: {
           data: {
-            first_name: firstName.trim(),
-            last_name: lastName.trim(),
+            full_name: fullName.trim(),
           }
         }
       });
@@ -98,9 +96,9 @@ export default function AccountSignUp() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#131314] text-slate-900 dark:text-gray-100 selection:bg-primary/20">
-      <div className="w-full max-w-[440px] p-6 sm:p-10 my-8">
-        <div className="bg-white dark:bg-[#1f1f1f] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-800 p-8 sm:p-12 shadow-sm">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#202124] text-slate-900 dark:text-gray-100 selection:bg-primary/20">
+      <div className="w-full max-w-[480px] p-6 sm:p-10 my-8">
+        <div className="bg-white dark:bg-[#28292C] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-800 border-t-4 border-t-primary p-8 sm:p-12 shadow-sm">
           {/* Sleek Logo Area */}
           <div className="mb-8 flex flex-col items-center">
             <Logo className="w-10 h-10 mb-6" />
@@ -121,27 +119,15 @@ export default function AccountSignUp() {
             )}
 
             <form onSubmit={handleSignUp} className="space-y-4">
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <Input
-                    type="text"
-                    required
-                    placeholder="First name"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    className="w-full h-14 px-4 text-[15px] bg-transparent border-gray-300 dark:border-gray-700 text-slate-900 dark:text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-gray-500"
-                  />
-                </div>
-                <div className="flex-1">
-                  <Input
-                    type="text"
-                    required
-                    placeholder="Last name"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    className="w-full h-14 px-4 text-[15px] bg-transparent border-gray-300 dark:border-gray-700 text-slate-900 dark:text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-gray-500"
-                  />
-                </div>
+              <div>
+                <Input
+                  type="text"
+                  required
+                  placeholder="Full name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="w-full h-14 px-4 text-[15px] bg-transparent border-gray-300 dark:border-gray-700 text-slate-900 dark:text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-gray-500"
+                />
               </div>
               <div>
                 <Input

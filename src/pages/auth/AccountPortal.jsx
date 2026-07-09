@@ -4,20 +4,23 @@ import { ShieldCheck, MonitorSmartphone, LayoutGrid } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function AccountPortal() {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   
-  const getInitials = (firstName, lastName, email) => {
-    if (firstName && lastName) return `${firstName[0]}${lastName[0]}`.toUpperCase();
-    if (firstName) return firstName.substring(0, 2).toUpperCase();
+  const getInitials = (fullName, email) => {
+    if (fullName) {
+       const parts = fullName.split(' ');
+       if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+       return fullName.substring(0, 2).toUpperCase();
+    }
     if (email) return email.substring(0, 2).toUpperCase();
     return 'U';
   };
 
-  const nameDisplay = profile?.first_name 
-    ? `${profile.first_name} ${profile.last_name || ''}` 
+  const nameDisplay = user?.full_name 
+    ? user.full_name
     : user?.email;
 
-  const initials = getInitials(profile?.first_name, profile?.last_name, user?.email);
+  const initials = getInitials(user?.full_name, user?.email);
 
   return (
     <div className="animate-in fade-in duration-500 max-w-3xl mx-auto">
@@ -25,8 +28,8 @@ export default function AccountPortal() {
       <div className="flex flex-col items-center text-center mb-12">
         <div className="relative mb-6 group cursor-pointer">
           <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-blue-600 text-white flex items-center justify-center text-4xl font-medium shadow-lg ring-4 ring-white dark:ring-[#202124] relative z-10 transition-transform group-hover:scale-105 duration-300 overflow-hidden">
-            {profile?.avatar_url ? (
-               <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+            {user?.avatar_url ? (
+               <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover" />
             ) : (
                initials
             )}

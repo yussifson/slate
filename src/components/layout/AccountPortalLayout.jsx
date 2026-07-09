@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { Logo } from '@/components/ui/Logo';
-import { Menu, X, Home, UserCircle, ShieldCheck, CreditCard, MonitorSmartphone, Sun, Moon, LogOut } from 'lucide-react';
+import { Menu, X, Home, UserCircle, ShieldCheck, CreditCard, MonitorSmartphone, Sun, Moon, LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { supabase } from "@/api/supabaseClient";
 import { useTheme } from "@/lib/ThemeContext";
 
@@ -11,6 +11,7 @@ export default function AccountPortalLayout() {
   const navigate = useNavigate();
   const { theme, changeTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
@@ -18,12 +19,15 @@ export default function AccountPortalLayout() {
     // 1. Clear local storage cache
     localStorage.removeItem('slate_cached_user');
     
-    // 2. Sign out of Supabase
-    await supabase.auth.signOut();
+    // 2. Sign out of Supabase (wrap in try-catch so it doesn't block if there's a multiple client error)
+    try {
+       await supabase.auth.signOut();
+    } catch (e) {
+       console.warn("Sign out warning:", e);
+    }
     
-    // 3. Optional: Add an iframe trick here later if we need to clear tokens across subdomains, 
-    // but for now, redirecting to login is sufficient for the root domain.
-    navigate('/login');
+    // 3. Hard redirect to login to clear all states and clients in memory
+    window.location.href = '/login';
   };
 
   const navItems = [
@@ -64,49 +68,70 @@ export default function AccountPortalLayout() {
 
       {/* Sidebar Navigation */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 w-72 bg-white dark:bg-[#202124] transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0
-        ${isMobileMenuOpen ? 'translate-x-0 border-r border-gray-200 dark:border-gray-800 shadow-2xl' : '-translate-x-full md:border-none md:shadow-none'}
+        fixed inset-y-0 left-0 z-40 bg-[#F8F9FA] dark:bg-[#1A1B1E] border-r border-gray-200 dark:border-gray-800 transform transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col
+        ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl w-72' : '-translate-x-full md:shadow-none'}
+        ${isDesktopCollapsed ? 'md:w-20' : 'md:w-72'}
       `}>
         {/* Desktop Logo Area */}
-        <div className="hidden md:flex items-center gap-3 px-8 h-20 pt-4">
-          <Logo className="w-10 h-10" />
-          <span className="text-2xl font-medium tracking-tight text-gray-800 dark:text-gray-100">Optavel</span>
+        <div className="hidden md:flex items-center justify-between px-5 h-20 pt-4">
+          {!isDesktopCollapsed && (
+            <div className="flex items-center gap-3 overflow-hidden">
+              <Logo className="w-9 h-9 shrink-0" />
+              <span className="text-xl font-medium tracking-tight text-gray-800 dark:text-gray-100 whitespace-nowrap">Optavel</span>
+            </div>
+          )}
+          {isDesktopCollapsed && (
+             <div className="w-full flex justify-center">
+                <Logo className="w-9 h-9 shrink-0" />
+             </div>
+          )}
         </div>
+        
+        {/* Collapse Toggle (Desktop Only) */}
+        <button 
+           onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
+           className="hidden md:flex absolute -right-3 top-24 z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-1 text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition-all"
+        >
+           {isDesktopCollapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
+        </button>
 
-        <div className="flex flex-col h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)]">
-          <nav className="flex-1 px-3 py-4 md:py-6 space-y-1 overflow-y-auto">
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <nav className="flex-1 px-3 py-4 md:py-6 space-y-1 overflow-y-auto scrollbar-hide">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) => `
-                  flex items-center gap-4 px-5 py-3.5 rounded-r-full font-medium text-sm transition-all
+                  flex items-center ${isDesktopCollapsed ? 'justify-center px-0' : 'gap-4 px-4'} py-3.5 rounded-xl font-medium text-[15px] transition-all group
                   ${isActive 
-                    ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' 
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200'
+                    ? 'bg-primary/10 text-primary dark:text-primary' 
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200'
                   }
                 `}
+                title={isDesktopCollapsed ? item.name : undefined}
               >
-                <item.icon className="w-5 h-5" />
-                {item.name}
+                <item.icon className={`w-5 h-5 shrink-0 ${isDesktopCollapsed ? '' : ''}`} />
+                {!isDesktopCollapsed && <span className="whitespace-nowrap">{item.name}</span>}
               </NavLink>
             ))}
           </nav>
           
-          <div className="p-5 border-t border-gray-100 dark:border-gray-800/60 space-y-4 bg-white dark:bg-[#202124]">
+          <div className="p-4 border-t border-gray-200 dark:border-gray-800/60 space-y-4">
              {/* Theme Switcher */}
-             <div className="flex items-center justify-between px-2">
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Theme</span>
-                <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-full p-1 border border-gray-200 dark:border-gray-700">
+             <div className={`flex items-center ${isDesktopCollapsed ? 'justify-center' : 'justify-between px-1'}`}>
+                {!isDesktopCollapsed && <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Theme</span>}
+                <div className={`flex items-center bg-gray-200/50 dark:bg-gray-800 rounded-full p-1 border border-gray-200 dark:border-gray-700 ${isDesktopCollapsed ? 'flex-col gap-2' : ''}`}>
                   <button 
                     onClick={() => changeTheme('light')} 
+                    title="Light Mode"
                     className={`p-1.5 rounded-full transition-all ${theme === 'light' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                   >
                     <Sun className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={() => changeTheme('dark')} 
+                    title="Dark Mode"
                     className={`p-1.5 rounded-full transition-all ${theme === 'dark' ? 'bg-gray-700 text-white shadow-sm' : 'text-gray-400 hover:text-gray-300'}`}
                   >
                     <Moon className="w-4 h-4" />
@@ -118,18 +143,19 @@ export default function AccountPortalLayout() {
              <button 
                onClick={handleLogout}
                disabled={isLoggingOut}
-               className="flex items-center gap-3 w-full px-2 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors"
+               title={isDesktopCollapsed ? "Sign out" : undefined}
+               className={`flex items-center ${isDesktopCollapsed ? 'justify-center' : 'gap-3 px-3'} w-full py-2.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors`}
              >
-               <LogOut className="w-5 h-5" />
-               {isLoggingOut ? 'Signing out...' : 'Sign out everywhere'}
+               <LogOut className="w-5 h-5 shrink-0" />
+               {!isDesktopCollapsed && <span>{isLoggingOut ? 'Signing out...' : 'Sign out everywhere'}</span>}
              </button>
           </div>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12 pb-24">
+      <main className="flex-1 overflow-y-auto bg-white dark:bg-[#202124] relative h-full">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12 pb-32">
            <Outlet />
         </div>
       </main>

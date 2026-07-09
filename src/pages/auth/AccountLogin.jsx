@@ -94,9 +94,9 @@ export default function AccountLogin() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#131314] text-slate-900 dark:text-gray-100 selection:bg-primary/20">
-      <div className="w-full max-w-[440px] p-6 sm:p-10">
-        <div className="bg-white dark:bg-[#1f1f1f] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-800 p-8 sm:p-12 shadow-sm">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#202124] text-slate-900 dark:text-gray-100 selection:bg-primary/20">
+      <div className="w-full max-w-[480px] p-6 sm:p-10 my-8">
+        <div className="bg-white dark:bg-[#28292C] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-800 border-t-4 border-t-primary p-8 sm:p-12 shadow-sm">
           {/* Sleek Logo Area */}
           <div className="mb-8 flex flex-col items-center">
             <Logo className="w-10 h-10 mb-6" />

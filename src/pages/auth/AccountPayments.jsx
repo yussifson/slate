@@ -21,14 +21,14 @@ export default function AccountPayments() {
              </p>
           </div>
           <div className="p-8 flex flex-col items-center justify-center text-center">
-             <div className="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center mb-4 text-blue-600 dark:text-blue-400">
+             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary">
                 <CreditCard className="w-8 h-8" strokeWidth={1.5} />
              </div>
              <h3 className="text-gray-900 dark:text-white font-medium mb-1">No payment methods saved</h3>
              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-sm">
                You haven't added any credit cards or payment methods yet.
              </p>
-             <button className="px-5 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors">
+             <button className="px-5 py-2.5 rounded-full bg-primary hover:bg-primary/90 text-white text-sm font-medium transition-colors">
                Add payment method
              </button>
           </div>
