@@ -364,7 +364,10 @@ import SignUp from './pages/SignUp';
 import ForceResetPassword from './pages/ForceResetPassword';
 import SSOGateway from './pages/auth/SSOGateway';
 import SSOCallback from './pages/auth/SSOCallback';
+import AccountPortalLayout from './components/layout/AccountPortalLayout';
 import AccountPortal from './pages/auth/AccountPortal';
+import AccountSecurity from './pages/auth/AccountSecurity';
+import AccountPersonalInfo from './pages/auth/AccountPersonalInfo';
 import AccountLogin from './pages/auth/AccountLogin';
 import AccountSignUp from './pages/auth/AccountSignUp';
 import ResetPassword from './pages/ResetPassword';
@@ -1203,8 +1206,13 @@ function App() {
                       <Route path="/sso" element={<SSOGateway />} />
                       <Route path="/auth/callback" element={<SSOCallback />} />
                       <Route element={<ProtectedRoute />}>
-                        <Route path="/" element={<AccountPortal />} />
-                        <Route path="*" element={<Navigate to="/" replace />} />
+                        <Route element={<AccountPortalLayout />}>
+                           <Route path="/" element={<AccountPortal />} />
+                           <Route path="/security" element={<AccountSecurity />} />
+                           <Route path="/personal-info" element={<AccountPersonalInfo />} />
+                           {/* Catch all for inner layout routes that don't exist */}
+                           <Route path="*" element={<Navigate to="/" replace />} />
+                        </Route>
                       </Route>
                     </Routes>
                   </React.Suspense>
