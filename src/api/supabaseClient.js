@@ -52,6 +52,9 @@ const customFetch = async (url, options) => {
     throw error;
   } finally {
     clearTimeout(timeoutId);
+  }
+};
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     // Bypass Web Locks to prevent deadlocks in React Strict Mode
