@@ -98,91 +98,103 @@ export default function AccountSignUp() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white selection:bg-slate-100">
-      <div className="w-full max-w-[420px] px-8 py-12 flex flex-col items-center">
-        {/* Sleek Logo Area */}
-        <div className="mb-10 flex flex-col items-center">
-          <Logo className="w-12 h-12 mb-6" />
-          <h1 className="text-[28px] font-semibold text-slate-900 tracking-[-0.03em] leading-tight text-center">
-            Create an Account
-          </h1>
-          <p className="text-slate-500 text-sm mt-2 tracking-wide font-medium text-center">
-            One account for everything Optavel
-          </p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-[#F8F9FA] selection:bg-primary/20 relative overflow-hidden">
+      {/* Decorative abstract background elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-3xl opacity-50 mix-blend-multiply animate-pulse" style={{ animationDuration: '8s' }}></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-3xl opacity-50 mix-blend-multiply animate-pulse" style={{ animationDuration: '10s' }}></div>
 
-        {/* Form Area */}
-        <div className="w-full">
-          {error && (
-            <div className="mb-6 p-4 rounded-xl bg-red-50 text-red-600 text-sm font-medium border border-red-100 flex items-center justify-center text-center">
-              {error}
+      <div className="w-full max-w-[440px] px-6 relative z-10 my-12">
+        <div className="bg-white rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 p-8 sm:p-12 backdrop-blur-xl">
+          {/* Sleek Logo Area */}
+          <div className="mb-10 flex flex-col items-center">
+            <div className="w-16 h-16 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center mb-6">
+              <Logo className="w-10 h-10" />
             </div>
-          )}
+            <h1 className="text-3xl font-semibold text-slate-900 tracking-tight leading-tight text-center">
+              Create an Account
+            </h1>
+            <p className="text-slate-500 text-sm mt-3 tracking-wide font-medium text-center">
+              One account for everything Optavel
+            </p>
+          </div>
 
-          <form onSubmit={handleSignUp} className="space-y-4">
-            <div className="flex gap-4">
-              <div className="flex-1">
+          {/* Form Area */}
+          <div className="w-full">
+            {error && (
+              <div className="mb-6 p-4 rounded-xl bg-red-50 text-red-600 text-sm font-medium border border-red-100 flex items-center justify-center text-center">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSignUp} className="space-y-4">
+              <div className="flex gap-3">
+                <div className="flex-1 space-y-1.5">
+                  <label className="text-[11px] font-semibold text-slate-600 uppercase tracking-wider ml-1">First name</label>
+                  <Input
+                    type="text"
+                    required
+                    placeholder="John"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="w-full h-12 px-4 text-base bg-slate-50/50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-slate-400"
+                  />
+                </div>
+                <div className="flex-1 space-y-1.5">
+                  <label className="text-[11px] font-semibold text-slate-600 uppercase tracking-wider ml-1">Last name</label>
+                  <Input
+                    type="text"
+                    required
+                    placeholder="Doe"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="w-full h-12 px-4 text-base bg-slate-50/50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-slate-400"
+                  />
+                </div>
+              </div>
+              <div className="space-y-1.5 pt-1">
+                <label className="text-[11px] font-semibold text-slate-600 uppercase tracking-wider ml-1">Email address</label>
                 <Input
-                  type="text"
+                  type="email"
                   required
-                  placeholder="First name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full h-14 px-4 text-base bg-white border-slate-200 text-slate-900 rounded-xl focus:border-slate-400 focus:ring-0 transition-all placeholder:text-slate-400"
+                  placeholder="john@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full h-12 px-4 text-base bg-slate-50/50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-slate-400"
                 />
               </div>
-              <div className="flex-1">
+              <div className="space-y-1.5 pt-1">
+                <label className="text-[11px] font-semibold text-slate-600 uppercase tracking-wider ml-1">Password</label>
                 <Input
-                  type="text"
+                  type="password"
                   required
-                  placeholder="Last name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  className="w-full h-14 px-4 text-base bg-white border-slate-200 text-slate-900 rounded-xl focus:border-slate-400 focus:ring-0 transition-all placeholder:text-slate-400"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full h-12 px-4 text-base bg-slate-50/50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-slate-400"
                 />
               </div>
-            </div>
-            <div>
-              <Input
-                type="email"
-                required
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-14 px-4 text-base bg-white border-slate-200 text-slate-900 rounded-xl focus:border-slate-400 focus:ring-0 transition-all placeholder:text-slate-400"
-              />
-            </div>
-            <div>
-              <Input
-                type="password"
-                required
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-14 px-4 text-base bg-white border-slate-200 text-slate-900 rounded-xl focus:border-slate-400 focus:ring-0 transition-all placeholder:text-slate-400"
-              />
-            </div>
-            
-            <div className="pt-2 pb-4">
-               <p className="text-xs text-slate-500 text-center leading-relaxed">
-                 By creating an account, you agree to the Optavel <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> and <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>.
-               </p>
-            </div>
+              
+              <div className="pt-3 pb-5">
+                 <p className="text-xs text-slate-500 text-center leading-relaxed font-medium">
+                   By creating an account, you agree to the Optavel <a href="#" className="text-primary hover:underline">Terms of Service</a> and <a href="#" className="text-primary hover:underline">Privacy Policy</a>.
+                 </p>
+              </div>
 
-            <Button 
-              type="submit" 
-              className="w-full h-14 text-base font-medium rounded-xl bg-slate-900 hover:bg-slate-800 text-white transition-all active:scale-[0.98]" 
-              disabled={loading}
-            >
-              {loading ? 'Creating...' : 'Create account'}
-            </Button>
-          </form>
+              <Button 
+                type="submit" 
+                className="w-full h-14 text-base font-semibold rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 transition-all active:scale-[0.98]" 
+                disabled={loading}
+              >
+                {loading ? 'Creating...' : 'Create account'}
+              </Button>
+            </form>
 
-          <div className="mt-10 flex justify-center gap-1.5 text-sm font-medium">
-            <span className="text-slate-500">Already have an account?</span>
-            <a href="/login" className="text-blue-600 hover:text-blue-700 transition-colors">
-              Sign in
-            </a>
+            <div className="mt-10 flex justify-center gap-1.5 text-sm font-medium">
+              <span className="text-slate-500">Already have an account?</span>
+              <a href="/login" className="text-primary hover:text-primary/80 transition-colors">
+                Sign in
+              </a>
+            </div>
           </div>
         </div>
       </div>
