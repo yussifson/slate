@@ -227,33 +227,34 @@ export default function SignUp() {
  setSuccess("Account and WorkSlate successfully created! Redirecting to your onboarding portal...");
  
  // Auto-redirect to their new subdomain
- setTimeout(() => {
- const { baseDomain} = getSubdomainAndBase();
- const port = window.location.port ? `:${window.location.port}` : '';
- const targetHost = `${companyData.subdomain}.${baseDomain}${port}`;
- 
- let url = `${window.location.protocol}//${targetHost}/onboarding`;
- const finalUrl = new URL(url);
- 
-  if (authData?.session?.access_token && authData?.session?.refresh_token) {
-    finalUrl.searchParams.set('access_token', authData.session.access_token);
-    finalUrl.searchParams.set('refresh_token', authData.session.refresh_token);
-  } else if (isAuthenticated) {
-    // If already authenticated via SSO, no need to pass tokens in URL
-    // since the session is already active in local storage
-  }
- 
- const pendingPrompt = localStorage.getItem('pendingOrbitPrompt');
- if (pendingPrompt) {
-   finalUrl.searchParams.set('orbit_prompt', pendingPrompt);
- }
- 
-      if (isElectron) {
-        navigate('/onboarding');
-      } else {
-        window.location.href = finalUrl.toString();
-      }
-}, 2000);
+ setTimeout(async () => {
+   const { baseDomain} = getSubdomainAndBase();
+   const port = window.location.port ? `:${window.location.port}` : '';
+   const targetHost = `${companyData.subdomain}.${baseDomain}${port}`;
+   
+   let url = `${window.location.protocol}//${targetHost}/onboarding`;
+   const finalUrl = new URL(url);
+   
+   // Always pass tokens across domains to ensure immediate authentication 
+   // on the new subdomain before background sync finishes.
+   const { data: { session } } = await supabase.auth.getSession();
+   if (session?.access_token && session?.refresh_token) {
+     finalUrl.searchParams.set('access_token', session.access_token);
+     finalUrl.searchParams.set('refresh_token', session.refresh_token);
+     finalUrl.searchParams.set('action', 'auto_login');
+   }
+   
+   const pendingPrompt = localStorage.getItem('pendingOrbitPrompt');
+   if (pendingPrompt) {
+     finalUrl.searchParams.set('orbit_prompt', pendingPrompt);
+   }
+   
+   if (isElectron) {
+     navigate('/onboarding');
+   } else {
+     window.location.href = finalUrl.toString();
+   }
+ }, 2000);
 
 } catch (err) {
  setError(err.message);

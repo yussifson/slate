@@ -145,7 +145,7 @@ export default function AccountLogin() {
               </div>
 
               <div className="flex items-center justify-between pt-2">
-                 <a href="/signup" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+                 <a href={`/signup${window.location.search}`} className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
                    Create account
                  </a>
                  <Button 

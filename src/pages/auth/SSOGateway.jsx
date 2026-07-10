@@ -38,7 +38,7 @@ export default function SSOGateway() {
       const saved = getSavedAccounts();
       if (saved.length === 0) {
         // No saved accounts, go straight to login
-        navigate(`/login?continue=${encodeURIComponent(`/sso?redirect_uri=${redirectUri}`)}`, { replace: true });
+        navigate(`/login?redirect_uri=${encodeURIComponent(redirectUri)}`, { replace: true });
         return;
       }
       

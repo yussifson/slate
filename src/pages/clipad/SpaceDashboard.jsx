@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { Users, Video, Calendar, Plus, ExternalLink, Play, Monitor, PlusCircle, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';

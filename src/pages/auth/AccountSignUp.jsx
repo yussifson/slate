@@ -157,7 +157,7 @@ export default function AccountSignUp() {
               </div>
 
               <div className="flex items-center justify-between pt-2">
-                 <a href="/login" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+                 <a href={`/login${window.location.search}`} className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
                    Sign in instead
                  </a>
                  <Button 
