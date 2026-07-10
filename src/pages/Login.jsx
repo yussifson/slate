@@ -227,19 +227,24 @@ export default function Login() {
 
       // We redirect directly to Google OIDC with account.optavel.com as the redirect URI
       // Google will see account.optavel.com (which has premium branding).
-      // The state parameter ensures Google passes the user back to the correct subdomain after auth.
-      
       const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
       const redirectUri = encodeURIComponent('https://account.optavel.com/auth/google-callback');
-      const nonce = Math.random().toString(36).substring(2, 15);
+      
+      // Generate and hash the nonce for Supabase verification
+      const rawNonce = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      const encoder = new TextEncoder();
+      const data = encoder.encode(rawNonce);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashedNonce = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
       
       const stateObj = {
         continue: window.location.origin + callbackPath,
-        nonce: nonce
+        nonce: rawNonce
       };
       const state = encodeURIComponent(JSON.stringify(stateObj));
       
-      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=id_token&scope=openid%20email%20profile&state=${state}&nonce=${nonce}`;
+      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=id_token&scope=openid%20email%20profile&state=${state}&nonce=${hashedNonce}`;
       
       window.location.href = googleAuthUrl;
     } catch (err) {
