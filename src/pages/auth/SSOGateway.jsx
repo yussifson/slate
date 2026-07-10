@@ -63,7 +63,9 @@ export default function SSOGateway() {
       if (sessionError) {
           // Token might be fully expired or revoked. Force login.
           removeAccount(account.id);
-          throw new Error("Session expired. Please log in again.");
+          // Redirect them to login automatically instead of getting stuck on an error
+          handleAddAccount();
+          return;
       }
       
       // 2. Wait a brief moment for any background token refreshes to apply

@@ -1104,7 +1104,7 @@ function ProtectedRoute() {
   if (!isAuthenticated) {
     // Use React Router Navigate instead of window.location.href to avoid
     // an irreversible hard page reload that cannot be cancelled
-    return <Navigate to="/login" replace />;
+    return <Navigate to={`/login?continue=${encodeURIComponent(window.location.pathname + window.location.search)}`} replace />;
   }
   
   if (user?.company_status === 'suspended') {

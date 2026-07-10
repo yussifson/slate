@@ -63,7 +63,16 @@ export default function Login() {
 
   const handleOptavelSSO = () => {
     const idpDomain = isLocalhost ? `http://account.localhost:${window.location.port || '5173'}` : 'https://account.optavel.com';
-    const redirectUri = encodeURIComponent(window.location.origin + '/auth/callback');
+    const searchParams = new URLSearchParams(window.location.search);
+    const continueUrl = searchParams.get('continue');
+    
+    // Pass the continue parameter along to the callback if it exists
+    let callbackPath = '/auth/callback';
+    if (continueUrl) {
+      callbackPath += `?continue=${encodeURIComponent(continueUrl)}`;
+    }
+    
+    const redirectUri = encodeURIComponent(window.location.origin + callbackPath);
     window.location.href = `${idpDomain}/sso?redirect_uri=${redirectUri}`;
   };
 
@@ -76,13 +85,18 @@ export default function Login() {
   }
 
   if (!isLoadingAuth && isAuthenticated && user) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const continueUrl = urlParams.get('continue');
+
       if (isElectron) {
-        if (user.role === 'student') navigate('/student-portal');
+        if (continueUrl) navigate(continueUrl);
+        else if (user.role === 'student') navigate('/student-portal');
         else if (user.role === 'parent') navigate('/parent-portal');
         else if (user.role === 'super_admin' && !currentSubdomain) navigate('/admin');
         else navigate('/');
       } else {
-        if (user.role === 'student') window.location.href = '/student-portal';
+        if (continueUrl) window.location.href = continueUrl;
+        else if (user.role === 'student') window.location.href = '/student-portal';
         else if (user.role === 'parent') window.location.href = '/parent-portal';
         else if (user.role === 'super_admin' && !currentSubdomain) window.location.href = '/admin';
         else window.location.href = '/';

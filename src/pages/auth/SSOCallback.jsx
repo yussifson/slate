@@ -12,12 +12,13 @@ export default function SSOCallback() {
 
   useEffect(() => {
     const processCallback = async () => {
-      // The tokens are sent in the hash fragment: #access_token=...&refresh_token=...
-      const hash = location.hash.substring(1);
-      const params = new URLSearchParams(hash);
+      // The tokens are usually sent in the hash fragment (#access_token=...) by Supabase Implicit Flow
+      // But some SSO redirects might pass them as query parameters (?sso_token=... or ?access_token=...)
+      const hashParams = new URLSearchParams(location.hash.substring(1));
+      const searchParams = new URLSearchParams(location.search);
       
-      const accessToken = params.get("access_token");
-      const refreshToken = params.get("refresh_token");
+      const accessToken = hashParams.get("access_token") || searchParams.get("sso_token") || searchParams.get("access_token");
+      const refreshToken = hashParams.get("refresh_token") || searchParams.get("sso_refresh") || searchParams.get("refresh_token");
 
       if (!accessToken || !refreshToken) {
         setError("Invalid SSO Payload. Missing security tokens.");
@@ -44,7 +45,8 @@ export default function SSOCallback() {
         }
 
         // Clear the URL hash for security so it isn't copied/pasted, and redirect to dashboard
-        navigate("/", { replace: true });
+        const continueUrl = searchParams.get("continue");
+        navigate(continueUrl || "/", { replace: true });
         
       } catch (err) {
         console.error("SSO Callback Error:", err);
