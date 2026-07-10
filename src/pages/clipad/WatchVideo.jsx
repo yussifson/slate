@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { MessageSquare, ThumbsUp, Send, Play, Pause, FastForward, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';

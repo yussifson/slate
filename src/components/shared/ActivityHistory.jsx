@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useQuery } from '@tanstack/react-query';
 import { Clock, UserCircle, Edit, Trash2, Plus, AlertCircle } from 'lucide-react';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/api/supabaseClient';
 import { formatDistanceToNow } from 'date-fns';
 
 const ACTION_CONFIG = {

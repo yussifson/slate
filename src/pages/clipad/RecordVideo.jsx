@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Camera, Monitor, StopCircle, Video, Mic, Share, Save, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 
 export default function RecordVideo() {

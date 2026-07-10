@@ -1,6 +1,6 @@
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useMutation } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 
 export function useLogActivity() {

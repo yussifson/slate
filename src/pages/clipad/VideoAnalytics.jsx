@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/api/supabaseClient';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { LineChart, BarChart2, Eye, MousePointerClick, Clock, ArrowUpRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
