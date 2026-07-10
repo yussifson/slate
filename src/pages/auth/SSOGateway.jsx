@@ -163,23 +163,23 @@ export default function SSOGateway() {
       {/* Sleek Icon Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
         <div className="absolute w-full max-w-6xl h-full">
-          <div className="absolute top-[10%] left-[5%] opacity-[0.03] dark:opacity-[0.02] text-primary">
-            <Shield size={180} strokeWidth={1} />
+          <div className="absolute top-[10%] left-[5%] opacity-[0.08] dark:opacity-[0.06] text-primary">
+            <Shield size={180} strokeWidth={1.5} />
           </div>
-          <div className="absolute top-[60%] left-[10%] opacity-[0.03] dark:opacity-[0.02] text-primary">
-            <Key size={140} strokeWidth={1} />
+          <div className="absolute top-[60%] left-[10%] opacity-[0.08] dark:opacity-[0.06] text-primary">
+            <Key size={140} strokeWidth={1.5} />
           </div>
-          <div className="absolute top-[15%] right-[8%] opacity-[0.03] dark:opacity-[0.02] text-primary">
-            <Hexagon size={160} strokeWidth={1} />
+          <div className="absolute top-[15%] right-[8%] opacity-[0.08] dark:opacity-[0.06] text-primary">
+            <Hexagon size={160} strokeWidth={1.5} />
           </div>
-          <div className="absolute bottom-[15%] right-[10%] opacity-[0.03] dark:opacity-[0.02] text-primary">
-            <Box size={150} strokeWidth={1} />
+          <div className="absolute bottom-[15%] right-[10%] opacity-[0.08] dark:opacity-[0.06] text-primary">
+            <Box size={150} strokeWidth={1.5} />
           </div>
-          <div className="absolute top-[45%] left-[80%] opacity-[0.03] dark:opacity-[0.02] text-primary">
-            <Fingerprint size={170} strokeWidth={1} />
+          <div className="absolute top-[45%] left-[80%] opacity-[0.08] dark:opacity-[0.06] text-primary">
+            <Fingerprint size={170} strokeWidth={1.5} />
           </div>
-          <div className="absolute bottom-[5%] left-[30%] opacity-[0.03] dark:opacity-[0.02] text-primary">
-            <Lock size={120} strokeWidth={1} />
+          <div className="absolute bottom-[5%] left-[30%] opacity-[0.08] dark:opacity-[0.06] text-primary">
+            <Lock size={120} strokeWidth={1.5} />
           </div>
         </div>
       </div>

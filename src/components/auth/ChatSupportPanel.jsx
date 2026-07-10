@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Send, Bot, User, ShieldAlert, Loader2, Minimize2, ExternalLink } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
-
+import { supabase } from '@/api/supabaseClient';
 export default function ChatSupportPanel({ isOpen, onClose }) {
   const { user, profile } = useAuth();
   const [messages, setMessages] = useState([
@@ -10,7 +10,42 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [status, setStatus] = useState('ai_handling'); // 'ai_handling', 'escalated', 'admin_joined'
+  const [chatId, setChatId] = useState(null);
   const messagesEndRef = useRef(null);
+
+  // Initialize chat session in DB
+  useEffect(() => {
+    if (!user?.id || !isOpen) return;
+    const initChat = async () => {
+      try {
+        const { data: existing } = await supabase.from('support_chats')
+          .select('id, status').eq('user_id', user.id).order('created_at', { ascending: false }).limit(1);
+        
+        if (existing && existing.length > 0) {
+          setChatId(existing[0].id);
+          setStatus(existing[0].status || 'ai_handling');
+          const { data: msgs } = await supabase.from('support_chat_messages')
+            .select('*').eq('chat_id', existing[0].id).order('created_at', { ascending: true });
+          if (msgs && msgs.length > 0) {
+            setMessages(msgs.map(m => ({
+               id: m.id, sender: m.sender, text: m.text, time: m.created_at, name: m.sender === 'admin' ? 'Admin' : ''
+            })));
+          }
+        } else {
+          const { data: newChat, error } = await supabase.from('support_chats').insert({ user_id: user.id }).select('id').single();
+          if (newChat) {
+             setChatId(newChat.id);
+             await supabase.from('support_chat_messages').insert({ chat_id: newChat.id, sender: 'ai', text: 'Hello! I am the Optavel Support Assistant. How can I help you today?' });
+          } else if (error && error.code === '42P01') {
+             console.warn("support_chats table does not exist. Using mock data.");
+          }
+        }
+      } catch (err) {
+        console.warn("Could not initialize chat session", err);
+      }
+    };
+    initChat();
+  }, [user?.id, isOpen]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -25,37 +60,48 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
   const handleSend = async () => {
     if (!input.trim()) return;
     
-    const newMsg = { id: Date.now(), sender: 'user', text: input.trim(), time: new Date().toISOString() };
+    const textToSend = input.trim();
+    const newMsg = { id: Date.now(), sender: 'user', text: textToSend, time: new Date().toISOString() };
     setMessages(prev => [...prev, newMsg]);
     setInput('');
     setIsTyping(true);
 
+    // Persist user message if chatId exists
+    if (chatId) {
+       supabase.from('support_chat_messages').insert({ chat_id: chatId, sender: 'user', text: textToSend }).catch(console.error);
+    }
+
     // Mock AI Response or Escalation
-    setTimeout(() => {
+    setTimeout(async () => {
       setIsTyping(false);
       
       const lowerInput = newMsg.text.toLowerCase();
       let replyText = '';
+      let escalate = false;
       
       if (lowerInput.includes('human') || lowerInput.includes('agent') || lowerInput.includes('admin')) {
         setStatus('escalated');
         replyText = 'I am transferring you to a human Support Admin. Please hold on...';
+        escalate = true;
+        
+        if (chatId) {
+           supabase.from('support_chats').update({ status: 'escalated' }).eq('id', chatId).catch(console.error);
+        }
         
         // Mock Admin joining after 3 seconds
         setTimeout(() => {
            setStatus('admin_joined');
-           setMessages(prev => [...prev, {
-             id: Date.now() + 1,
-             sender: 'system',
-             text: 'Admin "Sarah" has joined the chat.',
-             time: new Date().toISOString()
-           }, {
-             id: Date.now() + 2,
-             sender: 'admin',
-             text: 'Hi there! I am Sarah, a Super Admin. How can I assist you with this issue?',
-             time: new Date().toISOString(),
-             name: 'Sarah (Admin)'
-           }]);
+           const systemMsg = { id: Date.now() + 1, sender: 'system', text: 'Admin "Sarah" has joined the chat.', time: new Date().toISOString() };
+           const adminMsg = { id: Date.now() + 2, sender: 'admin', text: 'Hi there! I am Sarah, a Super Admin. How can I assist you with this issue?', time: new Date().toISOString(), name: 'Sarah (Admin)' };
+           setMessages(prev => [...prev, systemMsg, adminMsg]);
+           
+           if (chatId) {
+             supabase.from('support_chats').update({ status: 'admin_joined' }).eq('id', chatId).catch(console.error);
+             supabase.from('support_chat_messages').insert([
+               { chat_id: chatId, sender: 'system', text: systemMsg.text },
+               { chat_id: chatId, sender: 'admin', text: adminMsg.text }
+             ]).catch(console.error);
+           }
         }, 3000);
       } else {
         const lowerText = newMsg.text.toLowerCase().trim();
@@ -67,6 +113,9 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
       }
       
       setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: replyText, time: new Date().toISOString() }]);
+      if (chatId) {
+         supabase.from('support_chat_messages').insert({ chat_id: chatId, sender: 'ai', text: replyText }).catch(console.error);
+      }
     }, 1500);
   };
 

@@ -7,15 +7,22 @@ export default function AccountDevices() {
   const { user } = useAuth();
   const [session, setSession] = useState(null);
   const [ipAddress, setIpAddress] = useState('Unknown');
+  const [country, setCountry] = useState('Unknown');
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
     
-    // Fetch public IP address
-    fetch('https://api.ipify.org?format=json')
+    // Fetch public IP address and country
+    fetch('https://ipwho.is/')
       .then(res => res.json())
-      .then(data => setIpAddress(data.ip))
-      .catch(() => setIpAddress('Unknown'));
+      .then(data => {
+        setIpAddress(data.ip || 'Unknown');
+        setCountry(data.country || 'Unknown');
+      })
+      .catch(() => {
+        setIpAddress('Unknown');
+        setCountry('Unknown');
+      });
   }, []);
 
   const getDeviceName = () => {
@@ -63,7 +70,7 @@ export default function AccountDevices() {
                     </span>
                   </div>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Active now</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">IP: {ipAddress}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">IP: {ipAddress} {country !== 'Unknown' && `• ${country}`}</p>
                </div>
             </div>
           </div>

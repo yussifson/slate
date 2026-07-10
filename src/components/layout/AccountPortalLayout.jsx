@@ -306,20 +306,23 @@ export default function AccountPortalLayout() {
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto bg-transparent relative h-full flex flex-col">
-        {/* Desktop floating account switcher */}
-        <div className="hidden md:block absolute top-6 right-6 z-50">
-          <AccountSwitcher className={
-            isSuperAdmin ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-background rounded-full' :
-            isPremium ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-background rounded-full' : ''
-          } />
-        </div>
-        
         {isMaintenanceMode && (
           <div className="bg-yellow-500 text-black text-center text-xs font-semibold py-1.5 px-4 sticky top-0 z-50 shadow-sm flex items-center justify-center gap-2">
             <AlertCircle className="w-4 h-4" /> System is currently in maintenance mode. Some features may be restricted.
           </div>
         )}
-        <div className={`w-full ${['/help', '/admin'].includes(location.pathname) ? 'flex-1 pt-6 md:pt-10' : 'max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12 pb-32'}`}>
+
+        {/* Desktop account switcher in normal flow */}
+        <div className="hidden md:flex justify-end px-6 pt-6 shrink-0 z-50 relative pointer-events-none">
+          <div className="pointer-events-auto">
+            <AccountSwitcher className={
+              isSuperAdmin ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-background rounded-full' :
+              isPremium ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-background rounded-full' : ''
+            } />
+          </div>
+        </div>
+        
+        <div className={`w-full ${['/help', '/admin'].includes(location.pathname) ? 'flex-1 md:pt-4' : 'max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12 pb-32'}`}>
            <Outlet />
         </div>
         <CompanySelectionModal isOpen={isCompanyModalOpen} onClose={() => setIsCompanyModalOpen(false)} />
