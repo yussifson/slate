@@ -1,140 +1,206 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { LineChart, BarChart2, Eye, MousePointerClick, Clock, ArrowUpRight } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { useAuth } from '@/lib/AuthContext';
+import { BarChart3, TrendingUp, Eye, Heart, MessageSquare, Clock, ArrowLeft, Video, Target, Users } from 'lucide-react';
+
+function StatCard({ icon: Icon, color, value, label, trend }) {
+  return (
+    <div className="p-6 rounded-2xl bg-[#111827] border border-white/[0.06] hover:border-white/12 transition-all">
+      <div className="flex items-start justify-between mb-4">
+        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg`}>
+          <Icon className="w-5 h-5 text-white" />
+        </div>
+        {trend && <span className={`text-xs font-semibold px-2 py-1 rounded-full ${trend > 0 ? 'text-emerald-400 bg-emerald-400/10' : 'text-red-400 bg-red-400/10'}`}>{trend > 0 ? '+' : ''}{trend}%</span>}
+      </div>
+      <div className="text-3xl font-black text-white mb-1">{value}</div>
+      <div className="text-sm text-gray-500">{label}</div>
+    </div>
+  );
+}
 
 export default function VideoAnalytics() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
-    totalViews: 1250,
-    avgCompletion: 78,
-    ctr: 12.4,
-    topVideos: []
+    totalViews: 0,
+    totalVideos: 0,
+    totalComments: 0,
+    totalReactions: 0,
+    topVideos: [],
+    recentViews: []
   });
 
-  useEffect(() => {
-    // Mock analytics fetching
-    setTimeout(() => {
-      setStats({
-        totalViews: 1250,
-        avgCompletion: 78,
-        ctr: 12.4,
-        topVideos: [
-          { id: 1, title: 'Q3 Feature Walkthrough', views: 450, completion: 82 },
-          { id: 2, title: 'Sales Pitch - Enterprise', views: 320, completion: 91 },
-          { id: 3, title: 'Engineering All Hands', views: 280, completion: 65 }
-        ]
+  useEffect(() => { if (user) fetchAnalytics(); }, [user]);
+
+  const fetchAnalytics = async () => {
+    setLoading(true);
+    try {
+      // Fetch user's videos
+      const { data: videos } = await supabase.from('clipad_videos').select('id, title, created_at, duration_seconds').eq('creator_id', user.id);
+      
+      if (!videos || videos.length === 0) {
+        setLoading(false);
+        return;
+      }
+
+      const videoIds = videos.map(v => v.id);
+
+      // Fetch views for those videos
+      const { data: views } = await supabase.from('clipad_video_views').select('video_id, watch_percent, created_at').in('video_id', videoIds);
+      
+      // Fetch comments for those videos
+      const { count: commentsCount } = await supabase.from('clipad_video_comments').select('id', { count: 'exact', head: true }).in('video_id', videoIds);
+      
+      // Fetch reactions for those videos
+      const { count: reactionsCount } = await supabase.from('clipad_video_reactions').select('id', { count: 'exact', head: true }).in('video_id', videoIds);
+
+      // Calculate stats per video
+      const enhancedVideos = videos.map(v => {
+        const vViews = views?.filter(vw => vw.video_id === v.id) || [];
+        const avgCompletion = vViews.length > 0 ? Math.round(vViews.reduce((acc, curr) => acc + (curr.watch_percent || 0), 0) / vViews.length) : 0;
+        return {
+          ...v,
+          viewCount: vViews.length,
+          avgCompletion
+        };
+      }).sort((a, b) => b.viewCount - a.viewCount); // sort by most viewed
+
+      // Calculate timeline data (views per day for last 7 days)
+      const last7Days = [...Array(7)].map((_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        return { date: d.toISOString().split('T')[0], count: 0 };
+      }).reverse();
+
+      views?.forEach(v => {
+        const d = v.created_at.split('T')[0];
+        const day = last7Days.find(x => x.date === d);
+        if (day) day.count++;
       });
+
+      setStats({
+        totalViews: views?.length || 0,
+        totalVideos: videos.length,
+        totalComments: commentsCount || 0,
+        totalReactions: reactionsCount || 0,
+        topVideos: enhancedVideos.slice(0, 5),
+        recentViews: last7Days
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
       setLoading(false);
-    }, 1000);
-  }, []);
+    }
+  };
 
   if (loading) {
     return (
-      <div className="p-8 max-w-7xl mx-auto space-y-6">
-        <Skeleton className="h-8 w-64 mb-6" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Skeleton className="h-32 w-full rounded-2xl" />
-          <Skeleton className="h-32 w-full rounded-2xl" />
-          <Skeleton className="h-32 w-full rounded-2xl" />
-        </div>
-        <Skeleton className="h-96 w-full rounded-2xl mt-8" />
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#050A15] flex items-center justify-center">
+        <div className="w-10 h-10 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
       </div>
     );
   }
 
+  // Max value for chart scaling
+  const maxViews = Math.max(10, ...stats.recentViews.map(d => d.count));
+
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto flex flex-col gap-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Sales & Video Analytics</h1>
-        <p className="text-muted-foreground mt-1">Track engagement and conversion on your async videos.</p>
-      </div>
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#050A15] text-white">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-[#050A15]/80 backdrop-blur-xl border-b border-white/5">
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
+            <Video className="w-4 h-4 text-white" strokeWidth={2.5} />
+          </div>
+          <span className="text-lg font-bold tracking-tight">CliPad</span>
+        </div>
+        <button onClick={() => navigate('/dashboard')} className="text-sm text-gray-400 hover:text-white transition-colors">← Dashboard</button>
+      </nav>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-t-4 border-t-primary shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="pb-2">
-            <CardDescription className="flex items-center gap-2"><Eye className="w-4 h-4" /> Total Views (30d)</CardDescription>
-            <CardTitle className="text-4xl">{stats.totalViews.toLocaleString()}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-emerald-600 flex items-center font-medium">
-              <ArrowUpRight className="w-3 h-3 mr-1" /> +14% from last month
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-t-4 border-t-blue-500 shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="pb-2">
-            <CardDescription className="flex items-center gap-2"><Clock className="w-4 h-4" /> Avg. Completion Rate</CardDescription>
-            <CardTitle className="text-4xl">{stats.avgCompletion}%</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-emerald-600 flex items-center font-medium">
-              <ArrowUpRight className="w-3 h-3 mr-1" /> +2.1% from last month
-            </p>
-          </CardContent>
-        </Card>
+      <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
+        <div className="mb-10">
+          <h1 className="text-3xl font-black text-white mb-1 flex items-center gap-3"><BarChart3 className="w-7 h-7 text-emerald-400" /> Analytics</h1>
+          <p className="text-gray-400 text-sm">See how your team interacts with your video recordings.</p>
+        </div>
 
-        <Card className="border-t-4 border-t-rose-500 shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="pb-2">
-            <CardDescription className="flex items-center gap-2"><MousePointerClick className="w-4 h-4" /> CTA Click-Through</CardDescription>
-            <CardTitle className="text-4xl">{stats.ctr}%</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-rose-600 flex items-center font-medium">
-              -0.5% from last month
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+        {stats.totalVideos === 0 ? (
+          <div className="text-center py-24 border border-dashed border-white/10 rounded-3xl">
+            <BarChart3 className="w-16 h-16 text-gray-800 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-gray-400 mb-2">No data yet</h3>
+            <p className="text-gray-600 text-sm mb-6">Record a video and share it to start collecting analytics.</p>
+            <button onClick={() => navigate('/record')} className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all">Record Video</button>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            
+            {/* Top Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <StatCard icon={Eye} color="from-indigo-500 to-violet-500" value={stats.totalViews} label="Total Views" trend={14} />
+              <StatCard icon={Video} color="from-cyan-500 to-blue-500" value={stats.totalVideos} label="Videos Recorded" />
+              <StatCard icon={MessageSquare} color="from-pink-500 to-rose-500" value={stats.totalComments} label="Comments" trend={8} />
+              <StatCard icon={Heart} color="from-amber-500 to-orange-500" value={stats.totalReactions} label="Reactions" />
+            </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle>Top Performing Videos</CardTitle>
-            <CardDescription>Based on total views and completion rate.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {stats.topVideos.map((video, i) => (
-                <div key={video.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">{i + 1}</div>
-                    <div>
-                      <div className="font-semibold text-sm">{video.title}</div>
-                      <div className="text-xs text-muted-foreground">{video.views} views</div>
-                    </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              
+              {/* Chart */}
+              <div className="lg:col-span-2 bg-[#111827] border border-white/[0.06] rounded-2xl p-6">
+                <div className="flex items-center justify-between mb-8">
+                  <div>
+                    <h2 className="font-bold text-white text-lg">Views over time</h2>
+                    <p className="text-xs text-gray-500">Last 7 days</p>
                   </div>
-                  <div className="text-right">
-                    <div className="text-sm font-medium">{video.completion}%</div>
-                    <div className="text-[10px] text-muted-foreground">Completion</div>
-                  </div>
+                  <div className="px-3 py-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 text-xs font-bold border border-indigo-500/20">Active</div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                
+                <div className="h-64 flex items-end justify-between gap-2">
+                  {stats.recentViews.map((day, i) => {
+                    const heightPercent = Math.max((day.count / maxViews) * 100, 4); // min 4% for visibility
+                    return (
+                      <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
+                        <div className="w-full flex-1 flex items-end justify-center relative">
+                          <div 
+                            className="w-full max-w-[40px] bg-gradient-to-t from-indigo-600/40 to-indigo-500 rounded-t-lg transition-all duration-500 group-hover:from-indigo-500 group-hover:to-indigo-400 relative group-hover:shadow-[0_0_15px_rgba(99,102,241,0.5)]"
+                            style={{ height: `${heightPercent}%` }}
+                          >
+                            {/* Tooltip on hover */}
+                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+                              {day.count} views
+                            </div>
+                          </div>
+                        </div>
+                        <span className="text-[10px] text-gray-500 uppercase font-mono">{new Date(day.date).toLocaleDateString(undefined, { weekday: 'short' })}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
 
-        <Card className="shadow-sm bg-gradient-to-br from-slate-900 to-slate-800 text-white border-slate-700">
-          <CardHeader>
-            <CardTitle className="text-white">Audience Engagement Map</CardTitle>
-            <CardDescription className="text-slate-400">Where viewers are dropping off in your latest sales pitch.</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center h-48 relative">
-            {/* Mock Chart Area */}
-            <div className="absolute inset-x-6 bottom-6 top-6 flex items-end justify-between gap-1">
-              {[80, 85, 90, 88, 75, 60, 50, 45, 42, 40].map((h, i) => (
-                <div key={i} className="w-full bg-blue-500/80 rounded-t-sm" style={{ height: `${h}%` }}></div>
-              ))}
+              {/* Top Videos List */}
+              <div className="bg-[#111827] border border-white/[0.06] rounded-2xl overflow-hidden flex flex-col">
+                <div className="px-6 py-5 border-b border-white/5">
+                  <h2 className="font-bold text-white text-lg flex items-center gap-2"><TrendingUp className="w-5 h-5 text-emerald-400" /> Top Videos</h2>
+                </div>
+                <div className="flex-1 overflow-y-auto divide-y divide-white/5">
+                  {stats.topVideos.map((v, i) => (
+                    <div key={v.id} onClick={() => navigate(`/watch/${v.id}`)} className="p-5 hover:bg-white/[0.03] cursor-pointer transition-colors group flex items-start gap-4">
+                      <div className="w-6 h-6 rounded-full bg-white/5 text-gray-400 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-white text-sm truncate group-hover:text-indigo-400 transition-colors mb-1">{v.title || 'Untitled Video'}</h3>
+                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                          <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {v.viewCount} views</span>
+                          {/* <span className="flex items-center gap-1"><Target className="w-3 h-3" /> {v.avgCompletion}% avg completion</span> */}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="bg-black/50 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold shadow-xl border border-white/10">Significant drop-off at 2:14 (Pricing Slide)</span>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        )}
       </div>
-
     </div>
   );
 }
