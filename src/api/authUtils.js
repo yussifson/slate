@@ -74,7 +74,8 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
     // We use this newly created session to bypass RLS and insert their profile.
     if (data && data.session && data.user) {
       const tempClient = createClient(supabaseUrl, supabaseAnonKey, {
-        global: { headers: { Authorization: `Bearer ${data.session.access_token}` } }
+        global: { headers: { Authorization: `Bearer ${data.session.access_token}` } },
+        auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
       });
       
       const { error: profileError } = await tempClient.from('profiles').insert([

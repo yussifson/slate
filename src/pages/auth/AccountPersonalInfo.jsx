@@ -12,8 +12,14 @@ export default function AccountPersonalInfo() {
     safeAvatarUrl = safeAvatarUrl.substring(safeAvatarUrl.lastIndexOf('https://'));
   }
   
-  const [fullName, setFullName] = useState(user?.full_name || '');
+  const [fullName, setFullName] = useState(user?.user_metadata?.full_name || user?.full_name || '');
+  const [birthday, setBirthday] = useState(user?.user_metadata?.birthday || user?.birthday || '');
+  const [phone, setPhone] = useState(user?.phone || '');
+  
   const [isEditingName, setIsEditingName] = useState(false);
+  const [isEditingBirthday, setIsEditingBirthday] = useState(false);
+  const [isEditingPhone, setIsEditingPhone] = useState(false);
+  
   const [isEditingAvatar, setIsEditingAvatar] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -37,8 +43,8 @@ export default function AccountPersonalInfo() {
     setIsUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}-${Math.random()}.${fileExt}`;
-      const filePath = `${fileName}`;
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('profile-pictures')
@@ -116,6 +122,61 @@ export default function AccountPersonalInfo() {
       setIsEditingName(false);
     } catch (err) {
       alert("Error saving name: " + err.message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSaveBirthday = async () => {
+    setIsSaving(true);
+    try {
+      const { error } = await supabase.from('profiles').update({ birthday }).eq('id', user.id);
+      if (error) throw error;
+      
+      const { error: authErr } = await supabase.auth.updateUser({
+        data: { birthday }
+      });
+      if (authErr) throw authErr;
+
+      const cached = localStorage.getItem('slate_cached_user');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        parsed.birthday = birthday;
+        localStorage.setItem('slate_cached_user', JSON.stringify(parsed));
+      }
+      if (refreshUser) await refreshUser();
+      setIsEditingBirthday(false);
+    } catch (err) {
+      alert("Error saving birthday: " + err.message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSavePhone = async () => {
+    setIsSaving(true);
+    try {
+      const { error } = await supabase.from('profiles').update({ phone }).eq('id', user.id);
+      if (error) throw error;
+      
+      // Update Auth phone (might require OTP if enabled, but we just try it)
+      const { error: authErr } = await supabase.auth.updateUser({
+        phone: phone
+      });
+      if (authErr && !authErr.message.includes('rate limit')) {
+         console.warn("Auth phone update warning:", authErr.message);
+      }
+
+      const cached = localStorage.getItem('slate_cached_user');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        parsed.phone = phone;
+        localStorage.setItem('slate_cached_user', JSON.stringify(parsed));
+      }
+      if (refreshUser) await refreshUser();
+      setIsEditingPhone(false);
+    } catch (err) {
+      alert("Error saving phone: " + err.message);
     } finally {
       setIsSaving(false);
     }
@@ -239,14 +300,34 @@ export default function AccountPersonalInfo() {
             </div>
             
             {/* Birthday */}
-            <div className="p-6 md:px-8 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
-               <div className="flex-1 grid grid-cols-[120px_1fr] md:grid-cols-[160px_1fr] items-center">
-                  <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Birthday</div>
-                  <div className="text-sm text-gray-900 dark:text-white font-medium">Add birthday</div>
-               </div>
-               <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-               </svg>
+            <div className="p-6 md:px-8 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
+               {isEditingBirthday ? (
+                 <div className="space-y-4 max-w-md">
+                   <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Birthday</div>
+                   <input 
+                     type="date" 
+                     value={birthday} 
+                     onChange={e => setBirthday(e.target.value)}
+                     className="w-full h-10 px-3 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white"
+                   />
+                   <div className="flex gap-2 pt-2">
+                     <button onClick={handleSaveBirthday} disabled={isSaving} className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90">Save</button>
+                     <button onClick={() => setIsEditingBirthday(false)} className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</button>
+                   </div>
+                 </div>
+               ) : (
+                 <div className="flex items-center justify-between w-full" onClick={() => setIsEditingBirthday(true)}>
+                   <div className="flex-1 grid grid-cols-[120px_1fr] md:grid-cols-[160px_1fr] items-center">
+                      <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Birthday</div>
+                      <div className="text-sm text-gray-900 dark:text-white font-medium">
+                        {birthday ? new Date(birthday).toLocaleDateString() : "Add birthday"}
+                      </div>
+                   </div>
+                   <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                   </svg>
+                 </div>
+               )}
             </div>
           </div>
         </div>
@@ -269,14 +350,35 @@ export default function AccountPersonalInfo() {
             </div>
             
             {/* Phone */}
-            <div className="p-6 md:px-8 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
-               <div className="flex-1 grid grid-cols-[120px_1fr] md:grid-cols-[160px_1fr] items-center">
-                  <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</div>
-                  <div className="text-sm text-gray-900 dark:text-white font-medium">Add a recovery phone</div>
-               </div>
-               <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-               </svg>
+            <div className="p-6 md:px-8 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
+               {isEditingPhone ? (
+                 <div className="space-y-4 max-w-md">
+                   <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Phone</div>
+                   <input 
+                     type="tel" 
+                     value={phone} 
+                     onChange={e => setPhone(e.target.value)}
+                     placeholder="+1 (555) 000-0000"
+                     className="w-full h-10 px-3 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white"
+                   />
+                   <div className="flex gap-2 pt-2">
+                     <button onClick={handleSavePhone} disabled={isSaving} className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90">Save</button>
+                     <button onClick={() => setIsEditingPhone(false)} className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</button>
+                   </div>
+                 </div>
+               ) : (
+                 <div className="flex items-center justify-between w-full" onClick={() => setIsEditingPhone(true)}>
+                   <div className="flex-1 grid grid-cols-[120px_1fr] md:grid-cols-[160px_1fr] items-center">
+                      <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</div>
+                      <div className="text-sm text-gray-900 dark:text-white font-medium">
+                        {phone || "Add a recovery phone"}
+                      </div>
+                   </div>
+                   <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                   </svg>
+                 </div>
+               )}
             </div>
           </div>
         </div>

@@ -1,8 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MonitorSmartphone, Monitor, Smartphone, Laptop } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
+import { supabase } from '@/api/supabaseClient';
 
 export default function AccountDevices() {
+  const { user } = useAuth();
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSession(data.session));
+  }, []);
+
+  const getDeviceName = () => {
+    if (typeof window === 'undefined') return 'Unknown Device';
+    const ua = navigator.userAgent;
+    if (ua.includes('Win')) return 'Windows Computer';
+    if (ua.includes('Mac')) return 'Mac Computer';
+    if (ua.includes('Linux')) return 'Linux Computer';
+    if (ua.includes('iPhone') || ua.includes('iPad')) return 'Apple Device';
+    if (ua.includes('Android')) return 'Android Device';
+    return 'Web Browser';
+  };
   return (
     <div className="animate-in fade-in duration-500 max-w-3xl mx-auto">
       <div className="mb-10 text-center">
@@ -26,13 +44,13 @@ export default function AccountDevices() {
                </div>
                <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-gray-900 dark:text-white font-medium text-lg">Windows Computer</h3>
+                    <h3 className="text-gray-900 dark:text-white font-medium text-lg">{getDeviceName()}</h3>
                     <span className="px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold">
                       This device
                     </span>
                   </div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Chrome • Active now</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">United States</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Active now</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">IP: {session?.user?.last_sign_in_ip || 'Unknown'}</p>
                </div>
             </div>
           </div>
