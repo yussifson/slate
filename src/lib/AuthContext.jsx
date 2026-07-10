@@ -4,7 +4,7 @@ import { supabase } from "@/api/supabaseClient";
 import { isDesktopApp } from '@/lib/domainUtils';
 import { getSubdomainAndBase } from './domainUtils';
 import { useImpersonation } from './ImpersonationContext';
-
+import { saveAccount, removeAccount } from './multiAccountUtils';
 export const PORTAL_ROLES = ['client', 'patient', 'guest', 'parent', 'student', 'learner', 'trainee', 'customer', 'policyholder', 'member', 'tenant', 'landlord', 'employee'];
 
 const AuthContext = createContext();
@@ -486,6 +486,7 @@ export const AuthProvider = ({ children }) => {
       if (hasChanged) {
         setAuthStep("Setting user...");
         setUser(newUser);
+        saveAccount(sessionVal, newUser);
       }
       
       // Cache the fully constructed user profile for offline fallback
@@ -620,6 +621,11 @@ export const AuthProvider = ({ children }) => {
 
   const logout = useCallback(async (shouldRedirect = true) => {
     isExplicitLogoutRef.current = true;
+    
+    const currentUser = userRef.current;
+    if (currentUser) {
+      removeAccount(currentUser.id);
+    }
     
     const isRootAccount = window.location.hostname.startsWith('account.');
     if (isRootAccount) {
