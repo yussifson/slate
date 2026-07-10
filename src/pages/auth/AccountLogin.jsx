@@ -21,7 +21,8 @@ export default function AccountLogin() {
   // Handle SSO redirect logic if already authenticated
   useEffect(() => {
     if (isLoadingAuth) return;
-    if (isAuthenticated) {
+    const promptParam = searchParams.get('prompt');
+    if (isAuthenticated && promptParam !== 'login') {
       if (redirectUri) {
         // We are already logged in, hand off the token to the redirect_uri
         const handoff = async () => {

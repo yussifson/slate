@@ -35,7 +35,8 @@ export function saveAccount(session, profile = null) {
       refresh_token: session.refresh_token,
       full_name: profile?.full_name || session.user?.user_metadata?.full_name || '',
       avatar_url: profile?.avatar_url || session.user?.user_metadata?.avatar_url || '',
-      last_active: new Date().toISOString()
+      last_active: new Date().toISOString(),
+      logged_out: false
     };
 
     // Check if the user already exists in our saved list
@@ -70,6 +71,26 @@ export function removeAccount(userId) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredAccounts));
   } catch (e) {
     console.error("Failed to remove account", e);
+  }
+}
+
+/**
+ * Marks a specific account as logged out.
+ * @param {string} userId - The Supabase user ID to mark as logged out.
+ */
+export function markAccountLoggedOut(userId) {
+  if (typeof window === 'undefined' || !userId) return;
+  try {
+    const accounts = getSavedAccounts();
+    const existingIndex = accounts.findIndex(acc => acc.id === userId);
+    if (existingIndex >= 0) {
+      accounts[existingIndex].logged_out = true;
+      accounts[existingIndex].access_token = null;
+      accounts[existingIndex].refresh_token = null;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(accounts));
+    }
+  } catch (e) {
+    console.error("Failed to mark account logged out", e);
   }
 }
 

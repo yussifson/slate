@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/api/supabaseClient";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { useTranslation } from "react-i18next";
+import { getSubdomainAndBase } from "@/lib/domainUtils";
 
 export default function SSOCallback() {
   const { t } = useTranslation();
@@ -57,6 +58,22 @@ export default function SSOCallback() {
           if (!profile?.company_id && !sessionData?.session?.user?.user_metadata?.company_id) {
              navigate("/signup", { replace: true });
              return;
+          }
+
+          // Strict Multi-tenant boundary check: enforce subdomain isolation
+          if (profile?.company_id) {
+             const { currentSubdomain } = getSubdomainAndBase();
+             if (currentSubdomain) {
+                const { data: company } = await supabase.from('companies').select('name, subdomain, custom_domain').eq('id', profile.company_id).single();
+                const companySubdomain = company?.subdomain || company?.custom_domain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
+                
+                if (companySubdomain && companySubdomain !== currentSubdomain) {
+                   // User is trying to access another company's subdomain
+                   await supabase.auth.signOut();
+                   setError(`You are not authorized to access the workspace '${currentSubdomain}'.`);
+                   return;
+                }
+             }
           }
         }
 

@@ -4,7 +4,7 @@ import { supabase } from "@/api/supabaseClient";
 import { isDesktopApp } from '@/lib/domainUtils';
 import { getSubdomainAndBase } from './domainUtils';
 import { useImpersonation } from './ImpersonationContext';
-import { saveAccount, removeAccount, getSavedAccounts } from './multiAccountUtils';
+import { saveAccount, removeAccount, getSavedAccounts, markAccountLoggedOut } from './multiAccountUtils';
 export const PORTAL_ROLES = ['client', 'patient', 'guest', 'parent', 'student', 'learner', 'trainee', 'customer', 'policyholder', 'member', 'tenant', 'landlord', 'employee'];
 
 const AuthContext = createContext();
@@ -637,12 +637,16 @@ export const AuthProvider = ({ children }) => {
     return userRef.current;
   }, [checkUserAuth]);
 
-  const logout = useCallback(async (shouldRedirect = true, preserveSavedAccount = false) => {
+  const logout = useCallback(async (shouldRedirect = true, preserveSavedAccount = true) => {
     isExplicitLogoutRef.current = true;
     
     const currentUser = userRef.current;
-    if (currentUser && !preserveSavedAccount) {
-      removeAccount(currentUser.id);
+    if (currentUser) {
+      if (preserveSavedAccount) {
+        markAccountLoggedOut(currentUser.id);
+      } else {
+        removeAccount(currentUser.id);
+      }
     }
     
     const isRootAccount = window.location.hostname.startsWith('account.');
@@ -693,9 +697,9 @@ export const AuthProvider = ({ children }) => {
       const accounts = getSavedAccounts();
       const acc = accounts.find(a => a.id === targetAccountId);
       if (acc?.email) {
-        window.location.href = `/login?email=${encodeURIComponent(acc.email)}`;
+        window.location.href = `/login?prompt=login&email=${encodeURIComponent(acc.email)}`;
       } else {
-        window.location.href = `/login`;
+        window.location.href = `/login?prompt=login`;
       }
     }
   }, []);

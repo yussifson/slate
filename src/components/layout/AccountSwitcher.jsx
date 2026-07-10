@@ -33,7 +33,7 @@ export default function AccountSwitcher({ className = '' }) {
   };
 
   const handleAddAccount = () => {
-    window.location.href = '/login';
+    window.location.href = '/login?prompt=login';
   };
 
   const initials = getInitials(profile?.first_name || user?.user_metadata?.first_name, profile?.last_name || user?.user_metadata?.last_name, user?.email);
@@ -101,6 +101,11 @@ export default function AccountSwitcher({ className = '' }) {
                   <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{acc.full_name || 'User'}</p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{acc.email}</p>
                 </div>
+                {acc.logged_out && (
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-primary border border-primary/20 bg-primary/5 px-2 py-1 rounded-full whitespace-nowrap">
+                    Sign In
+                  </span>
+                )}
               </button>
             ))}
           </div>

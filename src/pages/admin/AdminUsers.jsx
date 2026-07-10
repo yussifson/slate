@@ -12,7 +12,7 @@ import { useToast } from '@/components/ui/use-toast';
 import PageHeader from '@/components/shared/PageHeader';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
-import AdminChatDialog from './AdminChatDialog';
+import AdminChatDialog from '@/components/admin/AdminChatDialog';
 
 export default function AdminUsers() {
   const { t } = useTranslation();

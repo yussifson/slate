@@ -76,16 +76,18 @@ export default function Login() {
     window.location.href = `${idpDomain}/sso?redirect_uri=${redirectUri}`;
   };
 
- // Auto-redirect if already authenticated or if mobile user needs onboarding
- useEffect(() => {
+  // Auto-redirect if already authenticated or if mobile user needs onboarding
+  useEffect(() => {
   const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 768;
   if (isMobileDevice && !localStorage.getItem('slate_has_seen_onboarding')) {
     navigate('/welcome', { replace: true });
     return;
   }
 
-  if (!isLoadingAuth && isAuthenticated && user) {
-      const urlParams = new URLSearchParams(window.location.search);
+  const urlParams = new URLSearchParams(window.location.search);
+  const promptParam = urlParams.get('prompt');
+
+  if (!isLoadingAuth && isAuthenticated && user && promptParam !== 'login') {
       const continueUrl = urlParams.get('continue');
 
       if (isElectron) {
