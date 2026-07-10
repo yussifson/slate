@@ -231,8 +231,13 @@ export default function Login() {
       
       const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
       const redirectUri = encodeURIComponent('https://account.optavel.com/auth/google-callback');
-      const state = encodeURIComponent(window.location.origin + callbackPath);
       const nonce = Math.random().toString(36).substring(2, 15);
+      
+      const stateObj = {
+        continue: window.location.origin + callbackPath,
+        nonce: nonce
+      };
+      const state = encodeURIComponent(JSON.stringify(stateObj));
       
       const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=id_token&scope=openid%20email%20profile&state=${state}&nonce=${nonce}`;
       

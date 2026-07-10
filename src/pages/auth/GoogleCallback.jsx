@@ -24,21 +24,32 @@ export default function GoogleCallback() {
           throw new Error('No ID token received from Google.');
         }
 
-        // Sign in to Supabase using the ID token
+        let stateObj = null;
+        let continueUrl = '/';
+        let nonce = undefined;
+        
+        if (stateUrl) {
+          try {
+            stateObj = JSON.parse(decodeURIComponent(stateUrl));
+            continueUrl = stateObj.continue || '/';
+            nonce = stateObj.nonce;
+          } catch (e) {
+            // Fallback for old URL state format
+            continueUrl = decodeURIComponent(stateUrl);
+          }
+        }
+
+        // Sign in to Supabase using the ID token and the matched nonce
         const { data, error: signInError } = await supabase.auth.signInWithIdToken({
           provider: 'google',
           token: idToken,
+          nonce: nonce,
         });
 
         if (signInError) throw signInError;
 
         // Redirect back to the subdomain that initiated the request
-        if (stateUrl) {
-          window.location.href = stateUrl;
-        } else {
-          // Fallback if no state was provided
-          window.location.href = '/';
-        }
+        window.location.href = continueUrl;
 
       } catch (err) {
         setError(err.message);
