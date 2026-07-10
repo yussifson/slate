@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
-import { Video, Mail, Lock, Eye, EyeOff, ArrowRight, Users } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Logo } from '@/components/ui/Logo';
+import { CliPadLogo } from '@/components/ui/CliPadLogo';
 
 export default function CliPadLogin() {
   const navigate = useNavigate();
@@ -39,79 +41,76 @@ export default function CliPadLogin() {
       <Helmet>
         <title>Sign In — CliPad</title>
       </Helmet>
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden text-foreground">
-        <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-primary/5 blur-[100px]" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(120,120,120,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(120,120,120,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative text-slate-900 dark:text-slate-100">
+        
+        {/* Subtle sleek background pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(120,120,120,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(120,120,120,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
 
-        <div className="relative z-10 w-full max-w-md">
-          <div className="flex items-center justify-center gap-3 mb-10">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/40 text-primary-foreground">
-              <Video className="w-5 h-5" strokeWidth={2.5} />
+        <div className="relative z-10 w-full max-w-[420px]">
+          <div className="flex flex-col items-center gap-4 mb-8">
+            <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-900 flex items-center justify-center border border-slate-200 dark:border-slate-800 shadow-sm text-primary">
+              <CliPadLogo size={28} />
             </div>
-            <span className="text-xl font-bold tracking-tight">CliPad</span>
+            <h1 className="text-2xl font-bold tracking-tight text-center text-slate-900 dark:text-white">Welcome to CliPad</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400 text-center">Sign in to access your spaces and recordings.</p>
           </div>
 
-          <div className="bg-card/80 backdrop-blur-xl border border-border rounded-3xl p-8 shadow-2xl">
-            <h1 className="text-2xl font-bold mb-1 text-center">Welcome back</h1>
-            <p className="text-sm text-muted-foreground text-center mb-8">Sign in to access your spaces, recordings and AI insights.</p>
-
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm">
             {mode === 'sso' && (
-              <>
+              <div className="flex flex-col gap-4">
                 <button
                   onClick={handleSSOLogin}
-                  className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm shadow-xl shadow-primary/25 transition-all mb-5"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 font-semibold text-sm transition-colors"
                 >
-                  <Users className="w-5 h-5" />
-                  Continue with Optavel Account
-                  <ArrowRight className="w-4 h-4" />
+                  <Logo hideText className="w-5 h-5 text-primary" />
+                  Continue with Optavel
                 </button>
 
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="flex-1 h-px bg-border" />
-                  <span className="text-xs text-muted-foreground">or</span>
-                  <div className="flex-1 h-px bg-border" />
+                <div className="flex items-center gap-3 my-2">
+                  <div className="flex-1 h-px bg-slate-100 dark:bg-slate-800" />
+                  <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">or</span>
+                  <div className="flex-1 h-px bg-slate-100 dark:bg-slate-800" />
                 </div>
 
                 <button
                   onClick={() => setMode('email')}
-                  className="w-full py-4 rounded-2xl bg-secondary hover:bg-secondary/80 border border-border text-secondary-foreground font-semibold text-sm transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3 rounded-xl bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 font-medium text-sm transition-colors flex items-center justify-center gap-2"
                 >
-                  <Mail className="w-4 h-4 text-muted-foreground" />
+                  <Mail className="w-4 h-4 text-slate-400" />
                   Sign in with email
                 </button>
-              </>
+              </div>
             )}
 
             {mode === 'email' && (
               <form onSubmit={handleEmailLogin} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Email</label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 tracking-wide">Email</label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="you@company.com"
-                      className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-background border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary/60 focus:bg-accent transition-all"
+                      placeholder="name@company.com"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                       required
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Password</label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 tracking-wide">Password</label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Your password"
-                      className="w-full pl-11 pr-12 py-3.5 rounded-xl bg-background border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary/60 focus:bg-accent transition-all"
+                      placeholder="Enter your password"
+                      className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                       required
                     />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
@@ -119,31 +118,26 @@ export default function CliPadLogin() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm shadow-xl shadow-primary/25 transition-all disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
+                  className="w-full py-3 mt-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-all disabled:opacity-70 flex items-center justify-center gap-2"
                 >
-                  {loading ? <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" /> : 'Sign In'}
+                  {loading ? <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" /> : 'Sign In'}
                 </button>
-                <button type="button" onClick={() => setMode('sso')} className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors pt-2">
-                  ← Back to SSO options
+                <button type="button" onClick={() => setMode('sso')} className="w-full text-center text-sm font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors pt-2">
+                  Use SSO instead
                 </button>
               </form>
             )}
-
-            <div className="mt-6 pt-6 border-t border-border text-center">
-              <p className="text-xs text-muted-foreground">
-                Joining a meeting?{' '}
-                <span className="text-primary cursor-pointer hover:text-primary/80 transition-colors" onClick={() => navigate('/')}>
-                  Go to meeting home
-                </span>
-              </p>
-            </div>
           </div>
 
-          <p className="text-center text-xs text-muted-foreground mt-6">
-            Protected by end-to-end encryption · <span className="text-foreground/70">Optavel Technologies</span>
+          <p className="text-center text-xs text-slate-400 mt-8">
+            Joining a meeting?{' '}
+            <span className="text-primary font-medium cursor-pointer hover:underline" onClick={() => navigate('/')}>
+              Go to meeting home
+            </span>
           </p>
         </div>
       </div>
     </>
   );
 }
+

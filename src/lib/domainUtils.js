@@ -4,7 +4,7 @@ export function getSubdomainAndBase() {
   const host = window.location.hostname;
   
   const envBase = import.meta.env.VITE_BASE_DOMAIN;
-  const knownBaseDomains = ['optavel.com', 'slate.optavel.com', 'slated.optavel.com', 'oatstack.com'];
+  const knownBaseDomains = ['optavel.com', 'slate.optavel.com', 'slated.optavel.com', 'oatstack.com', 'clipad.optavel.com'];
   if (envBase && !knownBaseDomains.includes(envBase)) {
     knownBaseDomains.push(envBase);
   }
