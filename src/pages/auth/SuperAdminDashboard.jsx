@@ -381,7 +381,7 @@ export default function SuperAdminDashboard() {
   };
 
   return (
-    <div className="animate-in fade-in duration-500 w-full px-4 sm:px-6 lg:px-8 pb-12 flex flex-col md:flex-row gap-8">
+    <div className="animate-in fade-in duration-500 w-full px-4 sm:px-6 lg:px-8 pt-8 pb-12 flex flex-col md:flex-row gap-8">
       {/* Sidebar Navigation */}
       <div className={`shrink-0 transition-all duration-300 ${isSidebarCollapsed ? 'w-16' : 'w-full md:w-64'}`}>
         <div className="flex items-center justify-between px-3 mb-6">
