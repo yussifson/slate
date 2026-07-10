@@ -371,6 +371,8 @@ import AccountPersonalInfo from './pages/auth/AccountPersonalInfo';
 import AccountPayments from './pages/auth/AccountPayments';
 import AccountDevices from './pages/auth/AccountDevices';
 import AccountHelp from './pages/auth/AccountHelp';
+import AccountDocs from './pages/auth/AccountDocs';
+import AccountTutorials from './pages/auth/AccountTutorials';
 import SuperAdminDashboard from './pages/auth/SuperAdminDashboard';
 import AccountLogin from './pages/auth/AccountLogin';
 import AccountSignUp from './pages/auth/AccountSignUp';
@@ -1218,6 +1220,8 @@ function App() {
                            <Route path="/subscriptions" element={<AccountPayments />} />
                            <Route path="/devices" element={<AccountDevices />} />
                            <Route path="/help" element={<AccountHelp />} />
+                           <Route path="/docs" element={<AccountDocs />} />
+                           <Route path="/tutorials" element={<AccountTutorials />} />
                            <Route path="/admin" element={<SuperAdminDashboard />} />
                            {/* Catch all for inner layout routes that don't exist */}
                            <Route path="*" element={<Navigate to="/" replace />} />

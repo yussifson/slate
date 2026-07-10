@@ -218,11 +218,11 @@ export default function AccountPortalLayout() {
 
       {/* Apps Launcher Popover */}
       {isAppsLauncherOpen && (
-        <div className={`fixed z-50 bottom-24 ${isDesktopCollapsed ? 'left-24' : 'left-68 md:left-72'} w-80 max-h-[500px] overflow-y-auto bg-card border border-border shadow-2xl rounded-2xl p-4 transition-all animate-in zoom-in-95 duration-200`}>
-           <div className="flex items-center justify-between mb-4 px-2">
-             <h3 className="text-lg font-medium text-foreground">Optavel Apps</h3>
-             <button onClick={() => setIsAppsLauncherOpen(false)} className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500">
-                <X className="w-5 h-5" />
+        <div className={`fixed z-50 bottom-24 ${isDesktopCollapsed ? 'left-24' : 'left-68 md:left-72'} w-80 max-h-[500px] overflow-y-auto bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] rounded-3xl p-5 transition-all animate-in zoom-in-95 duration-300 ring-1 ring-black/5 dark:ring-white/5`}>
+           <div className="flex items-center justify-between mb-6 px-1">
+             <h3 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 tracking-tight">Optavel Apps</h3>
+             <button onClick={() => setIsAppsLauncherOpen(false)} className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-all hover:rotate-90 duration-300 shadow-sm border border-slate-200/50 dark:border-slate-700/50 flex items-center justify-center">
+                <X className="w-4 h-4" strokeWidth={2.5} />
              </button>
            </div>
            

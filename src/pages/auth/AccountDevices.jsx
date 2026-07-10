@@ -6,9 +6,16 @@ import { supabase } from '@/api/supabaseClient';
 export default function AccountDevices() {
   const { user } = useAuth();
   const [session, setSession] = useState(null);
+  const [ipAddress, setIpAddress] = useState('Unknown');
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    
+    // Fetch public IP address
+    fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => setIpAddress(data.ip))
+      .catch(() => setIpAddress('Unknown'));
   }, []);
 
   const getDeviceName = () => {
@@ -23,10 +30,16 @@ export default function AccountDevices() {
   };
   return (
     <div className="animate-in fade-in duration-500 max-w-3xl mx-auto">
-      <div className="mb-10 text-center">
-        <h1 className="text-3xl md:text-4xl font-normal text-gray-900 dark:text-white mb-3">Your devices</h1>
-        <p className="text-gray-600 dark:text-gray-400 text-base max-w-lg mx-auto">
-          You're currently signed in to your Optavel Account on these devices. If you don't recognize a device, sign out.
+      <div className="mb-12 text-center relative pt-4">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent dark:from-blue-900/20 rounded-full blur-3xl opacity-70"></div>
+        <div className="inline-flex items-center justify-center p-3.5 bg-gradient-to-b from-blue-50 to-blue-100/50 dark:from-blue-900/40 dark:to-blue-900/10 text-blue-600 dark:text-blue-400 rounded-2xl mb-6 ring-1 ring-blue-200/50 dark:ring-blue-800/50 shadow-sm">
+          <MonitorSmartphone className="w-6 h-6" />
+        </div>
+        <h1 className="text-3xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 tracking-tight mb-4 pb-1">
+          Your Devices
+        </h1>
+        <p className="text-slate-600 dark:text-slate-400 text-[1.1rem] max-w-xl mx-auto leading-relaxed">
+          Manage the devices where you're currently signed in. If you don't recognize a device, sign out immediately to secure your account.
         </p>
       </div>
 
@@ -50,7 +63,7 @@ export default function AccountDevices() {
                     </span>
                   </div>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Active now</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">IP: {session?.user?.last_sign_in_ip || 'Unknown'}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">IP: {ipAddress}</p>
                </div>
             </div>
           </div>

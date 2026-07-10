@@ -229,9 +229,15 @@ export default function AccountPersonalInfo() {
 
   return (
     <div className="animate-in fade-in duration-500 max-w-3xl mx-auto">
-      <div className="mb-10 text-center">
-        <h1 className="text-3xl md:text-4xl font-normal text-gray-900 dark:text-white mb-3">Personal info</h1>
-        <p className="text-gray-600 dark:text-gray-400 text-base">
+      <div className="mb-12 text-center relative pt-4">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/40 via-transparent to-transparent dark:from-indigo-900/20 rounded-full blur-3xl opacity-70"></div>
+        <div className="inline-flex items-center justify-center p-3.5 bg-gradient-to-b from-indigo-50 to-indigo-100/50 dark:from-indigo-900/40 dark:to-indigo-900/10 text-indigo-600 dark:text-indigo-400 rounded-2xl mb-6 ring-1 ring-indigo-200/50 dark:ring-indigo-800/50 shadow-sm">
+          <User className="w-6 h-6" />
+        </div>
+        <h1 className="text-3xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 tracking-tight mb-4 pb-1">
+          Personal Info
+        </h1>
+        <p className="text-slate-600 dark:text-slate-400 text-[1.1rem] max-w-xl mx-auto leading-relaxed">
           Info about you and your preferences across Optavel services.
         </p>
       </div>
