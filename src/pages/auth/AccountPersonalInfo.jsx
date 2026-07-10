@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { User, Mail, Camera } from 'lucide-react';
+import { User, Mail, Camera, Crown } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from "@/api/supabaseClient";
 
@@ -254,13 +254,27 @@ export default function AccountPersonalInfo() {
                           {isUploading ? 'Uploading...' : 'A picture helps personalize your account'}
                         </div>
                      </div>
-                     <div className="relative">
+                     <div className={`relative shrink-0 rounded-full ${
+                        user?.role === 'super_admin' ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-[#28292C]' :
+                        user?.plan === 'premium' ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-[#28292C]' : ''
+                     }`}>
                        {safeAvatarUrl ? (
                           <img src={safeAvatarUrl} alt="Avatar" className="w-14 h-14 rounded-full object-cover shadow-sm bg-gray-100" />
                        ) : (
                           <div className="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center text-xl font-medium">
                             {getInitials()}
                           </div>
+                       )}
+                       
+                       {user?.plan === 'premium' && (
+                         <div className="absolute -top-2 -right-2 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-md z-30 flex items-center gap-0.5">
+                           <Crown className="w-2.5 h-2.5" /> Pro
+                         </div>
+                       )}
+                       {user?.role === 'super_admin' && (
+                         <div className="absolute -top-2 -right-4 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-md z-30">
+                           Admin
+                         </div>
                        )}
                      </div>
                   </div>

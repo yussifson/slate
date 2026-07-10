@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { Logo } from '@/components/ui/Logo';
-import { Menu, X, Home, UserCircle, ShieldCheck, CreditCard, MonitorSmartphone, Sun, Moon, LogOut, PanelLeftClose, PanelLeftOpen, LayoutGrid, HelpCircle, Lock, Video, PhoneCall, ClipboardList } from 'lucide-react';
+import { Menu, X, Home, UserCircle, ShieldCheck, CreditCard, MonitorSmartphone, Sun, Moon, LogOut, PanelLeftClose, PanelLeftOpen, LayoutGrid, HelpCircle, Lock, Video, PhoneCall, ClipboardList, Database, Server } from 'lucide-react';
 import { supabase } from "@/api/supabaseClient";
 import { useTheme } from "@/lib/ThemeContext";
 
@@ -88,8 +88,17 @@ export default function AccountPortalLayout() {
              <span className="text-xl font-medium tracking-tight">Optavel</span>
           </div>
         </div>
-        <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-medium text-sm">
-          {initials}
+        <div className={`relative shrink-0 rounded-full ${
+          profile?.role === 'super_admin' ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-background' :
+          profile?.plan === 'premium' ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-background' : ''
+        }`}>
+          {profile?.avatar_url ? (
+            <img src={profile.avatar_url} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-medium text-sm">
+              {initials}
+            </div>
+          )}
         </div>
       </header>
 
@@ -227,7 +236,7 @@ export default function AccountPortalLayout() {
              
              <div className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors opacity-60 cursor-not-allowed">
                <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800">
-                 <Video className="w-7 h-7 text-green-500" />
+                 <Database className="w-7 h-7 text-green-500" />
                </div>
                <div className="text-center">
                  <span className="block text-sm font-medium text-gray-900 dark:text-white">Preloom</span>
@@ -247,7 +256,7 @@ export default function AccountPortalLayout() {
              
              <div className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors opacity-60 cursor-not-allowed">
                <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800">
-                 <ClipboardList className="w-7 h-7 text-orange-500" />
+                 <Video className="w-7 h-7 text-orange-500" />
                </div>
                <div className="text-center">
                  <span className="block text-sm font-medium text-gray-900 dark:text-white">Clipad</span>
@@ -257,7 +266,7 @@ export default function AccountPortalLayout() {
            </div>
            
            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 text-center">
-              <a href="#" className="text-sm font-medium text-primary hover:underline">More from Optavel</a>
+              <a href="https://optavel.com" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline">More from Optavel</a>
            </div>
         </div>
       )}
