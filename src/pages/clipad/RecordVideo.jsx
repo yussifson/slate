@@ -74,12 +74,18 @@ export default function RecordVideo() {
       }
 
       if (mode === 'screen_camera' || mode === 'camera_only') {
-        cameraStream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 }, audio: micEnabled });
-        streamsRef.current.camera = cameraStream;
-        // Show camera preview overlay
-        if (previewRef.current) {
-          previewRef.current.srcObject = cameraStream;
-          previewRef.current.play().catch(() => {});
+        try {
+          cameraStream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 }, audio: micEnabled });
+          streamsRef.current.camera = cameraStream;
+          // Show camera preview overlay
+          if (previewRef.current) {
+            previewRef.current.srcObject = cameraStream;
+            previewRef.current.play().catch(() => {});
+          }
+        } catch (camErr) {
+          console.warn("Camera failed to load:", camErr);
+          toast({ title: 'Camera Unavailable', description: 'Proceeding without camera stream.', variant: 'default' });
+          if (mode === 'camera_only') throw camErr;
         }
       }
 
@@ -138,9 +144,10 @@ export default function RecordVideo() {
 
         const canvasStream = canvas.captureStream(30);
         recordStream = new MediaStream([...canvasStream.getVideoTracks(), ...dest.stream.getAudioTracks()]);
-      } else if (mode === 'screen_only' && screenStream) {
+      } else if (screenStream) {
+        // Fallback to screen stream if camera failed in PiP mode or if it was screen_only
         recordStream = screenStream;
-      } else if (mode === 'camera_only' && cameraStream) {
+      } else if (cameraStream) {
         recordStream = cameraStream;
       } else {
         throw new Error('No stream available');

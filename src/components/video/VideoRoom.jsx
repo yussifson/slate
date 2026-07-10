@@ -433,11 +433,10 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
       <div className="flex-1 flex flex-col lg:flex-row p-4 gap-4 overflow-hidden bg-white/30 dark:bg-black/20 backdrop-blur-sm">
         {/* Main Stage Area */}
         <div className="flex-[3] relative rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-white/10 shadow-inner bg-slate-900">
-          {showWhiteboard ? (
-            <div className="absolute inset-0 z-40 bg-white">
-              <Tldraw persistenceKey="clipad-whiteboard" />
-            </div>
-          ) : screens.length > 0 ? (
+          <div className={`absolute inset-0 bg-white transition-opacity duration-300 ${showWhiteboard ? 'opacity-100 z-40 pointer-events-auto' : 'opacity-0 -z-10 pointer-events-none'}`}>
+            <Tldraw persistenceKey="clipad-whiteboard" />
+          </div>
+          {screens.length > 0 ? (
             screens.map(screen => (
               <ScreenShareTile key={screen.screenId} screen={screen} className="w-full h-full absolute inset-0" />
             ))

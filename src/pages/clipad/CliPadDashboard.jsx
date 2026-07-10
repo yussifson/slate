@@ -19,11 +19,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 function StatCard({ icon: Icon, color, value, label, trend }) {
+  // Use `color` to dynamically style the icon container for a vibrant look
   return (
     <div className="p-5 md:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 group shadow-sm hover:shadow-md flex flex-col justify-between">
       <div className="flex items-start justify-between mb-4">
-        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-          <Icon className="w-5 h-5 text-primary" />
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 ${color || 'bg-primary/10 text-primary'}`}>
+          <Icon className="w-5 h-5" />
         </div>
         {trend && <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${trend > 0 ? 'text-emerald-600 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-500/10' : 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-500/10'}`}>{trend > 0 ? '+' : ''}{trend}%</span>}
       </div>
@@ -238,55 +239,40 @@ export default function CliPadDashboard() {
           <p className="text-lg text-slate-500 dark:text-slate-400 font-medium">Here's what's happening across your spaces.</p>
         </div>
 
+        {/* Stats Row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
+          <StatCard icon={Calendar} color="bg-indigo-500/10 text-indigo-500" value={stats.meetings} label="Meetings this week" trend={12} />
+          <StatCard icon={Camera} color="bg-rose-500/10 text-rose-500" value={stats.recordings} label="Video recordings" trend={8} />
+          <StatCard icon={Target} color="bg-cyan-500/10 text-cyan-500" value={stats.actionItems} label="Open action items" />
+          <StatCard icon={TrendingUp} color="bg-emerald-500/10 text-emerald-500" value={`${stats.completionRate}%`} label="Completion rate" trend={5} />
+        </div>
+
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-12 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
+        <div className="flex flex-col sm:flex-row gap-4 mb-12 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
           <button
             onClick={startInstantMeeting}
             disabled={isCreatingMeeting}
-            className="group p-5 md:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 text-left hover:-translate-y-1 shadow-sm hover:shadow-md flex flex-col justify-between min-h-[140px]"
+            className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-primary-foreground font-semibold shadow-lg shadow-primary/30 transition-all hover:-translate-y-0.5 active:translate-y-0"
           >
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
-              {isCreatingMeeting ? <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" /> : <Video className="w-6 h-6 text-primary" />}
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900 dark:text-white mb-1 text-lg">New Meeting</h3>
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Start an instant HD meeting</p>
-            </div>
+            {isCreatingMeeting ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Video className="w-5 h-5" />}
+            New Meeting
           </button>
 
           <button
             onClick={() => navigate('/record')}
-            className="group p-5 md:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 text-left hover:-translate-y-1 shadow-sm hover:shadow-md flex flex-col justify-between min-h-[140px]"
+            className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 text-slate-700 dark:text-slate-200 font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
           >
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
-              <Camera className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900 dark:text-white mb-1 text-lg">Record Video</h3>
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Camera, screen, or picture-in-picture</p>
-            </div>
+            <Camera className="w-5 h-5 text-rose-500 group-hover:scale-110 transition-transform" />
+            Record Video
           </button>
 
           <button
             onClick={() => navigate('/spaces')}
-            className="group p-5 md:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 text-left hover:-translate-y-1 shadow-sm hover:shadow-md flex flex-col justify-between min-h-[140px]"
+            className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 text-slate-700 dark:text-slate-200 font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
           >
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
-              <Plus className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900 dark:text-white mb-1 text-lg">Create Space</h3>
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Persistent team room</p>
-            </div>
+            <Layers className="w-5 h-5 text-indigo-500 group-hover:scale-110 transition-transform" />
+            Team Spaces
           </button>
-        </div>
-
-        {/* Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-          <StatCard icon={Calendar} value={stats.meetings} label="Meetings this week" trend={12} />
-          <StatCard icon={Camera} value={stats.recordings} label="Video recordings" trend={8} />
-          <StatCard icon={Target} value={stats.actionItems} label="Open action items" />
-          <StatCard icon={TrendingUp} value={`${stats.completionRate}%`} label="Completion rate" trend={5} />
         </div>
 
         {/* Main content grid */}

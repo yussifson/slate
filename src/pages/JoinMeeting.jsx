@@ -63,7 +63,7 @@ export default function JoinMeeting() {
       <div className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-4">
         <h1 className="text-2xl font-semibold text-rose-500">Access Denied</h1>
         <p className="text-muted-foreground">{error}</p>
-        <button onClick={() => navigate('/')} className="text-primary hover:underline">
+        <button onClick={() => navigate('/dashboard')} className="text-primary hover:underline">
           Return to Dashboard
         </button>
       </div>

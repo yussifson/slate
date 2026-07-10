@@ -163,7 +163,7 @@ export default function SpacesList() {
                 />
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowCreate(false)} className="flex-1 py-3 rounded-xl bg-secondary hover:bg-secondary text-gray-300 font-semibold text-sm transition-all border border-border">Cancel</button>
+                <button type="button" onClick={() => setShowCreate(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-secondary hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all border border-slate-200 dark:border-border">Cancel</button>
                 <button type="submit" disabled={creating} className="flex-1 py-3 rounded-xl bg-primary hover:bg-primary/90 text-foreground font-bold text-sm transition-all disabled:opacity-60">
                   {creating ? 'Creating...' : 'Create Space'}
                 </button>

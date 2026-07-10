@@ -1,4 +1,7 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/api/supabaseClient';
@@ -12,6 +15,7 @@ import {
   Users, Brain, Layers, Zap, ChevronRight, ChevronLeft,
   Monitor, CheckCircle, ArrowRight, Star, Globe, Plus, Camera, Target, TrendingUp
 } from 'lucide-react';
+import { CliPadLogo } from '@/components/ui/CliPadLogo';
 
 
 const pillars = [
@@ -167,7 +171,6 @@ const slides = [
   },
 ];
 
-// ΓöÇΓöÇΓöÇ Live Clock Hook ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 function useLiveClock() {
   const [now, setNow] = useState(new Date());
 
@@ -175,7 +178,7 @@ function useLiveClock() {
     // Update favicon
     const link = document.querySelector("link[rel~='icon']");
     if (link) {
-      link.href = '/orbit-logo.svg';
+      link.href = '/clipad-logo.svg';
     }
 
     const id = setInterval(() => setNow(new Date()), 1000);
@@ -303,10 +306,10 @@ export default function MeetLandingPage() {
       <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/50 dark:border-border bg-secondary/50 dark:bg-background/80 backdrop-blur-md">
 
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 flex items-center justify-center">
-            <img src="/orbit-logo.svg" alt="Optavel Logo" className="w-full h-full object-contain" />
+          <div className="w-10 h-10 flex items-center justify-center text-primary">
+            <CliPadLogo size={36} />
           </div>
-          <span className="text-xl font-semibold tracking-tight text-slate-800 dark:text-slate-100">CliPad</span>
+          <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">CliPad</span>
         </div>
         
         <div className="hidden md:flex items-center gap-1 text-sm text-muted-foreground">
