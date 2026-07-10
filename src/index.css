@@ -64,39 +64,39 @@
   }
 
   .dark {
-    --bg-base-rgb-dark: 20, 25, 40;
+    --bg-base-rgb-dark: 15, 15, 15;
 
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
     ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
-    /* Rich Midnight Blue Base (#0B1120) */
-    --background: 222 47% 8%;
+    /* Sleek Deep Neutral Base (#0A0A0A) */
+    --background: 0 0% 4%;
     
-    /* Soft Blue-White Typography */
-    --foreground: 214 32% 91%;
+    /* Crisp White-Gray Typography */
+    --foreground: 0 0% 95%;
     
-    /* Slightly lighter navy for cards (#0F172A) */
-    --card: 222 47% 11%;
-    --card-foreground: 214 32% 91%;
-    --popover: 222 47% 11%;
-    --popover-foreground: 214 32% 91%;
+    /* Sleek elevated cards (#1C1C1E) */
+    --card: 240 2% 11%;
+    --card-foreground: 0 0% 95%;
+    --popover: 240 2% 11%;
+    --popover-foreground: 0 0% 95%;
     
     /* Vivid Primary Emerald */
     --primary: 149 100% 33%;
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 0 0% 98%;
     
-    /* Indigo-tinted secondary/muted elements */
-    --secondary: 217 32% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 32% 17%;
-    --muted-foreground: 215 20% 65%;
+    /* Sleek secondary/muted elements */
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
     
-    --accent: 217 32% 17%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
     
     /* Destructive Accents */
     --destructive: 0 62% 30%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
     
     /* Soft Indigo-Navy Borders */
     --border: 217 32% 17%;

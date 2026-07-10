@@ -20,9 +20,9 @@ export default function AccountHelp() {
   };
 
   return (
-    <div className="flex relative w-full h-full min-h-[calc(100vh-120px)] overflow-hidden">
+    <div className="flex relative w-full h-full min-h-[calc(100vh-120px)] overflow-hidden bg-transparent">
       {/* Main Content Area */}
-      <div className={`animate-in fade-in duration-500 w-full transition-all duration-500 ease-in-out pb-20 px-4 sm:px-6 lg:px-8 ${(isChatOpen || isPhoneOpen) ? 'lg:pr-[420px]' : ''}`}>
+      <div className={`animate-in fade-in duration-500 flex-1 transition-all duration-500 ease-in-out pb-20 px-4 sm:px-6 lg:px-8`}>
         <div className="max-w-4xl mx-auto">
           <div className="mb-12 text-center relative pt-4">
             <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent dark:from-blue-900/20 rounded-full blur-3xl opacity-70"></div>

@@ -60,9 +60,9 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
       } else {
         const lowerText = newMsg.text.toLowerCase().trim();
         if (['hi', 'hello', 'hey', 'greetings'].includes(lowerText)) {
-          replyText = "Hello! I am the Optavel Support Assistant. How can I help you today?";
+          replyText = "Hello! How can I assist you with Optavel today?";
         } else {
-          replyText = `I understand you're asking about "${newMsg.text}". Optavel provides comprehensive ecosystem tools. Could you provide more details, or would you like to speak to a human admin?`;
+          replyText = `I can certainly help you with that. Optavel provides comprehensive ecosystem tools. Could you provide a bit more detail about your issue, or would you prefer to speak to a human admin?`;
         }
       }
       
@@ -89,8 +89,8 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
       
       {/* Panel */}
       <div className={`
-        absolute top-0 right-0 h-full w-full sm:w-[400px] bg-white dark:bg-[#1C1C1E] border-l border-slate-200 dark:border-slate-800 shadow-2xl z-50 flex flex-col transform transition-transform duration-500 ease-in-out
-        ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+        fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] lg:relative lg:inset-auto lg:z-0 lg:w-[400px] lg:shrink-0 bg-white dark:bg-[#1C1C1E] lg:border-l lg:border-slate-200 dark:lg:border-slate-800 lg:shadow-none shadow-2xl flex flex-col transform transition-transform duration-500 ease-in-out
+        ${isOpen ? 'translate-x-0' : 'translate-x-full lg:hidden'}
       `}>
         
         {/* Header */}

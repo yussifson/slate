@@ -78,8 +78,8 @@ export default function PhoneSupportPanel({ isOpen, onClose }) {
       
       {/* Panel */}
       <div className={`
-        absolute top-0 right-0 h-full w-full sm:w-[400px] bg-white dark:bg-[#1C1C1E] border-l border-slate-200 dark:border-slate-800 shadow-2xl z-50 flex flex-col transform transition-transform duration-500 ease-in-out overflow-y-auto
-        ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+        fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] lg:relative lg:inset-auto lg:z-0 lg:w-[400px] lg:shrink-0 bg-white dark:bg-[#1C1C1E] lg:border-l lg:border-slate-200 dark:lg:border-slate-800 lg:shadow-none shadow-2xl flex flex-col transform transition-transform duration-500 ease-in-out overflow-y-auto
+        ${isOpen ? 'translate-x-0' : 'translate-x-full lg:hidden'}
       `}>
         
         {/* Header */}

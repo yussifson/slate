@@ -665,7 +665,8 @@ export const AuthProvider = ({ children }) => {
           refresh_token: targetAccount.refresh_token
         });
         if (error) throw error;
-        window.location.reload(); // Hard reload to clear cached data for safety
+        // The onAuthStateChange listener in AuthContext will automatically trigger
+        // checkUserAuth, which will set the new user state across the app seamlessly.
       } else {
         throw new Error("No tokens found for account");
       }

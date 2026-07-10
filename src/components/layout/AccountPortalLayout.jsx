@@ -6,6 +6,7 @@ import { Menu, X, Home, UserCircle, ShieldCheck, CreditCard, MonitorSmartphone, 
 import { supabase } from "@/api/supabaseClient";
 import { useTheme } from "@/lib/ThemeContext";
 import AccountSwitcher from './AccountSwitcher';
+import CompanySelectionModal from './CompanySelectionModal';
 
 export default function AccountPortalLayout() {
   const { user, profile } = useAuth();
@@ -63,6 +64,7 @@ export default function AccountPortalLayout() {
   };
 
   const [isAppsLauncherOpen, setIsAppsLauncherOpen] = useState(false);
+  const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
 
   const baseNavItems = [
     { name: 'Home', path: '/', icon: Home },
@@ -88,6 +90,30 @@ export default function AccountPortalLayout() {
   };
 
   const initials = getInitials(profile?.first_name, profile?.last_name, user?.email);
+
+  const handleAppLauncherClick = (baseUrl, isSlate = false) => {
+    if (isSlate) {
+      setIsAppsLauncherOpen(false);
+      setIsCompanyModalOpen(true);
+      return;
+    }
+    
+    // For other apps, construct auto-login URL with token
+    const url = new URL(baseUrl);
+    try {
+      // Try fetching session from local storage to demonstrate auto login
+      const tokenStr = localStorage.getItem('slate_session');
+      if (tokenStr) {
+        const session = JSON.parse(tokenStr);
+        if (session.access_token) {
+          url.searchParams.append('access_token', session.access_token);
+          url.searchParams.append('action', 'auto_login');
+        }
+      }
+    } catch (e) {}
+    window.open(url.toString(), '_blank');
+    setIsAppsLauncherOpen(false);
+  };
 
   return (
     <div className="h-screen overflow-hidden bg-background text-foreground font-sans flex flex-col md:flex-row transition-colors duration-200">
@@ -231,7 +257,7 @@ export default function AccountPortalLayout() {
            </div>
            
            <div className="grid grid-cols-2 gap-3">
-             <a href="https://slate.optavel.com" className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors group">
+             <button onClick={() => handleAppLauncherClick('https://slate.optavel.com', true)} className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors group">
                <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
                  <Logo className="w-8 h-8" />
                </div>
@@ -239,37 +265,37 @@ export default function AccountPortalLayout() {
                  <span className="block text-sm font-medium text-gray-900 dark:text-white">Slate</span>
                  <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Business</span>
                </div>
-             </a>
+             </button>
              
-             <div className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors opacity-60 cursor-not-allowed">
-               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800">
+             <button onClick={() => handleAppLauncherClick('https://preloom.optavel.com')} className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors group">
+               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
                  <Database className="w-7 h-7 text-green-500" />
                </div>
                <div className="text-center">
                  <span className="block text-sm font-medium text-gray-900 dark:text-white">Preloom</span>
                  <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Data</span>
                </div>
-             </div>
+             </button>
              
-             <div className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors opacity-60 cursor-not-allowed">
-               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800">
+             <button onClick={() => handleAppLauncherClick('https://teleply.optavel.com')} className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors group">
+               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
                  <PhoneCall className="w-7 h-7 text-indigo-500" />
                </div>
                <div className="text-center">
                  <span className="block text-sm font-medium text-gray-900 dark:text-white">Teleply</span>
                  <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Telehealth</span>
                </div>
-             </div>
+             </button>
              
-             <div className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors opacity-60 cursor-not-allowed">
-               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800">
+             <button onClick={() => handleAppLauncherClick('https://clipad.optavel.com')} className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors group">
+               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
                  <Video className="w-7 h-7 text-orange-500" />
                </div>
                <div className="text-center">
                  <span className="block text-sm font-medium text-gray-900 dark:text-white">Clipad</span>
                  <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Productivity</span>
                </div>
-             </div>
+             </button>
            </div>
            
            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 text-center">
@@ -296,6 +322,7 @@ export default function AccountPortalLayout() {
         <div className={`w-full ${['/help', '/admin'].includes(location.pathname) ? 'flex-1' : 'max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12 pb-32'}`}>
            <Outlet />
         </div>
+        <CompanySelectionModal isOpen={isCompanyModalOpen} onClose={() => setIsCompanyModalOpen(false)} />
       </main>
       
       {/* Mobile Overlay */}

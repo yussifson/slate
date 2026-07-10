@@ -33,7 +33,7 @@ const slides = [
           <span className="text-xs font-semibold text-blue-600 dark:text-blue-300">Link Ready</span>
         </div>
         <div className="absolute bottom-10 left-6 bg-white dark:bg-slate-800 border border-blue-100 dark:border-blue-900/30 rounded-xl px-3 py-1.5 shadow-lg">
-          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 font-mono">meet.optavel.com/join/...</span>
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 font-mono">clipad.optavel.com/join/...</span>
         </div>
       </div>
     ),
@@ -196,10 +196,10 @@ export default function MeetLandingPage() {
         <meta name="keywords" content="CliPad, video meeting, online video call, video conferencing, free video call, HD video call, team meeting, virtual meeting, enterprise video, secure video call, Google Meet alternative, Zoom alternative" />
         <meta name="robots" content="index, follow" />
         <meta name="author" content="Optavel" />
-        <link rel="canonical" href="https://meet.optavel.com/" />
+        <link rel="canonical" href="https://clipad.optavel.com/" />
         {/* Open Graph */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://meet.optavel.com/" />
+        <meta property="og:url" content="https://clipad.optavel.com/" />
         <meta property="og:title" content="CliPad — Free HD Video Meetings for Teams" />
         <meta property="og:description" content="Start or join a free HD video meeting in seconds. Secure, enterprise-grade video conferencing by Optavel — no downloads, no friction." />
         <meta property="og:site_name" content="CliPad" />
@@ -214,7 +214,7 @@ export default function MeetLandingPage() {
           "@context": "https://schema.org",
           "@type": "WebApplication",
           "name": "CliPad",
-          "url": "https://meet.optavel.com",
+          "url": "https://clipad.optavel.com",
           "description": "Free, secure, enterprise-grade HD video conferencing. Start or join meetings instantly — no downloads required.",
           "applicationCategory": "CommunicationApplication",
           "operatingSystem": "Any",

@@ -125,7 +125,7 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
       if (meetingDomain.includes('localhost') || meetingDomain.includes('127.0.0.1')) {
         meetingDomain = `meet.localhost`;
       } else if (meetingDomain.includes('optavel.com')) {
-        meetingDomain = `meet.optavel.com`;
+        meetingDomain = `clipad.optavel.com`;
       } else if (meetingDomain.includes('oatstack.com')) {
         meetingDomain = `meet.oatstack.com`;
       } else {

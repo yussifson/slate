@@ -12,6 +12,14 @@ import PageNotFound from './lib/PageNotFound';
 const JoinMeeting = React.lazy(() => import('@/pages/JoinMeeting'));
 const StandaloneMeeting = React.lazy(() => import('@/pages/StandaloneMeeting'));
 const MeetLandingPage = React.lazy(() => import('@/pages/MeetLandingPage'));
+
+// CliPad Imports
+const SpaceDashboard = React.lazy(() => import('@/pages/clipad/SpaceDashboard'));
+const RecordVideo = React.lazy(() => import('@/pages/clipad/RecordVideo'));
+const WatchVideo = React.lazy(() => import('@/pages/clipad/WatchVideo'));
+const CliPadSettings = React.lazy(() => import('@/pages/clipad/CliPadSettings'));
+const VideoAnalytics = React.lazy(() => import('@/pages/clipad/VideoAnalytics'));
+
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import { ImpersonationProvider } from '@/lib/ImpersonationContext';
@@ -741,6 +749,14 @@ function PlatformRoutes() {
       {/* Vocational Suite Routes */}
       <Route path="/v/" element={<VDashboard />} />
       <Route path="/v/trades" element={<VTrades />} />
+      
+      {/* CliPad Routes */}
+      <Route path="/clipad/space/:spaceId" element={<SpaceDashboard />} />
+      <Route path="/clipad/record" element={<RecordVideo />} />
+      <Route path="/clipad/watch/:videoId" element={<WatchVideo />} />
+      <Route path="/clipad/settings" element={<CliPadSettings />} />
+      <Route path="/clipad/analytics" element={<VideoAnalytics />} />
+
       <Route path="/v/courses" element={<VCourses />} />
       <Route path="/v/workshops" element={<VWorkshops />} />
       <Route path="/v/practical-modules" element={<VPracticalModules />} />
@@ -1155,7 +1171,7 @@ function App() {
   const { currentSubdomain } = getSubdomainAndBase();
   const isNativeApp = isDesktopApp();
   const isBaseDomain = currentSubdomain === null;
-  const isMeetDomain = currentSubdomain === 'meet' || window.location.hostname.startsWith('meet.');
+  const isMeetDomain = currentSubdomain === 'clipad' || window.location.hostname.startsWith('clipad.');
   const isAccountDomain = currentSubdomain === 'account' || window.location.hostname.startsWith('account.');
 
   useEffect(() => {
