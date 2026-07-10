@@ -20,7 +20,7 @@ function StatCard({ icon: Icon, color, value, label, trend }) {
 }
 
 export default function VideoAnalytics() {
-  const { user } = useAuth();
+  const { user, isLoadingAuth } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -32,7 +32,17 @@ export default function VideoAnalytics() {
     recentViews: []
   });
 
-  useEffect(() => { if (user) fetchAnalytics(); }, [user]);
+  useEffect(() => {
+    if (!isLoadingAuth && !user) {
+      navigate('/login');
+    }
+  }, [isLoadingAuth, user, navigate]);
+
+  useEffect(() => { 
+    if (user) {
+      fetchAnalytics(); 
+    }
+  }, [user]);
 
   const fetchAnalytics = async () => {
     setLoading(true);
