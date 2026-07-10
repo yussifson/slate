@@ -4,7 +4,10 @@ import { useAuth } from '@/lib/AuthContext';
 import { supabase } from "@/api/supabaseClient";
 
 export default function AccountPersonalInfo() {
-  const { user, refreshUser } = useAuth();
+  const { user, profile, refreshUser } = useAuth();
+  
+  const isSuperAdmin = profile?.role === 'super_admin' || user?.role === 'super_admin';
+  const isPremium = profile?.plan === 'premium' || user?.plan === 'premium';
   
   // Clean malformed avatar URLs
   let safeAvatarUrl = user?.avatar_url || '';
@@ -19,6 +22,12 @@ export default function AccountPersonalInfo() {
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingBirthday, setIsEditingBirthday] = useState(false);
   const [isEditingPhone, setIsEditingPhone] = useState(false);
+  
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [emailInput, setEmailInput] = useState(user?.email || '');
+  
+  const [category, setCategory] = useState(user?.user_metadata?.category || profile?.industry || '');
+  const [isEditingCategory, setIsEditingCategory] = useState(false);
   
   const [isEditingAvatar, setIsEditingAvatar] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -156,27 +165,53 @@ export default function AccountPersonalInfo() {
   const handleSavePhone = async () => {
     setIsSaving(true);
     try {
-      const { error } = await supabase.from('profiles').update({ phone }).eq('id', user.id);
-      if (error) throw error;
+      const { error: profileErr } = await supabase.from('profiles').update({ phone }).eq('id', user.id);
+      if (profileErr) throw profileErr;
       
-      // Update Auth phone (might require OTP if enabled, but we just try it)
-      const { error: authErr } = await supabase.auth.updateUser({
-        phone: phone
-      });
-      if (authErr && !authErr.message.includes('rate limit')) {
-         console.warn("Auth phone update warning:", authErr.message);
-      }
-
-      const cached = localStorage.getItem('slate_cached_user');
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        parsed.phone = phone;
-        localStorage.setItem('slate_cached_user', JSON.stringify(parsed));
+      // Update Auth phone
+      const { error: authErr } = await supabase.auth.updateUser({ phone });
+      if (authErr && !authErr.message?.includes('rate limit')) {
+        console.warn("Auth phone update warning:", authErr.message);
       }
       if (refreshUser) await refreshUser();
       setIsEditingPhone(false);
     } catch (err) {
-      alert("Error saving phone: " + err.message);
+      alert("Error: " + err.message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSaveEmail = async () => {
+    if (!emailInput) return;
+    setIsSaving(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ email: emailInput });
+      if (error) throw error;
+      alert("A verification link has been sent to " + emailInput);
+      setIsEditingEmail(false);
+    } catch (err) {
+      alert("Error updating email: " + err.message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSaveCategory = async () => {
+    setIsSaving(true);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: { category }
+      });
+      if (error) throw error;
+      
+      const { error: profileError } = await supabase.from('profiles').update({ industry: category }).eq('id', user.id);
+      if (profileError) throw profileError;
+
+      if (refreshUser) await refreshUser();
+      setIsEditingCategory(false);
+    } catch (err) {
+      alert("Error updating category: " + err.message);
     } finally {
       setIsSaving(false);
     }
@@ -255,8 +290,8 @@ export default function AccountPersonalInfo() {
                         </div>
                      </div>
                      <div className={`relative shrink-0 rounded-full ${
-                        user?.role === 'super_admin' ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-[#28292C]' :
-                        user?.plan === 'premium' ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-[#28292C]' : ''
+                        isSuperAdmin ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-[#28292C]' :
+                        isPremium ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-[#28292C]' : ''
                      }`}>
                        {safeAvatarUrl ? (
                           <img src={safeAvatarUrl} alt="Avatar" className="w-14 h-14 rounded-full object-cover shadow-sm bg-gray-100" />
@@ -266,12 +301,12 @@ export default function AccountPersonalInfo() {
                           </div>
                        )}
                        
-                       {user?.plan === 'premium' && (
+                       {isPremium && (
                          <div className="absolute -top-2 -right-2 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-md z-30 flex items-center gap-0.5">
                            <Crown className="w-2.5 h-2.5" /> Pro
                          </div>
                        )}
-                       {user?.role === 'super_admin' && (
+                       {isSuperAdmin && (
                          <div className="absolute -top-2 -right-4 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-md z-30">
                            Admin
                          </div>
@@ -294,12 +329,12 @@ export default function AccountPersonalInfo() {
                      className="w-full h-10 px-3 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white"
                    />
                    <div className="flex gap-2 pt-2">
-                     <button onClick={handleSaveName} disabled={isSaving} className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90">Save</button>
-                     <button onClick={() => setIsEditingName(false)} className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</button>
+                     <button type="button" onClick={(e) => { e.stopPropagation(); handleSaveName(); }} disabled={isSaving} className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90">Save</button>
+                     <button type="button" onClick={(e) => { e.stopPropagation(); setIsEditingName(false); }} className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</button>
                    </div>
                  </div>
                ) : (
-                 <div className="flex items-center justify-between w-full" onClick={() => setIsEditingName(true)}>
+                 <div className="flex items-center justify-between w-full" onClick={(e) => { e.stopPropagation(); setIsEditingName(true); }}>
                    <div className="flex-1 grid grid-cols-[120px_1fr] md:grid-cols-[160px_1fr] items-center">
                       <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Name</div>
                       <div className="text-sm text-gray-900 dark:text-white font-medium">
@@ -325,16 +360,48 @@ export default function AccountPersonalInfo() {
                      className="w-full h-10 px-3 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white"
                    />
                    <div className="flex gap-2 pt-2">
-                     <button onClick={handleSaveBirthday} disabled={isSaving} className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90">Save</button>
-                     <button onClick={() => setIsEditingBirthday(false)} className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</button>
+                     <button type="button" onClick={(e) => { e.stopPropagation(); handleSaveBirthday(); }} disabled={isSaving} className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90">Save</button>
+                     <button type="button" onClick={(e) => { e.stopPropagation(); setIsEditingBirthday(false); }} className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</button>
                    </div>
                  </div>
                ) : (
-                 <div className="flex items-center justify-between w-full" onClick={() => setIsEditingBirthday(true)}>
+                 <div className="flex items-center justify-between w-full" onClick={(e) => { e.stopPropagation(); setIsEditingBirthday(true); }}>
                    <div className="flex-1 grid grid-cols-[120px_1fr] md:grid-cols-[160px_1fr] items-center">
                       <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Birthday</div>
                       <div className="text-sm text-gray-900 dark:text-white font-medium">
                         {birthday ? new Date(birthday).toLocaleDateString() : "Add birthday"}
+                      </div>
+                   </div>
+                   <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                   </svg>
+                 </div>
+               )}
+            </div>
+            
+            {/* Category */}
+            <div className="p-6 md:px-8 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
+               {isEditingCategory ? (
+                 <div className="space-y-4 max-w-md">
+                   <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Category / Industry</div>
+                   <input 
+                     type="text" 
+                     value={category} 
+                     onChange={e => setCategory(e.target.value)}
+                     placeholder="e.g. Legal, Healthcare, Real Estate"
+                     className="w-full h-10 px-3 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white"
+                   />
+                   <div className="flex gap-2 pt-2">
+                     <button type="button" onClick={(e) => { e.stopPropagation(); handleSaveCategory(); }} disabled={isSaving} className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90">Save</button>
+                     <button type="button" onClick={(e) => { e.stopPropagation(); setIsEditingCategory(false); }} className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</button>
+                   </div>
+                 </div>
+               ) : (
+                 <div className="flex items-center justify-between w-full" onClick={(e) => { e.stopPropagation(); setIsEditingCategory(true); }}>
+                   <div className="flex-1 grid grid-cols-[120px_1fr] md:grid-cols-[160px_1fr] items-center">
+                      <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Category</div>
+                      <div className="text-sm text-gray-900 dark:text-white font-medium">
+                        {category || "Add your category"}
                       </div>
                    </div>
                    <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -353,14 +420,32 @@ export default function AccountPersonalInfo() {
           
           <div className="divide-y divide-gray-100 dark:divide-gray-800">
             {/* Email */}
-            <div className="p-6 md:px-8 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
-               <div className="flex-1 grid grid-cols-[120px_1fr] md:grid-cols-[160px_1fr] items-center">
-                  <div className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-2">Email</div>
-                  <div className="text-sm text-gray-900 dark:text-white font-medium">{user?.email}</div>
-               </div>
-               <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-               </svg>
+            <div className="p-6 md:px-8 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
+               {isEditingEmail ? (
+                 <div className="space-y-4 max-w-md">
+                   <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Email</div>
+                   <input 
+                     type="email" 
+                     value={emailInput} 
+                     onChange={e => setEmailInput(e.target.value)}
+                     className="w-full h-10 px-3 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white"
+                   />
+                   <div className="flex gap-2 pt-2">
+                     <button type="button" onClick={(e) => { e.stopPropagation(); handleSaveEmail(); }} disabled={isSaving} className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90">Save</button>
+                     <button type="button" onClick={(e) => { e.stopPropagation(); setIsEditingEmail(false); }} className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</button>
+                   </div>
+                 </div>
+               ) : (
+                 <div className="flex items-center justify-between w-full" onClick={(e) => { e.stopPropagation(); setIsEditingEmail(true); }}>
+                   <div className="flex-1 grid grid-cols-[120px_1fr] md:grid-cols-[160px_1fr] items-center">
+                      <div className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-2">Email</div>
+                      <div className="text-sm text-gray-900 dark:text-white font-medium">{user?.email}</div>
+                   </div>
+                   <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                   </svg>
+                 </div>
+               )}
             </div>
             
             {/* Phone */}
@@ -376,12 +461,12 @@ export default function AccountPersonalInfo() {
                      className="w-full h-10 px-3 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white"
                    />
                    <div className="flex gap-2 pt-2">
-                     <button onClick={handleSavePhone} disabled={isSaving} className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90">Save</button>
-                     <button onClick={() => setIsEditingPhone(false)} className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</button>
+                     <button type="button" onClick={(e) => { e.stopPropagation(); handleSavePhone(); }} disabled={isSaving} className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90">Save</button>
+                     <button type="button" onClick={(e) => { e.stopPropagation(); setIsEditingPhone(false); }} className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</button>
                    </div>
                  </div>
                ) : (
-                 <div className="flex items-center justify-between w-full" onClick={() => setIsEditingPhone(true)}>
+                 <div className="flex items-center justify-between w-full" onClick={(e) => { e.stopPropagation(); setIsEditingPhone(true); }}>
                    <div className="flex-1 grid grid-cols-[120px_1fr] md:grid-cols-[160px_1fr] items-center">
                       <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</div>
                       <div className="text-sm text-gray-900 dark:text-white font-medium">

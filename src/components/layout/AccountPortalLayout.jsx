@@ -61,7 +61,10 @@ export default function AccountPortalLayout() {
     { name: 'Help Center', path: '/help', icon: HelpCircle },
   ];
 
-  const navItems = profile?.role === 'super_admin' 
+  const isSuperAdmin = profile?.role === 'super_admin' || user?.role === 'super_admin';
+  const isPremium = profile?.plan === 'premium' || user?.plan === 'premium';
+
+  const navItems = isSuperAdmin 
     ? [...baseNavItems, { name: 'Admin Portal', path: '/admin', icon: Lock }]
     : baseNavItems;
 
@@ -89,11 +92,11 @@ export default function AccountPortalLayout() {
           </div>
         </div>
         <div className={`relative shrink-0 rounded-full ${
-          profile?.role === 'super_admin' ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-background' :
-          profile?.plan === 'premium' ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-background' : ''
+          isSuperAdmin ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-background' :
+          isPremium ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-background' : ''
         }`}>
-          {profile?.avatar_url ? (
-            <img src={profile.avatar_url} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
+          {profile?.avatar_url || user?.avatar_url ? (
+            <img src={profile?.avatar_url || user?.avatar_url} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
           ) : (
             <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-medium text-sm">
               {initials}

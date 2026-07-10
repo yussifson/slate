@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, KeyRound, Smartphone, Activity, CheckCircle2, AlertCircle, X, Check } from 'lucide-react';
+import { ShieldCheck, KeyRound, Smartphone, Activity, CheckCircle2, AlertCircle, X, Check, Twitter, Link as LinkIcon } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from "@/api/supabaseClient";
 
@@ -18,6 +18,25 @@ export default function AccountSecurity() {
   const [verifyCode, setVerifyCode] = useState('');
   const [mfaError, setMfaError] = useState('');
   const [factorId, setFactorId] = useState('');
+  
+  const [isLinkingTwitter, setIsLinkingTwitter] = useState(false);
+
+  const handleLinkTwitter = async () => {
+    setIsLinkingTwitter(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'twitter',
+        options: {
+          redirectTo: window.location.origin + '/security'
+        }
+      });
+      if (error) throw error;
+    } catch (e) {
+      alert("Error linking Twitter: " + e.message);
+    } finally {
+      setIsLinkingTwitter(false);
+    }
+  };
 
   useEffect(() => {
     loadMfa();
@@ -159,12 +178,12 @@ export default function AccountSecurity() {
                    />
                    {passwordMsg && <p className="text-sm text-red-500">{passwordMsg}</p>}
                    <div className="flex gap-2 pt-2">
-                     <button onClick={handleSavePassword} disabled={isSubmitting} className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90">Save Password</button>
-                     <button onClick={() => setIsChangingPassword(false)} className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</button>
+                     <button type="button" onClick={(e) => { e.stopPropagation(); handleSavePassword(); }} disabled={isSubmitting} className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90">Save Password</button>
+                     <button type="button" onClick={(e) => { e.stopPropagation(); setIsChangingPassword(false); }} className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</button>
                    </div>
                  </div>
                ) : (
-                 <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsChangingPassword(true)}>
+                 <div className="flex items-center justify-between cursor-pointer" onClick={(e) => { e.stopPropagation(); setIsChangingPassword(true); }}>
                    <div>
                       <div className="text-gray-900 dark:text-white font-medium mb-1 flex items-center gap-2">
                         <KeyRound className="w-4 h-4 text-gray-500" />
@@ -197,8 +216,8 @@ export default function AccountSecurity() {
                    />
                    {mfaError && <p className="text-sm text-red-500">{mfaError}</p>}
                    <div className="flex gap-2 pt-2">
-                     <button onClick={handleVerifyMfa} className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90">Verify Code</button>
-                     <button onClick={() => setIsEnrollingMfa(false)} className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</button>
+                     <button type="button" onClick={(e) => { e.stopPropagation(); handleVerifyMfa(); }} className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90">Verify Code</button>
+                     <button type="button" onClick={(e) => { e.stopPropagation(); setIsEnrollingMfa(false); }} className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</button>
                    </div>
                  </div>
                ) : (
@@ -213,9 +232,9 @@ export default function AccountSecurity() {
                       </div>
                    </div>
                    {mfaFactors.length > 0 ? (
-                      <button onClick={() => handleUnenrollMfa(mfaFactors[0].id)} className="px-3 py-1.5 border border-red-200 text-red-600 hover:bg-red-50 rounded-md text-sm font-medium transition-colors">Disable</button>
+                      <button type="button" onClick={(e) => { e.stopPropagation(); handleUnenrollMfa(mfaFactors[0].id); }} className="px-3 py-1.5 border border-red-200 text-red-600 hover:bg-red-50 rounded-md text-sm font-medium transition-colors">Disable</button>
                    ) : (
-                      <div className="cursor-pointer" onClick={handleEnrollMfa}>
+                      <div className="cursor-pointer" onClick={(e) => { e.stopPropagation(); handleEnrollMfa(); }}>
                         <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
@@ -223,6 +242,35 @@ export default function AccountSecurity() {
                    )}
                  </div>
                )}
+            </div>
+            
+            {/* Linked Accounts section */}
+            <div className="p-6 md:px-8 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+               <div className="flex items-center justify-between">
+                 <div>
+                    <div className="text-gray-900 dark:text-white font-medium mb-1 flex items-center gap-2">
+                      <Twitter className="w-4 h-4 text-[#1DA1F2]" />
+                      Twitter / X Verification
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      Link your Twitter account for verification and faster login.
+                    </div>
+                 </div>
+                 
+                 {user?.app_metadata?.providers?.includes('twitter') ? (
+                    <span className="text-green-600 dark:text-green-400 flex items-center gap-1 text-sm font-medium"><Check className="w-4 h-4" /> Linked</span>
+                 ) : (
+                    <button 
+                      type="button" 
+                      onClick={(e) => { e.stopPropagation(); handleLinkTwitter(); }} 
+                      disabled={isLinkingTwitter}
+                      className="px-4 py-2 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md text-sm font-medium transition-colors flex items-center gap-2 text-gray-700 dark:text-gray-200"
+                    >
+                      <LinkIcon className="w-4 h-4" />
+                      {isLinkingTwitter ? 'Linking...' : 'Link Twitter'}
+                    </button>
+                 )}
+               </div>
             </div>
           </div>
         </div>

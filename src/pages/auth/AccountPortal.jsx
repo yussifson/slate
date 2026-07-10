@@ -4,7 +4,10 @@ import { ShieldCheck, MonitorSmartphone, LayoutGrid, Crown } from 'lucide-react'
 import { Link } from 'react-router-dom';
 
 export default function AccountPortal() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  
+  const isSuperAdmin = profile?.role === 'super_admin' || user?.role === 'super_admin';
+  const isPremium = profile?.plan === 'premium' || user?.plan === 'premium';
   
   const getInitials = (fullName, email) => {
     if (fullName) {
@@ -28,8 +31,8 @@ export default function AccountPortal() {
       <div className="flex flex-col items-center text-center mb-12">
         <div className="relative mb-6 group cursor-pointer mt-4">
           <div className={`w-28 h-28 md:w-32 md:h-32 rounded-full bg-blue-600 text-white flex items-center justify-center text-4xl font-medium shadow-lg relative z-10 transition-transform group-hover:scale-105 duration-300 overflow-hidden ${
-             user?.role === 'super_admin' ? 'ring-4 ring-red-500 ring-offset-4 dark:ring-offset-background' :
-             user?.plan === 'premium' ? 'ring-4 ring-primary ring-offset-4 dark:ring-offset-background' : 'ring-4 ring-white dark:ring-[#202124]'
+             isSuperAdmin ? 'ring-4 ring-red-500 ring-offset-4 dark:ring-offset-background' :
+             isPremium ? 'ring-4 ring-primary ring-offset-4 dark:ring-offset-background' : 'ring-4 ring-white dark:ring-[#202124]'
           }`}>
             {user?.avatar_url ? (
                <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover" />
@@ -47,12 +50,12 @@ export default function AccountPortal() {
              </svg>
           </div>
           
-          {user?.plan === 'premium' && (
+          {isPremium && (
             <div className="absolute -top-3 right-0 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full shadow-md z-30 flex items-center gap-1">
               <Crown className="w-3 h-3" /> Premium
             </div>
           )}
-          {user?.role === 'super_admin' && (
+          {isSuperAdmin && (
             <div className="absolute -top-3 right-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md z-30 flex items-center gap-1">
               Admin
             </div>
@@ -100,10 +103,23 @@ export default function AccountPortal() {
            </div>
         </Link>
 
-      </div>
-      
-      </div>
+        {/* Payments & Subscriptions Card */}
+        <Link to="/subscriptions" className="flex flex-col p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] hover:shadow-md transition-shadow group">
+           <div className="w-12 h-12 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-4">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              </svg>
+           </div>
+           <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-2">Payments & subscriptions</h2>
+           <p className="text-gray-600 dark:text-gray-400 text-sm flex-1 mb-6 leading-relaxed">
+             Manage your payment methods and subscriptions across the Optavel ecosystem.
+           </p>
+           <div className="text-blue-600 dark:text-blue-400 text-sm font-medium mt-auto group-hover:underline">
+             Manage payments
+           </div>
+        </Link>
 
+      </div>
     </div>
   );
 }

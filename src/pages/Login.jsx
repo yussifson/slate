@@ -61,11 +61,11 @@ export default function Login() {
  const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
  const showOptavelButtonOnly = !isRootAccount && !isLocalhost && !isElectron;
 
- const handleOptavelSSO = () => {
-   const idpDomain = `https://account.${baseDomain}`;
-   const redirectUri = encodeURIComponent(window.location.origin + '/auth/callback');
-   window.location.href = `${idpDomain}/sso?redirect_uri=${redirectUri}`;
- };
+  const handleOptavelSSO = () => {
+    const idpDomain = isLocalhost ? `http://account.localhost:${window.location.port || '5173'}` : 'https://account.optavel.com';
+    const redirectUri = encodeURIComponent(window.location.origin + '/auth/callback');
+    window.location.href = `${idpDomain}/sso?redirect_uri=${redirectUri}`;
+  };
 
  // Auto-redirect if already authenticated or if mobile user needs onboarding
  useEffect(() => {
