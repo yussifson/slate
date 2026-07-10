@@ -70,15 +70,15 @@
     ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
     /* Sleek Deep Neutral Base (#0A0A0A) */
-    --background: 0 0% 4%;
+    --background: 222 47% 7%;
     
     /* Crisp White-Gray Typography */
     --foreground: 0 0% 95%;
     
-    /* Sleek elevated cards (#1C1C1E) */
-    --card: 240 2% 11%;
+    /* Sleek elevated cards */
+    --card: 222 47% 11%;
     --card-foreground: 0 0% 95%;
-    --popover: 240 2% 11%;
+    --popover: 222 47% 11%;
     --popover-foreground: 0 0% 95%;
     
     /* Vivid Primary Emerald */
@@ -86,12 +86,12 @@
     --primary-foreground: 0 0% 98%;
     
     /* Sleek secondary/muted elements */
-    --secondary: 240 4% 16%;
+    --secondary: 222 47% 16%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 4% 16%;
-    --muted-foreground: 240 5% 65%;
+    --muted: 222 47% 16%;
+    --muted-foreground: 214 32% 75%;
     
-    --accent: 240 4% 16%;
+    --accent: 222 47% 16%;
     --accent-foreground: 0 0% 98%;
     
     /* Destructive Accents */

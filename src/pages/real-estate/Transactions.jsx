@@ -159,7 +159,7 @@ export default function Transactions() {
   };
 
   const KanbanColumn = ({ stage, transactions }) => (
-    <div className="bg-card/60 dark:bg-slate-900/60 backdrop-blur-md rounded-2xl p-5 min-h-[600px] flex flex-col border border-border/40 flex-shrink-0 w-96 shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out">
+    <div className="bg-card/60 dark:bg-card/60 backdrop-blur-md rounded-2xl p-5 min-h-[600px] flex flex-col border border-border/40 flex-shrink-0 w-96 shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out">
       <div className="mb-5 pb-4 border-b border-border/50">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-foreground text-base flex items-center gap-2">
@@ -247,7 +247,7 @@ export default function Transactions() {
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="p-6 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
+            <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
@@ -258,7 +258,7 @@ export default function Transactions() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="p-6 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
+            <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
@@ -269,7 +269,7 @@ export default function Transactions() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="p-6 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
+            <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
@@ -351,13 +351,13 @@ export default function Transactions() {
 
         {/* Transaction Details Sheet */}
         <Sheet open={!!selectedTransaction} onOpenChange={(open) => !open && setSelectedTransaction(null)}>
-          <SheetContent side="right" className="w-full sm:w-[450px] border-l border-gray-200 dark:border-white/10 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl">
+          <SheetContent side="right" className="w-full sm:w-[450px] border-l border-gray-200 dark:border-white/10 bg-white/95 dark:bg-background/95 backdrop-blur-xl">
             <SheetHeader className="border-b border-gray-100 dark:border-white/10 pb-6">
               <SheetTitle className="text-2xl font-bold dark:text-white">Transaction Details</SheetTitle>
             </SheetHeader>
             {selectedTransaction && (
               <div className="space-y-8 mt-8">
-                <div className="bg-gray-50 dark:bg-slate-900/50 rounded-2xl p-6 border border-gray-100 dark:border-white/5">
+                <div className="bg-gray-50 dark:bg-card/50 rounded-2xl p-6 border border-gray-100 dark:border-white/5">
                   <div className="flex items-start gap-4">
                     <div className="p-3 bg-primary/10 dark:bg-primary/30/30 rounded-xl mt-1 border border-primary/20/50 dark:border-primary/40/30">
                       <Home className="w-6 h-6 text-primary dark:text-primary/80" />
@@ -370,14 +370,14 @@ export default function Transactions() {
                 </div>
                 
                 <div className="grid grid-cols-2 gap-6">
-                  <div className="bg-white dark:bg-slate-900 rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-sm">
+                  <div className="bg-white dark:bg-card rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-2 mb-2">
                       <User className="w-4 h-4 text-gray-400" />
                       <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Buyer</p>
                     </div>
                     <p className="font-semibold text-gray-900 dark:text-white">{selectedTransaction.buyer_name}</p>
                   </div>
-                  <div className="bg-white dark:bg-slate-900 rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-sm">
+                  <div className="bg-white dark:bg-card rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-2 mb-2">
                       <User className="w-4 h-4 text-gray-400" />
                       <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Seller</p>
@@ -408,7 +408,7 @@ export default function Transactions() {
                 {selectedTransaction.notes && (
                   <div className="space-y-2 pt-4 border-t border-gray-100 dark:border-white/10">
                     <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Notes</p>
-                    <p className="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-slate-900 p-4 rounded-xl italic border border-gray-100 dark:border-white/5">{selectedTransaction.notes}</p>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-card p-4 rounded-xl italic border border-gray-100 dark:border-white/5">{selectedTransaction.notes}</p>
                   </div>
                 )}
               </div>
@@ -418,7 +418,7 @@ export default function Transactions() {
 
         {/* Form Modal */}
         <Sheet open={showForm} onOpenChange={setShowForm}>
-          <SheetContent className="w-full sm:w-[500px] border-l border-gray-200 dark:border-white/10 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl overflow-y-auto custom-scrollbar">
+          <SheetContent className="w-full sm:w-[500px] border-l border-gray-200 dark:border-white/10 bg-white/95 dark:bg-background/95 backdrop-blur-xl overflow-y-auto custom-scrollbar">
             <SheetHeader className="border-b border-gray-100 dark:border-white/10 pb-6">
               <SheetTitle className="text-2xl font-bold dark:text-white">{editingId ? 'Edit Transaction' : 'New Transaction'}</SheetTitle>
               <SheetDescription className="dark:text-gray-400">Fill in the transaction details below</SheetDescription>
@@ -426,39 +426,39 @@ export default function Transactions() {
             <form onSubmit={handleSubmit} className="space-y-6 mt-8">
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Property Address <span className="text-red-500">*</span></label>
-                <Input className="dark:bg-slate-900 dark:border-white/10 dark:text-white" value={formData.propertyAddress} onChange={(e) => setFormData({ ...formData, propertyAddress: e.target.value })} required />
+                <Input className="dark:bg-card dark:border-white/10 dark:text-white" value={formData.propertyAddress} onChange={(e) => setFormData({ ...formData, propertyAddress: e.target.value })} required />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Buyer <span className="text-red-500">*</span></label>
-                  <Input className="dark:bg-slate-900 dark:border-white/10 dark:text-white" value={formData.buyerName} onChange={(e) => setFormData({ ...formData, buyerName: e.target.value })} required />
+                  <Input className="dark:bg-card dark:border-white/10 dark:text-white" value={formData.buyerName} onChange={(e) => setFormData({ ...formData, buyerName: e.target.value })} required />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Seller</label>
-                  <Input className="dark:bg-slate-900 dark:border-white/10 dark:text-white" value={formData.sellerName} onChange={(e) => setFormData({ ...formData, sellerName: e.target.value })} />
+                  <Input className="dark:bg-card dark:border-white/10 dark:text-white" value={formData.sellerName} onChange={(e) => setFormData({ ...formData, sellerName: e.target.value })} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Sale Price <span className="text-red-500">*</span></label>
-                  <Input className="dark:bg-slate-900 dark:border-white/10 dark:text-white font-medium text-primary dark:text-primary/80" type="number" value={formData.salePrice} onChange={(e) => setFormData({ ...formData, salePrice: parseFloat(e.target.value) })} required />
+                  <Input className="dark:bg-card dark:border-white/10 dark:text-white font-medium text-primary dark:text-primary/80" type="number" value={formData.salePrice} onChange={(e) => setFormData({ ...formData, salePrice: parseFloat(e.target.value) })} required />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Closing Date <span className="text-red-500">*</span></label>
-                  <Input className="dark:bg-slate-900 dark:border-white/10 dark:text-white" type="date" value={formData.closingDate} onChange={(e) => setFormData({ ...formData, closingDate: e.target.value })} required />
+                  <Input className="dark:bg-card dark:border-white/10 dark:text-white" type="date" value={formData.closingDate} onChange={(e) => setFormData({ ...formData, closingDate: e.target.value })} required />
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Agent</label>
-                <Input className="dark:bg-slate-900 dark:border-white/10 dark:text-white" value={formData.agentName} onChange={(e) => setFormData({ ...formData, agentName: e.target.value })} />
+                <Input className="dark:bg-card dark:border-white/10 dark:text-white" value={formData.agentName} onChange={(e) => setFormData({ ...formData, agentName: e.target.value })} />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Status</label>
                 <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
-                  <SelectTrigger className="dark:bg-slate-900 dark:border-white/10 dark:text-white">
+                  <SelectTrigger className="dark:bg-card dark:border-white/10 dark:text-white">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="dark:bg-slate-900 dark:border-white/10">
+                  <SelectContent className="dark:bg-card dark:border-white/10">
                     <SelectItem value="offer_accepted">Offer Accepted</SelectItem>
                     <SelectItem value="inspection">Under Inspection</SelectItem>
                     <SelectItem value="appraisal">Appraisal</SelectItem>
@@ -470,7 +470,7 @@ export default function Transactions() {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Notes</label>
-                <textarea value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })} className="w-full p-3 border rounded-xl text-sm dark:bg-slate-900 dark:border-white/10 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/50" rows="3" placeholder="Add any additional notes here..." />
+                <textarea value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })} className="w-full p-3 border rounded-xl text-sm dark:bg-card dark:border-white/10 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/50" rows="3" placeholder="Add any additional notes here..." />
               </div>
               <div className="flex gap-3 pt-6 border-t border-gray-100 dark:border-white/10">
                 <Button type="submit" className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 dark:shadow-primary/10 rounded-xl transition-all duration-300">

@@ -177,7 +177,7 @@ export default function AdminBroadcasts() {
                 value={announcementText}
                 onChange={(e) => setAnnouncementText(e.target.value)}
                 placeholder="Compose your message here..."
-                className="w-full flex-1 min-h-[300px] p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50/50 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors resize-y"
+                className="w-full flex-1 min-h-[300px] p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50/50 dark:bg-card/50 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors resize-y"
               />
             </div>
           </div>

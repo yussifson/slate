@@ -96,7 +96,7 @@ export default function FeatureVault() {
           <p>Unlocking vault...</p>
         </div>
       ) : drafts.length === 0 ? (
-        <div className="text-center py-24 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+        <div className="text-center py-24 bg-slate-50 dark:bg-card/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
           <Package className="w-16 h-16 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300">Your Vault is Empty</h3>
           <p className="text-slate-500 mt-2 max-w-md mx-auto">When new features are announced, you can save them to draft and they will appear here for later installation.</p>
@@ -105,7 +105,7 @@ export default function FeatureVault() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {drafts.map((draft) => (
             <Card key={draft.id} className="flex flex-col border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all duration-200 group">
-              <CardHeader className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800/50">
+              <CardHeader className="bg-slate-50/50 dark:bg-card/50 border-b border-slate-100 dark:border-slate-800/50">
                 <div className="flex justify-between items-start mb-2">
                   <Badge variant="secondary" className="text-xs uppercase font-bold tracking-wider">
                     {draft.announcement?.announcement_type === 'specific' ? 'Custom Module' : 'General Feature'}

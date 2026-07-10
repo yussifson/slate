@@ -166,7 +166,7 @@ export default function Leave() {
  const rejected = requests.filter(r => r.status === 'Rejected').length;
 
  return (
- <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-slate-900/50 h-full p-4 lg:p-8 font-dmsans">
+ <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-card/50 h-full p-4 lg:p-8 font-dmsans">
   <div className="max-w-[1600px] mx-auto space-y-6">
 
     {/* ── Header ── */}
@@ -207,7 +207,7 @@ export default function Leave() {
         Loading leave requests...
       </div>
     ) : requests.length === 0 ? (
-      <div className="py-16 text-center text-muted-foreground bg-white dark:bg-slate-900 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8">
+      <div className="py-16 text-center text-muted-foreground bg-white dark:bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8">
         <CalendarOff className="w-14 h-14 mx-auto mb-3 opacity-20 text-amber-600" />
         <p className="font-semibold text-lg text-foreground">{t("no_leave_requests_found", "No leave requests found")}</p>
         <p className="text-sm mt-1">{t("submit_a_new_request_using_the", "Submit a new request using the button above.")}</p>
@@ -219,7 +219,7 @@ export default function Leave() {
           const statusStyle = STATUS_STYLES[req.status] || STATUS_STYLES['Pending'];
           const initials = req.employeeName?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
           return (
-            <div key={req.id} className={`group bg-white dark:bg-slate-900 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col border-l-4 ${leaveStyle.accent}`}>
+            <div key={req.id} className={`group bg-white dark:bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col border-l-4 ${leaveStyle.accent}`}>
               
               {/* Card Header */}
               <div className="p-5">
@@ -297,7 +297,7 @@ export default function Leave() {
   {/* ── Add / Edit Modal ── */}
   {showModal && (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-  <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-2xl border-[0.5px] border-black/9 dark:border-white/8">
+  <div className="bg-white dark:bg-card rounded-2xl w-full max-w-md shadow-2xl border-[0.5px] border-black/9 dark:border-white/8">
     <div className="p-6 border-b border-border/50">
       <h2 className="text-lg font-bold text-foreground">{editTargetId ? 'Edit Leave Request' : 'New Leave Request'}</h2>
     </div>

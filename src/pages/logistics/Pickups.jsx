@@ -107,7 +107,7 @@ export default function Pickups() {
   );
 
   return (
-    <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-slate-900/50 h-full p-4 lg:p-8">
+    <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-card/50 h-full p-4 lg:p-8">
       <div className="max-w-[1600px] mx-auto space-y-6">
         <PageHeader 
           title="Pickups Management" 
@@ -120,7 +120,7 @@ export default function Pickups() {
                   Schedule Pickup
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl bg-white dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl">
+              <DialogContent className="max-w-2xl bg-white dark:bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl">
                 <DialogHeader>
                   <DialogTitle className="text-xl font-bold">Schedule New Pickup</DialogTitle>
                 </DialogHeader>
@@ -180,28 +180,28 @@ export default function Pickups() {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-4 shadow-sm flex items-center gap-4">
+          <div className="bg-white dark:bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-4 shadow-sm flex items-center gap-4">
             <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600"><Clock className="w-5 h-5" /></div>
             <div>
               <p className="text-sm text-slate-500 font-medium">Pending Pickups</p>
               <h4 className="text-2xl font-bold">{pickups.filter(p => p.status === 'pending').length}</h4>
             </div>
           </div>
-          <div className="bg-white dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-4 shadow-sm flex items-center gap-4">
+          <div className="bg-white dark:bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-4 shadow-sm flex items-center gap-4">
             <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><Truck className="w-5 h-5" /></div>
             <div>
               <p className="text-sm text-slate-500 font-medium">Assigned (Active)</p>
               <h4 className="text-2xl font-bold">{pickups.filter(p => p.status === 'assigned').length}</h4>
             </div>
           </div>
-          <div className="bg-white dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-4 shadow-sm flex items-center gap-4">
+          <div className="bg-white dark:bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-4 shadow-sm flex items-center gap-4">
             <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600"><CheckCircle className="w-5 h-5" /></div>
             <div>
               <p className="text-sm text-slate-500 font-medium">Completed</p>
               <h4 className="text-2xl font-bold">{pickups.filter(p => p.status === 'completed').length}</h4>
             </div>
           </div>
-          <div className="bg-white dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-4 shadow-sm flex items-center gap-4">
+          <div className="bg-white dark:bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-4 shadow-sm flex items-center gap-4">
             <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600"><Package className="w-5 h-5" /></div>
             <div>
               <p className="text-sm text-slate-500 font-medium">Total Pickups</p>
@@ -210,15 +210,15 @@ export default function Pickups() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-          <div className="p-4 border-b border-black/9 dark:border-white/8 flex flex-col sm:flex-row gap-4 items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
+        <div className="bg-white dark:bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+          <div className="p-4 border-b border-black/9 dark:border-white/8 flex flex-col sm:flex-row gap-4 items-center justify-between bg-slate-50/50 dark:bg-card/50">
             <div className="relative w-full max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
                 placeholder="Search pickups..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="pl-9 bg-white dark:bg-slate-900 border-black/9 dark:border-white/8 rounded-xl h-10"
+                className="pl-9 bg-white dark:bg-card border-black/9 dark:border-white/8 rounded-xl h-10"
               />
             </div>
           </div>

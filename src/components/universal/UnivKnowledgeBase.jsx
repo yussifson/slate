@@ -229,7 +229,7 @@ export default function UnivKnowledgeBase({
  <div className="flex h-full w-full bg-background overflow-hidden text-foreground font-sans">
  
  {/* SIDEBAR */}
- <div className="w-64 flex-shrink-0 border-r border-primary/40 bg-slate-50/50 dark:bg-slate-900/20 flex flex-col">
+ <div className="w-64 flex-shrink-0 border-r border-primary/40 bg-slate-50/50 dark:bg-card/20 flex flex-col">
  <div className="p-4 border-b border-primary/40">
  <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
  <Folder className="w-5 h-5 text-primary" />

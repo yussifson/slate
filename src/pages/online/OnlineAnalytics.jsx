@@ -13,7 +13,7 @@ export default function OnlineAnalytics() {
  <p className="text-[#71717a] dark:text-gray-400 mt-1">Deep insights into student engagement, completion rates, and revenue.</p>
  </div>
  <div className="flex gap-4">
- <Button variant="outline" className="bg-white dark:bg-slate-900/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Calendar className="h-4 w-4 mr-2" /> Last 30 Days</Button>
+ <Button variant="outline" className="bg-white dark:bg-card/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Calendar className="h-4 w-4 mr-2" /> Last 30 Days</Button>
  <Button className="bg-primary hover:bg-primary/90 text-white"><Download className="h-4 w-4 mr-2" /> Export Report</Button>
  </div>
  </div>

@@ -238,7 +238,7 @@ export default function AppLayout() {
   <ElectronTitleBar />
   <div className="flex flex-1 overflow-hidden relative overscroll-y-none">
  {/* Clean Background */}
- <div className="absolute inset-0 z-0 bg-white dark:bg-[#0A0F1C] pointer-events-none transition-all duration-1000">
+ <div className="absolute inset-0 z-0 bg-white dark:bg-background pointer-events-none transition-all duration-1000">
  </div>
 
  <div className="z-10 flex">

@@ -375,7 +375,7 @@ export default function StudentPortal() {
 
       {submitModal.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-slate-900 border border-primary/20 w-full max-w-lg p-6 space-y-4 rounded-2xl shadow-xl">
+          <div className="bg-white dark:bg-card border border-primary/20 w-full max-w-lg p-6 space-y-4 rounded-2xl shadow-xl">
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Submit Assignment</h2>
             <p className="text-sm text-slate-500">{submitModal.assignment?.title}</p>
             <div>

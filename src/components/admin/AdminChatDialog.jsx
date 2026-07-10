@@ -115,7 +115,7 @@ export default function AdminChatDialog({ open, onOpenChange, targetUser }) {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/30 dark:bg-slate-900/10">
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/30 dark:bg-card/10">
           {loading ? (
             <div className="flex items-center justify-center h-full">
               <Loader2 className="w-6 h-6 animate-spin text-primary" />
@@ -172,7 +172,7 @@ export default function AdminChatDialog({ open, onOpenChange, targetUser }) {
         </div>
 
         {chatSession && (
-          <div className="p-4 bg-white dark:bg-[#1C1C1E] border-t border-slate-100 dark:border-slate-800 shrink-0">
+          <div className="p-4 bg-white dark:bg-card border-t border-slate-100 dark:border-slate-800 shrink-0">
             <div className="relative flex items-center max-w-4xl mx-auto">
               <Input
                 type="text"

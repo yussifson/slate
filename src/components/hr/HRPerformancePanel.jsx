@@ -201,7 +201,7 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Staff Member *</Label>
               <Select value={form.staff_id} onValueChange={v => setForm({...form, staff_id: v})}>
-                <SelectTrigger className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none"><SelectValue placeholder="Select staff..."/></SelectTrigger>
+                <SelectTrigger className="bg-slate-50 dark:bg-card rounded-xl border-none"><SelectValue placeholder="Select staff..."/></SelectTrigger>
                 <SelectContent className="rounded-xl max-h-60">
                   {staff.map(s => <SelectItem key={s.id} value={s.id}>{s.name || s.full_name}</SelectItem>)}
                 </SelectContent>
@@ -209,31 +209,31 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
             </div>
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Review Period *</Label>
-              <Input placeholder="e.g. Q3 2026" value={form.period} onChange={e => setForm({...form, period: e.target.value})} className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none" />
+              <Input placeholder="e.g. Q3 2026" value={form.period} onChange={e => setForm({...form, period: e.target.value})} className="bg-slate-50 dark:bg-card rounded-xl border-none" />
             </div>
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Review Type</Label>
               <Select value={form.type} onValueChange={v => setForm({...form, type: v})}>
-                <SelectTrigger className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="bg-slate-50 dark:bg-card rounded-xl border-none"><SelectValue /></SelectTrigger>
                 <SelectContent className="rounded-xl">{REVIEW_TYPES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Overall Score (0-10)</Label>
-              <Input type="number" min="0" max="10" step="0.1" placeholder="e.g. 8.5" value={form.score} onChange={e => setForm({...form, score: e.target.value})} className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none" />
+              <Input type="number" min="0" max="10" step="0.1" placeholder="e.g. 8.5" value={form.score} onChange={e => setForm({...form, score: e.target.value})} className="bg-slate-50 dark:bg-card rounded-xl border-none" />
             </div>
             <div className="col-span-2">
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Key Strengths</Label>
-              <Textarea value={form.strengths} onChange={e => setForm({...form, strengths: e.target.value})} className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none resize-none" rows={2} />
+              <Textarea value={form.strengths} onChange={e => setForm({...form, strengths: e.target.value})} className="bg-slate-50 dark:bg-card rounded-xl border-none resize-none" rows={2} />
             </div>
             <div className="col-span-2">
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Areas for Improvement</Label>
-              <Textarea value={form.weaknesses} onChange={e => setForm({...form, weaknesses: e.target.value})} className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none resize-none" rows={2} />
+              <Textarea value={form.weaknesses} onChange={e => setForm({...form, weaknesses: e.target.value})} className="bg-slate-50 dark:bg-card rounded-xl border-none resize-none" rows={2} />
             </div>
             <div className="col-span-2">
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Status</Label>
               <Select value={form.status} onValueChange={v => setForm({...form, status: v})}>
-                <SelectTrigger className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="bg-slate-50 dark:bg-card rounded-xl border-none"><SelectValue /></SelectTrigger>
                 <SelectContent className="rounded-xl">
                   <SelectItem value="draft">Draft</SelectItem>
                   <SelectItem value="submitted">Submitted</SelectItem>

@@ -138,12 +138,12 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
       
       {/* Panel */}
       <div className={`
-        fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] lg:relative lg:inset-auto lg:z-0 lg:w-[400px] lg:shrink-0 bg-white dark:bg-[#1C1C1E] lg:border-l lg:border-slate-200 dark:lg:border-slate-800 lg:shadow-none shadow-2xl flex flex-col transform transition-transform duration-500 ease-in-out
+        fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] lg:relative lg:inset-auto lg:z-0 lg:w-[400px] lg:shrink-0 bg-white dark:bg-card lg:border-l lg:border-slate-200 dark:lg:border-slate-800 lg:shadow-none shadow-2xl flex flex-col transform transition-transform duration-500 ease-in-out
         ${isOpen ? 'translate-x-0' : 'translate-x-full lg:hidden'}
       `}>
         
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+        <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-card/50">
            <div className="flex items-center gap-3">
              <div className="relative">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${status === 'admin_joined' ? 'bg-indigo-100 text-indigo-600' : 'bg-primary/10 text-primary'}`}>
@@ -166,7 +166,7 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
         </div>
 
         {/* Chat Area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/30 dark:bg-slate-900/10">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/30 dark:bg-card/10">
            
            <div className="text-center py-4">
              <p className="text-xs text-slate-400 font-medium bg-slate-100 dark:bg-slate-800 inline-block px-3 py-1 rounded-full">Today</p>
@@ -229,8 +229,8 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
         </div>
 
         {/* Input */}
-        <div className="p-4 bg-white dark:bg-[#1C1C1E] border-t border-slate-100 dark:border-slate-800">
-           <div className="relative flex items-end gap-2 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary transition-all p-1">
+        <div className="p-4 bg-white dark:bg-card border-t border-slate-100 dark:border-slate-800">
+           <div className="relative flex items-end gap-2 bg-slate-50 dark:bg-card rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary transition-all p-1">
              <textarea 
                value={input}
                onChange={(e) => setInput(e.target.value)}

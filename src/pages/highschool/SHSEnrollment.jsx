@@ -105,7 +105,7 @@ export default function SHSEnrollment() {
 
  <div className="flex-1 flex flex-col md:flex-row gap-6 overflow-hidden">
  {/* Left Panel: Admitted List */}
- <Card className="w-full md:w-[400px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="w-full md:w-[400px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/5">
  <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-3 flex items-center justify-between">
  Ready to Enroll <Badge className="bg-slate-100 text-primary/90">{admittedApplicants.length}</Badge>
@@ -114,7 +114,7 @@ export default function SHSEnrollment() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-primary" />
  <Input 
  placeholder="Search admitted students..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-9 h-10 bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -139,7 +139,7 @@ export default function SHSEnrollment() {
 }`}
  >
  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold shrink-0 ${
- selectedApplicant?.id === app.id ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
+ selectedApplicant?.id === app.id ? 'bg-white dark:bg-card/40 dark:bg-card/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
 }`}>
  <UserCheck className="w-5 h-5" />
  </div>
@@ -158,7 +158,7 @@ export default function SHSEnrollment() {
  </Card>
 
  {/* Right Panel: Enrollment Form */}
- <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {successMsg && (
  <div className="absolute inset-x-0 top-0 bg-primary text-white p-3 text-center text-sm font-semibold animate-in slide-in-from-top flex justify-center items-center gap-2 z-50">
  <CheckCircle className="w-4 h-4" /> {successMsg}
@@ -172,7 +172,7 @@ export default function SHSEnrollment() {
  <div>
  <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">{selectedApplicant.title}</h2>
  <div className="flex items-center gap-3 mt-2">
- <Badge variant="outline" className="border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{selectedApplicant.case_number}</Badge>
+ <Badge variant="outline" className="border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70 bg-white dark:bg-card/40 dark:bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{selectedApplicant.case_number}</Badge>
  <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Admitted to: {selectedApplicant.data?.programChoice1}</span>
  </div>
  </div>

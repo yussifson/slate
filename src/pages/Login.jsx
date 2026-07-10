@@ -490,7 +490,7 @@ export default function Login() {
   const mainUrl = isDesktopApp() ? '/login' : `${getMainAppUrl()}/login`;
 
  return (
-  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-50/50 dark:bg-slate-900 p-4 font-sans backdrop-blur-sm">
+  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-50/50 dark:bg-card p-4 font-sans backdrop-blur-sm">
     <div className="w-full max-w-md bg-white dark:bg-slate-800 rounded-3xl p-8 text-center border-[0.5px] border-black/9 dark:border-white/8 border-slate-100 dark:border-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-500/10/10 mb-6">
         <AlertCircle className="h-8 w-8 text-red-500 dark:text-red-400" />

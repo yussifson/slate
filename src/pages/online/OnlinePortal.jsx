@@ -88,7 +88,7 @@ export default function OnlinePortal() {
 
  <div className="lg:col-span-1 space-y-6">
  <h2 className="text-xl font-semibold text-gray-900">Upcoming Deadlines</h2>
- <Card className="border-0 rounded-xl p-6 bg-white dark:bg-slate-900/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="border-0 rounded-xl p-6 bg-white dark:bg-card/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex gap-4">
  <div className="flex flex-col items-center justify-center bg-red-50 text-red-600 rounded-xl p-2 min-w-[60px]">
  <span className="text-xs font-semibold uppercase tracking-[0.04em]">Oct</span>

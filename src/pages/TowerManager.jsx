@@ -131,7 +131,7 @@ export default function TowerManager() {
                 <Plus className="w-5 h-5" /> Deploy New Branch
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl rounded-2xl overflow-hidden">
+            <DialogContent className="sm:max-w-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-card shadow-2xl rounded-2xl overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-primary"></div>
               <DialogHeader className="pt-4">
                 <DialogTitle className="text-2xl font-bold dark:text-white">New {industry.charAt(0).toUpperCase() + industry.slice(1)} Branch</DialogTitle>
@@ -143,7 +143,7 @@ export default function TowerManager() {
                     value={newTowerName}
                     onChange={(e) => setNewTowerName(e.target.value)}
                     placeholder="e.g. Downtown Store, North Campus..."
-                    className="h-12 bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 rounded-lg focus-visible:ring-emerald-500"
+                    className="h-12 bg-slate-50 dark:bg-background border-slate-300 dark:border-slate-700 rounded-lg focus-visible:ring-emerald-500"
                     autoFocus
                   />
                 </div>
@@ -214,7 +214,7 @@ export default function TowerManager() {
                 className={`group relative rounded-xl p-6 border transition-all flex flex-col justify-between cursor-pointer ${
                   user.company_id === tower.id 
                     ? 'bg-primary/5 dark:bg-primary/5 border-primary shadow-md shadow-primary/10' 
-                    : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-primary/50 hover:shadow-md'
+                    : 'bg-slate-50 dark:bg-card border-slate-200 dark:border-slate-800 hover:border-primary/50 hover:shadow-md'
                 }`}
               >
                 <div>

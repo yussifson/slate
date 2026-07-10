@@ -147,7 +147,7 @@ System activity levels indicate normal operational flow. Data is being recorded 
   };
 
   return (
-    <div className="bg-card dark:bg-slate-950/40 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 shadow-xl shadow-slate-200/20 dark:shadow-none overflow-hidden" style={{ minHeight: '520px' }}>
+    <div className="bg-card dark:bg-background/40 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 shadow-xl shadow-slate-200/20 dark:shadow-none overflow-hidden" style={{ minHeight: '520px' }}>
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900/20">
         <div className="flex items-center gap-4">

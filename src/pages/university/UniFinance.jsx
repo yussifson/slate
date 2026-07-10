@@ -91,7 +91,7 @@ export default function UniFinance() {
  <p className="text-[11px] font-semibold text-white/80 uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">Net Balance</p>
  <h3 className="text-[var(--text-3xl)] font-display font-semibold mt-1 tracking-tight tracking-[-0.02em]">${(totalIncome - totalExpense).toLocaleString()}</h3>
  </div>
- <div className="w-12 h-12 rounded-md-[var(--radius-lg)] bg-white dark:bg-slate-900/40/20 flex items-center justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-md-[var(--radius-lg)] bg-white dark:bg-card/40/20 flex items-center justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CreditCard className="w-6 h-6" />
  </div>
  </div>

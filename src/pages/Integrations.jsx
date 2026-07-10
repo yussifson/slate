@@ -487,7 +487,7 @@ export default function Integrations() {
  </div>
  </div>
  {/* Top Filter Bar */}
- <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900/50 dark:backdrop-blur-xl rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 p-4 flex flex-col md:flex-row gap-4 items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-white dark:bg-card/40 dark:bg-card/40 dark:bg-card/50 dark:backdrop-blur-xl rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 p-4 flex flex-col md:flex-row gap-4 items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex gap-2 overflow-x-auto w-full md:w-auto md:flex-1 min-w-0 pb-2 md:pb-0 hide-scrollbar">
  {categories.map(cat => {
  return (
@@ -511,7 +511,7 @@ export default function Integrations() {
  placeholder="Search apps or features..." 
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="pl-10 h-11 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 border-primary/40 dark:border-primary/40 text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:focus:bg-slate-800 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-10 h-11 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 border-primary/40 dark:border-primary/40 text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-white dark:bg-card/40 dark:bg-card/40 dark:focus:bg-slate-800 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  </div>
@@ -537,7 +537,7 @@ export default function Integrations() {
  return (
  <div 
  key={app.id} 
- className={`bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 flex flex-col overflow-hidden ${
+ className={`bg-white dark:bg-card/40 dark:bg-card/40 dark:bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 flex flex-col overflow-hidden ${
  isConnected 
  ? 'border-primary -emerald-500/10 ring-1 ring-primary/20' 
  : 'border-primary/40 dark:border-primary/40 hover:border-primary/40 dark:hover:border-primary/40 hover:-translate-y-1'
@@ -545,7 +545,7 @@ export default function Integrations() {
  >
  <div className="p-6 sm:p-7 flex-1">
  <div className="flex justify-between items-start mb-6">
- <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center p-3 group-hover:scale-105 transition-transform hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-16 h-16 rounded-2xl bg-white dark:bg-card/40 dark:bg-card/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center p-3 group-hover:scale-105 transition-transform hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <img 
  src={app.logo} 
  alt={app.name} 
@@ -572,7 +572,7 @@ export default function Integrations() {
  <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3.5 tracking-[0.04em]">{app.category}</p>
  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{appDescription}</p>
  </div>
- <div className="px-6 py-5 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between">
+ <div className="px-6 py-5 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50/80 dark:bg-card/50 flex items-center justify-between">
  <a 
  href={app.learnMore} 
  target="_blank" 
@@ -608,7 +608,7 @@ export default function Integrations() {
  variant="outline" 
  disabled={isLoading}
  onClick={() => handleDisconnect(app)}
- className="h-10 px-4 rounded-xl border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-transparent text-slate-700 dark:text-slate-300 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10/10 hover:border-red-200 dark:hover:border-red-500/20 transition-colors font-semibold  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="h-10 px-4 rounded-xl border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card/40 dark:bg-transparent text-slate-700 dark:text-slate-300 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10/10 hover:border-red-200 dark:hover:border-red-500/20 transition-colors font-semibold  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  {isLoading ? <OrbitLoader size="sm" /> : "Disconnect"}
  </Button>
@@ -635,7 +635,7 @@ export default function Integrations() {
  </div>
  )}
  {!initialLoading && filteredApps.length === 0 && (
- <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-dashed hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white dark:bg-card/40 dark:bg-card/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-dashed hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
  <Search className="w-8 h-8 text-slate-400" />
  </div>
@@ -647,7 +647,7 @@ export default function Integrations() {
  </div>
  )}
  <Dialog open={!!modalApp} onOpenChange={(open) => !open && setModalApp(null)}>
- <DialogContent className="max-w-md bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-2xl p-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <DialogContent className="max-w-md bg-white dark:bg-card/40 dark:bg-card/40 dark:bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-2xl p-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <DialogHeader>
  <DialogTitle className="text-xl font-semibold text-slate-950 dark:text-white">
  Connect {modalApp?.name}

@@ -112,7 +112,7 @@ export default function TaskAttachments({ taskId }) {
                     </div>
                 ) : (
                     attachments.map((file) => (
-                        <div key={file.id} className="flex items-center gap-3 p-3 rounded-lg border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 group">
+                        <div key={file.id} className="flex items-center gap-3 p-3 rounded-lg border border-slate-100 dark:border-slate-800 bg-white dark:bg-card/50 group">
                             <div className="w-10 h-10 rounded bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0">
                                 <FileText className="w-5 h-5 text-blue-500" />
                             </div>

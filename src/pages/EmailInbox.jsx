@@ -736,7 +736,7 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
  return (
  <div className={cn(
  "fixed right-6 bottom-0 z-50 flex flex-col rounded-t-xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition-all duration-200",
- "bg-card dark:bg-slate-900",
+ "bg-card dark:bg-card",
  isMinimized ? "w-72 h-12" : "w-[520px] h-[560px] max-h-[85vh]"
  )}>
  {/* Compose Header */}
@@ -863,7 +863,7 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
  </div>
 
  {/* Footer */}
- <div className="px-4 py-3 border-t border-primary/40 flex items-center justify-between bg-muted/30 dark:bg-slate-900/60 shrink-0">
+ <div className="px-4 py-3 border-t border-primary/40 flex items-center justify-between bg-muted/30 dark:bg-card/60 shrink-0">
  <div className="flex items-center gap-2">
  <Button type="submit" disabled={isLoading || isUploading}
  className="bg-primary hover:bg-primary/90 text-white px-5 rounded-xl font-semibold h-8 text-sm">

@@ -43,7 +43,7 @@ export default function CustomerPortal() {
  "View your purchase history, track active orders, and check your loyalty rewards."
  )}</p>
  </div>
- <div className="bg-white dark:bg-slate-900/40/10 backdrop-blur-md rounded-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-white/20 text-center min-w-[150px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-white dark:bg-card/40/10 backdrop-blur-md rounded-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-white/20 text-center min-w-[150px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="text-xs uppercase font-semibold tracking-wider text-primary/10 mb-1 tracking-[0.04em]">{t("loyalty_points", "Loyalty Points")}</p>
  <p className="text-3xl font-black flex items-center justify-center gap-2 tracking-[-0.02em]">
  <Star className="w-5 h-5 text-yellow-300 fill-yellow-300" /> {loyaltyPoints}

@@ -45,7 +45,7 @@ export default function TrackingPortal() {
  value={trackingId}
  onChange={e => setTrackingId(e.target.value)}
  placeholder="e.g. SHIP-1234" 
- className="pl-12 h-14 bg-white dark:bg-slate-900/40/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/60 focus-visible:ring-white/30 text-lg rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-12 h-14 bg-white dark:bg-card/40/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/60 focus-visible:ring-white/30 text-lg rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  <Button type="submit" className="h-14 px-8 bg-primary hover:bg-primary text-white rounded-xl text-lg font-semibold transition-all active:scale-95">

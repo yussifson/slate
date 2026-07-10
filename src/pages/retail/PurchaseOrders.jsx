@@ -462,7 +462,7 @@ export default function PurchaseOrders() {
  <div>
  <label className="text-sm font-medium mb-1.5 block">{t("supplier", "Supplier")}</label>
  <Select value={newPO.supplierId} onValueChange={(v) => setNewPO({...newPO, supplierId: v})}>
- <SelectTrigger className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <SelectTrigger className="bg-white dark:bg-card/40 dark:bg-card/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <SelectValue placeholder="Select supplier..." />
  </SelectTrigger>
  <SelectContent>
@@ -476,7 +476,7 @@ export default function PurchaseOrders() {
  <div>
  <label className="text-sm font-medium mb-1.5 block">{t("status", "Status")}</label>
  <Select value={newPO.status} onValueChange={(v) => setNewPO({...newPO, status: v})}>
- <SelectTrigger className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <SelectTrigger className="bg-white dark:bg-card/40 dark:bg-card/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <SelectValue />
  </SelectTrigger>
  <SelectContent>
@@ -493,7 +493,7 @@ export default function PurchaseOrders() {
  <div className="flex-1">
  <label className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400 mb-1 block tracking-[0.04em]">Product</label>
  <Select value={selectedProduct} onValueChange={setSelectedProduct}>
- <SelectTrigger className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <SelectTrigger className="bg-white dark:bg-card/40 dark:bg-card/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <SelectValue placeholder="Select product..." />
  </SelectTrigger>
  <SelectContent>
@@ -505,17 +505,17 @@ export default function PurchaseOrders() {
  </div>
  <div className="w-24">
  <label className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400 mb-1 block tracking-[0.04em]">Qty</label>
- <Input type="number" min="1" value={orderQuantity} onChange={e => setOrderQuantity(e.target.value)} className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <Input type="number" min="1" value={orderQuantity} onChange={e => setOrderQuantity(e.target.value)} className="bg-white dark:bg-card/40 dark:bg-card/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  <div className="w-32">
  <label className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400 mb-1 block tracking-[0.04em]">Unit Cost ($)</label>
- <Input type="number" min="0" step="0.01" value={orderCost} onChange={e => setOrderCost(e.target.value)} className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <Input type="number" min="0" step="0.01" value={orderCost} onChange={e => setOrderCost(e.target.value)} className="bg-white dark:bg-card/40 dark:bg-card/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  <Button type="button" onClick={handleAddItem} variant="secondary">Add</Button>
  </div>
 
  {newPO.items.length > 0 && (
- <div className="mt-4 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 overflow-x-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="mt-4 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl bg-white dark:bg-card/40 dark:bg-card/40 overflow-x-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm">
  <thead className="bg-slate-50 dark:bg-slate-800/50 border-b">
  <tr>
@@ -552,7 +552,7 @@ export default function PurchaseOrders() {
  value={newPO.notes} 
  onChange={(e) => setNewPO({...newPO, notes: e.target.value})}
  placeholder="Optional notes for this order..."
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-card/40 dark:bg-card/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
 

@@ -102,13 +102,13 @@ export default function SuperAdminDashboard() {
  </div>
  {!company && (
   <div className="flex flex-col sm:flex-row items-center gap-3">
-    <div className="flex items-center bg-white dark:bg-slate-900/40/10 p-2 rounded-2xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-      <Button onClick={() => setShowForm(true)} size="sm" className="gap-2.5 text-sm font-semibold bg-white dark:bg-slate-900/40 text-primary/70 hover:bg-white dark:bg-slate-900/40/90 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="flex items-center bg-white dark:bg-card/40/10 p-2 rounded-2xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <Button onClick={() => setShowForm(true)} size="sm" className="gap-2.5 text-sm font-semibold bg-white dark:bg-card/40 text-primary/70 hover:bg-white dark:bg-card/40/90 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <Plus className="w-4 h-4" /> {t("setup_firm", "Setup " + (getTerm(activeIndustry, "venue") || "Firm"))}
       </Button>
     </div>
-    <div className="flex items-center bg-white dark:bg-slate-900/40/10 p-2 rounded-2xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-      <Button onClick={() => setShowPartners(true)} size="sm" className="gap-2.5 text-sm font-semibold bg-white dark:bg-slate-900/40 text-primary/70 hover:bg-white dark:bg-slate-900/40/90 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="flex items-center bg-white dark:bg-card/40/10 p-2 rounded-2xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <Button onClick={() => setShowPartners(true)} size="sm" className="gap-2.5 text-sm font-semibold bg-white dark:bg-card/40 text-primary/70 hover:bg-white dark:bg-card/40/90 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <Handshake className="w-4 h-4" /> Partner Applications
       </Button>
     </div>

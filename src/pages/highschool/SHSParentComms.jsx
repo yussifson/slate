@@ -139,7 +139,7 @@ export default function SHSParentComms() {
  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
  
  {/* Contact List */}
- <Card className="lg:col-span-4 rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="lg:col-span-4 rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4 p-6">
  <div className="flex flex-col md:flex-row gap-4 items-end">
  <div className="space-y-2 flex-1 max-w-xs">
@@ -147,7 +147,7 @@ export default function SHSParentComms() {
  <Users className="w-4 h-4 text-primary dark:text-primary/70" /> Filter by Class
  </label>
  <select 
- className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={selectedClassId}
  onChange={(e) => setSelectedClassId(e.target.value)}
  >
@@ -164,7 +164,7 @@ export default function SHSParentComms() {
  </label>
  <Input 
  placeholder="Type name..." 
- className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -274,7 +274,7 @@ export default function SHSParentComms() {
  </div>
 
  <Dialog open={isComposeOpen} onOpenChange={setIsComposeOpen}>
- <DialogContent className="sm:max-w-[600px] rounded-3xl p-0 overflow-hidden border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <DialogContent className="sm:max-w-[600px] rounded-3xl p-0 overflow-hidden border-none bg-white dark:bg-card/40 dark:bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-6 bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
  <DialogHeader>
  <DialogTitle className="text-2xl font-black tracking-[-0.02em]">Compose Message</DialogTitle>
@@ -292,7 +292,7 @@ export default function SHSParentComms() {
  <button
  onClick={() => setMessage({...message, type: 'SMS'})}
  className={`p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 flex flex-col items-center justify-center gap-2 transition-all ${
- message.type === 'SMS' ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/30 text-primary dark:text-primary/70' : 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800'
+ message.type === 'SMS' ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/30 text-primary dark:text-primary/70' : 'bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800'
 }`}
  >
  <Smartphone className="w-5 h-5" />
@@ -301,7 +301,7 @@ export default function SHSParentComms() {
  <button
  onClick={() => setMessage({...message, type: 'Email'})}
  className={`p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 flex flex-col items-center justify-center gap-2 transition-all ${
- message.type === 'Email' ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/30 text-primary dark:text-primary/70' : 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800'
+ message.type === 'Email' ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/30 text-primary dark:text-primary/70' : 'bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800'
 }`}
  >
  <Mail className="w-5 h-5" />
@@ -310,7 +310,7 @@ export default function SHSParentComms() {
  <button
  onClick={() => setMessage({...message, type: 'App Push'})}
  className={`p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 flex flex-col items-center justify-center gap-2 transition-all ${
- message.type === 'App Push' ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/30 text-primary dark:text-primary/70' : 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800'
+ message.type === 'App Push' ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/30 text-primary dark:text-primary/70' : 'bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800'
 }`}
  >
  <MessageSquare className="w-5 h-5" />
@@ -324,7 +324,7 @@ export default function SHSParentComms() {
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Subject Line</label>
  <Input 
  placeholder="e.g. End of Term Arrangements"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl h-11 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl h-11 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={message.subject}
  onChange={e => setMessage({...message, subject: e.target.value})}
  />
@@ -341,7 +341,7 @@ export default function SHSParentComms() {
  )}
  </label>
  <textarea 
- className="w-full h-32 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-4 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-32 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card p-4 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  placeholder="Type your message here. Use variables like {ParentName} or {StudentName}..."
  value={message.body}
  onChange={e => setMessage({...message, body: e.target.value})}
@@ -351,7 +351,7 @@ export default function SHSParentComms() {
  </div>
  
  <div className="p-4 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
- <Button variant="outline" onClick={() => setIsComposeOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button variant="outline" onClick={() => setIsComposeOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300 bg-white dark:bg-card/40 dark:bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  Cancel
  </Button>
  <Button 

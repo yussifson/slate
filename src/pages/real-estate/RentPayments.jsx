@@ -122,19 +122,19 @@ export default function RentPayments() {
               }
             }} className="space-y-4 mt-6">
               <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Lease ID</label>
-                <input id="rent-lease-id" type="text" placeholder="Lease ID" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" /></div>
+                <input id="rent-lease-id" type="text" placeholder="Lease ID" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-card/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" /></div>
               <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Property ID</label>
-                <input id="rent-property-id" type="text" placeholder="Property ID" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" /></div>
+                <input id="rent-property-id" type="text" placeholder="Property ID" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-card/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" /></div>
               <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Tenant ID</label>
-                <input id="rent-tenant-id" type="text" placeholder="Tenant ID" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" /></div>
+                <input id="rent-tenant-id" type="text" placeholder="Tenant ID" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-card/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" /></div>
               <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Tenant Name *</label>
-                <input id="rent-tenant-name" type="text" placeholder="Tenant Name" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" required /></div>
+                <input id="rent-tenant-name" type="text" placeholder="Tenant Name" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-card/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" required /></div>
               <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Amount *</label>
-                <input id="rent-amount" type="number" placeholder="0.00" step="0.01" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" required /></div>
+                <input id="rent-amount" type="number" placeholder="0.00" step="0.01" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-card/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" required /></div>
               <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Due Date *</label>
-                <input id="rent-due-date" type="date" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" required /></div>
+                <input id="rent-due-date" type="date" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-card/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" required /></div>
               <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Payment Method</label>
-                <select id="rent-method" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500">
+                <select id="rent-method" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-card/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500">
                   <option value="">Select method</option>
                   <option value="bank_transfer">Bank Transfer</option>
                   <option value="check">Check</option>
@@ -142,7 +142,7 @@ export default function RentPayments() {
                   <option value="credit_card">Credit Card</option>
                 </select></div>
               <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Notes</label>
-                <textarea id="rent-notes" placeholder="Additional notes" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" rows="3"></textarea></div>
+                <textarea id="rent-notes" placeholder="Additional notes" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-card/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" rows="3"></textarea></div>
               <Button type="submit" className="w-full bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 shadow-lg hover:shadow-orange-500/25 transition-all duration-300">Record Payment</Button>
             </form>
             </div>
@@ -206,7 +206,7 @@ export default function RentPayments() {
 
         <div className="grid grid-cols-3 gap-6 mb-8">
           {/* Upcoming Payments */}
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
             <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><Calendar className="w-5 h-5" /></div>
@@ -240,7 +240,7 @@ export default function RentPayments() {
           </Card>
 
           {/* Overdue Alerts */}
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
             <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><AlertTriangle className="w-5 h-5" /></div>
@@ -274,7 +274,7 @@ export default function RentPayments() {
           </Card>
 
           {/* Recent Payments */}
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
             <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><CheckCircle className="w-5 h-5" /></div>
@@ -309,7 +309,7 @@ export default function RentPayments() {
         </div>
 
         {/* All Payments Table */}
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
           <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="flex items-center gap-2">
               <CreditCard className="w-5 h-5" />

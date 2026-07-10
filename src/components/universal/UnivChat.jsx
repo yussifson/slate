@@ -167,7 +167,7 @@ export default function UnivChat({
  <div className="flex h-full w-full bg-background font-sans overflow-hidden">
  
  {/* Sidebar - Channels */}
- <div className="w-64 bg-slate-50 dark:bg-slate-900 border-r border-primary/40 flex flex-col shrink-0">
+ <div className="w-64 bg-slate-50 dark:bg-card border-r border-primary/40 flex flex-col shrink-0">
  <div className="h-14 px-4 flex items-center justify-between border-b border-primary/40 bg-card z-10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="font-semibold text-foreground flex items-center gap-2">
  <MessageSquare className="w-5 h-5 text-primary" /> {title}

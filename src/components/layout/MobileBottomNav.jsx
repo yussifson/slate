@@ -51,7 +51,7 @@ export default function MobileBottomNav() {
 
  return (
  <>
- <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[60] bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl border-t border-black/5 dark:border-white/5 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.04)]">
+ <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[60] bg-white/80 dark:bg-background/80 backdrop-blur-2xl border-t border-black/5 dark:border-white/5 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.04)]">
  <div className="flex items-center justify-around h-[52px] px-2 pt-1">
  {bottomNavItems.map((item) => {
    const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin", "/optavel", "/logistics", "/real-estate", "/retail", "/hotel", "/pharmacy", "/religion"].includes(item.path);
@@ -98,10 +98,10 @@ export default function MobileBottomNav() {
  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300" onClick={() => setMobileMenuOpen(false)} />
  
  {/* Sheet */}
- <div className="relative w-full rounded-t-[20px] max-h-[88vh] bg-[#F2F2F7] dark:bg-[#1C1C1E] transition-transform animate-in slide-in-from-bottom-full overflow-hidden flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+ <div className="relative w-full rounded-t-[20px] max-h-[88vh] bg-[#F2F2F7] dark:bg-card transition-transform animate-in slide-in-from-bottom-full overflow-hidden flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
  
  {/* Drag Handle & Header */}
- <div className="flex flex-col items-center pt-3 pb-2 bg-white dark:bg-[#1C1C1E] border-b border-black/5 dark:border-white/5">
+ <div className="flex flex-col items-center pt-3 pb-2 bg-white dark:bg-card border-b border-black/5 dark:border-white/5">
  <div className="w-10 h-1 rounded-full bg-[#E5E5EA] dark:bg-[#3A3A3C] mb-3" />
            <div className="w-full flex items-center justify-between px-4 pb-1">
            <h2 className="text-[17px] font-semibold text-black dark:text-white tracking-[-0.41px]">{t('menu', 'Menu')}</h2>
@@ -130,12 +130,12 @@ export default function MobileBottomNav() {
            onClick={() => setMobileMenuOpen(false)}
            className={cn(
            "flex items-center gap-3.5 px-4 py-3 transition-colors active:bg-[#E5E5EA] dark:active:bg-[#3A3A3C]",
-           isActive ? "bg-[#F2F2F7]/50 dark:bg-[#1C1C1E]/50" : "bg-transparent"
+           isActive ? "bg-[#F2F2F7]/50 dark:bg-card/50" : "bg-transparent"
            )}
            >
            <div className={cn(
            "w-[30px] h-[30px] rounded-[7px] flex items-center justify-center transition-colors",
-           isActive ? "bg-primary text-white drop-shadow-md" : "bg-white dark:bg-[#1C1C1E] text-primary"
+           isActive ? "bg-primary text-white drop-shadow-md" : "bg-white dark:bg-card text-primary"
            )}>
            <IconComp className="w-4 h-4" strokeWidth={isActive ? 2.5 : 2} />
            </div>

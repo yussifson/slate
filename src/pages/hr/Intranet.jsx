@@ -277,14 +277,14 @@ export default function Intranet() {
                 onChange={e => setFormData({...formData, title: e.target.value})} 
                 placeholder="e.g. Q3 Townhall Meeting"
                 required
-                className="bg-slate-50 dark:bg-slate-900 rounded-xl border-border/50 font-medium"
+                className="bg-slate-50 dark:bg-card rounded-xl border-border/50 font-medium"
               />
             </div>
             
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Priority Level</Label>
               <Select value={formData.priority} onValueChange={v => setFormData({...formData, priority: v})}>
-                <SelectTrigger className="bg-slate-50 dark:bg-slate-900 rounded-xl border-border/50 font-medium">
+                <SelectTrigger className="bg-slate-50 dark:bg-card rounded-xl border-border/50 font-medium">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
@@ -302,7 +302,7 @@ export default function Intranet() {
                 onChange={e => setFormData({...formData, content: e.target.value})} 
                 placeholder="Write your announcement here..."
                 required
-                className="min-h-[200px] bg-slate-50 dark:bg-slate-900 rounded-xl border-border/50 font-medium resize-none"
+                className="min-h-[200px] bg-slate-50 dark:bg-card rounded-xl border-border/50 font-medium resize-none"
               />
             </div>
             

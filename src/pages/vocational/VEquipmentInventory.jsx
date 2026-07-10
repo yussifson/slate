@@ -94,7 +94,7 @@ export default function VEquipmentInventory() {
  );
 
  return (
- <div className="flex-1 space-y-6 p-8 bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50 min-h-screen animate-in fade-in duration-300">
+ <div className="flex-1 space-y-6 p-8 bg-slate-50/50 dark:bg-transparent dark:bg-card/50 min-h-screen animate-in fade-in duration-300">
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
  <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 dark:from-primary/70 dark:to-white bg-clip-text text-transparent flex items-center gap-3 tracking-[-0.02em]">
@@ -111,7 +111,7 @@ export default function VEquipmentInventory() {
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input 
  placeholder="Search equipment..." 
- className="pl-9 w-[250px] bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 focus-visible:ring-primary rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-9 w-[250px] bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 focus-visible:ring-primary rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
  />
@@ -123,7 +123,7 @@ export default function VEquipmentInventory() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <Card className="bg-white dark:bg-slate-900/40/60 dark:bg-slate-900/60 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="bg-white dark:bg-card/40/60 dark:bg-card/60 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex items-center gap-4">
  <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
  <Settings className="w-7 h-7" />
@@ -134,7 +134,7 @@ export default function VEquipmentInventory() {
  </div>
  </CardContent>
  </Card>
- <Card className="bg-white dark:bg-slate-900/40/60 dark:bg-slate-900/60 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="bg-white dark:bg-card/40/60 dark:bg-card/60 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex items-center gap-4">
  <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
  <Package className="w-7 h-7" />
@@ -145,7 +145,7 @@ export default function VEquipmentInventory() {
  </div>
  </CardContent>
  </Card>
- <Card className="bg-white dark:bg-slate-900/40/60 dark:bg-slate-900/60 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="bg-white dark:bg-card/40/60 dark:bg-card/60 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex items-center gap-4">
  <div className="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
  <Wrench className="w-7 h-7" />
@@ -158,7 +158,7 @@ export default function VEquipmentInventory() {
  </Card>
  </div>
 
- <Card className="bg-white dark:bg-slate-900/40/80 dark:bg-slate-900/80 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="bg-white dark:bg-card/40/80 dark:bg-card/80 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <ScrollArea className="h-[500px]">
  {loading ? (
  <div className="p-12 text-center text-[#71717a] dark:text-gray-400">Loading equipment...</div>
@@ -211,7 +211,7 @@ export default function VEquipmentInventory() {
  </Card>
 
  <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
- <DialogContent className="sm:max-w-[425px] rounded-3xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-none ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <DialogContent className="sm:max-w-[425px] rounded-3xl bg-white dark:bg-card/40 dark:bg-card border-none ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <DialogHeader>
  <DialogTitle className="text-xl font-semibold">{currentRecord ? 'Edit Equipment' : 'Add Equipment'}</DialogTitle>
  </DialogHeader>

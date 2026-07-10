@@ -62,13 +62,13 @@ export default function VPlacementReports() {
  </div>
 
  <div className="flex-1 flex gap-6 overflow-hidden">
- <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-amber-100/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-amber-100/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-amber-50 dark:border-primary/40">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-amber-500" />
  <Input 
  placeholder="Search trainees or employers..." 
- className="pl-9 h-10 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 border-amber-100 dark:border-primary/40 rounded-xl focus-visible:ring-amber-600"
+ className="pl-9 h-10 bg-slate-50 dark:bg-slate-800/50 dark:bg-card border-amber-100 dark:border-primary/40 rounded-xl focus-visible:ring-amber-600"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -92,7 +92,7 @@ export default function VPlacementReports() {
 }`}
  >
  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
- selectedReport?.id === report.id ? 'bg-white dark:bg-slate-900/40/20' : 'bg-amber-100 text-amber-600'
+ selectedReport?.id === report.id ? 'bg-white dark:bg-card/40/20' : 'bg-amber-100 text-amber-600'
 }`}>
  <Award className="w-5 h-5" />
  </div>
@@ -109,13 +109,13 @@ export default function VPlacementReports() {
  </ScrollArea>
  </Card>
 
- <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-amber-100/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-amber-100/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {selectedReport ? (
  <>
  <div className="h-32 bg-gradient-to-r from-amber-500 to-orange-500 relative shrink-0">
  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
  <div className="absolute top-4 right-4">
- <Badge className="bg-white dark:bg-slate-900/40 text-amber-600 hover:bg-slate-50 dark:bg-slate-800/50 border-none font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Badge className="bg-white dark:bg-card/40 text-amber-600 hover:bg-slate-50 dark:bg-slate-800/50 border-none font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  Placed
  </Badge>
  </div>
@@ -124,7 +124,7 @@ export default function VPlacementReports() {
  <ScrollArea className="flex-1 -mt-12">
  <div className="px-8 pb-8">
  <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
- <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-1 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-24 h-24 rounded-3xl bg-white dark:bg-card/40 dark:bg-card p-1 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="w-full h-full rounded-2xl bg-amber-50 dark:bg-slate-800 flex items-center justify-center text-amber-600">
  <Award className="w-10 h-10" />
  </div>
@@ -141,9 +141,9 @@ export default function VPlacementReports() {
  <div className="mt-8">
  <Tabs defaultValue="overview" className="w-full">
  <TabsList className="bg-amber-50/50 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border-[0.5px] border-black/9 dark:border-white/8 border-amber-100 dark:border-primary/40">
- <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-amber-600 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Placement Details</TabsTrigger>
- <TabsTrigger value="employer-feedback" className="rounded-xl data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-amber-600 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Employer Feedback</TabsTrigger>
- <TabsTrigger value="trainee-feedback" className="rounded-xl data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-amber-600 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Trainee Feedback</TabsTrigger>
+ <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-white dark:bg-card/40 data-[state=active]:text-amber-600 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Placement Details</TabsTrigger>
+ <TabsTrigger value="employer-feedback" className="rounded-xl data-[state=active]:bg-white dark:bg-card/40 data-[state=active]:text-amber-600 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Employer Feedback</TabsTrigger>
+ <TabsTrigger value="trainee-feedback" className="rounded-xl data-[state=active]:bg-white dark:bg-card/40 data-[state=active]:text-amber-600 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Trainee Feedback</TabsTrigger>
  </TabsList>
  
  <div className="mt-6">
@@ -189,7 +189,7 @@ export default function VPlacementReports() {
  <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <h3 className="text-sm font-semibold text-amber-600 uppercase tracking-wider mb-4 flex items-center gap-2 tracking-[0.04em]"><MessageSquare className="w-4 h-4"/> Supervisor Evaluation</h3>
  <div className="space-y-4">
- <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-white dark:bg-card/40 dark:bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-center mb-2">
  <p className="font-semibold text-slate-800 dark:text-slate-200">Overall Performance</p>
  <Badge className="bg-slate-100 text-primary/90 hover:bg-primary/20 border-none">{selectedReport.data?.employerRating || 'Excellent'}</Badge>
@@ -206,7 +206,7 @@ export default function VPlacementReports() {
  <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <h3 className="text-sm font-semibold text-amber-600 uppercase tracking-wider mb-4 flex items-center gap-2 tracking-[0.04em]"><MessageSquare className="w-4 h-4"/> Graduate Experience</h3>
  <div className="space-y-4">
- <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-white dark:bg-card/40 dark:bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-center mb-2">
  <p className="font-semibold text-slate-800 dark:text-slate-200">Training Relevance</p>
  <Badge className="bg-orange-100 text-orange-700 hover:bg-primary/20 border-none">{selectedReport.data?.trainingRelevanceRating || 'Highly Relevant'}</Badge>

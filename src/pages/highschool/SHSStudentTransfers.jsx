@@ -115,14 +115,14 @@ export default function SHSStudentTransfers() {
 
  <div className="flex-1 flex flex-col md:flex-row gap-6 overflow-hidden">
  {/* Left Panel: Student Selection */}
- <Card className="w-full md:w-[400px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="w-full md:w-[400px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/5">
  <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-3">Select Student</h3>
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-primary" />
  <Input 
  placeholder="Search active students..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-9 h-10 bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -147,7 +147,7 @@ export default function SHSStudentTransfers() {
 }`}
  >
  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold shrink-0 ${
- selectedStudent?.id === student.id ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
+ selectedStudent?.id === student.id ? 'bg-white dark:bg-card/40 dark:bg-card/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
 }`}>
  {student.title?.charAt(0)}
  </div>
@@ -166,7 +166,7 @@ export default function SHSStudentTransfers() {
  </Card>
 
  {/* Right Panel: Transfer Form */}
- <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {successMsg && (
  <div className="absolute inset-x-0 top-0 bg-primary text-white p-3 text-center text-sm font-semibold animate-in slide-in-from-top flex justify-center items-center gap-2 z-50">
  <CheckCircle2 className="w-4 h-4" /> {successMsg}
@@ -178,7 +178,7 @@ export default function SHSStudentTransfers() {
  <div className="p-6 bg-slate-500 dark:bg-slate-800/50 border-b border-primary/40 dark:border-primary/40">
  <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">Transfer Request for {selectedStudent.title}</h2>
  <div className="flex items-center gap-2 mt-2">
- <Badge variant="outline" className="border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{selectedStudent.case_number}</Badge>
+ <Badge variant="outline" className="border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70 bg-white dark:bg-card/40 dark:bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{selectedStudent.case_number}</Badge>
  <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Current: {selectedStudent.data?.program} ({selectedStudent.data?.grade})</span>
  </div>
  </div>
@@ -193,7 +193,7 @@ export default function SHSStudentTransfers() {
  className={`p-4 rounded-2xl border-2 text-left transition-all ${
  transferType === 'External' 
  ? 'border-primary dark:border-primary bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary dark:text-primary/70' 
- : 'border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:border-primary/20 dark:border-primary/40 text-slate-600 dark:text-slate-300'
+ : 'border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card hover:border-primary/20 dark:border-primary/40 text-slate-600 dark:text-slate-300'
 }`}
  >
  <Building className="w-6 h-6 mb-2" />
@@ -206,7 +206,7 @@ export default function SHSStudentTransfers() {
  className={`p-4 rounded-2xl border-2 text-left transition-all ${
  transferType === 'Internal' 
  ? 'border-primary dark:border-primary bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary dark:text-primary/70' 
- : 'border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:border-primary/20 dark:border-primary/40 text-slate-600 dark:text-slate-300'
+ : 'border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card hover:border-primary/20 dark:border-primary/40 text-slate-600 dark:text-slate-300'
 }`}
  >
  <ArrowRightLeft className="w-6 h-6 mb-2" />
@@ -215,7 +215,7 @@ export default function SHSStudentTransfers() {
  </button>
  </div>
 
- <div className="space-y-4 p-6 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="space-y-4 p-6 rounded-2xl bg-white dark:bg-card/40 dark:bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <FileText className="w-4 h-4 text-primary dark:text-primary/70" /> Transfer Details
  </h3>

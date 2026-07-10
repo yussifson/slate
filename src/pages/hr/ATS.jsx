@@ -79,7 +79,7 @@ export default function ATS() {
   };
 
   return (
-    <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-slate-900/50 h-[calc(100vh-4rem)] p-4 lg:p-8 font-dmsans flex flex-col">
+    <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-card/50 h-[calc(100vh-4rem)] p-4 lg:p-8 font-dmsans flex flex-col">
       <div className="max-w-[1600px] w-full mx-auto flex flex-col h-full space-y-6">
         
         {/* ── Header ── */}
@@ -95,7 +95,7 @@ export default function ATS() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input 
                 placeholder="Search candidates..." 
-                className="pl-9 w-64 bg-white dark:bg-slate-900 border-none rounded-xl shadow-sm"
+                className="pl-9 w-64 bg-white dark:bg-card border-none rounded-xl shadow-sm"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -111,8 +111,8 @@ export default function ATS() {
           <DragDropContext onDragEnd={onDragEnd}>
             <div className="flex h-full gap-6 overflow-x-auto pb-4 custom-scrollbar items-start">
               {columns.map(col => (
-                <div key={col.id} className="flex flex-col w-80 shrink-0 bg-white/40 dark:bg-slate-900/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm max-h-full">
-                  <div className="p-4 flex items-center justify-between border-b border-border/50 shrink-0 bg-white/60 dark:bg-slate-900/60 rounded-t-2xl">
+                <div key={col.id} className="flex flex-col w-80 shrink-0 bg-white/40 dark:bg-card/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm max-h-full">
+                  <div className="p-4 flex items-center justify-between border-b border-border/50 shrink-0 bg-white/60 dark:bg-card/60 rounded-t-2xl">
                     <div className="flex items-center gap-2">
                       <span className={`w-2.5 h-2.5 rounded-full ${col.dot}`} />
                       <h3 className="font-bold text-foreground text-sm uppercase tracking-wider">{col.title}</h3>
@@ -136,7 +136,7 @@ export default function ATS() {
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
-                                className={`bg-white dark:bg-slate-900 p-4 rounded-xl border-[0.5px] ${snapshot.isDragging ? 'border-primary/50 shadow-xl ring-2 ring-primary/20 rotate-2 z-50' : 'border-black/9 dark:border-white/8 shadow-sm hover:shadow-md hover:border-primary/30'} transition-all group select-none flex flex-col gap-3`}
+                                className={`bg-white dark:bg-card p-4 rounded-xl border-[0.5px] ${snapshot.isDragging ? 'border-primary/50 shadow-xl ring-2 ring-primary/20 rotate-2 z-50' : 'border-black/9 dark:border-white/8 shadow-sm hover:shadow-md hover:border-primary/30'} transition-all group select-none flex flex-col gap-3`}
                               >
                                 <div className="flex items-start justify-between">
                                   <div className="flex items-center gap-3">
@@ -176,7 +176,7 @@ export default function ATS() {
                                 </div>
 
                                 <div className="flex items-center justify-between pt-1">
-                                  <div className={`flex items-center gap-1.5 text-xs font-bold px-2 py-1 rounded-md bg-white dark:bg-slate-950 border border-border/50 ${item.ai_score >= 80 ? 'text-emerald-600 dark:text-emerald-400' : item.ai_score >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500'}`}>
+                                  <div className={`flex items-center gap-1.5 text-xs font-bold px-2 py-1 rounded-md bg-white dark:bg-background border border-border/50 ${item.ai_score >= 80 ? 'text-emerald-600 dark:text-emerald-400' : item.ai_score >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500'}`}>
                                     <Sparkles className="w-3 h-3" /> Score {item.ai_score}
                                   </div>
                                   <div className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
@@ -207,21 +207,21 @@ export default function ATS() {
           <form onSubmit={handleAddCandidate} className="space-y-4">
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Full Name *</Label>
-              <Input required value={newCandidate.name} onChange={e => setNewCandidate({...newCandidate, name: e.target.value})} className="mt-1 rounded-xl bg-slate-50 dark:bg-slate-900 border-none" placeholder="John Doe" />
+              <Input required value={newCandidate.name} onChange={e => setNewCandidate({...newCandidate, name: e.target.value})} className="mt-1 rounded-xl bg-slate-50 dark:bg-card border-none" placeholder="John Doe" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Email *</Label>
-                <Input required type="email" value={newCandidate.email} onChange={e => setNewCandidate({...newCandidate, email: e.target.value})} className="mt-1 rounded-xl bg-slate-50 dark:bg-slate-900 border-none" placeholder="john@example.com" />
+                <Input required type="email" value={newCandidate.email} onChange={e => setNewCandidate({...newCandidate, email: e.target.value})} className="mt-1 rounded-xl bg-slate-50 dark:bg-card border-none" placeholder="john@example.com" />
               </div>
               <div>
                 <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Phone</Label>
-                <Input value={newCandidate.phone} onChange={e => setNewCandidate({...newCandidate, phone: e.target.value})} className="mt-1 rounded-xl bg-slate-50 dark:bg-slate-900 border-none" placeholder="+1..." />
+                <Input value={newCandidate.phone} onChange={e => setNewCandidate({...newCandidate, phone: e.target.value})} className="mt-1 rounded-xl bg-slate-50 dark:bg-card border-none" placeholder="+1..." />
               </div>
             </div>
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Job Role Applied For</Label>
-              <Input value={newCandidate.job_id} onChange={e => setNewCandidate({...newCandidate, job_id: e.target.value})} className="mt-1 rounded-xl bg-slate-50 dark:bg-slate-900 border-none" placeholder="e.g. Senior Developer" />
+              <Input value={newCandidate.job_id} onChange={e => setNewCandidate({...newCandidate, job_id: e.target.value})} className="mt-1 rounded-xl bg-slate-50 dark:bg-card border-none" placeholder="e.g. Senior Developer" />
             </div>
             <div className="pt-2 flex gap-3">
               <Button type="button" variant="ghost" onClick={() => setIsAddOpen(false)} className="flex-1 rounded-xl font-bold">Cancel</Button>

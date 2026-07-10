@@ -78,12 +78,12 @@ export default function PhoneSupportPanel({ isOpen, onClose }) {
       
       {/* Panel */}
       <div className={`
-        fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] lg:relative lg:inset-auto lg:z-0 lg:w-[400px] lg:shrink-0 bg-white dark:bg-[#1C1C1E] lg:border-l lg:border-slate-200 dark:lg:border-slate-800 lg:shadow-none shadow-2xl flex flex-col transform transition-transform duration-500 ease-in-out overflow-y-auto
+        fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] lg:relative lg:inset-auto lg:z-0 lg:w-[400px] lg:shrink-0 bg-white dark:bg-card lg:border-l lg:border-slate-200 dark:lg:border-slate-800 lg:shadow-none shadow-2xl flex flex-col transform transition-transform duration-500 ease-in-out overflow-y-auto
         ${isOpen ? 'translate-x-0' : 'translate-x-full lg:hidden'}
       `}>
         
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+        <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-card/50">
            <div className="flex items-center gap-3">
              <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                 <Phone className="w-5 h-5" />
@@ -137,7 +137,7 @@ export default function PhoneSupportPanel({ isOpen, onClose }) {
                    <input
                      type="tel"
                      placeholder="+1 (555) 000-0000"
-                     className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none"
+                     className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-card/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none"
                      value={formData.phone_number}
                      onChange={(e) => setFormData({...formData, phone_number: e.target.value})}
                    />
@@ -151,7 +151,7 @@ export default function PhoneSupportPanel({ isOpen, onClose }) {
                  <textarea
                    rows={4}
                    placeholder="Briefly describe the problem you are facing..."
-                   className="w-full p-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none resize-none"
+                   className="w-full p-4 bg-slate-50 dark:bg-card/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none resize-none"
                    value={formData.reason}
                    onChange={(e) => setFormData({...formData, reason: e.target.value})}
                  />
@@ -164,7 +164,7 @@ export default function PhoneSupportPanel({ isOpen, onClose }) {
                  <div className="relative">
                    <Clock className="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                    <select
-                     className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none appearance-none"
+                     className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-card/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none appearance-none"
                      value={formData.preferred_time}
                      onChange={(e) => setFormData({...formData, preferred_time: e.target.value})}
                    >

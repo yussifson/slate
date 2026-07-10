@@ -61,13 +61,13 @@ export default function VCoursePerformance() {
  </div>
 
  <div className="flex-1 flex gap-6 overflow-hidden">
- <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/5 dark:border-primary/40">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
  <Input 
  placeholder="Search courses or instructors..." 
- className="pl-9 h-10 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
+ className="pl-9 h-10 bg-slate-50 dark:bg-slate-800/50 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -91,7 +91,7 @@ export default function VCoursePerformance() {
 }`}
  >
  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
- selectedCourse?.id === course.id ? 'bg-white dark:bg-slate-900/40/20' : 'bg-slate-100 text-primary'
+ selectedCourse?.id === course.id ? 'bg-white dark:bg-card/40/20' : 'bg-slate-100 text-primary'
 }`}>
  <Presentation className="w-5 h-5" />
  </div>
@@ -108,13 +108,13 @@ export default function VCoursePerformance() {
  </ScrollArea>
  </Card>
 
- <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {selectedCourse ? (
  <>
  <div className="h-32 bg-gradient-to-r from-primary to-primary relative shrink-0">
  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
  <div className="absolute top-4 right-4">
- <Badge className="bg-white dark:bg-slate-900/40/20 text-white hover:bg-white dark:bg-slate-900/40/30 backdrop-blur-md border-none flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Badge className="bg-white dark:bg-card/40/20 text-white hover:bg-white dark:bg-card/40/30 backdrop-blur-md border-none flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <UserCheck className="w-3 h-3" /> Instructor: {selectedCourse.data?.instructor || 'TBD'}
  </Badge>
  </div>
@@ -123,7 +123,7 @@ export default function VCoursePerformance() {
  <ScrollArea className="flex-1 -mt-12">
  <div className="px-8 pb-8">
  <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
- <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-1 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-24 h-24 rounded-3xl bg-white dark:bg-card/40 dark:bg-card p-1 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="w-full h-full rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center text-primary">
  <LineChart className="w-10 h-10" />
  </div>
@@ -141,14 +141,14 @@ export default function VCoursePerformance() {
  <div className="mt-8">
  <Tabs defaultValue="overview" className="w-full">
  <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
- <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Performance Metrics</TabsTrigger>
- <TabsTrigger value="feedback" className="rounded-xl data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Feedback & Satisfaction</TabsTrigger>
+ <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-white dark:bg-card/40 data-[state=active]:text-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Performance Metrics</TabsTrigger>
+ <TabsTrigger value="feedback" className="rounded-xl data-[state=active]:bg-white dark:bg-card/40 data-[state=active]:text-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Feedback & Satisfaction</TabsTrigger>
  </TabsList>
  
  <div className="mt-6">
  <TabsContent value="overview" className="space-y-6 outline-none">
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 rounded-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="bg-white dark:bg-card/40 dark:bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 rounded-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex flex-col items-center text-center">
  <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-full flex items-center justify-center mb-4">
  <Activity className="w-6 h-6" />
@@ -158,7 +158,7 @@ export default function VCoursePerformance() {
  </CardContent>
  </Card>
  
- <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 rounded-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="bg-white dark:bg-card/40 dark:bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 rounded-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex flex-col items-center text-center">
  <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-full flex items-center justify-center mb-4">
  <CheckSquare className="w-6 h-6" />
@@ -168,7 +168,7 @@ export default function VCoursePerformance() {
  </CardContent>
  </Card>
 
- <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/80 rounded-2xl ring-1 ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="bg-white dark:bg-card/40 dark:bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/80 rounded-2xl ring-1 ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex flex-col items-center text-center">
  <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-full flex items-center justify-center mb-4">
  <Star className="w-6 h-6" />

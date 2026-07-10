@@ -122,7 +122,7 @@ export default function HRAnalytics({ companyId, staff = [], currency = "USD" })
         <h3 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-green-600" /> Organizational Overview
         </h3>
-        <div className="h-64 flex flex-col items-center justify-center text-center bg-slate-50/50 dark:bg-slate-900/50 rounded-xl border border-dashed border-border/50">
+        <div className="h-64 flex flex-col items-center justify-center text-center bg-slate-50/50 dark:bg-card/50 rounded-xl border border-dashed border-border/50">
           <BarChart2 className="w-12 h-12 text-muted-foreground/30 mb-4" />
           <p className="text-sm font-medium text-muted-foreground">Detailed demographic charts and trends will render here.</p>
           <p className="text-xs text-muted-foreground mt-1">Generate an Orbit AI report to view dynamic insights.</p>
@@ -142,7 +142,7 @@ export default function HRAnalytics({ companyId, staff = [], currency = "USD" })
             </DialogHeader>
           </div>
           
-          <div className="p-8 space-y-6 bg-slate-50 dark:bg-slate-900">
+          <div className="p-8 space-y-6 bg-slate-50 dark:bg-card">
             <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-border/50">
               <h4 className="font-bold text-emerald-700 dark:text-emerald-400 mb-3 uppercase tracking-wider text-sm flex items-center gap-2">
                 <Users className="w-4 h-4" /> Headcount & Retention

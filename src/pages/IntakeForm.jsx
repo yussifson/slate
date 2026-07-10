@@ -105,7 +105,7 @@ View in App: ${window.location.origin}/leads`});
  if (submitted) {
  return (
  <div className="min-h-screen bg-gradient-to-br from-slate-50 to-primary/5 flex items-center justify-center p-4">
- <div className="bg-white dark:bg-slate-900/40 rounded-2xl p-8 max-w-md w-full text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-white dark:bg-card/40 rounded-2xl p-8 max-w-md w-full text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
  <CheckCircle className="w-8 h-8 text-primary" />
  </div>
@@ -153,7 +153,7 @@ View in App: ${window.location.origin}/leads`});
  )}</p>
  </div>
 
- <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 space-y-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <form onSubmit={handleSubmit} className="bg-white dark:bg-card/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 space-y-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Personal Info */}
  <div>
  <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">

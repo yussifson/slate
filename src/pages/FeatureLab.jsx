@@ -216,7 +216,7 @@ Do NOT wrap the output in markdown code blocks. Output the raw text directly.`;
           </h1>
           <p className="text-slate-500 mt-1">Shape the future of the platform. Submit custom feature requests and track their progress.</p>
         </div>
-        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl px-5 py-3 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 flex items-center gap-3 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)]">
+        <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl px-5 py-3 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 flex items-center gap-3 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)]">
           <div className="text-sm font-semibold text-slate-700 dark:text-slate-300">Monthly Submissions:</div>
           <Badge variant={remaining > 0 ? 'default' : 'secondary'} className={remaining > 0 ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200 ring-1 ring-indigo-200 shadow-sm' : ''}>
             {limit >= 999999 ? 'Unlimited' : `${used} / ${limit} Used`}
@@ -226,7 +226,7 @@ Do NOT wrap the output in markdown code blocks. Output the raw text directly.`;
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <Card className="border border-indigo-200/50 dark:border-indigo-900/30 shadow-xl shadow-indigo-900/5 overflow-hidden bg-white/60 dark:bg-slate-900/60 backdrop-blur-3xl relative">
+          <Card className="border border-indigo-200/50 dark:border-indigo-900/30 shadow-xl shadow-indigo-900/5 overflow-hidden bg-white/60 dark:bg-card/60 backdrop-blur-3xl relative">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
             <CardHeader className="pb-4">
               <CardTitle className="text-xl flex items-center gap-2 text-slate-900 dark:text-white">
@@ -237,7 +237,7 @@ Do NOT wrap the output in markdown code blocks. Output the raw text directly.`;
             </CardHeader>
             <CardContent>
               {limit === 0 ? (
-                <div className="p-8 text-center bg-white/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 backdrop-blur-xl">
+                <div className="p-8 text-center bg-white/50 dark:bg-card/50 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 backdrop-blur-xl">
                   <LayoutDashboard className="w-12 h-12 text-slate-400 mx-auto mb-4 drop-shadow-sm" />
                   <h3 className="text-lg font-bold text-slate-900 dark:text-white">Upgrade to Suggest Features</h3>
                   <p className="text-slate-500 mt-2 mb-6 max-w-md mx-auto leading-relaxed">Your current plan ({plan}) does not include feature requests. Upgrade to Professional or Business to start submitting ideas to the Feature Insider.</p>
@@ -297,7 +297,7 @@ Do NOT wrap the output in markdown code blocks. Output the raw text directly.`;
               )}
             </CardContent>
             {canSubmit && (
-              <CardFooter className="bg-slate-50/80 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 p-6 flex justify-between items-center backdrop-blur-xl">
+              <CardFooter className="bg-slate-50/80 dark:bg-card/80 border-t border-slate-100 dark:border-slate-800 p-6 flex justify-between items-center backdrop-blur-xl">
                 {isEditing ? (
                   <Button type="button" variant="ghost" onClick={() => { setIsEditing(false); setTitle(''); setDescription(''); }} className="text-slate-500 hover:text-slate-700">Cancel Edit</Button>
                 ) : <div/>}
@@ -310,7 +310,7 @@ Do NOT wrap the output in markdown code blocks. Output the raw text directly.`;
         </div>
 
         <div className="space-y-6">
-          <Card className="border border-slate-200/60 dark:border-slate-800/60 shadow-xl shadow-slate-200/10 bg-white/60 dark:bg-slate-900/60 backdrop-blur-3xl sticky top-24">
+          <Card className="border border-slate-200/60 dark:border-slate-800/60 shadow-xl shadow-slate-200/10 bg-white/60 dark:bg-card/60 backdrop-blur-3xl sticky top-24">
             <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800/50">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Activity className="w-5 h-5 text-emerald-500" /> 
@@ -375,7 +375,7 @@ Do NOT wrap the output in markdown code blocks. Output the raw text directly.`;
         <DialogContent className="sm:max-w-[600px] max-h-[85vh] p-0 border-0 shadow-2xl rounded-3xl overflow-hidden flex flex-col">
           {activeRequest && (
             <>
-              <div className="bg-slate-50/80 dark:bg-slate-900/80 p-6 border-b border-slate-100 dark:border-slate-800 backdrop-blur-xl shrink-0">
+              <div className="bg-slate-50/80 dark:bg-card/80 p-6 border-b border-slate-100 dark:border-slate-800 backdrop-blur-xl shrink-0">
                 <div className="flex items-center justify-between mb-2">
                   <Badge variant="outline" className="bg-white dark:bg-slate-800 uppercase text-[10px] tracking-wider font-bold text-indigo-600 border-indigo-100">
                     {activeRequest.request_type} Feature
@@ -389,7 +389,7 @@ Do NOT wrap the output in markdown code blocks. Output the raw text directly.`;
               
               <div className="p-6 overflow-y-auto space-y-6 flex-1 bg-white dark:bg-[#0B1120]">
                 {/* Status & Progress Box */}
-                <div className="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
+                <div className="bg-slate-50 dark:bg-card/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Status</span>
                     <Badge className={clsx(
@@ -433,13 +433,13 @@ Do NOT wrap the output in markdown code blocks. Output the raw text directly.`;
                 {/* Description content */}
                 <div>
                   <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3">Feature Requirements</h3>
-                  <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed text-slate-600 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-900/20 p-5 rounded-2xl border border-slate-100 dark:border-slate-800/50 whitespace-pre-wrap">
+                  <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed text-slate-600 dark:text-slate-400 bg-slate-50/50 dark:bg-card/20 p-5 rounded-2xl border border-slate-100 dark:border-slate-800/50 whitespace-pre-wrap">
                     {activeRequest.description}
                   </div>
                 </div>
               </div>
 
-              <DialogFooter className="bg-slate-50/80 dark:bg-slate-900/80 p-5 border-t border-slate-100 dark:border-slate-800 backdrop-blur-xl shrink-0">
+              <DialogFooter className="bg-slate-50/80 dark:bg-card/80 p-5 border-t border-slate-100 dark:border-slate-800 backdrop-blur-xl shrink-0">
                 <Button variant="outline" onClick={() => setIsViewModalOpen(false)} className="rounded-xl font-semibold border-slate-200 hover:bg-slate-100">Close</Button>
                 <Button onClick={openEditMode} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md shadow-indigo-500/20 font-semibold px-6 gap-2">
                   <Edit className="w-4 h-4" /> Edit Feature

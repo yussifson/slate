@@ -93,7 +93,7 @@ export default function Viewings() {
     const days = [];
     
     for (let i = 0; i < firstDay; i++) {
-      days.push(<div key={`empty-${i}`} className="p-2.5 bg-slate-50/50 dark:bg-slate-900/20 border-r border-b border-slate-200 dark:border-slate-800"></div>);
+      days.push(<div key={`empty-${i}`} className="p-2.5 bg-slate-50/50 dark:bg-card/20 border-r border-b border-slate-200 dark:border-slate-800"></div>);
     }
     
     for (let day = 1; day <= daysInMonth; day++) {
@@ -104,7 +104,7 @@ export default function Viewings() {
       });
       
       days.push(
-        <div key={day} className="min-h-[100px] p-2.5 border-r border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-300 ease-in-out cursor-pointer bg-white dark:bg-slate-900/50 group">
+        <div key={day} className="min-h-[100px] p-2.5 border-r border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-300 ease-in-out cursor-pointer bg-white dark:bg-card/50 group">
           <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 group-hover:text-primary dark:group-hover:text-primary/80 transition-colors">{day}</div>
           <div className="space-y-1.5">
             {dayViewings.slice(0, 2).map(v => (
@@ -149,14 +149,14 @@ export default function Viewings() {
         {view === 'calendar' ? (
           <div className="grid grid-cols-3 gap-6 mb-8">
             <div className="col-span-2">
-              <Card className="p-6 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
+              <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
                 <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2.5 text-lg font-bold tracking-wide">
                       <Calendar className="w-5 h-5 text-primary dark:text-primary/80" />
                       {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                     </CardTitle>
-                    <div className="flex gap-1 bg-slate-100 dark:bg-slate-900/50 rounded-lg p-1 border border-slate-200 dark:border-slate-600/30">
+                    <div className="flex gap-1 bg-slate-100 dark:bg-card/50 rounded-lg p-1 border border-slate-200 dark:border-slate-600/30">
                       <Button variant="ghost" size="sm" onClick={handlePrevMonth} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 h-8 w-8 p-0 rounded-md transition-colors shadow-sm">
                         <ChevronLeft className="w-4 h-4" />
                       </Button>
@@ -169,7 +169,7 @@ export default function Viewings() {
                 <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                   <div className="grid grid-cols-7 gap-0">
                     {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                      <div key={day} className="py-3 px-2 text-center text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 border-r border-b border-slate-200 dark:border-slate-800">
+                      <div key={day} className="py-3 px-2 text-center text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-card border-r border-b border-slate-200 dark:border-slate-800">
                         {day}
                       </div>
                     ))}
@@ -181,7 +181,7 @@ export default function Viewings() {
 
             {/* Upcoming Viewings Sidebar */}
             <div>
-              <Card className="p-6 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
+              <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
                 <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
                   <CardTitle className="flex items-center gap-2.5 text-lg font-bold text-slate-900 dark:text-white tracking-wide">
                     <div className="p-1.5 bg-primary/10 dark:bg-primary/30/30 rounded-lg border border-primary/20 dark:border-primary/40/50 shadow-sm">
@@ -221,7 +221,7 @@ export default function Viewings() {
                               <span>{viewing.agent_name}</span>
                             </div>
                           </div>
-                          <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-white dark:bg-slate-900 p-1 rounded-lg shadow-sm">
+                          <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-white dark:bg-card p-1 rounded-lg shadow-sm">
                             <Button size="icon" variant="ghost" className="h-6 w-6 hover:bg-primary/5 text-primary dark:hover:bg-primary/30/30" onClick={() => handleEdit(viewing)}>
                               <Edit className="w-3 h-3" />
                             </Button>
@@ -328,44 +328,44 @@ export default function Viewings() {
             }} className="space-y-4 mt-6">
               <div>
                 <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Property ID</label>
-                <input type="text" placeholder="Property ID" value={formData.propertyId} onChange={(e) => setFormData({...formData, propertyId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                <input type="text" placeholder="Property ID" value={formData.propertyId} onChange={(e) => setFormData({...formData, propertyId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Property Address *</label>
-                <input type="text" placeholder="Property Address" value={formData.propertyAddress} onChange={(e) => setFormData({...formData, propertyAddress: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" required />
+                <input type="text" placeholder="Property Address" value={formData.propertyAddress} onChange={(e) => setFormData({...formData, propertyAddress: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" required />
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Client ID</label>
-                <input type="text" placeholder="Client ID" value={formData.clientId} onChange={(e) => setFormData({...formData, clientId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                <input type="text" placeholder="Client ID" value={formData.clientId} onChange={(e) => setFormData({...formData, clientId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Client Name *</label>
-                <input type="text" placeholder="Client Name" value={formData.clientName} onChange={(e) => setFormData({...formData, clientName: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" required />
+                <input type="text" placeholder="Client Name" value={formData.clientName} onChange={(e) => setFormData({...formData, clientName: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" required />
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Agent ID</label>
-                <input type="text" placeholder="Agent ID" value={formData.agentId} onChange={(e) => setFormData({...formData, agentId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                <input type="text" placeholder="Agent ID" value={formData.agentId} onChange={(e) => setFormData({...formData, agentId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Agent Name</label>
-                <input type="text" placeholder="Agent Name" value={formData.agentName} onChange={(e) => setFormData({...formData, agentName: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                <input type="text" placeholder="Agent Name" value={formData.agentName} onChange={(e) => setFormData({...formData, agentName: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Viewing Date *</label>
-                  <input type="date" value={formData.viewingDate} onChange={(e) => setFormData({...formData, viewingDate: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" required />
+                  <input type="date" value={formData.viewingDate} onChange={(e) => setFormData({...formData, viewingDate: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" required />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Time</label>
                   <div className="relative">
-                    <input type="time" value={formData.viewingTime} onChange={(e) => setFormData({...formData, viewingTime: e.target.value})} className="w-full pl-3 pr-10 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-0 [&::-webkit-calendar-picker-indicator]:w-10 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer z-10" />
+                    <input type="time" value={formData.viewingTime} onChange={(e) => setFormData({...formData, viewingTime: e.target.value})} className="w-full pl-3 pr-10 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-0 [&::-webkit-calendar-picker-indicator]:w-10 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer z-10" />
                     <Clock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none z-0" />
                   </div>
                 </div>
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Status</label>
-                <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none">
+                <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none">
                   <option value="scheduled">Scheduled</option>
                   <option value="completed">Completed</option>
                   <option value="cancelled">Cancelled</option>
@@ -373,7 +373,7 @@ export default function Viewings() {
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Notes</label>
-                <textarea placeholder="Additional notes" value={formData.notes} onChange={(e) => setFormData({...formData, notes: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" rows="3"></textarea>
+                <textarea placeholder="Additional notes" value={formData.notes} onChange={(e) => setFormData({...formData, notes: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" rows="3"></textarea>
               </div>
               <Button type="submit" className="w-full bg-primary hover:bg-primary/90 dark:bg-primary dark:hover:bg-primary text-white rounded-lg shadow-lg shadow-primary/20 py-2.5 transition-all">Schedule Viewing</Button>
             </form>

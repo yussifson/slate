@@ -102,7 +102,7 @@ export default function PatientEHR({ patientId, companyId }) {
 
   return (
     <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm overflow-hidden flex flex-col h-[800px]">
-      <div className="p-6 border-b border-black/9 dark:border-white/8 bg-slate-50/50 dark:bg-slate-900/50 flex justify-between items-start">
+      <div className="p-6 border-b border-black/9 dark:border-white/8 bg-slate-50/50 dark:bg-card/50 flex justify-between items-start">
         <div className="flex gap-4 items-center">
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary text-2xl font-semibold border-[0.5px] border-primary/20">
             {patient.first_name?.[0]}{patient.last_name?.[0]}
@@ -145,7 +145,7 @@ export default function PatientEHR({ patientId, companyId }) {
         ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 bg-slate-50/30 dark:bg-slate-900/30">
+      <div className="flex-1 overflow-y-auto p-6 bg-slate-50/30 dark:bg-card/30">
         {activeTab === 'overview' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-card p-5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8">

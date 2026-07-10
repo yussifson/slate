@@ -188,7 +188,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
                   <div className="h-32 bg-slate-100 dark:bg-slate-800 p-5 flex flex-col justify-between relative overflow-hidden border-b border-border/50 shrink-0">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-500/10 to-transparent rounded-bl-full pointer-events-none" />
                     <div className="flex justify-between items-start relative z-10">
-                      <span className="text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider bg-white dark:bg-slate-950 text-green-700 dark:text-green-400 shadow-sm border border-border/50">
+                      <span className="text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider bg-white dark:bg-background text-green-700 dark:text-green-400 shadow-sm border border-border/50">
                         {course.category}
                       </span>
                       {course.is_mandatory ? (
@@ -197,11 +197,11 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
                         </span>
                       ) : null}
                     </div>
-                    <div className="relative z-10 w-10 h-10 rounded-xl bg-white dark:bg-slate-900 flex items-center justify-center shadow-sm border border-border/50 mt-4 group-hover:scale-110 transition-transform">
+                    <div className="relative z-10 w-10 h-10 rounded-xl bg-white dark:bg-card flex items-center justify-center shadow-sm border border-border/50 mt-4 group-hover:scale-110 transition-transform">
                       <PlayCircle className="w-5 h-5 text-green-600 dark:text-green-500" />
                     </div>
                   </div>
-                  <div className="p-5 flex-1 flex flex-col bg-white dark:bg-slate-900">
+                  <div className="p-5 flex-1 flex flex-col bg-white dark:bg-card">
                     <h3 className="font-bold text-foreground text-lg leading-tight line-clamp-2">{course.title}</h3>
                     <p className="text-sm text-muted-foreground mt-2 line-clamp-2 font-medium flex-1">{course.description || "No description provided."}</p>
                     
@@ -224,7 +224,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
               {records.map(r => (
                 <div key={r.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-border/50 gap-4 hover:shadow-md hover:border-green-500/30 transition-all group">
                   <div className="flex gap-4 items-center">
-                    <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 flex items-center justify-center font-bold text-sm text-foreground shadow-sm border border-border/50 shrink-0">
+                    <div className="w-10 h-10 rounded-xl bg-white dark:bg-card flex items-center justify-center font-bold text-sm text-foreground shadow-sm border border-border/50 shrink-0">
                       {r.full_name?.charAt(0) || '?'}
                     </div>
                     <div>
@@ -237,7 +237,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
                       {r.status?.replace("_", " ")}
                     </span>
                     {showUpdateForm === r.id ? (
-                      <div className="flex gap-2 bg-white dark:bg-slate-900 p-1 rounded-lg border border-border/50 shadow-sm">
+                      <div className="flex gap-2 bg-white dark:bg-card p-1 rounded-lg border border-border/50 shadow-sm">
                         <Button size="sm" className="h-7 text-[10px] font-bold uppercase tracking-wider bg-emerald-100 hover:bg-emerald-200 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400" onClick={() => updateStatus(r.id, 'completed')}>Complete</Button>
                         <Button size="sm" variant="ghost" className="h-7 text-[10px] font-bold uppercase tracking-wider" onClick={() => setShowUpdateForm(null)}>Cancel</Button>
                       </div>
@@ -261,7 +261,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
             ) : (
               <div className="space-y-4">
                 {staffCompletion.map((s, idx) => (
-                  <div key={idx} className="flex items-center gap-5 p-4 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-border/50">
+                  <div key={idx} className="flex items-center gap-5 p-4 bg-white dark:bg-card rounded-xl shadow-sm border border-border/50">
                     <div className="w-8 font-black text-xl text-muted-foreground/40 shrink-0 text-right">#{idx + 1}</div>
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500/20 to-green-500/5 flex items-center justify-center font-bold text-green-600 border border-green-500/20 shrink-0">
                       {s.avatar}
@@ -293,20 +293,20 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
           <div className="space-y-4">
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Title *</Label>
-              <Input value={courseForm.title} onChange={e => setCourseForm({...courseForm, title: e.target.value})} className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none" />
+              <Input value={courseForm.title} onChange={e => setCourseForm({...courseForm, title: e.target.value})} className="bg-slate-50 dark:bg-card rounded-xl border-none" />
             </div>
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Category</Label>
               <Select value={courseForm.category} onValueChange={v => setCourseForm({...courseForm, category: v})}>
-                <SelectTrigger className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="bg-slate-50 dark:bg-card rounded-xl border-none"><SelectValue /></SelectTrigger>
                 <SelectContent className="rounded-xl">{CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Description</Label>
-              <Textarea value={courseForm.description} onChange={e => setCourseForm({...courseForm, description: e.target.value})} className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none resize-none" rows={3} />
+              <Textarea value={courseForm.description} onChange={e => setCourseForm({...courseForm, description: e.target.value})} className="bg-slate-50 dark:bg-card rounded-xl border-none resize-none" rows={3} />
             </div>
-            <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900 p-3 rounded-xl">
+            <div className="flex items-center gap-3 bg-slate-50 dark:bg-card p-3 rounded-xl">
               <input type="checkbox" id="mandatory" checked={courseForm.is_mandatory===1} onChange={e => setCourseForm({...courseForm, is_mandatory: e.target.checked?1:0})} className="w-4 h-4 rounded text-green-600 focus:ring-green-600 accent-green-600" />
               <Label htmlFor="mandatory" className="font-bold text-sm cursor-pointer">Make this a mandatory course</Label>
             </div>
@@ -327,7 +327,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Select Staff *</Label>
               <Select value={enrollForm.staff_id} onValueChange={v => setEnrollForm({...enrollForm, staff_id: v})}>
-                <SelectTrigger className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none"><SelectValue placeholder="Choose employee..."/></SelectTrigger>
+                <SelectTrigger className="bg-slate-50 dark:bg-card rounded-xl border-none"><SelectValue placeholder="Choose employee..."/></SelectTrigger>
                 <SelectContent className="rounded-xl max-h-60">
                   {staff.map(s => <SelectItem key={s.id} value={s.id}>{s.name || s.full_name}</SelectItem>)}
                 </SelectContent>
@@ -336,7 +336,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Select Course *</Label>
               <Select value={enrollForm.course_id} onValueChange={v => setEnrollForm({...enrollForm, course_id: v})}>
-                <SelectTrigger className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none"><SelectValue placeholder="Choose course..."/></SelectTrigger>
+                <SelectTrigger className="bg-slate-50 dark:bg-card rounded-xl border-none"><SelectValue placeholder="Choose course..."/></SelectTrigger>
                 <SelectContent className="rounded-xl max-h-60">
                   {courses.map(c => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}
                 </SelectContent>
@@ -344,7 +344,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
             </div>
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">Expiry Date (Optional)</Label>
-              <Input type="date" value={enrollForm.expiry_date} onChange={e => setEnrollForm({...enrollForm, expiry_date: e.target.value})} className="bg-slate-50 dark:bg-slate-900 rounded-xl border-none" />
+              <Input type="date" value={enrollForm.expiry_date} onChange={e => setEnrollForm({...enrollForm, expiry_date: e.target.value})} className="bg-slate-50 dark:bg-card rounded-xl border-none" />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button variant="ghost" onClick={() => setShowEnrollForm(false)} className="rounded-xl font-bold">Cancel</Button>

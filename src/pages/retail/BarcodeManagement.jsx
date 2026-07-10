@@ -166,7 +166,7 @@ export default function BarcodeManagement() {
             <CardContent>
               <div className="space-y-3 max-h-[400px] overflow-y-auto mb-6 pr-2">
                 {printQueue.map(item => (
-                  <div key={item.product.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-900">
+                  <div key={item.product.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-card">
                     <div className="truncate flex-1 mr-2">
                       <p className="text-sm font-medium truncate">{item.product.name}</p>
                       <p className="text-xs text-slate-500">{item.product.sku}</p>

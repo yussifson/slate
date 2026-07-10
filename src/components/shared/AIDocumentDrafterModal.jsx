@@ -94,7 +94,7 @@ Output ONLY the markdown content, no extra conversational text.`;
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/50 dark:bg-slate-900/20">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/50 dark:bg-card/20">
           {!draftResult ? (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -149,7 +149,7 @@ Output ONLY the markdown content, no extra conversational text.`;
                   <Button size="sm" onClick={handleSaveToDocuments} className="bg-primary hover:bg-primary/90 text-white"><Download className="w-4 h-4 mr-2"/> Save to Documents Vault</Button>
                 </div>
               </div>
-              <div className="flex-1 bg-white dark:bg-slate-950 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl p-6 overflow-y-auto font-mono text-sm shadow-sm">
+              <div className="flex-1 bg-white dark:bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl p-6 overflow-y-auto font-mono text-sm shadow-sm">
                 <pre className="whitespace-pre-wrap">{draftResult}</pre>
               </div>
             </div>

@@ -89,7 +89,7 @@ export default function DataOracle() {
   };
 
   return (
-    <div className="flex flex-col bg-card dark:bg-slate-950/40 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 overflow-hidden shadow-xl shadow-slate-200/20 dark:shadow-none" style={{ minHeight: '560px', maxHeight: '72vh' }}>
+    <div className="flex flex-col bg-card dark:bg-background/40 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 overflow-hidden shadow-xl shadow-slate-200/20 dark:shadow-none" style={{ minHeight: '560px', maxHeight: '72vh' }}>
       {/* Header */}
       <div className="flex items-center gap-4 px-6 py-5 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900/20 shrink-0">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md shadow-blue-500/20">
@@ -106,7 +106,7 @@ export default function DataOracle() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5 bg-slate-50/50 dark:bg-slate-950/50">
+      <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5 bg-slate-50/50 dark:bg-background/50">
         {messages.map((msg, i) => (
           <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
             <div className={`w-8 h-8 flex-shrink-0 rounded-lg flex items-center justify-center shadow-sm ${msg.role === 'user' ? 'bg-primary' : 'bg-blue-600'}`}>
@@ -147,13 +147,13 @@ export default function DataOracle() {
       )}
 
       {/* Input */}
-      <div className="px-5 py-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shrink-0">
+      <div className="px-5 py-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-background shrink-0">
         <form onSubmit={(e) => { e.preventDefault(); handleQuery(); }} className="flex gap-2">
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Ask anything about your data…"
-            className="flex-1 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 disabled:opacity-60"
+            className="flex-1 text-sm bg-slate-50 dark:bg-card border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 disabled:opacity-60"
             disabled={isProcessing}
           />
           <button

@@ -102,7 +102,7 @@ export default function OptavelCommandCenter() {
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 
   return (
-    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 flex flex-col items-center py-6 px-6">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-background flex flex-col items-center py-6 px-6">
       
       <div className="w-full max-w-7xl">
         {/* Massive Colorful Header like Pharmacy */}
@@ -131,7 +131,7 @@ export default function OptavelCommandCenter() {
         {/* Top Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Active Tasks Card */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+          <div className="bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className="flex items-start justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
                 <CheckCircle2 className="w-6 h-6" />
@@ -147,7 +147,7 @@ export default function OptavelCommandCenter() {
           </div>
           
           {/* Total Employees Card */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+          <div className="bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className="flex items-start justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-purple-600 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
                 <UsersIcon className="w-6 h-6" />
@@ -163,7 +163,7 @@ export default function OptavelCommandCenter() {
           </div>
 
           {/* Open Tickets Card */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+          <div className="bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className="flex items-start justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-rose-500 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
                 <AlertCircle className="w-6 h-6" />
@@ -179,7 +179,7 @@ export default function OptavelCommandCenter() {
           </div>
 
           {/* Active Deals Card */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+          <div className="bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className="flex items-start justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
                 <TrendingUp className="w-6 h-6" />
@@ -202,7 +202,7 @@ export default function OptavelCommandCenter() {
             const Icon = mod.icon;
             return (
               <Link key={mod.id} to={mod.path}
-                className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-slate-300 dark:hover:border-slate-700 flex flex-col min-h-[220px]">
+                className="group bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-slate-300 dark:hover:border-slate-700 flex flex-col min-h-[220px]">
                 
                 <div className="flex-1">
                   <div className={`w-14 h-14 rounded-2xl ${mod.bg} flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>

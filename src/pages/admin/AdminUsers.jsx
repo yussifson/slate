@@ -308,7 +308,7 @@ export default function AdminUsers() {
 
       {/* Role Change Dialog */}
       <Dialog open={!!roleDialog} onOpenChange={(o) => !o && setRoleDialog(null)}>
-        <DialogContent className="max-w-sm rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <DialogContent className="max-w-sm rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-white dark:bg-card/40 p-6 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <DialogDescription className="sr-only">Change user role</DialogDescription>
           <DialogHeader>
             <DialogTitle className="text-slate-900 dark:text-slate-100 font-extrabold text-base">

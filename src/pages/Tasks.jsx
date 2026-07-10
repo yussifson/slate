@@ -131,7 +131,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl h-[85vh] flex flex-col p-0 gap-0 overflow-hidden bg-[#F2F2F7] dark:bg-[#1C1C1E]">
+      <DialogContent className="max-w-3xl h-[85vh] flex flex-col p-0 gap-0 overflow-hidden bg-[#F2F2F7] dark:bg-card">
         <DialogHeader className="px-6 py-4 border-b border-black/5 dark:border-white/5 bg-white dark:bg-[#2C2C2E] shrink-0">
           <DialogTitle className="text-xl font-bold tracking-tight">{isEdit ? "Task Details" : "New Task"}</DialogTitle>
         </DialogHeader>
@@ -558,7 +558,7 @@ export default function Tasks() {
                 indicator: "bg-emerald-500"
               },
               cancelled: { 
-                bg: "bg-slate-50 dark:bg-slate-900/50", 
+                bg: "bg-slate-50 dark:bg-card/50", 
                 border: "border-slate-200 dark:border-slate-800", 
                 accent: "bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-400",
                 indicator: "bg-slate-400"

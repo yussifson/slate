@@ -56,7 +56,7 @@ export default function UnifiedInbox() {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col overflow-hidden relative bg-slate-50/50 dark:bg-slate-900/50">
+      <div className="flex-1 flex flex-col overflow-hidden relative bg-slate-50/50 dark:bg-card/50">
         {/* Mobile Header */}
         <div className="md:hidden p-4 border-b border-border bg-card flex items-center justify-between shrink-0">
            <h2 className="font-semibold flex items-center gap-2">

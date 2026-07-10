@@ -600,7 +600,7 @@ return (
            setShowFirmAlert(false);
          }}
          placeholder="Describe your dream workspace in plain english..."
-         className="w-full min-h-[64px] bg-white dark:bg-slate-900 rounded-3xl py-5 pl-6 pr-16 text-slate-900 dark:text-white placeholder-slate-400 font-medium text-lg border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-primary/20 outline-none resize-none"
+         className="w-full min-h-[64px] bg-white dark:bg-card rounded-3xl py-5 pl-6 pr-16 text-slate-900 dark:text-white placeholder-slate-400 font-medium text-lg border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-primary/20 outline-none resize-none"
          rows={1}
        />
        <button

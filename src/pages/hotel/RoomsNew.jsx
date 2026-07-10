@@ -173,7 +173,7 @@ export default function RoomsNew() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: idx * 0.05 }}
-            className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 hover:shadow-md transition-all group"
+            className="bg-white dark:bg-card rounded-xl border border-slate-200 dark:border-slate-800 p-5 hover:shadow-md transition-all group"
           >
             <div className="flex justify-between items-start mb-3">
               <div>
@@ -218,7 +218,7 @@ export default function RoomsNew() {
           animate={{ opacity: 1 }}
         >
           <motion.div
-            className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md p-6 border border-slate-200 dark:border-slate-800"
+            className="bg-white dark:bg-card rounded-2xl w-full max-w-md p-6 border border-slate-200 dark:border-slate-800"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
           >

@@ -281,7 +281,7 @@ export default function UnivAlumni() {
  name="name"
  value={formData.name}
  onChange={handleInputChange}
- className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+ className="w-full px-3 py-2 bg-background dark:bg-card/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
  required
  />
  </div>
@@ -292,7 +292,7 @@ export default function UnivAlumni() {
  name="graduation_year"
  value={formData.graduation_year}
  onChange={handleInputChange}
- className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+ className="w-full px-3 py-2 bg-background dark:bg-card/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
  required
  />
  </div>
@@ -303,7 +303,7 @@ export default function UnivAlumni() {
  name="degree"
  value={formData.degree}
  onChange={handleInputChange}
- className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+ className="w-full px-3 py-2 bg-background dark:bg-card/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
  required
  />
  </div>
@@ -314,7 +314,7 @@ export default function UnivAlumni() {
  name="current_employer"
  value={formData.current_employer}
  onChange={handleInputChange}
- className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+ className="w-full px-3 py-2 bg-background dark:bg-card/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
  required
  />
  </div>

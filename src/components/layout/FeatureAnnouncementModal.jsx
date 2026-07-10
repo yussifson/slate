@@ -154,7 +154,7 @@ export default function FeatureAnnouncementModal() {
           </div>
         </div>
         
-        <div className="p-8 bg-white dark:bg-slate-900 space-y-8">
+        <div className="p-8 bg-white dark:bg-card space-y-8">
           <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed">
             {announcement.description}
           </p>

@@ -512,10 +512,10 @@ export default function Chat() {
  "relative px-3 py-1.5 text-[14.5px] leading-snug rounded-xl",
  isMe 
  ? "bg-[#d9fdd3] dark:bg-[#005c4b] text-slate-900 dark:text-slate-100 dark:text-gray-100 rounded-tr-none" 
- : "bg-white dark:bg-slate-900/40 dark:bg-[#202c33] text-slate-900 dark:text-slate-100 dark:text-gray-100 rounded-tl-none"
+ : "bg-white dark:bg-card/40 dark:bg-[#202c33] text-slate-900 dark:text-slate-100 dark:text-gray-100 rounded-tl-none"
  )}>
  {msg.reply_to_id && (
- <div className="bg-primary/20 dark:bg-white dark:bg-slate-900/40/5 border-l-4 border-primary rounded-md p-1.5 mb-1.5 text-xs opacity-80 cursor-pointer tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => {
+ <div className="bg-primary/20 dark:bg-white dark:bg-card/40/5 border-l-4 border-primary rounded-md p-1.5 mb-1.5 text-xs opacity-80 cursor-pointer tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => {
  const el = document.getElementById(`msg-${msg.reply_to_id}`);
  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
 }}>
@@ -537,13 +537,13 @@ export default function Chat() {
  
  {msg.content.startsWith('[Attachment|') ? (
  <div className="pr-12 pt-1 pb-1">
- <div className="flex items-center gap-2 bg-primary/20 dark:bg-white dark:bg-slate-900/40/5 p-2 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center gap-2 bg-primary/20 dark:bg-white dark:bg-card/40/5 p-2 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {msg.content.split('|')[3] === 'data:image' ? (
  <img src={msg.content.split('|')[2]} alt="attachment" className="max-w-[200px] rounded-md object-cover cursor-pointer hover:opacity-90 transition-opacity" onClick={() => window.open(msg.content.split('|')[2], '_blank')} />
  ) : msg.content.split('|')[3] === 'data:video' ? (
  <video src={msg.content.split('|')[2]} controls className="max-w-[250px] rounded-md" />
  ) : (
- <a href={msg.content.split('|')[2]} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:bg-primary/20 dark:hover:bg-white dark:bg-slate-900/40/5 rounded-lg p-1 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <a href={msg.content.split('|')[2]} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:bg-primary/20 dark:hover:bg-white dark:bg-card/40/5 rounded-lg p-1 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <FileText className="w-8 h-8 text-primary shrink-0" />
  <div className="flex flex-col min-w-0">
  <span className="text-sm font-semibold truncate max-w-[150px] text-primary hover:underline">{msg.content.split('|')[1]}</span>
@@ -570,7 +570,7 @@ export default function Chat() {
  </div>
  
  {/* Message Actions */}
- <div className="opacity-40 hover:opacity-100 transition-opacity flex flex-wrap items-center gap-2 bg-white dark:bg-slate-900/40/50 dark:bg-black/20 rounded-full px-1 py-0.5 mb-1 self-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="opacity-40 hover:opacity-100 transition-opacity flex flex-wrap items-center gap-2 bg-white dark:bg-card/40/50 dark:bg-black/20 rounded-full px-1 py-0.5 mb-1 self-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <button onClick={() => setReplyTo(msg)} className="p-1 hover:bg-primary/20 rounded-full text-[#71717a] dark:text-gray-400" title="Reply">
  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
  </button>
@@ -672,7 +672,7 @@ export default function Chat() {
  </PopoverContent>
  </Popover>
  
- <div className="flex-1 bg-white dark:bg-slate-900/40 dark:bg-[#2a3942] rounded-xl relative flex items-center  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-white dark:bg-card/40 dark:bg-[#2a3942] rounded-xl relative flex items-center  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <input
  type="text"
  value={inputValue}

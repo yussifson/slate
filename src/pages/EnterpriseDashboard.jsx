@@ -112,7 +112,7 @@ export default function EnterpriseDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex items-center gap-4">
+        <div className="bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex items-center gap-4">
           <div className="w-11 h-11 rounded-lg bg-primary/5 dark:bg-primary/10 flex items-center justify-center">
             <Building2 className="text-primary dark:text-primary w-5 h-5" />
           </div>
@@ -121,7 +121,7 @@ export default function EnterpriseDashboard() {
             <p className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">{portfolio.length}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex items-center gap-4">
+        <div className="bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex items-center gap-4">
           <div className="w-11 h-11 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
             <Layers className="text-blue-600 dark:text-blue-400 w-5 h-5" />
           </div>
@@ -148,7 +148,7 @@ export default function EnterpriseDashboard() {
           {loading ? (
             <div className="flex flex-col gap-2">{[1,2,3].map(i => <div key={i} className="h-20 bg-slate-200 dark:bg-slate-800 rounded-xl animate-pulse" />)}</div>
           ) : portfolio.length === 0 ? (
-            <div className="p-5 md:p-8 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl text-center bg-white dark:bg-slate-900">
+            <div className="p-5 md:p-8 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl text-center bg-white dark:bg-card">
               <Building2 className="mx-auto text-slate-400 mb-2 w-8 h-8" />
               <p className="text-slate-500 text-sm font-medium">No verticals deployed yet.</p>
               <Button onClick={() => setShowDeployModal(true)} variant="outline" size="sm" className="mt-3 rounded-lg">Deploy First Vertical</Button>
@@ -161,7 +161,7 @@ export default function EnterpriseDashboard() {
                 return (
                   <motion.div key={company.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}
                     onClick={() => setSelectedVertical(company)}
-                    className={'p-4 cursor-pointer rounded-xl border transition-all ' + (isSelected ? 'bg-primary border-primary' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-primary/50 hover:bg-slate-50')}
+                    className={'p-4 cursor-pointer rounded-xl border transition-all ' + (isSelected ? 'bg-primary border-primary' : 'bg-white dark:bg-card border-slate-200 dark:border-slate-800 hover:border-primary/50 hover:bg-slate-50')}
                   >
                     <div className="flex items-center gap-3">
                       <div className={'p-2 rounded-lg ' + (isSelected ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-800')}>
@@ -184,7 +184,7 @@ export default function EnterpriseDashboard() {
           <AnimatePresence mode="wait">
             {selectedVertical ? (
               <motion.div key={selectedVertical.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 flex flex-col gap-5"
+                className="bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-xl p-6 flex flex-col gap-5"
               >
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-5 border-b border-slate-100 dark:border-slate-800">
                   <div>
@@ -235,7 +235,7 @@ export default function EnterpriseDashboard() {
               </motion.div>
             ) : (
               <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-16 flex flex-col items-center justify-center text-center">
+                className="bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-xl p-16 flex flex-col items-center justify-center text-center">
                 <Building2 className="w-12 h-12 text-slate-300 mb-4" />
                 <p className="text-slate-500 font-medium">Select a vertical to view details</p>
               </motion.div>
@@ -245,7 +245,7 @@ export default function EnterpriseDashboard() {
       </div>
 
       <Dialog open={showDeployModal} onOpenChange={deployingVertical ? undefined : setShowDeployModal}>
-        <DialogContent className="max-w-3xl max-h-screen overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-0">
+        <DialogContent className="max-w-3xl max-h-screen overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-card p-0">
           <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-start justify-between">
             <div>
               <DialogTitle className="text-base font-bold text-slate-900 dark:text-white">Deploy New Vertical</DialogTitle>
@@ -265,12 +265,12 @@ export default function EnterpriseDashboard() {
                   className={'border rounded-lg p-4 transition-all relative overflow-hidden ' + (
                     alreadyDeployed ? 'border-primary/20 dark:border-primary/20 bg-primary/5 cursor-default' :
                     isDeploying ? 'border-primary/40 bg-primary/5 dark:bg-primary/10' :
-                    deployingVertical ? 'opacity-40 pointer-events-none border-slate-200 bg-white dark:bg-slate-900' :
-                    'border-slate-200 dark:border-slate-800 hover:border-primary/50 hover:bg-slate-50 cursor-pointer bg-white dark:bg-slate-900'
+                    deployingVertical ? 'opacity-40 pointer-events-none border-slate-200 bg-white dark:bg-card' :
+                    'border-slate-200 dark:border-slate-800 hover:border-primary/50 hover:bg-slate-50 cursor-pointer bg-white dark:bg-card'
                   )}
                 >
                   {isDeploying && (
-                    <div className="absolute inset-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-2">
+                    <div className="absolute inset-0 bg-white/80 dark:bg-card/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-2">
                       <Loader2 className="w-6 h-6 text-primary animate-spin" />
                       <span className="text-xs font-bold text-primary">Deploying {ind.name}...</span>
                       <div className="w-32 h-1.5 bg-slate-200 rounded-full overflow-hidden mt-1"><div className="h-full bg-primary rounded-full" style={{width: '70%'}} /></div>

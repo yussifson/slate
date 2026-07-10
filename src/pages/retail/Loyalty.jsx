@@ -261,7 +261,7 @@ Suggest an exclusive perk or engagement strategy.`;
  {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
  </select>
  ) : (
- <div className="border-[0.5px] border-black/9 dark:border-white/8 rounded-lg max-h-48 overflow-y-auto bg-white dark:bg-slate-900/40 p-2 space-y-1 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="border-[0.5px] border-black/9 dark:border-white/8 rounded-lg max-h-48 overflow-y-auto bg-white dark:bg-card/40 p-2 space-y-1 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {customers.length === 0 ? (
  <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-2">No customers available.</p>
  ) : (

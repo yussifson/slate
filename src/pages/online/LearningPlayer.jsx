@@ -126,9 +126,9 @@ export default function LearningPlayer() {
  <PlayCircle className="w-4 h-4 text-[var(--primary)]" />
  <span>{activeLesson?.title || courseTitle}</span>
  </div>
- <div className="w-full h-1.5 bg-white dark:bg-slate-900/40/30 rounded-full overflow-hidden cursor-pointer group/progress hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-full h-1.5 bg-white dark:bg-card/40/30 rounded-full overflow-hidden cursor-pointer group/progress hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="h-full bg-[var(--primary)] w-0 relative group-hover/progress:bg-primary/70 transition-colors" style={{width: enrollment?.progress_percent + '%'}}>
- <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white dark:bg-slate-900/40 rounded-full scale-0 group-hover/progress:scale-100 transition-transform hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white dark:bg-card/40 rounded-full scale-0 group-hover/progress:scale-100 transition-transform hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  </div>

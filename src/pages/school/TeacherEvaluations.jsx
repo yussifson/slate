@@ -66,7 +66,7 @@ export default function TeacherEvaluations() {
  {teachers.map((teacher, i) => {
  const done = hasEvaluated(teacher);
  return (
- <div key={i} className={`p-6 rounded-3xl border ${done ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 border-primary/40 dark:border-primary/40 dark:border-primary/40' : 'bg-white dark:bg-slate-900/40 dark:bg-background border-primary/40 dark:border-primary/40 '} flex flex-col md:flex-row items-center justify-between gap-4 transition-all`}>
+ <div key={i} className={`p-6 rounded-3xl border ${done ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-card/50 border-primary/40 dark:border-primary/40 dark:border-primary/40' : 'bg-white dark:bg-card/40 dark:bg-background border-primary/40 dark:border-primary/40 '} flex flex-col md:flex-row items-center justify-between gap-4 transition-all`}>
  <div className="font-semibold text-lg text-slate-900 dark:text-slate-100 dark:text-white">{teacher}</div>
  
  {done ? (

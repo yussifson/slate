@@ -98,7 +98,7 @@ export default function SHSStudentPromotion() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <Card className="col-span-1 rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="col-span-1 rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="bg-slate-500 dark:bg-slate-800/50 rounded-md-t-3xl border-b border-primary/40 dark:border-primary/40">
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Promotion Rules</CardTitle>
  <CardDescription>Select the source and target forms</CardDescription>
@@ -107,7 +107,7 @@ export default function SHSStudentPromotion() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-primary dark:text-primary/70 uppercase tracking-wider tracking-[0.04em]">Current Level (From)</label>
  <select 
- className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={sourceGrade}
  onChange={(e) => {
  setSourceGrade(e.target.value);
@@ -127,7 +127,7 @@ export default function SHSStudentPromotion() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-primary uppercase tracking-wider tracking-[0.04em]">Next Level (To)</label>
  <select 
- className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={targetGrade}
  onChange={(e) => setTargetGrade(e.target.value)}
  >
@@ -148,8 +148,8 @@ export default function SHSStudentPromotion() {
  </CardContent>
  </Card>
 
- <Card className="col-span-1 md:col-span-2 rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 flex flex-col h-[calc(100vh-250px)] min-h-[500px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 rounded-md-t-3xl border-b border-primary/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="col-span-1 md:col-span-2 rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-primary/50 flex flex-col h-[calc(100vh-250px)] min-h-[500px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <CardHeader className="bg-white dark:bg-card/40 dark:bg-card rounded-md-t-3xl border-b border-primary/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Eligible Students</CardTitle>
  <CardDescription>{eligibleStudents.length} students currently in {sourceGrade}</CardDescription>
@@ -216,7 +216,7 @@ export default function SHSStudentPromotion() {
  </ScrollArea>
  </div>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 rounded-md-b-3xl flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-4 bg-white dark:bg-card/40 dark:bg-card border-t border-primary/40 dark:border-primary/40 rounded-md-b-3xl flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
  <span className="text-primary dark:text-primary/70 font-black">{selectedStudentIds.size}</span> students selected
  </p>

@@ -106,7 +106,7 @@ export default function Expenses() {
   const pendingCount = expenses.filter(e => e.status === 'Pending').length;
 
   return (
-    <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-slate-900/50 h-full p-4 lg:p-8 font-dmsans">
+    <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-card/50 h-full p-4 lg:p-8 font-dmsans">
       <div className="max-w-[1600px] mx-auto space-y-6">
 
         {/* ── Header ── */}
@@ -142,7 +142,7 @@ export default function Expenses() {
         {/* ── Search ── */}
         <div className="relative max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search expenses..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white dark:bg-slate-900 rounded-xl border-[0.5px] border-black/9 dark:border-white/8" />
+          <Input placeholder="Search expenses..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white dark:bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8" />
         </div>
 
         {/* ── Expenses Grid ── */}
@@ -152,7 +152,7 @@ export default function Expenses() {
             Loading expenses...
           </div>
         ) : filtered.length === 0 ? (
-          <div className="py-16 text-center text-muted-foreground bg-white dark:bg-slate-900 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8">
+          <div className="py-16 text-center text-muted-foreground bg-white dark:bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8">
             <Receipt className="w-14 h-14 mx-auto mb-3 opacity-20 text-primary" />
             <p className="font-semibold text-lg text-foreground">{t("no_expenses", "No expenses found")}</p>
             <p className="text-sm mt-1">{t("add_expense_prompt", "Submit a new expense report to get started.")}</p>
@@ -163,7 +163,7 @@ export default function Expenses() {
               const statusStyle = STATUS_STYLES[expense.status] || STATUS_STYLES['Pending'];
               
               return (
-                <div key={expense.id} className="group bg-white dark:bg-slate-900 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+                <div key={expense.id} className="group bg-white dark:bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
                   
                   {/* Card Header */}
                   <div className="p-5 border-b border-border/50">
@@ -194,7 +194,7 @@ export default function Expenses() {
 
                   {/* Body & Actions */}
                   <div className="p-5 flex-1 flex flex-col gap-4 bg-slate-50/50 dark:bg-slate-800/20">
-                    <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-3 rounded-xl border border-border/50 shadow-sm">
+                    <div className="flex justify-between items-center bg-white dark:bg-card p-3 rounded-xl border border-border/50 shadow-sm">
                       <span className="text-sm font-semibold text-muted-foreground">Amount</span>
                       <span className="text-lg font-bold text-foreground">{expense.currency} {parseFloat(expense.amount).toLocaleString()}</span>
                     </div>
@@ -229,7 +229,7 @@ export default function Expenses() {
       {/* ── Add Modal ── */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-2xl border-[0.5px] border-black/9 dark:border-white/8">
+          <div className="bg-white dark:bg-card rounded-2xl w-full max-w-md shadow-2xl border-[0.5px] border-black/9 dark:border-white/8">
             <div className="p-6 border-b border-border/50">
               <h2 className="text-lg font-bold text-foreground">New Expense Report</h2>
             </div>

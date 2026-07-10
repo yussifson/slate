@@ -166,7 +166,7 @@ export default function OnlineCourses() {
  ) : null}
  <div className="absolute inset-0 bg-primary/20 group-hover:bg-primary/20 transition-colors z-10" />
  <PlayCircle className="w-12 h-12 text-[var(--primary)] opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 z-20 " />
- <div className="absolute top-3 right-3 px-2.5 py-1 bg-white dark:bg-slate-900/40/90 dark:bg-black/50 backdrop-blur-sm border-[0.5px] border-black/9 dark:border-white/8 border-white/20 dark:border-white/10 text-[10px] font-semibold rounded-lg text-[var(--color-text-primary)] uppercase tracking-wider z-20 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="absolute top-3 right-3 px-2.5 py-1 bg-white dark:bg-card/40/90 dark:bg-black/50 backdrop-blur-sm border-[0.5px] border-black/9 dark:border-white/8 border-white/20 dark:border-white/10 text-[10px] font-semibold rounded-lg text-[var(--color-text-primary)] uppercase tracking-wider z-20 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {course.level || 'Beginner'}
  </div>
  </div>
@@ -198,7 +198,7 @@ export default function OnlineCourses() {
  <button onClick={() => navigate(`/o/builder/course/${course.id}`)} className="text-sm font-semibold text-[var(--primary)] group-hover:text-white flex items-center gap-2 transition-colors">
  Manage Course <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
  </button>
- <button onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(course.id);}} className="text-[var(--color-error)] opacity-0 group-hover:opacity-100 hover:text-white transition-all bg-white dark:bg-slate-900/40/50 group-hover:bg-transparent rounded-lg p-1.5 backdrop-blur-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" title="Delete Course">
+ <button onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(course.id);}} className="text-[var(--color-error)] opacity-0 group-hover:opacity-100 hover:text-white transition-all bg-white dark:bg-card/40/50 group-hover:bg-transparent rounded-lg p-1.5 backdrop-blur-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" title="Delete Course">
  <Trash2 className="w-4 h-4" />
  </button>
  </div>

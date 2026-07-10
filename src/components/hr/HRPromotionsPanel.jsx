@@ -120,7 +120,7 @@ export default function HRPromotionsPanel({ companyId, staff, currency, isAdmin,
             {promotions.map(promo => (
               <div key={promo.id} className="p-5 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-border/50 flex flex-col md:flex-row justify-between gap-6 hover:border-green-500/30 transition-colors">
                 <div className="flex gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-white dark:bg-slate-900 flex items-center justify-center font-bold text-lg text-foreground shadow-sm border border-border/50 shrink-0">
+                  <div className="w-12 h-12 rounded-xl bg-white dark:bg-card flex items-center justify-center font-bold text-lg text-foreground shadow-sm border border-border/50 shrink-0">
                     {promo.full_name?.charAt(0) || '?'}
                   </div>
                   <div>
@@ -148,7 +148,7 @@ export default function HRPromotionsPanel({ companyId, staff, currency, isAdmin,
                   </span>
 
                   {isAdmin && promo.status === "pending" && (
-                    <div className="flex gap-2 bg-white dark:bg-slate-900 p-1 rounded-lg border border-border/50 shadow-sm ml-2">
+                    <div className="flex gap-2 bg-white dark:bg-card p-1 rounded-lg border border-border/50 shadow-sm ml-2">
                       <Button size="sm" onClick={() => updateStatus(promo.id, 'approved')} className="h-7 text-[10px] font-bold uppercase tracking-wider bg-emerald-100 hover:bg-emerald-200 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">Approve</Button>
                       <Button size="sm" onClick={() => updateStatus(promo.id, 'rejected')} className="h-7 text-[10px] font-bold uppercase tracking-wider bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-900/40 dark:text-red-400">Reject</Button>
                     </div>

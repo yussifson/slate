@@ -1109,7 +1109,7 @@ function ProtectedRoute() {
   
   if (user?.company_status === 'suspended') {
     return (
-      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-50/50 dark:bg-slate-900 p-4 font-sans backdrop-blur-sm">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-50/50 dark:bg-background p-4 font-sans backdrop-blur-sm">
         <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-3xl p-8 text-center border-[0.5px] border-black/9 dark:border-white/8 border-slate-100 dark:border-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="w-16 h-16 bg-red-50 dark:bg-red-500/10/10 text-red-500 dark:text-red-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">

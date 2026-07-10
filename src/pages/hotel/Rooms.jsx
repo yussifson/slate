@@ -366,7 +366,7 @@ export default function Rooms() {
                 {editingFloorId ? 'Update' : 'Add'}
               </Button>
             </div>
-            <div className="max-h-64 overflow-y-auto mt-4 space-y-2 border border-primary/20 p-2 rounded-xl bg-slate-50 dark:bg-slate-900">
+            <div className="max-h-64 overflow-y-auto mt-4 space-y-2 border border-primary/20 p-2 rounded-xl bg-slate-50 dark:bg-card">
               {savedFloors.length === 0 ? (
                 <p className="text-sm text-center text-muted-foreground p-4">No custom floors saved yet. Using defaults.</p>
               ) : (

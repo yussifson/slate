@@ -81,7 +81,7 @@ export default function TaskComments({ taskId }) {
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="Write a comment..."
-                    className="text-sm bg-slate-50 dark:bg-slate-900"
+                    className="text-sm bg-slate-50 dark:bg-card"
                 />
                 <Button type="submit" disabled={addMutation.isPending || !comment.trim()} className="shrink-0 gap-2">
                     <Send className="w-4 h-4" /> Send

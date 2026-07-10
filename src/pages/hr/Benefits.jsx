@@ -85,7 +85,7 @@ export default function Benefits() {
   const totalEmployerContribution = benefits.reduce((acc, curr) => acc + (curr.employer_contribution || 0), 0);
 
   return (
-    <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-slate-900/50 h-full p-4 lg:p-8 font-dmsans">
+    <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-card/50 h-full p-4 lg:p-8 font-dmsans">
       <div className="max-w-[1600px] mx-auto space-y-6">
 
         {/* ── Header ── */}
@@ -122,12 +122,12 @@ export default function Benefits() {
         {/* ── Search ── */}
         <div className="relative max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search benefits..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white dark:bg-slate-900 rounded-xl border-[0.5px] border-black/9 dark:border-white/8" />
+          <Input placeholder="Search benefits..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white dark:bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8" />
         </div>
 
         {/* ── Benefits Grid ── */}
         {filteredBenefits.length === 0 ? (
-          <div className="py-16 text-center text-muted-foreground bg-white dark:bg-slate-900 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8">
+          <div className="py-16 text-center text-muted-foreground bg-white dark:bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8">
             <ShieldPlus className="w-14 h-14 mx-auto mb-3 opacity-20 text-primary" />
             <p className="font-semibold text-lg text-foreground">No benefits found</p>
             <p className="text-sm mt-1">Create a new benefit program to get started.</p>
@@ -138,7 +138,7 @@ export default function Benefits() {
               const typeStyle = TYPE_STYLES[benefit.type] || TYPE_STYLES['Other'];
               const Icon = typeStyle.icon;
               return (
-                <div key={benefit.id} className="group bg-white dark:bg-slate-900 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col relative">
+                <div key={benefit.id} className="group bg-white dark:bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col relative">
                   <div className={`absolute top-0 right-0 w-32 h-32 opacity-10 bg-gradient-to-bl ${typeStyle.gradient} rounded-bl-full pointer-events-none`} />
                   
                   <div className="p-5 flex-1 flex flex-col relative z-10">

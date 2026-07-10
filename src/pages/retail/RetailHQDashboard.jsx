@@ -246,7 +246,7 @@ export default function RetailHQDashboard() {
               <p className="text-slate-500 text-center py-8">No transfer history found.</p>
             ) : (
               transfers.map(t => (
-                <div key={t.id} className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+                <div key={t.id} className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-card/50">
                   <div className="flex items-center gap-4 mb-4 md:mb-0">
                     <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
                       <Package className="w-5 h-5 text-slate-600" />

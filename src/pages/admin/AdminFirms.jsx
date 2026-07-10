@@ -371,7 +371,7 @@ export default function AdminFirms() {
 
       {/* Message Dialog */}
       <Dialog open={messageDialogOpen} onOpenChange={setMessageDialogOpen}>
-        <DialogContent className="max-w-md rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <DialogContent className="max-w-md rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 p-6 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <DialogDescription className="sr-only">Details about the firm</DialogDescription>
           <DialogHeader>
             <DialogTitle className="text-slate-900 dark:text-slate-100 font-extrabold text-base flex items-center gap-2.5">
@@ -404,7 +404,7 @@ export default function AdminFirms() {
 
       {/* Edit Quota & Plans Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="max-w-md rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <DialogContent className="max-w-md rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 p-6 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <DialogDescription className="sr-only">Adjust firm quota settings</DialogDescription>
           <DialogHeader>
             <DialogTitle className="text-slate-900 dark:text-slate-100 font-extrabold text-base flex items-center gap-2.5">

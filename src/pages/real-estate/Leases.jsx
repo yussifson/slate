@@ -342,7 +342,7 @@ export default function Leases() {
 
       {/* Form Modal */}
       <Sheet open={showForm} onOpenChange={setShowForm}>
-        <SheetContent className="w-full sm:max-w-md overflow-y-auto border-l border-border/50 bg-background/95 backdrop-blur-md dark:bg-slate-900/95 dark:border-white/10 shadow-2xl transition-all duration-300">
+        <SheetContent className="w-full sm:max-w-md overflow-y-auto border-l border-border/50 bg-background/95 backdrop-blur-md dark:bg-card/95 dark:border-white/10 shadow-2xl transition-all duration-300">
           <SheetHeader className="mb-6">
             <SheetTitle className="text-2xl font-bold tracking-tight">Add New Lease</SheetTitle>
             <SheetDescription>Create a new rental agreement for your property.</SheetDescription>

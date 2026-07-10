@@ -167,7 +167,7 @@ export default function GuestPortal() {
     <h3 className="font-semibold text-card-foreground">AI Concierge</h3>
   </div>
   <div className="p-4 space-y-4">
-    <div className="h-[250px] overflow-y-auto space-y-3 p-2 bg-slate-50 dark:bg-slate-900/50 rounded-lg border-[0.5px] border-black/9 dark:border-white/8">
+    <div className="h-[250px] overflow-y-auto space-y-3 p-2 bg-slate-50 dark:bg-card/50 rounded-lg border-[0.5px] border-black/9 dark:border-white/8">
       {chatLog.map((msg, i) => (
         <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
           {msg.role === 'ai' && <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0"><Bot className="w-3 h-3 text-primary"/></div>}

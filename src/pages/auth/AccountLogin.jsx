@@ -86,7 +86,7 @@ export default function AccountLogin() {
     }
   };
 
-  if (isLoadingAuth || isAuthenticated) {
+  if (isLoadingAuth || (isAuthenticated && searchParams.get('prompt') !== 'login')) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
         <div className="animate-pulse text-slate-400 font-medium">Authenticating...</div>

@@ -247,7 +247,7 @@ export default function UniStudents() {
  <p className="text-[var(--color-text-primary)] mb-6">Students with CGPA &gt; 3.80 are eligible for academic honors and scholarship endowments.</p>
  <div className="space-y-2">
  {students.filter(s => parseFloat(s.gpa) >= 3.8).map(s => (
- <div key={s.id} className="flex items-center justify-between p-3 bg-white dark:bg-slate-900/40/50 backdrop-blur rounded-md-[var(--radius-md)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={s.id} className="flex items-center justify-between p-3 bg-white dark:bg-card/40/50 backdrop-blur rounded-md-[var(--radius-md)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <span className="font-medium">{s.name}</span>
  <span className="font-mono font-semibold text-[var(--color-success)]">{s.gpa}</span>
  </div>
@@ -266,7 +266,7 @@ export default function UniStudents() {
  <div className="p-3 text-[var(--color-text-secondary)] text-sm italic">No students currently on probation.</div>
  ) : (
  students.filter(s => parseFloat(s.gpa) < 2.5).map(s => (
- <div key={s.id} className="flex items-center justify-between p-3 bg-white dark:bg-slate-900/40/50 backdrop-blur rounded-md-[var(--radius-md)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={s.id} className="flex items-center justify-between p-3 bg-white dark:bg-card/40/50 backdrop-blur rounded-md-[var(--radius-md)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <span className="font-medium">{s.name}</span>
  <span className="font-mono font-semibold text-[var(--color-danger)]">{s.gpa}</span>
  </div>

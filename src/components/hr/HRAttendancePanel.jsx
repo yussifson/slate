@@ -241,7 +241,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
               <div key={s.id} className="bg-slate-50 dark:bg-slate-800/30 border border-border/50 rounded-2xl p-5 flex flex-col hover:border-emerald-500/30 hover:-translate-y-1 transition-all group relative overflow-hidden">
                 <div className="flex justify-between items-start mb-4 relative z-10">
                   <div className="flex gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 flex items-center justify-center font-bold text-foreground shadow-sm border border-border/50 shrink-0">
+                    <div className="w-10 h-10 rounded-xl bg-white dark:bg-card flex items-center justify-center font-bold text-foreground shadow-sm border border-border/50 shrink-0">
                       {avatarInitials(s.name || s.full_name)}
                     </div>
                     <div>
@@ -253,11 +253,11 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
                 
                 {s.record ? (
                   <div className="space-y-3 mt-auto relative z-10">
-                    <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-2 rounded-lg border border-border/50">
+                    <div className="flex justify-between items-center bg-white dark:bg-card p-2 rounded-lg border border-border/50">
                       <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5"><LogIn className="w-3.5 h-3.5"/> In</span>
                       <span className="text-xs font-bold text-foreground">{formatTime(s.record.clock_in)}</span>
                     </div>
-                    <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-2 rounded-lg border border-border/50">
+                    <div className="flex justify-between items-center bg-white dark:bg-card p-2 rounded-lg border border-border/50">
                       <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5"><LogOut className="w-3.5 h-3.5"/> Out</span>
                       <span className="text-xs font-bold text-foreground">{formatTime(s.record.clock_out)}</span>
                     </div>
@@ -285,7 +285,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
         <TabsContent value="history" className="bg-card border border-border/50 rounded-2xl p-0 shadow-sm overflow-hidden">
           <div className="p-4 border-b border-border/50 flex flex-wrap gap-4 bg-slate-50/50 dark:bg-slate-800/30">
             <Select value={historyFilter.status} onValueChange={v => setHistoryFilter({...historyFilter, status: v})}>
-              <SelectTrigger className="w-[180px] bg-white dark:bg-slate-900 rounded-xl border-border/50 font-semibold"><SelectValue placeholder="All Status" /></SelectTrigger>
+              <SelectTrigger className="w-[180px] bg-white dark:bg-card rounded-xl border-border/50 font-semibold"><SelectValue placeholder="All Status" /></SelectTrigger>
               <SelectContent className="rounded-xl">
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="present">Present</SelectItem>
@@ -294,13 +294,13 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
               </SelectContent>
             </Select>
             <Select value={historyFilter.staff_id} onValueChange={v => setHistoryFilter({...historyFilter, staff_id: v})}>
-              <SelectTrigger className="w-[200px] bg-white dark:bg-slate-900 rounded-xl border-border/50 font-semibold"><SelectValue placeholder="All Staff" /></SelectTrigger>
+              <SelectTrigger className="w-[200px] bg-white dark:bg-card rounded-xl border-border/50 font-semibold"><SelectValue placeholder="All Staff" /></SelectTrigger>
               <SelectContent className="rounded-xl max-h-60">
                 <SelectItem value="all">All Staff</SelectItem>
                 {staff.map(s => <SelectItem key={s.id} value={s.id}>{s.name || s.full_name}</SelectItem>)}
               </SelectContent>
             </Select>
-            <Input type="date" value={historyFilter.date} onChange={e => setHistoryFilter({...historyFilter, date: e.target.value})} className="w-[160px] bg-white dark:bg-slate-900 rounded-xl border-border/50 font-semibold" />
+            <Input type="date" value={historyFilter.date} onChange={e => setHistoryFilter({...historyFilter, date: e.target.value})} className="w-[160px] bg-white dark:bg-card rounded-xl border-border/50 font-semibold" />
             <Button variant="ghost" onClick={() => setHistoryFilter({status:"all", staff_id:"all", date:""})} className="rounded-xl font-bold">Clear Filters</Button>
           </div>
 
@@ -311,7 +311,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
                 <p className="text-muted-foreground font-medium">No history records match your filters.</p>
               </div>
             ) : (
-              <div className="bg-white dark:bg-slate-900 rounded-xl border border-border/50 overflow-hidden shadow-sm">
+              <div className="bg-white dark:bg-card rounded-xl border border-border/50 overflow-hidden shadow-sm">
                 <table className="w-full text-left text-sm">
                   <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-border/50">
                     <tr>

@@ -126,7 +126,7 @@ export default function LogisticsDashboardNew() {
       {/* Charts Row */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Delivery Performance */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+        <div className="lg:col-span-2 bg-white dark:bg-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
           <DashboardSectionHeader title="Weekly Performance" subtitle="Delivery metrics" />
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={performanceData}>
@@ -148,7 +148,7 @@ export default function LogisticsDashboardNew() {
         </div>
 
         {/* Shipment Status Distribution */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="bg-white dark:bg-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
           <DashboardSectionHeader title="Status Distribution" />
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -194,7 +194,7 @@ export default function LogisticsDashboardNew() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: idx * 0.1 }}
-            className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:shadow-md transition-all"
+            className="bg-white dark:bg-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:shadow-md transition-all"
           >
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-slate-900 dark:text-slate-100">{metric.title}</h3>

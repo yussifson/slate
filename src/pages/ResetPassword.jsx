@@ -75,7 +75,7 @@ export default function ResetPassword() {
  return (
  <div className="flex h-screen items-center justify-center bg-slate-50 dark:bg-slate-800/50 px-4">
  <div className="w-full max-w-md">
- <div className="bg-white dark:bg-slate-900/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 p-10 space-y-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-white dark:bg-card/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 p-10 space-y-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex flex-col items-center gap-3 text-center">
  <div className="flex flex-col items-center mb-2">
  <Logo className="w-12 h-12" />
@@ -122,7 +122,7 @@ export default function ResetPassword() {
  placeholder="Min. 6 characters"
  value={password}
  onChange={(e) => setPassword(e.target.value)}
- className="w-full h-14 rounded-xl border-primary/40 bg-slate-50/50 dark:bg-transparent focus:bg-white dark:bg-slate-900/40 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all font-medium px-4 pr-12 text-slate-900 dark:text-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-14 rounded-xl border-primary/40 bg-slate-50/50 dark:bg-transparent focus:bg-white dark:bg-card/40 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all font-medium px-4 pr-12 text-slate-900 dark:text-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  <button
  type="button"
@@ -144,7 +144,7 @@ export default function ResetPassword() {
  placeholder="Repeat password"
  value={confirm}
  onChange={(e) => setConfirm(e.target.value)}
- className="w-full h-14 rounded-xl border-primary/40 bg-slate-50/50 dark:bg-transparent focus:bg-white dark:bg-slate-900/40 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all font-medium px-4 text-slate-900 dark:text-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-14 rounded-xl border-primary/40 bg-slate-50/50 dark:bg-transparent focus:bg-white dark:bg-card/40 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all font-medium px-4 text-slate-900 dark:text-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
 

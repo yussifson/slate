@@ -111,7 +111,7 @@ export default function Onboarding() {
   });
 
   return (
-    <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-slate-900/50 h-[calc(100vh-4rem)] p-4 lg:p-8 font-dmsans flex flex-col">
+    <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-card/50 h-[calc(100vh-4rem)] p-4 lg:p-8 font-dmsans flex flex-col">
       <div className="max-w-[1600px] w-full mx-auto flex flex-col h-full space-y-6">
         
         {/* Header Section */}
@@ -137,7 +137,7 @@ export default function Onboarding() {
 
         {/* Add Task Form (Glassmorphic) */}
         {isAdding && (
-          <form onSubmit={handleAddTask} className="relative overflow-hidden rounded-3xl bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border border-white/50 dark:border-slate-800/50 p-8 shadow-2xl shadow-indigo-100/50 dark:shadow-black/50 animate-in fade-in slide-in-from-top-4 duration-500">
+          <form onSubmit={handleAddTask} className="relative overflow-hidden rounded-3xl bg-white/60 dark:bg-card/60 backdrop-blur-xl border border-white/50 dark:border-slate-800/50 p-8 shadow-2xl shadow-indigo-100/50 dark:shadow-black/50 animate-in fade-in slide-in-from-top-4 duration-500">
             <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-indigo-500/10 blur-3xl rounded-full pointer-events-none"></div>
             <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 bg-purple-500/10 blur-3xl rounded-full pointer-events-none"></div>
             
@@ -197,7 +197,7 @@ export default function Onboarding() {
               {Object.values(employeeProgress).map(ep => {
                 const perc = Math.round((ep.completed / ep.total) * 100);
                 return (
-                  <div key={ep.employeeId} className="group relative bg-white/70 dark:bg-slate-900/70 backdrop-blur-md rounded-2xl p-6 border border-white/50 dark:border-slate-800 shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-none hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
+                  <div key={ep.employeeId} className="group relative bg-white/70 dark:bg-card/70 backdrop-blur-md rounded-2xl p-6 border border-white/50 dark:border-slate-800 shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-none hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
                     <div className="flex items-start justify-between mb-4">
                       <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-lg shadow-inner">
                         {getEmployeeName(ep.employeeId).charAt(0).toUpperCase()}
@@ -239,7 +239,7 @@ export default function Onboarding() {
                 placeholder="Search tasks or people..." 
                 value={search} 
                 onChange={e => setSearch(e.target.value)} 
-                className="pl-11 h-12 w-full rounded-full bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/50 dark:border-slate-800 shadow-sm focus:bg-white dark:focus:bg-slate-900 transition-all text-sm" 
+                className="pl-11 h-12 w-full rounded-full bg-white/70 dark:bg-card/70 backdrop-blur-md border border-white/50 dark:border-slate-800 shadow-sm focus:bg-white dark:focus:bg-slate-900 transition-all text-sm" 
               />
             </div>
           </div>
@@ -250,7 +250,7 @@ export default function Onboarding() {
               <p className="mt-4 font-medium text-slate-500">Syncing tasks...</p>
             </div>
           ) : filteredTasks.length === 0 ? (
-            <div className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-md rounded-3xl p-12 text-center border border-dashed border-slate-300 dark:border-slate-700">
+            <div className="bg-white/50 dark:bg-card/50 backdrop-blur-md rounded-3xl p-12 text-center border border-dashed border-slate-300 dark:border-slate-700">
               <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-4 opacity-50" />
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300">No tasks found</h3>
               <p className="text-slate-500 mt-2">Try adjusting your search or assign a new task.</p>
@@ -258,7 +258,7 @@ export default function Onboarding() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredTasks.map(task => (
-                <div key={task.id} className="group bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-6 border border-white/60 dark:border-slate-800 shadow-[0_4px_20px_rgb(0,0,0,0.04)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col h-full relative overflow-hidden">
+                <div key={task.id} className="group bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-3xl p-6 border border-white/60 dark:border-slate-800 shadow-[0_4px_20px_rgb(0,0,0,0.04)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col h-full relative overflow-hidden">
                   
                   {/* Decorative corner blur */}
                   <div className="absolute -right-10 -top-10 w-32 h-32 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>

@@ -52,7 +52,7 @@ export default function OnlineMarketplace() {
  return (
  <div className="min-h-screen bg-[#F5F7F8] font-sans">
  {/* Navbar */}
- <nav className="bg-white dark:bg-slate-900/40 border-b border-primary/40 sticky top-0 z-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <nav className="bg-white dark:bg-card/40 border-b border-primary/40 sticky top-0 z-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
  <div className="flex justify-between h-16 items-center">
  <div className="flex items-center space-x-8">
@@ -72,7 +72,7 @@ export default function OnlineMarketplace() {
  </nav>
 
  {/* Hero Section */}
- <div className="bg-white dark:bg-slate-900/40 pb-12 pt-16 border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-white dark:bg-card/40 pb-12 pt-16 border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-12">
  <div className="md:w-1/2 space-y-6">
  <h1 className="text-5xl font-semibold text-gray-900 leading-tight tracking-[-0.02em]">Learn without limits</h1>
@@ -112,7 +112,7 @@ export default function OnlineMarketplace() {
  <Card key={course.id} className="overflow-hidden transition-all duration-300 border-primary/40 cursor-pointer group rounded-xl">
  <div className="relative h-48 overflow-hidden">
  <img src={course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
- <Badge className="absolute top-4 left-4 bg-white dark:bg-slate-900/40/90 text-primary hover:bg-white dark:bg-slate-900/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{course.tag}</Badge>
+ <Badge className="absolute top-4 left-4 bg-white dark:bg-card/40/90 text-primary hover:bg-white dark:bg-card/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{course.tag}</Badge>
  </div>
  <CardContent className="p-6">
  <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
@@ -141,21 +141,21 @@ export default function OnlineMarketplace() {
  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
  <h2 className="text-3xl font-semibold text-gray-900 mb-12 tracking-[-0.02em]">World-class learning for anyone, anywhere</h2>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
- <div className="p-6 bg-white dark:bg-slate-900/40 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-6 bg-white dark:bg-card/40 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
  <BookOpen className="h-8 w-8" />
  </div>
  <h3 className="text-xl font-semibold mb-3">Learn anything</h3>
  <p className="text-gray-600">Explore any interest or trending topic, take prerequisites, and advance your skills.</p>
  </div>
- <div className="p-6 bg-white dark:bg-slate-900/40 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-6 bg-white dark:bg-card/40 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
  <Star className="h-8 w-8" />
  </div>
  <h3 className="text-xl font-semibold mb-3">Save money</h3>
  <p className="text-gray-600">Spend less money on your learning if you plan to take multiple courses this year.</p>
  </div>
- <div className="p-6 bg-white dark:bg-slate-900/40 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-6 bg-white dark:bg-card/40 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
  <Clock className="h-8 w-8" />
  </div>

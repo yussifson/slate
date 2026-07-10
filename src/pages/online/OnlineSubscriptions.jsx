@@ -74,7 +74,7 @@ export default function OnlineSubscriptions() {
  </div>
  </div>
 
- <button className="w-full py-3 bg-white dark:bg-slate-900/40 text-[var(--primary)] font-semibold rounded-md-[var(--radius-md)] hover:bg-gray-50 transition-colors  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <button className="w-full py-3 bg-white dark:bg-card/40 text-[var(--primary)] font-semibold rounded-md-[var(--radius-md)] hover:bg-gray-50 transition-colors  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  Subscribe Annually
  </button>
  </div>

@@ -157,7 +157,7 @@ export default function FrontDeskNew() {
       {/* Room Grid & Chart */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Occupancy Forecast Chart */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+        <div className="lg:col-span-2 bg-white dark:bg-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
           <DashboardSectionHeader title="Occupancy Forecast" subtitle="7-day prediction" />
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={forecastData}>
@@ -183,7 +183,7 @@ export default function FrontDeskNew() {
         </div>
 
         {/* Quick Stats */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+        <div className="bg-white dark:bg-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
           <DashboardSectionHeader title="Quick Stats" />
           <div className="space-y-3">
             <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
@@ -237,7 +237,7 @@ export default function FrontDeskNew() {
           animate={{ opacity: 1 }}
         >
           <motion.div
-            className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-2xl"
+            className="bg-white dark:bg-card rounded-2xl w-full max-w-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-2xl"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
           >

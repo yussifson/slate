@@ -85,7 +85,7 @@ Respond professionally with clear metrics, bullet points, and strategic advice. 
                 onChange={e => setQuery(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleAskAI()}
                 placeholder="e.g. 'What is our current active user engagement rate?'"
-                className="flex-1 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent outline-none transition-all text-base placeholder:text-slate-400"
+                className="flex-1 bg-slate-50 dark:bg-card/50 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent outline-none transition-all text-base placeholder:text-slate-400"
               />
               <button 
                 onClick={handleAskAI}
@@ -97,7 +97,7 @@ Respond professionally with clear metrics, bullet points, and strategic advice. 
             </div>
 
             {response && (
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-8 p-6 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800">
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-8 p-6 bg-slate-50 dark:bg-card/50 rounded-2xl border border-slate-200 dark:border-slate-800">
                 <p className="whitespace-pre-wrap text-base leading-relaxed text-slate-700 dark:text-slate-300">{response}</p>
               </motion.div>
             )}

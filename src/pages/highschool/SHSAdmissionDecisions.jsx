@@ -64,7 +64,7 @@ export default function SHSAdmissionDecisions() {
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
- <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 cursor-pointer transition-all hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => setFilterType('All')}>
+ <Card className="rounded-2xl border-none bg-white dark:bg-card/40 dark:bg-card/60 dark:bg-card/60 backdrop-blur-xl ring-1 ring-primary/10 cursor-pointer transition-all hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => setFilterType('All')}>
  <CardContent className="p-5 flex items-center gap-4">
  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'All' ? 'bg-primary dark:bg-primary text-white' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'}`}>
  <Mail className="w-6 h-6" />
@@ -76,7 +76,7 @@ export default function SHSAdmissionDecisions() {
  </CardContent>
  </Card>
  
- <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 cursor-pointer transition-all hover:bg-slate-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => setFilterType('Admitted')}>
+ <Card className="rounded-2xl border-none bg-white dark:bg-card/40 dark:bg-card/60 dark:bg-card/60 backdrop-blur-xl ring-1 ring-primary/10 cursor-pointer transition-all hover:bg-slate-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => setFilterType('Admitted')}>
  <CardContent className="p-5 flex items-center gap-4">
  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'Admitted' ? 'bg-primary text-white' : 'bg-slate-100 text-primary'}`}>
  <FileCheck className="w-6 h-6" />
@@ -90,7 +90,7 @@ export default function SHSAdmissionDecisions() {
  </CardContent>
  </Card>
  
- <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-rose-100 cursor-pointer transition-all hover:bg-rose-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => setFilterType('Rejected')}>
+ <Card className="rounded-2xl border-none bg-white dark:bg-card/40 dark:bg-card/60 dark:bg-card/60 backdrop-blur-xl ring-1 ring-rose-100 cursor-pointer transition-all hover:bg-rose-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => setFilterType('Rejected')}>
  <CardContent className="p-5 flex items-center gap-4">
  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'Rejected' ? 'bg-rose-500 text-white' : 'bg-rose-100 text-rose-600'}`}>
  <FileX className="w-6 h-6" />
@@ -105,7 +105,7 @@ export default function SHSAdmissionDecisions() {
  </Card>
  </div>
 
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
@@ -118,7 +118,7 @@ export default function SHSAdmissionDecisions() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search applicant name..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-9 h-9 bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />

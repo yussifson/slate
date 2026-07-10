@@ -199,7 +199,7 @@ export default function AdminSecurity() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
               <thead>
-                <tr className="bg-muted/50 dark:bg-slate-900/30 border-b border-primary/10 dark:border-primary/20 text-[#71717a] dark:text-gray-400 font-semibold uppercase tracking-wider text-[10px] tracking-[0.04em]">
+                <tr className="bg-muted/50 dark:bg-card/30 border-b border-primary/10 dark:border-primary/20 text-[#71717a] dark:text-gray-400 font-semibold uppercase tracking-wider text-[10px] tracking-[0.04em]">
                   <th className="px-6 py-4">{t("user_email", "User Email")}</th>
                   <th className="px-6 py-4">{t("role", "Role")}</th>
                   <th className="px-6 py-4">{t("last_active", "Last Active")}</th>
@@ -243,7 +243,7 @@ export default function AdminSecurity() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
               <thead>
-                <tr className="bg-muted/50 dark:bg-slate-900/30 border-b border-primary/10 dark:border-primary/20 text-[#71717a] dark:text-gray-400 font-semibold uppercase tracking-wider text-[10px] tracking-[0.04em]">
+                <tr className="bg-muted/50 dark:bg-card/30 border-b border-primary/10 dark:border-primary/20 text-[#71717a] dark:text-gray-400 font-semibold uppercase tracking-wider text-[10px] tracking-[0.04em]">
                   <th className="px-6 py-4">{t("event_type", "Event Type")}</th>
                   <th className="px-6 py-4">{t("actor_origin", "Actor / Origin")}</th>
                   <th className="px-6 py-4">{t("target_detail", "Target / Detail")}</th>

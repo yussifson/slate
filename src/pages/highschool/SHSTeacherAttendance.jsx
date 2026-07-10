@@ -151,7 +151,7 @@ export default function SHSTeacherAttendance() {
  </div>
  </div>
 
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
  <div className="flex flex-col md:flex-row justify-between gap-6">
  <div className="flex-1 flex flex-col sm:flex-row gap-4">
@@ -161,7 +161,7 @@ export default function SHSTeacherAttendance() {
  </label>
  <Input 
  type="date"
- className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={selectedDate}
  onChange={(e) => setSelectedDate(e.target.value)}
  max={new Date().toISOString().split('T')[0]}
@@ -174,7 +174,7 @@ export default function SHSTeacherAttendance() {
  </label>
  <Input 
  placeholder="Name or ID..."
- className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -182,7 +182,7 @@ export default function SHSTeacherAttendance() {
  </div>
 
  <div className="flex items-end pb-1">
- <div className="flex gap-4 p-4 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex gap-4 p-4 rounded-2xl bg-white dark:bg-card/40 dark:bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="text-center">
  <p className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider tracking-[0.04em]">Total</p>
  <p className="text-xl font-black text-slate-700 dark:text-slate-300 dark:text-slate-200">{teachers.length}</p>
@@ -238,7 +238,7 @@ export default function SHSTeacherAttendance() {
  <div>
  <p className="font-semibold text-slate-800 dark:text-slate-100">{teacher.title}</p>
  <div className="flex items-center gap-2 mt-0.5">
- <Badge variant="outline" className="text-[10px] bg-white dark:bg-slate-900/40 dark:bg-slate-900 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 border-primary/40 dark:border-primary/40 py-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{teacher.case_number}</Badge>
+ <Badge variant="outline" className="text-[10px] bg-white dark:bg-card/40 dark:bg-card text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 border-primary/40 dark:border-primary/40 py-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{teacher.case_number}</Badge>
  <span className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">{teacher.data?.department || 'General'}</span>
  </div>
  </div>
@@ -249,7 +249,7 @@ export default function SHSTeacherAttendance() {
  onClick={() => handleStatusChange(teacher.id, 'Present')}
  className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2.5 ${
  status === 'Present' 
- ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 text-primary ring-1 ring-primary/50' 
+ ? 'bg-white dark:bg-card/40 dark:bg-card text-primary ring-1 ring-primary/50' 
  : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:bg-slate-200 dark:bg-slate-700'
 }`}
  >
@@ -259,7 +259,7 @@ export default function SHSTeacherAttendance() {
  onClick={() => handleStatusChange(teacher.id, 'Late')}
  className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2.5 ${
  status === 'Late' 
- ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 text-amber-600 ring-1 ring-amber-200/50' 
+ ? 'bg-white dark:bg-card/40 dark:bg-card text-amber-600 ring-1 ring-amber-200/50' 
  : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:bg-slate-200 dark:bg-slate-700'
 }`}
  >
@@ -269,7 +269,7 @@ export default function SHSTeacherAttendance() {
  onClick={() => handleStatusChange(teacher.id, 'Absent')}
  className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2.5 ${
  status === 'Absent' 
- ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 text-rose-600 ring-1 ring-rose-200/50' 
+ ? 'bg-white dark:bg-card/40 dark:bg-card text-rose-600 ring-1 ring-rose-200/50' 
  : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:bg-slate-200 dark:bg-slate-700'
 }`}
  >
@@ -279,7 +279,7 @@ export default function SHSTeacherAttendance() {
  onClick={() => handleStatusChange(teacher.id, 'On Leave')}
  className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2.5 ${
  status === 'On Leave' 
- ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 text-primary ring-1 ring-primary/50' 
+ ? 'bg-white dark:bg-card/40 dark:bg-card text-primary ring-1 ring-primary/50' 
  : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:bg-slate-200 dark:bg-slate-700'
 }`}
  >

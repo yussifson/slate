@@ -56,7 +56,7 @@ export const RoomStatusBadge = ({ status, size = 'md', animated = true }) => {
     },
     Maintenance: {
       icon: Settings,
-      color: 'bg-slate-100 dark:bg-slate-950/40 text-slate-700 dark:text-slate-400',
+      color: 'bg-slate-100 dark:bg-background/40 text-slate-700 dark:text-slate-400',
       borderColor: 'border-slate-200 dark:border-slate-900/40',
       label: 'Maintenance',
       dotColor: 'bg-slate-500',

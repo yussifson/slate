@@ -125,7 +125,7 @@ export default function DocumentGenerator({ onGenerate }) {
 
       <div className="flex flex-col h-full space-y-4">
         <h3 className="text-lg font-semibold">Document Preview</h3>
-        <div className="flex-1 bg-white dark:bg-slate-900 border border-border rounded-xl p-6 overflow-y-auto whitespace-pre-wrap font-serif text-slate-800 dark:text-slate-200 shadow-inner min-h-[300px]">
+        <div className="flex-1 bg-white dark:bg-card border border-border rounded-xl p-6 overflow-y-auto whitespace-pre-wrap font-serif text-slate-800 dark:text-slate-200 shadow-inner min-h-[300px]">
           {generatedDoc ? generatedDoc : <span className="text-muted-foreground italic">Fill variables and click generate to preview document.</span>}
         </div>
         <div className="flex justify-end gap-3 pt-2">

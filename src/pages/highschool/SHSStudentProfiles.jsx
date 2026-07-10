@@ -61,13 +61,13 @@ export default function SHSStudentProfiles() {
 
  <div className="flex-1 flex gap-6 overflow-hidden">
  {/* Left Panel: Student List */}
- <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/5">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-primary" />
  <Input 
  placeholder="Search students..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-9 h-10 bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -91,7 +91,7 @@ export default function SHSStudentProfiles() {
 }`}
  >
  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold shrink-0 ${
- selectedStudent?.id === student.id ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
+ selectedStudent?.id === student.id ? 'bg-white dark:bg-card/40 dark:bg-card/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
 }`}>
  {student.title?.charAt(0)}
  </div>
@@ -109,7 +109,7 @@ export default function SHSStudentProfiles() {
  </Card>
 
  {/* Right Panel: Student Details */}
- <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {selectedStudent ? (
  <>
  {/* Profile Header Background */}
@@ -121,7 +121,7 @@ export default function SHSStudentProfiles() {
  <div className="px-8 pb-8">
  {/* Profile Avatar & Primary Info */}
  <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
- <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-1 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-24 h-24 rounded-3xl bg-white dark:bg-card/40 dark:bg-card p-1 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="w-full h-full rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
  <UserCircle className="w-12 h-12" />
  </div>
@@ -141,10 +141,10 @@ export default function SHSStudentProfiles() {
  <div className="mt-8">
  <Tabs defaultValue="overview" className="w-full">
  <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
- <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-white dark:bg-slate-900/40 dark:bg-slate-900 data-[state=active]:text-primary dark:text-primary/70 data-[state=active]: hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Overview</TabsTrigger>
- <TabsTrigger value="family" className="rounded-xl data-[state=active]:bg-white dark:bg-slate-900/40 dark:bg-slate-900 data-[state=active]:text-primary dark:text-primary/70 data-[state=active]: hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Family & Contacts</TabsTrigger>
- <TabsTrigger value="medical" className="rounded-xl data-[state=active]:bg-white dark:bg-slate-900/40 dark:bg-slate-900 data-[state=active]:text-primary dark:text-primary/70 data-[state=active]: hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Medical Summary</TabsTrigger>
- <TabsTrigger value="documents" className="rounded-xl data-[state=active]:bg-white dark:bg-slate-900/40 dark:bg-slate-900 data-[state=active]:text-primary dark:text-primary/70 data-[state=active]: hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Documents</TabsTrigger>
+ <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-white dark:bg-card/40 dark:bg-card data-[state=active]:text-primary dark:text-primary/70 data-[state=active]: hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Overview</TabsTrigger>
+ <TabsTrigger value="family" className="rounded-xl data-[state=active]:bg-white dark:bg-card/40 dark:bg-card data-[state=active]:text-primary dark:text-primary/70 data-[state=active]: hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Family & Contacts</TabsTrigger>
+ <TabsTrigger value="medical" className="rounded-xl data-[state=active]:bg-white dark:bg-card/40 dark:bg-card data-[state=active]:text-primary dark:text-primary/70 data-[state=active]: hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Medical Summary</TabsTrigger>
+ <TabsTrigger value="documents" className="rounded-xl data-[state=active]:bg-white dark:bg-card/40 dark:bg-card data-[state=active]:text-primary dark:text-primary/70 data-[state=active]: hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Documents</TabsTrigger>
  </TabsList>
  
  <div className="mt-6">

@@ -120,7 +120,7 @@ export default function HRAnalytics() {
   ];
 
   return (
-    <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-slate-900/50 h-[calc(100vh-4rem)] p-4 lg:p-8 font-dmsans flex flex-col">
+    <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-card/50 h-[calc(100vh-4rem)] p-4 lg:p-8 font-dmsans flex flex-col">
       <div className="max-w-[1600px] w-full mx-auto flex flex-col h-full space-y-6">
         
         {/* Header */}
@@ -160,7 +160,7 @@ export default function HRAnalytics() {
         {/* Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 shrink-0">
           {metrics.map((metric, idx) => (
-            <div key={idx} className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border-[0.5px] border-black/9 dark:border-white/8 transition-all hover:shadow-xl hover:-translate-y-1">
+            <div key={idx} className="bg-white dark:bg-card rounded-2xl p-6 shadow-sm border-[0.5px] border-black/9 dark:border-white/8 transition-all hover:shadow-xl hover:-translate-y-1">
               <div className="flex items-center justify-between mb-4">
                 <div className={`p-3 rounded-xl ${metric.color}`}>
                   {metric.icon}
@@ -176,7 +176,7 @@ export default function HRAnalytics() {
         </div>
 
         {/* AI Flight Risk Predictor Section */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border-[0.5px] border-black/9 dark:border-white/8 flex-1 min-h-[400px] flex flex-col">
+        <div className="bg-white dark:bg-card rounded-2xl shadow-sm border-[0.5px] border-black/9 dark:border-white/8 flex-1 min-h-[400px] flex flex-col">
           <div className="p-6 border-b border-border/50 shrink-0">
             <div className="flex items-center gap-3 mb-1">
               <div className="p-2 bg-rose-100 dark:bg-rose-900/30 rounded-lg text-rose-600 dark:text-rose-400">
@@ -199,7 +199,7 @@ export default function HRAnalytics() {
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex items-start gap-4">
                         <div className="relative shrink-0">
-                          <div className="w-12 h-12 rounded-xl bg-white dark:bg-slate-900 flex items-center justify-center text-lg font-bold text-foreground shadow-sm border border-border/50">
+                          <div className="w-12 h-12 rounded-xl bg-white dark:bg-card flex items-center justify-center text-lg font-bold text-foreground shadow-sm border border-border/50">
                             {employee.name.charAt(0)}
                           </div>
                           <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 flex items-center justify-center shadow-sm">

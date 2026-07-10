@@ -190,7 +190,7 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden bg-white dark:bg-slate-900 border-none shadow-2xl rounded-2xl">
+      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden bg-white dark:bg-card border-none shadow-2xl rounded-2xl">
         {scheduledMeeting ? (
           <>
             <DialogTitle className="sr-only">Meeting Scheduled</DialogTitle>
@@ -211,7 +211,7 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
                   Your meeting has been set and calendar invitations have been sent to all participants.
                 </p>
 
-                <div className="w-full bg-white dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-white/10 rounded-2xl p-5 sm:p-6 text-left shadow-sm space-y-5 relative">
+                <div className="w-full bg-white dark:bg-card/80 backdrop-blur-sm border border-slate-200 dark:border-white/10 rounded-2xl p-5 sm:p-6 text-left shadow-sm space-y-5 relative">
                   <div>
                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Meeting Title</p>
                     <p className="text-lg text-slate-900 dark:text-white font-medium truncate">{scheduledMeeting.title}</p>

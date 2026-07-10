@@ -166,7 +166,7 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  </Field>
  <Field label="Logo URL (Light Background)">
  <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" placeholder="https://..." value={form.logo_light_url || ""} onChange={e => setForm({ ...form, logo_light_url: e.target.value})} />
- {form.logo_light_url && <img src={form.logo_light_url} alt="Light logo preview" className="mt-3 h-12 object-contain rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-1 bg-white dark:bg-slate-900/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />}
+ {form.logo_light_url && <img src={form.logo_light_url} alt="Light logo preview" className="mt-3 h-12 object-contain rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-1 bg-white dark:bg-card/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />}
  </Field>
  <Field label="Favicon URL" full>
  <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" placeholder="https://..." value={form.favicon_url || ""} onChange={e => setForm({ ...form, favicon_url: e.target.value})} />
@@ -230,13 +230,13 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  To complete your custom domain setup, add the following record to your DNS provider (e.g. GoDaddy, Namecheap, Route53).
  </p>
  {form.custom_domain.split('.').length > 2 ? (
- <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-blue-100 dark:border-blue-900 text-sm font-mono flex flex-col gap-2 shadow-sm">
+ <div className="bg-white dark:bg-card p-4 rounded-xl border border-blue-100 dark:border-blue-900 text-sm font-mono flex flex-col gap-2 shadow-sm">
  <div className="flex justify-between border-b pb-2"><span className="text-slate-500">Type</span><strong className="text-slate-900 dark:text-white">CNAME</strong></div>
  <div className="flex justify-between border-b pb-2"><span className="text-slate-500">Name</span><strong className="text-slate-900 dark:text-white">{form.custom_domain.split('.')[0]}</strong></div>
  <div className="flex justify-between"><span className="text-slate-500">Value</span><strong className="text-slate-900 dark:text-white">cname.vercel-dns.com</strong></div>
  </div>
  ) : (
- <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-blue-100 dark:border-blue-900 text-sm font-mono flex flex-col gap-2 shadow-sm">
+ <div className="bg-white dark:bg-card p-4 rounded-xl border border-blue-100 dark:border-blue-900 text-sm font-mono flex flex-col gap-2 shadow-sm">
  <div className="flex justify-between border-b pb-2"><span className="text-slate-500">Type</span><strong className="text-slate-900 dark:text-white">A</strong></div>
  <div className="flex justify-between border-b pb-2"><span className="text-slate-500">Name</span><strong className="text-slate-900 dark:text-white">@</strong></div>
  <div className="flex justify-between"><span className="text-slate-500">Value</span><strong className="text-slate-900 dark:text-white">76.76.21.21</strong></div>
@@ -246,7 +246,7 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  )}
  </div>
  ) : (
- <div className="border border-slate-200 dark:border-slate-800 rounded-xl p-6 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden group">
+ <div className="border border-slate-200 dark:border-slate-800 rounded-xl p-6 bg-slate-50 dark:bg-card/50 relative overflow-hidden group">
  <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
  <div className="flex items-center justify-between">
  <div>
