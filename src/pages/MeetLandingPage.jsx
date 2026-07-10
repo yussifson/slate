@@ -1,14 +1,99 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/api/supabaseClient';
-import { Video, Keyboard, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Copy, Plus, Link as LinkIcon, ChevronLeft, ChevronRight, Calendar, ShieldCheck, Users } from 'lucide-react';
+import {
+  Video, Keyboard, Sparkles, Copy, Link as LinkIcon, Calendar, ShieldCheck,
+  Users, Mic, Brain, BarChart3, Layers, Zap, Play, ChevronRight, ChevronLeft,
+  Monitor, Clock, FileText, CheckCircle, ArrowRight, Star, Globe, Plus,
+  MessageSquare, Activity, Camera, Wand2, Target, TrendingUp
+} from 'lucide-react';
+
+
+const pillars = [
+  {
+    icon: Video,
+    color: 'from-violet-500 to-indigo-500',
+    glow: 'shadow-violet-500/20',
+    title: 'HD Live Meetings',
+    desc: 'No time limits. Up to 500 participants. Speaker spotlight, noise cancellation, live captions, breakout rooms and a persistent whiteboard ΓÇö all built in.'
+  },
+  {
+    icon: Camera,
+    color: 'from-cyan-500 to-blue-500',
+    glow: 'shadow-cyan-500/20',
+    title: 'Async Video Messages',
+    desc: 'Record camera, screen, or both in picture-in-picture. Share an instant link. Viewers leave timestamped comments and emoji reactions at exact moments.'
+  },
+  {
+    icon: Brain,
+    color: 'from-pink-500 to-rose-500',
+    glow: 'shadow-pink-500/20',
+    title: 'AI Meeting Intelligence',
+    desc: 'Every meeting produces a full summary, key decisions, extracted action items with owners, open questions, and sentiment ΓÇö within 2 minutes of ending.'
+  },
+  {
+    icon: Layers,
+    color: 'from-amber-500 to-orange-500',
+    glow: 'shadow-amber-500/20',
+    title: 'Team Spaces',
+    desc: 'Persistent rooms for every team and project. Live meetings, async videos, shared notes, action boards, and cross-space search in one place.'
+  },
+  {
+    icon: Target,
+    color: 'from-emerald-500 to-teal-500',
+    glow: 'shadow-emerald-500/20',
+    title: 'Sales & Demo Layer',
+    desc: 'Record personalised video proposals. Know who watched, how much, where they paused, and whether they shared it ΓÇö before your follow-up call.'
+  },
+  {
+    icon: Zap,
+    color: 'from-indigo-500 to-purple-500',
+    glow: 'shadow-primary/20',
+    title: 'Smart Follow-up',
+    desc: 'After every meeting, each participant receives only their personal action items with full context. Not the whole notes ΓÇö just what they need to do.'
+  },
+];
+
+// ΓöÇΓöÇΓöÇ Stats ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+const stats = [
+  { value: '500+', label: 'Participants per call' },
+  { value: '2 min', label: 'AI summary delivery' },
+  { value: '0', label: 'Time limits' },
+  { value: '100%', label: 'End-to-end encrypted' },
+];
+
+// ΓöÇΓöÇΓöÇ Pricing Tiers ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+const tiers = [
+  {
+    name: 'Free',
+    price: '$0',
+    period: 'forever',
+    highlight: false,
+    features: ['Unlimited HD meetings', 'Up to 100 participants', 'Screen sharing & whiteboard', '5 async video recordings/mo', 'Basic AI meeting summary'],
+  },
+  {
+    name: 'Pro',
+    price: '$49',
+    period: 'per workspace/mo',
+    highlight: true,
+    badge: 'Most Popular',
+    features: ['Everything in Free', 'Up to 300 participants', 'Unlimited async recordings', 'Full AI intelligence layer', 'Smart follow-up emails', 'Video engagement analytics', 'Team Spaces'],
+  },
+  {
+    name: 'Enterprise',
+    price: 'Custom',
+    period: 'contact us',
+    highlight: false,
+    features: ['Everything in Pro', 'Up to 500 participants', 'Branded meeting rooms', 'SSO & compliance recording', 'E2E encryption', 'SLA & dedicated support', 'Custom integrations'],
+  },
+];
+
 
 // ΓöÇΓöÇΓöÇ Carousel Slides ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 // Each slide has a render function (not static JSX) so they re-render correctly
@@ -25,7 +110,7 @@ const slides = [
         <div className="absolute w-44 h-44 rounded-full bg-blue-50 dark:bg-blue-900/20" />
         {/* Inner glowing circle */}
         <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-blue-400 flex items-center justify-center shadow-2xl shadow-blue-500/40">
-          <LinkIcon className="w-14 h-14 text-white" strokeWidth={1.5} />
+          <LinkIcon className="w-14 h-14 text-foreground" strokeWidth={1.5} />
         </div>
         {/* Floating badges */}
         <div className="absolute top-6 right-10 bg-white dark:bg-slate-800 border border-blue-100 dark:border-blue-900/30 rounded-xl px-3 py-1.5 shadow-lg flex items-center gap-1.5">
@@ -50,7 +135,7 @@ const slides = [
         <div className="absolute w-44 h-44 rounded-full bg-emerald-50 dark:bg-emerald-900/20" />
         {/* Calendar icon circle */}
         <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shadow-2xl shadow-emerald-500/40">
-          <Calendar className="w-14 h-14 text-white" strokeWidth={1.5} />
+          <Calendar className="w-14 h-14 text-foreground" strokeWidth={1.5} />
         </div>
         {/* Floating time badge */}
         <div className="absolute top-4 right-8 bg-white dark:bg-slate-800 border border-emerald-100 dark:border-emerald-900/30 rounded-xl px-3 py-1.5 shadow-lg flex items-center gap-2">
@@ -76,13 +161,13 @@ const slides = [
         <div className="absolute w-44 h-44 rounded-full bg-primary/5" />
         {/* Shield icon circle */}
         <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-2xl shadow-primary/40">
-          <ShieldCheck className="w-14 h-14 text-white" strokeWidth={1.5} />
+          <ShieldCheck className="w-14 h-14 text-foreground" strokeWidth={1.5} />
         </div>
         {/* Avatars below */}
         <div className="absolute bottom-6 flex -space-x-3">
           {['bg-blue-400', 'bg-rose-400', 'bg-amber-400', 'bg-emerald-400'].map((c, i) => (
             <div key={i} className={`w-9 h-9 rounded-full ${c} border-2 border-white dark:border-slate-900 flex items-center justify-center`}>
-              <Users className="w-4 h-4 text-white" />
+              <Users className="w-4 h-4 text-foreground" />
             </div>
           ))}
         </div>
@@ -229,7 +314,7 @@ export default function MeetLandingPage() {
         })}</script>
       </Helmet>
       {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/50 dark:border-white/5 bg-white/50 dark:bg-[#090E17]/50 backdrop-blur-md">
+      <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/50 dark:border-border bg-secondary0 dark:bg-background/80 backdrop-blur-md">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 flex items-center justify-center">
             <img src="/orbit-logo.svg" alt="Optavel Logo" className="w-full h-full object-contain" />
@@ -267,17 +352,17 @@ export default function MeetLandingPage() {
                   New meeting
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-64 p-2 shadow-xl border-slate-100 dark:border-white/10 rounded-xl">
+              <DropdownMenuContent align="start" className="w-64 p-2 shadow-xl border-slate-100 dark:border-border rounded-xl">
                 <DropdownMenuItem
                   onClick={() => handleCreateMeeting('later')}
-                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50 dark:hover:bg-white/5"
+                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50 dark:hover:bg-secondary"
                 >
                   <LinkIcon className="w-5 h-5 text-slate-500 dark:text-slate-400" />
                   <span className="font-medium text-slate-700 dark:text-slate-200">Create a meeting for later</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => handleCreateMeeting('instant')}
-                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50 dark:hover:bg-white/5"
+                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50 dark:hover:bg-secondary"
                 >
                   <Plus className="w-5 h-5 text-slate-500 dark:text-slate-400" />
                   <span className="font-medium text-slate-700 dark:text-slate-200">Start an instant meeting</span>
@@ -294,7 +379,7 @@ export default function MeetLandingPage() {
                 value={meetingCode}
                 onChange={(e) => setMeetingCode(e.target.value)}
                 placeholder="Enter a code or link"
-                className="block w-full pl-11 pr-14 py-3 border border-slate-200 dark:border-white/10 rounded-xl leading-5 bg-transparent placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition-colors"
+                className="block w-full pl-11 pr-14 py-3 border border-slate-200 dark:border-border rounded-xl leading-5 bg-transparent placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition-colors"
               />
               {meetingCode && (
                 <button
@@ -307,7 +392,7 @@ export default function MeetLandingPage() {
             </form>
           </div>
 
-          <div className="border-t border-slate-100 dark:border-white/10 w-full pt-5 mt-2">
+          <div className="border-t border-slate-100 dark:border-border w-full pt-5 mt-2">
             <p className="text-sm text-slate-500">
               <a href="#" className="text-primary hover:underline font-medium">Learn more</a> about CliPad
             </p>
@@ -319,7 +404,7 @@ export default function MeetLandingPage() {
           {/* Prev button */}
           <button
             onClick={prevSlide}
-            className="absolute left-0 z-10 w-10 h-10 rounded-full bg-white dark:bg-card hover:bg-slate-50 dark:hover:bg-slate-800 shadow-md border border-slate-100 dark:border-white/10 flex items-center justify-center transition-all"
+            className="absolute left-0 z-10 w-10 h-10 rounded-full bg-white dark:bg-card hover:bg-slate-50 dark:hover:bg-slate-800 shadow-md border border-slate-100 dark:border-border flex items-center justify-center transition-all"
           >
             <ChevronLeft className="w-5 h-5 text-slate-500" />
           </button>
@@ -341,7 +426,7 @@ export default function MeetLandingPage() {
 
             {/* Text area with fixed height to prevent layout shift */}
             <div className="h-28">
-              <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2 tracking-tight">
+              <h2 className="text-2xl font-semibold text-slate-900 dark:text-foreground mb-2 tracking-tight">
                 {slides[currentSlide].title}
               </h2>
               <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-xs mx-auto">
@@ -368,7 +453,7 @@ export default function MeetLandingPage() {
           {/* Next button */}
           <button
             onClick={nextSlide}
-            className="absolute right-0 z-10 w-10 h-10 rounded-full bg-white dark:bg-card hover:bg-slate-50 dark:hover:bg-slate-800 shadow-md border border-slate-100 dark:border-white/10 flex items-center justify-center transition-all"
+            className="absolute right-0 z-10 w-10 h-10 rounded-full bg-white dark:bg-card hover:bg-slate-50 dark:hover:bg-slate-800 shadow-md border border-slate-100 dark:border-border flex items-center justify-center transition-all"
           >
             <ChevronRight className="w-5 h-5 text-slate-500" />
           </button>
@@ -388,26 +473,26 @@ export default function MeetLandingPage() {
             </div>
 
             {/* Icon */}
-            <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mb-6 shadow-lg shadow-primary/30 shrink-0">
+            <div className="w-16 h-16 bg-primary text-foreground rounded-full flex items-center justify-center mb-6 shadow-lg shadow-primary/30 shrink-0">
               <Video className="w-8 h-8" />
             </div>
 
             {/* Text */}
-            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2 tracking-tight">Here's your meeting link</h2>
+            <h2 className="text-2xl font-semibold text-slate-900 dark:text-foreground mb-2 tracking-tight">Here's your meeting link</h2>
             <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-sm text-sm leading-relaxed">
               Copy this link and send it to people you want to meet with. Save it so you can use it later.
             </p>
 
             {/* Link Box */}
-            <div className="w-full bg-white dark:bg-card/80 backdrop-blur-sm border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-left shadow-sm">
+            <div className="w-full bg-white dark:bg-card/80 backdrop-blur-sm border border-slate-200 dark:border-border rounded-2xl p-4 text-left shadow-sm">
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Join Link</p>
               <div className="flex items-center gap-2">
-                <div className="flex-1 min-w-0 bg-slate-50 dark:bg-black/50 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/5 overflow-hidden">
+                <div className="flex-1 min-w-0 bg-slate-50 dark:bg-black/50 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-border overflow-hidden">
                   <span className="text-sm text-primary font-medium truncate block w-full">{laterLink}</span>
                 </div>
                 <Button
                   type="button"
-                  className="rounded-xl shrink-0 gap-2 bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20 transition-all hover:scale-105 px-4"
+                  className="rounded-xl shrink-0 gap-2 bg-primary hover:bg-primary/90 text-foreground shadow-md shadow-primary/20 transition-all hover:scale-105 px-4"
                   onClick={() => {
                     navigator.clipboard.writeText(laterLink);
                     toast({ title: 'Copied!', description: 'Meeting link copied to clipboard.' });
@@ -433,3 +518,7 @@ export default function MeetLandingPage() {
     </div>
   );
 }
+
+
+// Fix icon reference
+function MonitorIcon(props) { return <Monitor {...props} />; }
