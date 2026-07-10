@@ -103,7 +103,7 @@ export default function PhoneSupportPanel({ isOpen, onClose }) {
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-6 overflow-y-auto">
            {isSuccess ? (
              <div className="flex flex-col items-center justify-center h-full text-center animate-in fade-in zoom-in duration-500">
                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/20 text-green-500 rounded-full flex items-center justify-center mb-4">
