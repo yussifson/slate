@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { Logo } from '@/components/ui/Logo';
-import { Menu, X, Home, UserCircle, ShieldCheck, CreditCard, MonitorSmartphone, Sun, Moon, LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Menu, X, Home, UserCircle, ShieldCheck, CreditCard, MonitorSmartphone, Sun, Moon, LogOut, PanelLeftClose, PanelLeftOpen, LayoutGrid, HelpCircle, Lock, Video, PhoneCall, ClipboardList } from 'lucide-react';
 import { supabase } from "@/api/supabaseClient";
 import { useTheme } from "@/lib/ThemeContext";
 
@@ -16,6 +16,26 @@ export default function AccountPortalLayout() {
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
+    
+    // Trigger Logout Alert (fire and forget)
+    try {
+      const getDevice = () => {
+        if (typeof window === 'undefined') return 'Unknown';
+        const ua = navigator.userAgent;
+        if (ua.includes('Win')) return 'Windows';
+        if (ua.includes('Mac')) return 'Mac';
+        if (ua.includes('Linux')) return 'Linux';
+        if (ua.includes('iPhone') || ua.includes('iPad')) return 'iOS';
+        if (ua.includes('Android')) return 'Android';
+        return 'Web Browser';
+      };
+      if (user?.email) {
+        supabase.functions.invoke('send-auth-alert', {
+          body: { email: user.email, type: 'Logout', deviceInfo: getDevice() }
+        }).catch(e => console.error("Failed to send logout alert:", e));
+      }
+    } catch (e) {}
+
     // 1. Clear local storage cache
     localStorage.removeItem('slate_cached_user');
     
@@ -30,13 +50,20 @@ export default function AccountPortalLayout() {
     window.location.href = '/login';
   };
 
-  const navItems = [
+  const [isAppsLauncherOpen, setIsAppsLauncherOpen] = useState(false);
+
+  const baseNavItems = [
     { name: 'Home', path: '/', icon: Home },
     { name: 'Personal info', path: '/personal-info', icon: UserCircle },
     { name: 'Security', path: '/security', icon: ShieldCheck },
     { name: 'Payments & subscriptions', path: '/subscriptions', icon: CreditCard },
     { name: 'Devices', path: '/devices', icon: MonitorSmartphone },
+    { name: 'Help Center', path: '/help', icon: HelpCircle },
   ];
+
+  const navItems = profile?.role === 'super_admin' 
+    ? [...baseNavItems, { name: 'Admin Portal', path: '/admin', icon: Lock }]
+    : baseNavItems;
 
   const getInitials = (firstName, lastName, email) => {
     if (firstName && lastName) return `${firstName[0]}${lastName[0]}`.toUpperCase();
@@ -121,9 +148,27 @@ export default function AccountPortalLayout() {
                 {!isDesktopCollapsed && <span className="whitespace-nowrap">{item.name}</span>}
               </NavLink>
             ))}
+            
+            {/* Apps Launcher Button */}
+            <div className="pt-2 mt-2 border-t border-gray-100 dark:border-gray-800/50">
+              <button
+                onClick={() => setIsAppsLauncherOpen(!isAppsLauncherOpen)}
+                className={`
+                  w-full flex items-center ${isDesktopCollapsed ? 'justify-center px-0' : 'gap-4 px-4'} py-3.5 rounded-xl font-medium text-[15px] transition-all group
+                  ${isAppsLauncherOpen 
+                    ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400' 
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200'
+                  }
+                `}
+                title={isDesktopCollapsed ? "Apps" : undefined}
+              >
+                <LayoutGrid className="w-5 h-5 shrink-0" />
+                {!isDesktopCollapsed && <span className="whitespace-nowrap">Apps</span>}
+              </button>
+            </div>
           </nav>
           
-          <div className="p-4 border-t border-gray-200 dark:border-gray-800/60 space-y-4">
+          <div className="p-4 border-t border-gray-200 dark:border-gray-800/60 space-y-4 relative">
              {/* Theme Switcher */}
              <div className={`flex items-center ${isDesktopCollapsed ? 'justify-center' : 'justify-between px-1'}`}>
                 {!isDesktopCollapsed && <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Theme</span>}
@@ -158,6 +203,64 @@ export default function AccountPortalLayout() {
           </div>
         </div>
       </aside>
+
+      {/* Apps Launcher Popover */}
+      {isAppsLauncherOpen && (
+        <div className={`fixed z-50 bottom-24 ${isDesktopCollapsed ? 'left-24' : 'left-68 md:left-72'} w-80 max-h-[500px] overflow-y-auto bg-card border border-border shadow-2xl rounded-2xl p-4 transition-all animate-in zoom-in-95 duration-200`}>
+           <div className="flex items-center justify-between mb-4 px-2">
+             <h3 className="text-lg font-medium text-foreground">Optavel Apps</h3>
+             <button onClick={() => setIsAppsLauncherOpen(false)} className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500">
+                <X className="w-5 h-5" />
+             </button>
+           </div>
+           
+           <div className="grid grid-cols-2 gap-3">
+             <a href="https://slate.optavel.com" className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors group">
+               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
+                 <Logo className="w-8 h-8" />
+               </div>
+               <div className="text-center">
+                 <span className="block text-sm font-medium text-gray-900 dark:text-white">Slate</span>
+                 <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Business</span>
+               </div>
+             </a>
+             
+             <div className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors opacity-60 cursor-not-allowed">
+               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800">
+                 <Video className="w-7 h-7 text-green-500" />
+               </div>
+               <div className="text-center">
+                 <span className="block text-sm font-medium text-gray-900 dark:text-white">Preloom</span>
+                 <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Data</span>
+               </div>
+             </div>
+             
+             <div className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors opacity-60 cursor-not-allowed">
+               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800">
+                 <PhoneCall className="w-7 h-7 text-indigo-500" />
+               </div>
+               <div className="text-center">
+                 <span className="block text-sm font-medium text-gray-900 dark:text-white">Teleply</span>
+                 <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Telehealth</span>
+               </div>
+             </div>
+             
+             <div className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors opacity-60 cursor-not-allowed">
+               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800">
+                 <ClipboardList className="w-7 h-7 text-orange-500" />
+               </div>
+               <div className="text-center">
+                 <span className="block text-sm font-medium text-gray-900 dark:text-white">Clipad</span>
+                 <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Productivity</span>
+               </div>
+             </div>
+           </div>
+           
+           <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 text-center">
+              <a href="#" className="text-sm font-medium text-primary hover:underline">More from Optavel</a>
+           </div>
+        </div>
+      )}
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto bg-transparent relative h-full">
