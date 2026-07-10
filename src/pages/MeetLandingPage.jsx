@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/api/supabaseClient';
@@ -8,10 +8,9 @@ import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
-  Video, Keyboard, Sparkles, Copy, Link as LinkIcon, Calendar, ShieldCheck,
-  Users, Mic, Brain, BarChart3, Layers, Zap, Play, ChevronRight, ChevronLeft,
-  Monitor, Clock, FileText, CheckCircle, ArrowRight, Star, Globe, Plus,
-  MessageSquare, Activity, Camera, Wand2, Target, TrendingUp
+  Video, Keyboard, Sparkles, Copy, Link as LinkIcon, Calendar,
+  Users, Brain, Layers, Zap, ChevronRight, ChevronLeft,
+  Monitor, CheckCircle, ArrowRight, Star, Globe, Plus, Camera, Target, TrendingUp
 } from 'lucide-react';
 
 
@@ -100,81 +99,68 @@ const tiers = [
 const slides = [
   {
     id: 0,
-    title: 'Get a link you can share',
-    description: 'Click New meeting to get a link you can send to people you want to meet with',
+    title: 'Team Spaces & Async Video',
+    description: 'Create persistent rooms for every project. Record picture-in-picture async updates and share instantly.',
     render: () => (
       <div className="relative flex flex-col items-center justify-center w-full h-full select-none">
-        {/* Outer ring */}
-        <div className="absolute w-64 h-64 rounded-full border-2 border-blue-100 dark:border-blue-900/40 animate-pulse" />
-        {/* Mid ring */}
-        <div className="absolute w-44 h-44 rounded-full bg-blue-50 dark:bg-blue-900/20" />
-        {/* Inner glowing circle */}
-        <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-blue-400 flex items-center justify-center shadow-2xl shadow-blue-500/40">
-          <LinkIcon className="w-14 h-14 text-foreground" strokeWidth={1.5} />
+        <div className="absolute w-64 h-64 rounded-full border-2 border-indigo-100 dark:border-indigo-900/40 animate-pulse" />
+        <div className="absolute w-44 h-44 rounded-full bg-indigo-50 dark:bg-indigo-900/20" />
+        <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-400 flex items-center justify-center shadow-2xl shadow-indigo-500/40">
+          <Layers className="w-14 h-14 text-white" strokeWidth={1.5} />
         </div>
-        {/* Floating badges */}
-        <div className="absolute top-6 right-10 bg-white dark:bg-slate-800 border border-blue-100 dark:border-blue-900/30 rounded-xl px-3 py-1.5 shadow-lg flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-          <span className="text-xs font-semibold text-blue-600 dark:text-blue-300">Link Ready</span>
+        <div className="absolute top-6 right-10 bg-background border border-border rounded-xl px-3 py-1.5 shadow-lg flex items-center gap-1.5">
+          <Camera className="w-3 h-3 text-indigo-500" />
+          <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-300">Async Ready</span>
         </div>
-        <div className="absolute bottom-10 left-6 bg-white dark:bg-slate-800 border border-blue-100 dark:border-blue-900/30 rounded-xl px-3 py-1.5 shadow-lg">
-          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 font-mono">clipad.optavel.com/join/...</span>
+        <div className="absolute bottom-10 left-6 bg-background border border-border rounded-xl px-3 py-1.5 shadow-lg">
+          <span className="text-xs font-medium text-muted-foreground font-mono">Design Team Space</span>
         </div>
       </div>
     ),
   },
   {
     id: 1,
-    title: 'Plan ahead',
-    description: 'Click New meeting to schedule meetings for later, then share the link before your event.',
+    title: 'AI Meeting Intelligence',
+    description: 'Every meeting produces a full summary, extracted action items, and key decisions within 2 minutes of ending.',
     render: () => (
       <div className="relative flex flex-col items-center justify-center w-full h-full select-none">
-        {/* Outer ring */}
-        <div className="absolute w-64 h-64 rounded-full border-2 border-emerald-100 dark:border-emerald-900/40 animate-pulse" />
-        {/* Mid ring */}
-        <div className="absolute w-44 h-44 rounded-full bg-emerald-50 dark:bg-emerald-900/20" />
-        {/* Calendar icon circle */}
-        <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shadow-2xl shadow-emerald-500/40">
-          <Calendar className="w-14 h-14 text-foreground" strokeWidth={1.5} />
+        <div className="absolute w-64 h-64 rounded-full border-2 border-pink-100 dark:border-pink-900/40 animate-pulse" />
+        <div className="absolute w-44 h-44 rounded-full bg-pink-50 dark:bg-pink-900/20" />
+        <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-pink-500 to-rose-400 flex items-center justify-center shadow-2xl shadow-pink-500/40">
+          <Brain className="w-14 h-14 text-white" strokeWidth={1.5} />
         </div>
-        {/* Floating time badge */}
-        <div className="absolute top-4 right-8 bg-white dark:bg-slate-800 border border-emerald-100 dark:border-emerald-900/30 rounded-xl px-3 py-1.5 shadow-lg flex items-center gap-2">
-          <Calendar className="w-3 h-3 text-emerald-500" />
-          <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-300">Scheduled</span>
+        <div className="absolute top-4 right-8 bg-background border border-border rounded-xl px-3 py-1.5 shadow-lg flex items-center gap-2">
+          <Brain className="w-3 h-3 text-pink-500" />
+          <span className="text-xs font-semibold text-pink-600 dark:text-pink-300">Summary Gen</span>
         </div>
-        <div className="absolute bottom-8 left-4 bg-white dark:bg-slate-800 border border-emerald-100 dark:border-emerald-900/30 rounded-xl px-3 py-2 shadow-lg text-center">
-          <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider block">Reminder sent</span>
-          <span className="text-xs font-bold text-slate-700 dark:text-slate-200">10:00 AM ┬╖ Mon</span>
+        <div className="absolute bottom-8 left-4 bg-background border border-border rounded-xl px-3 py-2 shadow-lg text-center">
+          <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider block">Action Items</span>
+          <span className="text-xs font-bold text-foreground">3 assigned to you</span>
         </div>
       </div>
     ),
   },
   {
     id: 2,
-    title: 'Your meeting is safe',
-    description: 'No one can join unless invited or admitted by the host. End-to-end encrypted.',
+    title: 'Smart Follow-up',
+    description: 'Participants receive only their personal action items with full context. No more reading through entire transcripts.',
     render: () => (
       <div className="relative flex flex-col items-center justify-center w-full h-full select-none">
-        {/* Outer ring */}
-        <div className="absolute w-64 h-64 rounded-full border-2 border-primary/10 animate-pulse" />
-        {/* Mid ring */}
-        <div className="absolute w-44 h-44 rounded-full bg-primary/5" />
-        {/* Shield icon circle */}
-        <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-2xl shadow-primary/40">
-          <ShieldCheck className="w-14 h-14 text-foreground" strokeWidth={1.5} />
+        <div className="absolute w-64 h-64 rounded-full border-2 border-emerald-100 dark:border-emerald-900/40 animate-pulse" />
+        <div className="absolute w-44 h-44 rounded-full bg-emerald-50 dark:bg-emerald-900/20" />
+        <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shadow-2xl shadow-emerald-500/40">
+          <Zap className="w-14 h-14 text-white" strokeWidth={1.5} />
         </div>
-        {/* Avatars below */}
         <div className="absolute bottom-6 flex -space-x-3">
           {['bg-blue-400', 'bg-rose-400', 'bg-amber-400', 'bg-emerald-400'].map((c, i) => (
-            <div key={i} className={`w-9 h-9 rounded-full ${c} border-2 border-white dark:border-slate-900 flex items-center justify-center`}>
-              <Users className="w-4 h-4 text-foreground" />
+            <div key={i} className={`w-9 h-9 rounded-full ${c} border-2 border-background flex items-center justify-center`}>
+              <Users className="w-4 h-4 text-white" />
             </div>
           ))}
         </div>
-        {/* Encrypted badge */}
-        <div className="absolute top-4 right-6 bg-white dark:bg-slate-800 border border-primary/20 rounded-xl px-3 py-1.5 shadow-lg flex items-center gap-1.5">
-          <ShieldCheck className="w-3 h-3 text-primary" />
-          <span className="text-xs font-semibold text-primary">End-to-end</span>
+        <div className="absolute top-4 right-6 bg-background border border-border rounded-xl px-3 py-1.5 shadow-lg flex items-center gap-1.5">
+          <CheckCircle className="w-3 h-3 text-emerald-500" />
+          <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">Context aware</span>
         </div>
       </div>
     ),
@@ -314,19 +300,37 @@ export default function MeetLandingPage() {
         })}</script>
       </Helmet>
       {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/50 dark:border-border bg-secondary0 dark:bg-background/80 backdrop-blur-md">
+      <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/50 dark:border-border bg-secondary/50 dark:bg-background/80 backdrop-blur-md">
+
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 flex items-center justify-center">
             <img src="/orbit-logo.svg" alt="Optavel Logo" className="w-full h-full object-contain" />
           </div>
           <span className="text-xl font-semibold tracking-tight text-slate-800 dark:text-slate-100">CliPad</span>
         </div>
-        {/* Live real-time clock */}
-        <div className="flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 tabular-nums">
-          <span>{timeStr}</span>
-          <span className="text-slate-300 dark:text-slate-600">ΓÇó</span>
-          <span>{dateStr}</span>
+        
+        <div className="hidden md:flex items-center gap-1 text-sm text-muted-foreground">
+          <a href="#features" className="px-4 py-2 rounded-lg hover:text-foreground hover:bg-secondary transition-colors">Features</a>
+          <a href="#pricing" className="px-4 py-2 rounded-lg hover:text-foreground hover:bg-secondary transition-colors">Pricing</a>
         </div>
+
+        <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 tabular-nums">
+            <span>{timeStr}</span>
+            <span className="text-slate-300 dark:text-slate-600">·</span>
+            <span>{dateStr}</span>
+          </div>
+          {user ? (
+            <Button onClick={() => navigate('/dashboard')} className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
+              <Layers className="w-4 h-4 mr-2" /> Dashboard
+            </Button>
+          ) : (
+            <Button onClick={() => navigate('/login')} variant="outline" className="rounded-xl border-border bg-background hover:bg-secondary text-foreground">
+              Sign In
+            </Button>
+          )}
+        </div>
+
       </header>
 
       {/* Main Content */}
@@ -459,6 +463,155 @@ export default function MeetLandingPage() {
           </button>
         </div>
       </main>
+
+      <section id="features" className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-semibold tracking-wider uppercase mb-6">
+              <Layers className="w-3 h-3" /> 7 Pillars
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5">Everything your team needs.</h2>
+            <p className="text-muted-foreground text-lg max-w-xl mx-auto">Not five tools. One.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {pillars.map((p) => {
+              const Icon = p.icon;
+              return (
+                <div key={p.title} className="group p-6 rounded-2xl bg-secondary/50 border border-border hover:border-border hover:bg-secondary/80 transition-all duration-300">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.color} flex items-center justify-center mb-5 shadow-xl ${p.glow} group-hover:scale-110 transition-transform`}>
+                    <Icon className="w-6 h-6 text-foreground" />
+                  </div>
+                  <h3 className="text-lg font-bold text-foreground mb-3">{p.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ΓöÇΓöÇ HOW IT CONNECTS ΓöÇΓöÇ */}
+        <section className="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5">The connected workflow.</h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">The magic isn't any single feature ΓÇö it's how they connect.</p>
+          </div>
+
+          <div className="relative">
+            {[
+              { icon: Calendar, color: 'bg-indigo-500', step: '01', title: 'Schedule or start', desc: 'A meeting is scheduled. Each participant gets an AI brief: prior meeting summary, their outstanding action items, and shared async videos.' },
+              { icon: Video, color: 'bg-violet-500', step: '02', title: 'Meet live', desc: 'The call happens with real-time transcription running in the side panel. Decisions are made, screens are shared, the whiteboard is used.' },
+              { icon: Brain, color: 'bg-pink-500', step: '03', title: 'AI summary in 2 min', desc: 'Within 2 minutes of ending, every participant gets their personalised follow-up: just their action items, with full context of what was discussed.' },
+              { icon: Camera, color: 'bg-cyan-500', step: '04', title: 'Async updates', desc: "A team member records a quick video update on their action items. Others watch in their own time, react with emojis, and leave timestamped comments." },
+              { icon: TrendingUp, color: 'bg-emerald-500', step: '05', title: 'Intelligence compounds', desc: "Over time, CliPad surfaces patterns: which meetings run over, which generate action items that don't get completed, and where decisions actually happen." },
+            ].map((step, i) => {
+              const Icon = step.icon;
+              return (
+                <div key={step.step} className="flex gap-6 mb-10 last:mb-0">
+                  <div className="flex flex-col items-center">
+                    <div className={`w-12 h-12 rounded-xl ${step.color} flex items-center justify-center shadow-lg shrink-0`}>
+                      <Icon className="w-5 h-5 text-foreground" />
+                    </div>
+                    {i < 4 && <div className="w-px flex-1 bg-gradient-to-b from-white/10 to-transparent mt-3" />}
+                  </div>
+                  <div className="pb-10">
+                    <div className="text-xs font-mono text-muted-foreground mb-1">STEP {step.step}</div>
+                    <h3 className="text-lg font-bold text-foreground mb-2">{step.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">{step.desc}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ΓöÇΓöÇ PRICING ΓöÇΓöÇ */}
+        <section id="pricing" className="py-24 px-6 md:px-12 max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-semibold tracking-wider uppercase mb-6">
+              <Star className="w-3 h-3" /> Flat Per-Workspace Pricing
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5">A team of 50 pays the same as a team of 5.</h2>
+            <p className="text-muted-foreground text-lg max-w-xl mx-auto">No per-seat pricing. Ever.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {tiers.map((tier) => (
+              <div key={tier.name} className={`relative p-8 rounded-3xl border transition-all ${tier.highlight ? 'bg-gradient-to-b from-primary/20 to-primary/10 border-primary/40 shadow-2xl shadow-primary/10' : 'bg-secondary/50 border-border hover:border-border'}`}>
+                {tier.badge && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-primary to-primary rounded-full text-xs font-bold text-foreground shadow-lg">
+                    {tier.badge}
+                  </div>
+                )}
+                <div className="mb-6">
+                  <h3 className="text-lg font-bold text-foreground mb-2">{tier.name}</h3>
+                  <div className="flex items-end gap-1">
+                    <span className="text-4xl font-black text-foreground">{tier.price}</span>
+                    <span className="text-sm text-muted-foreground mb-1">/ {tier.period}</span>
+                  </div>
+                </div>
+                <div className="space-y-3 mb-8">
+                  {tier.features.map((f) => (
+                    <div key={f} className="flex items-start gap-3">
+                      <CheckCircle className={`w-4 h-4 shrink-0 mt-0.5 ${tier.highlight ? 'text-primary' : 'text-emerald-400'}`} />
+                      <span className="text-sm text-foreground/80">{f}</span>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={() => navigate(tier.name === 'Enterprise' ? '#' : '/login')}
+                  className={`w-full py-3 rounded-xl font-semibold text-sm transition-all ${tier.highlight ? 'bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-foreground shadow-lg shadow-primary/25' : 'bg-secondary hover:bg-secondary/80 text-foreground border border-border'}`}
+                >
+                  {tier.name === 'Enterprise' ? 'Contact Sales' : 'Get Started'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ΓöÇΓöÇ CTA BANNER ΓöÇΓöÇ */}
+        <section className="py-24 px-6 md:px-12 max-w-4xl mx-auto text-center">
+          <div className="p-12 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20">
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5">
+              Start your first meeting.
+              <span className="block text-primary">Free. Right now.</span>
+            </h2>
+            <p className="text-muted-foreground mb-10 max-w-xl mx-auto">No account needed to join or start a meeting. Sign up to unlock AI intelligence, async video, and team spaces.</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <button
+                onClick={() => createRoom(true)}
+                disabled={isCreating}
+                className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-foreground font-bold shadow-2xl shadow-primary/30 transition-all hover:scale-[1.02]"
+              >
+                <Video className="w-5 h-5" /> Start Free Meeting
+              </button>
+              <button
+                onClick={() => navigate('/login')}
+                className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-secondary hover:bg-secondary/80 text-foreground font-semibold border border-border transition-all"
+              >
+                Sign In <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* ΓöÇΓöÇ FOOTER ΓöÇΓöÇ */}
+        <footer className="border-t border-border py-10 px-6 md:px-12">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-muted-foreground text-sm">
+              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                <Video className="w-3 h-3 text-foreground" />
+              </div>
+              <span>┬⌐ {new Date().getFullYear()} CliPad by Optavel Technologies</span>
+            </div>
+            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+              <span className="hover:text-muted-foreground cursor-pointer transition-colors">Privacy</span>
+              <span className="hover:text-muted-foreground cursor-pointer transition-colors">Terms</span>
+              <span className="hover:text-muted-foreground cursor-pointer transition-colors">Security</span>
+              <a href="https://optavel.com" className="hover:text-muted-foreground transition-colors flex items-center gap-1"><Globe className="w-3 h-3" /> optavel.com</a>
+            </div>
+          </div>
+        </footer>
+      
 
       {/* Share Link Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
