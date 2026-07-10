@@ -108,7 +108,7 @@ export default function SSOGateway() {
   };
 
   const handleAddAccount = () => {
-    navigate(`/login?continue=${encodeURIComponent(`/sso?redirect_uri=${redirectUri}`)}`);
+    navigate(`/login?redirect_uri=${encodeURIComponent(redirectUri)}`);
   };
 
   const handleSignOutAccount = (e, userId) => {

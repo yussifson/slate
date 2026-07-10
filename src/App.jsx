@@ -1128,7 +1128,9 @@ function ProtectedRoute() {
     );
   }
 
-  if (!user?.company_id && user?.role !== 'super_admin' && !window.location.pathname.startsWith('/onboarding')) {
+  const isAccountDomain = window.location.hostname.startsWith('account.') || window.location.hostname === 'account.localhost';
+  
+  if (!user?.company_id && user?.role !== 'super_admin' && !window.location.pathname.startsWith('/onboarding') && !isAccountDomain) {
     return <Navigate to="/onboarding" replace />;
   }
 
