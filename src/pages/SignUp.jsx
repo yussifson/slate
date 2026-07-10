@@ -307,6 +307,7 @@ export default function SignUp() {
         width="100%"
       />
     </div>
+    {/*
     <button 
       onClick={handleAppleSignIn}
       type="button"
@@ -317,6 +318,7 @@ export default function SignUp() {
       </svg>
       Continue with Apple
     </button>
+    */}
   </div>
   ) : (
   <form className="space-y-4" onSubmit={handleSignUp}>

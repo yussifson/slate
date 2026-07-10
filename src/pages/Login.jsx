@@ -577,6 +577,7 @@ export default function Login() {
         Sign in with Google
       </button>
     </div>
+    {/* 
     <button 
       onClick={handleAppleSignIn}
       type="button"
@@ -587,6 +588,7 @@ export default function Login() {
       </svg>
       Sign in with Apple
     </button>
+    */}
   </div>
 
   <div className="text-center mt-10">
