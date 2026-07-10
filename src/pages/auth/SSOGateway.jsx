@@ -4,7 +4,8 @@ import { supabase } from "@/api/supabaseClient";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { useTranslation } from "react-i18next";
 import { getSavedAccounts, removeAccount } from "@/lib/multiAccountUtils";
-import { LogOut, Plus, ChevronRight, AlertCircle, ShieldAlert } from "lucide-react";
+import { LogOut, Plus, ChevronRight, AlertCircle } from "lucide-react";
+import { Logo } from "@/components/ui/Logo";
 
 export default function SSOGateway() {
   const { t } = useTranslation();
@@ -152,17 +153,22 @@ export default function SSOGateway() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-slate-100 dark:border-slate-800 overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-primary/5 via-blue-50 to-primary/10 dark:from-primary/10 dark:via-slate-900 dark:to-primary/20 p-4 relative overflow-hidden">
+      
+      {/* Decorative Background Elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/20 dark:bg-primary/30 blur-[100px] pointer-events-none mix-blend-multiply dark:mix-blend-screen" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-400/20 dark:bg-blue-600/20 blur-[100px] pointer-events-none mix-blend-multiply dark:mix-blend-screen" />
+
+      <div className="w-full max-w-md bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_40px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_40px_rgb(0,0,0,0.3)] border border-white/50 dark:border-white/10 overflow-hidden relative z-10 transition-all">
         
         {/* Header */}
-        <div className="p-8 text-center border-b border-slate-100 dark:border-slate-800">
-          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-5 rotate-3">
-             <ShieldAlert className="w-8 h-8 text-primary -rotate-3" />
+        <div className="p-8 pb-6 text-center border-b border-primary/10 dark:border-white/5">
+          <div className="mx-auto mb-6 flex justify-center">
+             <Logo className="w-14 h-14 drop-shadow-md" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Choose an account</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            to continue to <span className="font-semibold text-slate-700 dark:text-slate-300">{targetHost}</span>
+          <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white mb-2">Choose an account</h1>
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+            to continue to <span className="font-bold text-primary dark:text-primary-foreground">{targetHost}</span>
           </p>
         </div>
 
@@ -212,25 +218,25 @@ export default function SSOGateway() {
             </div>
           ))}
 
-          <div className="h-px bg-slate-100 dark:border-slate-800 my-2 mx-4" />
+          <div className="h-px bg-primary/10 dark:bg-white/5 my-3 mx-4" />
 
           {/* Add Account Button */}
           <div 
             onClick={handleAddAccount}
-            className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl cursor-pointer transition-colors text-slate-700 dark:text-slate-300"
+            className="flex items-center gap-4 p-4 mx-2 mb-2 hover:bg-primary/5 dark:hover:bg-primary/10 rounded-2xl cursor-pointer transition-colors text-slate-700 dark:text-slate-300 group"
           >
-            <div className="w-12 h-12 rounded-full border-2 border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center shrink-0">
-              <Plus className="w-5 h-5" />
+            <div className="w-12 h-12 rounded-full border-2 border-dashed border-primary/30 dark:border-primary/50 flex items-center justify-center shrink-0 group-hover:border-primary/60 transition-colors">
+              <Plus className="w-5 h-5 text-primary" />
             </div>
-            <div className="flex-1 font-medium text-sm">
+            <div className="flex-1 font-semibold text-sm group-hover:text-primary transition-colors">
               Use another account
             </div>
           </div>
         </div>
         
         {/* Footer */}
-        <div className="p-6 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800 text-center">
-           <p className="text-xs text-slate-400">
+        <div className="p-5 bg-primary/5 dark:bg-slate-900/50 border-t border-primary/10 dark:border-white/5 text-center">
+           <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
              Secure authentication by Optavel ID
            </p>
         </div>
