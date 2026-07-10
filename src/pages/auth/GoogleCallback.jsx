@@ -48,8 +48,13 @@ export default function GoogleCallback() {
 
         if (signInError) throw signInError;
 
-        // Redirect back to the subdomain that initiated the request
-        window.location.href = continueUrl;
+        // Redirect back to the subdomain that initiated the request, passing the new session tokens
+        if (data?.session) {
+          const hash = `#access_token=${data.session.access_token}&refresh_token=${data.session.refresh_token}`;
+          window.location.href = `${continueUrl}${hash}`;
+        } else {
+          window.location.href = continueUrl;
+        }
 
       } catch (err) {
         setError(err.message);
