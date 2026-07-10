@@ -372,6 +372,7 @@ import SignUp from './pages/SignUp';
 import ForceResetPassword from './pages/ForceResetPassword';
 import SSOGateway from './pages/auth/SSOGateway';
 import SSOCallback from './pages/auth/SSOCallback';
+import GoogleCallback from './pages/auth/GoogleCallback';
 import AccountPortalLayout from './components/layout/AccountPortalLayout';
 import AccountPortal from './pages/auth/AccountPortal';
 import AccountSecurity from './pages/auth/AccountSecurity';
@@ -989,6 +990,7 @@ function PlatformRoutes() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/sso" element={<SSOGateway />} />
         <Route path="/auth/callback" element={<SSOCallback />} />
+        <Route path="/auth/google-callback" element={<GoogleCallback />} />
         <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/loyalty" element={<Loyalty />} />
       <Route path="/orders" element={<Orders />} />
@@ -1230,6 +1232,7 @@ function App() {
                       <Route path="/signup" element={<AccountSignUp />} />
                       <Route path="/sso" element={<SSOGateway />} />
                       <Route path="/auth/callback" element={<SSOCallback />} />
+                      <Route path="/auth/google-callback" element={<GoogleCallback />} />
                       <Route element={<ProtectedRoute />}>
                         <Route element={<AccountPortalLayout />}>
                            <Route path="/" element={<AccountPortal />} />
@@ -1273,6 +1276,7 @@ function App() {
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/sso" element={<SSOGateway />} />
                         <Route path="/auth/callback" element={<SSOCallback />} />
+                        <Route path="/auth/google-callback" element={<GoogleCallback />} />
                         <Route path="/welcome" element={<NativeOnboarding />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
@@ -1310,6 +1314,7 @@ function App() {
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/sso" element={<SSOGateway />} />
                         <Route path="/auth/callback" element={<SSOCallback />} />
+                        <Route path="/auth/google-callback" element={<GoogleCallback />} />
                         <Route path="/welcome" element={<NativeOnboarding />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
