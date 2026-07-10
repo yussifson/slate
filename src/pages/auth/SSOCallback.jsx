@@ -32,7 +32,23 @@ export default function SSOCallback() {
           refresh_token: refreshToken
         });
 
-        if (sessionError) throw sessionError;
+        if (sessionError) {
+          console.warn("[SSOCallback] setSession failed, injecting tokens directly into local storage as fallback:", sessionError.message);
+          
+          try {
+             // Fallback: manually inject tokens so AuthContext picks them up on reload
+             const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+             const storageKey = `sb-${new URL(supabaseUrl).hostname.split('.')[0]}-auth-token`;
+             localStorage.setItem(storageKey, JSON.stringify({
+                 access_token: accessToken,
+                 refresh_token: refreshToken,
+                 user: null // AuthContext will fetch the user on next load
+             }));
+          } catch (storageErr) {
+             console.error("Failed to write to local storage", storageErr);
+             throw sessionError; // Throw original error if fallback also fails
+          }
+        }
 
         // Check if user has a company
         const userId = sessionData?.session?.user?.id;
