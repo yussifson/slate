@@ -239,16 +239,16 @@ export default function RecordVideo() {
   };
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#050A15] text-white">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
       {/* Hidden canvas for PiP compositing */}
       <canvas ref={canvasRef} className="hidden" />
 
       {/* Nav */}
-      <nav className="sticky top-0 z-40 flex items-center gap-3 px-6 h-14 bg-[#050A15]/90 backdrop-blur-xl border-b border-white/5">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm">
+      <nav className="sticky top-0 z-40 flex items-center gap-3 px-6 h-14 bg-background page-enter/90 backdrop-blur-xl border-b border-border">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm">
           <ArrowLeft className="w-4 h-4" /> Back
         </button>
-        <span className="text-white font-semibold">Record Async Video</span>
+        <span className="text-foreground font-semibold">Record Async Video</span>
         {phase === 'recording' && (
           <div className="ml-auto flex items-center gap-2">
             <span className="flex items-center gap-1.5 text-red-400 text-sm font-mono font-bold">
@@ -265,8 +265,8 @@ export default function RecordVideo() {
         {phase === 'setup' && (
           <>
             <div>
-              <h1 className="text-2xl font-black text-white mb-1">Choose your recording mode</h1>
-              <p className="text-gray-400 text-sm">Record a video message for your team. All recordings are stored in CliPad.</p>
+              <h1 className="text-2xl font-black text-foreground mb-1">Choose your recording mode</h1>
+              <p className="text-muted-foreground text-sm">Record a video message for your team. All recordings are stored in CliPad.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -276,11 +276,11 @@ export default function RecordVideo() {
                   <button
                     key={m.id}
                     onClick={() => setMode(m.id)}
-                    className={`p-5 rounded-2xl border text-left transition-all ${mode === m.id ? 'border-indigo-500/60 bg-indigo-500/10' : 'border-white/[0.08] bg-white/[0.03] hover:border-white/15'}`}
+                    className={`p-5 rounded-2xl border text-left transition-all ${mode === m.id ? 'border-indigo-500/60 bg-primary/10' : 'border-white/[0.08] bg-white/[0.03] hover:border-white/15'}`}
                   >
-                    <Icon className={`w-6 h-6 mb-3 ${mode === m.id ? 'text-indigo-400' : 'text-gray-500'}`} />
-                    <p className="font-semibold text-white text-sm mb-1">{m.label}</p>
-                    <p className="text-xs text-gray-500 leading-snug">{m.desc}</p>
+                    <Icon className={`w-6 h-6 mb-3 ${mode === m.id ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <p className="font-semibold text-foreground text-sm mb-1">{m.label}</p>
+                    <p className="text-xs text-muted-foreground leading-snug">{m.desc}</p>
                   </button>
                 );
               })}
@@ -288,20 +288,20 @@ export default function RecordVideo() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Video Title</label>
+                <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Video Title</label>
                 <input
                   value={title}
                   onChange={e => setTitle(e.target.value)}
                   placeholder="e.g. Q3 Feature Walkthrough"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Add to Space (optional)</label>
+                <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Add to Space (optional)</label>
                 <select
                   value={selectedSpace}
                   onChange={e => setSelectedSpace(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-[#111827] border border-white/10 text-white text-sm focus:outline-none focus:border-indigo-500/60 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground text-sm focus:outline-none focus:border-indigo-500/60 transition-all"
                 >
                   <option value="">No space</option>
                   {spaces.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -313,12 +313,12 @@ export default function RecordVideo() {
               <label className="flex items-center gap-3 cursor-pointer select-none">
                 <div
                   onClick={() => setMicEnabled(!micEnabled)}
-                  className={`w-10 h-6 rounded-full transition-colors relative ${micEnabled ? 'bg-indigo-600' : 'bg-white/10'}`}
+                  className={`w-10 h-6 rounded-full transition-colors relative ${micEnabled ? 'bg-primary' : 'bg-secondary/80'}`}
                 >
                   <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${micEnabled ? 'left-5' : 'left-1'}`} />
                 </div>
                 <span className="text-sm text-gray-300 flex items-center gap-2">
-                  {micEnabled ? <Mic className="w-4 h-4 text-indigo-400" /> : <MicOff className="w-4 h-4 text-gray-500" />}
+                  {micEnabled ? <Mic className="w-4 h-4 text-primary" /> : <MicOff className="w-4 h-4 text-muted-foreground" />}
                   {micEnabled ? 'Microphone on' : 'Microphone off'}
                 </span>
               </label>
@@ -326,7 +326,7 @@ export default function RecordVideo() {
 
             <button
               onClick={startRecording}
-              className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold shadow-2xl shadow-red-500/25 transition-all hover:scale-[1.02]"
+              className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-foreground font-bold shadow-2xl shadow-red-500/25 transition-all hover:scale-[1.02]"
             >
               <span className="w-3 h-3 rounded-full bg-white animate-pulse" />
               Start Recording
@@ -344,7 +344,7 @@ export default function RecordVideo() {
                   <canvas ref={canvasRef} className="w-full h-full object-contain hidden" />
                   {/* Show a placeholder since canvas compositing draws off-screen for recording */}
                   <div className="w-full h-full flex items-center justify-center bg-slate-900">
-                    <div className="text-center text-gray-500">
+                    <div className="text-center text-muted-foreground">
                       <Monitor className="w-16 h-16 mx-auto mb-3 opacity-50" />
                       <p className="text-sm">Recording your screen + camera…</p>
                     </div>
@@ -360,7 +360,7 @@ export default function RecordVideo() {
               )}
               {mode === 'screen_only' && (
                 <div className="w-full h-full flex items-center justify-center bg-slate-900">
-                  <div className="text-center text-gray-500">
+                  <div className="text-center text-muted-foreground">
                     <Monitor className="w-16 h-16 mx-auto mb-3 opacity-50" />
                     <p className="text-sm">Recording your screen…</p>
                   </div>
@@ -370,13 +370,13 @@ export default function RecordVideo() {
               {/* Recording indicator */}
               <div className="absolute top-4 left-4 flex items-center gap-2 bg-black/60 backdrop-blur-sm px-3 py-2 rounded-xl">
                 <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-                <span className="text-white text-sm font-mono font-bold">{formatDuration(recordingSeconds)}</span>
+                <span className="text-foreground text-sm font-mono font-bold">{formatDuration(recordingSeconds)}</span>
               </div>
             </div>
 
             <button
               onClick={stopRecording}
-              className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-bold shadow-xl shadow-red-500/25 transition-all"
+              className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-red-600 hover:bg-red-500 text-foreground font-bold shadow-xl shadow-red-500/25 transition-all"
             >
               <StopCircle className="w-5 h-5" /> Stop Recording
             </button>
@@ -387,8 +387,8 @@ export default function RecordVideo() {
         {phase === 'review' && recordingUrl && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-xl font-bold text-white mb-1">Review your recording</h2>
-              <p className="text-gray-400 text-sm">{formatDuration(recordingSeconds)} · {(videoBlob?.size / 1024 / 1024).toFixed(1)} MB</p>
+              <h2 className="text-xl font-bold text-foreground mb-1">Review your recording</h2>
+              <p className="text-muted-foreground text-sm">{formatDuration(recordingSeconds)} · {(videoBlob?.size / 1024 / 1024).toFixed(1)} MB</p>
             </div>
 
             <div className="rounded-2xl overflow-hidden bg-black aspect-video">
@@ -397,20 +397,20 @@ export default function RecordVideo() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Title *</label>
+                <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Title *</label>
                 <input
                   value={title}
                   onChange={e => setTitle(e.target.value)}
                   placeholder="Give your video a title"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Space</label>
+                <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Space</label>
                 <select
                   value={selectedSpace}
                   onChange={e => setSelectedSpace(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-[#111827] border border-white/10 text-white text-sm focus:outline-none focus:border-indigo-500/60 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground text-sm focus:outline-none focus:border-indigo-500/60 transition-all"
                 >
                   <option value="">No space</option>
                   {spaces.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -419,21 +419,21 @@ export default function RecordVideo() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Description (optional)</label>
+              <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Description (optional)</label>
               <textarea
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 placeholder="What is this video about?"
                 rows={2}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all resize-none"
+                className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all resize-none"
               />
             </div>
 
             <div className="flex gap-4">
-              <button onClick={discard} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 hover:bg-white/8 border border-white/10 text-gray-300 font-semibold text-sm transition-all">
+              <button onClick={discard} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-secondary hover:bg-secondary border border-border text-gray-300 font-semibold text-sm transition-all">
                 <RotateCcw className="w-4 h-4" /> Discard & Re-record
               </button>
-              <button onClick={uploadRecording} className="flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold shadow-lg shadow-indigo-500/25 transition-all">
+              <button onClick={uploadRecording} className="flex items-center gap-2 px-8 py-3 rounded-xl bg-primary hover:bg-primary/90 text-foreground font-bold shadow-lg shadow-primary/25 transition-all">
                 <Upload className="w-4 h-4" /> Save to CliPad
               </button>
             </div>
@@ -443,15 +443,15 @@ export default function RecordVideo() {
         {/* UPLOADING PHASE */}
         {phase === 'uploading' && (
           <div className="flex flex-col items-center justify-center py-24 gap-6">
-            <div className="w-20 h-20 rounded-full bg-indigo-500/10 border-2 border-indigo-500/20 flex items-center justify-center mb-2">
-              <Upload className="w-8 h-8 text-indigo-400 animate-bounce" />
+            <div className="w-20 h-20 rounded-full bg-primary/10 border-2 border-indigo-500/20 flex items-center justify-center mb-2">
+              <Upload className="w-8 h-8 text-primary animate-bounce" />
             </div>
-            <h2 className="text-xl font-bold text-white">Uploading your video…</h2>
+            <h2 className="text-xl font-bold text-foreground">Uploading your video…</h2>
             <div className="w-80">
-              <div className="flex justify-between text-xs text-gray-500 mb-2">
+              <div className="flex justify-between text-xs text-muted-foreground mb-2">
                 <span>Uploading</span><span>{uploadProgress}%</span>
               </div>
-              <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+              <div className="h-2 rounded-full bg-secondary/80 overflow-hidden">
                 <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-all duration-500" style={{ width: `${uploadProgress}%` }} />
               </div>
             </div>
@@ -462,10 +462,10 @@ export default function RecordVideo() {
         {phase === 'done' && (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <div className="w-20 h-20 rounded-full bg-emerald-500/10 border-2 border-emerald-500/30 flex items-center justify-center">
-              <CheckCircle className="w-10 h-10 text-emerald-400" />
+              <CheckCircle className="w-10 h-10 text-emerald-500" />
             </div>
-            <h2 className="text-xl font-bold text-white">Video saved!</h2>
-            <p className="text-gray-400 text-sm">Redirecting to your video…</p>
+            <h2 className="text-xl font-bold text-foreground">Video saved!</h2>
+            <p className="text-muted-foreground text-sm">Redirecting to your video…</p>
           </div>
         )}
       </div>

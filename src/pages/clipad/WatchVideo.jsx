@@ -158,7 +158,7 @@ export default function WatchVideo() {
 
   if (loading) {
     return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#050A15] flex items-center justify-center">
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter flex items-center justify-center">
         <div className="w-10 h-10 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
       </div>
     );
@@ -166,10 +166,10 @@ export default function WatchVideo() {
 
   if (!video) {
     return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#050A15] flex items-center justify-center text-white text-center">
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter flex items-center justify-center text-foreground text-center">
         <div>
-          <p className="text-gray-400 mb-4">Video not found.</p>
-          <button onClick={() => navigate('/dashboard')} className="text-indigo-400 hover:text-indigo-300 transition-colors text-sm">← Dashboard</button>
+          <p className="text-muted-foreground mb-4">Video not found.</p>
+          <button onClick={() => navigate('/dashboard')} className="text-primary hover:text-primary/80 transition-colors text-sm">← Dashboard</button>
         </div>
       </div>
     );
@@ -184,15 +184,15 @@ export default function WatchVideo() {
         }
       `}</style>
 
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#050A15] text-white">
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
         {/* Nav */}
-        <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-14 bg-[#050A15]/90 backdrop-blur-xl border-b border-white/5">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm">
+        <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-14 bg-background page-enter/90 backdrop-blur-xl border-b border-border">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm">
             <ArrowLeft className="w-4 h-4" /> Back
           </button>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-500 flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> {views} views</span>
-            <button onClick={copyShareLink} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${copied ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' : 'text-gray-300 border-white/10 bg-white/5 hover:bg-white/8'}`}>
+            <span className="text-xs text-muted-foreground flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> {views} views</span>
+            <button onClick={copyShareLink} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${copied ? 'text-emerald-500 border-emerald-500/30 bg-emerald-500/10' : 'text-gray-300 border-border bg-secondary hover:bg-secondary'}`}>
               {copied ? <><Check className="w-3.5 h-3.5" /> Copied!</> : <><Share2 className="w-3.5 h-3.5" /> Share</>}
             </button>
           </div>
@@ -250,12 +250,12 @@ export default function WatchVideo() {
 
                 <div className="flex items-center gap-3 px-4 pb-4">
                   <button onClick={togglePlay} className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors">
-                    {playing ? <Pause className="w-4 h-4 text-white" /> : <Play className="w-4 h-4 text-white fill-white" />}
+                    {playing ? <Pause className="w-4 h-4 text-foreground" /> : <Play className="w-4 h-4 text-foreground fill-white" />}
                   </button>
-                  <button onClick={toggleMute} className="text-white/70 hover:text-white transition-colors">
+                  <button onClick={toggleMute} className="text-foreground/70 hover:text-foreground transition-colors">
                     {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                   </button>
-                  <span className="text-white/60 text-xs font-mono">{formatTime(currentTime)} / {formatTime(duration)}</span>
+                  <span className="text-foreground/60 text-xs font-mono">{formatTime(currentTime)} / {formatTime(duration)}</span>
                   <div className="flex-1" />
                   {/* Emoji reaction bar in controls */}
                   <div className="flex items-center gap-1">
@@ -272,16 +272,16 @@ export default function WatchVideo() {
 
             {/* Video info */}
             <div>
-              <h1 className="text-xl font-bold text-white mb-2">{video.title || 'Untitled Recording'}</h1>
+              <h1 className="text-xl font-bold text-foreground mb-2">{video.title || 'Untitled Recording'}</h1>
               <div className="flex items-center gap-3">
                 <img
                   src={video.creator?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${video.creator?.full_name}`}
                   className="w-8 h-8 rounded-full bg-slate-700"
                   alt="Creator"
                 />
-                <span className="text-sm text-gray-400">{video.creator?.full_name || 'Unknown'}</span>
-                <span className="text-gray-600">·</span>
-                <span className="text-sm text-gray-400">{new Date(video.created_at).toLocaleDateString()}</span>
+                <span className="text-sm text-muted-foreground">{video.creator?.full_name || 'Unknown'}</span>
+                <span className="text-muted-foreground">·</span>
+                <span className="text-sm text-muted-foreground">{new Date(video.created_at).toLocaleDateString()}</span>
               </div>
             </div>
 
@@ -289,8 +289,8 @@ export default function WatchVideo() {
             {video.ai_summary && (
               <div className="p-5 rounded-2xl bg-gradient-to-br from-pink-500/10 to-rose-500/5 border border-pink-500/15">
                 <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="w-4 h-4 text-pink-400" />
-                  <span className="text-xs font-bold text-pink-300 uppercase tracking-wider">AI Summary</span>
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  <span className="text-xs font-bold text-primary/80 uppercase tracking-wider">AI Summary</span>
                 </div>
                 <p className="text-sm text-gray-300 leading-relaxed">{video.ai_summary}</p>
               </div>
@@ -301,12 +301,12 @@ export default function WatchVideo() {
           <div className="lg:col-span-1 flex flex-col gap-4">
 
             {/* Filter tabs */}
-            <div className="flex gap-1 p-1 bg-white/5 rounded-xl">
+            <div className="flex gap-1 p-1 bg-secondary rounded-xl">
               {[['all','All'],['comments','Comments'],['reactions','Reactions']].map(([val, label]) => (
                 <button
                   key={val}
                   onClick={() => setActiveCommentFilter(val)}
-                  className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-all ${activeCommentFilter === val ? 'bg-white/10 text-white' : 'text-gray-500 hover:text-gray-300'}`}
+                  className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-all ${activeCommentFilter === val ? 'bg-secondary/80 text-foreground' : 'text-muted-foreground hover:text-gray-300'}`}
                 >
                   {label}
                 </button>
@@ -320,9 +320,9 @@ export default function WatchVideo() {
                   value={commentText}
                   onChange={e => setCommentText(e.target.value)}
                   placeholder={`Comment at ${formatTime(currentTime)}…`}
-                  className="w-full pl-4 pr-12 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all"
+                  className="w-full pl-4 pr-12 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all"
                 />
-                <button type="submit" disabled={submitting || !commentText.trim()} className="absolute right-3 top-1/2 -translate-y-1/2 text-indigo-400 hover:text-indigo-300 disabled:text-gray-600 transition-colors">
+                <button type="submit" disabled={submitting || !commentText.trim()} className="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80 disabled:text-muted-foreground transition-colors">
                   <Send className="w-4 h-4" />
                 </button>
               </form>
@@ -331,13 +331,13 @@ export default function WatchVideo() {
             {/* Comments list */}
             <div className="flex-1 overflow-y-auto space-y-2 max-h-[60vh]">
               {(activeCommentFilter === 'all' || activeCommentFilter === 'reactions') && reactions.length > 0 && (
-                <div className="flex flex-wrap gap-2 p-3 rounded-xl bg-white/[0.03] border border-white/5">
+                <div className="flex flex-wrap gap-2 p-3 rounded-xl bg-white/[0.03] border border-border">
                   {EMOJIS.map(e => {
                     const count = reactions.filter(r => r.emoji === e).length;
                     if (!count) return null;
                     return (
-                      <button key={e} onClick={() => addReaction(e)} className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-sm transition-all">
-                        {e} <span className="text-xs text-gray-400">{count}</span>
+                      <button key={e} onClick={() => addReaction(e)} className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-secondary hover:bg-secondary/80 text-sm transition-all">
+                        {e} <span className="text-xs text-muted-foreground">{count}</span>
                       </button>
                     );
                   })}
@@ -348,11 +348,11 @@ export default function WatchVideo() {
                 comments.length === 0 ? (
                   <div className="py-12 text-center">
                     <MessageSquare className="w-10 h-10 text-gray-800 mx-auto mb-3" />
-                    <p className="text-sm text-gray-600">No comments yet. Pause the video and type to leave a timestamped comment.</p>
+                    <p className="text-sm text-muted-foreground">No comments yet. Pause the video and type to leave a timestamped comment.</p>
                   </div>
                 ) : (
                   comments.map(c => (
-                    <div key={c.id} className="flex gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-colors group">
+                    <div key={c.id} className="flex gap-3 p-3 rounded-xl hover:bg-secondary transition-colors group">
                       <img
                         src={c.author?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${c.author?.full_name || 'U'}`}
                         className="w-7 h-7 rounded-full bg-slate-700 shrink-0 mt-0.5"
@@ -363,7 +363,7 @@ export default function WatchVideo() {
                           <span className="text-xs font-semibold text-gray-300">{c.author?.full_name || 'Anonymous'}</span>
                           <button
                             onClick={() => seekTo(c.timestamp_seconds)}
-                            className="text-[10px] font-mono text-indigo-400 hover:text-indigo-300 transition-colors bg-indigo-500/10 px-1.5 py-0.5 rounded"
+                            className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors bg-primary/10 px-1.5 py-0.5 rounded"
                           >
                             @{formatTime(c.timestamp_seconds)}
                           </button>

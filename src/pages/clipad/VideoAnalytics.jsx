@@ -6,15 +6,15 @@ import { BarChart3, TrendingUp, Eye, Heart, MessageSquare, Clock, ArrowLeft, Vid
 
 function StatCard({ icon: Icon, color, value, label, trend }) {
   return (
-    <div className="p-6 rounded-2xl bg-[#111827] border border-white/[0.06] hover:border-white/12 transition-all">
+    <div className="p-6 rounded-2xl bg-card border border-border hover:border-white/12 transition-all">
       <div className="flex items-start justify-between mb-4">
         <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg`}>
-          <Icon className="w-5 h-5 text-white" />
+          <Icon className="w-5 h-5 text-foreground" />
         </div>
-        {trend && <span className={`text-xs font-semibold px-2 py-1 rounded-full ${trend > 0 ? 'text-emerald-400 bg-emerald-400/10' : 'text-red-400 bg-red-400/10'}`}>{trend > 0 ? '+' : ''}{trend}%</span>}
+        {trend && <span className={`text-xs font-semibold px-2 py-1 rounded-full ${trend > 0 ? 'text-emerald-500 bg-emerald-400/10' : 'text-red-400 bg-red-400/10'}`}>{trend > 0 ? '+' : ''}{trend}%</span>}
       </div>
-      <div className="text-3xl font-black text-white mb-1">{value}</div>
-      <div className="text-sm text-gray-500">{label}</div>
+      <div className="text-3xl font-black text-foreground mb-1">{value}</div>
+      <div className="text-sm text-muted-foreground">{label}</div>
     </div>
   );
 }
@@ -97,7 +97,7 @@ export default function VideoAnalytics() {
 
   if (loading) {
     return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#050A15] flex items-center justify-center">
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter flex items-center justify-center">
         <div className="w-10 h-10 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
       </div>
     );
@@ -107,29 +107,29 @@ export default function VideoAnalytics() {
   const maxViews = Math.max(10, ...stats.recentViews.map(d => d.count));
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#050A15] text-white">
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-[#050A15]/80 backdrop-blur-xl border-b border-white/5">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-background page-enter/80 backdrop-blur-xl border-b border-border">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
-            <Video className="w-4 h-4 text-white" strokeWidth={2.5} />
+          <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
+            <Video className="w-4 h-4 text-foreground" strokeWidth={2.5} />
           </div>
           <span className="text-lg font-bold tracking-tight">CliPad</span>
         </div>
-        <button onClick={() => navigate('/dashboard')} className="text-sm text-gray-400 hover:text-white transition-colors">← Dashboard</button>
+        <button onClick={() => navigate('/dashboard')} className="text-sm text-muted-foreground hover:text-foreground transition-colors">← Dashboard</button>
       </nav>
 
       <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
         <div className="mb-10">
-          <h1 className="text-3xl font-black text-white mb-1 flex items-center gap-3"><BarChart3 className="w-7 h-7 text-emerald-400" /> Analytics</h1>
-          <p className="text-gray-400 text-sm">See how your team interacts with your video recordings.</p>
+          <h1 className="text-3xl font-black text-foreground mb-1 flex items-center gap-3"><BarChart3 className="w-7 h-7 text-emerald-500" /> Analytics</h1>
+          <p className="text-muted-foreground text-sm">See how your team interacts with your video recordings.</p>
         </div>
 
         {stats.totalVideos === 0 ? (
-          <div className="text-center py-24 border border-dashed border-white/10 rounded-3xl">
+          <div className="text-center py-24 border border-dashed border-border rounded-3xl">
             <BarChart3 className="w-16 h-16 text-gray-800 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-gray-400 mb-2">No data yet</h3>
-            <p className="text-gray-600 text-sm mb-6">Record a video and share it to start collecting analytics.</p>
-            <button onClick={() => navigate('/record')} className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all">Record Video</button>
+            <h3 className="text-xl font-bold text-muted-foreground mb-2">No data yet</h3>
+            <p className="text-muted-foreground text-sm mb-6">Record a video and share it to start collecting analytics.</p>
+            <button onClick={() => navigate('/record')} className="px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-foreground font-semibold text-sm transition-all">Record Video</button>
           </div>
         ) : (
           <div className="space-y-8">
@@ -145,13 +145,13 @@ export default function VideoAnalytics() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               
               {/* Chart */}
-              <div className="lg:col-span-2 bg-[#111827] border border-white/[0.06] rounded-2xl p-6">
+              <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-8">
                   <div>
-                    <h2 className="font-bold text-white text-lg">Views over time</h2>
-                    <p className="text-xs text-gray-500">Last 7 days</p>
+                    <h2 className="font-bold text-foreground text-lg">Views over time</h2>
+                    <p className="text-xs text-muted-foreground">Last 7 days</p>
                   </div>
-                  <div className="px-3 py-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 text-xs font-bold border border-indigo-500/20">Active</div>
+                  <div className="px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-bold border border-indigo-500/20">Active</div>
                 </div>
                 
                 <div className="h-64 flex items-end justify-between gap-2">
@@ -170,7 +170,7 @@ export default function VideoAnalytics() {
                             </div>
                           </div>
                         </div>
-                        <span className="text-[10px] text-gray-500 uppercase font-mono">{new Date(day.date).toLocaleDateString(undefined, { weekday: 'short' })}</span>
+                        <span className="text-[10px] text-muted-foreground uppercase font-mono">{new Date(day.date).toLocaleDateString(undefined, { weekday: 'short' })}</span>
                       </div>
                     );
                   })}
@@ -178,17 +178,17 @@ export default function VideoAnalytics() {
               </div>
 
               {/* Top Videos List */}
-              <div className="bg-[#111827] border border-white/[0.06] rounded-2xl overflow-hidden flex flex-col">
-                <div className="px-6 py-5 border-b border-white/5">
-                  <h2 className="font-bold text-white text-lg flex items-center gap-2"><TrendingUp className="w-5 h-5 text-emerald-400" /> Top Videos</h2>
+              <div className="bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
+                <div className="px-6 py-5 border-b border-border">
+                  <h2 className="font-bold text-foreground text-lg flex items-center gap-2"><TrendingUp className="w-5 h-5 text-emerald-500" /> Top Videos</h2>
                 </div>
                 <div className="flex-1 overflow-y-auto divide-y divide-white/5">
                   {stats.topVideos.map((v, i) => (
-                    <div key={v.id} onClick={() => navigate(`/watch/${v.id}`)} className="p-5 hover:bg-white/[0.03] cursor-pointer transition-colors group flex items-start gap-4">
-                      <div className="w-6 h-6 rounded-full bg-white/5 text-gray-400 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</div>
+                    <div key={v.id} onClick={() => navigate(`/watch/${v.id}`)} className="p-5 hover:bg-secondary cursor-pointer transition-colors group flex items-start gap-4">
+                      <div className="w-6 h-6 rounded-full bg-secondary text-muted-foreground flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-white text-sm truncate group-hover:text-indigo-400 transition-colors mb-1">{v.title || 'Untitled Video'}</h3>
-                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                        <h3 className="font-semibold text-foreground text-sm truncate group-hover:text-primary transition-colors mb-1">{v.title || 'Untitled Video'}</h3>
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
                           <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {v.viewCount} views</span>
                           {/* <span className="flex items-center gap-1"><Target className="w-3 h-3" /> {v.avgCompletion}% avg completion</span> */}
                         </div>

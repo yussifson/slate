@@ -30,19 +30,19 @@ function TaskRow({ item, onToggle }) {
     onToggle?.(item.id, next);
   };
   return (
-    <div className="flex items-start gap-3 p-4 rounded-xl hover:bg-white/[0.03] transition-colors group">
-      <button onClick={handle} className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${done ? 'bg-emerald-500 border-emerald-500' : 'border-gray-600 hover:border-indigo-400'}`}>
-        {done && <CheckCircle className="w-3.5 h-3.5 text-white" />}
+    <div className="flex items-start gap-3 p-4 rounded-xl hover:bg-secondary transition-colors group">
+      <button onClick={handle} className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${done ? 'bg-emerald-500 border-emerald-500' : 'border-gray-600 hover:border-primary'}`}>
+        {done && <CheckCircle className="w-3.5 h-3.5 text-foreground" />}
       </button>
       <div className="flex-1 min-w-0">
-        <p className={`text-sm font-medium leading-snug ${done ? 'line-through text-gray-600' : 'text-gray-200'}`}>{item.title}</p>
+        <p className={`text-sm font-medium leading-snug ${done ? 'line-through text-muted-foreground' : 'text-gray-200'}`}>{item.title}</p>
         <div className="flex items-center gap-3 mt-1">
-          {item.assigned_to && <span className="text-xs text-gray-500 flex items-center gap-1"><User className="w-3 h-3" /> {item.assigned_to}</span>}
-          {item.due_date && <span className="text-xs text-gray-500 flex items-center gap-1"><Clock className="w-3 h-3" /> {new Date(item.due_date).toLocaleDateString()}</span>}
+          {item.assigned_to && <span className="text-xs text-muted-foreground flex items-center gap-1"><User className="w-3 h-3" /> {item.assigned_to}</span>}
+          {item.due_date && <span className="text-xs text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" /> {new Date(item.due_date).toLocaleDateString()}</span>}
         </div>
       </div>
       {item.context && (
-        <span className="hidden group-hover:block text-[10px] text-gray-600 max-w-[140px] text-right line-clamp-2">{item.context}</span>
+        <span className="hidden group-hover:block text-[10px] text-muted-foreground max-w-[140px] text-right line-clamp-2">{item.context}</span>
       )}
     </div>
   );
@@ -50,7 +50,7 @@ function TaskRow({ item, onToggle }) {
 
 function VideoCard({ video, onClick }) {
   return (
-    <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-[#0D1117] border border-white/[0.06] hover:border-white/12 transition-all hover:-translate-y-0.5">
+    <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-[#0D1117] border border-border hover:border-white/12 transition-all hover:-translate-y-0.5">
       <div className="aspect-video bg-gradient-to-br from-slate-800 to-slate-900 relative flex items-center justify-center">
         {video.thumbnail_url
           ? <img src={video.thumbnail_url} className="w-full h-full object-cover" alt={video.title} />
@@ -58,18 +58,18 @@ function VideoCard({ video, onClick }) {
         }
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
           <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-            <Play className="w-5 h-5 text-white fill-white" />
+            <Play className="w-5 h-5 text-foreground fill-white" />
           </div>
         </div>
         {video.duration_seconds && (
-          <div className="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] font-mono px-2 py-0.5 rounded">
+          <div className="absolute bottom-2 right-2 bg-black/70 text-foreground text-[10px] font-mono px-2 py-0.5 rounded">
             {Math.floor(video.duration_seconds/60)}:{String(video.duration_seconds%60).padStart(2,'0')}
           </div>
         )}
       </div>
       <div className="p-4">
-        <p className="text-sm font-semibold text-white line-clamp-1">{video.title || 'Untitled'}</p>
-        <p className="text-xs text-gray-500 mt-1">{new Date(video.created_at).toLocaleDateString()}</p>
+        <p className="text-sm font-semibold text-foreground line-clamp-1">{video.title || 'Untitled'}</p>
+        <p className="text-xs text-muted-foreground mt-1">{new Date(video.created_at).toLocaleDateString()}</p>
       </div>
     </div>
   );
@@ -151,7 +151,7 @@ export default function SpaceDashboard() {
 
   if (loading) {
     return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#050A15] flex items-center justify-center">
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter flex items-center justify-center">
         <div className="w-10 h-10 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
       </div>
     );
@@ -159,11 +159,11 @@ export default function SpaceDashboard() {
 
   if (!space) {
     return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#050A15] flex items-center justify-center text-white">
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter flex items-center justify-center text-foreground">
         <div className="text-center">
           <Layers className="w-12 h-12 text-gray-700 mx-auto mb-3" />
-          <p className="text-gray-400">Space not found.</p>
-          <button onClick={() => navigate('/spaces')} className="mt-4 text-indigo-400 hover:text-indigo-300 text-sm transition-colors">← Back to Spaces</button>
+          <p className="text-muted-foreground">Space not found.</p>
+          <button onClick={() => navigate('/spaces')} className="mt-4 text-primary hover:text-primary/80 text-sm transition-colors">← Back to Spaces</button>
         </div>
       </div>
     );
@@ -173,21 +173,21 @@ export default function SpaceDashboard() {
   const doneTasks = tasks.filter(t => t.is_complete);
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#050A15] text-white">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
       {/* Nav */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-[#050A15]/80 backdrop-blur-xl border-b border-white/5">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-background page-enter/80 backdrop-blur-xl border-b border-border">
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate('/spaces')} className="text-gray-400 hover:text-white transition-colors"><ArrowLeft className="w-5 h-5" /></button>
+          <button onClick={() => navigate('/spaces')} className="text-muted-foreground hover:text-foreground transition-colors"><ArrowLeft className="w-5 h-5" /></button>
           <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center text-sm font-bold`}>{space.name?.[0]}</div>
-          <span className="font-semibold text-white">{space.name}</span>
+          <span className="font-semibold text-foreground">{space.name}</span>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => navigate('/record')} className="px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all flex items-center gap-2">
+          <button onClick={() => navigate('/record')} className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all flex items-center gap-2">
             <Camera className="w-4 h-4" /> Record
           </button>
           <button
             onClick={handleJoinMeeting}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all ${isLive ? 'bg-rose-500 hover:bg-rose-400 text-white shadow-lg shadow-rose-500/25 animate-pulse' : 'bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-lg shadow-indigo-500/25'}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all ${isLive ? 'bg-rose-500 hover:bg-rose-400 text-foreground shadow-lg shadow-rose-500/25 animate-pulse' : 'bg-primary hover:bg-primary/90 text-foreground shadow-lg shadow-primary/25'}`}
           >
             {isLive ? <Activity className="w-4 h-4" /> : <Video className="w-4 h-4" />}
             {isLive ? 'Join Live' : 'Start Meeting'}
@@ -202,9 +202,9 @@ export default function SpaceDashboard() {
           <div className="flex items-start gap-4">
             <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-2xl font-black shadow-xl shrink-0`}>{space.name?.[0]}</div>
             <div>
-              <h1 className="text-2xl font-black text-white">{space.name}</h1>
-              <p className="text-gray-400 mt-1">{space.description || 'A shared space for meetings, videos, and collaboration.'}</p>
-              <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
+              <h1 className="text-2xl font-black text-foreground">{space.name}</h1>
+              <p className="text-muted-foreground mt-1">{space.description || 'A shared space for meetings, videos, and collaboration.'}</p>
+              <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {meetings.length} meetings</span>
                 <span className="flex items-center gap-1"><Camera className="w-3.5 h-3.5" /> {videos.length} videos</span>
                 <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> {openTasks.length} open tasks</span>
@@ -215,7 +215,7 @@ export default function SpaceDashboard() {
       </div>
 
       {/* Tab bar */}
-      <div className="px-6 md:px-10 border-b border-white/5">
+      <div className="px-6 md:px-10 border-b border-border">
         <div className="flex gap-1 -mb-px">
           {TABS.map(tab => {
             const Icon = tab.icon;
@@ -223,7 +223,7 @@ export default function SpaceDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === tab.id ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-300 hover:border-white/20'}`}
+                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === tab.id ? 'border-indigo-500 text-primary' : 'border-transparent text-muted-foreground hover:text-gray-300 hover:border-white/20'}`}
               >
                 <Icon className="w-4 h-4" />{tab.label}
               </button>
@@ -244,11 +244,11 @@ export default function SpaceDashboard() {
               {/* Recent Videos */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-bold text-white flex items-center gap-2"><Camera className="w-4 h-4 text-cyan-400" /> Recent Videos</h2>
-                  <button onClick={() => setActiveTab('videos')} className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">View all →</button>
+                  <h2 className="font-bold text-foreground flex items-center gap-2"><Camera className="w-4 h-4 text-primary" /> Recent Videos</h2>
+                  <button onClick={() => setActiveTab('videos')} className="text-xs text-primary hover:text-primary/80 transition-colors">View all →</button>
                 </div>
                 {videos.length === 0
-                  ? <div className="p-8 rounded-2xl border border-dashed border-white/10 text-center text-gray-600 text-sm">No videos yet. <button className="text-cyan-400 hover:text-cyan-300 transition-colors" onClick={() => navigate('/record')}>Record one →</button></div>
+                  ? <div className="p-8 rounded-2xl border border-dashed border-border text-center text-muted-foreground text-sm">No videos yet. <button className="text-primary hover:text-primary/80 transition-colors" onClick={() => navigate('/record')}>Record one →</button></div>
                   : <div className="grid grid-cols-2 gap-3">{videos.slice(0,4).map(v => <VideoCard key={v.id} video={v} onClick={() => navigate(`/watch/${v.id}`)} />)}</div>
                 }
               </div>
@@ -256,20 +256,20 @@ export default function SpaceDashboard() {
               {/* Recent Meetings */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-bold text-white flex items-center gap-2"><Calendar className="w-4 h-4 text-violet-400" /> Recent Meetings</h2>
-                  <button onClick={() => setActiveTab('meetings')} className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">View all →</button>
+                  <h2 className="font-bold text-foreground flex items-center gap-2"><Calendar className="w-4 h-4 text-primary" /> Recent Meetings</h2>
+                  <button onClick={() => setActiveTab('meetings')} className="text-xs text-primary hover:text-primary/80 transition-colors">View all →</button>
                 </div>
-                <div className="bg-[#111827] border border-white/[0.06] rounded-2xl divide-y divide-white/5 overflow-hidden">
+                <div className="bg-card border border-border rounded-2xl divide-y divide-white/5 overflow-hidden">
                   {meetings.length === 0
-                    ? <div className="p-8 text-center text-gray-600 text-sm">No meetings yet.</div>
+                    ? <div className="p-8 text-center text-muted-foreground text-sm">No meetings yet.</div>
                     : meetings.slice(0,5).map(m => (
-                        <div key={m.id} onClick={() => navigate(`/meetings/${m.id}`)} className="px-5 py-4 hover:bg-white/[0.03] cursor-pointer transition-colors">
+                        <div key={m.id} onClick={() => navigate(`/meetings/${m.id}`)} className="px-5 py-4 hover:bg-secondary cursor-pointer transition-colors">
                           <div className="flex items-center justify-between">
-                            <p className="text-sm font-semibold text-white">{m.title || 'Team Meeting'}</p>
-                            {m.ai_summary && <Sparkles className="w-3.5 h-3.5 text-pink-400 shrink-0" />}
+                            <p className="text-sm font-semibold text-foreground">{m.title || 'Team Meeting'}</p>
+                            {m.ai_summary && <Sparkles className="w-3.5 h-3.5 text-primary shrink-0" />}
                           </div>
-                          <p className="text-xs text-gray-500 mt-0.5">{new Date(m.created_at).toLocaleString()}</p>
-                          {m.ai_summary && <p className="text-xs text-gray-400 mt-1 line-clamp-2">{m.ai_summary}</p>}
+                          <p className="text-xs text-muted-foreground mt-0.5">{new Date(m.created_at).toLocaleString()}</p>
+                          {m.ai_summary && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{m.ai_summary}</p>}
                         </div>
                       ))
                   }
@@ -283,16 +283,16 @@ export default function SpaceDashboard() {
         {activeTab === 'videos' && (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-white">{videos.length} Videos</h2>
-              <button onClick={() => navigate('/record')} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-sm font-bold shadow-lg transition-all">
+              <h2 className="text-xl font-bold text-foreground">{videos.length} Videos</h2>
+              <button onClick={() => navigate('/record')} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-foreground text-sm font-bold shadow-lg transition-all">
                 <Camera className="w-4 h-4" /> Record New
               </button>
             </div>
             {videos.length === 0 ? (
               <div className="text-center py-20">
                 <Camera className="w-16 h-16 text-gray-800 mx-auto mb-4" />
-                <p className="text-gray-500 mb-4">No videos in this space yet.</p>
-                <button onClick={() => navigate('/record')} className="px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-all">Record Async Video</button>
+                <p className="text-muted-foreground mb-4">No videos in this space yet.</p>
+                <button onClick={() => navigate('/record')} className="px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-foreground font-semibold text-sm transition-all">Record Async Video</button>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -306,30 +306,30 @@ export default function SpaceDashboard() {
         {activeTab === 'meetings' && (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-white">{meetings.length} Meetings</h2>
-              <button onClick={handleJoinMeeting} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-sm font-bold shadow-lg transition-all">
+              <h2 className="text-xl font-bold text-foreground">{meetings.length} Meetings</h2>
+              <button onClick={handleJoinMeeting} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-foreground text-sm font-bold shadow-lg transition-all">
                 <Video className="w-4 h-4" /> Start Meeting
               </button>
             </div>
             {meetings.length === 0 ? (
               <div className="text-center py-20">
                 <Calendar className="w-16 h-16 text-gray-800 mx-auto mb-4" />
-                <p className="text-gray-500">No meeting records yet.</p>
+                <p className="text-muted-foreground">No meeting records yet.</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {meetings.map(m => (
-                  <div key={m.id} onClick={() => navigate(`/meetings/${m.id}`)} className="p-5 rounded-2xl bg-[#111827] border border-white/[0.06] hover:border-white/12 cursor-pointer transition-all group">
+                  <div key={m.id} onClick={() => navigate(`/meetings/${m.id}`)} className="p-5 rounded-2xl bg-card border border-border hover:border-white/12 cursor-pointer transition-all group">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-white">{m.title || 'Team Meeting'}</h3>
-                          {m.ai_summary && <span className="px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-400 text-[10px] font-semibold flex items-center gap-1"><Sparkles className="w-2.5 h-2.5" /> AI Summary</span>}
+                          <h3 className="font-semibold text-foreground">{m.title || 'Team Meeting'}</h3>
+                          {m.ai_summary && <span className="px-2 py-0.5 rounded-full bg-pink-500/10 text-primary text-[10px] font-semibold flex items-center gap-1"><Sparkles className="w-2.5 h-2.5" /> AI Summary</span>}
                         </div>
-                        <p className="text-xs text-gray-500">{new Date(m.created_at).toLocaleString()}</p>
-                        {m.ai_summary && <p className="text-sm text-gray-400 mt-2 line-clamp-2">{m.ai_summary}</p>}
+                        <p className="text-xs text-muted-foreground">{new Date(m.created_at).toLocaleString()}</p>
+                        {m.ai_summary && <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{m.ai_summary}</p>}
                       </div>
-                      <ChevronRight className="w-5 h-5 text-gray-600 group-hover:text-indigo-400 transition-colors shrink-0 mt-0.5" />
+                      <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-0.5" />
                     </div>
                   </div>
                 ))}
@@ -343,10 +343,10 @@ export default function SpaceDashboard() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-white">{openTasks.length} Open Actions</h2>
-                <p className="text-sm text-gray-500 mt-0.5">{doneTasks.length} completed</p>
+                <h2 className="text-xl font-bold text-foreground">{openTasks.length} Open Actions</h2>
+                <p className="text-sm text-muted-foreground mt-0.5">{doneTasks.length} completed</p>
               </div>
-              <button onClick={() => setShowNewTask(!showNewTask)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-sm font-bold shadow-lg transition-all">
+              <button onClick={() => setShowNewTask(!showNewTask)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-foreground text-sm font-bold shadow-lg transition-all">
                 <Plus className="w-4 h-4" /> Add Task
               </button>
             </div>
@@ -357,19 +357,19 @@ export default function SpaceDashboard() {
                   value={newTaskTitle}
                   onChange={e => setNewTaskTitle(e.target.value)}
                   placeholder="Task title..."
-                  className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all"
+                  className="flex-1 px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all"
                   autoFocus
                 />
-                <button type="submit" disabled={creatingTask} className="px-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition-all disabled:opacity-60">Add</button>
-                <button type="button" onClick={() => setShowNewTask(false)} className="px-3 py-3 rounded-xl bg-white/5 hover:bg-white/8 text-gray-400 transition-all"><X className="w-4 h-4" /></button>
+                <button type="submit" disabled={creatingTask} className="px-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-foreground font-semibold text-sm transition-all disabled:opacity-60">Add</button>
+                <button type="button" onClick={() => setShowNewTask(false)} className="px-3 py-3 rounded-xl bg-secondary hover:bg-secondary text-muted-foreground transition-all"><X className="w-4 h-4" /></button>
               </form>
             )}
 
-            <div className="bg-[#111827] border border-white/[0.06] rounded-2xl overflow-hidden divide-y divide-white/5">
+            <div className="bg-card border border-border rounded-2xl overflow-hidden divide-y divide-white/5">
               {tasks.length === 0 ? (
                 <div className="py-16 text-center">
                   <CheckCircle className="w-12 h-12 text-gray-800 mx-auto mb-3" />
-                  <p className="text-gray-500 text-sm">No action items yet. Add one or start a meeting to generate them automatically.</p>
+                  <p className="text-muted-foreground text-sm">No action items yet. Add one or start a meeting to generate them automatically.</p>
                 </div>
               ) : (
                 tasks.map(item => <TaskRow key={item.id} item={item} onToggle={(id, val) => setTasks(prev => prev.map(t => t.id === id ? { ...t, is_complete: val } : t))} />)
@@ -381,7 +381,7 @@ export default function SpaceDashboard() {
         {/* NOTES */}
         {activeTab === 'notes' && (
           <div>
-            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2"><FileText className="w-5 h-5 text-indigo-400" /> Shared Notes</h2>
+            <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2"><FileText className="w-5 h-5 text-primary" /> Shared Notes</h2>
             <SpaceNotes spaceId={spaceId} />
           </div>
         )}
