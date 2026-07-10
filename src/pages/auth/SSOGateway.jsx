@@ -4,7 +4,7 @@ import { supabase } from "@/api/supabaseClient";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { useTranslation } from "react-i18next";
 import { getSavedAccounts, removeAccount } from "@/lib/multiAccountUtils";
-import { LogOut, Plus, ChevronRight, AlertCircle } from "lucide-react";
+import { LogOut, Plus, ChevronRight, AlertCircle, Shield, Key, Lock, Hexagon, Box, Fingerprint } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { useAuth } from "@/lib/AuthContext";
 
@@ -158,18 +158,38 @@ export default function SSOGateway() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-primary/5 via-blue-50 to-primary/10 dark:from-primary/10 dark:via-slate-900 dark:to-primary/20 p-4 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-[#090E17] p-4 relative overflow-hidden">
       
-      {/* Decorative Background Elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/20 dark:bg-primary/30 blur-[100px] pointer-events-none mix-blend-multiply dark:mix-blend-screen" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-400/20 dark:bg-blue-600/20 blur-[100px] pointer-events-none mix-blend-multiply dark:mix-blend-screen" />
+      {/* Sleek Icon Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
+        <div className="absolute w-full max-w-6xl h-full">
+          <div className="absolute top-[10%] left-[5%] opacity-[0.03] dark:opacity-[0.02] text-primary">
+            <Shield size={180} strokeWidth={1} />
+          </div>
+          <div className="absolute top-[60%] left-[10%] opacity-[0.03] dark:opacity-[0.02] text-primary">
+            <Key size={140} strokeWidth={1} />
+          </div>
+          <div className="absolute top-[15%] right-[8%] opacity-[0.03] dark:opacity-[0.02] text-primary">
+            <Hexagon size={160} strokeWidth={1} />
+          </div>
+          <div className="absolute bottom-[15%] right-[10%] opacity-[0.03] dark:opacity-[0.02] text-primary">
+            <Box size={150} strokeWidth={1} />
+          </div>
+          <div className="absolute top-[45%] left-[80%] opacity-[0.03] dark:opacity-[0.02] text-primary">
+            <Fingerprint size={170} strokeWidth={1} />
+          </div>
+          <div className="absolute bottom-[5%] left-[30%] opacity-[0.03] dark:opacity-[0.02] text-primary">
+            <Lock size={120} strokeWidth={1} />
+          </div>
+        </div>
+      </div>
 
-      <div className="w-full max-w-md bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_40px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_40px_rgb(0,0,0,0.3)] border border-white/50 dark:border-white/10 overflow-hidden relative z-10 transition-all">
+      <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden relative z-10">
         
         {/* Header */}
-        <div className="p-8 pb-6 text-center border-b border-primary/10 dark:border-white/5">
+        <div className="p-8 pb-6 text-center border-b border-slate-100 dark:border-slate-800">
           <div className="mx-auto mb-6 flex justify-center">
-             <Logo className="w-14 h-14 drop-shadow-md" />
+             <Logo className="w-12 h-12" />
           </div>
           <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white mb-2">Choose an account</h1>
           <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
@@ -240,7 +260,7 @@ export default function SSOGateway() {
         </div>
         
         {/* Footer */}
-        <div className="p-5 bg-primary/5 dark:bg-slate-900/50 border-t border-primary/10 dark:border-white/5 text-center">
+        <div className="p-5 bg-slate-50 dark:bg-[#0B1120] border-t border-slate-100 dark:border-slate-800 text-center">
            <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
              Secure authentication by Optavel ID
            </p>
