@@ -40,7 +40,7 @@ export default function AccountHelp() {
               </div>
               <input 
                 type="text" 
-                className="block w-full pl-11 pr-4 py-4 rounded-2xl border-none shadow-md ring-1 ring-black/5 dark:ring-white/10 bg-white dark:bg-[#28292C] text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-primary transition-shadow text-lg" 
+                className="block w-full pl-11 pr-4 py-4 rounded-2xl border-none shadow-md ring-1 ring-black/5 dark:ring-white/10 bg-white dark:bg-card text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-primary transition-shadow text-lg" 
                 placeholder="Search help topics..."
               />
             </div>
@@ -48,7 +48,7 @@ export default function AccountHelp() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
             {/* Help Topics */}
-            <div onClick={() => navigate('/docs')} className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] hover:shadow-md transition-shadow cursor-pointer group">
+            <div onClick={() => navigate('/docs')} className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card hover:shadow-md transition-shadow cursor-pointer group">
               <div className="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4">
                 <FileText className="w-6 h-6" strokeWidth={1.5} />
               </div>
@@ -61,7 +61,7 @@ export default function AccountHelp() {
               </div>
             </div>
 
-            <div onClick={() => navigate('/tutorials')} className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] hover:shadow-md transition-shadow cursor-pointer group">
+            <div onClick={() => navigate('/tutorials')} className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card hover:shadow-md transition-shadow cursor-pointer group">
               <div className="w-12 h-12 rounded-xl bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-4">
                 <BookOpen className="w-6 h-6" strokeWidth={1.5} />
               </div>
@@ -75,7 +75,7 @@ export default function AccountHelp() {
             </div>
 
             {/* Contact Support */}
-            <div onClick={handleOpenChat} className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] hover:shadow-md transition-shadow cursor-pointer group">
+            <div onClick={handleOpenChat} className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card hover:shadow-md transition-shadow cursor-pointer group">
               <div className="w-12 h-12 rounded-xl bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 flex items-center justify-center mb-4">
                 <MessageCircle className="w-6 h-6" strokeWidth={1.5} />
               </div>
@@ -88,7 +88,7 @@ export default function AccountHelp() {
               </div>
             </div>
 
-            <div onClick={handleOpenPhone} className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] hover:shadow-md transition-shadow cursor-pointer group">
+            <div onClick={handleOpenPhone} className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card hover:shadow-md transition-shadow cursor-pointer group">
               <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4">
                 <PhoneCall className="w-6 h-6" strokeWidth={1.5} />
               </div>

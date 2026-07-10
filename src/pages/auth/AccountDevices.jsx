@@ -51,7 +51,7 @@ export default function AccountDevices() {
       </div>
 
       <div className="space-y-6">
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] overflow-hidden">
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden">
           <div className="p-6 md:p-8 border-b border-gray-200 dark:border-gray-800">
              <h2 className="text-xl font-medium text-gray-900 dark:text-white">Active Sessions</h2>
           </div>

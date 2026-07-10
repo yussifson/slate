@@ -81,7 +81,7 @@ export default function SuperAdminDashboard() {
           <div className="space-y-8 animate-in fade-in duration-300">
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C]">
+              <div className="p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card">
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
                     <Users className="w-5 h-5" />
@@ -94,7 +94,7 @@ export default function SuperAdminDashboard() {
                 <p className="text-sm text-gray-500 dark:text-gray-400">Total Users</p>
               </div>
 
-              <div className="p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C]">
+              <div className="p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card">
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
                     <Building2 className="w-5 h-5" />
@@ -107,7 +107,7 @@ export default function SuperAdminDashboard() {
                 <p className="text-sm text-gray-500 dark:text-gray-400">Tenant Companies</p>
               </div>
 
-              <div className="p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C]">
+              <div className="p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card">
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-10 h-10 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400">
                     <Activity className="w-5 h-5" />
@@ -123,7 +123,7 @@ export default function SuperAdminDashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Recent Users preview */}
-              <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] overflow-hidden flex flex-col">
+              <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden flex flex-col">
                 <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
                    <h2 className="text-lg font-medium text-gray-900 dark:text-white">Recent Users</h2>
                    <button onClick={() => setActiveTab('users')} className="text-sm text-primary hover:underline">View All</button>
@@ -149,7 +149,7 @@ export default function SuperAdminDashboard() {
               </div>
 
               {/* Workspaces preview */}
-              <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] overflow-hidden flex flex-col">
+              <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden flex flex-col">
                 <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
                    <h2 className="text-lg font-medium text-gray-900 dark:text-white">Recent Workspaces</h2>
                    <button onClick={() => setActiveTab('workspaces')} className="text-sm text-primary hover:underline">View All</button>
@@ -178,7 +178,7 @@ export default function SuperAdminDashboard() {
       case 'chats':
         return (
           <div className="animate-in fade-in duration-300">
-             <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] p-8 text-center flex flex-col items-center">
+             <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card p-8 text-center flex flex-col items-center">
                <MessageSquare className="w-12 h-12 text-blue-500 mb-4" />
                <h3 className="text-xl font-bold mb-2">Live Support Chats</h3>
                <p className="text-gray-500 max-w-md mx-auto mb-6">Escalated chats from the AI Assistant will appear here in real-time. Join a room to chat directly with users.</p>
@@ -195,7 +195,7 @@ export default function SuperAdminDashboard() {
       case 'callbacks':
         return (
           <div className="animate-in fade-in duration-300">
-             <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] overflow-hidden">
+             <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-500">
@@ -237,7 +237,7 @@ export default function SuperAdminDashboard() {
 
       case 'users':
         return (
-          <div className="animate-in fade-in duration-300 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] overflow-hidden flex flex-col">
+          <div className="animate-in fade-in duration-300 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden flex flex-col">
              <div className="flex-1 overflow-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
@@ -280,7 +280,7 @@ export default function SuperAdminDashboard() {
 
       case 'workspaces':
         return (
-          <div className="animate-in fade-in duration-300 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] overflow-hidden flex flex-col">
+          <div className="animate-in fade-in duration-300 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden flex flex-col">
              <div className="flex-1 overflow-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
@@ -339,7 +339,7 @@ export default function SuperAdminDashboard() {
 
       case 'settings':
         return (
-          <div className="animate-in fade-in duration-300 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] p-6 space-y-6">
+          <div className="animate-in fade-in duration-300 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card p-6 space-y-6">
             <h2 className="text-lg font-medium mb-4">Global Security Settings</h2>
             
             <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
@@ -427,7 +427,7 @@ export default function SuperAdminDashboard() {
 
       {/* Main Content Area */}
       <div className="flex-1 min-w-0">
-        <div className="mb-6 flex justify-between items-center bg-white dark:bg-[#28292C] p-4 rounded-2xl border border-gray-200 dark:border-gray-800">
+        <div className="mb-6 flex justify-between items-center bg-white dark:bg-card p-4 rounded-2xl border border-gray-200 dark:border-gray-800">
            <h2 className="text-lg font-semibold capitalize text-gray-900 dark:text-white">
              {tabs.find(t => t.id === activeTab)?.label}
            </h2>

@@ -134,7 +134,7 @@ export default function AccountSecurity() {
 
       <div className="space-y-6">
         {/* Security Checkup */}
-        <div className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C]">
+        <div className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
              <div>
                <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-2 flex items-center gap-2">
@@ -152,7 +152,7 @@ export default function AccountSecurity() {
         </div>
 
         {/* How you sign in */}
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] overflow-hidden">
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden">
           <div className="p-6 md:p-8 border-b border-gray-200 dark:border-gray-800">
              <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-2">How you sign in to Optavel</h2>
              <p className="text-gray-600 dark:text-gray-400 text-sm">
@@ -282,7 +282,7 @@ export default function AccountSecurity() {
         </div>
 
         {/* Recent Security Activity */}
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] overflow-hidden">
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden">
           <div className="p-6 md:p-8 border-b border-gray-200 dark:border-gray-800">
              <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-2">Recent security activity</h2>
              <p className="text-gray-600 dark:text-gray-400 text-sm">

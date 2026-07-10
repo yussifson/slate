@@ -116,10 +116,10 @@ export default function AccountPortalLayout() {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-slate-50 dark:bg-[#0B0C10] text-slate-900 dark:text-gray-100 font-sans flex flex-col md:flex-row transition-colors duration-200">
+    <div className="h-screen overflow-hidden bg-slate-50 dark:bg-background text-slate-900 dark:text-gray-100 font-sans flex flex-col md:flex-row transition-colors duration-200">
       
       {/* Mobile Header */}
-      <header className="md:hidden flex items-center justify-between px-4 h-16 bg-white dark:bg-[#15161C] border-b border-gray-200 dark:border-white/5 sticky top-0 z-50">
+      <header className="md:hidden flex items-center justify-between px-4 h-16 bg-white dark:bg-sidebar border-b border-gray-200 dark:border-white/5 sticky top-0 z-50">
         <div className="flex items-center gap-3">
           <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -130,14 +130,14 @@ export default function AccountPortalLayout() {
           </div>
         </div>
         <AccountSwitcher className={`shrink-0 rounded-full ${
-          isSuperAdmin ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-[#0B0C10]' :
-          isPremium ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-[#0B0C10]' : ''
+          isSuperAdmin ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-background' :
+          isPremium ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-background' : ''
         }`} />
       </header>
 
       {/* Sidebar Navigation */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 bg-white dark:bg-[#15161C] border-r border-gray-200 dark:border-white/5 transform transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col
+        fixed inset-y-0 left-0 z-40 bg-white dark:bg-sidebar border-r border-gray-200 dark:border-white/5 transform transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col
         ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl w-64' : '-translate-x-full md:shadow-none'}
         ${isDesktopCollapsed ? 'md:w-20' : 'md:w-64'}
       `}>
@@ -258,7 +258,7 @@ export default function AccountPortalLayout() {
            
            <div className="grid grid-cols-2 gap-3">
              <button onClick={() => handleAppLauncherClick('https://slate.optavel.com', true)} className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors group">
-               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
+               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-background flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
                  <Logo className="w-8 h-8" />
                </div>
                <div className="text-center">
@@ -268,7 +268,7 @@ export default function AccountPortalLayout() {
              </button>
              
              <button onClick={() => handleAppLauncherClick('https://preloom.optavel.com')} className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors group">
-               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
+               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-background flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
                  <Database className="w-7 h-7 text-green-500" />
                </div>
                <div className="text-center">
@@ -278,7 +278,7 @@ export default function AccountPortalLayout() {
              </button>
              
              <button onClick={() => handleAppLauncherClick('https://teleply.optavel.com')} className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors group">
-               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
+               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-background flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
                  <PhoneCall className="w-7 h-7 text-indigo-500" />
                </div>
                <div className="text-center">
@@ -288,7 +288,7 @@ export default function AccountPortalLayout() {
              </button>
              
              <button onClick={() => handleAppLauncherClick('https://clipad.optavel.com')} className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors group">
-               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202124] flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
+               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-background flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
                  <Video className="w-7 h-7 text-orange-500" />
                </div>
                <div className="text-center">

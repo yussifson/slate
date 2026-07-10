@@ -32,7 +32,7 @@ export default function AccountPortal() {
         <div className="relative mb-6 group cursor-pointer mt-4">
           <div className={`w-28 h-28 md:w-32 md:h-32 rounded-full bg-blue-600 text-white flex items-center justify-center text-4xl font-medium shadow-lg relative z-10 transition-transform group-hover:scale-105 duration-300 overflow-hidden ${
              isSuperAdmin ? 'ring-4 ring-red-500 ring-offset-4 dark:ring-offset-background' :
-             isPremium ? 'ring-4 ring-primary ring-offset-4 dark:ring-offset-background' : 'ring-4 ring-white dark:ring-[#202124]'
+             isPremium ? 'ring-4 ring-primary ring-offset-4 dark:ring-offset-background' : 'ring-4 ring-white dark:ring-background'
           }`}>
             {user?.avatar_url ? (
                <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover" />
@@ -74,7 +74,7 @@ export default function AccountPortal() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* Personal Info Card */}
-        <Link to="/personal-info" className="flex flex-col p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] hover:shadow-md transition-shadow group">
+        <Link to="/personal-info" className="flex flex-col p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card hover:shadow-md transition-shadow group">
            <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-4">
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -90,7 +90,7 @@ export default function AccountPortal() {
         </Link>
 
         {/* Security Card */}
-        <Link to="/security" className="flex flex-col p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] hover:shadow-md transition-shadow group">
+        <Link to="/security" className="flex flex-col p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card hover:shadow-md transition-shadow group">
            <div className="w-12 h-12 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400 mb-4">
               <ShieldCheck className="w-6 h-6" strokeWidth={1.5} />
            </div>
@@ -104,7 +104,7 @@ export default function AccountPortal() {
         </Link>
 
         {/* Payments & Subscriptions Card */}
-        <Link to="/subscriptions" className="flex flex-col p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] hover:shadow-md transition-shadow group">
+        <Link to="/subscriptions" className="flex flex-col p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card hover:shadow-md transition-shadow group">
            <div className="w-12 h-12 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-4">
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />

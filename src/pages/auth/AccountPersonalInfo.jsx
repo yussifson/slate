@@ -244,7 +244,7 @@ export default function AccountPersonalInfo() {
 
       <div className="space-y-6">
         
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] overflow-hidden">
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden">
           <div className="p-6 md:p-8 border-b border-gray-200 dark:border-gray-800">
              <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-2">Basic info</h2>
              <p className="text-gray-600 dark:text-gray-400 text-sm">
@@ -296,8 +296,8 @@ export default function AccountPersonalInfo() {
                         </div>
                      </div>
                      <div className={`relative shrink-0 rounded-full ${
-                        isSuperAdmin ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-[#28292C]' :
-                        isPremium ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-[#28292C]' : ''
+                        isSuperAdmin ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-background' :
+                        isPremium ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-background' : ''
                      }`}>
                        {safeAvatarUrl ? (
                           <img src={safeAvatarUrl} alt="Avatar" className="w-14 h-14 rounded-full object-cover shadow-sm bg-gray-100" />
@@ -419,7 +419,7 @@ export default function AccountPersonalInfo() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] overflow-hidden">
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden">
           <div className="p-6 md:p-8 border-b border-gray-200 dark:border-gray-800">
              <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-2">Contact info</h2>
           </div>

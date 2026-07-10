@@ -128,7 +128,7 @@ export default function AccountPayments() {
 
       <div className="space-y-6">
         {/* Active Subscription */}
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] overflow-hidden">
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden">
           <div className="p-6 md:p-8 border-b border-gray-200 dark:border-gray-800">
             <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-1">Your subscriptions</h2>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
@@ -194,7 +194,7 @@ export default function AccountPayments() {
         </div>
 
         {/* Payment Methods */}
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#28292C] overflow-hidden">
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden">
           <div className="p-6 md:p-8 border-b border-gray-200 dark:border-gray-800">
             <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-1">Payment methods</h2>
             <p className="text-gray-600 dark:text-gray-400 text-sm">

@@ -57,7 +57,7 @@ export default function AccountSwitcher({ className = '' }) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#28292C] border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-card border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800 flex items-center gap-3">
             <div className="shrink-0 w-12 h-12 rounded-full overflow-hidden">
               {profile?.avatar_url || user?.avatar_url ? (

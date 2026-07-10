@@ -9,7 +9,7 @@ export default function AccountTutorials() {
     <div className="min-h-screen bg-slate-50 dark:bg-[#1C1C1E] flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md animate-in fade-in zoom-in-95 duration-500">
         
-        <div className="bg-white dark:bg-[#28292C] p-8 md:p-10 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-black/20 border border-slate-100 dark:border-slate-800 text-center relative overflow-hidden">
+        <div className="bg-white dark:bg-card p-8 md:p-10 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-black/20 border border-slate-100 dark:border-slate-800 text-center relative overflow-hidden">
           
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-pink-500/5 dark:from-orange-500/10 dark:to-pink-500/10 pointer-events-none" />
