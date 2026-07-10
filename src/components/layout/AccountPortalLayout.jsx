@@ -116,12 +116,12 @@ export default function AccountPortalLayout() {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-background text-foreground font-sans flex flex-col md:flex-row transition-colors duration-200">
+    <div className="h-screen overflow-hidden bg-slate-50 dark:bg-[#0B0C10] text-slate-900 dark:text-gray-100 font-sans flex flex-col md:flex-row transition-colors duration-200">
       
       {/* Mobile Header */}
-      <header className="md:hidden flex items-center justify-between px-4 h-16 bg-card border-b border-border sticky top-0 z-50">
+      <header className="md:hidden flex items-center justify-between px-4 h-16 bg-white dark:bg-[#15161C] border-b border-gray-200 dark:border-white/5 sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
           <div className="flex items-center gap-2">
@@ -130,14 +130,14 @@ export default function AccountPortalLayout() {
           </div>
         </div>
         <AccountSwitcher className={`shrink-0 rounded-full ${
-          isSuperAdmin ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-background' :
-          isPremium ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-background' : ''
+          isSuperAdmin ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-[#0B0C10]' :
+          isPremium ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-[#0B0C10]' : ''
         }`} />
       </header>
 
       {/* Sidebar Navigation */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 bg-card border-r-2 border-primary/50 transform transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col
+        fixed inset-y-0 left-0 z-40 bg-white dark:bg-[#15161C] border-r border-gray-200 dark:border-white/5 transform transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col
         ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl w-64' : '-translate-x-full md:shadow-none'}
         ${isDesktopCollapsed ? 'md:w-20' : 'md:w-64'}
       `}>
@@ -319,7 +319,7 @@ export default function AccountPortalLayout() {
             <AlertCircle className="w-4 h-4" /> System is currently in maintenance mode. Some features may be restricted.
           </div>
         )}
-        <div className={`w-full ${['/help', '/admin'].includes(location.pathname) ? 'flex-1' : 'max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12 pb-32'}`}>
+        <div className={`w-full ${['/help', '/admin'].includes(location.pathname) ? 'flex-1 pt-6 md:pt-10' : 'max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12 pb-32'}`}>
            <Outlet />
         </div>
         <CompanySelectionModal isOpen={isCompanyModalOpen} onClose={() => setIsCompanyModalOpen(false)} />
