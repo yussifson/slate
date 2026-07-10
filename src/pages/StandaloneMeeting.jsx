@@ -132,7 +132,7 @@ export default function StandaloneMeeting() {
 
   // Effect 3: Document title and favicon
   useEffect(() => {
-    document.title = roomName ? `${roomName} - Optavel Meet` : 'Joining Room - Optavel Meet';
+    document.title = roomName ? `${roomName} - CliPad` : 'Joining Room - CliPad';
     const link = document.querySelector("link[rel~='icon']");
     if (link) {
       link.href = '/orbit-logo.svg';

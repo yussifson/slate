@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { 
   Users, Building2, Activity, ArrowUpRight, Search, CheckCircle2, ShieldAlert,
-  MessageSquare, Phone, Database, Settings, ShieldCheck, TerminalSquare, AlertCircle
+  MessageSquare, Phone, Database, Settings, ShieldCheck, TerminalSquare, AlertCircle, PanelLeftClose, PanelLeftOpen, Check
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 
 export default function SuperAdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [showSaveToast, setShowSaveToast] = useState(false);
   
   const [stats, setStats] = useState({ users: 0, companies: 0, activeNow: 0 });
   const [users, setUsers] = useState([]);
@@ -16,7 +19,21 @@ export default function SuperAdminDashboard() {
 
   useEffect(() => {
     fetchData();
+    const isMaintenance = localStorage.getItem('maintenanceMode') === 'true';
+    setMaintenanceMode(isMaintenance);
   }, []);
+
+  const handleToggleMaintenance = () => {
+    setMaintenanceMode(!maintenanceMode);
+  };
+
+  const handleSaveSettings = () => {
+    localStorage.setItem('maintenanceMode', maintenanceMode);
+    setShowSaveToast(true);
+    // Dispatch a custom event so other components (like layout) can update immediately
+    window.dispatchEvent(new Event('maintenanceModeChanged'));
+    setTimeout(() => setShowSaveToast(false), 3000);
+  };
 
   const fetchData = async () => {
     try {
@@ -340,12 +357,21 @@ export default function SuperAdminDashboard() {
                 <h4 className="font-medium text-sm text-gray-900 dark:text-white">Maintenance Mode</h4>
                 <p className="text-xs text-gray-500 mt-1">Take the system offline for all non-super-admins.</p>
               </div>
-              <div className="relative inline-block w-12 h-6 rounded-full bg-gray-200 dark:bg-gray-700 transition-colors cursor-pointer">
-                <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div>
+              <div onClick={handleToggleMaintenance} className={`relative inline-block w-12 h-6 rounded-full transition-colors cursor-pointer ${maintenanceMode ? 'bg-primary' : 'bg-gray-200 dark:bg-gray-700'}`}>
+                <div className={`absolute top-1 bg-white w-4 h-4 rounded-full transition-transform ${maintenanceMode ? 'right-1' : 'left-1'}`}></div>
               </div>
             </div>
             
-            <button className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg">Save Settings</button>
+            <div className="flex items-center gap-4">
+              <button onClick={handleSaveSettings} className="px-4 py-2 bg-primary hover:bg-primary/90 text-white text-sm font-medium rounded-lg transition-colors">
+                Save Settings
+              </button>
+              {showSaveToast && (
+                <span className="flex items-center gap-2 text-sm text-green-600 bg-green-50 px-3 py-1.5 rounded-lg animate-in fade-in zoom-in duration-300">
+                  <Check className="w-4 h-4" /> Settings saved successfully
+                </span>
+              )}
+            </div>
           </div>
         );
 
@@ -355,28 +381,45 @@ export default function SuperAdminDashboard() {
   };
 
   return (
-    <div className="animate-in fade-in duration-500 max-w-6xl mx-auto pb-12 flex flex-col md:flex-row gap-8">
+    <div className="animate-in fade-in duration-500 w-full px-4 sm:px-6 lg:px-8 pb-12 flex flex-col md:flex-row gap-8">
       {/* Sidebar Navigation */}
-      <div className="w-full md:w-64 shrink-0">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2 px-3">
-          <ShieldAlert className="w-6 h-6 text-red-500" />
-          Admin Portal
-        </h1>
-        <p className="text-gray-500 text-xs px-3 mb-6">Global ecosystem management</p>
+      <div className={`shrink-0 transition-all duration-300 ${isSidebarCollapsed ? 'w-16' : 'w-full md:w-64'}`}>
+        <div className="flex items-center justify-between px-3 mb-6">
+          {!isSidebarCollapsed && (
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
+                <ShieldAlert className="w-6 h-6 text-red-500" />
+                Admin Portal
+              </h1>
+              <p className="text-gray-500 text-xs">Global management</p>
+            </div>
+          )}
+          {isSidebarCollapsed && (
+             <ShieldAlert className="w-6 h-6 text-red-500 mx-auto mt-2" />
+          )}
+          <button 
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors hidden md:block"
+            title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {isSidebarCollapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
+          </button>
+        </div>
         
         <nav className="space-y-1">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+              title={isSidebarCollapsed ? tab.label : ''}
+              className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center p-2.5' : 'gap-3 px-3 py-2.5'} rounded-xl text-sm font-medium transition-all ${
                 activeTab === tab.id 
                   ? 'bg-primary/10 text-primary' 
                   : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50'
               }`}
             >
               {tab.icon}
-              {tab.label}
+              {!isSidebarCollapsed && <span>{tab.label}</span>}
             </button>
           ))}
         </nav>

@@ -4,7 +4,7 @@ import { supabase } from "@/api/supabaseClient";
 import { isDesktopApp } from '@/lib/domainUtils';
 import { getSubdomainAndBase } from './domainUtils';
 import { useImpersonation } from './ImpersonationContext';
-import { saveAccount, removeAccount } from './multiAccountUtils';
+import { saveAccount, removeAccount, getSavedAccounts } from './multiAccountUtils';
 export const PORTAL_ROLES = ['client', 'patient', 'guest', 'parent', 'student', 'learner', 'trainee', 'customer', 'policyholder', 'member', 'tenant', 'landlord', 'employee'];
 
 const AuthContext = createContext();
@@ -654,6 +654,33 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  const switchAccount = useCallback(async (targetAccountId) => {
+    try {
+      setIsLoadingAuth(true);
+      const accounts = getSavedAccounts();
+      const targetAccount = accounts.find(a => a.id === targetAccountId);
+      if (targetAccount && targetAccount.access_token) {
+        const { error } = await supabase.auth.setSession({
+          access_token: targetAccount.access_token,
+          refresh_token: targetAccount.refresh_token
+        });
+        if (error) throw error;
+        window.location.reload(); // Hard reload to clear cached data for safety
+      } else {
+        throw new Error("No tokens found for account");
+      }
+    } catch (e) {
+      console.warn("Failed to switch account transparently, forcing login...", e);
+      const accounts = getSavedAccounts();
+      const acc = accounts.find(a => a.id === targetAccountId);
+      if (acc?.email) {
+        window.location.href = `/login?email=${encodeURIComponent(acc.email)}`;
+      } else {
+        window.location.href = `/login`;
+      }
+    }
+  }, []);
+
   const isPortalUser = user?.role ? PORTAL_ROLES.includes(user.role.toLowerCase()) : false;
 
   const contextValue = useMemo(() => ({
@@ -668,6 +695,7 @@ export const AuthProvider = ({ children }) => {
     authChecked,
     logout,
     navigateToLogin,
+    switchAccount,
     checkUserAuth,
     checkAppState,
     refreshUser
@@ -683,6 +711,7 @@ export const AuthProvider = ({ children }) => {
     authChecked,
     logout,
     navigateToLogin,
+    switchAccount,
     checkUserAuth,
     checkAppState,
     refreshUser

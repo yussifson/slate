@@ -1,18 +1,30 @@
-import React, { useState } from 'react';
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { Logo } from '@/components/ui/Logo';
-import { Menu, X, Home, UserCircle, ShieldCheck, CreditCard, MonitorSmartphone, Sun, Moon, LogOut, PanelLeftClose, PanelLeftOpen, LayoutGrid, HelpCircle, Lock, Video, PhoneCall, ClipboardList, Database, Server } from 'lucide-react';
+import { Menu, X, Home, UserCircle, ShieldCheck, CreditCard, MonitorSmartphone, Sun, Moon, LogOut, PanelLeftClose, PanelLeftOpen, LayoutGrid, HelpCircle, Lock, Video, PhoneCall, ClipboardList, Database, Server, AlertCircle } from 'lucide-react';
 import { supabase } from "@/api/supabaseClient";
 import { useTheme } from "@/lib/ThemeContext";
+import AccountSwitcher from './AccountSwitcher';
 
 export default function AccountPortalLayout() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme, changeTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isMaintenanceMode, setIsMaintenanceMode] = useState(false);
+
+  useEffect(() => {
+    const checkMaintenance = () => {
+      setIsMaintenanceMode(localStorage.getItem('maintenanceMode') === 'true');
+    };
+    checkMaintenance();
+    window.addEventListener('maintenanceModeChanged', checkMaintenance);
+    return () => window.removeEventListener('maintenanceModeChanged', checkMaintenance);
+  }, []);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -91,18 +103,10 @@ export default function AccountPortalLayout() {
              <span className="text-xl font-medium tracking-tight">Optavel</span>
           </div>
         </div>
-        <div className={`relative shrink-0 rounded-full ${
+        <AccountSwitcher className={`shrink-0 rounded-full ${
           isSuperAdmin ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-background' :
           isPremium ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-background' : ''
-        }`}>
-          {profile?.avatar_url || user?.avatar_url ? (
-            <img src={profile?.avatar_url || user?.avatar_url} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-medium text-sm">
-              {initials}
-            </div>
-          )}
-        </div>
+        }`} />
       </header>
 
       {/* Sidebar Navigation */}
@@ -275,8 +279,21 @@ export default function AccountPortalLayout() {
       )}
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto bg-transparent relative h-full">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12 pb-32">
+      <main className="flex-1 overflow-y-auto bg-transparent relative h-full flex flex-col">
+        {/* Desktop floating account switcher */}
+        <div className="hidden md:block absolute top-6 right-6 z-50">
+          <AccountSwitcher className={
+            isSuperAdmin ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-background rounded-full' :
+            isPremium ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-background rounded-full' : ''
+          } />
+        </div>
+        
+        {isMaintenanceMode && (
+          <div className="bg-yellow-500 text-black text-center text-xs font-semibold py-1.5 px-4 sticky top-0 z-50 shadow-sm flex items-center justify-center gap-2">
+            <AlertCircle className="w-4 h-4" /> System is currently in maintenance mode. Some features may be restricted.
+          </div>
+        )}
+        <div className={`w-full ${['/help', '/admin'].includes(location.pathname) ? 'flex-1' : 'max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12 pb-32'}`}>
            <Outlet />
         </div>
       </main>

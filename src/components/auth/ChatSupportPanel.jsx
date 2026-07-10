@@ -58,7 +58,12 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
            }]);
         }, 3000);
       } else {
-        replyText = `I understand you're asking about "${newMsg.text}". Optavel provides comprehensive ecosystem tools. Could you provide more details, or would you like to speak to a human admin?`;
+        const lowerText = newMsg.text.toLowerCase().trim();
+        if (['hi', 'hello', 'hey', 'greetings'].includes(lowerText)) {
+          replyText = "Hello! I am the Optavel Support Assistant. How can I help you today?";
+        } else {
+          replyText = `I understand you're asking about "${newMsg.text}". Optavel provides comprehensive ecosystem tools. Could you provide more details, or would you like to speak to a human admin?`;
+        }
       }
       
       setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: replyText, time: new Date().toISOString() }]);
@@ -84,7 +89,7 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
       
       {/* Panel */}
       <div className={`
-        fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white dark:bg-[#1C1C1E] border-l border-slate-200 dark:border-slate-800 shadow-2xl z-50 flex flex-col transform transition-transform duration-500 ease-in-out
+        absolute top-0 right-0 h-full w-full sm:w-[400px] bg-white dark:bg-[#1C1C1E] border-l border-slate-200 dark:border-slate-800 shadow-2xl z-50 flex flex-col transform transition-transform duration-500 ease-in-out
         ${isOpen ? 'translate-x-0' : 'translate-x-full'}
       `}>
         

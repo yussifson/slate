@@ -191,29 +191,29 @@ export default function MeetLandingPage() {
         <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[120px]" />
       </div>
       <Helmet>
-        <title>Optavel Meet — Free HD Video Meetings for Teams</title>
-        <meta name="description" content="Optavel Meet is a free, secure, enterprise-grade video conferencing platform. Start or join HD video meetings instantly — no downloads required. Trusted by teams worldwide." />
-        <meta name="keywords" content="Optavel Meet, video meeting, online video call, video conferencing, free video call, HD video call, team meeting, virtual meeting, enterprise video, secure video call, Google Meet alternative, Zoom alternative" />
+        <title>CliPad — Free HD Video Meetings for Teams</title>
+        <meta name="description" content="CliPad is a free, secure, enterprise-grade video conferencing platform. Start or join HD video meetings instantly — no downloads required. Trusted by teams worldwide." />
+        <meta name="keywords" content="CliPad, video meeting, online video call, video conferencing, free video call, HD video call, team meeting, virtual meeting, enterprise video, secure video call, Google Meet alternative, Zoom alternative" />
         <meta name="robots" content="index, follow" />
         <meta name="author" content="Optavel" />
         <link rel="canonical" href="https://meet.optavel.com/" />
         {/* Open Graph */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://meet.optavel.com/" />
-        <meta property="og:title" content="Optavel Meet — Free HD Video Meetings for Teams" />
+        <meta property="og:title" content="CliPad — Free HD Video Meetings for Teams" />
         <meta property="og:description" content="Start or join a free HD video meeting in seconds. Secure, enterprise-grade video conferencing by Optavel — no downloads, no friction." />
-        <meta property="og:site_name" content="Optavel Meet" />
+        <meta property="og:site_name" content="CliPad" />
         <meta property="og:locale" content="en_US" />
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Optavel Meet — Free HD Video Meetings for Teams" />
+        <meta name="twitter:title" content="CliPad — Free HD Video Meetings for Teams" />
         <meta name="twitter:description" content="Start or join a free HD video meeting in seconds. Secure, enterprise-grade video conferencing by Optavel — no downloads, no friction." />
         <meta name="twitter:site" content="@optavel" />
         {/* Structured Data */}
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebApplication",
-          "name": "Optavel Meet",
+          "name": "CliPad",
           "url": "https://meet.optavel.com",
           "description": "Free, secure, enterprise-grade HD video conferencing. Start or join meetings instantly — no downloads required.",
           "applicationCategory": "CommunicationApplication",
@@ -228,7 +228,7 @@ export default function MeetLandingPage() {
           <div className="w-9 h-9 flex items-center justify-center">
             <img src="/orbit-logo.svg" alt="Optavel Logo" className="w-full h-full object-contain" />
           </div>
-          <span className="text-xl font-semibold tracking-tight text-slate-800 dark:text-slate-100">Optavel Meet</span>
+          <span className="text-xl font-semibold tracking-tight text-slate-800 dark:text-slate-100">CliPad</span>
         </div>
         {/* Live real-time clock */}
         <div className="flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 tabular-nums">
@@ -246,7 +246,7 @@ export default function MeetLandingPage() {
             Premium video meetings.<br />Now free for everyone.
           </h1>
           <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
-            We re-engineered the service we built for secure business meetings, Optavel Meet, to make it free and available for all.
+            We re-engineered the service we built for secure business meetings, CliPad, to make it free and available for all.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full pt-2">
@@ -303,7 +303,7 @@ export default function MeetLandingPage() {
 
           <div className="border-t border-slate-100 dark:border-white/10 w-full pt-5 mt-2">
             <p className="text-sm text-slate-500">
-              <a href="#" className="text-primary hover:underline font-medium">Learn more</a> about Optavel Meet
+              <a href="#" className="text-primary hover:underline font-medium">Learn more</a> about CliPad
             </p>
           </div>
         </div>

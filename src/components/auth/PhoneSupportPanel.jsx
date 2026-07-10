@@ -78,7 +78,7 @@ export default function PhoneSupportPanel({ isOpen, onClose }) {
       
       {/* Panel */}
       <div className={`
-        fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white dark:bg-[#1C1C1E] border-l border-slate-200 dark:border-slate-800 shadow-2xl z-50 flex flex-col transform transition-transform duration-500 ease-in-out overflow-y-auto
+        absolute top-0 right-0 h-full w-full sm:w-[400px] bg-white dark:bg-[#1C1C1E] border-l border-slate-200 dark:border-slate-800 shadow-2xl z-50 flex flex-col transform transition-transform duration-500 ease-in-out overflow-y-auto
         ${isOpen ? 'translate-x-0' : 'translate-x-full'}
       `}>
         

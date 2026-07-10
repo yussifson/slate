@@ -13,7 +13,7 @@ import {
  useParticipant,
  useActiveSpeakerId
 } from '@daily-co/daily-react';
-import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink, MessageSquare, Send, X, UserPlus, Mail, Settings, Check, Copy, Smile, PanelRightClose} from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink, MessageSquare, Send, X, UserPlus, Mail, Settings, Check, Copy, Smile, PanelRightClose, PenTool } from 'lucide-react';
 import { Button} from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,8 @@ import { generateText} from "@/lib/cloudflareAI";
 import { useToast} from "@/components/ui/use-toast";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { useTheme } from "@/lib/ThemeContext";
+import { Tldraw } from '@tldraw/tldraw';
+import '@tldraw/tldraw/tldraw.css';
 
 // Export VIRTUAL_BACKGROUNDS so PreJoinScreen can use them
 export const VIRTUAL_BACKGROUNDS = [
@@ -72,6 +74,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   const EMOJIS = ['👍', '❤️', '👏', '😂', '🎉', '🔥'];
   const [activeBg, setActiveBg] = useState(initialBackground?.id || 'none');
   const [isApplyingBg, setIsApplyingBg] = useState(false);
+  const [showWhiteboard, setShowWhiteboard] = useState(false);
 
   const applyVirtualBackground = async (bg) => {
     if (!daily) return;
@@ -311,59 +314,64 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
 };
 }, [joined, isMuted, daily]);
 
- const handleAiAssist = async () => {
-   if (transcriptData.length === 0) {
-     setAiResponse("No meaningful conversation detected yet. Please make sure your microphone is unmuted and speak clearly to generate a meeting transcript.");
-     return;
-   }
+  const handleAiAssist = async () => {
+    if (transcriptData.length === 0) {
+      setAiResponse("No meaningful conversation detected yet. Please make sure your microphone is unmuted and speak clearly to generate a meeting transcript.");
+      return;
+    }
 
-   setIsAiLoading(true);
-   setAiResponse(null);
-   toast({ title: "Orbit Meeting AI", description: "Generating meeting summary and action items..."});
-   try {
-     const meetingContext = transcriptData.map(t => `${t.name}: ${t.text}`).join('\n');
+    setIsAiLoading(true);
+    setAiResponse(null);
+    toast({ title: "CliPad AI", description: "Generating meeting summary and action items..."});
+    try {
+      const meetingContext = transcriptData.map(t => `${t.name}: ${t.text}`).join('\n');
 
-     const messages = [
-       { role: 'system', content: 'You are an AI meeting assistant. Summarize the following meeting transcript into concise bullet points, specifically extracting any "Action Items" or decisions made. Format elegantly using basic HTML (like <ul>, <li>, <strong>) but do not use markdown blocks.'},
-       { role: 'user', content: meetingContext}
-     ];
-     let response = await generateText(messages);
-     if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
-     setAiResponse(response || "Meeting concluded without action items.");
-   } catch (err) {
-     console.error(err);
-     toast({ title: "AI Error", description: "Failed to connect to AI backend.", variant: "destructive"});
-   } finally {
-     setIsAiLoading(false);
-   }
- };
+      const { data, error } = await supabase.functions.invoke('clipad-ai-processor', {
+        body: { type: 'meeting', transcript: meetingContext, roomId: 'dummy-room', spaceId: null }
+      });
 
- const handleAiFollowUp = async () => {
-   if (transcriptData.length === 0) {
-     setAiResponse("Not enough transcript data to draft a follow-up email.");
-     return;
-   }
+      if (error) throw error;
+      
+      const formattedResponse = `
+        <div class="space-y-4">
+          <p><strong>Summary:</strong> ${data.data.summary}</p>
+          <div><strong>Decisions:</strong> <ul class="list-disc pl-4">${data.data.decisions.map(d => `<li>${d}</li>`).join('')}</ul></div>
+          <div><strong>Action Items:</strong> <ul class="list-disc pl-4">${data.data.actionItems.map(a => `<li>${a.assignee}: ${a.task}</li>`).join('')}</ul></div>
+          <p><strong>Sentiment:</strong> ${data.data.sentiment}</p>
+        </div>
+      `;
+      setAiResponse(formattedResponse);
+    } catch (err) {
+      console.error(err);
+      toast({ title: "AI Error", description: "Failed to connect to AI backend.", variant: "destructive"});
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
 
-   setIsAiLoading(true);
-   setAiResponse(null);
-   toast({ title: "Orbit Meeting AI", description: "Drafting follow-up email..."});
-   try {
-     const meetingContext = transcriptData.map(t => `${t.name}: ${t.text}`).join('\n');
+  const handleAiFollowUp = async () => {
+    if (transcriptData.length === 0) {
+      setAiResponse("Not enough transcript data to draft a follow-up email.");
+      return;
+    }
 
-     const messages = [
-       { role: 'system', content: 'You are an AI assistant. Draft a professional follow-up email to the participants based on the transcript. Include a summary and next steps. Use basic HTML formatting (like <p>, <strong>, <br>) without markdown blocks.'},
-       { role: 'user', content: meetingContext}
-     ];
-     let response = await generateText(messages);
-     if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
-     setAiResponse(`<strong>Drafted Follow-Up Email:</strong><br/><br/>${response}`);
-   } catch (err) {
-     console.error(err);
-     toast({ title: "AI Error", description: "Failed to connect to AI backend.", variant: "destructive"});
-   } finally {
-     setIsAiLoading(false);
-   }
- };
+    setIsAiLoading(true);
+    setAiResponse(null);
+    toast({ title: "CliPad AI", description: "Drafting follow-up email..."});
+    try {
+      const { data, error } = await supabase.functions.invoke('clipad-smart-followup', {
+        body: { type: 'meeting_followup', targetId: 'dummy-room' }
+      });
+
+      if (error) throw error;
+      setAiResponse(`<strong>Follow-Up Triggered:</strong><br/><br/>${data.message}`);
+    } catch (err) {
+      console.error(err);
+      toast({ title: "AI Error", description: "Failed to connect to AI backend.", variant: "destructive"});
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
 
  const [chatMessages, setChatMessages] = useState([]);
  const [chatInput, setChatInput] = useState("");
@@ -425,7 +433,11 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
       <div className="flex-1 flex flex-col lg:flex-row p-4 gap-4 overflow-hidden bg-white/30 dark:bg-black/20 backdrop-blur-sm">
         {/* Main Stage Area */}
         <div className="flex-[3] relative rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-white/10 shadow-inner bg-slate-900">
-          {screens.length > 0 ? (
+          {showWhiteboard ? (
+            <div className="absolute inset-0 z-40 bg-white">
+              <Tldraw persistenceKey="clipad-whiteboard" />
+            </div>
+          ) : screens.length > 0 ? (
             screens.map(screen => (
               <ScreenShareTile key={screen.screenId} screen={screen} className="w-full h-full absolute inset-0" />
             ))
@@ -444,6 +456,18 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
             </div>
           )}
         </div>
+
+        {/* Live Captions Overlay */}
+        {transcriptData.length > 0 && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-2xl z-30 pointer-events-none flex flex-col items-center gap-2">
+            {transcriptData.slice(-2).map((cap, idx) => (
+              <div key={idx} className="bg-black/70 backdrop-blur-md text-white px-6 py-3 rounded-2xl shadow-xl text-center animate-in slide-in-from-bottom-4 fade-in">
+                <span className="font-semibold text-primary mr-2 opacity-80">{cap.name}:</span>
+                <span className="text-lg font-medium tracking-wide">{cap.text}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   })()}
@@ -684,8 +708,18 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  variant={isSharingScreen ? "default" : "secondary"}
  size="icon"
  className="w-12 h-12 rounded-full hidden sm:flex"
+ title="Share Screen"
  >
  <MonitorUp className="w-5 h-5" />
+ </Button>
+ <Button 
+ onClick={() => setShowWhiteboard(!showWhiteboard)}
+ variant={showWhiteboard ? "default" : "secondary"}
+ size="icon"
+ className="w-12 h-12 rounded-full hidden sm:flex relative"
+ title="Whiteboard"
+ >
+ <PenTool className="w-5 h-5" />
  </Button>
  <Button 
  onClick={() => setShowChat(!showChat)}
