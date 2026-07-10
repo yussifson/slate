@@ -7,11 +7,12 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import {ShieldAlert, Trash2, Search, KeyRound, RefreshCcw, Building2, Calendar, Clock, ChevronDown, Users} from "lucide-react";
+import {ShieldAlert, Trash2, Search, KeyRound, RefreshCcw, Building2, Calendar, Clock, ChevronDown, Users, MessageSquare} from "lucide-react";
 import { useToast } from '@/components/ui/use-toast';
 import PageHeader from '@/components/shared/PageHeader';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
+import AdminChatDialog from './AdminChatDialog';
 
 export default function AdminUsers() {
   const { t } = useTranslation();
@@ -44,6 +45,7 @@ export default function AdminUsers() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [roleDialog, setRoleDialog] = useState(null); // { user, newRole }
+  const [chatDialogUser, setChatDialogUser] = useState(null);
   const [updatingRole, setUpdatingRole] = useState(false);
   const [suspendingId, setSuspendingId] = useState(null);
   const loading = loadingProfiles || loadingCompanies;
@@ -279,6 +281,14 @@ export default function AdminUsers() {
                       <ChevronDown className="w-3.5 h-3.5 mr-1" /> Role
                     </Button>
                     <Button 
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setChatDialogUser(user)}
+                      className="flex-1 h-8 px-2 rounded-xl border-primary/20 text-blue-600 bg-blue-50 hover:bg-blue-100 text-[10px]"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5 mr-1" /> Chat
+                    </Button>
+                    <Button 
                       variant="destructive" 
                       size="sm"
                       onClick={() => handleSuspendUser(user)}
@@ -324,6 +334,12 @@ export default function AdminUsers() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AdminChatDialog 
+        open={!!chatDialogUser} 
+        onOpenChange={(o) => !o && setChatDialogUser(null)} 
+        targetUser={chatDialogUser} 
+      />
     </div>
   );
 }
