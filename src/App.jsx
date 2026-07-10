@@ -1128,7 +1128,7 @@ function ProtectedRoute() {
     );
   }
 
-  if (!user?.company_id && user?.role !== 'super_admin' && window.location.pathname !== '/onboarding') {
+  if (!user?.company_id && user?.role !== 'super_admin' && !window.location.pathname.startsWith('/onboarding')) {
     return <Navigate to="/onboarding" replace />;
   }
 

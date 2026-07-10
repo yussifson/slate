@@ -86,6 +86,24 @@ export const AuthProvider = ({ children }) => {
             
             if (!error && data.session) {
                 sessionVal = data.session;
+            } else if (error) {
+                console.warn("[AuthContext] Cross-domain setSession failed:", error.message);
+                // Fallback: try setting session with only access_token
+                const { data: fallbackData, error: fallbackError } = await supabase.auth.setSession({
+                    access_token: urlAccessToken,
+                    refresh_token: urlRefreshToken // Sometimes supabase requires it, but let's try just getting the user
+                });
+                
+                if (!fallbackError && fallbackData?.session) {
+                    sessionVal = fallbackData.session;
+                } else {
+                    // Ultimate fallback: manually fetch the user if the token is valid
+                    const { data: userData, error: userError } = await supabase.auth.getUser(urlAccessToken);
+                    if (userData?.user) {
+                       // We have a valid user, so let's proceed even if the session couldn't be formally set in local storage yet
+                       sessionVal = { user: userData.user, access_token: urlAccessToken, refresh_token: urlRefreshToken };
+                    }
+                }
             }
         }
         
