@@ -637,11 +637,11 @@ export const AuthProvider = ({ children }) => {
     return userRef.current;
   }, [checkUserAuth]);
 
-  const logout = useCallback(async (shouldRedirect = true) => {
+  const logout = useCallback(async (shouldRedirect = true, preserveSavedAccount = false) => {
     isExplicitLogoutRef.current = true;
     
     const currentUser = userRef.current;
-    if (currentUser) {
+    if (currentUser && !preserveSavedAccount) {
       removeAccount(currentUser.id);
     }
     

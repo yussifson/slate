@@ -6,9 +6,11 @@ import { useTranslation } from "react-i18next";
 import { getSavedAccounts, removeAccount } from "@/lib/multiAccountUtils";
 import { LogOut, Plus, ChevronRight, AlertCircle } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function SSOGateway() {
   const { t } = useTranslation();
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectUri = searchParams.get("redirect_uri");
@@ -108,7 +110,10 @@ export default function SSOGateway() {
     }
   };
 
-  const handleAddAccount = () => {
+  const handleAddAccount = async () => {
+    // Clear the active session so the user actually sees the login form, 
+    // but preserve their account in the multi-account list.
+    await logout(false, true);
     navigate(`/login?redirect_uri=${encodeURIComponent(redirectUri)}`);
   };
 
