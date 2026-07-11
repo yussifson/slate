@@ -1143,7 +1143,7 @@ function ProtectedRoute() {
   }
 
   // Intercept forced password reset
-  if (authData?.user?.user_metadata?.force_password_reset && window.location.pathname !== '/force-reset-password') {
+  if (user?.user_metadata?.force_password_reset && window.location.pathname !== '/force-reset-password') {
     return <Navigate to="/force-reset-password" replace />;
   }
 
