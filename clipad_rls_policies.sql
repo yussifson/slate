@@ -119,23 +119,19 @@ ALTER TABLE public.clipad_space_members ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "clipad_space_members_select" ON public.clipad_space_members;
 CREATE POLICY "clipad_space_members_select" ON public.clipad_space_members
   FOR SELECT USING (
-    user_id = auth.uid()
-    OR EXISTS (SELECT 1 FROM clipad_spaces cs WHERE cs.id = space_id AND cs.created_by = auth.uid())
-    OR EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'super_admin'))
+    true
   );
 
 DROP POLICY IF EXISTS "clipad_space_members_insert" ON public.clipad_space_members;
 CREATE POLICY "clipad_space_members_insert" ON public.clipad_space_members
   FOR INSERT WITH CHECK (
-    EXISTS (SELECT 1 FROM clipad_spaces cs WHERE cs.id = space_id AND cs.created_by = auth.uid())
-    OR EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'super_admin'))
+    true
   );
 
 DROP POLICY IF EXISTS "clipad_space_members_delete" ON public.clipad_space_members;
 CREATE POLICY "clipad_space_members_delete" ON public.clipad_space_members
   FOR DELETE USING (
     user_id = auth.uid()
-    OR EXISTS (SELECT 1 FROM clipad_spaces cs WHERE cs.id = space_id AND cs.created_by = auth.uid())
     OR EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'super_admin'))
   );
 
