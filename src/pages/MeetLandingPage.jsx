@@ -357,13 +357,13 @@ export default function MeetLandingPage() {
 
   return (
     <div className={`light min-h-screen bg-white text-slate-900 flex flex-col font-sans relative overflow-x-hidden transition-all duration-500 ease-in-out ${supportPanel ? 'lg:pr-[400px]' : ''}`}>
-      <div className="absolute inset-0 pointer-events-none z-0">
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 blur-[120px]" />
         <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-orange-500/5 blur-[120px]" />
       </div>
       <Helmet>
-        <title>CliPad — Free HD Video Meetings for Teams</title>
-        <meta name="description" content="CliPad is a free, secure, enterprise-grade video conferencing platform. Start or join HD video meetings instantly — no downloads required. Trusted by teams worldwide." />
+        <title>CliPad — Enterprise Collaborative Productivity Workspace</title>
+        <meta name="description" content="CliPad is a free, secure, enterprise-grade collaborative productivity workspace. Connect your team with chat, spaces, and HD video meetings instantly. Trusted by teams worldwide." />
       </Helmet>
       <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 border-b border-slate-200/50 bg-white/80 backdrop-blur-md shadow-sm">
         <div className="flex items-center gap-2.5">
@@ -399,10 +399,10 @@ export default function MeetLandingPage() {
       <main className="relative z-10 flex-1 flex flex-col md:flex-row items-center justify-center p-6 md:p-12 gap-12 md:gap-16 max-w-7xl mx-auto w-full">
         <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-8 max-w-xl">
           <h1 className="text-4xl md:text-5xl font-normal text-slate-800 leading-tight">
-            Enterprise video messaging & meetings.<br />Now free for everyone.
+            Enterprise collaboration & productivity workspace.<br />Now free for everyone.
           </h1>
           <p className="text-lg text-slate-500 leading-relaxed">
-            We re-engineered the service we built for secure business meetings, CliPad, to make it free and available for all.
+            We re-engineered the service we built for secure collaborative productivity, CliPad, to make it free and available for all.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full pt-2">
