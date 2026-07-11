@@ -70,7 +70,7 @@ export default function WatchVideo() {
 
       // Log a view
       if (user) {
-        await supabase.from('clipad_video_views').insert({ video_id: videoId, viewer_id: user.id, watch_percent: 0 }).select();
+        await supabase.from('clipad_video_views').insert({ video_id: videoId, viewer_id: user.id }).select();
       }
       // Get view count
       const { count } = await supabase.from('clipad_video_views').select('id', { count: 'exact', head: true }).eq('video_id', videoId);
@@ -116,9 +116,9 @@ export default function WatchVideo() {
       const { data, error } = await supabase.from('clipad_video_comments').insert({
         video_id: videoId,
         user_id: user.id,
-        body: commentText.trim(),
+        content: commentText.trim(),
         timestamp_seconds: ts,
-      }).select('*, author:user_id(full_name, avatar_url)').single();
+      }).select('*, author:profiles!user_id(full_name, avatar_url)').single();
       if (error) throw error;
       setComments(prev => [...prev, data].sort((a,b) => a.timestamp_seconds - b.timestamp_seconds));
       setCommentText('');

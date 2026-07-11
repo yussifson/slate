@@ -389,7 +389,6 @@ export default function RecordVideo() {
             creator_id: user.id,
             video_url: publicUrl,
             title: videoTitle,
-            description: description.trim() || null,
             space_id: selectedSpace || null,
             duration_seconds: recordingSeconds,
           }).select().single();
@@ -503,7 +502,6 @@ export default function RecordVideo() {
         creator_id: user.id,
         video_url: publicUrl,
         title: videoTitle,
-        description: description.trim() || null,
         space_id: selectedSpace || null,
         duration_seconds: recordingSeconds,
       }).select().single();

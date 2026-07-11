@@ -297,16 +297,16 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
       try {
         const durationSeconds = Math.round((Date.now() - joinTimeRef.current) / 1000);
         const meetingTitle = `Meeting - ${new Date().toLocaleDateString()}`;
-        const summary = transcripts.length > 0 
-          ? transcripts.map(t => `${t.name}: ${t.text}`).join('\n').substring(0, 500) 
+        const summary = transcriptData.length > 0 
+          ? transcriptData.map(t => `${t.name}: ${t.text}`).join('\n').substring(0, 500) 
           : 'No transcript recorded.';
           
         await supabase.from('clipad_meeting_records').insert({
           title: meetingTitle,
-          meeting_link: window.location.href,
-          duration: durationSeconds,
+          daily_room_name: roomUrl.split('/').pop() || 'room',
+          host_id: user?.id || null,
           ai_summary: summary,
-          created_by: user?.id || null,
+          ended_at: new Date().toISOString(),
           space_id: spaceId || null
         });
       } catch (e) {
