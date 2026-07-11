@@ -11,6 +11,7 @@ export default function CliPadBilling() {
   const [currentPlan, setCurrentPlan] = useState('free');
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
+  const [exchangeRate, setExchangeRate] = useState(218 / 19); // Fallback: 218 GHS for $19
 
   useEffect(() => {
     // Load Paystack script
@@ -20,6 +21,7 @@ export default function CliPadBilling() {
     document.body.appendChild(script);
 
     fetchSubscription();
+    fetchExchangeRate();
 
     return () => {
       document.body.removeChild(script);
@@ -51,14 +53,34 @@ export default function CliPadBilling() {
     }
   };
 
-  const handleUpgrade = async (planType, amount) => {
+  const fetchExchangeRate = async () => {
+    try {
+      const res = await fetch('https://open.er-api.com/v6/latest/USD');
+      const data = await res.json();
+      if (data && data.rates && data.rates.GHS) {
+        setExchangeRate(data.rates.GHS);
+      } else {
+        setExchangeRate(218 / 19);
+      }
+    } catch (e) {
+      console.error('Exchange rate fetch failed, using fallback 218 GHS', e);
+      setExchangeRate(218 / 19);
+    }
+  };
+
+  const handleUpgrade = async (planType, amountInUsd) => {
     setLoading(true);
     try {
+      const amountInGhs = amountInUsd * exchangeRate;
+      const amountInPesewas = Math.round(amountInGhs * 100);
+      const planCode = import.meta.env.VITE_PAYSTACK_PLAN_CODE_PRO || '';
+
       const handler = window.PaystackPop.setup({
         key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_mock', // Fallback for dev
         email: user?.email || 'user@example.com',
-        amount: amount * 100, // in kobo/cents
-        currency: 'USD',
+        amount: amountInPesewas, 
+        currency: 'GHS',
+        plan: planType === 'pro' ? planCode : '', // Add Paystack Plan code for subscriptions
         ref: '' + Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference
         callback: function (response) {
           toast({
@@ -124,14 +146,17 @@ export default function CliPadBilling() {
             </div>
           )}
           <h3 className="text-xl font-bold">Pro</h3>
-          <p className="text-3xl font-bold mt-4">$29<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
+          <p className="text-3xl font-bold mt-4">$19<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Billed in GHS (~{Math.round(19 * exchangeRate)} GHS)
+          </p>
           <ul className="mt-6 space-y-3">
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Unlimited Meetings</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Advanced AI Action Items</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Cloud Recordings (Daily.co)</li>
           </ul>
           <button 
-            onClick={() => handleUpgrade('pro', 29)}
+            onClick={() => handleUpgrade('pro', 19)}
             disabled={currentPlan === 'pro' || loading}
             className={`w-full mt-8 py-2 rounded-xl font-semibold transition-all ${currentPlan === 'pro' ? 'bg-secondary text-foreground border border-border' : 'bg-primary text-white hover:bg-primary/90'}`}>
             {currentPlan === 'pro' ? 'Current Plan' : 'Upgrade to Pro'}

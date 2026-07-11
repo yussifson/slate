@@ -74,7 +74,7 @@ export default function CliPadSettings() {
           
           {/* Sidebar */}
           <div className="md:col-span-1 space-y-3">
-            {[{id: 'profile', icon: User, label: 'Profile'}, {id: 'notifs', icon: Bell, label: 'Notifications'}, {id: 'meeting', icon: Video, label: 'Meeting Defaults'}, {id: 'billing', icon: CreditCard, label: 'Billing & Plans'}].map(tab => (
+            {[{id: 'profile', icon: User, label: 'Profile'}, {id: 'notifs', icon: Bell, label: 'Notifications'}, {id: 'meeting', icon: Video, label: 'Meeting Defaults'}, ...(['admin', 'company_admin', 'super_admin'].includes(user?.role) ? [{id: 'billing', icon: CreditCard, label: 'Billing & Plans'}] : [])].map(tab => (
               <button 
                 key={tab.id} 
                 onClick={() => setActiveTab(tab.id)}
