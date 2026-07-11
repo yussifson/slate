@@ -1,0 +1,147 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Layers, Video, Camera, Brain, Target, Zap } from 'lucide-react';
+
+const pillars = [
+  {
+    icon: Video,
+    color: 'from-orange-500 to-orange-400',
+    glow: 'shadow-orange-500/20',
+    bg: 'bg-orange-50 dark:bg-orange-900/10',
+    title: 'HD Live Meetings',
+    desc: 'No time limits. Up to 500 participants. Speaker spotlight, noise cancellation, live captions, breakout rooms and a persistent whiteboard.'
+  },
+  {
+    icon: Camera,
+    color: 'from-green-500 to-emerald-500',
+    glow: 'shadow-green-500/20',
+    bg: 'bg-emerald-50 dark:bg-emerald-900/10',
+    title: 'Async Video Messages',
+    desc: 'Record camera, screen, or both in picture-in-picture. Share an instant link. Viewers leave timestamped comments and emoji reactions.'
+  },
+  {
+    icon: Brain,
+    color: 'from-yellow-500 to-amber-500',
+    glow: 'shadow-yellow-500/20',
+    bg: 'bg-amber-50 dark:bg-amber-900/10',
+    title: 'AI Intelligence',
+    desc: 'Every meeting produces a full summary, key decisions, extracted action items with owners, open questions, and sentiment — instantly.'
+  },
+  {
+    icon: Layers,
+    color: 'from-blue-500 to-indigo-500',
+    glow: 'shadow-blue-500/20',
+    bg: 'bg-blue-50 dark:bg-blue-900/10',
+    title: 'Team Spaces',
+    desc: 'Persistent rooms for every team and project. Live meetings, async videos, shared notes, action boards, and cross-space search.'
+  },
+  {
+    icon: Target,
+    color: 'from-purple-500 to-fuchsia-500',
+    glow: 'shadow-purple-500/20',
+    bg: 'bg-purple-50 dark:bg-purple-900/10',
+    title: 'Sales & Demo Layer',
+    desc: 'Record personalised video proposals. Know who watched, how much, where they paused, and whether they shared it.'
+  },
+  {
+    icon: Zap,
+    color: 'from-rose-500 to-red-500',
+    glow: 'shadow-rose-500/20',
+    bg: 'bg-rose-50 dark:bg-rose-900/10',
+    title: 'Smart Follow-up',
+    desc: 'After every meeting, each participant receives only their personal action items with full context. Not the whole notes.'
+  },
+];
+
+export default function FeaturesCircle() {
+  const [rotation, setRotation] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRotation(prev => prev - 60); // 360 / 6
+      setActiveIndex(prev => (prev + 1) % 6);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="relative w-full max-w-5xl mx-auto py-20 flex flex-col md:flex-row items-center justify-center gap-12 lg:gap-24 overflow-hidden">
+      
+      {/* Circle Container */}
+      <div className="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] shrink-0">
+        <div className="absolute inset-0 rounded-full border border-slate-200 dark:border-slate-800" />
+        <div className="absolute inset-8 rounded-full border border-dashed border-slate-200 dark:border-slate-800" />
+        <div className="absolute inset-16 rounded-full bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center">
+          <motion.div 
+            className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center relative shadow-[0_0_30px_rgba(var(--primary),0.2)]"
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping opacity-20" />
+            <Layers className="w-8 h-8 text-primary relative z-10" />
+          </motion.div>
+        </div>
+
+        <motion.div 
+          className="absolute inset-0 origin-center"
+          animate={{ rotate: rotation }}
+          transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
+        >
+          {pillars.map((p, i) => {
+            const angle = (i * 60) * (Math.PI / 180);
+            const radius = 150; // px
+            // For sm screens it's 200, so we use a responsive radius approach in css or calc, but we can just fix it approximately for desktop, it will scale down on mobile because of wrapper.
+            // Let's use percentage based positioning for true responsiveness.
+            const left = `calc(50% + ${Math.sin(angle) * 50}% - 28px)`;
+            const top = `calc(50% - ${Math.cos(angle) * 50}% - 28px)`;
+            
+            const isActive = i === activeIndex;
+            const Icon = p.icon;
+            
+            return (
+              <motion.div
+                key={i}
+                className="absolute w-14 h-14"
+                style={{ left, top }}
+                animate={{ rotate: -rotation }} // Counter rotate so icons stay upright
+                transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
+              >
+                <button
+                  onClick={() => {
+                    const diff = i - activeIndex;
+                    setRotation(r => r - (diff * 60));
+                    setActiveIndex(i);
+                  }}
+                  className={`w-full h-full rounded-2xl flex items-center justify-center transition-all duration-500 shadow-lg ${isActive ? `bg-gradient-to-br ${p.color} ${p.glow} scale-125 z-20` : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 opacity-60 hover:opacity-100 z-10'}`}
+                >
+                  <Icon className={`w-6 h-6 ${isActive ? 'text-white' : 'text-slate-500 dark:text-slate-400'}`} />
+                </button>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      </div>
+
+      {/* Feature Details */}
+      <div className="flex-1 w-full max-w-md min-h-[220px] relative">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeIndex}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className={`p-8 rounded-3xl ${pillars[activeIndex].bg} border border-slate-200/50 dark:border-slate-800/50`}
+          >
+            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${pillars[activeIndex].color} ${pillars[activeIndex].glow} flex items-center justify-center mb-6 shadow-xl`}>
+              {React.createElement(pillars[activeIndex].icon, { className: "w-6 h-6 text-white" })}
+            </div>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">{pillars[activeIndex].title}</h3>
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">{pillars[activeIndex].desc}</p>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}

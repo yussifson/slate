@@ -419,31 +419,17 @@ export default function MeetLandingPage() {
         </div>
       </main>
 
-      <section id="features" className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-semibold tracking-wider uppercase mb-6">
-              <Layers className="w-3 h-3" /> 7 Pillars
-            </div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5">Everything your team needs.</h2>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto">Not five tools. One.</p>
+      <section id="features" className="py-24 px-6 md:px-12 max-w-7xl mx-auto overflow-hidden">
+        <div className="text-center mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-500 dark:text-cyan-400 text-xs font-semibold tracking-wider uppercase mb-6">
+            <Sparkles className="w-3 h-3" /> Unified Intelligence
           </div>
+          <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5">Everything your team needs.</h2>
+          <p className="text-muted-foreground text-lg max-w-xl mx-auto">Not five tools. One.</p>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pillars.map((p) => {
-              const Icon = p.icon;
-              return (
-                <div key={p.title} className="group relative p-8 rounded-3xl bg-white border border-slate-200/60 hover:border-primary/40 shadow-sm hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 transition-all duration-300 overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className={`relative w-14 h-14 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center mb-6 shadow-xl ${p.glow} group-hover:scale-110 transition-transform duration-300`}>
-                    <Icon className="w-7 h-7 text-white" />
-                  </div>
-                  <h3 className="relative text-xl font-extrabold text-slate-900 mb-3">{p.title}</h3>
-                  <p className="relative text-sm text-slate-500 leading-relaxed">{p.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+        <FeaturesCircle />
+      </section>
 
         <section className="py-32 px-6 md:px-12 max-w-6xl mx-auto relative">
           <div className="text-center mb-20 relative z-10">
