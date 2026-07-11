@@ -331,14 +331,78 @@ export default function RecordVideo() {
           previewRef.current.play().catch(()=>{});
         }
       } else if (screenStream) {
-        // Fallback to screen stream if camera failed in PiP mode or if it was screen_only
-        recordStream = screenStream;
+        // screen_only: properly merge system audio + mic audio
+        const audioCtx = audioContextRef.current;
+        const dest = audioCtx.createMediaStreamDestination();
+        const analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        analyserRef.current = analyser;
+
+        if (screenStream.getAudioTracks().length > 0) {
+          const screenAudio = audioCtx.createMediaStreamSource(new MediaStream(screenStream.getAudioTracks()));
+          screenAudio.connect(dest);
+        }
+        if (cameraStream && cameraStream.getAudioTracks().length > 0 && micEnabled) {
+          const micSource = audioCtx.createMediaStreamSource(new MediaStream(cameraStream.getAudioTracks()));
+          micSource.connect(dest);
+          micSource.connect(analyser);
+        } else if (screenStream.getAudioTracks().length === 0 && micEnabled) {
+          // No system audio AND no camera — try to get mic directly
+          try {
+            const micOnly = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            streamsRef.current.mic = micOnly;
+            const micSource = audioCtx.createMediaStreamSource(micOnly);
+            micSource.connect(dest);
+            micSource.connect(analyser);
+          } catch (_) { console.warn('Mic fallback failed'); }
+        }
+
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        const checkVolume = () => {
+          if (!analyserRef.current) return;
+          analyserRef.current.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+          setMicVolume(sum / dataArray.length);
+          if (mediaRecorderRef.current?.state === 'recording') requestAnimationFrame(checkVolume);
+        };
+        checkVolume();
+
+        // Combine: screen video + merged audio
+        recordStream = new MediaStream([
+          ...screenStream.getVideoTracks(),
+          ...dest.stream.getAudioTracks()
+        ]);
         if (previewRef.current) {
           previewRef.current.srcObject = screenStream;
           previewRef.current.play().catch(()=>{});
         }
       } else if (cameraStream) {
-        recordStream = cameraStream;
+        // camera_only: same audio mixing
+        const audioCtx = audioContextRef.current;
+        const dest = audioCtx.createMediaStreamDestination();
+        const analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        analyserRef.current = analyser;
+        if (cameraStream.getAudioTracks().length > 0 && micEnabled) {
+          const micSource = audioCtx.createMediaStreamSource(new MediaStream(cameraStream.getAudioTracks()));
+          micSource.connect(dest);
+          micSource.connect(analyser);
+        }
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        const checkVolume = () => {
+          if (!analyserRef.current) return;
+          analyserRef.current.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+          setMicVolume(sum / dataArray.length);
+          if (mediaRecorderRef.current?.state === 'recording') requestAnimationFrame(checkVolume);
+        };
+        checkVolume();
+        recordStream = new MediaStream([
+          ...cameraStream.getVideoTracks(),
+          ...dest.stream.getAudioTracks()
+        ]);
         if (previewRef.current) {
           previewRef.current.srcObject = cameraStream;
           previewRef.current.play().catch(()=>{});
@@ -352,8 +416,13 @@ export default function RecordVideo() {
         startPip(cameraStream);
       }
 
-      const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm';
-      const recorder = new MediaRecorder(recordStream, { mimeType });
+      // Pick best mimeType with audio codec (opus) to guarantee audio in output
+      const mimeType = 
+        MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'video/webm;codecs=vp9,opus' :
+        MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus') ? 'video/webm;codecs=vp8,opus' :
+        MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : '';
+      const recorderOptions = mimeType ? { mimeType } : {};
+      const recorder = new MediaRecorder(recordStream, recorderOptions);
       mediaRecorderRef.current = recorder;
       chunksRef.current = [];
 

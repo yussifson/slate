@@ -6,7 +6,7 @@ import { Settings, User, Bell, Shield, LogOut, ArrowLeft, Video, CheckCircle, Ca
 import { useToast } from '@/components/ui/use-toast';
 
 export default function CliPadSettings() {
-  const { user, signOut } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
@@ -50,7 +50,7 @@ export default function CliPadSettings() {
   };
 
   const handleSignOut = async () => {
-    await signOut();
+    await logout();
     window.location.href = '/login';
   };
 

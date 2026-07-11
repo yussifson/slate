@@ -19,19 +19,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
-function StatCard({ icon: Icon, color, value, label, trend }) {
-  // Use `color` to dynamically style the icon container for a vibrant look
+function StatCard({ icon: Icon, value, label, trend, accentColor, bgColor, iconColor }) {
   return (
-    <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 group shadow-sm hover:shadow-md flex flex-col justify-between">
-      <div className="flex items-start justify-between mb-3">
-        <div className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 ${color || 'bg-primary/10 text-primary'}`}>
-          <Icon className="w-4 h-4" />
+    <div className={`relative overflow-hidden rounded-2xl border transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg shadow-sm flex flex-col justify-between p-5 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-primary/40 dark:hover:border-primary/40`}>
+      {/* Glowing top accent bar */}
+      <div className={`absolute top-0 left-0 right-0 h-[3px] ${accentColor} rounded-t-2xl`} />
+      {/* Large faint background icon */}
+      <div className={`absolute bottom-2 right-3 opacity-[0.07] group-hover:opacity-[0.12] transition-opacity duration-500`}>
+        <Icon className="w-20 h-20" strokeWidth={1} />
+      </div>
+      <div className="flex items-start justify-between">
+        <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${bgColor} shadow-sm mb-3`}>
+          <Icon className={`w-4.5 h-4.5 ${iconColor}`} strokeWidth={2} />
         </div>
-        {trend && <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${trend > 0 ? 'text-emerald-600 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-500/10' : 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-500/10'}`}>{trend > 0 ? '+' : ''}{trend}%</span>}
+        {trend && <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${trend > 0 ? 'text-emerald-600 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-500/10' : 'text-red-500 bg-red-100 dark:text-red-400 dark:bg-red-500/10'}`}>{trend > 0 ? '↑' : '↓'}{Math.abs(trend)}%</span>}
       </div>
       <div>
-        <div className="text-2xl font-bold text-slate-900 dark:text-white mb-0.5 tabular-nums tracking-tight">{value}</div>
-        <div className="text-xs font-medium text-slate-500 dark:text-slate-400">{label}</div>
+        <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums leading-none mb-1">{value}</div>
+        <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{label}</div>
       </div>
     </div>
   );
@@ -133,7 +138,7 @@ function ActionItemRow({ item }) {
 }
 
 export default function CliPadDashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [spaces, setSpaces] = useState([]);
   const [videos, setVideos] = useState([]);
@@ -239,7 +244,7 @@ export default function CliPadDashboard() {
                 <span>Settings</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => supabase.auth.signOut()} className="cursor-pointer text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400">
+              <DropdownMenuItem onClick={async () => { await logout(); navigate('/login'); }} className="cursor-pointer text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400">
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Sign Out</span>
               </DropdownMenuItem>
@@ -257,11 +262,11 @@ export default function CliPadDashboard() {
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-          <StatCard icon={Calendar} color="bg-indigo-500/10 text-indigo-500" value={stats.meetings} label="Meetings this week" trend={12} />
-          <StatCard icon={Camera} color="bg-rose-500/10 text-rose-500" value={stats.recordings} label="Video recordings" trend={8} />
-          <StatCard icon={Target} color="bg-cyan-500/10 text-cyan-500" value={stats.actionItems} label="Open action items" />
-          <StatCard icon={TrendingUp} color="bg-emerald-500/10 text-emerald-500" value={`${stats.completionRate}%`} label="Completion rate" trend={5} />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mb-8 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
+          <StatCard icon={Calendar} accentColor="bg-indigo-500" bgColor="bg-indigo-50 dark:bg-indigo-500/10" iconColor="text-indigo-500" value={stats.meetings} label="Meetings this week" trend={12} />
+          <StatCard icon={Camera} accentColor="bg-rose-500" bgColor="bg-rose-50 dark:bg-rose-500/10" iconColor="text-rose-500" value={stats.recordings} label="Video recordings" trend={8} />
+          <StatCard icon={Target} accentColor="bg-cyan-500" bgColor="bg-cyan-50 dark:bg-cyan-500/10" iconColor="text-cyan-500" value={stats.actionItems} label="Open action items" />
+          <StatCard icon={TrendingUp} accentColor="bg-emerald-500" bgColor="bg-emerald-50 dark:bg-emerald-500/10" iconColor="text-emerald-500" value={`${stats.completionRate}%`} label="Completion rate" trend={5} />
         </div>
 
         {/* Quick Actions */}

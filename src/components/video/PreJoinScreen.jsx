@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Mic, MicOff, Video as VideoIcon, VideoOff, AlertCircle, Activity, Sparkles, Copy } from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, AlertCircle, Activity, Sparkles, Copy, ChevronLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { VIRTUAL_BACKGROUNDS } from './VideoRoom';
@@ -12,6 +13,8 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
   const [localStream, setLocalStream] = useState(null);
   const [volume, setVolume] = useState(0);
   const [selectedBg, setSelectedBg] = useState(VIRTUAL_BACKGROUNDS[0]);
+  
+  const navigate = useNavigate();
   
   const videoRef = useRef(null);
   const streamRef = useRef(null);
@@ -161,6 +164,14 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
 
   return (
     <div className="w-screen h-screen bg-slate-50 dark:bg-[#0B1121] flex flex-col md:flex-row items-center justify-center px-4 md:px-12 gap-8 md:gap-16 overflow-y-auto relative overflow-hidden">
+      {/* Back Button */}
+      <button 
+        onClick={() => navigate(-1)} 
+        className="absolute top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-sm shadow-sm hover:shadow-md transition-all hover:-translate-x-1"
+      >
+        <ChevronLeft className="w-4 h-4" /> Back
+      </button>
+
       {/* Realistic Background Layers */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 dark:bg-primary/10 blur-[120px]" />

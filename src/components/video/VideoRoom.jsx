@@ -22,6 +22,7 @@ import { useToast} from "@/components/ui/use-toast";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { useTheme } from "@/lib/ThemeContext";
 import CanvasWhiteboard from '@/components/clipad/CanvasWhiteboard';
+import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 
@@ -47,7 +48,7 @@ export const VIRTUAL_BACKGROUNDS = [
 ];
 
 
-function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBackground}) {
+function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBackground, spaceId}) {
  const { t} = useTranslation();
  const { user } = useAuth();
  
@@ -306,7 +307,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
             host_id: user?.id || null,
             ai_summary: summary,
             ended_at: new Date().toISOString(),
-            space_id: null // spaceId not available in this context
+            space_id: spaceId || null
           });
         } else {
           console.error("Supabase client is not available in leaveCall");
@@ -698,7 +699,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  `}</style>
 
  {/* Control Bar */}
- <div className={`relative z-10 bg-white/80 dark:bg-black/60 backdrop-blur-md border-t border-primary/40 flex items-center justify-center transition-all ${isPipMode ? 'h-12 px-2 gap-2' : 'h-20 px-6 gap-4'}`}>
+ <div className={`relative z-10 bg-white/70 dark:bg-slate-950/70 backdrop-blur-2xl border-t border-white/20 dark:border-white/5 flex items-center justify-center transition-all shadow-[0_-4px_24px_-8px_rgba(0,0,0,0.1)] ${isPipMode ? 'h-14 px-3 gap-2' : 'h-[88px] px-8 gap-3 sm:gap-5'}`}>
  <div className="relative">
    {showEmojis && (
      <div className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-card border border-primary/20 shadow-xl rounded-full px-4 py-3 flex gap-3 animate-in fade-in slide-in-from-bottom-4 z-50">
@@ -717,7 +718,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
      onClick={() => setShowEmojis(!showEmojis)}
      variant={showEmojis ? "default" : "secondary"}
      size="icon"
-     className={`${isPipMode ? 'w-8 h-8' : 'w-12 h-12'} rounded-full`}
+     className={`${isPipMode ? 'w-10 h-10' : 'w-14 h-14'} rounded-[1.25rem] shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5`}
    >
      <Smile className={isPipMode ? "w-3 h-3" : "w-5 h-5"} />
    </Button>
@@ -726,7 +727,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  onClick={toggleAudio}
  variant={isMuted ? "destructive" : "secondary"}
  size="icon"
- className={`${isPipMode ? 'w-8 h-8' : 'w-12 h-12'} rounded-full`}
+ className={`${isPipMode ? 'w-10 h-10' : 'w-14 h-14'} rounded-[1.25rem] shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isMuted ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'}`}
  >
  {isMuted ? <MicOff className={isPipMode ? "w-3 h-3" : "w-5 h-5"} /> : <Mic className={isPipMode ? "w-3 h-3" : "w-5 h-5"} />}
  </Button>
@@ -734,7 +735,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  onClick={toggleVideo}
  variant={isVideoOff ? "destructive" : "secondary"}
  size="icon"
- className={`${isPipMode ? 'w-8 h-8' : 'w-12 h-12'} rounded-full`}
+ className={`${isPipMode ? 'w-10 h-10' : 'w-14 h-14'} rounded-[1.25rem] shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isVideoOff ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'}`}
  >
  {isVideoOff ? <VideoOff className={isPipMode ? "w-3 h-3" : "w-5 h-5"} /> : <VideoIcon className={isPipMode ? "w-3 h-3" : "w-5 h-5"} />}
  </Button>
@@ -742,54 +743,54 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  <>
  <Button 
  onClick={toggleScreenShare}
- variant={isSharingScreen ? "default" : "secondary"}
+ variant={isSharingScreen ? "default" : "outline"}
  size="icon"
- className="w-12 h-12 rounded-full hidden sm:flex"
+ className={`w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isSharingScreen ? '' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}
  title="Share Screen"
  >
  <MonitorUp className="w-5 h-5" />
  </Button>
  <Button 
  onClick={() => setShowWhiteboard(!showWhiteboard)}
- variant={showWhiteboard ? "default" : "secondary"}
+ variant={showWhiteboard ? "default" : "outline"}
  size="icon"
- className="w-12 h-12 rounded-full hidden sm:flex relative"
+ className={`w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${showWhiteboard ? '' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}
  title="Whiteboard"
  >
  <PenTool className="w-5 h-5" />
  </Button>
  <Button 
  onClick={() => setShowChat(!showChat)}
- variant={showChat ? "default" : "secondary"}
+ variant={showChat ? "default" : "outline"}
  size="icon"
- className="w-12 h-12 rounded-full hidden sm:flex relative"
+ className={`w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${showChat ? '' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}
  title="Chat"
  >
  <MessageSquare className="w-5 h-5" />
  </Button>
   <Button 
   onClick={() => setShowInvite(true)}
-  variant="secondary"
+  variant="outline"
   size="icon"
-  className="w-12 h-12 rounded-full hidden sm:flex relative"
+  className="w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
   title="Invite People"
   >
   <UserPlus className="w-5 h-5" />
   </Button>
   <Button 
   onClick={() => setShowSettings(true)}
-  variant="secondary"
+  variant="outline"
   size="icon"
-  className="w-12 h-12 rounded-full hidden sm:flex relative"
+  className="w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
   title="Settings"
   >
   <Settings className="w-5 h-5" />
   </Button>
  <Button 
-  variant="secondary"
+  variant="default"
   onClick={handleAiAssist}
   disabled={isAiLoading}
-  className="h-12 px-5 rounded-full font-semibold gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
+  className="h-14 px-6 rounded-[1.25rem] font-semibold gap-2 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all hover:-translate-y-0.5 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white"
  >
   <Sparkles className="w-4 h-4" /> {isAiLoading ? "Processing..." : "AI Notes"}
  </Button>
@@ -806,7 +807,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  <Button 
  onClick={leaveCall}
  variant="destructive"
- className={`${isPipMode ? 'h-8 w-8 p-0' : 'h-12 px-8 ml-4'} rounded-full font-semibold flex items-center justify-center`}
+ className={`${isPipMode ? 'h-10 w-10 p-0 rounded-xl' : 'h-14 px-8 ml-4 rounded-[1.25rem]'} font-bold flex items-center justify-center shadow-lg shadow-red-500/20 hover:shadow-red-500/40 transition-all hover:-translate-y-0.5 bg-red-500 hover:bg-red-600`}
  >
  {isPipMode ? <PhoneOff className="w-3 h-3" /> : <><PhoneOff className="w-5 h-5 mr-2" /> Leave</>}
  </Button>
@@ -963,7 +964,7 @@ function ParticipantTile({ id, isLocal, className }) {
 }
 
 // Wrapper to initialize Daily provider
-export default function VideoRoom({ roomUrl, userName, token, initialAudio = true, initialVideo = true, initialBackground, onLeave, isPipMode, togglePipMode }) {
+export default function VideoRoom({ roomUrl, userName, token, initialAudio = true, initialVideo = true, initialBackground, onLeave, isPipMode, togglePipMode, spaceId }) {
  const [daily, setDaily] = useState(null);
  // Keep a ref so the cleanup closure always has access to the latest callObject
  // without triggering re-renders on creation
@@ -1059,10 +1060,8 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
   if (!daily || !roomUrl) {
    return (
     <div className="flex flex-col h-full bg-white dark:bg-[#090E17] rounded-xl items-center justify-center gap-4">
-     <div className="w-16 h-16 relative flex items-center justify-center">
-      <div className="absolute inset-0 rounded-full border-4 border-slate-100 dark:border-white/5" />
-      <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-      <VideoIcon className="w-6 h-6 text-primary" />
+     <div className="w-16 h-16 relative flex items-center justify-center animate-pulse">
+      <CliPadLogo className="w-12 h-12" />
      </div>
      <p className="text-slate-500 font-medium tracking-wide animate-pulse">Connecting to secure video server...</p>
     </div>
@@ -1071,7 +1070,7 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
 
  return (
   <DailyProvider callObject={daily}>
-   <VideoRoomInner roomUrl={roomUrl} onLeave={onLeave} isPipMode={isPipMode} togglePipMode={togglePipMode} initialBackground={initialBackground} />
+   <VideoRoomInner roomUrl={roomUrl} onLeave={onLeave} isPipMode={isPipMode} togglePipMode={togglePipMode} initialBackground={initialBackground} spaceId={spaceId} />
   </DailyProvider>
  );
 }

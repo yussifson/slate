@@ -550,7 +550,7 @@ export default function MeetLandingPage() {
             {tiers.map((tier) => (
               <div key={tier.name} className={`relative p-8 rounded-3xl border transition-all ${tier.highlight ? 'bg-gradient-to-b from-primary/20 to-primary/10 border-primary/40 shadow-2xl shadow-primary/10' : 'bg-secondary/50 border-border hover:border-border'}`}>
                 {tier.badge && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-primary to-primary rounded-full text-xs font-bold text-foreground shadow-lg">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-primary to-primary rounded-full text-xs font-bold text-white shadow-lg">
                     {tier.badge}
                   </div>
                 )}
@@ -571,7 +571,7 @@ export default function MeetLandingPage() {
                 </div>
                 <button
                   onClick={() => navigate(tier.name === 'Enterprise' ? '#' : '/login')}
-                  className={`w-full py-3 rounded-xl font-semibold text-sm transition-all ${tier.highlight ? 'bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-foreground shadow-lg shadow-primary/25' : 'bg-secondary hover:bg-secondary/80 text-foreground border border-border'}`}
+                  className={`w-full py-3 rounded-xl font-semibold text-sm transition-all ${tier.highlight ? 'bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white shadow-lg shadow-primary/25' : 'bg-secondary hover:bg-secondary/80 text-foreground border border-border'}`}
                 >
                   {tier.name === 'Enterprise' ? 'Contact Sales' : 'Get Started'}
                 </button>

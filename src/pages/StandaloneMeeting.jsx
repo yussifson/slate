@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 import VideoRoom from '@/components/video/VideoRoom';
@@ -7,12 +7,13 @@ import PreJoinScreen from '@/components/video/PreJoinScreen';
 import { useAuth } from '@/lib/AuthContext';
 import { Video, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { CliPadLogo } from '@/components/ui/CliPadLogo';
 
 function MeetLoader({ label = 'Preparing your secure meeting...' }) {
   return (
-    <div className="w-screen h-screen flex flex-col items-center justify-center bg-white dark:bg-[#090E17]">
-      <div className="w-24 h-24 relative flex items-center justify-center animate-spin" style={{ animationDuration: '3s' }}>
-        <img src="/orbit-logo.svg" alt="Orbit Logo" className="w-full h-full object-contain drop-shadow-xl" />
+    <div className="w-screen h-screen flex flex-col items-center justify-center bg-white dark:bg-slate-950">
+      <div className="w-24 h-24 relative flex items-center justify-center animate-pulse">
+        <CliPadLogo className="w-20 h-20" />
       </div>
       <p className="mt-8 text-slate-500 font-medium tracking-wide animate-pulse">{label}</p>
     </div>
@@ -20,7 +21,7 @@ function MeetLoader({ label = 'Preparing your secure meeting...' }) {
 }
 
 // ─── Pre-join screen + in-meeting screen ──────────────────────────────────────
-function StandaloneMeetingInner({ url, roomName, onLeave, onToast }) {
+function StandaloneMeetingInner({ url, roomName, onLeave, onToast, spaceId }) {
   const [hasJoined, setHasJoined] = useState(false);
   const [joinConfig, setJoinConfig] = useState({ name: '', micOn: true, videoOn: true });
 
@@ -49,6 +50,7 @@ function StandaloneMeetingInner({ url, roomName, onLeave, onToast }) {
         onLeave={onLeave}
         isPipMode={false}
         togglePipMode={() => {}}
+        spaceId={spaceId}
       />
     </div>
   );
@@ -59,6 +61,8 @@ function StandaloneMeetingInner({ url, roomName, onLeave, onToast }) {
 export default function StandaloneMeeting() {
   const { roomId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const spaceId = searchParams.get('spaceId');
   const { toast } = useToast();
 
   // All state declarations first — no hooks after early returns
