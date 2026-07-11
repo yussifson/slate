@@ -356,7 +356,7 @@ export default function MeetLandingPage() {
   const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
 
   return (
-    <div className={`light min-h-screen bg-white text-slate-900 flex flex-col font-sans relative overflow-x-hidden transition-all duration-500 ease-in-out ${supportPanel ? 'lg:pr-[400px]' : ''}`}>
+    <div className={`light min-h-screen bg-white text-slate-900 flex flex-col font-sans relative transition-all duration-500 ease-in-out ${supportPanel ? 'lg:pr-[400px]' : ''}`}>
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 blur-[120px]" />
         <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-orange-500/5 blur-[120px]" />
