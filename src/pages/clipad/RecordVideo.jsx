@@ -37,15 +37,23 @@ export default function RecordVideo() {
   const [selectedSpace, setSelectedSpace] = useState('');
   const [spaces, setSpaces] = useState([]);
   const [description, setDescription] = useState('');
+  const [transcript, setTranscript] = useState('');
 
   const canvasRef = useRef(null);
-  const previewRef = useRef(null); // camera preview only
+  const previewRef = useRef(null); // main preview for screen + camera
   const playbackRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
   const animFrameRef = useRef(null);
   const timerRef = useRef(null);
   const streamsRef = useRef({ screen: null, camera: null });
+  const recognitionRef = useRef(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [pipWindow, setPipWindow] = useState(null);
+  const [micVolume, setMicVolume] = useState(0);
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const pipContainerRef = useRef(null);
 
   useEffect(() => {
     // Load spaces for selection
@@ -58,7 +66,73 @@ export default function RecordVideo() {
   const stopEverything = () => {
     clearInterval(timerRef.current);
     cancelAnimationFrame(animFrameRef.current);
+    if (recognitionRef.current) recognitionRef.current.stop();
+    if (audioContextRef.current) audioContextRef.current.close().catch(()=>{});
     Object.values(streamsRef.current).forEach(s => s?.getTracks().forEach(t => t.stop()));
+    if (pipWindow) pipWindow.close();
+  };
+
+  const togglePause = () => {
+    if (!mediaRecorderRef.current) return;
+    if (mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.pause();
+      setIsPaused(true);
+      clearInterval(timerRef.current);
+    } else if (mediaRecorderRef.current.state === 'paused') {
+      mediaRecorderRef.current.resume();
+      setIsPaused(false);
+      timerRef.current = setInterval(() => setRecordingSeconds(s => s + 1), 1000);
+    }
+  };
+
+  const toggleWebcam = () => {
+    const track = streamsRef.current.camera?.getVideoTracks()[0];
+    if (track) track.enabled = !track.enabled;
+  };
+
+  const toggleMicTrack = () => {
+    setMicEnabled(!micEnabled);
+    const track = streamsRef.current.camera?.getAudioTracks()[0] || streamsRef.current.screen?.getAudioTracks()[0];
+    if (track) track.enabled = !micEnabled;
+  };
+
+  const startPip = async () => {
+    if (!('documentPictureInPicture' in window)) {
+      toast({ title: 'PiP Not Supported', description: 'Your browser does not support Document PiP.', variant: 'destructive' });
+      return;
+    }
+    try {
+      const pip = await window.documentPictureInPicture.requestWindow({ width: 320, height: 280 });
+      // Copy styles
+      [...document.styleSheets].forEach((styleSheet) => {
+        try {
+          if (styleSheet.href) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = styleSheet.href;
+            pip.document.head.appendChild(link);
+          } else if (styleSheet.cssRules) {
+            const style = document.createElement('style');
+            Array.from(styleSheet.cssRules).forEach(rule => style.appendChild(document.createTextNode(rule.cssText)));
+            pip.document.head.appendChild(style);
+          }
+        } catch (e) {
+          // Cross-origin stylesheet error, skip
+        }
+      });
+      // Move the pip container into the PiP window
+      if (pipContainerRef.current) {
+        pip.document.body.appendChild(pipContainerRef.current);
+      }
+      pip.addEventListener('pagehide', () => {
+        setPipWindow(null);
+        if (pipContainerRef.current) document.body.appendChild(pipContainerRef.current); // move back
+      });
+      setPipWindow(pip);
+    } catch (err) {
+      console.error(err);
+      toast({ title: 'PiP Failed', description: err.message, variant: 'destructive' });
+    }
   };
 
   const startRecording = async () => {
@@ -77,11 +151,6 @@ export default function RecordVideo() {
         try {
           cameraStream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 }, audio: micEnabled });
           streamsRef.current.camera = cameraStream;
-          // Show camera preview overlay
-          if (previewRef.current) {
-            previewRef.current.srcObject = cameraStream;
-            previewRef.current.play().catch(() => {});
-          }
         } catch (camErr) {
           console.warn("Camera failed to load:", camErr);
           toast({ title: 'Camera Unavailable', description: 'Proceeding without camera stream.', variant: 'default' });
@@ -132,18 +201,44 @@ export default function RecordVideo() {
         };
         drawFrame();
 
-        // Merge audio
+        // Merge audio and setup analyzer
         const audioCtx = new AudioContext();
+        audioContextRef.current = audioCtx;
         const dest = audioCtx.createMediaStreamDestination();
+        const analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        analyserRef.current = analyser;
+
         if (screenStream.getAudioTracks().length) {
           audioCtx.createMediaStreamSource(new MediaStream(screenStream.getAudioTracks())).connect(dest);
         }
         if (cameraStream.getAudioTracks().length && micEnabled) {
-          audioCtx.createMediaStreamSource(new MediaStream(cameraStream.getAudioTracks())).connect(dest);
+          const micSource = audioCtx.createMediaStreamSource(new MediaStream(cameraStream.getAudioTracks()));
+          micSource.connect(dest);
+          micSource.connect(analyser); // Analyze mic specifically
         }
+
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        const checkVolume = () => {
+          if (!analyserRef.current) return;
+          analyserRef.current.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+          setMicVolume(sum / dataArray.length);
+          if (mediaRecorderRef.current?.state === 'recording') {
+            requestAnimationFrame(checkVolume);
+          }
+        };
+        checkVolume();
 
         const canvasStream = canvas.captureStream(30);
         recordStream = new MediaStream([...canvasStream.getVideoTracks(), ...dest.stream.getAudioTracks()]);
+        
+        // Show composited canvas directly in preview window
+        if (previewRef.current) {
+          previewRef.current.srcObject = canvasStream;
+          previewRef.current.play().catch(()=>{});
+        }
       } else if (screenStream) {
         // Fallback to screen stream if camera failed in PiP mode or if it was screen_only
         recordStream = screenStream;
@@ -174,6 +269,26 @@ export default function RecordVideo() {
       timerRef.current = setInterval(() => setRecordingSeconds(s => s + 1), 1000);
 
       toast({ title: '● Recording started', description: 'Click Stop when done.' });
+
+      // Start Speech Recognition
+      if (micEnabled && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+        try {
+          const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+          const recognition = new SpeechRecognition();
+          recognition.continuous = true;
+          recognition.interimResults = true;
+          recognition.onresult = (event) => {
+            let finalStr = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+              if (event.results[i].isFinal) finalStr += event.results[i][0].transcript + ' ';
+            }
+            if (finalStr) setTranscript(prev => prev + finalStr);
+          };
+          recognition.start();
+          recognitionRef.current = recognition;
+        } catch (e) { console.warn("Speech recognition failed to start", e); }
+      }
+
     } catch (err) {
       console.error(err);
       const msg = err.name === 'NotAllowedError' ? 'Permission denied. Please allow screen/camera access.' : err.message;
@@ -187,6 +302,7 @@ export default function RecordVideo() {
     }
     clearInterval(timerRef.current);
     cancelAnimationFrame(animFrameRef.current);
+    if (recognitionRef.current) recognitionRef.current.stop();
   };
 
   const uploadRecording = async () => {
@@ -222,6 +338,22 @@ export default function RecordVideo() {
 
       if (dbError) throw dbError;
 
+      if (transcript.trim().length > 10) {
+        import('@/lib/cloudflareAI').then(({ generateText }) => {
+          generateText([
+            { role: 'system', content: 'You are an AI assistant. Summarize the following video transcript concisely. Identify key action items and topics.' },
+            { role: 'user', content: transcript.trim() }
+          ]).then((aiResult) => {
+            if (aiResult?.response) {
+              supabase.from('clipad_videos')
+                .update({ ai_summary: JSON.stringify({ summary: aiResult.response }) })
+                .eq('id', videoRecord.id)
+                .then(() => console.log('AI summary saved.'));
+            }
+          }).catch(e => console.error("AI processing error:", e));
+        });
+      }
+
       setUploadProgress(100);
       setPhase('done');
       toast({ title: '✓ Video saved!', description: 'Your recording is ready to share.' });
@@ -242,18 +374,42 @@ export default function RecordVideo() {
     setRecordingSeconds(0);
     setTitle('');
     setDescription('');
+    setTranscript('');
     setPhase('setup');
   };
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter">
       {/* Hidden canvas for PiP compositing */}
       <canvas ref={canvasRef} className="hidden" />
 
+      {/* Hidden PiP Container (moves to PiP window when requested) */}
+      <div ref={pipContainerRef} className={`w-full h-full flex flex-col items-center justify-center bg-slate-900 text-white p-4 ${pipWindow ? '' : 'hidden'}`}>
+        <div className="flex-1 w-full relative rounded-xl overflow-hidden mb-4 bg-black">
+           {/* If we want to show the camera feed in PiP, we can render it here, but canvas stream is best */}
+           <video autoPlay muted playsInline className="w-full h-full object-cover scale-x-[-1]" ref={el => { if (el && streamsRef.current.camera) el.srcObject = streamsRef.current.camera; }} />
+        </div>
+        <div className="flex items-center gap-3 bg-slate-800/80 p-3 rounded-2xl backdrop-blur-md">
+          <button onClick={() => toggleMicTrack()} className={`p-3 rounded-full transition-all ${micEnabled ? (micVolume > 10 ? 'bg-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.6)]' : 'bg-slate-700') : 'bg-red-500/20 text-red-400'}`}>
+            {micEnabled ? <Mic className="w-5 h-5 text-white" /> : <MicOff className="w-5 h-5" />}
+          </button>
+          <button onClick={toggleWebcam} className="p-3 rounded-full bg-slate-700 hover:bg-slate-600 transition-colors">
+            <Camera className="w-5 h-5 text-white" />
+          </button>
+          <div className="w-px h-8 bg-slate-600 mx-1" />
+          <button onClick={togglePause} className="p-3 rounded-full bg-slate-700 hover:bg-slate-600 transition-colors text-white">
+            {isPaused ? <Play className="w-5 h-5 text-emerald-400 fill-emerald-400" /> : <Pause className="w-5 h-5" />}
+          </button>
+          <button onClick={stopRecording} className="p-3 rounded-full bg-red-600 hover:bg-red-500 transition-colors text-white">
+            <StopCircle className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
       {/* Nav */}
-      <nav className="sticky top-0 z-40 flex items-center gap-3 px-6 h-14 bg-background page-enter/90 backdrop-blur-xl border-b border-border">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm">
-          <ArrowLeft className="w-4 h-4" /> Back
+      <nav className="sticky top-0 z-40 flex items-center gap-3 px-6 h-16 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5">
+          <ArrowLeft className="w-4 h-4 text-slate-500" /> Back
         </button>
         <span className="text-foreground font-semibold">Record Async Video</span>
         {phase === 'recording' && (
@@ -283,11 +439,11 @@ export default function RecordVideo() {
                   <button
                     key={m.id}
                     onClick={() => setMode(m.id)}
-                    className={`p-5 rounded-2xl border text-left transition-all ${mode === m.id ? 'border-indigo-500/60 bg-primary/10' : 'border-white/[0.08] bg-white/[0.03] hover:border-white/15'}`}
+                    className={`p-5 rounded-2xl border text-left transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md ${mode === m.id ? 'border-primary bg-primary/5 dark:bg-primary/10' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50'}`}
                   >
-                    <Icon className={`w-6 h-6 mb-3 ${mode === m.id ? 'text-primary' : 'text-muted-foreground'}`} />
-                    <p className="font-semibold text-foreground text-sm mb-1">{m.label}</p>
-                    <p className="text-xs text-muted-foreground leading-snug">{m.desc}</p>
+                    <Icon className={`w-6 h-6 mb-3 ${mode === m.id ? 'text-primary' : 'text-slate-500 dark:text-slate-400'}`} />
+                    <p className="font-semibold text-slate-900 dark:text-white text-sm mb-1">{m.label}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">{m.desc}</p>
                   </button>
                 );
               })}
@@ -295,20 +451,20 @@ export default function RecordVideo() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Video Title</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Video Title</label>
                 <input
                   value={title}
                   onChange={e => setTitle(e.target.value)}
                   placeholder="e.g. Q3 Feature Walkthrough"
-                  className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-primary/60 transition-all shadow-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Add to Space (optional)</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Add to Space (optional)</label>
                 <select
                   value={selectedSpace}
                   onChange={e => setSelectedSpace(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground text-sm focus:outline-none focus:border-indigo-500/60 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/60 transition-all shadow-sm"
                 >
                   <option value="">No space</option>
                   {spaces.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -320,12 +476,12 @@ export default function RecordVideo() {
               <label className="flex items-center gap-3 cursor-pointer select-none">
                 <div
                   onClick={() => setMicEnabled(!micEnabled)}
-                  className={`w-10 h-6 rounded-full transition-colors relative ${micEnabled ? 'bg-primary' : 'bg-secondary/80'}`}
+                  className={`w-10 h-6 rounded-full transition-colors relative ${micEnabled ? 'bg-primary' : 'bg-slate-200 dark:bg-slate-700'}`}
                 >
                   <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${micEnabled ? 'left-5' : 'left-1'}`} />
                 </div>
-                <span className="text-sm text-gray-300 flex items-center gap-2">
-                  {micEnabled ? <Mic className="w-4 h-4 text-primary" /> : <MicOff className="w-4 h-4 text-muted-foreground" />}
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-300 flex items-center gap-2">
+                  {micEnabled ? <Mic className="w-4 h-4 text-primary" /> : <MicOff className="w-4 h-4 text-slate-400 dark:text-slate-500" />}
                   {micEnabled ? 'Microphone on' : 'Microphone off'}
                 </span>
               </label>
@@ -347,19 +503,7 @@ export default function RecordVideo() {
             <div className="relative w-full max-w-2xl rounded-2xl overflow-hidden bg-black aspect-video">
               {mode === 'screen_camera' && (
                 <>
-                  {/* The canvas shows the composited feed */}
-                  <canvas ref={canvasRef} className="w-full h-full object-contain hidden" />
-                  {/* Show a placeholder since canvas compositing draws off-screen for recording */}
-                  <div className="w-full h-full flex items-center justify-center bg-slate-900">
-                    <div className="text-center text-muted-foreground">
-                      <Monitor className="w-16 h-16 mx-auto mb-3 opacity-50" />
-                      <p className="text-sm">Recording your screen + camera…</p>
-                    </div>
-                  </div>
-                  {/* Camera PiP preview */}
-                  <div className="absolute bottom-4 right-4 w-36 aspect-video rounded-xl overflow-hidden border-2 border-indigo-500 shadow-2xl">
-                    <video ref={previewRef} autoPlay muted playsInline className="w-full h-full object-cover scale-x-[-1]" />
-                  </div>
+                  <video ref={previewRef} autoPlay muted playsInline className="w-full h-full object-contain" />
                 </>
               )}
               {mode === 'camera_only' && (
@@ -381,12 +525,31 @@ export default function RecordVideo() {
               </div>
             </div>
 
-            <button
-              onClick={stopRecording}
-              className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-red-600 hover:bg-red-500 text-foreground font-bold shadow-xl shadow-red-500/25 transition-all"
-            >
-              <StopCircle className="w-5 h-5" /> Stop Recording
-            </button>
+            <div className="flex gap-4">
+              <button
+                onClick={togglePause}
+                className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold transition-all"
+              >
+                {isPaused ? <Play className="w-5 h-5 text-emerald-500" /> : <Pause className="w-5 h-5" />}
+                {isPaused ? 'Resume' : 'Pause'}
+              </button>
+              
+              {!pipWindow && ('documentPictureInPicture' in window) && (
+                <button
+                  onClick={startPip}
+                  className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-500/20 dark:text-indigo-300 dark:hover:bg-indigo-500/30 font-bold transition-all"
+                >
+                  <Monitor className="w-5 h-5" /> Open PiP Controls
+                </button>
+              )}
+
+              <button
+                onClick={stopRecording}
+                className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-red-600 hover:bg-red-500 text-foreground font-bold shadow-xl shadow-red-500/25 transition-all ml-auto"
+              >
+                <StopCircle className="w-5 h-5" /> Stop Recording
+              </button>
+            </div>
           </div>
         )}
 

@@ -32,17 +32,13 @@ export default function VideoAnalytics() {
     recentViews: []
   });
 
-  useEffect(() => {
-    if (!isLoadingAuth && !user) {
-      navigate('/login');
-    }
-  }, [isLoadingAuth, user, navigate]);
-
   useEffect(() => { 
     if (user) {
       fetchAnalytics(); 
+    } else if (!isLoadingAuth) {
+      setLoading(false);
     }
-  }, [user]);
+  }, [user, isLoadingAuth]);
 
   const fetchAnalytics = async () => {
     setLoading(true);
@@ -105,10 +101,36 @@ export default function VideoAnalytics() {
     }
   };
 
-  if (loading) {
+  if (loading || isLoadingAuth) {
     return (
       <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter flex items-center justify-center">
         <div className="w-10 h-10 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative text-slate-900 dark:text-slate-100">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(120,120,120,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(120,120,120,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+        <div className="relative z-10 w-full max-w-[420px] text-center space-y-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-10 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center mx-auto text-indigo-500">
+            <BarChart3 className="w-8 h-8" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight mb-2">Video Analytics</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">Please sign in to view your video engagement analytics and metrics.</p>
+          </div>
+          <button
+            onClick={() => {
+              const continueUrl = encodeURIComponent(`${window.location.origin}/auth/callback?continue=%2Fanalytics`);
+              window.location.href = `https://account.optavel.com/sso?redirect_uri=${continueUrl}`;
+            }}
+            className="w-full py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-all shadow-sm"
+          >
+            Sign In with SSO
+          </button>
+        </div>
       </div>
     );
   }
@@ -125,7 +147,7 @@ export default function VideoAnalytics() {
           </div>
           <span className="text-lg font-bold tracking-tight">CliPad</span>
         </div>
-        <button onClick={() => navigate('/dashboard')} className="text-sm text-muted-foreground hover:text-foreground transition-colors">← Dashboard</button>
+        <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5"><ArrowLeft className="w-4 h-4 text-slate-500" /> Dashboard</button>
       </nav>
 
       <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">

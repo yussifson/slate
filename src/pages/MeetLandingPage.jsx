@@ -18,45 +18,45 @@ import { CliPadLogo } from '@/components/ui/CliPadLogo';
 const pillars = [
   {
     icon: Video,
-    color: 'from-violet-500 to-indigo-500',
-    glow: 'shadow-violet-500/20',
+    color: 'from-orange-500 to-orange-400',
+    glow: 'shadow-orange-500/20',
     title: 'HD Live Meetings',
-    desc: 'No time limits. Up to 500 participants. Speaker spotlight, noise cancellation, live captions, breakout rooms and a persistent whiteboard ΓÇö all built in.'
+    desc: 'No time limits. Up to 500 participants. Speaker spotlight, noise cancellation, live captions, breakout rooms and a persistent whiteboard — all built in.'
   },
   {
     icon: Camera,
-    color: 'from-cyan-500 to-blue-500',
-    glow: 'shadow-cyan-500/20',
+    color: 'from-green-500 to-emerald-500',
+    glow: 'shadow-green-500/20',
     title: 'Async Video Messages',
     desc: 'Record camera, screen, or both in picture-in-picture. Share an instant link. Viewers leave timestamped comments and emoji reactions at exact moments.'
   },
   {
     icon: Brain,
-    color: 'from-pink-500 to-rose-500',
-    glow: 'shadow-pink-500/20',
+    color: 'from-yellow-500 to-amber-500',
+    glow: 'shadow-yellow-500/20',
     title: 'AI Meeting Intelligence',
-    desc: 'Every meeting produces a full summary, key decisions, extracted action items with owners, open questions, and sentiment ΓÇö within 2 minutes of ending.'
+    desc: 'Every meeting produces a full summary, key decisions, extracted action items with owners, open questions, and sentiment — within 2 minutes of ending.'
   },
   {
     icon: Layers,
-    color: 'from-amber-500 to-orange-500',
-    glow: 'shadow-amber-500/20',
+    color: 'from-orange-500 to-orange-400',
+    glow: 'shadow-orange-500/20',
     title: 'Team Spaces',
     desc: 'Persistent rooms for every team and project. Live meetings, async videos, shared notes, action boards, and cross-space search in one place.'
   },
   {
     icon: Target,
-    color: 'from-emerald-500 to-teal-500',
-    glow: 'shadow-emerald-500/20',
+    color: 'from-green-500 to-emerald-500',
+    glow: 'shadow-green-500/20',
     title: 'Sales & Demo Layer',
-    desc: 'Record personalised video proposals. Know who watched, how much, where they paused, and whether they shared it ΓÇö before your follow-up call.'
+    desc: 'Record personalised video proposals. Know who watched, how much, where they paused, and whether they shared it — before your follow-up call.'
   },
   {
     icon: Zap,
-    color: 'from-indigo-500 to-purple-500',
-    glow: 'shadow-primary/20',
+    color: 'from-yellow-500 to-amber-500',
+    glow: 'shadow-yellow-500/20',
     title: 'Smart Follow-up',
-    desc: 'After every meeting, each participant receives only their personal action items with full context. Not the whole notes ΓÇö just what they need to do.'
+    desc: 'After every meeting, each participant receives only their personal action items with full context. Not the whole notes — just what they need to do.'
   },
 ];
 
@@ -104,14 +104,14 @@ const slides = [
     description: 'Create persistent rooms for every project. Record picture-in-picture async updates and share instantly.',
     render: () => (
       <div className="relative flex flex-col items-center justify-center w-full h-full select-none">
-        <div className="absolute w-64 h-64 rounded-full border-2 border-indigo-100 dark:border-indigo-900/40 animate-pulse" />
-        <div className="absolute w-44 h-44 rounded-full bg-indigo-50 dark:bg-indigo-900/20" />
+        <div className="absolute w-64 h-64 rounded-full border-2 border-indigo-100 animate-pulse" />
+        <div className="absolute w-44 h-44 rounded-full bg-indigo-50" />
         <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-400 flex items-center justify-center shadow-2xl shadow-indigo-500/40">
           <Layers className="w-14 h-14 text-white" strokeWidth={1.5} />
         </div>
         <div className="absolute top-6 right-10 bg-background border border-border rounded-xl px-3 py-1.5 shadow-lg flex items-center gap-1.5">
           <Camera className="w-3 h-3 text-indigo-500" />
-          <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-300">Async Ready</span>
+          <span className="text-xs font-semibold text-indigo-600">Async Ready</span>
         </div>
         <div className="absolute bottom-10 left-6 bg-background border border-border rounded-xl px-3 py-1.5 shadow-lg">
           <span className="text-xs font-medium text-muted-foreground font-mono">Design Team Space</span>
@@ -125,14 +125,14 @@ const slides = [
     description: 'Every meeting produces a full summary, extracted action items, and key decisions within 2 minutes of ending.',
     render: () => (
       <div className="relative flex flex-col items-center justify-center w-full h-full select-none">
-        <div className="absolute w-64 h-64 rounded-full border-2 border-pink-100 dark:border-pink-900/40 animate-pulse" />
-        <div className="absolute w-44 h-44 rounded-full bg-pink-50 dark:bg-pink-900/20" />
+        <div className="absolute w-64 h-64 rounded-full border-2 border-pink-100 animate-pulse" />
+        <div className="absolute w-44 h-44 rounded-full bg-pink-50" />
         <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-pink-500 to-rose-400 flex items-center justify-center shadow-2xl shadow-pink-500/40">
           <Brain className="w-14 h-14 text-white" strokeWidth={1.5} />
         </div>
         <div className="absolute top-4 right-8 bg-background border border-border rounded-xl px-3 py-1.5 shadow-lg flex items-center gap-2">
           <Brain className="w-3 h-3 text-pink-500" />
-          <span className="text-xs font-semibold text-pink-600 dark:text-pink-300">Summary Gen</span>
+          <span className="text-xs font-semibold text-pink-600">Summary Gen</span>
         </div>
         <div className="absolute bottom-8 left-4 bg-background border border-border rounded-xl px-3 py-2 shadow-lg text-center">
           <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider block">Action Items</span>
@@ -147,8 +147,8 @@ const slides = [
     description: 'Participants receive only their personal action items with full context. No more reading through entire transcripts.',
     render: () => (
       <div className="relative flex flex-col items-center justify-center w-full h-full select-none">
-        <div className="absolute w-64 h-64 rounded-full border-2 border-emerald-100 dark:border-emerald-900/40 animate-pulse" />
-        <div className="absolute w-44 h-44 rounded-full bg-emerald-50 dark:bg-emerald-900/20" />
+        <div className="absolute w-64 h-64 rounded-full border-2 border-emerald-100 animate-pulse" />
+        <div className="absolute w-44 h-44 rounded-full bg-emerald-50" />
         <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shadow-2xl shadow-emerald-500/40">
           <Zap className="w-14 h-14 text-white" strokeWidth={1.5} />
         </div>
@@ -161,7 +161,7 @@ const slides = [
         </div>
         <div className="absolute top-4 right-6 bg-background border border-border rounded-xl px-3 py-1.5 shadow-lg flex items-center gap-1.5">
           <CheckCircle className="w-3 h-3 text-emerald-500" />
-          <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">Context aware</span>
+          <span className="text-xs font-semibold text-emerald-600">Context aware</span>
         </div>
       </div>
     ),
@@ -261,11 +261,11 @@ export default function MeetLandingPage() {
   const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1121] flex flex-col font-sans relative overflow-hidden">
+    <div className="light min-h-screen bg-white text-slate-900 flex flex-col font-sans relative">
       {/* Realistic Background Layers */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 dark:bg-primary/10 blur-[120px]" />
-        <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[120px]" />
+        <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 blur-[120px]" />
+        <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-orange-500/5 blur-[120px]" />
       </div>
       <Helmet>
         <title>CliPad ΓÇö Free HD Video Meetings for Teams</title>
@@ -300,13 +300,13 @@ export default function MeetLandingPage() {
         })}</script>
       </Helmet>
       {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/50 dark:border-border bg-secondary/50 dark:bg-background/80 backdrop-blur-md">
+      <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/50 bg-secondary/50 backdrop-blur-md">
 
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 flex items-center justify-center text-primary">
             <CliPadLogo size={36} />
           </div>
-          <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">CliPad</span>
+          <span className="text-xl font-bold tracking-tight text-slate-900">CliPad</span>
         </div>
         
         <div className="hidden md:flex items-center gap-1 text-sm text-muted-foreground">
@@ -315,9 +315,9 @@ export default function MeetLandingPage() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 tabular-nums">
+          <div className="hidden md:flex items-center gap-1.5 text-sm font-medium text-slate-500 tabular-nums">
             <span>{timeStr}</span>
-            <span className="text-slate-300 dark:text-slate-600">·</span>
+            <span className="text-slate-300">·</span>
             <span>{dateStr}</span>
           </div>
           {user ? (
@@ -337,10 +337,10 @@ export default function MeetLandingPage() {
       <main className="relative z-10 flex-1 flex flex-col md:flex-row items-center justify-center p-6 md:p-12 gap-12 md:gap-16 max-w-7xl mx-auto w-full">
         {/* Left Side */}
         <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-8 max-w-xl">
-          <h1 className="text-4xl md:text-5xl font-normal text-slate-800 dark:text-slate-100 leading-tight">
-            Premium video meetings.<br />Now free for everyone.
+          <h1 className="text-4xl md:text-5xl font-normal text-slate-800 leading-tight">
+            Enterprise video messaging & meetings.<br />Now free for everyone.
           </h1>
-          <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
+          <p className="text-lg text-slate-500 leading-relaxed">
             We re-engineered the service we built for secure business meetings, CliPad, to make it free and available for all.
           </p>
 
@@ -356,20 +356,20 @@ export default function MeetLandingPage() {
                   New meeting
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-64 p-2 shadow-xl border-slate-100 dark:border-border rounded-xl">
+              <DropdownMenuContent align="start" className="w-64 p-2 shadow-xl border-slate-100 rounded-xl">
                 <DropdownMenuItem
                   onClick={() => handleCreateMeeting('later')}
-                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50 dark:hover:bg-secondary"
+                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50:bg-secondary"
                 >
-                  <LinkIcon className="w-5 h-5 text-slate-500 dark:text-slate-400" />
-                  <span className="font-medium text-slate-700 dark:text-slate-200">Create a meeting for later</span>
+                  <LinkIcon className="w-5 h-5 text-slate-500" />
+                  <span className="font-medium text-slate-700">Create a meeting for later</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => handleCreateMeeting('instant')}
-                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50 dark:hover:bg-secondary"
+                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50:bg-secondary"
                 >
-                  <Plus className="w-5 h-5 text-slate-500 dark:text-slate-400" />
-                  <span className="font-medium text-slate-700 dark:text-slate-200">Start an instant meeting</span>
+                  <Plus className="w-5 h-5 text-slate-500" />
+                  <span className="font-medium text-slate-700">Start an instant meeting</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -383,7 +383,7 @@ export default function MeetLandingPage() {
                 value={meetingCode}
                 onChange={(e) => setMeetingCode(e.target.value)}
                 placeholder="Enter a code or link"
-                className="block w-full pl-11 pr-14 py-3 border border-slate-200 dark:border-border rounded-xl leading-5 bg-transparent placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition-colors"
+                className="block w-full pl-11 pr-14 py-3 border border-slate-200 rounded-xl leading-5 bg-transparent placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition-colors"
               />
               {meetingCode && (
                 <button
@@ -396,7 +396,7 @@ export default function MeetLandingPage() {
             </form>
           </div>
 
-          <div className="border-t border-slate-100 dark:border-border w-full pt-5 mt-2">
+          <div className="border-t border-slate-100 w-full pt-5 mt-2">
             <p className="text-sm text-slate-500">
               <a href="#" className="text-primary hover:underline font-medium">Learn more</a> about CliPad
             </p>
@@ -408,7 +408,7 @@ export default function MeetLandingPage() {
           {/* Prev button */}
           <button
             onClick={prevSlide}
-            className="absolute left-0 z-10 w-10 h-10 rounded-full bg-white dark:bg-card hover:bg-slate-50 dark:hover:bg-slate-800 shadow-md border border-slate-100 dark:border-border flex items-center justify-center transition-all"
+            className="absolute left-0 z-10 w-10 h-10 rounded-full bg-white hover:bg-slate-50:bg-slate-800 shadow-md border border-slate-100 flex items-center justify-center transition-all"
           >
             <ChevronLeft className="w-5 h-5 text-slate-500" />
           </button>
@@ -430,10 +430,10 @@ export default function MeetLandingPage() {
 
             {/* Text area with fixed height to prevent layout shift */}
             <div className="h-28">
-              <h2 className="text-2xl font-semibold text-slate-900 dark:text-foreground mb-2 tracking-tight">
+              <h2 className="text-2xl font-semibold text-slate-900 mb-2 tracking-tight">
                 {slides[currentSlide].title}
               </h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-xs mx-auto">
+              <p className="text-sm text-slate-500 leading-relaxed max-w-xs mx-auto">
                 {slides[currentSlide].description}
               </p>
             </div>
@@ -447,7 +447,7 @@ export default function MeetLandingPage() {
                   className={`h-2 rounded-full transition-all duration-300 ${
                     i === currentSlide
                       ? 'bg-primary w-6'
-                      : 'bg-slate-200 dark:bg-slate-700 w-2 hover:bg-slate-300 dark:hover:bg-slate-600'
+                      : 'bg-slate-200 w-2 hover:bg-slate-300:bg-slate-600'
                   }`}
                 />
               ))}
@@ -457,7 +457,7 @@ export default function MeetLandingPage() {
           {/* Next button */}
           <button
             onClick={nextSlide}
-            className="absolute right-0 z-10 w-10 h-10 rounded-full bg-white dark:bg-card hover:bg-slate-50 dark:hover:bg-slate-800 shadow-md border border-slate-100 dark:border-border flex items-center justify-center transition-all"
+            className="absolute right-0 z-10 w-10 h-10 rounded-full bg-white hover:bg-slate-50:bg-slate-800 shadow-md border border-slate-100 flex items-center justify-center transition-all"
           >
             <ChevronRight className="w-5 h-5 text-slate-500" />
           </button>
@@ -615,7 +615,7 @@ export default function MeetLandingPage() {
 
       {/* Share Link Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md p-0 border-none shadow-2xl rounded-2xl overflow-hidden bg-white dark:bg-card">
+        <DialogContent className="sm:max-w-md p-0 border-none shadow-2xl rounded-2xl overflow-hidden bg-white">
           <DialogTitle className="sr-only">Meeting Link Created</DialogTitle>
           <DialogDescription className="sr-only">Your meeting link is ready to be copied.</DialogDescription>
           
@@ -631,16 +631,16 @@ export default function MeetLandingPage() {
             </div>
 
             {/* Text */}
-            <h2 className="text-2xl font-semibold text-slate-900 dark:text-foreground mb-2 tracking-tight">Here's your meeting link</h2>
-            <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-sm text-sm leading-relaxed">
+            <h2 className="text-2xl font-semibold text-slate-900 mb-2 tracking-tight">Here's your meeting link</h2>
+            <p className="text-slate-500 mb-8 max-w-sm text-sm leading-relaxed">
               Copy this link and send it to people you want to meet with. Save it so you can use it later.
             </p>
 
             {/* Link Box */}
-            <div className="w-full bg-white dark:bg-card/80 backdrop-blur-sm border border-slate-200 dark:border-border rounded-2xl p-4 text-left shadow-sm">
+            <div className="w-full bg-white backdrop-blur-sm border border-slate-200 rounded-2xl p-4 text-left shadow-sm">
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Join Link</p>
               <div className="flex items-center gap-2">
-                <div className="flex-1 min-w-0 bg-slate-50 dark:bg-black/50 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-border overflow-hidden">
+                <div className="flex-1 min-w-0 bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-200 overflow-hidden">
                   <span className="text-sm text-primary font-medium truncate block w-full">{laterLink}</span>
                 </div>
                 <Button
@@ -661,7 +661,7 @@ export default function MeetLandingPage() {
             <Button
               onClick={() => setIsDialogOpen(false)}
               variant="ghost"
-              className="mt-6 w-full sm:w-auto px-10 text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full"
+              className="mt-6 w-full sm:w-auto px-10 text-slate-500 hover:text-slate-700 hover:bg-slate-100:bg-slate-800 rounded-full"
             >
               Done
             </Button>

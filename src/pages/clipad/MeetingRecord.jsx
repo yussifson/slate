@@ -182,9 +182,9 @@ export default function MeetingRecord() {
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
       {/* Nav */}
       <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-14 bg-background page-enter/90 backdrop-blur-xl border-b border-border">
-        <button onClick={() => navigate('/meetings')} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm">
-          <ArrowLeft className="w-4 h-4" /> Meetings
-        </button>
+          <button onClick={() => navigate('/meetings')} className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5">
+            <ArrowLeft className="w-4 h-4 text-slate-500" /> Meetings
+          </button>
         <div className="flex items-center gap-2">
           {!meeting.ai_summary && (
             <button

@@ -11,20 +11,38 @@ export default function CliPadSettings() {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
 
-  // Settings state (mocked for UI)
-  const [settings, setSettings] = useState({
-    emailNotifs: true,
-    actionItemReminders: true,
-    aiSummaries: true,
-    cameraDefault: true,
-    micDefault: true,
-    blurBackground: false
+  // Settings state (persisted locally)
+  const [settings, setSettings] = useState(() => {
+    const saved = localStorage.getItem('clipad_user_settings');
+    if (saved) {
+      try {
+        return { ...{
+          emailNotifs: true,
+          actionItemReminders: true,
+          aiSummaries: true,
+          cameraDefault: true,
+          micDefault: true,
+          blurBackground: false
+        }, ...JSON.parse(saved) };
+      } catch (e) {}
+    }
+    return {
+      emailNotifs: true,
+      actionItemReminders: true,
+      aiSummaries: true,
+      cameraDefault: true,
+      micDefault: true,
+      blurBackground: false
+    };
   });
 
   const toggle = (key) => setSettings(s => ({ ...s, [key]: !s[key] }));
 
   const handleSave = () => {
     setSaving(true);
+    // Persist to local storage
+    localStorage.setItem('clipad_user_settings', JSON.stringify(settings));
+    
     setTimeout(() => {
       setSaving(false);
       toast({ title: 'Settings saved', description: 'Your preferences have been updated.' });
@@ -45,16 +63,16 @@ export default function CliPadSettings() {
           </div>
           <span className="text-lg font-bold tracking-tight">Settings</span>
         </div>
-        <button onClick={() => navigate('/dashboard')} className="text-sm text-muted-foreground hover:text-foreground transition-colors">← Dashboard</button>
+        <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5"><ArrowLeft className="w-4 h-4 text-slate-500" /> Dashboard</button>
       </nav>
 
       <div className="max-w-4xl mx-auto px-6 md:px-10 py-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           
           {/* Sidebar */}
-          <div className="md:col-span-1 space-y-1">
+          <div className="md:col-span-1 space-y-3">
             {[{id: 'profile', icon: User, label: 'Profile'}, {id: 'notifs', icon: Bell, label: 'Notifications'}, {id: 'meeting', icon: Video, label: 'Meeting Defaults'}].map(tab => (
-              <button key={tab.id} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-secondary text-foreground font-semibold text-sm transition-all border border-border">
+              <button key={tab.id} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-secondary text-foreground font-semibold text-sm transition-all border border-border hover:bg-secondary/80">
                 <tab.icon className="w-4 h-4 text-primary" /> {tab.label}
               </button>
             ))}
@@ -68,12 +86,12 @@ export default function CliPadSettings() {
               <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2"><User className="w-5 h-5 text-primary" /> Account Profile</h2>
               <div className="flex items-center gap-6 mb-8">
                 <img
-                  src={user?.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${user?.user_metadata?.full_name || user?.email}`}
-                  className="w-20 h-20 rounded-2xl bg-secondary"
+                  src={user?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${user?.full_name || user?.email}`}
+                  className="w-20 h-20 rounded-2xl bg-secondary object-cover shadow-sm"
                   alt="Profile"
                 />
                 <div>
-                  <h3 className="text-xl font-bold text-foreground">{user?.user_metadata?.full_name || 'User'}</h3>
+                  <h3 className="text-xl font-bold text-foreground">{user?.full_name || 'User'}</h3>
                   <p className="text-muted-foreground">{user?.email}</p>
                 </div>
               </div>
@@ -82,7 +100,7 @@ export default function CliPadSettings() {
                 <div>
                   <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Full Name</label>
                   <input
-                    defaultValue={user?.user_metadata?.full_name || ''}
+                    defaultValue={user?.full_name || ''}
                     className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm focus:outline-none focus:border-indigo-500/50 transition-all"
                   />
                 </div>
@@ -91,7 +109,7 @@ export default function CliPadSettings() {
                   <input
                     disabled
                     value={user?.email || ''}
-                    className="w-full px-4 py-3 rounded-xl bg-white/[0.02] border border-border text-muted-foreground text-sm cursor-not-allowed"
+                    className="w-full px-4 py-3 rounded-xl bg-white/[0.02] dark:bg-black/20 border border-border text-muted-foreground text-sm cursor-not-allowed"
                   />
                 </div>
               </div>

@@ -59,37 +59,37 @@ export default function SpacesList() {
   const filtered = spaces.filter(s => s.name?.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-background page-enter/80 backdrop-blur-xl border-b border-border">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
-          <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center"><Video className="w-4 h-4 text-foreground" strokeWidth={2.5} /></div>
-          <span className="text-lg font-bold tracking-tight">CliPad</span>
+          <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
+            <Layers className="w-4 h-4 text-white dark:text-slate-900" strokeWidth={2.5} />
+          </div>
+          <span className="text-lg font-bold tracking-tight">Spaces</span>
         </div>
-        <button onClick={() => navigate('/dashboard')} className="text-sm text-muted-foreground hover:text-foreground transition-colors">← Dashboard</button>
+        <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5"><ArrowLeft className="w-4 h-4 text-slate-500" /> Dashboard</button>
       </nav>
 
       <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
           <div>
-            <h1 className="text-3xl font-black text-foreground mb-1 flex items-center gap-3"><Layers className="w-7 h-7 text-primary" /> Team Spaces</h1>
-            <p className="text-muted-foreground text-sm">Persistent rooms for every team, project, and recurring purpose.</p>
+            <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-2">Team Spaces</h1>
+            <p className="text-slate-500 dark:text-slate-400">Persistent rooms for projects, teams, or recurring syncs.</p>
           </div>
-          <button
-            onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-foreground text-sm font-bold shadow-lg shadow-primary/25 transition-all"
-          >
-            <Plus className="w-4 h-4" /> New Space
-          </button>
-        </div>
-
-        <div className="relative mb-8">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search spaces..."
-            className="w-full pl-11 pr-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-all"
-          />
+          <div className="flex items-center gap-3">
+            <div className="relative w-full md:w-64">
+              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+              <input
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Find a space..."
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:border-primary/50 text-sm shadow-sm transition-all"
+              />
+            </div>
+            <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm shadow-md shadow-primary/20 transition-all shrink-0">
+              <Plus className="w-4 h-4" /> New Space
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -98,10 +98,10 @@ export default function SpacesList() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-24">
-            <Layers className="w-16 h-16 text-gray-800 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-muted-foreground mb-2">No spaces yet</h3>
-            <p className="text-muted-foreground mb-6 text-sm">Create a space for your first team or project.</p>
-            <button onClick={() => setShowCreate(true)} className="px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-foreground font-semibold text-sm transition-all">
+            <Layers className="w-16 h-16 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-slate-500 dark:text-slate-400 mb-2">No spaces yet</h3>
+            <p className="text-slate-400 dark:text-slate-500 mb-6 text-sm">Create a space for your first team or project.</p>
+            <button onClick={() => setShowCreate(true)} className="px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm shadow-md transition-all">
               Create your first space
             </button>
           </div>
@@ -113,18 +113,18 @@ export default function SpacesList() {
                 <div
                   key={space.id}
                   onClick={() => navigate(`/spaces/${space.id}`)}
-                  className="group p-6 rounded-2xl bg-card border border-border hover:border-white/12 cursor-pointer transition-all hover:-translate-y-1"
+                  className="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
                 >
                   <div className="flex items-start gap-4 mb-5">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-foreground font-bold text-lg shadow-lg shrink-0`}>
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-white font-bold text-lg shadow-sm shrink-0`}>
                       {space.name?.[0]?.toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-foreground text-base truncate">{space.name}</h3>
-                      <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">{space.description || 'A shared space for meetings and video updates.'}</p>
+                      <h3 className="font-bold text-slate-900 dark:text-white text-base truncate">{space.name}</h3>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">{space.description || 'A shared space for meetings and video updates.'}</p>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                     <div className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{new Date(space.created_at).toLocaleDateString()}</div>
                     <div className="flex items-center gap-1 group-hover:text-primary transition-colors font-medium">Open <ArrowRight className="w-3.5 h-3.5" /></div>
                   </div>
@@ -137,34 +137,34 @@ export default function SpacesList() {
 
       {/* Create Space Modal */}
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-card border border-border rounded-3xl p-8 max-w-md w-full shadow-2xl">
-            <h2 className="text-xl font-bold text-foreground mb-1">Create a Space</h2>
-            <p className="text-sm text-muted-foreground mb-6">A persistent room for your team, project, or recurring meetings.</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-1">Create a Space</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">A persistent room for your team, project, or recurring meetings.</p>
             <form onSubmit={createSpace} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Space Name *</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Space Name *</label>
                 <input
                   value={newName}
                   onChange={e => setNewName(e.target.value)}
                   placeholder="e.g. Product Team, Q3 Campaign..."
-                  className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 transition-all"
                   required
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Description</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Description</label>
                 <textarea
                   value={newDesc}
                   onChange={e => setNewDesc(e.target.value)}
                   placeholder="What is this space for?"
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 transition-all resize-none"
                 />
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowCreate(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-secondary hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all border border-slate-200 dark:border-border">Cancel</button>
-                <button type="submit" disabled={creating} className="flex-1 py-3 rounded-xl bg-primary hover:bg-primary/90 text-foreground font-bold text-sm transition-all disabled:opacity-60">
+                <button type="button" onClick={() => setShowCreate(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all border border-slate-200 dark:border-slate-700 shadow-sm">Cancel</button>
+                <button type="submit" disabled={creating} className="flex-1 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-all shadow-md disabled:opacity-60">
                   {creating ? 'Creating...' : 'Create Space'}
                 </button>
               </div>

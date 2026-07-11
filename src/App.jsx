@@ -24,6 +24,7 @@ const CliPadLogin = React.lazy(() => import('@/pages/clipad/CliPadLogin'));
 const SpacesList = React.lazy(() => import('@/pages/clipad/SpacesList'));
 const MeetingRecord = React.lazy(() => import('@/pages/clipad/MeetingRecord'));
 const MeetingsList = React.lazy(() => import('@/pages/clipad/MeetingsList'));
+const CliPadSupport = React.lazy(() => import('@/pages/clipad/CliPadSupport'));
 
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
@@ -1229,15 +1230,18 @@ function App() {
                       <Route path="/auth/callback" element={<SSOCallback />} />
                       <Route path="/auth/google-callback" element={<GoogleCallback />} />
                       <Route path="/join/:roomId" element={<StandaloneMeeting />} />
-                      <Route path="/dashboard" element={<CliPadDashboard />} />
-                      <Route path="/spaces" element={<SpacesList />} />
-                      <Route path="/spaces/:spaceId" element={<SpaceDashboard />} />
-                      <Route path="/record" element={<RecordVideo />} />
-                      <Route path="/watch/:videoId" element={<WatchVideo />} />
-                      <Route path="/meetings" element={<MeetingsList />} />
-                      <Route path="/meetings/:meetingId" element={<MeetingRecord />} />
                       <Route path="/analytics" element={<VideoAnalytics />} />
-                      <Route path="/settings" element={<CliPadSettings />} />
+                      <Route element={<ProtectedRoute />}>
+                        <Route path="/dashboard" element={<CliPadDashboard />} />
+                        <Route path="/spaces" element={<SpacesList />} />
+                        <Route path="/spaces/:spaceId" element={<SpaceDashboard />} />
+                        <Route path="/record" element={<RecordVideo />} />
+                        <Route path="/meetings" element={<MeetingsList />} />
+                        <Route path="/meetings/:meetingId" element={<MeetingRecord />} />
+                        <Route path="/settings" element={<CliPadSettings />} />
+                        <Route path="/support" element={<CliPadSupport />} />
+                      </Route>
+                      <Route path="/watch/:videoId" element={<WatchVideo />} />
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                   </React.Suspense>

@@ -15,13 +15,16 @@ export default function SSOCallback() {
     const processCallback = async () => {
       // The tokens are usually sent in the hash fragment (#access_token=...) by Supabase Implicit Flow
       // But some SSO redirects might pass them as query parameters (?sso_token=... or ?access_token=...)
-      const hashParams = new URLSearchParams(location.hash.substring(1));
-      const searchParams = new URLSearchParams(location.search);
+      const rawSearch = window.location.search;
+      const rawHash = window.location.hash;
+      const hashParams = new URLSearchParams(rawHash.substring(1));
+      const searchParams = new URLSearchParams(rawSearch);
       
       const accessToken = hashParams.get("access_token") || searchParams.get("sso_token") || searchParams.get("access_token");
       const refreshToken = hashParams.get("refresh_token") || searchParams.get("sso_refresh") || searchParams.get("refresh_token");
 
       if (!accessToken || !refreshToken) {
+        console.error("Missing tokens. Search:", rawSearch, "Hash:", rawHash);
         setError("Invalid SSO Payload. Missing security tokens.");
         return;
       }

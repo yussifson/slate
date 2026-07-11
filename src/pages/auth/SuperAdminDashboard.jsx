@@ -15,6 +15,7 @@ export default function SuperAdminDashboard() {
   const [users, setUsers] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [callbacks, setCallbacks] = useState([]);
+  const [clipadSupport, setClipadSupport] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -57,6 +58,12 @@ export default function SuperAdminDashboard() {
         if (callbacksRes.data) setCallbacks(callbacksRes.data);
       } catch (e) { }
 
+      // Fetch clipad support requests
+      try {
+        const supportRes = await supabase.from('clipad_support_requests').select('*').order('created_at', { ascending: false });
+        if (supportRes.data) setClipadSupport(supportRes.data);
+      } catch (e) { }
+
     } catch (e) {
       console.error(e);
     } finally {
@@ -68,6 +75,7 @@ export default function SuperAdminDashboard() {
     { id: 'overview', label: 'Overview', icon: <Activity className="w-4 h-4" /> },
     { id: 'chats', label: 'Support Chats', icon: <MessageSquare className="w-4 h-4" /> },
     { id: 'callbacks', label: 'Callback Requests', icon: <Phone className="w-4 h-4" /> },
+    { id: 'clipad_support', label: 'CliPad Support', icon: <ShieldAlert className="w-4 h-4" /> },
     { id: 'users', label: 'Users', icon: <Users className="w-4 h-4" /> },
     { id: 'workspaces', label: 'Workspaces', icon: <Building2 className="w-4 h-4" /> },
     { id: 'logs', label: 'System Logs', icon: <TerminalSquare className="w-4 h-4" /> },
@@ -226,6 +234,51 @@ export default function SuperAdminDashboard() {
                         <td colSpan="6" className="p-8 text-center text-gray-500">
                           <Phone className="w-8 h-8 mx-auto text-gray-300 mb-2" />
                           No pending callback requests.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+             </div>
+          </div>
+        );
+
+      case 'clipad_support':
+        return (
+          <div className="animate-in fade-in duration-300">
+             <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-500">
+                      <th className="px-6 py-4 font-medium">User Email</th>
+                      <th className="px-6 py-4 font-medium">Subject</th>
+                      <th className="px-6 py-4 font-medium">Message</th>
+                      <th className="px-6 py-4 font-medium">Date</th>
+                      <th className="px-6 py-4 font-medium">Status</th>
+                      <th className="px-6 py-4 font-medium">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                    {clipadSupport.length > 0 ? clipadSupport.map((req, i) => (
+                      <tr key={i} className="hover:bg-gray-50 dark:hover:bg-gray-800/30">
+                        <td className="px-6 py-4 text-sm font-medium">{req.user_email || 'Anonymous'}</td>
+                        <td className="px-6 py-4 text-sm font-semibold">{req.subject}</td>
+                        <td className="px-6 py-4 text-sm text-gray-500 max-w-[250px] truncate" title={req.message}>{req.message}</td>
+                        <td className="px-6 py-4 text-sm">{new Date(req.created_at).toLocaleDateString()}</td>
+                        <td className="px-6 py-4 text-sm">
+                          <span className={`px-2 py-1 text-xs rounded-full ${req.status === 'open' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-500' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-500'}`}>
+                            {req.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm">
+                          <button className="text-primary hover:underline font-medium">Mark Resolved</button>
+                        </td>
+                      </tr>
+                    )) : (
+                      <tr>
+                        <td colSpan="6" className="p-8 text-center text-gray-500">
+                          <ShieldAlert className="w-8 h-8 mx-auto text-gray-300 mb-2" />
+                          No CliPad support requests.
                         </td>
                       </tr>
                     )}

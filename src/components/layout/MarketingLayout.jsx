@@ -145,9 +145,9 @@ export default function MarketingLayout({ children}) {
 
  return (
  <div className="light bg-background text-foreground font-sans overflow-x-hidden selection:bg-primary/20 selection:text-primary relative">
- {/* ========== NAVIGATION HEADER ========== */}
- <div className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'py-3 bg-white/95 backdrop-blur-lg border-b-2 border-primary/80 ' : 'py-5 bg-white/50 backdrop-blur-sm border-b-2 border-transparent'}`}>
- <header className="max-w-6xl mx-auto">
+  {/* ========== NAVIGATION HEADER ========== */}
+  <div className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'py-3 bg-white/95 shadow-sm backdrop-blur-lg border-b border-slate-200' : 'py-5 bg-white/80 backdrop-blur-md border-b border-transparent'}`}>
+  <header className="max-w-6xl mx-auto px-4 md:px-6">
  <div className="h-14 flex items-center justify-between">
  {/* Logo */}
  <Link to="/" className="flex items-center gap-2.5 group shrink-0">
@@ -220,26 +220,28 @@ export default function MarketingLayout({ children}) {
  )}
  </div>
 
- {/* Mobile CTA */}
- <div className="flex lg:hidden items-center gap-2.5">
- {/* Removed broken globe button */}
- {isLoadingAuth ? (
- <div className="w-16 h-9 rounded-full animate-pulse bg-muted/60"></div>
- ) : isAuthenticated ? (
- <a href={workspaceUrl}>
- <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-full px-5 h-9 text-[11px] uppercase tracking-wider -primary/20 tracking-[0.04em]">
- {t("app", "App")}
- </Button>
- </a>
- ) : (
- <Link to="/signup">
- <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-full px-5 h-9 text-[11px] uppercase tracking-wider -primary/20 tracking-[0.04em]">
- {t("start", "Start")}
- </Button>
- </Link>
- )}
- </div>
- </div>
+  {/* Mobile CTA & Menu */}
+  <div className="flex lg:hidden items-center gap-2.5">
+  {isLoadingAuth ? (
+  <div className="w-16 h-9 rounded-full animate-pulse bg-muted/60"></div>
+  ) : isAuthenticated ? (
+  <a href={workspaceUrl}>
+  <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-full px-5 h-9 text-[11px] uppercase tracking-wider tracking-[0.04em]">
+  {t("app", "App")}
+  </Button>
+  </a>
+  ) : (
+  <Link to="/signup">
+  <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-full px-5 h-9 text-[11px] uppercase tracking-wider tracking-[0.04em]">
+  {t("start", "Start")}
+  </Button>
+  </Link>
+  )}
+  <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 -mr-2 text-foreground/70 hover:text-primary transition-colors">
+    {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+  </button>
+  </div>
+  </div>
  </header>
  </div>
  

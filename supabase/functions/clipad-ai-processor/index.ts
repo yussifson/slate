@@ -25,38 +25,66 @@ serve(async (req) => {
     // Connect to external LLM via _shared or direct API call
     // using OpenAI / Anthropic placeholders
     const prompt = `You are an AI meeting/video assistant. Summarize the following transcript.
-Extract: 
-1. Key summary (paragraph)
-2. Decisions made (bullet points)
-3. Action items (with assignees and deadlines)
-4. Open questions
-5. Sentiment
+Output ONLY a JSON object (no markdown formatting, no backticks, no text outside the JSON) with these exact keys:
+- summary: A string (paragraph)
+- decisions: An array of strings
+- actionItems: An array of objects, each with 'assignee', 'task', and 'deadline' string properties
+- openQuestions: An array of strings
+- sentiment: A string
 
 Transcript:
 ${transcript}`;
 
-    // Mock LLM Response for scaffold
-    const mockAiResponse = {
-      summary: "This was a productive meeting discussing the new CliPad architecture.",
-      decisions: ["Use Supabase Storage for async video", "Use Daily.js for live calls"],
-      actionItems: [{ assignee: "John", task: "Setup Daily.js token generation", deadline: "Next Friday" }],
-      openQuestions: ["What LLM provider should we use?"],
-      sentiment: "Positive and forward-looking",
-      rawText: "This was a productive meeting..."
-    };
+    // Call Cloudflare AI using Llama 3
+    const cfToken = Deno.env.get('CLOUDFLARE_API_TOKEN');
+    const cfAccountId = Deno.env.get('CLOUDFLARE_ACCOUNT_ID');
+
+    let aiResponse;
+    if (cfToken && cfAccountId) {
+      const resp = await fetch(
+        `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/ai/run/@cf/meta/llama-3.1-8b-instruct`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${cfToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 1024
+          })
+        }
+      );
+      if (!resp.ok) {
+        throw new Error(`Cloudflare AI Error: ${await resp.text()}`);
+      }
+      const data = await resp.json();
+      const rawText = data.result?.response || '{}';
+      
+      try {
+        aiResponse = JSON.parse(rawText.replace(/```json/g, '').replace(/```/g, '').trim());
+      } catch (e) {
+        console.error("Failed to parse JSON from AI", rawText);
+        aiResponse = { summary: "Failed to parse AI response." };
+      }
+    } else {
+      // Fallback
+      aiResponse = {
+        summary: "Cloudflare AI credentials missing.",
+      };
+    }
 
     if (type === "meeting" && roomId) {
       const { error } = await supabase
         .from('clipad_meeting_records')
-        .insert({
-          room_id: roomId,
-          space_id: spaceId,
+        .update({
           transcript,
-          ai_summary: JSON.stringify(mockAiResponse),
-          action_items: mockAiResponse.actionItems,
-          open_questions: mockAiResponse.openQuestions,
-          sentiment: mockAiResponse.sentiment
-        });
+          ai_summary: JSON.stringify(aiResponse),
+          action_items: aiResponse.actionItems || [],
+          open_questions: aiResponse.openQuestions || [],
+          sentiment: aiResponse.sentiment || 'Neutral'
+        })
+        .eq('room_id', roomId);
       
       if (error) throw error;
     } else if (type === "video" && videoId) {
@@ -64,7 +92,7 @@ ${transcript}`;
         .from('clipad_videos')
         .update({
           transcript,
-          ai_summary: JSON.stringify(mockAiResponse)
+          ai_summary: JSON.stringify(aiResponse)
         })
         .eq('id', videoId);
         
@@ -72,7 +100,7 @@ ${transcript}`;
     }
 
     return new Response(
-      JSON.stringify({ success: true, data: mockAiResponse }),
+      JSON.stringify({ success: true, data: aiResponse }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
