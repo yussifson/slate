@@ -645,7 +645,7 @@ export default function RecordVideo() {
               
               {!pipWindow && ('documentPictureInPicture' in window) && (
                 <button
-                  onClick={startPip}
+                  onClick={() => startPip(streamsRef.current?.camera)}
                   className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-500/20 dark:text-indigo-300 dark:hover:bg-indigo-500/30 font-bold transition-all"
                 >
                   <Monitor className="w-5 h-5" /> Open PiP Controls
