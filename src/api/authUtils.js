@@ -58,7 +58,12 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
     
     if (error) {
       // Fallback if RPC doesn't exist (e.g. before migration runs)
-      if (error.message && (error.message.includes('function admin_create_user does not exist') || error.message.includes('function gen_salt'))) {
+      if (error.message && (
+        error.message.includes('function admin_create_user does not exist') || 
+        error.message.includes('function gen_salt') || 
+        error.message.includes('in the schema cache') || 
+        error.message.includes('admin_create_user')
+      )) {
          const { data: fallbackData, error: fallbackError } = await supabaseAdmin.auth.signUp({
            email: cleanEmail,
            password: password,
@@ -83,7 +88,8 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
           id: data.user.id,
           company_id: companyId,
           role: role,
-          email: cleanEmail
+          email: cleanEmail,
+          full_name: fullName
         }
       ]);
       

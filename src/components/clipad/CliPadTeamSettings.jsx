@@ -3,7 +3,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { registerSchoolUser } from '@/api/authUtils';
 import { useToast } from '@/components/ui/use-toast';
-import { Users, Mail, UserPlus, Shield, User, X, CheckCircle, RefreshCcw } from 'lucide-react';
+import { Users, Mail, UserPlus, Shield, User, X, CheckCircle, RefreshCcw, UserMinus } from 'lucide-react';
 import { getSubdomainAndBase } from '@/lib/domainUtils';
 
 export default function CliPadTeamSettings() {
@@ -40,6 +40,39 @@ export default function CliPadTeamSettings() {
       toast({ title: 'Error loading team', description: err.message, variant: 'destructive' });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRoleChange = async (memberId, newRole) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ role: newRole })
+        .eq('id', memberId)
+        .eq('company_id', user.company_id);
+      
+      if (error) throw error;
+      toast({ title: 'Role updated', description: 'User role has been updated.' });
+      fetchMembers();
+    } catch (err) {
+      toast({ title: 'Update failed', description: err.message, variant: 'destructive' });
+    }
+  };
+
+  const handleRemoveMember = async (memberId) => {
+    if (!window.confirm('Are you sure you want to remove this member?')) return;
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', memberId)
+        .eq('company_id', user.company_id);
+        
+      if (error) throw error;
+      toast({ title: 'Member removed', description: 'The user has been removed from your team.' });
+      fetchMembers();
+    } catch (err) {
+      toast({ title: 'Remove failed', description: err.message, variant: 'destructive' });
     }
   };
 
@@ -205,14 +238,34 @@ export default function CliPadTeamSettings() {
                     <span className="text-sm text-muted-foreground">{member.email}</span>
                   </td>
                   <td className="px-6 py-4">
-                    {member.role === 'company_admin' || member.role === 'admin' || member.role === 'super_admin' ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-500 text-xs font-semibold">
-                        <Shield className="w-3.5 h-3.5" /> Admin
-                      </span>
+                    {member.id === user.id ? (
+                      member.role === 'company_admin' || member.role === 'admin' || member.role === 'super_admin' ? (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-500 text-xs font-semibold">
+                          <Shield className="w-3.5 h-3.5" /> Admin
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-500/10 text-slate-500 dark:text-slate-400 text-xs font-semibold">
+                          <User className="w-3.5 h-3.5" /> User
+                        </span>
+                      )
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-500/10 text-slate-500 dark:text-slate-400 text-xs font-semibold">
-                        <User className="w-3.5 h-3.5" /> User
-                      </span>
+                      <div className="flex items-center gap-4">
+                        <select
+                          value={member.role === 'company_admin' || member.role === 'admin' ? 'company_admin' : 'user'}
+                          onChange={(e) => handleRoleChange(member.id, e.target.value)}
+                          className="bg-secondary/50 border border-border rounded-lg text-xs font-semibold px-2 py-1 text-foreground focus:outline-none focus:border-primary cursor-pointer"
+                        >
+                          <option value="user">User</option>
+                          <option value="company_admin">Admin</option>
+                        </select>
+                        <button
+                          onClick={() => handleRemoveMember(member.id)}
+                          className="text-muted-foreground hover:text-destructive transition-colors"
+                          title="Remove member"
+                        >
+                          <UserMinus className="w-4 h-4" />
+                        </button>
+                      </div>
                     )}
                   </td>
                 </tr>

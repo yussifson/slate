@@ -15,6 +15,8 @@ export default function CliPadLogin() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [workspaces, setWorkspaces] = useState([]);
+  const [showWorkspaceSelect, setShowWorkspaceSelect] = useState(false);
 
   const handleSSOLogin = () => {
     const continueUrl = encodeURIComponent(`${window.location.origin}/auth/callback?continue=%2Fdashboard`);
@@ -26,12 +28,37 @@ export default function CliPadLogin() {
     if (!email || !password) return;
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      // Check for multiple workspaces
+      const { data: userWorkspaces, error: rpcError } = await supabase.rpc('get_user_workspaces_by_email', { lookup_email: email });
+      
+      if (!rpcError && userWorkspaces && userWorkspaces.length > 1) {
+        setWorkspaces(userWorkspaces);
+        setShowWorkspaceSelect(true);
+        setLoading(false);
+        return; // Pause login to let user select
+      }
+      
+      // If exactly 1 workspace found via salt, use it. Otherwise fallback to raw email
+      const loginEmail = (userWorkspaces && userWorkspaces.length === 1) ? userWorkspaces[0].salted_email : email;
+      
+      const { data, error } = await supabase.auth.signInWithPassword({ email: loginEmail, password });
       if (error) throw error;
       navigate('/dashboard');
     } catch (err) {
       toast({ title: 'Sign in failed', description: err.message, variant: 'destructive' });
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleWorkspaceSelect = async (saltedEmail) => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email: saltedEmail, password });
+      if (error) throw error;
+      navigate('/dashboard');
+    } catch (err) {
+      toast({ title: 'Sign in failed', description: err.message, variant: 'destructive' });
       setLoading(false);
     }
   };
@@ -84,7 +111,7 @@ export default function CliPadLogin() {
               </div>
             )}
 
-            {mode === 'email' && (
+            {mode === 'email' && !showWorkspaceSelect && (
               <form onSubmit={handleEmailLogin} className="space-y-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 tracking-wide">Email</label>
@@ -128,6 +155,41 @@ export default function CliPadLogin() {
                   Use SSO instead
                 </button>
               </form>
+            )}
+
+            {mode === 'email' && showWorkspaceSelect && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-center text-slate-900 dark:text-white mb-2">Select Workspace</h3>
+                <p className="text-sm text-center text-slate-500 dark:text-slate-400 mb-4">We found multiple accounts associated with {email}. Which workspace would you like to access?</p>
+                
+                <div className="space-y-2 max-h-[240px] overflow-y-auto pr-1">
+                  {workspaces.map((ws) => (
+                    <button
+                      key={ws.company_id}
+                      onClick={() => handleWorkspaceSelect(ws.salted_email)}
+                      disabled={loading}
+                      className="w-full flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white hover:bg-slate-50 dark:bg-slate-950 dark:hover:bg-slate-900 transition-all text-left group"
+                    >
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-slate-900 dark:text-white text-sm">{ws.company_name || 'My Workspace'}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{ws.salted_email}</span>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0" />
+                    </button>
+                  ))}
+                </div>
+                
+                <button 
+                  onClick={() => {
+                    setShowWorkspaceSelect(false);
+                    setPassword('');
+                  }} 
+                  disabled={loading}
+                  className="w-full text-center text-sm font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors mt-4 pt-4 border-t border-slate-100 dark:border-slate-800"
+                >
+                  Cancel
+                </button>
+              </div>
             )}
           </div>
 
