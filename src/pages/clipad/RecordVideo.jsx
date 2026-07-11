@@ -37,6 +37,7 @@ export default function RecordVideo() {
   const [selectedSpace, setSelectedSpace] = useState('');
   const [spaces, setSpaces] = useState([]);
   const [description, setDescription] = useState('');
+  const [title, setTitle] = useState('');
   const [transcript, setTranscript] = useState('');
 
   const canvasRef = useRef(null);
