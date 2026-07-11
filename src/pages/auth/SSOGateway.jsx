@@ -57,22 +57,35 @@ export default function SSOGateway() {
     setIsLoading(true);
     setAuthError(null);
     try {
-      // 1. Swap active session
-      const { error: sessionError } = await supabase.auth.setSession({
-        access_token: account.access_token,
-        refresh_token: account.refresh_token
-      });
+      // 0. Check if already active
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
       
-      if (sessionError) {
-          // Token might be fully expired or revoked. Force login.
-          removeAccount(account.id);
-          // Redirect them to login automatically instead of getting stuck on an error
-          handleAddAccount();
-          return;
+      if (currentSession && currentSession.user.id === account.id) {
+        // Already active! Skip setSession.
+        await new Promise(resolve => setTimeout(resolve, 200));
+      } else {
+        // 1. Swap active session
+        const { error: sessionError } = await supabase.auth.setSession({
+          access_token: account.access_token,
+          refresh_token: account.refresh_token
+        });
+        
+        if (sessionError) {
+            // Attempt an explicit refresh in case setSession rejected an expired access token
+            const { error: refreshError } = await supabase.auth.refreshSession({ refresh_token: account.refresh_token });
+            
+            if (refreshError) {
+                // Token might be fully expired or revoked. Force login.
+                removeAccount(account.id);
+                // Redirect them to login automatically instead of getting stuck on an error
+                handleAddAccount();
+                return;
+            }
+        }
+        
+        // 2. Wait a brief moment for any background token refreshes to apply
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
-      
-      // 2. Wait a brief moment for any background token refreshes to apply
-      await new Promise(resolve => setTimeout(resolve, 500));
       
       // 3. Verify workspace access
       if (targetHost !== 'slate.optavel.com' && targetHost !== 'account.optavel.com' && targetHost !== 'localhost' && targetHost !== '127.0.0.1') {
