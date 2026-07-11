@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/AuthContext';
 import {
   ArrowLeft, Send, Smile, Clock, Play, Pause, Volume2, VolumeX,
   Maximize2, Share2, Copy, Check, Sparkles, MessageSquare, Heart,
-  ThumbsUp, Zap, Star, BookOpen, ChevronRight, Eye, MoreHorizontal, PictureInPicture
+  ThumbsUp, Zap, Star, BookOpen, ChevronRight, Eye, MoreHorizontal, PictureInPicture, RotateCcw, RotateCw
 } from 'lucide-react';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
@@ -171,6 +171,12 @@ export default function WatchVideo() {
     const nextRate = playbackRate === 1 ? 1.5 : playbackRate === 1.5 ? 2 : 1;
     videoRef.current.playbackRate = nextRate;
     setPlaybackRate(nextRate);
+  };
+
+  const skip = (amount) => {
+    if (!videoRef.current) return;
+    const newTime = Math.max(0, Math.min(videoRef.current.duration, videoRef.current.currentTime + amount));
+    videoRef.current.currentTime = newTime;
   };
 
   const togglePiP = async () => {
@@ -339,6 +345,12 @@ export default function WatchVideo() {
                 <div className="flex items-center gap-3 px-4 pb-4 pointer-events-auto">
                   <button onClick={togglePlay} className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors">
                     {playing ? <Pause className="w-4 h-4 text-foreground" /> : <Play className="w-4 h-4 text-foreground fill-white" />}
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); skip(-10); }} className="text-foreground/70 hover:text-foreground transition-colors" title="Backward 10s">
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); skip(10); }} className="text-foreground/70 hover:text-foreground transition-colors" title="Forward 10s">
+                    <RotateCw className="w-4 h-4" />
                   </button>
                   <button onClick={toggleMute} className="text-foreground/70 hover:text-foreground transition-colors">
                     {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}

@@ -73,7 +73,7 @@ export default function CliPadBilling() {
     try {
       const amountInGhs = amountInUsd * exchangeRate;
       const amountInPesewas = Math.round(amountInGhs * 100);
-      const planCode = import.meta.env.VITE_PAYSTACK_PLAN_CODE_PRO || '';
+      const planCode = import.meta.env.VITE_PAYSTACK_PLAN_CODE_PRO || 'PLN_rz16cups3jarao2';
 
       const handler = window.PaystackPop.setup({
         key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_mock', // Fallback for dev
