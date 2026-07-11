@@ -22,16 +22,16 @@ import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 function StatCard({ icon: Icon, color, value, label, trend }) {
   // Use `color` to dynamically style the icon container for a vibrant look
   return (
-    <div className="p-5 md:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 group shadow-sm hover:shadow-md flex flex-col justify-between">
-      <div className="flex items-start justify-between mb-4">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 ${color || 'bg-primary/10 text-primary'}`}>
-          <Icon className="w-5 h-5" />
+    <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 group shadow-sm hover:shadow-md flex flex-col justify-between">
+      <div className="flex items-start justify-between mb-3">
+        <div className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 ${color || 'bg-primary/10 text-primary'}`}>
+          <Icon className="w-4 h-4" />
         </div>
-        {trend && <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${trend > 0 ? 'text-emerald-600 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-500/10' : 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-500/10'}`}>{trend > 0 ? '+' : ''}{trend}%</span>}
+        {trend && <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${trend > 0 ? 'text-emerald-600 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-500/10' : 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-500/10'}`}>{trend > 0 ? '+' : ''}{trend}%</span>}
       </div>
       <div>
-        <div className="text-3xl font-black text-slate-900 dark:text-white mb-1 tabular-nums tracking-tight">{value}</div>
-        <div className="text-sm font-medium text-slate-500 dark:text-slate-400">{label}</div>
+        <div className="text-2xl font-bold text-slate-900 dark:text-white mb-0.5 tabular-nums tracking-tight">{value}</div>
+        <div className="text-xs font-medium text-slate-500 dark:text-slate-400">{label}</div>
       </div>
     </div>
   );
@@ -249,29 +249,29 @@ export default function CliPadDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-12 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+        <div className="flex flex-col sm:flex-row gap-3 mb-8 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
           <button
             onClick={startInstantMeeting}
             disabled={isCreatingMeeting}
-            className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-primary-foreground font-semibold shadow-lg shadow-primary/30 transition-all hover:-translate-y-0.5 active:translate-y-0"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-primary-foreground font-semibold shadow-md shadow-primary/20 transition-all hover:-translate-y-0.5 active:translate-y-0"
           >
-            {isCreatingMeeting ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Video className="w-5 h-5" />}
+            {isCreatingMeeting ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Video className="w-4 h-4" />}
             New Meeting
           </button>
 
           <button
             onClick={() => navigate('/record')}
-            className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 text-slate-700 dark:text-slate-200 font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 text-slate-700 dark:text-slate-200 font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
           >
-            <Camera className="w-5 h-5 text-rose-500 group-hover:scale-110 transition-transform" />
+            <Camera className="w-4 h-4 text-rose-500 group-hover:scale-110 transition-transform" />
             Record Video
           </button>
 
           <button
             onClick={() => navigate('/spaces')}
-            className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 text-slate-700 dark:text-slate-200 font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 text-slate-700 dark:text-slate-200 font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
           >
-            <Layers className="w-5 h-5 text-indigo-500 group-hover:scale-110 transition-transform" />
+            <Layers className="w-4 h-4 text-indigo-500 group-hover:scale-110 transition-transform" />
             Team Spaces
           </button>
         </div>
