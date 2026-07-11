@@ -53,19 +53,7 @@ export default function ClipadMobileNav() {
         </div>
       </nav>
 
-      {/* Orbit AI Floating Toggle - Visible on all screens */}
-      {!isOrbitOpen && (
-        <button
-          onClick={() => setIsOrbitOpen(true)}
-          className="fixed bottom-[80px] md:bottom-6 right-6 z-50 w-14 h-14 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 group"
-        >
-          <Bot className="w-6 h-6" />
-          <Sparkles className="w-3 h-3 text-amber-300 absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-        </button>
-      )}
-
-      {/* Orbit Assistant Modal */}
-      <ClipadOrbitAssistant isOpen={isOrbitOpen} onClose={() => setIsOrbitOpen(false)} />
+      {/* Removed floating Orbit Assistant modal; it is now handled by ClipadLayout */}
     </>
   );
 }

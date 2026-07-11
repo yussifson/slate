@@ -287,6 +287,7 @@ export default function MeetLandingPage() {
         <div className="hidden md:flex items-center gap-1 text-sm text-muted-foreground">
           <a href="#features" className="px-4 py-2 rounded-lg hover:text-foreground hover:bg-secondary transition-colors">Features</a>
           <a href="#pricing" className="px-4 py-2 rounded-lg hover:text-foreground hover:bg-secondary transition-colors">Pricing</a>
+          <a href="#contact" className="px-4 py-2 rounded-lg hover:text-foreground hover:bg-secondary transition-colors">Support</a>
         </div>
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-2 text-sm font-semibold tabular-nums bg-slate-100/80 px-3 py-1.5 rounded-xl border border-slate-200/60 shadow-inner text-slate-700">
@@ -422,9 +423,7 @@ export default function MeetLandingPage() {
 
       <section id="features" className="py-24 px-6 md:px-12 max-w-7xl mx-auto overflow-hidden">
         <div className="text-center mb-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-500 dark:text-cyan-400 text-xs font-semibold tracking-wider uppercase mb-6">
-            <Sparkles className="w-3 h-3" /> Unified Intelligence
-          </div>
+
           <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5">Everything your team needs.</h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">Not five tools. One.</p>
         </div>
@@ -469,9 +468,7 @@ export default function MeetLandingPage() {
 
         <section id="pricing" className="py-24 px-6 md:px-12 max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-semibold tracking-wider uppercase mb-6">
-              <Star className="w-3 h-3" /> Upgrade Your Workspace
-            </div>
+
             <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5">Choose the perfect plan for your team.</h2>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto">Scale your operations seamlessly with Clipad.</p>
           </div>
@@ -563,6 +560,7 @@ export default function MeetLandingPage() {
               <h3 className="text-xl font-bold mb-3">Request a Call</h3>
               <p className="text-muted-foreground text-sm mb-6 flex-1">Submit your details and a dedicated support representative will call you back shortly.</p>
               <button 
+                onClick={() => setSupportPanel('call')}
                 className="w-full py-3 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-semibold transition-colors"
               >
                 Request Call
@@ -645,6 +643,66 @@ export default function MeetLandingPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Support Panel */}
+      <AnimatePresence>
+        {supportPanel && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-slate-900/20 backdrop-blur-sm"
+            onClick={() => setSupportPanel(null)}
+          >
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between p-6 border-b border-slate-100">
+                <h3 className="text-xl font-bold">{supportPanel === 'chat' ? 'Live Chat Support' : 'Request a Call'}</h3>
+                <button onClick={() => setSupportPanel(null)} className="p-2 hover:bg-slate-100 rounded-full">
+                  <X className="w-5 h-5 text-slate-500" />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-6">
+                {supportPanel === 'chat' ? (
+                  <div className="flex flex-col h-full justify-center items-center text-center text-slate-500">
+                    <MessageSquare className="w-12 h-12 text-slate-300 mb-4" />
+                    <p>Live chat agents are currently offline.<br/>Please leave a message.</p>
+                    <form className="space-y-4 w-full mt-8" onSubmit={(e) => { e.preventDefault(); setSubmittingSupport(true); setTimeout(() => { setSubmittingSupport(false); setSupportPanel(null); toast({title: 'Message Sent', description: 'We will email you shortly.'}); }, 1000); }}>
+                      <div className="text-left">
+                        <label className="text-sm font-medium">Message</label>
+                        <textarea required className="w-full mt-1 px-4 py-2 border rounded-xl" rows={4} />
+                      </div>
+                      <Button type="submit" disabled={submittingSupport} className="w-full rounded-xl bg-primary">
+                        {submittingSupport ? 'Sending...' : 'Send Message'}
+                      </Button>
+                    </form>
+                  </div>
+                ) : (
+                  <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setSubmittingSupport(true); setTimeout(() => { setSubmittingSupport(false); setSupportPanel(null); toast({title: 'Request Sent', description: 'We will call you shortly.'}); }, 1000); }}>
+                    <div>
+                      <label className="text-sm font-medium">Name</label>
+                      <input type="text" required className="w-full mt-1 px-4 py-2 border rounded-xl" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">Phone Number</label>
+                      <input type="tel" required className="w-full mt-1 px-4 py-2 border rounded-xl" />
+                    </div>
+                    <Button type="submit" disabled={submittingSupport} className="w-full rounded-xl mt-4 bg-blue-500 hover:bg-blue-600 text-white">
+                      {submittingSupport ? 'Submitting...' : 'Request Call'}
+                    </Button>
+                  </form>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

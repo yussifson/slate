@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
-import { Bell, Trash2 } from 'lucide-react';
+import { Bell, Trash2, Check, X } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatDistanceToNow } from 'date-fns';
+import { powerSync } from "@/api/PowerSyncConnector";
+import { toast } from "@/components/ui/use-toast";
+import { Button } from '@/components/ui/button';
 
 export default function NotificationsDropdown() {
   const { user } = useAuth();
@@ -38,7 +41,6 @@ export default function NotificationsDropdown() {
 
       if (error) throw error;
       
-      // Fix boolean representation for 'is_read' if it's stored as text "false" or boolean false
       const formattedData = data?.map(n => ({
         ...n,
         is_read: n.is_read === true || n.is_read === 'true'
@@ -79,13 +81,61 @@ export default function NotificationsDropdown() {
   };
 
   const deleteNotification = async (id, e) => {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     try {
       await supabase.from('notifications').delete().eq('id', id);
       setNotifications(prev => prev.filter(n => n.id !== id));
       fetchNotifications();
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleGroupRequest = async (notification, action, e) => {
+    e.stopPropagation();
+    try {
+      if (action === 'accept') {
+        const newParticipant = {
+          id: crypto.randomUUID(),
+          room_id: notification.related_id,
+          user_id: notification.created_by,
+          role: 'member'
+        };
+        await powerSync.execute(
+          `INSERT INTO chat_participants (id, room_id, user_id, role) VALUES (?, ?, ?, ?)`,
+          [newParticipant.id, newParticipant.room_id, newParticipant.user_id, newParticipant.role]
+        );
+        toast({ title: "Success", description: "User added to the group." });
+        
+        // Notify the user they were accepted
+        const { data: requesterProfile } = await supabase.from('profiles').select('email, full_name').eq('id', notification.created_by).single();
+        if (requesterProfile) {
+          const accNotif = {
+            id: crypto.randomUUID(),
+            created_at: new Date().toISOString(),
+            created_by: user.id,
+            company_id: notification.company_id,
+            recipient_email: requesterProfile.email,
+            recipient_name: requesterProfile.full_name,
+            type: 'system',
+            title: 'Group Join Request Accepted',
+            message: `Your request to join the group has been approved.`,
+            related_id: notification.related_id,
+            is_read: 'false'
+          };
+          const _keys = Object.keys(accNotif);
+          const _vals = Object.values(accNotif);
+          await powerSync.execute(`INSERT INTO notifications (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+        }
+      } else {
+        toast({ title: "Request Rejected", description: "User was not added to the group." });
+      }
+
+      // Delete original request
+      await deleteNotification(notification.id);
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Error", description: err.message, variant: "destructive" });
     }
   };
 
@@ -125,16 +175,39 @@ export default function NotificationsDropdown() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-tight mb-1">{notification.title}</p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">{notification.message}</p>
+                    
+                    {notification.type === 'group_join_request' && (
+                      <div className="flex items-center gap-2 mt-3">
+                        <Button 
+                          size="sm" 
+                          onClick={(e) => handleGroupRequest(notification, 'accept', e)} 
+                          className="h-7 text-[10px] px-2.5 rounded bg-emerald-500 hover:bg-emerald-600 text-white"
+                        >
+                          <Check className="w-3 h-3 mr-1"/> Accept
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={(e) => handleGroupRequest(notification, 'reject', e)} 
+                          className="h-7 text-[10px] px-2.5 rounded text-slate-500"
+                        >
+                          <X className="w-3 h-3 mr-1"/> Reject
+                        </Button>
+                      </div>
+                    )}
+
                     <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-2 font-medium uppercase tracking-wider">
                       {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
                     </p>
                   </div>
-                  <button 
-                    onClick={(e) => deleteNotification(notification.id, e)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-rose-500 shrink-0 self-start"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                  {notification.type !== 'group_join_request' && (
+                    <button 
+                      onClick={(e) => deleteNotification(notification.id, e)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-rose-500 shrink-0 self-start"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

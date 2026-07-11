@@ -70,16 +70,16 @@ export default function FeaturesCircle() {
       
       {/* Circle Container */}
       <div className="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] shrink-0">
-        <div className="absolute inset-0 rounded-full border border-slate-200 dark:border-slate-800" />
-        <div className="absolute inset-8 rounded-full border border-dashed border-slate-200 dark:border-slate-800" />
-        <div className="absolute inset-16 rounded-full bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center">
+        <div className="absolute inset-0 rounded-full border-2 border-slate-100 dark:border-slate-800 shadow-[inset_0_0_40px_rgba(0,0,0,0.02)] dark:shadow-[inset_0_0_40px_rgba(255,255,255,0.02)] bg-gradient-to-b from-slate-50/50 to-transparent dark:from-slate-900/50" />
+        <div className="absolute inset-8 rounded-full border border-dashed border-slate-300/60 dark:border-slate-700/60" />
+        <div className="absolute inset-16 rounded-full bg-gradient-to-tr from-slate-100 to-white dark:from-slate-800 dark:to-slate-900 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] flex items-center justify-center border border-white/50 dark:border-slate-700/50 backdrop-blur-md">
           <motion.div 
-            className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center relative shadow-[0_0_30px_rgba(var(--primary),0.2)]"
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center relative shadow-[0_0_40px_rgba(var(--primary),0.3)] border border-primary/20 backdrop-blur-xl"
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           >
-            <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping opacity-20" />
-            <Layers className="w-8 h-8 text-primary relative z-10" />
+            <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping opacity-30" style={{ animationDuration: '3s' }} />
+            <Layers className="w-10 h-10 text-primary relative z-10 drop-shadow-md" />
           </motion.div>
         </div>
 
@@ -113,9 +113,9 @@ export default function FeaturesCircle() {
                     setRotation(r => r - (diff * 60));
                     setActiveIndex(i);
                   }}
-                  className={`w-full h-full rounded-2xl flex items-center justify-center transition-all duration-500 shadow-lg ${isActive ? `bg-gradient-to-br ${p.color} ${p.glow} scale-125 z-20` : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 opacity-60 hover:opacity-100 z-10'}`}
+                  className={`w-full h-full rounded-2xl flex items-center justify-center transition-all duration-500 shadow-xl border border-white/20 backdrop-blur-sm ${isActive ? `bg-gradient-to-br ${p.color} ${p.glow} scale-125 z-20` : 'bg-white/90 dark:bg-slate-800/90 border-slate-200/50 dark:border-slate-700/50 opacity-70 hover:opacity-100 hover:scale-110 z-10'}`}
                 >
-                  <Icon className={`w-6 h-6 ${isActive ? 'text-white' : 'text-slate-500 dark:text-slate-400'}`} />
+                  <Icon className={`w-6 h-6 drop-shadow-sm ${isActive ? 'text-white' : 'text-slate-600 dark:text-slate-300'}`} />
                 </button>
               </motion.div>
             );
@@ -132,13 +132,17 @@ export default function FeaturesCircle() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className={`p-8 rounded-3xl ${pillars[activeIndex].bg} border border-slate-200/50 dark:border-slate-800/50`}
+            className={`relative p-8 rounded-3xl ${pillars[activeIndex].bg} border border-white/60 dark:border-slate-700/50 shadow-2xl shadow-slate-200/50 dark:shadow-none backdrop-blur-xl`}
           >
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${pillars[activeIndex].color} ${pillars[activeIndex].glow} flex items-center justify-center mb-6 shadow-xl`}>
-              {React.createElement(pillars[activeIndex].icon, { className: "w-6 h-6 text-white" })}
+            <div className="absolute -inset-0.5 bg-gradient-to-br opacity-50 blur-2xl z-0 rounded-3xl pointer-events-none transition-colors duration-500" style={{ backgroundImage: `var(--tw-gradient-stops)` }} className={`absolute -inset-1 opacity-20 blur-xl z-0 bg-gradient-to-br ${pillars[activeIndex].color}`} />
+            
+            <div className="relative z-10">
+              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${pillars[activeIndex].color} ${pillars[activeIndex].glow} flex items-center justify-center mb-6 shadow-lg shadow-black/10 border border-white/20`}>
+                {React.createElement(pillars[activeIndex].icon, { className: "w-7 h-7 text-white drop-shadow-md" })}
+              </div>
+              <h3 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4 drop-shadow-sm">{pillars[activeIndex].title}</h3>
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-lg font-medium">{pillars[activeIndex].desc}</p>
             </div>
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">{pillars[activeIndex].title}</h3>
-            <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">{pillars[activeIndex].desc}</p>
           </motion.div>
         </AnimatePresence>
       </div>

@@ -12,8 +12,8 @@ import PageNotFound from './lib/PageNotFound';
 const JoinMeeting = React.lazy(() => import('@/pages/JoinMeeting'));
 const StandaloneMeeting = React.lazy(() => import('@/pages/StandaloneMeeting'));
 const MeetLandingPage = React.lazy(() => import('@/pages/MeetLandingPage'));
-
 // CliPad Imports
+import ClipadLayout from '@/components/layout/ClipadLayout';
 const SpaceDashboard = React.lazy(() => import('@/pages/clipad/SpaceDashboard'));
 const RecordVideo = React.lazy(() => import('@/pages/clipad/RecordVideo'));
 const WatchVideo = React.lazy(() => import('@/pages/clipad/WatchVideo'));
@@ -758,12 +758,14 @@ function PlatformRoutes() {
       <Route path="/v/" element={<VDashboard />} />
       <Route path="/v/trades" element={<VTrades />} />
       
-      {/* CliPad Routes */}
-      <Route path="/clipad/space/:spaceId" element={<SpaceDashboard />} />
-      <Route path="/clipad/record" element={<RecordVideo />} />
-      <Route path="/clipad/watch/:videoId" element={<WatchVideo />} />
-      <Route path="/clipad/settings" element={<CliPadSettings />} />
-      <Route path="/clipad/analytics" element={<VideoAnalytics />} />
+      {/* CliPad Routes (also mounted here for legacy fallback/support) */}
+      <Route element={<ClipadLayout />}>
+        <Route path="/clipad/space/:spaceId" element={<SpaceDashboard />} />
+        <Route path="/clipad/record" element={<RecordVideo />} />
+        <Route path="/clipad/watch/:videoId" element={<WatchVideo />} />
+        <Route path="/clipad/settings" element={<CliPadSettings />} />
+        <Route path="/clipad/analytics" element={<VideoAnalytics />} />
+      </Route>
 
       <Route path="/v/courses" element={<VCourses />} />
       <Route path="/v/workshops" element={<VWorkshops />} />
@@ -1233,16 +1235,18 @@ function App() {
                       <Route path="/join/:roomId" element={<StandaloneMeeting />} />
                       <Route path="/analytics" element={<VideoAnalytics />} />
                       <Route element={<ProtectedRoute />}>
-                        <Route path="/dashboard" element={<CliPadDashboard />} />
-                        <Route path="/spaces" element={<SpacesList />} />
-                        <Route path="/spaces/:spaceId" element={<SpaceDashboard />} />
-                        <Route path="/record" element={<RecordVideo />} />
-                        <Route path="/meetings" element={<MeetingsList />} />
-                        <Route path="/meetings/:meetingId" element={<MeetingRecord />} />
-                        <Route path="/settings" element={<CliPadSettings />} />
-                        <Route path="/support" element={<CliPadSupport />} />
-                        <Route path="/chat" element={<ClipadChat />} />
-                        <Route path="/chat/:roomId" element={<ClipadChat />} />
+                        <Route element={<ClipadLayout />}>
+                          <Route path="/dashboard" element={<CliPadDashboard />} />
+                          <Route path="/spaces" element={<SpacesList />} />
+                          <Route path="/spaces/:spaceId" element={<SpaceDashboard />} />
+                          <Route path="/record" element={<RecordVideo />} />
+                          <Route path="/meetings" element={<MeetingsList />} />
+                          <Route path="/meetings/:meetingId" element={<MeetingRecord />} />
+                          <Route path="/settings" element={<CliPadSettings />} />
+                          <Route path="/support" element={<CliPadSupport />} />
+                          <Route path="/chat" element={<ClipadChat />} />
+                          <Route path="/chat/:roomId" element={<ClipadChat />} />
+                        </Route>
                       </Route>
                       <Route path="/watch/:videoId" element={<WatchVideo />} />
                       <Route path="*" element={<Navigate to="/" replace />} />
