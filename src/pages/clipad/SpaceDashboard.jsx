@@ -13,7 +13,7 @@ import MeetingInsights from '@/components/clipad/MeetingInsights';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import { getSpaceIcon } from '@/utils/spaceIcons';
 import ClipadLoader from '@/components/ui/ClipadLoader';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 
 const TABS = [
   { id: 'overview', icon: Layers, label: 'Overview' },
@@ -116,6 +116,10 @@ export default function SpaceDashboard() {
   const [editDesc, setEditDesc] = useState('');
   const [editIsPrivate, setEditIsPrivate] = useState(false);
   const [savingEdit, setSavingEdit] = useState(false);
+  const [showMembers, setShowMembers] = useState(false);
+  const [profiles, setProfiles] = useState([]);
+  const [spaceMembers, setSpaceMembers] = useState([]);
+  const [searchMember, setSearchMember] = useState('');
   const { toast } = useToast();
 
   useEffect(() => { if (spaceId) fetchAll(); }, [spaceId]);
@@ -123,11 +127,13 @@ export default function SpaceDashboard() {
   const fetchAll = async () => {
     setLoading(true);
     try {
-      const [spaceRes, videosRes, meetingsRes, tasksRes] = await Promise.all([
+      const [spaceRes, videosRes, meetingsRes, tasksRes, membersRes, profilesRes] = await Promise.all([
         supabase.from('clipad_spaces').select('*').eq('id', spaceId).single(),
         supabase.from('clipad_videos').select('*, creator:creator_id(full_name, avatar_url)').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(12),
         supabase.from('clipad_meeting_records').select('*').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(20),
         supabase.from('clipad_action_items').select('*, assignedUser:assigned_to(full_name)').eq('space_id', spaceId).order('created_at', { ascending: false }),
+        supabase.from('clipad_space_members').select('*').eq('space_id', spaceId),
+        supabase.from('profiles').select('id, full_name, email, avatar_url')
       ]);
       if (spaceRes.data) {
         setSpace(spaceRes.data);
@@ -145,6 +151,8 @@ export default function SpaceDashboard() {
         }
       }
       if (tasksRes.data) setTasks(tasksRes.data);
+      if (membersRes.data) setSpaceMembers(membersRes.data);
+      if (profilesRes.data) setProfiles(profilesRes.data);
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
   };
@@ -206,6 +214,20 @@ export default function SpaceDashboard() {
     } catch (err) { console.error(err); }
   };
 
+  const toggleMember = async (profileId) => {
+    const isMember = spaceMembers.some(m => m.user_id === profileId);
+    try {
+      if (isMember) {
+        await supabase.from('clipad_space_members').delete().match({ space_id: spaceId, user_id: profileId });
+        setSpaceMembers(prev => prev.filter(m => m.user_id !== profileId));
+      } else {
+        const { data, error } = await supabase.from('clipad_space_members').insert({ space_id: spaceId, user_id: profileId }).select().single();
+        if (error) throw error;
+        if (data) setSpaceMembers(prev => [...prev, data]);
+      }
+    } catch (err) { console.error(err); }
+  };
+
   const colorIndex = space?.name?.charCodeAt(0) % COLORS.length || 0;
   const color = COLORS[colorIndex];
 
@@ -230,8 +252,9 @@ export default function SpaceDashboard() {
   
   const isAdmin = user?.subscription_tier === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin';
   const canEdit = space.created_by === user?.id || isAdmin;
+  const isMember = spaceMembers.some(m => m.user_id === user?.id);
 
-  if (space.is_private && !canEdit) {
+  if (space.is_private && !canEdit && !isMember) {
     return (
       <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter flex items-center justify-center text-foreground">
         <div className="text-center">
@@ -300,6 +323,11 @@ export default function SpaceDashboard() {
                 <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {meetings.length} meetings</span>
                 <span className="flex items-center gap-1"><Camera className="w-3.5 h-3.5" /> {videos.length} videos</span>
                 <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> {openTasks.length} open tasks</span>
+                {space.is_private && canEdit && (
+                  <button onClick={() => setShowMembers(true)} className="flex items-center gap-1 ml-2 text-primary hover:text-primary/80 font-semibold transition-colors">
+                    <Users className="w-3.5 h-3.5" /> Manage Members
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -520,6 +548,61 @@ export default function SpaceDashboard() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Manage Members Modal */}
+      {showMembers && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-lg w-full shadow-2xl flex flex-col max-h-[80vh]">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><Users className="w-5 h-5 text-primary" /> Manage Members</h2>
+              <button onClick={() => setShowMembers(false)} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"><X className="w-5 h-5" /></button>
+            </div>
+            
+            <div className="relative mb-4">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input 
+                type="text"
+                placeholder="Search users by name or email..."
+                value={searchMember}
+                onChange={e => setSearchMember(e.target.value)}
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-primary/50 transition-colors"
+              />
+            </div>
+
+            <div className="flex-1 overflow-y-auto pr-2 space-y-2">
+              {profiles
+                .filter(p => p.id !== space.created_by && (p.full_name?.toLowerCase().includes(searchMember.toLowerCase()) || p.email?.toLowerCase().includes(searchMember.toLowerCase())))
+                .map(p => {
+                  const isMem = spaceMembers.some(m => m.user_id === p.id);
+                  return (
+                    <div key={p.id} className="flex items-center justify-between p-3 rounded-xl border border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <img src={p.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${p.full_name}`} alt={p.full_name} className="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-700 object-cover" />
+                        <div>
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white">{p.full_name}</p>
+                          <p className="text-xs text-slate-500">{p.email}</p>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => toggleMember(p.id)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${isMem ? 'bg-rose-50 text-rose-600 hover:bg-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:hover:bg-rose-500/20 border border-rose-200 dark:border-rose-500/30' : 'bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20'}`}
+                      >
+                        {isMem ? 'Remove' : 'Add'}
+                      </button>
+                    </div>
+                  );
+                })}
+              {profiles.filter(p => p.id !== space.created_by && (p.full_name?.toLowerCase().includes(searchMember.toLowerCase()) || p.email?.toLowerCase().includes(searchMember.toLowerCase()))).length === 0 && (
+                <p className="text-center text-slate-500 text-sm py-4">No users found.</p>
+              )}
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+              <button onClick={() => setShowMembers(false)} className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm hover:opacity-90 transition-opacity">Done</button>
+            </div>
           </div>
         </div>
       )}

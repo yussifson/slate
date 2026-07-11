@@ -12,7 +12,7 @@ import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 
 function CopyButton({ text }) {
   const [copied, setCopied] = useState(false);
