@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from '@/api/supabaseClient';
-import { Settings, User, Bell, Shield, LogOut, ArrowLeft, Video, CheckCircle, Camera, CreditCard } from 'lucide-react';
+import { Settings, User, Users, Bell, Shield, LogOut, ArrowLeft, Video, CheckCircle, Camera, CreditCard } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import CliPadBilling from './CliPadBilling';
+import CliPadTeamSettings from '@/components/clipad/CliPadTeamSettings';
 
 export default function CliPadSettings() {
   const { user, logout } = useAuth();
@@ -91,7 +92,7 @@ export default function CliPadSettings() {
           
           {/* Sidebar */}
           <div className="md:col-span-1 space-y-3">
-            {[{id: 'profile', icon: User, label: 'Profile'}, {id: 'notifs', icon: Bell, label: 'Notifications'}, {id: 'meeting', icon: Video, label: 'Meeting Defaults'}, ...(['admin', 'company_admin', 'super_admin'].includes(user?.role) ? [{id: 'billing', icon: CreditCard, label: 'Billing & Plans'}] : [])].map(tab => (
+            {[{id: 'profile', icon: User, label: 'Profile'}, {id: 'notifs', icon: Bell, label: 'Notifications'}, {id: 'meeting', icon: Video, label: 'Meeting Defaults'}, ...(['admin', 'company_admin', 'super_admin'].includes(user?.role) ? [{id: 'team', icon: Users, label: 'Team Management'}, {id: 'billing', icon: CreditCard, label: 'Billing & Plans'}] : [])].map(tab => (
               <button 
                 key={tab.id} 
                 onClick={() => setActiveTab(tab.id)}
@@ -105,6 +106,7 @@ export default function CliPadSettings() {
           <div className="md:col-span-3 space-y-8">
             
             {activeTab === 'billing' && <CliPadBilling />}
+            {activeTab === 'team' && <CliPadTeamSettings />}
 
             {/* Profile */}
             {activeTab === 'profile' && (
