@@ -108,7 +108,7 @@ export default function RecordVideo() {
         setRecordingSeconds(seconds);
         
         // Free tier limit: 3 minutes (180 seconds)
-        if (seconds >= 180 && user?.subscription_tier !== 'pro') {
+        if (seconds >= 180 && user?.subscription_tier !== 'pro' && user?.role !== 'super_admin') {
           stopRecording();
           setShowPaywall(true);
         }
@@ -544,7 +544,7 @@ export default function RecordVideo() {
         setRecordingSeconds(seconds);
         
         // Free tier limit: 3 minutes (180 seconds)
-        if (seconds >= 180 && user?.subscription_tier !== 'pro') {
+        if (seconds >= 180 && user?.subscription_tier !== 'pro' && user?.role !== 'super_admin') {
           stopRecording();
           setShowPaywall(true);
         }

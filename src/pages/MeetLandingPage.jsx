@@ -12,6 +12,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import FeaturesCircle from '@/components/clipad/FeaturesCircle';
+import { useAuth } from '@/lib/AuthContext';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 
 const pillars = [
@@ -183,18 +185,32 @@ export default function MeetLandingPage() {
   const [laterLink, setLaterLink] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [user, setUser] = useState(null);
   const [supportPanel, setSupportPanel] = useState(null); 
   const [supportForm, setSupportForm] = useState({ name: '', email: '', phone: '', message: '' });
   const [submittingSupport, setSubmittingSupport] = useState(false);
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setUser(data?.session?.user || null));
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => setUser(session?.user || null));
-    return () => subscription.unsubscribe();
-  }, []);
+  
+  const { user } = useAuth();
+  const companyId = useCompanyId();
+  const [exchangeRate, setExchangeRate] = useState(218 / 19);
+  const [isProcessingPay, setIsProcessingPay] = useState(false);
+
   const navigate = useNavigate();
   const { toast } = useToast();
   const now = useLiveClock();
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "https://js.paystack.co/v1/inline.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    fetch('https://open.er-api.com/v6/latest/USD')
+      .then(res => res.json())
+      .then(data => { if (data?.rates?.GHS) setExchangeRate(data.rates.GHS); })
+      .catch(() => setExchangeRate(218 / 19));
+
+    return () => { if (document.body.contains(script)) document.body.removeChild(script); };
+  }, []);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -228,6 +244,62 @@ export default function MeetLandingPage() {
       return result;
     };
     return `${randomStr(3)}-${randomStr(3)}-${randomStr(1)}`;
+  };
+
+  const handlePricingAction = async (tierName) => {
+    if (tierName === 'Enterprise') return;
+    
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    if (tierName === 'Free') {
+      navigate('/dashboard');
+      return;
+    }
+
+    if (tierName === 'Pro') {
+      setIsProcessingPay(true);
+      try {
+        const amountInUsd = 19;
+        const amountInGhs = amountInUsd * exchangeRate;
+        const amountInPesewas = Math.round(amountInGhs * 100);
+        const planCode = import.meta.env.VITE_PAYSTACK_PLAN_CODE_PRO || 'PLN_rz16cups3jarao2';
+
+        const handler = window.PaystackPop.setup({
+          key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_mock',
+          email: user?.email || 'user@example.com',
+          amount: amountInPesewas, 
+          currency: 'GHS',
+          plan: planCode,
+          ref: '' + Math.floor((Math.random() * 1000000000) + 1),
+          callback: function (response) {
+            toast({ title: 'Payment Successful', description: `Welcome to Pro!` });
+            
+            if (companyId) {
+              supabase.from('company_subscriptions').upsert({
+                company_id: companyId,
+                plan_id: 'pro',
+                status: 'active',
+                paystack_customer_code: response.reference,
+                updated_at: new Date().toISOString()
+              }).then(() => navigate('/dashboard'));
+            } else {
+              navigate('/dashboard');
+            }
+          },
+          onClose: function () {
+            toast({ title: 'Payment Cancelled' });
+          },
+        });
+        handler.openIframe();
+      } catch (err) {
+        toast({ title: 'Error', description: 'Could not initialize Paystack', variant: 'destructive' });
+      } finally {
+        setIsProcessingPay(false);
+      }
+    }
   };
 
   const handleCreateMeeting = async (type) => {
@@ -497,10 +569,11 @@ export default function MeetLandingPage() {
                   ))}
                 </div>
                 <button
-                  onClick={() => navigate(tier.name === 'Enterprise' ? '#' : '/login')}
+                  onClick={() => handlePricingAction(tier.name)}
+                  disabled={isProcessingPay}
                   className={`w-full py-3 rounded-xl font-semibold text-sm transition-all ${tier.highlight ? 'bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white shadow-lg shadow-primary/25' : 'bg-secondary hover:bg-secondary/80 text-foreground border border-border'}`}
                 >
-                  {tier.name === 'Enterprise' ? 'Contact Sales' : 'Get Started'}
+                  {tier.name === 'Enterprise' ? 'Contact Sales' : (user ? (tier.name === 'Free' ? 'Current Plan' : 'Upgrade') : 'Get Started')}
                 </button>
               </div>
             ))}
