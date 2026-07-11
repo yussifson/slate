@@ -274,7 +274,7 @@ export default function MeetLandingPage() {
   const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
 
   return (
-    <div className="light min-h-screen bg-white text-slate-900 flex flex-col font-sans relative">
+    <div className="light min-h-screen bg-white text-slate-900 flex flex-col font-sans relative overflow-hidden">
       {/* Realistic Background Layers */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 blur-[120px]" />
