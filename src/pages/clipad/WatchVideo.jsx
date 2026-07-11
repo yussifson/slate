@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/AuthContext';
 import {
   ArrowLeft, Send, Smile, Clock, Play, Pause, Volume2, VolumeX,
   Maximize2, Share2, Copy, Check, Sparkles, MessageSquare, Heart,
-  ThumbsUp, Zap, Star, BookOpen, ChevronRight, Eye, MoreHorizontal
+  ThumbsUp, Zap, Star, BookOpen, ChevronRight, Eye, MoreHorizontal, PictureInPicture
 } from 'lucide-react';
 
 const EMOJIS = ['👍','❤️','🔥','😂','🎉','🤯'];
@@ -139,6 +139,28 @@ export default function WatchVideo() {
     if (!videoRef.current) return;
     videoRef.current.muted = !muted;
     setMuted(!muted);
+  };
+
+  const toggleFullScreen = () => {
+    if (!playerRef.current) return;
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(err => console.error(err));
+    } else {
+      playerRef.current.requestFullscreen().catch(err => console.error(err));
+    }
+  };
+
+  const togglePiP = async () => {
+    if (!videoRef.current) return;
+    try {
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+      } else {
+        await videoRef.current.requestPictureInPicture();
+      }
+    } catch (err) {
+      console.error('PiP failed', err);
+    }
   };
 
   const submitComment = async (e) => {
@@ -301,6 +323,13 @@ export default function WatchVideo() {
                       <button key={e} onClick={(evt) => { evt.stopPropagation(); addReaction(e); }} className="text-base hover:scale-125 transition-transform active:scale-150">{e}</button>
                     ))}
                   </div>
+                  <div className="w-px h-4 bg-white/20 mx-1" />
+                  <button onClick={(e) => { e.stopPropagation(); togglePiP(); }} className="text-foreground/70 hover:text-foreground transition-colors" title="Picture-in-Picture">
+                    <PictureInPicture className="w-4 h-4" />
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); toggleFullScreen(); }} className="text-foreground/70 hover:text-foreground transition-colors" title="Full Screen">
+                    <Maximize2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </div>
