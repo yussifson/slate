@@ -16,6 +16,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import ContactSalesModal from '@/components/clipad/ContactSalesModal';
 import PaymentReceiptModal from '@/components/clipad/PaymentReceiptModal';
+import SupportAIChat from '@/components/clipad/SupportAIChat';
 
 
 const pillars = [
@@ -191,7 +192,8 @@ export default function MeetLandingPage() {
   const [supportForm, setSupportForm] = useState({ name: '', email: '', phone: '', message: '' });
   const [submittingSupport, setSubmittingSupport] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
-  const [receiptDetails, setReceiptDetails] = useState(null);
+  const [receiptDetails, setDetails] = useState(null);
+  const [showHumanForm, setShowHumanForm] = useState(false);
   
   const { user } = useAuth();
   const companyId = useCompanyId();
@@ -399,7 +401,7 @@ export default function MeetLandingPage() {
       <main className="relative z-10 flex-1 flex flex-col md:flex-row items-center justify-center p-6 md:p-12 gap-12 md:gap-16 max-w-7xl mx-auto w-full">
         <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-8 max-w-xl">
           <h1 className="text-4xl md:text-5xl font-normal text-slate-800 leading-tight">
-            Enterprise collaboration & productivity workspace.<br />Now free for everyone.
+            Enterprise collaboration & productivity software.<br />Now free for everyone.
           </h1>
           <p className="text-lg text-slate-500 leading-relaxed">
             We re-engineered the service we built for secure collaborative productivity, CliPad, to make it free and available for all.
@@ -810,29 +812,36 @@ export default function MeetLandingPage() {
               <div className="flex items-center justify-between p-6 border-b border-slate-100">
                 <h3 className="text-xl font-bold">{supportPanel === 'chat' ? 'Live Chat Support' : 'Request a Call'}</h3>
                 <button 
-                  onClick={() => setSupportPanel(null)} 
+                  onClick={() => { setSupportPanel(null); setShowHumanForm(false); }} 
                   className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-all"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <div className="flex-1 overflow-y-auto p-6">
+              <div className="flex-1 overflow-y-auto overflow-x-hidden relative">
                 {supportPanel === 'chat' ? (
-                  <div className="flex flex-col h-full justify-center items-center text-center text-slate-500">
-                    <MessageSquare className="w-12 h-12 text-slate-300 mb-4" />
-                    <p>Live chat agents are currently offline.<br/>Please leave a message.</p>
-                    <form className="space-y-4 w-full mt-8" onSubmit={(e) => { e.preventDefault(); setSubmittingSupport(true); setTimeout(() => { setSubmittingSupport(false); setSupportPanel(null); toast({title: 'Message Sent', description: 'We will email you shortly.'}); }, 1000); }}>
-                      <div className="text-left">
-                        <label className="text-sm font-medium">Message</label>
-                        <textarea required className="w-full mt-1 px-4 py-2 border rounded-xl" rows={4} />
+                  showHumanForm ? (
+                    <div className="p-6">
+                      <div className="flex flex-col h-full justify-center items-center text-center text-slate-500">
+                        <MessageSquare className="w-12 h-12 text-slate-300 mb-4" />
+                        <p>Live chat agents are currently offline.<br/>Please leave a message.</p>
+                        <form className="space-y-4 w-full mt-8" onSubmit={(e) => { e.preventDefault(); setSubmittingSupport(true); setTimeout(() => { setSubmittingSupport(false); setSupportPanel(null); setShowHumanForm(false); toast({title: 'Message Sent', description: 'We will email you shortly.'}); }, 1000); }}>
+                          <div className="text-left">
+                            <label className="text-sm font-medium">Message</label>
+                            <textarea required className="w-full mt-1 px-4 py-2 border rounded-xl" rows={4} />
+                          </div>
+                          <Button type="submit" disabled={submittingSupport} className="w-full rounded-xl bg-primary">
+                            {submittingSupport ? 'Sending...' : 'Send Message'}
+                          </Button>
+                        </form>
                       </div>
-                      <Button type="submit" disabled={submittingSupport} className="w-full rounded-xl bg-primary">
-                        {submittingSupport ? 'Sending...' : 'Send Message'}
-                      </Button>
-                    </form>
-                  </div>
+                    </div>
+                  ) : (
+                    <SupportAIChat onEscalate={() => setShowHumanForm(true)} />
+                  )
                 ) : (
-                  <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setSubmittingSupport(true); setTimeout(() => { setSubmittingSupport(false); setSupportPanel(null); toast({title: 'Request Sent', description: 'We will call you shortly.'}); }, 1000); }}>
+                  <div className="p-6">
+                    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setSubmittingSupport(true); setTimeout(() => { setSubmittingSupport(false); setSupportPanel(null); toast({title: 'Request Sent', description: 'We will call you shortly.'}); }, 1000); }}>
                     <div>
                       <label className="text-sm font-medium">Name</label>
                       <input type="text" required className="w-full mt-1 px-4 py-2 border rounded-xl" />
@@ -844,7 +853,8 @@ export default function MeetLandingPage() {
                     <Button type="submit" disabled={submittingSupport} className="w-full rounded-xl mt-4 bg-blue-500 hover:bg-blue-600 text-white">
                       {submittingSupport ? 'Submitting...' : 'Request Call'}
                     </Button>
-                  </form>
+                    </form>
+                  </div>
                 )}
               </div>
             </motion.div>
@@ -853,7 +863,7 @@ export default function MeetLandingPage() {
       </AnimatePresence>
 
       <ContactSalesModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
-      <PaymentReceiptModal isOpen={!!receiptDetails} onClose={() => setReceiptDetails(null)} transactionDetails={receiptDetails} />
+      <PaymentReceiptModal isOpen={!!receiptDetails} onClose={() => setDetails(null)} transactionDetails={receiptDetails} />
     </div>
   );
 }

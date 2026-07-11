@@ -34,8 +34,8 @@ export default function About() {
  return (
  <div className="overflow-x-hidden bg-white min-h-screen hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Helmet>
- <title>About Us | Slate AI Workslate</title>
- <meta name="description" content="Learn more about Slate. We are a team of engineers building the ultimate AI WorkSlate for modern businesses." />
+ <title>About Us | CliPad Collaborative Productivity</title>
+ <meta name="description" content="Learn more about CliPad. We are building the ultimate enterprise-grade collaborative productivity workspace for modern teams." />
  </Helmet>
  {/* Hero Section */}
  <section className="relative pt-8 pb-10 md:pt-14 lg:py-16">

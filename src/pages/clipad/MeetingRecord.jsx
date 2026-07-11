@@ -6,11 +6,13 @@ import {
   ArrowLeft, Brain, CheckCircle, Clock, Users, FileText,
   Sparkles, MessageSquare, Target, ChevronDown, ChevronUp,
   User, Calendar, Copy, Check, Download, Zap, AlertCircle,
-  Play, BarChart3, Video
+  Play, BarChart3, Video, Edit3, Trash2, Lock, MoreHorizontal
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { useToast } from '@/hooks/use-toast';
 
 function CopyButton({ text }) {
   const [copied, setCopied] = useState(false);
@@ -97,6 +99,10 @@ export default function MeetingRecord() {
   const [loading, setLoading] = useState(true);
   const [generatingAI, setGeneratingAI] = useState(false);
   const [showFullTranscript, setShowFullTranscript] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
+  const [savingEdit, setSavingEdit] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => { if (meetingId) fetchMeeting(); }, [meetingId]);
 
@@ -108,7 +114,11 @@ export default function MeetingRecord() {
         supabase.from('clipad_action_items').select('*').eq('meeting_id', meetingId).order('created_at', { ascending: true }),
         supabase.from('clipad_transcripts').select('*').eq('meeting_id', meetingId).order('start_time', { ascending: true }),
       ]);
-      if (meetingRes.data) setMeeting(meetingRes.data);
+      ]);
+      if (meetingRes.data) {
+        setMeeting(meetingRes.data);
+        setEditTitle(meetingRes.data.title || '');
+      }
       if (actionsRes.data) setActionItems(actionsRes.data);
       if (transcriptRes.data) setTranscript(transcriptRes.data);
     } catch (err) { console.error(err); }
@@ -177,6 +187,34 @@ export default function MeetingRecord() {
   const openItems = actionItems.filter(i => !i.is_complete);
   const doneItems = actionItems.filter(i => i.is_complete);
 
+  const handleEditMeeting = async (e) => {
+    e.preventDefault();
+    if (!editTitle.trim()) return;
+    setSavingEdit(true);
+    try {
+      const { data, error } = await supabase.from('clipad_meeting_records').update({
+        title: editTitle.trim()
+      }).eq('id', meetingId).select().single();
+      if (error) throw error;
+      setMeeting(data);
+      setShowEdit(false);
+      toast({ title: 'Meeting updated' });
+    } catch (err) { console.error(err); }
+    finally { setSavingEdit(false); }
+  };
+
+  const handleDeleteMeeting = async () => {
+    if (!window.confirm('Are you sure you want to delete this meeting record? This cannot be undone.')) return;
+    try {
+      await supabase.from('clipad_meeting_records').delete().eq('id', meetingId);
+      toast({ title: 'Meeting deleted' });
+      navigate(meeting.space_id ? `/spaces/${meeting.space_id}` : '/meetings');
+    } catch (err) { console.error(err); }
+  };
+
+  const isAdmin = user?.subscription_tier === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin';
+  const canEdit = meeting?.created_by === user?.id || isAdmin;
+
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground overflow-x-hidden pb-24 md:pb-8">
       {/* Nav */}
@@ -211,7 +249,26 @@ export default function MeetingRecord() {
               </span>
             )}
           </div>
-          <h1 className="text-2xl md:text-3xl font-black text-foreground mb-2">{meeting.title || 'Team Meeting'}</h1>
+          <div className="flex items-start justify-between gap-4 mb-2">
+            <h1 className="text-2xl md:text-3xl font-black text-foreground">{meeting.title || 'Team Meeting'}</h1>
+            {canEdit && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors mt-1">
+                    <MoreHorizontal className="w-5 h-5" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-40 rounded-xl">
+                  <DropdownMenuItem onClick={() => setShowEdit(true)} className="cursor-pointer gap-2">
+                    <Edit3 className="w-4 h-4" /> Edit Meeting
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDeleteMeeting} className="cursor-pointer gap-2 text-rose-500 focus:text-rose-500">
+                    <Trash2 className="w-4 h-4" /> Delete Meeting
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4" />{new Date(meeting.created_at).toLocaleString()}</span>
             {getMeetingDuration() && <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{getMeetingDuration()}</span>}
@@ -335,6 +392,33 @@ export default function MeetingRecord() {
         )}
 
       </div>
+      
+      {/* Edit Meeting Modal */}
+      {showEdit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Edit Meeting</h2>
+            <form onSubmit={handleEditMeeting} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Meeting Title *</label>
+                <input
+                  value={editTitle}
+                  onChange={e => setEditTitle(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all"
+                  required
+                />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setShowEdit(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all border border-slate-200 dark:border-slate-700 shadow-sm">Cancel</button>
+                <button type="submit" disabled={savingEdit} className="flex-1 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-all shadow-md disabled:opacity-60">
+                  {savingEdit ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <ClipadMobileNav />
     </div>
   );

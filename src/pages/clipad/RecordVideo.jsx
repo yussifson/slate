@@ -790,7 +790,7 @@ export default function RecordVideo() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Video Title</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Video Title *</label>
                 <input
                   value={title}
                   onChange={e => setTitle(e.target.value)}
@@ -799,7 +799,7 @@ export default function RecordVideo() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Add to Space (optional)</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Add to Space *</label>
                 <select
                   value={selectedSpace}
                   onChange={e => setSelectedSpace(e.target.value)}
@@ -828,8 +828,8 @@ export default function RecordVideo() {
 
             <button
               onClick={startRecording}
-              disabled={countdown !== null}
-              className={`flex items-center gap-3 px-8 py-4 rounded-2xl ${countdown !== null ? 'bg-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500'} text-white font-bold shadow-2xl shadow-red-500/25 transition-all hover:scale-[1.02]`}
+              disabled={countdown !== null || !title.trim() || !selectedSpace}
+              className={`flex items-center gap-3 px-8 py-4 rounded-2xl ${countdown !== null || !title.trim() || !selectedSpace ? 'bg-slate-400 cursor-not-allowed opacity-70' : 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500'} text-white font-bold shadow-2xl shadow-red-500/25 transition-all hover:scale-[1.02]`}
             >
               <span className="w-3 h-3 rounded-full bg-white animate-pulse" />
               {countdown !== null ? `Starting in ${countdown}...` : 'Start Recording'}
@@ -925,7 +925,7 @@ export default function RecordVideo() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Space</label>
+                <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Space *</label>
                 <select
                   value={selectedSpace}
                   onChange={e => setSelectedSpace(e.target.value)}
@@ -970,7 +970,7 @@ export default function RecordVideo() {
               <button onClick={discard} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-secondary hover:bg-secondary border border-border text-gray-400 font-semibold text-sm transition-all">
                 <RotateCcw className="w-4 h-4" /> Discard
               </button>
-              <button onClick={uploadRecording} className="flex items-center gap-2 px-8 py-3 rounded-xl bg-primary hover:bg-primary/90 text-foreground font-bold shadow-lg shadow-primary/25 transition-all">
+              <button onClick={uploadRecording} disabled={!title.trim() || !selectedSpace} className="flex items-center gap-2 px-8 py-3 rounded-xl bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-foreground font-bold shadow-lg shadow-primary/25 transition-all">
                 <Upload className="w-4 h-4" /> {activeVideoId ? 'Save Details' : 'Save to CliPad'}
               </button>
             </div>

@@ -33,6 +33,7 @@ export default function SpacesList() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDesc, setNewDesc] = useState('');
+  const [isPrivate, setIsPrivate] = useState(false);
   const [creating, setCreating] = useState(false);
 
   useEffect(() => { fetchSpaces(); }, []);
@@ -61,12 +62,14 @@ export default function SpacesList() {
         name: newName.trim(),
         description: newDesc.trim(),
         created_by: user.id,
+        is_private: isPrivate
       }).select().single();
       if (error) throw error;
       setSpaces(prev => [data, ...prev]);
       setShowCreate(false);
       setNewName('');
       setNewDesc('');
+      setIsPrivate(false);
       navigate(`/spaces/${data.id}`);
     } catch (err) {
       console.error(err);
@@ -75,7 +78,9 @@ export default function SpacesList() {
     }
   };
 
-  const filtered = spaces.filter(s => s.name?.toLowerCase().includes(search.toLowerCase()));
+  const isAdmin = user?.subscription_tier === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin';
+  const visibleSpaces = spaces.filter(s => !s.is_private || s.created_by === user?.id || isAdmin);
+  const filtered = visibleSpaces.filter(s => s.name?.toLowerCase().includes(search.toLowerCase()));
 
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
@@ -179,7 +184,10 @@ export default function SpacesList() {
                           {React.createElement(getSpaceIcon(space.name), { className: "w-7 h-7" })}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-extrabold text-slate-900 dark:text-white text-lg truncate group-hover:text-primary transition-colors">{space.name}</h3>
+                          <h3 className="font-extrabold text-slate-900 dark:text-white text-lg truncate group-hover:text-primary transition-colors flex items-center gap-2">
+                            {space.name}
+                            {space.is_private && <Lock className="w-4 h-4 text-slate-400" />}
+                          </h3>
                           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">{space.description || 'A shared space for meetings and video updates.'}</p>
                         </div>
                       </div>
@@ -228,6 +236,19 @@ export default function SpacesList() {
                   className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 transition-all resize-none"
                 />
               </div>
+              
+              <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                <div className={`w-10 h-6 rounded-full transition-colors relative ${isPrivate ? 'bg-primary' : 'bg-slate-300 dark:bg-slate-700'}`}>
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${isPrivate ? 'left-5' : 'left-1'}`} />
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5" /> Private Space
+                  </div>
+                  <div className="text-[11px] text-slate-500">Only invited members can access.</div>
+                </div>
+              </label>
+
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowCreate(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all border border-slate-200 dark:border-slate-700 shadow-sm">Cancel</button>
                 <button type="submit" disabled={creating} className="flex-1 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-all shadow-md disabled:opacity-60">

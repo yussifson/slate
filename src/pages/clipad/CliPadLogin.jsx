@@ -39,7 +39,8 @@ export default function CliPadLogin() {
   return (
     <>
       <Helmet>
-        <title>Sign In — CliPad</title>
+        <title>Sign In — CliPad Collaborative Workspace</title>
+        <meta name="description" content="Sign in to your enterprise-grade collaborative productivity workspace." />
         <link rel="icon" type="image/svg+xml" href="/clipad-logo.svg" />
       </Helmet>
       <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative text-slate-900 dark:text-slate-100">

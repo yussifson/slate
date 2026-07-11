@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/AuthContext';
 import {
   ArrowLeft, Send, Smile, Clock, Play, Pause, Volume2, VolumeX,
   Maximize2, Share2, Copy, Check, Sparkles, MessageSquare, Heart,
-  ThumbsUp, Zap, Star, BookOpen, ChevronRight, Eye, MoreHorizontal, PictureInPicture, RotateCcw, RotateCw
+  ThumbsUp, Zap, Star, BookOpen, ChevronRight, Eye, MoreHorizontal, PictureInPicture, RotateCcw, RotateCw, Edit3, Trash2
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
@@ -58,6 +58,10 @@ export default function WatchVideo() {
   const [activeCommentFilter, setActiveCommentFilter] = useState('all'); // 'all' | 'comments' | 'reactions'
   const [views, setViews] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const [showEdit, setShowEdit] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
+  const [editDesc, setEditDesc] = useState('');
+  const [savingEdit, setSavingEdit] = useState(false);
 
   const lastReactionTime = useRef(-1);
 
@@ -85,7 +89,11 @@ export default function WatchVideo() {
         supabase.from('clipad_video_comments').select('*').eq('video_id', videoId).order('timestamp_seconds', { ascending: true }),
         supabase.from('clipad_video_reactions').select('*').eq('video_id', videoId),
       ]);
-      if (videoRes.data) setVideo(videoRes.data);
+      if (videoRes.data) {
+        setVideo(videoRes.data);
+        setEditTitle(videoRes.data.title || '');
+        setEditDesc(videoRes.data.description || '');
+      }
       
       let finalComments = commentsRes.data || [];
       let finalReactions = reactionsRes.data || [];
@@ -159,6 +167,33 @@ export default function WatchVideo() {
     if (playing) { videoRef.current.pause(); setPlaying(false); }
     else { videoRef.current.play(); setPlaying(true); }
   };
+
+  const handleEditVideo = async (e) => {
+    e.preventDefault();
+    if (!editTitle.trim()) return;
+    setSavingEdit(true);
+    try {
+      const { data, error } = await supabase.from('clipad_videos').update({
+        title: editTitle.trim(),
+        description: editDesc.trim() || null,
+      }).eq('id', videoId).select('*, creator:creator_id(full_name, avatar_url)').single();
+      if (error) throw error;
+      setVideo(data);
+      setShowEdit(false);
+    } catch (err) { console.error(err); }
+    finally { setSavingEdit(false); }
+  };
+
+  const handleDeleteVideo = async () => {
+    if (!window.confirm('Are you sure you want to delete this video? This cannot be undone.')) return;
+    try {
+      await supabase.from('clipad_videos').delete().eq('id', videoId);
+      navigate(video.space_id ? `/spaces/${video.space_id}` : '/dashboard');
+    } catch (err) { console.error(err); }
+  };
+
+  const isAdmin = user?.subscription_tier === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin';
+  const canEdit = video?.creator_id === user?.id || isAdmin;
 
   const toggleMute = () => {
     if (!videoRef.current) return;
@@ -403,7 +438,26 @@ export default function WatchVideo() {
 
             {/* Video info */}
             <div>
-              <h1 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{video.title || 'Untitled Recording'}</h1>
+              <div className="flex items-start justify-between gap-4 mb-2">
+                <h1 className="text-xl font-bold text-slate-900 dark:text-white">{video.title || 'Untitled Recording'}</h1>
+                {canEdit && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors">
+                        <MoreHorizontal className="w-5 h-5" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40 rounded-xl">
+                      <DropdownMenuItem onClick={() => setShowEdit(true)} className="cursor-pointer gap-2">
+                        <Edit3 className="w-4 h-4" /> Edit Video
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleDeleteVideo} className="cursor-pointer gap-2 text-rose-500 focus:text-rose-500">
+                        <Trash2 className="w-4 h-4" /> Delete Video
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </div>
               <div className="flex items-center gap-3">
                 <img
                   src={video.creator?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${video.creator?.full_name}`}
@@ -519,7 +573,7 @@ export default function WatchVideo() {
                     if (!count) return null;
                     return (
                       <button key={e} onClick={() => addReaction(e)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-sm font-medium transition-all shadow-sm border border-slate-200 dark:border-slate-700">
-                        {e} <span className="text-xs text-slate-500 dark:text-slate-400">{count}</span>
+                        {e} <span className="text-xs text-slate-500 dark:border-slate-400">{count}</span>
                       </button>
                     );
                   })}
@@ -570,7 +624,43 @@ export default function WatchVideo() {
             </div>
           </div>
         </div>
-        <ClipadMobileNav />
+
+      {/* Edit Video Modal */}
+      {showEdit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Edit Video</h2>
+            <form onSubmit={handleEditVideo} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Video Title *</label>
+                <input
+                  value={editTitle}
+                  onChange={e => setEditTitle(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Description</label>
+                <textarea
+                  value={editDesc}
+                  onChange={e => setEditDesc(e.target.value)}
+                  rows={3}
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all resize-none"
+                />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setShowEdit(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all border border-slate-200 dark:border-slate-700 shadow-sm">Cancel</button>
+                <button type="submit" disabled={savingEdit} className="flex-1 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-all shadow-md disabled:opacity-60">
+                  {savingEdit ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <ClipadMobileNav />
       </div>
     </>
   );

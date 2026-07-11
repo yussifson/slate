@@ -65,8 +65,8 @@ export default function Pricing() {
  return (
  <div className="overflow-x-hidden bg-white min-h-screen hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Helmet>
- <title>Pricing | Slate</title>
- <meta name="description" content="Transparent pricing for Slate. All features included on every plan. Technology for everyone." />
+ <title>Pricing | CliPad Collaborative Productivity</title>
+ <meta name="description" content="Transparent pricing for CliPad. All collaborative productivity features included on every plan. Technology for everyone." />
  </Helmet>
 
  {/* ── HERO ── */}

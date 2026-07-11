@@ -6,13 +6,14 @@ import {
   Users, Video, Calendar, Plus, Play, Monitor, Activity,
   Brain, FileText, CheckCircle, Search, Settings, ArrowLeft,
   Clock, MessageSquare, Sparkles, Camera, Layers, Target,
-  ChevronRight, X, Edit3, Trash2, User
+  ChevronRight, X, Edit3, Trash2, User, Lock
 } from 'lucide-react';
 import SpaceNotes from '@/components/clipad/SpaceNotes';
 import MeetingInsights from '@/components/clipad/MeetingInsights';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import { getSpaceIcon } from '@/utils/spaceIcons';
 import ClipadLoader from '@/components/ui/ClipadLoader';
+import { useToast } from '@/hooks/use-toast';
 
 const TABS = [
   { id: 'overview', icon: Layers, label: 'Overview' },
@@ -110,6 +111,12 @@ export default function SpaceDashboard() {
   const [showNewTask, setShowNewTask] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [creatingTask, setCreatingTask] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editDesc, setEditDesc] = useState('');
+  const [editIsPrivate, setEditIsPrivate] = useState(false);
+  const [savingEdit, setSavingEdit] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => { if (spaceId) fetchAll(); }, [spaceId]);
 
@@ -122,7 +129,12 @@ export default function SpaceDashboard() {
         supabase.from('clipad_meeting_records').select('*').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(20),
         supabase.from('clipad_action_items').select('*, assignedUser:assigned_to(full_name)').eq('space_id', spaceId).order('created_at', { ascending: false }),
       ]);
-      if (spaceRes.data) setSpace(spaceRes.data);
+      if (spaceRes.data) {
+        setSpace(spaceRes.data);
+        setEditName(spaceRes.data.name);
+        setEditDesc(spaceRes.data.description || '');
+        setEditIsPrivate(spaceRes.data.is_private || false);
+      }
       if (videosRes.data) setVideos(videosRes.data);
       if (meetingsRes.data) {
         setMeetings(meetingsRes.data);
@@ -167,6 +179,33 @@ export default function SpaceDashboard() {
     finally { setCreatingTask(false); }
   };
 
+  const handleEditSpace = async (e) => {
+    e.preventDefault();
+    if (!editName.trim()) return;
+    setSavingEdit(true);
+    try {
+      const { data, error } = await supabase.from('clipad_spaces').update({
+        name: editName.trim(),
+        description: editDesc.trim(),
+        is_private: editIsPrivate,
+      }).eq('id', spaceId).select().single();
+      if (error) throw error;
+      setSpace(data);
+      setShowEdit(false);
+      toast({ title: 'Space updated successfully' });
+    } catch (err) { console.error(err); }
+    finally { setSavingEdit(false); }
+  };
+
+  const handleDeleteSpace = async () => {
+    if (!window.confirm('Are you sure you want to delete this space? All associated videos and tasks will be removed. This cannot be undone.')) return;
+    try {
+      await supabase.from('clipad_spaces').delete().eq('id', spaceId);
+      toast({ title: 'Space deleted' });
+      navigate('/spaces');
+    } catch (err) { console.error(err); }
+  };
+
   const colorIndex = space?.name?.charCodeAt(0) % COLORS.length || 0;
   const color = COLORS[colorIndex];
 
@@ -188,6 +227,22 @@ export default function SpaceDashboard() {
 
   const openTasks = tasks.filter(t => !t.is_complete);
   const doneTasks = tasks.filter(t => t.is_complete);
+  
+  const isAdmin = user?.subscription_tier === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin';
+  const canEdit = space.created_by === user?.id || isAdmin;
+
+  if (space.is_private && !canEdit) {
+    return (
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter flex items-center justify-center text-foreground">
+        <div className="text-center">
+          <Lock className="w-12 h-12 text-gray-700 mx-auto mb-3" />
+          <h2 className="text-xl font-bold mb-1">Private Space</h2>
+          <p className="text-muted-foreground text-sm">You don't have permission to view this space.</p>
+          <button onClick={() => navigate('/spaces')} className="mt-4 text-primary hover:text-primary/80 text-sm transition-colors font-medium">← Back to Spaces</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground overflow-x-hidden pb-24 md:pb-8">
@@ -226,7 +281,20 @@ export default function SpaceDashboard() {
               {React.createElement(getSpaceIcon(space.name), { className: "w-7 h-7" })}
             </div>
             <div>
-              <h1 className="text-2xl font-black text-foreground">{space.name}</h1>
+              <h1 className="text-2xl font-black text-foreground flex items-center gap-3">
+                {space.name}
+                {space.is_private && <Lock className="w-5 h-5 text-slate-400" />}
+                {canEdit && (
+                  <div className="flex items-center gap-2 ml-2 opacity-50 hover:opacity-100 transition-opacity">
+                    <button onClick={() => setShowEdit(true)} className="p-1.5 hover:bg-white/20 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors" title="Edit Space">
+                      <Edit3 className="w-4 h-4" />
+                    </button>
+                    <button onClick={handleDeleteSpace} className="p-1.5 hover:bg-rose-500/20 rounded-lg text-slate-500 hover:text-rose-500 transition-colors" title="Delete Space">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </h1>
               <p className="text-muted-foreground mt-1">{space.description || 'A shared space for meetings, videos, and collaboration.'}</p>
               <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {meetings.length} meetings</span>
@@ -411,6 +479,51 @@ export default function SpaceDashboard() {
         )}
 
       </div>
+      {showEdit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Edit Space</h2>
+            <form onSubmit={handleEditSpace} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Space Name *</label>
+                <input
+                  value={editName}
+                  onChange={e => setEditName(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Description</label>
+                <textarea
+                  value={editDesc}
+                  onChange={e => setEditDesc(e.target.value)}
+                  rows={3}
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all resize-none"
+                />
+              </div>
+              <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                <div className={`w-10 h-6 rounded-full transition-colors relative ${editIsPrivate ? 'bg-primary' : 'bg-slate-300 dark:bg-slate-700'}`}>
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${editIsPrivate ? 'left-5' : 'left-1'}`} />
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5" /> Private Space
+                  </div>
+                  <div className="text-[11px] text-slate-500">Only invited members can access.</div>
+                </div>
+              </label>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setShowEdit(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all border border-slate-200 dark:border-slate-700 shadow-sm">Cancel</button>
+                <button type="submit" disabled={savingEdit} className="flex-1 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-all shadow-md disabled:opacity-60">
+                  {savingEdit ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <ClipadMobileNav />
     </div>
   );

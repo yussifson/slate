@@ -535,12 +535,12 @@ export default function Home() {
 };
 return (
  <div className="overflow-x-hidden">
- <Helmet>
- <title>Slate - The Ultimate AI Workslate</title>
- <meta name="description" content="Slate is an AI-powered workspace replacing multiple tools with one cohesive ecosystem. Simplify communication, scheduling, cases, and payments." />
- <meta property="og:title" content="Slate - The Ultimate AI Workspace" />
- <meta property="og:description" content="Replace fragmented tools with an intelligent, cohesive workspace built for maximum operational excellence." />
- </Helmet>
+  <Helmet>
+  <title>CliPad - Enterprise Collaborative Productivity Workspace</title>
+  <meta name="description" content="CliPad is an AI-powered collaborative productivity workspace replacing multiple tools with one cohesive ecosystem. Simplify communication, meetings, and action items." />
+  <meta property="og:title" content="CliPad - Enterprise Collaborative Productivity Workspace" />
+  <meta property="og:description" content="Replace fragmented tools with an intelligent, cohesive workspace built for maximum operational excellence." />
+  </Helmet>
 
  {/* ============================================================ */}
  {/* HERO */}
