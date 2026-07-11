@@ -13,10 +13,11 @@ export default function CliPadSettings() {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
+  const [fullName, setFullName] = useState(user?.full_name || user?.user_metadata?.full_name || '');
 
-  // Settings state (persisted locally)
+  // Settings state (persisted to Supabase)
   const [settings, setSettings] = useState(() => {
-    const saved = localStorage.getItem('clipad_user_settings');
+    const saved = user?.user_metadata?.clipad_settings;
     if (saved) {
       try {
         return { ...{
@@ -26,7 +27,7 @@ export default function CliPadSettings() {
           cameraDefault: true,
           micDefault: true,
           blurBackground: false
-        }, ...JSON.parse(saved) };
+        }, ...saved };
       } catch (e) {}
     }
     return {
@@ -41,15 +42,31 @@ export default function CliPadSettings() {
 
   const toggle = (key) => setSettings(s => ({ ...s, [key]: !s[key] }));
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setSaving(true);
-    // Persist to local storage
-    localStorage.setItem('clipad_user_settings', JSON.stringify(settings));
     
-    setTimeout(() => {
-      setSaving(false);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: { 
+          clipad_settings: settings,
+          full_name: fullName
+        }
+      });
+      
+      if (error) throw error;
+      
+      // Update users table
+      if (user?.id) {
+        await supabase.from('users').update({ full_name: fullName }).eq('id', user.id);
+      }
+      
       toast({ title: 'Settings saved', description: 'Your preferences have been updated.' });
-    }, 600);
+    } catch (err) {
+      console.error(err);
+      toast({ title: 'Failed to save settings', description: err.message, variant: 'destructive' });
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleSignOut = async () => {
@@ -69,7 +86,7 @@ export default function CliPadSettings() {
         <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5"><ArrowLeft className="w-4 h-4 text-slate-500" /> Dashboard</button>
       </nav>
 
-      <div className="max-w-4xl mx-auto px-6 md:px-10 py-10">
+      <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           
           {/* Sidebar */}
@@ -109,8 +126,9 @@ export default function CliPadSettings() {
                 <div>
                   <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Full Name</label>
                   <input
-                    defaultValue={user?.full_name || ''}
-                    className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm focus:outline-none focus:border-indigo-500/50 transition-all"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm focus:outline-none focus:border-primary transition-all"
                   />
                 </div>
                 <div>

@@ -1,15 +1,26 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import AiAssistant from '@/components/AiAssistant';
+import GlobalAIAssistant from '@/components/layout/GlobalAIAssistant';
 
 export default function ClipadLayout() {
   const [isAIOpen, setIsAIOpen] = useState(false);
+  const [injectedContext, setInjectedContext] = useState(null);
 
   // Expose toggle globally for Clipad pages to call it
   React.useEffect(() => {
     const handleToggle = () => setIsAIOpen(prev => !prev);
+    const handleOrbitInject = (e) => {
+      setIsAIOpen(true);
+      if (e.detail) {
+        setInjectedContext(e.detail);
+      }
+    };
     window.addEventListener('toggle-clipad-orbit', handleToggle);
-    return () => window.removeEventListener('toggle-clipad-orbit', handleToggle);
+    window.addEventListener('orbit:inject', handleOrbitInject);
+    return () => {
+      window.removeEventListener('toggle-clipad-orbit', handleToggle);
+      window.removeEventListener('orbit:inject', handleOrbitInject);
+    };
   }, []);
 
   return (
@@ -29,7 +40,12 @@ export default function ClipadLayout() {
 
       </div>
 
-      <AiAssistant isOpen={isAIOpen} onClose={() => setIsAIOpen(false)} />
+      <GlobalAIAssistant 
+        isOpen={isAIOpen} 
+        onClose={() => setIsAIOpen(false)} 
+        injectedContext={injectedContext} 
+        onContextConsumed={() => setInjectedContext(null)} 
+      />
     </div>
   );
 }

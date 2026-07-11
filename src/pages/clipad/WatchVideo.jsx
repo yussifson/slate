@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
+import ClipadLoader from '@/components/ui/ClipadLoader';
 
 const EMOJIS = ['👍','❤️','🔥','😂','🎉','🤯'];
 
@@ -36,7 +37,7 @@ function FloatingReaction({ emoji, x, y, onDone }) {
 
 export default function WatchVideo() {
   const { videoId } = useParams();
-  const { user } = useAuth();
+  const { user, isLoading: isLoadingAuth } = useAuth();
   const navigate = useNavigate();
   const videoRef = useRef(null);
   const playerRef = useRef(null);
@@ -247,12 +248,8 @@ export default function WatchVideo() {
   // Get reactions at current timestamp (within 5s window)
   const nearbyReactions = reactions.filter(r => Math.abs(r.timestamp_seconds - currentTime) < 5);
 
-  if (loading) {
-    return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
-        <div className="w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
+  if (loading || isLoadingAuth) {
+    return <ClipadLoader fullScreen text="Loading video..." />;
   }
 
   if (!video) {

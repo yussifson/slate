@@ -70,9 +70,9 @@ export default function FeaturesCircle() {
       
       {/* Circle Container */}
       <div className="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] shrink-0">
-        <div className="absolute inset-0 rounded-full border-2 border-slate-100 dark:border-slate-800 shadow-[inset_0_0_40px_rgba(0,0,0,0.02)] dark:shadow-[inset_0_0_40px_rgba(255,255,255,0.02)] bg-gradient-to-b from-slate-50/50 to-transparent dark:from-slate-900/50" />
-        <div className="absolute inset-8 rounded-full border border-dashed border-slate-300/60 dark:border-slate-700/60" />
-        <div className="absolute inset-16 rounded-full bg-gradient-to-tr from-slate-100 to-white dark:from-slate-800 dark:to-slate-900 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] flex items-center justify-center border border-white/50 dark:border-slate-700/50 backdrop-blur-md">
+        <div className="absolute inset-0 rounded-full border-2 border-primary/20 dark:border-primary/30 shadow-[inset_0_0_60px_rgba(var(--primary),0.1)] bg-gradient-to-b from-primary/10 to-transparent dark:from-primary/20" />
+        <div className="absolute inset-8 rounded-full border border-dashed border-primary/40 dark:border-primary/50" />
+        <div className="absolute inset-16 rounded-full bg-gradient-to-tr from-emerald-500/10 to-primary/5 dark:from-emerald-900/40 dark:to-primary/20 shadow-[0_10px_40px_-10px_rgba(var(--primary),0.3)] flex items-center justify-center border border-primary/30 backdrop-blur-md">
           <motion.div 
             className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center relative shadow-[0_0_40px_rgba(var(--primary),0.3)] border border-primary/20 backdrop-blur-xl"
             animate={{ scale: [1, 1.05, 1] }}

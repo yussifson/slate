@@ -10,6 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import { isAdmin } from '@/lib/constants';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import ClipadLoader from '@/components/ui/ClipadLoader';
 
 function StatCard({ icon: Icon, color, value, label, trend }) {
   return (
@@ -53,35 +54,39 @@ export default function VideoAnalytics() {
       let videoIds = [];
       let videos = [];
       
-      // If company admin with company_id, fetch all videos for the company's spaces
+      let myMeetings = [];
       if (user.company_id) {
         const { data: spaces } = await supabase.from('clipad_spaces').select('id').eq('company_id', user.company_id);
         const spaceIds = spaces?.map(s => s.id) || [];
         if (spaceIds.length > 0) {
           const { data: companyVideos } = await supabase.from('clipad_videos').select('id, title, created_at, duration_seconds').in('space_id', spaceIds);
           videos = companyVideos || [];
+          const { data: companyMeetings } = await supabase.from('clipad_meeting_records').select('id').in('space_id', spaceIds);
+          myMeetings = companyMeetings || [];
         }
       } else {
-        // Fallback to own videos if company_id is missing
         const { data: myVideos } = await supabase.from('clipad_videos').select('id, title, created_at, duration_seconds').eq('creator_id', user.id);
         videos = myVideos || [];
-      }
-      
-      if (!videos || videos.length === 0) {
-        setLoading(false);
-        return;
+        const { data: myM } = await supabase.from('clipad_meeting_records').select('id').eq('host_id', user.id);
+        myMeetings = myM || [];
       }
 
       videoIds = videos.map(v => v.id);
 
       // Fetch views for those videos
-      const { data: views } = await supabase.from('clipad_video_views').select('video_id, watch_percent, created_at').in('video_id', videoIds);
+      const { data: views } = videoIds.length > 0
+        ? await supabase.from('clipad_video_views').select('video_id, watch_percent, created_at').in('video_id', videoIds)
+        : { data: [] };
       
       // Fetch comments for those videos
-      const { count: commentsCount } = await supabase.from('clipad_video_comments').select('id', { count: 'exact', head: true }).in('video_id', videoIds);
+      const { count: commentsCount } = videoIds.length > 0
+        ? await supabase.from('clipad_video_comments').select('id', { count: 'exact', head: true }).in('video_id', videoIds)
+        : { count: 0 };
       
       // Fetch reactions for those videos
-      const { count: reactionsCount } = await supabase.from('clipad_video_reactions').select('id', { count: 'exact', head: true }).in('video_id', videoIds);
+      const { count: reactionsCount } = videoIds.length > 0 
+        ? await supabase.from('clipad_video_reactions').select('id', { count: 'exact', head: true }).in('video_id', videoIds)
+        : { count: 0 };
 
       // Calculate stats per video
       const enhancedVideos = videos.map(v => {
@@ -109,7 +114,7 @@ export default function VideoAnalytics() {
 
       setStats({
         totalViews: views?.length || 0,
-        totalVideos: videos.length,
+        totalVideos: videos.length + myMeetings.length,
         totalComments: commentsCount || 0,
         totalReactions: reactionsCount || 0,
         topVideos: enhancedVideos.slice(0, 5),
@@ -123,11 +128,7 @@ export default function VideoAnalytics() {
   };
 
   if (loading || isLoadingAuth) {
-    return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter flex items-center justify-center">
-        <div className="w-10 h-10 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
-      </div>
-    );
+    return <ClipadLoader fullScreen text="Loading analytics..." />;
   }
 
   if (!user) {
@@ -238,17 +239,7 @@ export default function VideoAnalytics() {
           <p className="text-muted-foreground text-sm">See how your team interacts with your video recordings.</p>
         </div>
 
-        {stats.totalVideos === 0 ? (
-          <div className="text-center py-24 border border-dashed border-border rounded-3xl">
-            <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Video className="w-8 h-8" />
-            </div>
-            <h3 className="text-xl font-bold mb-2 text-foreground">No Videos Yet</h3>
-            <p className="text-muted-foreground max-w-sm mx-auto mb-6">You haven't recorded any videos yet. Start recording to see analytics.</p>
-            <button onClick={() => navigate('/record')} className="px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-all">Start Recording</button>
-          </div>
-        ) : (
-          <div className="space-y-8">
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             
             {/* Top Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -337,7 +328,7 @@ export default function VideoAnalytics() {
               )}
             </div>
           </div>
-        )}
+        </div>
       </div>
       <ClipadMobileNav />
     </div>

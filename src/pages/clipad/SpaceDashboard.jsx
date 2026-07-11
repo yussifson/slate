@@ -12,6 +12,7 @@ import SpaceNotes from '@/components/clipad/SpaceNotes';
 import MeetingInsights from '@/components/clipad/MeetingInsights';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import { getSpaceIcon } from '@/utils/spaceIcons';
+import ClipadLoader from '@/components/ui/ClipadLoader';
 
 const TABS = [
   { id: 'overview', icon: Layers, label: 'Overview' },
@@ -97,7 +98,7 @@ function VideoCard({ video, onClick }) {
 
 export default function SpaceDashboard() {
   const { spaceId } = useParams();
-  const { user } = useAuth();
+  const { user, isLoadingAuth } = useAuth();
   const navigate = useNavigate();
   const [space, setSpace] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
@@ -169,12 +170,8 @@ export default function SpaceDashboard() {
   const colorIndex = space?.name?.charCodeAt(0) % COLORS.length || 0;
   const color = COLORS[colorIndex];
 
-  if (loading) {
-    return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter flex items-center justify-center">
-        <div className="w-10 h-10 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
-      </div>
-    );
+  if (loading || isLoadingAuth) {
+    return <ClipadLoader fullScreen text="Loading space dashboard..." />;
   }
 
   if (!space) {

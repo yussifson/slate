@@ -83,26 +83,9 @@ export default function StandaloneMeeting() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
-  // Effect 1b: Change Favicon and Title
-  useEffect(() => {
-    document.title = "Orbit Meeting";
-    const link = document.querySelector("link[rel~='icon']");
-    const oldHref = link ? link.href : null;
-    if (link) {
-      link.href = "/orbit-logo.svg";
-    } else {
-      const newLink = document.createElement('link');
-      newLink.rel = 'icon';
-      newLink.href = '/orbit-logo.svg';
-      document.head.appendChild(newLink);
-    }
-    return () => {
-      document.title = "Slate Workspace";
-      if (link && oldHref) link.href = oldHref;
-    };
-  }, []);
+  // Favicon and document title are handled by the global AuthProvider logic
 
-  // Effect 2: Countdown timer for scheduled meetings — MUST be before any conditional returns
+  // Effect 2: Countdown timer for scheduled meetings
   useEffect(() => {
     if (!scheduledData) return;
     const targetDate = new Date(scheduledData.scheduled_start_time).getTime();
@@ -132,15 +115,6 @@ export default function StandaloneMeeting() {
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scheduledData]);
-
-  // Effect 3: Document title and favicon
-  useEffect(() => {
-    document.title = roomName ? `${roomName} - CliPad` : 'Joining Room - CliPad';
-    const link = document.querySelector("link[rel~='icon']");
-    if (link) {
-      link.href = '/orbit-logo.svg';
-    }
-  }, [roomName]);
 
   // ── Async handler ────────────────────────────────────────────────────────────
   const handleJoin = async () => {

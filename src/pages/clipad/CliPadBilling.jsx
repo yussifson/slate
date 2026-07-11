@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { supabase } from '@/api/supabaseClient';
-import { Check, CreditCard, Loader2, Sparkles } from 'lucide-react';
+import { Check, Loader2, Sparkles } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
+import ContactSalesModal from '@/components/clipad/ContactSalesModal';
 
 export default function CliPadBilling() {
   const { user } = useAuth();
@@ -12,6 +13,7 @@ export default function CliPadBilling() {
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
   const [exchangeRate, setExchangeRate] = useState(218 / 19); // Fallback: 218 GHS for $19
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   useEffect(() => {
     // Load Paystack script
@@ -173,13 +175,14 @@ export default function CliPadBilling() {
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Enterprise SLAs</li>
           </ul>
           <button 
-            onClick={() => handleUpgrade('custom', 199)}
+            onClick={() => setIsContactModalOpen(true)}
             disabled={currentPlan === 'custom' || loading}
             className={`w-full mt-8 py-2 rounded-xl font-semibold border ${currentPlan === 'custom' ? 'bg-secondary text-foreground border-border' : 'bg-background text-foreground hover:bg-secondary border-border'}`}>
             {currentPlan === 'custom' ? 'Current Plan' : 'Contact Sales'}
           </button>
         </div>
       </div>
+      <ContactSalesModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
     </div>
   );
 }

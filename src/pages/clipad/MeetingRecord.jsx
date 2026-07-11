@@ -8,6 +8,8 @@ import {
   User, Calendar, Copy, Check, Download, Zap, AlertCircle,
   Play, BarChart3
 } from 'lucide-react';
+import { CliPadLogo } from '@/components/ui/CliPadLogo';
+import ClipadLoader from '@/components/ui/ClipadLoader';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
 function CopyButton({ text }) {
@@ -86,7 +88,7 @@ function ActionItemRow({ item, onUpdate }) {
 
 export default function MeetingRecord() {
   const { meetingId } = useParams();
-  const { user } = useAuth();
+  const { user, isLoadingAuth } = useAuth();
   const navigate = useNavigate();
 
   const [meeting, setMeeting] = useState(null);
@@ -156,12 +158,8 @@ export default function MeetingRecord() {
     return `${m}m ${s}s`;
   };
 
-  if (loading) {
-    return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter flex items-center justify-center">
-        <div className="w-10 h-10 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
-      </div>
-    );
+  if (loading || isLoadingAuth) {
+    return <ClipadLoader fullScreen text="Loading meeting record..." />;
   }
 
   if (!meeting) {

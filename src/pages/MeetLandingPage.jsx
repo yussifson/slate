@@ -14,6 +14,7 @@ import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import FeaturesCircle from '@/components/clipad/FeaturesCircle';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
+import ContactSalesModal from '@/components/clipad/ContactSalesModal';
 
 
 const pillars = [
@@ -188,6 +189,7 @@ export default function MeetLandingPage() {
   const [supportPanel, setSupportPanel] = useState(null); 
   const [supportForm, setSupportForm] = useState({ name: '', email: '', phone: '', message: '' });
   const [submittingSupport, setSubmittingSupport] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   
   const { user } = useAuth();
   const companyId = useCompanyId();
@@ -247,7 +249,10 @@ export default function MeetLandingPage() {
   };
 
   const handlePricingAction = async (tierName) => {
-    if (tierName === 'Enterprise') return;
+    if (tierName === 'Enterprise') {
+      setIsContactModalOpen(true);
+      return;
+    }
     
     if (!user) {
       navigate('/login');
@@ -835,6 +840,8 @@ export default function MeetLandingPage() {
           </>
         )}
       </AnimatePresence>
+
+      <ContactSalesModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
     </div>
   );
 }
