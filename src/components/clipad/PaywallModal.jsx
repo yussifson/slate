@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Check, X, Shield, Zap, Video } from 'lucide-react';
 import PaystackAPI from '../../api/PaystackAPI';
 import { useAuth } from '../../lib/AuthContext';
-import { powerSync } from '../../lib/powersync';
+import { powerSync } from '../../api/PowerSyncConnector';
 
 export const PaywallModal = ({ isOpen, onClose, featureName = "This feature", limitDescription = "You have reached your limit on the free plan." }) => {
   const { user } = useAuth();

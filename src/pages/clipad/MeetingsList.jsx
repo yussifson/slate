@@ -4,7 +4,7 @@ import { supabase } from '@/api/supabaseClient';
 import { Calendar, Video, Search, Clock, Users, ArrowRight, Sparkles, Filter, CheckCircle, Flame, ArrowLeft, Target } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
+import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';

@@ -4,7 +4,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { BarChart3, TrendingUp, Eye, Heart, MessageSquare, Clock, ArrowLeft, Video, Target, Users } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
+import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';

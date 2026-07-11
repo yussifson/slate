@@ -45,6 +45,7 @@ export default function WatchVideo() {
   const [reactions, setReactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [commentText, setCommentText] = useState('');
+  const [isAnonymous, setIsAnonymous] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -78,12 +79,25 @@ export default function WatchVideo() {
     try {
       const [videoRes, commentsRes, reactionsRes] = await Promise.all([
         supabase.from('clipad_videos').select('*, creator:creator_id(full_name, avatar_url)').eq('id', videoId).single(),
-        supabase.from('clipad_video_comments').select('*, author:user_id(full_name, avatar_url)').eq('video_id', videoId).order('timestamp_seconds', { ascending: true }),
+        supabase.from('clipad_video_comments').select('*').eq('video_id', videoId).order('timestamp_seconds', { ascending: true }),
         supabase.from('clipad_video_reactions').select('*').eq('video_id', videoId),
       ]);
       if (videoRes.data) setVideo(videoRes.data);
-      if (commentsRes.data) setComments(commentsRes.data);
-      if (reactionsRes.data) setReactions(reactionsRes.data);
+      
+      let finalComments = commentsRes.data || [];
+      let finalReactions = reactionsRes.data || [];
+      
+      // Fetch profiles manually to bypass missing schema relation
+      const userIds = [...new Set([...finalComments.map(c => c.user_id), ...finalReactions.map(r => r.user_id)])].filter(Boolean);
+      if (userIds.length > 0) {
+        const { data: profiles } = await supabase.from('profiles').select('id, full_name, avatar_url').in('id', userIds);
+        const profileMap = (profiles || []).reduce((acc, p) => ({ ...acc, [p.id]: p }), {});
+        finalComments = finalComments.map(c => ({ ...c, author: profileMap[c.user_id] }));
+        finalReactions = finalReactions.map(r => ({ ...r, author: profileMap[r.user_id] }));
+      }
+      
+      setComments(finalComments);
+      setReactions(finalReactions);
 
       // Log a view
       if (user) {
@@ -170,14 +184,18 @@ export default function WatchVideo() {
     setSubmitting(true);
     try {
       const ts = videoRef.current ? Math.floor(videoRef.current.currentTime) : 0;
+      const contentToSave = isAnonymous ? `[ANON]${commentText.trim()}` : commentText.trim();
       const { data, error } = await supabase.from('clipad_video_comments').insert({
         video_id: videoId,
         user_id: user.id,
-        content: commentText.trim(),
+        content: contentToSave,
         timestamp_seconds: ts,
-      }).select('*, author:profiles!user_id(full_name, avatar_url)').single();
+      }).select('*').single();
       if (error) throw error;
-      setComments(prev => [...prev, data].sort((a,b) => a.timestamp_seconds - b.timestamp_seconds));
+      
+      // Add author manually to state
+      const commentWithAuthor = { ...data, author: { full_name: user.full_name, avatar_url: user.avatar_url } };
+      setComments(prev => [...prev, commentWithAuthor].sort((a,b) => a.timestamp_seconds - b.timestamp_seconds));
       setCommentText('');
     } catch (err) { console.error(err); }
     finally { setSubmitting(false); }
@@ -193,9 +211,10 @@ export default function WatchVideo() {
     setFloatingReactions(prev => [...prev, { id, emoji, x: `${x}%`, y: `${y}%` }]);
     // Save to DB
     try {
-      await supabase.from('clipad_video_reactions').insert({ video_id: videoId, user_id: user.id, emoji, timestamp_seconds: ts });
+      const emojiToSave = isAnonymous ? `[ANON]${emoji}` : emoji;
+      await supabase.from('clipad_video_reactions').insert({ video_id: videoId, user_id: user.id, emoji: emojiToSave, timestamp_seconds: ts });
       // Realtime subscription will handle updating the state and showing it for everyone else!
-      setReactions(prev => [...prev, { emoji, timestamp_seconds: ts, user_id: user.id }]);
+      setReactions(prev => [...prev, { emoji: emojiToSave, timestamp_seconds: ts, user_id: user.id, author: { full_name: user.full_name, avatar_url: user.avatar_url } }]);
     } catch (err) { console.error(err); }
   };
 
@@ -432,6 +451,12 @@ export default function WatchVideo() {
                 <button type="submit" disabled={submitting || !commentText.trim()} className="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80 disabled:text-slate-400 transition-colors">
                   <Send className="w-4 h-4" />
                 </button>
+                <div className="flex items-center justify-end mt-2 px-1">
+                  <label className="flex items-center gap-2 text-xs font-medium text-slate-500 cursor-pointer hover:text-slate-700 dark:hover:text-slate-300">
+                    <input type="checkbox" checked={isAnonymous} onChange={e => setIsAnonymous(e.target.checked)} className="rounded text-primary focus:ring-primary w-3.5 h-3.5" />
+                    Post Anonymously
+                  </label>
+                </div>
               </form>
             )}
 
@@ -440,7 +465,10 @@ export default function WatchVideo() {
               {(activeCommentFilter === 'all' || activeCommentFilter === 'reactions') && reactions.length > 0 && (
                 <div className="flex flex-wrap gap-2 p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
                   {EMOJIS.map(e => {
-                    const count = reactions.filter(r => r.emoji === e).length;
+                    const count = reactions.filter(r => {
+                      const cleanEmoji = r.emoji?.startsWith('[ANON]') ? r.emoji.slice(6) : r.emoji;
+                      return cleanEmoji === e;
+                    }).length;
                     if (!count) return null;
                     return (
                       <button key={e} onClick={() => addReaction(e)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-sm font-medium transition-all shadow-sm border border-slate-200 dark:border-slate-700">
@@ -458,16 +486,27 @@ export default function WatchVideo() {
                     <p className="text-sm font-medium text-slate-500 dark:text-slate-400 px-4">No comments yet. Pause the video and type to leave a timestamped comment.</p>
                   </div>
                 ) : (
-                  comments.map(c => (
+                  comments.map(c => {
+                    const isAnon = c.content?.startsWith('[ANON]');
+                    const cleanContent = isAnon ? c.content.slice(6) : c.content;
+                    return (
                     <div key={c.id} className="flex gap-3 p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all group">
-                      <img
-                        src={c.author?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${c.author?.full_name || 'U'}`}
-                        className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 shrink-0 object-cover"
-                        alt="Author"
-                      />
+                      {isAnon ? (
+                        <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
+                          <span className="text-xs font-bold text-slate-500 dark:text-slate-400">?</span>
+                        </div>
+                      ) : (
+                        <img
+                          src={c.author?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${c.author?.full_name || 'U'}`}
+                          className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 shrink-0 object-cover"
+                          alt="Author"
+                        />
+                      )}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1.5">
-                          <span className="text-xs font-bold text-slate-900 dark:text-white">{c.author?.full_name || 'Anonymous'}</span>
+                          <span className="text-xs font-bold text-slate-900 dark:text-white">
+                            {isAnon ? 'Anonymous' : (c.author?.full_name || 'User')}
+                          </span>
                           <button
                             onClick={() => seekTo(c.timestamp_seconds)}
                             className="text-[10px] font-bold font-mono text-primary hover:text-primary/80 transition-colors bg-primary/10 px-2 py-0.5 rounded-md"
@@ -475,10 +514,10 @@ export default function WatchVideo() {
                             @{formatTime(c.timestamp_seconds)}
                           </button>
                         </div>
-                        <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">{c.body}</p>
+                        <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">{cleanContent}</p>
                       </div>
                     </div>
-                  ))
+                  )})
                 )
               )}
             </div>

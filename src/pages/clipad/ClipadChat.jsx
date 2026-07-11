@@ -17,7 +17,7 @@ import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { useUIPreference } from "@/hooks/useUIPreference";
 import { useNavigate } from "react-router-dom";
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
+import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 

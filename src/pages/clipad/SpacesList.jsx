@@ -8,7 +8,7 @@ import {
   Search, Lock, Globe, Layout, Camera, Layers, ArrowLeft, UserCircle
 } from 'lucide-react';
 import { getSpaceIcon } from '@/utils/spaceIcons';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
+import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';

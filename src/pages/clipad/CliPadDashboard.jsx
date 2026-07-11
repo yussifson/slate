@@ -11,7 +11,7 @@ import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import { getSpaceIcon } from '@/utils/spaceIcons';
 import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
+import ThemeToggle from '@/components/layout/ThemeToggle';
 import {
   DropdownMenu,
   DropdownMenuContent,
