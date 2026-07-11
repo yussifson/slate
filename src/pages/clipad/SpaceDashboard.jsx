@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import SpaceNotes from '@/components/clipad/SpaceNotes';
 import MeetingInsights from '@/components/clipad/MeetingInsights';
+import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
 const TABS = [
   { id: 'overview', icon: Layers, label: 'Overview' },
@@ -387,6 +388,7 @@ export default function SpaceDashboard() {
         )}
 
       </div>
+      <ClipadMobileNav />
     </div>
   );
 }

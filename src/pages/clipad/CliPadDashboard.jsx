@@ -17,6 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
 function StatCard({ icon: Icon, color, value, label, trend }) {
   // Use `color` to dynamically style the icon container for a vibrant look
@@ -385,6 +386,7 @@ export default function CliPadDashboard() {
           </div>
         </div>
       </div>
+      <ClipadMobileNav />
     </div>
   );
 }

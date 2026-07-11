@@ -328,9 +328,10 @@ export default function MeetLandingPage() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-1.5 text-sm font-medium text-slate-500 tabular-nums">
+          <div className="hidden md:flex items-center gap-2 text-sm font-semibold tabular-nums bg-slate-100/80 px-3 py-1.5 rounded-xl border border-slate-200/60 shadow-inner text-slate-700">
+            <Clock className="w-4 h-4 text-primary" />
             <span>{timeStr}</span>
-            <span className="text-slate-300">·</span>
+            <span className="text-slate-300 mx-0.5">|</span>
             <span>{dateStr}</span>
           </div>
           {user ? (
@@ -409,11 +410,6 @@ export default function MeetLandingPage() {
             </form>
           </div>
 
-          <div className="border-t border-slate-100 w-full pt-5 mt-2">
-            <p className="text-sm text-slate-500">
-              <a href="#" className="text-primary hover:underline font-medium">Learn more</a> about CliPad
-            </p>
-          </div>
         </div>
 
         {/* Right Side: Enlarged Carousel */}
@@ -529,7 +525,7 @@ export default function MeetLandingPage() {
                   <div className={`w-20 h-20 rounded-2xl ${step.color} text-white flex items-center justify-center shadow-2xl mb-6 group-hover:-translate-y-2 group-hover:scale-110 transition-all duration-300`}>
                     <Icon className="w-8 h-8" />
                   </div>
-                  <div className="bg-slate-900 text-white text-[10px] font-mono font-bold px-3 py-1 rounded-full mb-4 tracking-widest shadow-sm">
+                  <div className="bg-primary text-primary-foreground text-[10px] font-mono font-bold px-3 py-1 rounded-full mb-4 tracking-widest shadow-sm">
                     STEP {step.step}
                   </div>
                   <h3 className="text-xl font-bold text-slate-900 mb-2">{step.title}</h3>
