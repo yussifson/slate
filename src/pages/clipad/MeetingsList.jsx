@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
-import { Calendar, Video, Search, Clock, Users, ArrowRight, Sparkles, Filter, CheckCircle, Flame, ArrowLeft, Target } from 'lucide-react';
+import { Calendar, Video, Search, Clock, Users, ArrowRight, Sparkles, Filter, CheckCircle, Flame, ArrowLeft, Target, Settings } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
 import ThemeToggle from '@/components/layout/ThemeToggle';
