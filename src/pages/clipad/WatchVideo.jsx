@@ -324,10 +324,10 @@ export default function WatchVideo() {
                     ))}
                   </div>
                   <div className="w-px h-4 bg-white/20 mx-1" />
-                  <button onClick={(e) => { e.stopPropagation(); togglePiP(); }} className="text-foreground/70 hover:text-foreground transition-colors" title="Picture-in-Picture">
+                  <button onClick={(e) => { e.stopPropagation(); togglePiP(); }} className="text-white/80 hover:text-white transition-colors" title="Picture-in-Picture">
                     <PictureInPicture className="w-4 h-4" />
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); toggleFullScreen(); }} className="text-foreground/70 hover:text-foreground transition-colors" title="Full Screen">
+                  <button onClick={(e) => { e.stopPropagation(); toggleFullScreen(); }} className="text-white/80 hover:text-white transition-colors" title="Full Screen">
                     <Maximize2 className="w-4 h-4" />
                   </button>
                 </div>

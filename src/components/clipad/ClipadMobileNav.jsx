@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Layers, Video, Camera, User } from 'lucide-react';
+import { Home, Layers, Video, Camera, User, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function ClipadMobileNav() {
@@ -9,6 +9,7 @@ export default function ClipadMobileNav() {
   const navItems = [
     { label: 'Home', path: '/dashboard', icon: Home },
     { label: 'Spaces', path: '/spaces', icon: Layers },
+    { label: 'Chat', path: '/chat', icon: MessageSquare },
     { label: 'Record', path: '/record', icon: Camera },
     { label: 'Meetings', path: '/meetings', icon: Video },
     { label: 'Profile', path: '/settings', icon: User },

@@ -25,6 +25,7 @@ const SpacesList = React.lazy(() => import('@/pages/clipad/SpacesList'));
 const MeetingRecord = React.lazy(() => import('@/pages/clipad/MeetingRecord'));
 const MeetingsList = React.lazy(() => import('@/pages/clipad/MeetingsList'));
 const CliPadSupport = React.lazy(() => import('@/pages/clipad/CliPadSupport'));
+const ClipadChat = React.lazy(() => import('@/pages/clipad/ClipadChat'));
 
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
@@ -1240,6 +1241,8 @@ function App() {
                         <Route path="/meetings/:meetingId" element={<MeetingRecord />} />
                         <Route path="/settings" element={<CliPadSettings />} />
                         <Route path="/support" element={<CliPadSupport />} />
+                        <Route path="/chat" element={<ClipadChat />} />
+                        <Route path="/chat/:roomId" element={<ClipadChat />} />
                       </Route>
                       <Route path="/watch/:videoId" element={<WatchVideo />} />
                       <Route path="*" element={<Navigate to="/" replace />} />

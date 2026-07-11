@@ -545,14 +545,36 @@ export default function RecordVideo() {
         
         if (transcript.trim().length > 10) {
           import('@/lib/cloudflareAI').then(({ generateText }) => {
-            generateText(`Summarize this video transcript:\n\n${transcript}`).then(async (aiSummary) => {
-               await supabase.from('clipad_videos').update({ ai_summary: aiSummary }).eq('id', activeVideoId);
+            generateText([
+              { role: 'system', content: 'You are an AI assistant. Summarize the following video transcript. Return ONLY valid JSON with two keys: "summary" (a string summarizing the video concisely) and "action_items" (an array of objects, each with "title", "owner", and "context"). Do not wrap the JSON in markdown blocks.' },
+              { role: 'user', content: transcript.trim() }
+            ]).then(async (aiResult) => {
+              try {
+                let text = typeof aiResult === 'string' ? aiResult : aiResult?.response;
+                if (!text) return;
+                if (text.startsWith('```json')) text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+                const parsed = JSON.parse(text);
+                
+                if (parsed.summary) {
+                  await supabase.from('clipad_videos').update({ ai_summary: parsed.summary }).eq('id', activeVideoId);
+                }
+                if (parsed.action_items && Array.isArray(parsed.action_items) && parsed.action_items.length > 0) {
+                  const inserts = parsed.action_items.map(ai => ({
+                    space_id: selectedSpace || null,
+                    title: ai.title,
+                    assigned_to: ai.owner || null,
+                    context: ai.context || null,
+                    is_complete: false,
+                  }));
+                  await supabase.from('clipad_action_items').insert(inserts);
+                }
+              } catch(e) { console.warn("Failed to parse AI output", e); }
             }).catch(()=>{});
           });
         }
         
         toast({ title: '✓ Details updated!', description: 'Your recording has been finalized.' });
-        setTimeout(() => navigate(`/watch/${activeVideoId}`), 1000);
+        setTimeout(() => navigate(`/spaces/${selectedSpace || ''}`), 1000);
       } catch (err) {
         toast({ title: 'Update failed', description: err.message, variant: 'destructive' });
         setPhase('review');
@@ -592,18 +614,31 @@ export default function RecordVideo() {
 
       if (transcript.trim().length > 10) {
         import('@/lib/cloudflareAI').then(({ generateText }) => {
-
           generateText([
-            { role: 'system', content: 'You are an AI assistant. Summarize the following video transcript concisely. Identify key action items and topics.' },
+            { role: 'system', content: 'You are an AI assistant. Summarize the following video transcript. Return ONLY valid JSON with two keys: "summary" (a string summarizing the video concisely) and "action_items" (an array of objects, each with "title", "owner", and "context"). Do not wrap the JSON in markdown blocks.' },
             { role: 'user', content: transcript.trim() }
-          ]).then((aiResult) => {
-            if (aiResult?.response) {
-              supabase.from('clipad_videos')
-                .update({ ai_summary: JSON.stringify({ summary: aiResult.response }) })
-                .eq('id', videoRecord.id)
-                .then(() => console.log('AI summary saved.'));
-            }
-          }).catch(e => console.error("AI processing error:", e));
+          ]).then(async (aiResult) => {
+            try {
+              let text = typeof aiResult === 'string' ? aiResult : aiResult?.response;
+              if (!text) return;
+              if (text.startsWith('```json')) text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+              const parsed = JSON.parse(text);
+              
+              if (parsed.summary) {
+                await supabase.from('clipad_videos').update({ ai_summary: parsed.summary }).eq('id', videoRecord.id);
+              }
+              if (parsed.action_items && Array.isArray(parsed.action_items) && parsed.action_items.length > 0) {
+                const inserts = parsed.action_items.map(ai => ({
+                  space_id: selectedSpace || null,
+                  title: ai.title,
+                  assigned_to: ai.owner || null,
+                  context: ai.context || null,
+                  is_complete: false,
+                }));
+                await supabase.from('clipad_action_items').insert(inserts);
+              }
+            } catch(e) { console.warn("Failed to parse AI output", e); }
+          }).catch(()=>{});
         });
       }
 
