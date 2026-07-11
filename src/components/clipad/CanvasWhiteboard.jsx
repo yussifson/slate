@@ -341,7 +341,7 @@ export default function CanvasWhiteboard({ onClose }) {
     ctx.fillText(textInput.val, textInput.x, textInput.y);
     ctx.restore();
     setTextInput(null);
-  }, [textInput, ctx, color, size, pan, zoom]);
+  }, [textInput, color, size, pan, zoom]);
 
   // ── Zoom ────────────────────────────────────────────────────────────────────
   const onWheel = useCallback((e) => {

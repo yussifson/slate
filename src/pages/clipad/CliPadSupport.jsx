@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, MessageSquare, Send, CheckCircle, HelpCircle } from 'lucide-react';
+import { ArrowLeft, LifeBuoy, MessageSquare, Mail, ExternalLink, HelpCircle, FileText, Settings, Send, CheckCircle } from 'lucide-react';
+import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
@@ -63,8 +64,8 @@ export default function CliPadSupport() {
       {/* Navbar */}
       <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-16 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-            <HelpCircle className="w-4 h-4 text-primary" />
+          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center text-primary">
+            <CliPadLogo size={20} />
           </div>
           <span className="text-lg font-bold tracking-tight">Support</span>
         </div>

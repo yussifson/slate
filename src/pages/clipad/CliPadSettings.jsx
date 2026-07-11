@@ -4,6 +4,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { supabase } from '@/api/supabaseClient';
 import { Settings, User, Bell, Shield, LogOut, ArrowLeft, Video, CheckCircle, Camera } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { CliPadLogo } from '@/components/ui/CliPadLogo';
 
 export default function CliPadSettings() {
   const { user, logout } = useAuth();
@@ -58,8 +59,8 @@ export default function CliPadSettings() {
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
       <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-background page-enter/80 backdrop-blur-xl border-b border-border">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
-          <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
-            <Settings className="w-4 h-4 text-foreground" strokeWidth={2.5} />
+          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center text-primary">
+            <CliPadLogo size={20} />
           </div>
           <span className="text-lg font-bold tracking-tight">Settings</span>
         </div>

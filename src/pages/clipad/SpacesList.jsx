@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
+import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { Layers, Plus, Search, Users, Video, Camera, ArrowRight, Settings, Clock, ArrowLeft } from 'lucide-react';
 
 const COLORS = [
@@ -62,8 +63,8 @@ export default function SpacesList() {
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter">
       <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
-          <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
-            <Layers className="w-4 h-4 text-white dark:text-slate-900" strokeWidth={2.5} />
+          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center text-primary">
+            <CliPadLogo size={20} />
           </div>
           <span className="text-lg font-bold tracking-tight">Spaces</span>
         </div>

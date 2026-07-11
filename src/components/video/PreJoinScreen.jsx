@@ -26,8 +26,12 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
     const startMedia = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: true, 
-          audio: true 
+          video: { width: { ideal: 1280 }, height: { ideal: 720 } }, 
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          } 
         });
         
         if (!mounted) {

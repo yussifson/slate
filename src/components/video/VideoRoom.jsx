@@ -997,7 +997,21 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
    if (cancelled) return;
 
    const callObject = DailyIframe.createCallObject({
-    dailyConfig: {}
+    dailyConfig: {
+      camSimulcastEncodings: [
+        { maxBitrate: 1200000, maxFramerate: 30, scaleResolutionDownBy: 1 },
+        { maxBitrate: 600000, maxFramerate: 24, scaleResolutionDownBy: 2 },
+        { maxBitrate: 200000, maxFramerate: 15, scaleResolutionDownBy: 4 },
+      ],
+      v2CamAndMic: true,
+      audioSource: true,
+      videoSource: true,
+      userMediaAudioConstraints: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+      }
+    }
    });
    callRef.current = callObject;
 
@@ -1012,6 +1026,15 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
    try {
     await callObject.startCamera();
     if (cancelled) return;
+
+    // Force advanced noise cancellation if supported by browser/daily
+    try {
+      await callObject.updateInputSettings({
+        audio: {
+          processor: { type: 'noise-cancellation' }
+        }
+      });
+    } catch (e) { console.warn("Noise cancellation not supported or failed to init:", e); }
     
     // Apply background instantly before joining
     if (initialBackground && initialBackground.type !== 'none') {
