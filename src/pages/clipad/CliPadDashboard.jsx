@@ -20,7 +20,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
 function StatCard({ icon: Icon, value, label, trend, accentColor, bgColor, iconColor }) {
   return (
