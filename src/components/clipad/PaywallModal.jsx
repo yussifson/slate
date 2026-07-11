@@ -66,10 +66,10 @@ export const PaywallModal = ({ isOpen, onClose, featureName = "This feature", li
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-md overflow-hidden bg-white border shadow-2xl rounded-2xl dark:bg-slate-900 border-slate-200 dark:border-slate-800"
+          className="relative w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden bg-white border shadow-2xl rounded-2xl dark:bg-slate-900 border-slate-200 dark:border-slate-800"
         >
           {/* Header Graphic */}
-          <div className="relative h-32 overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600">
+          <div className="relative shrink-0 h-24 overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600">
             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
             <div className="absolute flex items-center justify-center w-16 h-16 transform -translate-x-1/2 bg-white rounded-full shadow-lg left-1/2 -bottom-8 dark:bg-slate-900">
               <Sparkles className="w-8 h-8 text-indigo-500" />
@@ -85,7 +85,7 @@ export const PaywallModal = ({ isOpen, onClose, featureName = "This feature", li
           </button>
 
           {/* Content */}
-          <div className="px-6 pt-12 pb-6 text-center">
+          <div className="px-6 pt-10 pb-6 text-center overflow-y-auto">
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
               Upgrade to Clipad Pro
             </h2>
