@@ -40,8 +40,25 @@ export default function SpacesList() {
 
   const fetchSpaces = async () => {
     setLoading(true);
-    const { data } = await supabase.from('clipad_spaces').select('*').order('created_at', { ascending: false });
-    if (data) setSpaces(data);
+    if (!user?.id) { setLoading(false); return; }
+    // Show spaces the user created, or is a member of, or are public
+    const [mySpacesRes, memberSpacesRes] = await Promise.all([
+      supabase.from('clipad_spaces').select('*').eq('created_by', user.id).order('created_at', { ascending: false }),
+      supabase.from('clipad_space_members').select('space_id').eq('user_id', user.id)
+    ]);
+    const memberSpaceIds = memberSpacesRes.data?.map(m => m.space_id) || [];
+    let allSpaces = mySpacesRes.data || [];
+    if (memberSpaceIds.length > 0) {
+      const { data: memberSpaces } = await supabase.from('clipad_spaces').select('*').in('id', memberSpaceIds);
+      const existingIds = new Set(allSpaces.map(s => s.id));
+      allSpaces = [...allSpaces, ...(memberSpaces || []).filter(s => !existingIds.has(s.id))];
+    }
+    // Also include public spaces
+    const { data: publicSpaces } = await supabase.from('clipad_spaces').select('*').eq('is_private', false);
+    const existingIds2 = new Set(allSpaces.map(s => s.id));
+    allSpaces = [...allSpaces, ...(publicSpaces || []).filter(s => !existingIds2.has(s.id))];
+    allSpaces.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    setSpaces(allSpaces);
     setLoading(false);
   };
 

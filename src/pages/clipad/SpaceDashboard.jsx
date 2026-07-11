@@ -133,7 +133,7 @@ export default function SpaceDashboard() {
         supabase.from('clipad_meeting_records').select('*').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(20),
         supabase.from('clipad_action_items').select('*, assignedUser:assigned_to(full_name)').eq('space_id', spaceId).order('created_at', { ascending: false }),
         supabase.from('clipad_space_members').select('*').eq('space_id', spaceId),
-        supabase.from('profiles').select('id, full_name, email, avatar_url')
+        supabase.from('profiles').select('id, full_name, email, avatar_url').eq('company_id', user.company_id)
       ]);
       if (spaceRes.data) {
         setSpace(spaceRes.data);

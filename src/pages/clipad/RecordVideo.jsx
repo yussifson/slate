@@ -64,12 +64,26 @@ export default function RecordVideo() {
   const recordStreamRef = useRef(null);
 
   useEffect(() => {
-    // Load spaces for selection
-    supabase.from('clipad_spaces').select('id, name').order('created_at', { ascending: false }).then(({ data }) => {
-      if (data) setSpaces(data);
-    });
+    // Load spaces user has access to
+    const loadSpaces = async () => {
+      if (user?.id) {
+        const [mySpacesRes, memberSpacesRes] = await Promise.all([
+          supabase.from('clipad_spaces').select('id, name').eq('created_by', user.id).order('created_at', { ascending: false }),
+          supabase.from('clipad_space_members').select('space_id').eq('user_id', user.id)
+        ]);
+        const memberIds = memberSpacesRes.data?.map(m => m.space_id) || [];
+        let allSpaces = mySpacesRes.data || [];
+        if (memberIds.length > 0) {
+          const { data: memberSpaceData } = await supabase.from('clipad_spaces').select('id, name').in('id', memberIds);
+          const existingIds = new Set(allSpaces.map(s => s.id));
+          allSpaces = [...allSpaces, ...(memberSpaceData || []).filter(s => !existingIds.has(s.id))];
+        }
+        setSpaces(allSpaces);
+      }
+    };
+    loadSpaces();
     return () => stopEverything();
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     if (countdown === null) return;
