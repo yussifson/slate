@@ -11,6 +11,7 @@ import {
 import SpaceNotes from '@/components/clipad/SpaceNotes';
 import MeetingInsights from '@/components/clipad/MeetingInsights';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
+import { getSpaceIcon } from '@/utils/spaceIcons';
 
 const TABS = [
   { id: 'overview', icon: Layers, label: 'Overview' },
@@ -38,7 +39,7 @@ function TaskRow({ item, onToggle }) {
       <div className="flex-1 min-w-0">
         <p className={`text-sm font-medium leading-snug ${done ? 'line-through text-muted-foreground' : 'text-gray-200'}`}>{item.title}</p>
         <div className="flex items-center gap-3 mt-1">
-          {item.assigned_to && <span className="text-xs text-muted-foreground flex items-center gap-1"><User className="w-3 h-3" /> {item.assigned_to}</span>}
+          {item.assignedUser?.full_name && <span className="text-xs text-muted-foreground flex items-center gap-1"><User className="w-3 h-3" /> {item.assignedUser.full_name}</span>}
           {item.due_date && <span className="text-xs text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" /> {new Date(item.due_date).toLocaleDateString()}</span>}
         </div>
       </div>
@@ -118,7 +119,7 @@ export default function SpaceDashboard() {
         supabase.from('clipad_spaces').select('*').eq('id', spaceId).single(),
         supabase.from('clipad_videos').select('*, creator:creator_id(full_name, avatar_url)').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(12),
         supabase.from('clipad_meeting_records').select('*').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(20),
-        supabase.from('clipad_action_items').select('*').eq('space_id', spaceId).order('created_at', { ascending: false }),
+        supabase.from('clipad_action_items').select('*, assignedUser:assigned_to(full_name)').eq('space_id', spaceId).order('created_at', { ascending: false }),
       ]);
       if (spaceRes.data) setSpace(spaceRes.data);
       if (videosRes.data) setVideos(videosRes.data);
@@ -197,7 +198,9 @@ export default function SpaceDashboard() {
       <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-background page-enter/80 backdrop-blur-xl border-b border-border">
         <div className="flex items-center gap-3">
           <button onClick={() => navigate('/spaces')} className="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5"><ArrowLeft className="w-5 h-5 text-slate-500" /></button>
-          <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center text-sm font-bold`}>{space.name?.[0]}</div>
+          <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-sm`}>
+            {React.createElement(getSpaceIcon(space.name), { className: "w-4 h-4" })}
+          </div>
           <span className="font-semibold text-foreground">{space.name}</span>
         </div>
         <div className="flex items-center gap-2">
@@ -219,7 +222,9 @@ export default function SpaceDashboard() {
         <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-10`} />
         <div className="relative px-6 md:px-10 py-8">
           <div className="flex items-start gap-4">
-            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-2xl font-black shadow-xl shrink-0`}>{space.name?.[0]}</div>
+            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-xl shrink-0`}>
+              {React.createElement(getSpaceIcon(space.name), { className: "w-7 h-7" })}
+            </div>
             <div>
               <h1 className="text-2xl font-black text-foreground">{space.name}</h1>
               <p className="text-muted-foreground mt-1">{space.description || 'A shared space for meetings, videos, and collaboration.'}</p>

@@ -3,7 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
-import { Layers, Plus, Search, Users, Video, Camera, ArrowRight, Settings, Clock, ArrowLeft } from 'lucide-react';
+import { 
+  Plus, Users, Video, Clock, ArrowRight, Settings, 
+  Search, Lock, Globe, Layout, Camera, Layers, ArrowLeft
+} from 'lucide-react';
+import { getSpaceIcon } from '@/utils/spaceIcons';
 
 const COLORS = [
   'from-indigo-500 to-violet-500',
@@ -119,8 +123,8 @@ export default function SpacesList() {
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className="p-8">
                       <div className="flex items-center gap-4 mb-6">
-                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-white font-bold text-xl shadow-lg shrink-0`}>
-                          {space.name?.[0]?.toUpperCase()}
+                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-lg shrink-0`}>
+                          {React.createElement(getSpaceIcon(space.name), { className: "w-7 h-7" })}
                         </div>
                         <div className="flex-1 min-w-0">
                           <h3 className="font-extrabold text-slate-900 dark:text-white text-lg truncate group-hover:text-primary transition-colors">{space.name}</h3>

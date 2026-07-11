@@ -10,8 +10,9 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/compone
 import {
   Video, Keyboard, Sparkles, Copy, Link as LinkIcon, Calendar,
   Users, Brain, Layers, Zap, ChevronRight, ChevronLeft,
-  Monitor, CheckCircle, ArrowRight, Star, Globe, Plus, Camera, Target, TrendingUp, Clock
+  Monitor, CheckCircle, ArrowRight, Star, Globe, Plus, Camera, Target, TrendingUp, Clock, MessageSquare, PhoneCall
 } from 'lucide-react';
+import { v4 as uuidv4 } from 'uuid';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 
 
@@ -592,7 +593,7 @@ export default function MeetLandingPage() {
               <button
                 onClick={() => createRoom(true)}
                 disabled={isCreating}
-                className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-foreground font-bold shadow-2xl shadow-primary/30 transition-all hover:scale-[1.02]"
+                className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white font-bold shadow-2xl shadow-primary/30 transition-all hover:scale-[1.02]"
               >
                 <Video className="w-5 h-5" /> Start Free Meeting
               </button>
@@ -601,6 +602,89 @@ export default function MeetLandingPage() {
                 className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-secondary hover:bg-secondary/80 text-foreground font-semibold border border-border transition-all"
               >
                 Sign In <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* ΓöÇΓöÇ CONTACT SUPPORT ΓöÇΓöÇ */}
+        <section id="contact" className="py-24 px-6 md:px-12 max-w-7xl mx-auto border-t border-border">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">We're here to help</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">Need assistance with your account, or want to schedule a demo? Reach out to our Optavel Support team below.</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Chat Option */}
+            <div className="bg-card border border-border p-8 rounded-3xl shadow-sm hover:shadow-md transition-all text-center flex flex-col items-center">
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                <MessageSquare className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Live Support Chat</h3>
+              <p className="text-muted-foreground text-sm mb-6 flex-1">Chat directly with an Optavel support agent in real-time to get your questions answered instantly.</p>
+              <button 
+                onClick={async () => {
+                  try {
+                    const name = prompt("Enter your name to start chat:");
+                    if (!name) return;
+                    await supabase.from('optavel_support_tickets').insert({
+                      id: uuidv4(),
+                      company_id: 'default', // Using a default/guest identifier since they might not be logged in
+                      title: 'Live Chat Request',
+                      description: 'User initiated a live chat from the landing page.',
+                      severity: 'low',
+                      status: 'open',
+                      customer_name: name,
+                      created_at: new Date().toISOString(),
+                      updated_at: new Date().toISOString()
+                    });
+                    alert(`Thanks ${name}, an agent will connect with you shortly!`);
+                  } catch (e) {
+                    console.error(e);
+                    alert("Failed to initiate chat. Please try again later.");
+                  }
+                }}
+                className="w-full py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold transition-colors"
+              >
+                Start Chat
+              </button>
+            </div>
+
+            {/* Request Call Option */}
+            <div className="bg-card border border-border p-8 rounded-3xl shadow-sm hover:shadow-md transition-all text-center flex flex-col items-center">
+              <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6">
+                <PhoneCall className="w-8 h-8 text-blue-500" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Request a Call</h3>
+              <p className="text-muted-foreground text-sm mb-6 flex-1">Submit your details and a dedicated support representative will call you back shortly.</p>
+              <button 
+                onClick={async () => {
+                  try {
+                    const name = prompt("Enter your name:");
+                    if (!name) return;
+                    const phone = prompt("Enter your phone number:");
+                    if (!phone) return;
+                    
+                    await supabase.from('optavel_support_tickets').insert({
+                      id: uuidv4(),
+                      company_id: 'default', // Using a default/guest identifier
+                      title: 'Call Request',
+                      description: `User requested a call back at ${phone}.`,
+                      severity: 'medium',
+                      status: 'open',
+                      customer_name: name,
+                      created_at: new Date().toISOString(),
+                      updated_at: new Date().toISOString()
+                    });
+                    alert(`Thank you ${name}. We will call you shortly at ${phone}.`);
+                  } catch(e) {
+                    console.error(e);
+                    alert("Failed to submit request.");
+                  }
+                }}
+                className="w-full py-3 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-semibold transition-colors"
+              >
+                Request Call
               </button>
             </div>
           </div>
