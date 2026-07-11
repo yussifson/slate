@@ -7,6 +7,7 @@ import {
   Maximize2, Share2, Copy, Check, Sparkles, MessageSquare, Heart,
   ThumbsUp, Zap, Star, BookOpen, ChevronRight, Eye, MoreHorizontal, PictureInPicture, RotateCcw, RotateCw
 } from 'lucide-react';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
 const EMOJIS = ['👍','❤️','🔥','😂','🎉','🤯'];
@@ -166,11 +167,10 @@ export default function WatchVideo() {
     }
   };
 
-  const changeSpeed = () => {
+  const changeSpeed = (rate) => {
     if (!videoRef.current) return;
-    const nextRate = playbackRate === 1 ? 1.5 : playbackRate === 1.5 ? 2 : 1;
-    videoRef.current.playbackRate = nextRate;
-    setPlaybackRate(nextRate);
+    videoRef.current.playbackRate = rate;
+    setPlaybackRate(rate);
   };
 
   const skip = (amount) => {
@@ -317,7 +317,7 @@ export default function WatchVideo() {
               <div className="absolute inset-0 cursor-pointer z-10" onClick={togglePlay} />
 
               {/* Controls overlay */}
-              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-30 pointer-events-none">
+              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30 pointer-events-none">
                 {/* Progress bar */}
                 <div className="px-4 mb-2 pointer-events-auto">
                   {/* Comment markers on timeline */}
@@ -327,51 +327,66 @@ export default function WatchVideo() {
                         key={c.id}
                         onClick={() => seekTo(c.timestamp_seconds)}
                         title={c.body}
-                        className="absolute top-0 w-2 h-2 -mt-0.5 rounded-full bg-indigo-400 hover:scale-150 transition-transform"
-                        style={{ left: `${(c.timestamp_seconds / (duration || 1)) * 100}%` }}
+                        className="absolute top-0 w-2 h-2 -mt-0.5 rounded-full bg-indigo-400 hover:scale-150 transition-transform shadow-sm"
+                        style={{ left: `${(c.timestamp_seconds / (duration && duration !== Infinity ? duration : 1)) * 100}%` }}
                       />
                     ))}
                   </div>
                   <input
                     type="range"
                     min={0}
-                    max={duration || 100}
+                    max={duration && duration !== Infinity ? duration : 100}
                     value={currentTime}
                     onChange={e => seekTo(Number(e.target.value))}
-                    className="w-full h-1 rounded-full accent-emerald-500 cursor-pointer"
+                    className="w-full h-1.5 rounded-full accent-emerald-500 cursor-pointer bg-white/20 hover:h-2 transition-all"
                   />
                 </div>
 
-                <div className="flex items-center gap-3 px-4 pb-4 pointer-events-auto">
-                  <button onClick={togglePlay} className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors">
-                    {playing ? <Pause className="w-4 h-4 text-foreground" /> : <Play className="w-4 h-4 text-foreground fill-white" />}
+                <div className="flex items-center gap-4 px-4 pb-4 pointer-events-auto">
+                  <button onClick={togglePlay} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30 hover:scale-105 transition-all shadow-lg border border-white/10">
+                    {playing ? <Pause className="w-4 h-4 text-white" fill="currentColor" /> : <Play className="w-4 h-4 text-white ml-0.5" fill="currentColor" />}
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); skip(-10); }} className="text-foreground/70 hover:text-foreground transition-colors" title="Backward 10s">
-                    <RotateCcw className="w-4 h-4" />
+                  <button onClick={(e) => { e.stopPropagation(); skip(-10); }} className="text-white/80 hover:text-white transition-colors" title="Backward 10s">
+                    <RotateCcw className="w-5 h-5" />
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); skip(10); }} className="text-foreground/70 hover:text-foreground transition-colors" title="Forward 10s">
-                    <RotateCw className="w-4 h-4" />
+                  <button onClick={(e) => { e.stopPropagation(); skip(10); }} className="text-white/80 hover:text-white transition-colors" title="Forward 10s">
+                    <RotateCw className="w-5 h-5" />
                   </button>
-                  <button onClick={toggleMute} className="text-foreground/70 hover:text-foreground transition-colors">
-                    {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                  <button onClick={toggleMute} className="text-white/80 hover:text-white transition-colors ml-2">
+                    {muted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                   </button>
-                  <span className="text-foreground/60 text-xs font-mono">{formatTime(currentTime)} / {formatTime(duration)}</span>
+                  <span className="text-white/90 text-sm font-mono font-medium ml-2">
+                    {formatTime(currentTime)} / {duration === Infinity || isNaN(duration) ? '--:--' : formatTime(duration)}
+                  </span>
                   <div className="flex-1" />
                   {/* Emoji reaction bar in controls */}
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
                     {EMOJIS.map(e => (
-                      <button key={e} onClick={(evt) => { evt.stopPropagation(); addReaction(e); }} className="text-base hover:scale-125 transition-transform active:scale-150">{e}</button>
+                      <button key={e} onClick={(evt) => { evt.stopPropagation(); addReaction(e); }} className="text-lg hover:scale-125 transition-transform active:scale-150">{e}</button>
                     ))}
                   </div>
-                  <div className="w-px h-4 bg-white/20 mx-1" />
-                  <button onClick={(e) => { e.stopPropagation(); changeSpeed(); }} className="text-white/80 hover:text-white transition-colors text-xs font-bold" title="Playback Speed">
-                    {playbackRate}x
-                  </button>
+                  <div className="w-px h-5 bg-white/20 mx-2" />
+                  
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="text-white/90 hover:text-white transition-colors text-sm font-bold bg-white/10 hover:bg-white/20 px-2 py-1 rounded-md" title="Playback Speed">
+                        {playbackRate}x
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-24 bg-white/10 backdrop-blur-xl border-white/10 text-white" align="end">
+                      {[0.5, 1, 1.25, 1.5, 2].map(rate => (
+                        <DropdownMenuItem key={rate} onClick={() => changeSpeed(rate)} className="hover:bg-white/20 cursor-pointer text-sm">
+                          {rate}x
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
                   <button onClick={(e) => { e.stopPropagation(); togglePiP(); }} className="text-white/80 hover:text-white transition-colors" title="Picture-in-Picture">
-                    <PictureInPicture className="w-4 h-4" />
+                    <PictureInPicture className="w-5 h-5" />
                   </button>
                   <button onClick={(e) => { e.stopPropagation(); toggleFullScreen(); }} className="text-white/80 hover:text-white transition-colors" title="Full Screen">
-                    <Maximize2 className="w-4 h-4" />
+                    <Maximize2 className="w-5 h-5" />
                   </button>
                 </div>
               </div>

@@ -83,6 +83,20 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   const [isApplyingBg, setIsApplyingBg] = useState(false);
   const [showWhiteboard, setShowWhiteboard] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const recordingIntervalRef = useRef(null);
+
+  useEffect(() => {
+    if (isRecording) {
+      recordingIntervalRef.current = setInterval(() => {
+        setRecordingSeconds(s => s + 1);
+      }, 1000);
+    } else {
+      clearInterval(recordingIntervalRef.current);
+      setRecordingSeconds(0);
+    }
+    return () => clearInterval(recordingIntervalRef.current);
+  }, [isRecording]);
 
   const applyVirtualBackground = async (bg) => {
     if (!daily) return;
@@ -462,6 +476,14 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  >
  {isPipMode ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
  </Button>
+
+ {/* Recording Status Indicator */}
+ {isRecording && (
+   <div className="absolute top-4 left-4 z-50 bg-red-600/90 backdrop-blur-md text-white px-3 py-1.5 rounded-full font-bold text-xs shadow-lg flex items-center gap-2 animate-pulse border border-red-500/30 tracking-wide">
+     <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+     {Math.floor(recordingSeconds / 60).toString().padStart(2, '0')}:{(recordingSeconds % 60).toString().padStart(2, '0')}
+   </div>
+ )}
 
   {/* Video Grid */}
   {(() => {

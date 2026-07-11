@@ -82,14 +82,14 @@ const tiers = [
     period: 'per workspace/mo',
     highlight: true,
     badge: 'Most Popular',
-    features: ['Everything in Free', 'Up to 300 participants', 'Unlimited async recordings', 'Full AI intelligence layer', 'Smart follow-up emails', 'Video engagement analytics', 'Unlimited Team Spaces'],
+    features: ['Everything in Free', 'Up to 300 participants', 'Unlimited async recordings (1 hr limit)', 'Full AI intelligence layer', 'Smart follow-up emails', 'Video engagement analytics', 'Unlimited Team Spaces'],
   },
   {
     name: 'Enterprise',
     price: 'Custom',
     period: 'contact us',
     highlight: false,
-    features: ['Everything in Pro', 'Unlimited participants', 'Branded meeting rooms', 'SSO & compliance recording', 'E2E encryption', 'SLA & dedicated support', 'Custom integrations'],
+    features: ['Everything in Pro', 'Unlimited participants', 'Branded meeting rooms', 'SSO & compliance recording', 'Unlimited async recordings', 'SLA & dedicated support', 'Custom integrations'],
   },
 ];
 
@@ -340,7 +340,7 @@ export default function MeetLandingPage() {
   const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
 
   return (
-    <div className="light min-h-screen bg-white text-slate-900 flex flex-col font-sans relative overflow-hidden">
+    <div className={`light min-h-screen bg-white text-slate-900 flex flex-col font-sans relative overflow-x-hidden transition-all duration-500 ease-in-out ${supportPanel ? 'lg:pr-[400px]' : ''}`}>
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 blur-[120px]" />
         <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-orange-500/5 blur-[120px]" />
@@ -578,6 +578,61 @@ export default function MeetLandingPage() {
               </div>
             ))}
           </div>
+
+          {/* Compare Plans Table */}
+          <div className="mt-24">
+            <h3 className="text-3xl font-black text-center mb-10 tracking-tight">Compare Plans</h3>
+            <div className="overflow-x-auto border border-border rounded-3xl bg-secondary/30">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-border bg-slate-50/50">
+                    <th className="p-5 font-bold text-foreground w-[40%] rounded-tl-3xl">Features</th>
+                    <th className="p-5 font-bold text-foreground text-center">Free</th>
+                    <th className="p-5 font-bold text-primary text-center bg-primary/5">Pro</th>
+                    <th className="p-5 font-bold text-foreground text-center rounded-tr-3xl">Enterprise</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm text-muted-foreground">
+                  <tr className="border-b border-border hover:bg-slate-50/80 transition-colors">
+                    <td className="p-5 font-semibold text-slate-700">Video Recording Limit</td>
+                    <td className="p-5 text-center">15 minutes</td>
+                    <td className="p-5 text-center text-primary font-bold bg-primary/5">1 hour</td>
+                    <td className="p-5 text-center">Unlimited</td>
+                  </tr>
+                  <tr className="border-b border-border hover:bg-slate-50/80 transition-colors">
+                    <td className="p-5 font-semibold text-slate-700">Team Spaces</td>
+                    <td className="p-5 text-center">Up to 5</td>
+                    <td className="p-5 text-center text-primary font-bold bg-primary/5">Unlimited</td>
+                    <td className="p-5 text-center">Unlimited</td>
+                  </tr>
+                  <tr className="border-b border-border hover:bg-slate-50/80 transition-colors">
+                    <td className="p-5 font-semibold text-slate-700">Participants per Call</td>
+                    <td className="p-5 text-center">Up to 50</td>
+                    <td className="p-5 text-center text-primary font-bold bg-primary/5">Up to 300</td>
+                    <td className="p-5 text-center">Unlimited</td>
+                  </tr>
+                  <tr className="border-b border-border hover:bg-slate-50/80 transition-colors">
+                    <td className="p-5 font-semibold text-slate-700">AI Meeting Summary</td>
+                    <td className="p-5 text-center">Basic</td>
+                    <td className="p-5 text-center text-primary font-bold bg-primary/5">Full Intelligence</td>
+                    <td className="p-5 text-center">Full Intelligence</td>
+                  </tr>
+                  <tr className="border-b border-border hover:bg-slate-50/80 transition-colors">
+                    <td className="p-5 font-semibold text-slate-700">Video Analytics</td>
+                    <td className="p-5 text-center">-</td>
+                    <td className="p-5 text-center text-primary font-bold bg-primary/5">Yes</td>
+                    <td className="p-5 text-center">Advanced</td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/80 transition-colors">
+                    <td className="p-5 font-semibold text-slate-700">Custom Branding & SSO</td>
+                    <td className="p-5 text-center">-</td>
+                    <td className="p-5 text-center text-primary font-bold bg-primary/5">-</td>
+                    <td className="p-5 text-center">Yes</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </section>
 
         <section className="py-24 px-6 md:px-12 max-w-4xl mx-auto text-center">
@@ -720,25 +775,29 @@ export default function MeetLandingPage() {
       {/* Support Panel */}
       <AnimatePresence>
         {supportPanel && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-slate-900/20 backdrop-blur-sm"
-            onClick={() => setSupportPanel(null)}
-          >
+          <>
             <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[100] bg-slate-900/20 backdrop-blur-sm lg:hidden"
+              onClick={() => setSupportPanel(null)}
+            />
+            <motion.div
+              initial={{ x: '100%', opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: '100%', opacity: 0 }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col"
+              className="fixed right-0 top-0 bottom-0 w-[400px] max-w-full bg-white shadow-[-10px_0_30px_rgba(0,0,0,0.05)] flex flex-col z-[110] border-l border-slate-100"
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center justify-between p-6 border-b border-slate-100">
                 <h3 className="text-xl font-bold">{supportPanel === 'chat' ? 'Live Chat Support' : 'Request a Call'}</h3>
-                <button onClick={() => setSupportPanel(null)} className="p-2 hover:bg-slate-100 rounded-full">
-                  <X className="w-5 h-5 text-slate-500" />
+                <button 
+                  onClick={() => setSupportPanel(null)} 
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-all"
+                >
+                  <X className="w-5 h-5" />
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto p-6">
@@ -773,7 +832,7 @@ export default function MeetLandingPage() {
                 )}
               </div>
             </motion.div>
-          </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>

@@ -107,10 +107,14 @@ export default function RecordVideo() {
         const seconds = Math.floor((Date.now() - newStartTime) / 1000);
         setRecordingSeconds(seconds);
         
-        // Free tier limit: 3 minutes (180 seconds)
-        if (seconds >= 180 && user?.subscription_tier !== 'pro' && user?.role !== 'super_admin') {
-          stopRecording();
-          setShowPaywall(true);
+        if (user?.role !== 'super_admin' && user?.subscription_tier !== 'enterprise') {
+          if (user?.subscription_tier === 'pro' && seconds >= 3600) {
+            stopRecording();
+            setShowPaywall(true);
+          } else if (user?.subscription_tier !== 'pro' && seconds >= 900) {
+            stopRecording();
+            setShowPaywall(true);
+          }
         }
       }, 1000);
     }
@@ -543,10 +547,14 @@ export default function RecordVideo() {
         const seconds = Math.floor((Date.now() - startTime) / 1000);
         setRecordingSeconds(seconds);
         
-        // Free tier limit: 3 minutes (180 seconds)
-        if (seconds >= 180 && user?.subscription_tier !== 'pro' && user?.role !== 'super_admin') {
-          stopRecording();
-          setShowPaywall(true);
+        if (user?.role !== 'super_admin' && user?.subscription_tier !== 'enterprise') {
+          if (user?.subscription_tier === 'pro' && seconds >= 3600) {
+            stopRecording();
+            setShowPaywall(true);
+          } else if (user?.subscription_tier !== 'pro' && seconds >= 900) {
+            stopRecording();
+            setShowPaywall(true);
+          }
         }
       }, 1000);
 

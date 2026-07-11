@@ -219,15 +219,27 @@ export default function MeetingRecord() {
             {getMeetingDuration() && <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{getMeetingDuration()}</span>}
             {meeting.participant_count && <span className="flex items-center gap-1.5"><Users className="w-4 h-4" />{meeting.participant_count} participants</span>}
           </div>
+          <div className="mt-4">
+            <button 
+              onClick={() => {
+                toast({ title: 'Recording Loading', description: 'Your recording is being processed by the cloud provider and will be available shortly.' });
+              }}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-white font-bold shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5"
+            >
+              <VideoIcon className="w-4 h-4" /> Watch Recording
+            </button>
+          </div>
         </div>
 
         {/* AI Summary */}
         {meeting.ai_summary && (
           <SectionCard icon={Brain} iconColor="from-pink-500 to-rose-500" title="AI Meeting Summary" defaultOpen>
             <div className="flex justify-end mb-3">
-              <CopyButton text={meeting.ai_summary} />
+              <CopyButton text={meeting.ai_summary === '00' ? 'No summary generated.' : meeting.ai_summary} />
             </div>
-            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">{meeting.ai_summary}</p>
+            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+              {meeting.ai_summary === '00' ? 'No meaningful transcript recorded to generate a summary.' : meeting.ai_summary}
+            </p>
           </SectionCard>
         )}
 
