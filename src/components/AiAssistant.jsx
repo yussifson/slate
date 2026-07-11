@@ -259,8 +259,9 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  .order('created_at', { ascending: false});
  
  if (data && data.length > 0) {
- setSessions(data.map(d => d.data));
- setActiveId(data[0].data.id);
+  const loadedSessions = data.map(d => ({ ...(d.data || {}), id: d.id }));
+  setSessions(loadedSessions);
+  setActiveId(loadedSessions[0].id);
 } else {
  const s = newSession();
  setSessions([s]);

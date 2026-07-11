@@ -52,23 +52,37 @@ export default function VideoAnalytics() {
     setLoading(true);
     try {
       let videoIds = [];
-      let videos = [];
       
+      const isAdminUser = user.subscription_tier === 'enterprise' || user.role === 'admin' || user.role === 'super_admin';
+      let videos = [];
       let myMeetings = [];
-      if (user.company_id) {
-        const { data: spaces } = await supabase.from('clipad_spaces').select('id').eq('company_id', user.company_id);
-        const spaceIds = spaces?.map(s => s.id) || [];
-        if (spaceIds.length > 0) {
-          const { data: companyVideos } = await supabase.from('clipad_videos').select('id, title, created_at, duration_seconds').in('space_id', spaceIds);
-          videos = companyVideos || [];
-          const { data: companyMeetings } = await supabase.from('clipad_meeting_records').select('id').in('space_id', spaceIds);
-          myMeetings = companyMeetings || [];
-        }
+
+      if (isAdminUser) {
+        const [videosRes, meetingsRes] = await Promise.all([
+          supabase.from('clipad_videos').select('id, title, created_at, duration_seconds'),
+          supabase.from('clipad_meeting_records').select('id')
+        ]);
+        videos = videosRes.data || [];
+        myMeetings = meetingsRes.data || [];
       } else {
-        const { data: myVideos } = await supabase.from('clipad_videos').select('id, title, created_at, duration_seconds').eq('creator_id', user.id);
-        videos = myVideos || [];
-        const { data: myM } = await supabase.from('clipad_meeting_records').select('id').eq('host_id', user.id);
-        myMeetings = myM || [];
+        const [mySpacesRes, memberSpacesRes] = await Promise.all([
+          supabase.from('clipad_spaces').select('id').eq('created_by', user.id),
+          supabase.from('clipad_space_members').select('space_id').eq('user_id', user.id)
+        ]);
+        const spaceIds = Array.from(new Set([
+          ...(mySpacesRes.data?.map(s => s.id) || []),
+          ...(memberSpacesRes.data?.map(m => m.space_id) || [])
+        ]));
+        
+        const [videosRes, meetingsRes, myVidsRes] = await Promise.all([
+          spaceIds.length > 0 ? supabase.from('clipad_videos').select('id, title, created_at, duration_seconds').in('space_id', spaceIds) : { data: [] },
+          spaceIds.length > 0 ? supabase.from('clipad_meeting_records').select('id').in('space_id', spaceIds) : { data: [] },
+          supabase.from('clipad_videos').select('id, title, created_at, duration_seconds').eq('creator_id', user.id)
+        ]);
+        
+        const allVids = [...(videosRes.data || []), ...(myVidsRes.data || [])];
+        videos = Array.from(new Map(allVids.map(v => [v.id, v])).values());
+        myMeetings = meetingsRes.data || [];
       }
 
       videoIds = videos.map(v => v.id);
