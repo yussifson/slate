@@ -11,6 +11,7 @@ import { Zap, Target, Star, Brain, Camera, Rocket, MessageSquare, PhoneCall, Arr
 import { v4 as uuidv4 } from 'uuid';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
+import FeaturesCircle from '@/components/clipad/FeaturesCircle';
 
 
 const pillars = [
@@ -71,7 +72,7 @@ const tiers = [
     price: '$0',
     period: 'forever',
     highlight: false,
-    features: ['Unlimited HD meetings', 'Up to 100 participants', 'Screen sharing & whiteboard', '5 async video recordings/mo', 'Basic AI meeting summary'],
+    features: ['Unlimited HD meetings', 'Up to 50 participants', 'Screen sharing & whiteboard', '10 async video recordings/mo (15 min limit)', 'Basic AI meeting summary', 'Up to 5 Team Spaces'],
   },
   {
     name: 'Pro',
@@ -79,14 +80,14 @@ const tiers = [
     period: 'per workspace/mo',
     highlight: true,
     badge: 'Most Popular',
-    features: ['Everything in Free', 'Up to 300 participants', 'Unlimited async recordings', 'Full AI intelligence layer', 'Smart follow-up emails', 'Video engagement analytics', 'Team Spaces'],
+    features: ['Everything in Free', 'Up to 300 participants', 'Unlimited async recordings', 'Full AI intelligence layer', 'Smart follow-up emails', 'Video engagement analytics', 'Unlimited Team Spaces'],
   },
   {
     name: 'Enterprise',
     price: 'Custom',
     period: 'contact us',
     highlight: false,
-    features: ['Everything in Pro', 'Up to 500 participants', 'Branded meeting rooms', 'SSO & compliance recording', 'E2E encryption', 'SLA & dedicated support', 'Custom integrations'],
+    features: ['Everything in Pro', 'Unlimited participants', 'Branded meeting rooms', 'SSO & compliance recording', 'E2E encryption', 'SLA & dedicated support', 'Custom integrations'],
   },
 ];
 
@@ -469,10 +470,10 @@ export default function MeetLandingPage() {
         <section id="pricing" className="py-24 px-6 md:px-12 max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-semibold tracking-wider uppercase mb-6">
-              <Star className="w-3 h-3" /> Flat Per-Workspace Pricing
+              <Star className="w-3 h-3" /> Upgrade Your Workspace
             </div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5">A team of 50 pays the same as a team of 5.</h2>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto">No per-seat pricing. Ever.</p>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5">Choose the perfect plan for your team.</h2>
+            <p className="text-muted-foreground text-lg max-w-xl mx-auto">Scale your operations seamlessly with Clipad.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
