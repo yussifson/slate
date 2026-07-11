@@ -1,6 +1,7 @@
 import { supabase} from '@/api/supabaseClient';
 import { useTranslation} from "react-i18next";
 import React, { useState, useRef, useEffect, useCallback} from 'react';
+import { createPortal } from 'react-dom';
 import { useLocation, useNavigate} from 'react-router-dom';
 import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square} from 'lucide-react';
 import { Button} from '@/components/ui/button';
@@ -168,7 +169,7 @@ function FormatMessage({ content}) {
 }
 
 // Main Component 
-export default function GlobalAIAssistant({ onClose}) {
+export default function GlobalAIAssistant({ isOpen = false, onClose }) {
  const { t} = useTranslation();
  const { user} = useAuth();
  const location = useLocation();
@@ -786,7 +787,9 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  const ctx = PAGE_CONTEXT[location.pathname];
 
  // Render 
- return (
+ if (!isOpen) return null;
+
+ const content = (
  <div className={`flex h-full shrink-0 border-l-[3px] border-l-primary bg-card -[-8px_0_30px_rgba(0,0,0,0.07)] animate-in slide-in-from-right-8 duration-300 z-40 transition-all ${isExpanded ? 'w-[680px]' : 'w-[400px]'}`}>
  {/* History Sidebar */}
  {showHistory && (
@@ -1030,5 +1033,9 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  </div>
  </div>
  </div>
+ </div>
  );
+
+ const portalNode = document.getElementById('right-docked-panel-portal');
+ return portalNode ? createPortal(content, portalNode) : content;
 }
