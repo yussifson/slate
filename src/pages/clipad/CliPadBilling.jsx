@@ -5,6 +5,7 @@ import { supabase } from '@/api/supabaseClient';
 import { Check, Loader2, Sparkles } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import ContactSalesModal from '@/components/clipad/ContactSalesModal';
+import PaymentReceiptModal from '@/components/clipad/PaymentReceiptModal';
 
 export default function CliPadBilling() {
   const { user } = useAuth();
@@ -14,6 +15,7 @@ export default function CliPadBilling() {
   const [initializing, setInitializing] = useState(true);
   const [exchangeRate, setExchangeRate] = useState(218 / 19); // Fallback: 218 GHS for $19
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [receiptDetails, setReceiptDetails] = useState(null);
 
   useEffect(() => {
     // Load Paystack script
@@ -88,6 +90,15 @@ export default function CliPadBilling() {
           toast({
             title: 'Payment Successful',
             description: `Reference: ${response.reference}. You are now on the ${planType.toUpperCase()} plan.`,
+          });
+          
+          setReceiptDetails({
+            reference: response.reference,
+            amount: amountInPesewas,
+            currency: 'GHS',
+            plan: planType,
+            date: new Date().toISOString(),
+            email: user?.email || 'user@example.com'
           });
           
           setCurrentPlan(planType);
@@ -183,6 +194,7 @@ export default function CliPadBilling() {
         </div>
       </div>
       <ContactSalesModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
+      <PaymentReceiptModal isOpen={!!receiptDetails} onClose={() => setReceiptDetails(null)} transactionDetails={receiptDetails} />
     </div>
   );
 }

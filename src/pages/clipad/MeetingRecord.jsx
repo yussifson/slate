@@ -6,7 +6,7 @@ import {
   ArrowLeft, Brain, CheckCircle, Clock, Users, FileText,
   Sparkles, MessageSquare, Target, ChevronDown, ChevronUp,
   User, Calendar, Copy, Check, Download, Zap, AlertCircle,
-  Play, BarChart3
+  Play, BarChart3, Video
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ClipadLoader from '@/components/ui/ClipadLoader';
@@ -224,7 +224,7 @@ export default function MeetingRecord() {
               }}
               className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-white font-bold shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5"
             >
-              <VideoIcon className="w-4 h-4" /> Watch Recording
+              <Video className="w-4 h-4" /> Watch Recording
             </button>
           </div>
         </div>

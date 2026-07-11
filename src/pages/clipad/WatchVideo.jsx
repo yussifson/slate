@@ -118,6 +118,11 @@ export default function WatchVideo() {
       const ct = videoRef.current.currentTime;
       setCurrentTime(ct);
       
+      const dur = videoRef.current.duration;
+      if (dur && dur !== Infinity && !isNaN(dur) && dur !== duration) {
+        setDuration(dur);
+      }
+      
       const sec = Math.floor(ct);
       if (sec !== lastReactionTime.current && playing) {
         lastReactionTime.current = sec;
@@ -133,7 +138,7 @@ export default function WatchVideo() {
         }
       }
     }
-  }, [reactions, playing]);
+  }, [reactions, playing, duration]);
 
   const handleLoadedMetadata = useCallback(() => {
     if (videoRef.current) setDuration(videoRef.current.duration);
@@ -142,8 +147,10 @@ export default function WatchVideo() {
   const seekTo = (t) => {
     if (videoRef.current) {
       videoRef.current.currentTime = t;
-      videoRef.current.play();
-      setPlaying(true);
+      setCurrentTime(t);
+      if (!playing) {
+        videoRef.current.play().then(() => setPlaying(true)).catch(console.error);
+      }
     }
   };
 
@@ -176,8 +183,12 @@ export default function WatchVideo() {
 
   const skip = (amount) => {
     if (!videoRef.current) return;
-    const newTime = Math.max(0, Math.min(videoRef.current.duration, videoRef.current.currentTime + amount));
+    const dur = videoRef.current.duration && videoRef.current.duration !== Infinity && !isNaN(videoRef.current.duration) 
+      ? videoRef.current.duration 
+      : 999999;
+    const newTime = Math.max(0, Math.min(dur, videoRef.current.currentTime + amount));
     videoRef.current.currentTime = newTime;
+    setCurrentTime(newTime);
   };
 
   const togglePiP = async () => {
@@ -332,9 +343,10 @@ export default function WatchVideo() {
                   <input
                     type="range"
                     min={0}
-                    max={duration && duration !== Infinity ? duration : 100}
+                    max={duration && duration !== Infinity && !isNaN(duration) ? duration : Math.max(100, currentTime)}
                     value={currentTime}
                     onChange={e => seekTo(Number(e.target.value))}
+                    onClick={e => e.stopPropagation()}
                     className="w-full h-1.5 rounded-full accent-emerald-500 cursor-pointer bg-white/20 hover:h-2 transition-all"
                   />
                 </div>

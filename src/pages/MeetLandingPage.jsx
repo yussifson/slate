@@ -15,6 +15,7 @@ import FeaturesCircle from '@/components/clipad/FeaturesCircle';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import ContactSalesModal from '@/components/clipad/ContactSalesModal';
+import PaymentReceiptModal from '@/components/clipad/PaymentReceiptModal';
 
 
 const pillars = [
@@ -190,6 +191,7 @@ export default function MeetLandingPage() {
   const [supportForm, setSupportForm] = useState({ name: '', email: '', phone: '', message: '' });
   const [submittingSupport, setSubmittingSupport] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [receiptDetails, setReceiptDetails] = useState(null);
   
   const { user } = useAuth();
   const companyId = useCompanyId();
@@ -282,6 +284,15 @@ export default function MeetLandingPage() {
           callback: function (response) {
             toast({ title: 'Payment Successful', description: `Welcome to Pro!` });
             
+            setReceiptDetails({
+              reference: response.reference,
+              amount: amountInPesewas,
+              currency: 'GHS',
+              plan: 'Pro',
+              date: new Date().toISOString(),
+              email: user?.email || 'user@example.com'
+            });
+
             if (companyId) {
               supabase.from('company_subscriptions').upsert({
                 company_id: companyId,
@@ -703,7 +714,7 @@ export default function MeetLandingPage() {
         </section>
 
         {/* ΓöÇΓöÇ FOOTER ΓöÇΓöÇ */}
-        <footer className="border-t border-border py-10 px-6 md:px-12">
+        <footer className="border-t border-border py-6 px-6 md:px-12 bg-slate-50/50">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
               <div className="text-primary mr-1">
@@ -793,7 +804,7 @@ export default function MeetLandingPage() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: '100%', opacity: 0 }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 bottom-0 w-[400px] max-w-full bg-white shadow-[-10px_0_30px_rgba(0,0,0,0.05)] flex flex-col z-[110] border-l border-slate-100"
+              className="fixed right-0 top-0 bottom-0 w-[400px] max-w-full bg-white shadow-[-10px_0_30px_rgba(0,0,0,0.05)] flex flex-col z-[110] border-l-4 border-primary"
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center justify-between p-6 border-b border-slate-100">
@@ -842,6 +853,7 @@ export default function MeetLandingPage() {
       </AnimatePresence>
 
       <ContactSalesModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
+      <PaymentReceiptModal isOpen={!!receiptDetails} onClose={() => setReceiptDetails(null)} transactionDetails={receiptDetails} />
     </div>
   );
 }
