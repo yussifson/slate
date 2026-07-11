@@ -61,6 +61,7 @@ export default function RecordVideo() {
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const pipContainerRef = useRef(null);
+  const recordStreamRef = useRef(null);
 
   useEffect(() => {
     // Load spaces for selection
@@ -76,7 +77,7 @@ export default function RecordVideo() {
       const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
       return () => clearTimeout(timer);
     } else if (countdown === 0) {
-      executeStartRecording();
+      startMediaRecorder();
       setCountdown(null);
     }
   }, [countdown]);
@@ -250,15 +251,18 @@ export default function RecordVideo() {
     }
   };
 
-  const startRecording = () => {
+  const startRecording = async () => {
     if (!title) {
       toast({ title: 'Missing Title', description: 'Please enter a video title before recording.', variant: 'destructive' });
       return;
     }
-    setCountdown(5);
+    const success = await prepareStreamsAndPip();
+    if (success) {
+      setCountdown(5);
+    }
   };
 
-  const executeStartRecording = async () => {
+  const prepareStreamsAndPip = async () => {
     try {
       // Initialize AudioContext immediately during the click event to avoid being suspended
       const audioCtx = new AudioContext();
@@ -363,7 +367,8 @@ export default function RecordVideo() {
         checkVolume();
 
         const canvasStream = canvas.captureStream(30);
-        recordStream = new MediaStream([...canvasStream.getVideoTracks(), ...dest.stream.getAudioTracks()]);
+        let recordStream = new MediaStream([...canvasStream.getVideoTracks(), ...dest.stream.getAudioTracks()]);
+        recordStreamRef.current = recordStream;
         
         // Show composited canvas directly in preview window
         if (previewRef.current) {
@@ -409,10 +414,11 @@ export default function RecordVideo() {
         checkVolume();
 
         // Combine: screen video + merged audio
-        recordStream = new MediaStream([
+        let recordStream = new MediaStream([
           ...screenStream.getVideoTracks(),
           ...dest.stream.getAudioTracks()
         ]);
+        recordStreamRef.current = recordStream;
         if (previewRef.current) {
           previewRef.current.srcObject = screenStream;
           previewRef.current.play().catch(()=>{});
@@ -439,10 +445,11 @@ export default function RecordVideo() {
           if (mediaRecorderRef.current?.state === 'recording') requestAnimationFrame(checkVolume);
         };
         checkVolume();
-        recordStream = new MediaStream([
+        let recordStream = new MediaStream([
           ...cameraStream.getVideoTracks(),
           ...dest.stream.getAudioTracks()
         ]);
+        recordStreamRef.current = recordStream;
         if (previewRef.current) {
           previewRef.current.srcObject = cameraStream;
           previewRef.current.play().catch(()=>{});
@@ -455,6 +462,16 @@ export default function RecordVideo() {
       if (mode === 'screen_camera' || mode === 'camera_only') {
         startPip(cameraStream);
       }
+      return true;
+    } catch (err) {
+      console.error(err);
+      toast({ title: 'Stream Error', description: err.message || 'Could not acquire media.', variant: 'destructive' });
+      return false;
+    }
+  };
+
+  const startMediaRecorder = () => {
+    if (!recordStreamRef.current) return;
 
       // Pick best mimeType with audio codec (opus) to guarantee audio in output
       const mimeType = 
@@ -462,7 +479,7 @@ export default function RecordVideo() {
         MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus') ? 'video/webm;codecs=vp8,opus' :
         MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : '';
       const recorderOptions = mimeType ? { mimeType } : {};
-      const recorder = new MediaRecorder(recordStream, recorderOptions);
+      const recorder = new MediaRecorder(recordStreamRef.current, recorderOptions);
       mediaRecorderRef.current = recorder;
       chunksRef.current = [];
 

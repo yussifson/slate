@@ -82,6 +82,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   const [activeBg, setActiveBg] = useState(initialBackground?.id || 'none');
   const [isApplyingBg, setIsApplyingBg] = useState(false);
   const [showWhiteboard, setShowWhiteboard] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
 
   const applyVirtualBackground = async (bg) => {
     if (!daily) return;
@@ -776,6 +777,27 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   title="Invite People"
   >
   <UserPlus className="w-5 h-5" />
+  </Button>
+  <Button 
+  onClick={() => {
+    if (daily) {
+      if (isRecording) {
+        daily.stopRecording();
+        setIsRecording(false);
+        toast({ title: 'Recording Stopped', description: 'The recording has been saved to your workspace.' });
+      } else {
+        daily.startRecording();
+        setIsRecording(true);
+        toast({ title: 'Recording Started', description: 'Meeting is now being recorded.' });
+      }
+    }
+  }}
+  variant={isRecording ? "destructive" : "outline"}
+  size="icon"
+  className={`w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isRecording ? 'animate-pulse' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'}`}
+  title="Record Meeting"
+  >
+  <VideoIcon className="w-5 h-5" />
   </Button>
   <Button 
   onClick={() => setShowSettings(true)}

@@ -236,6 +236,10 @@ export default function CliPadDashboard() {
           
           <ThemeToggle />
           
+          <button onClick={() => window.dispatchEvent(new CustomEvent("orbit:inject", { detail: { label: "OrbitFlow", query: "Hello OrbitFlow! I'm working in CliPad." } }))} className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all flex items-center gap-1.5 ml-2">
+            <Sparkles className="w-3.5 h-3.5" /> OrbitFlow
+          </button>
+          
           <NotificationsDropdown />
 
           <DropdownMenu>

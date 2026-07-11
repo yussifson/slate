@@ -55,6 +55,7 @@ export default function WatchVideo() {
   const [floatingReactions, setFloatingReactions] = useState([]);
   const [activeCommentFilter, setActiveCommentFilter] = useState('all'); // 'all' | 'comments' | 'reactions'
   const [views, setViews] = useState(0);
+  const [playbackRate, setPlaybackRate] = useState(1);
 
   const lastReactionTime = useRef(-1);
 
@@ -163,6 +164,13 @@ export default function WatchVideo() {
     } else {
       playerRef.current.requestFullscreen().catch(err => console.error(err));
     }
+  };
+
+  const changeSpeed = () => {
+    if (!videoRef.current) return;
+    const nextRate = playbackRate === 1 ? 1.5 : playbackRate === 1.5 ? 2 : 1;
+    videoRef.current.playbackRate = nextRate;
+    setPlaybackRate(nextRate);
   };
 
   const togglePiP = async () => {
@@ -324,7 +332,7 @@ export default function WatchVideo() {
                     max={duration || 100}
                     value={currentTime}
                     onChange={e => seekTo(Number(e.target.value))}
-                    className="w-full h-1 rounded-full accent-indigo-500 cursor-pointer"
+                    className="w-full h-1 rounded-full accent-emerald-500 cursor-pointer"
                   />
                 </div>
 
@@ -344,6 +352,9 @@ export default function WatchVideo() {
                     ))}
                   </div>
                   <div className="w-px h-4 bg-white/20 mx-1" />
+                  <button onClick={(e) => { e.stopPropagation(); changeSpeed(); }} className="text-white/80 hover:text-white transition-colors text-xs font-bold" title="Playback Speed">
+                    {playbackRate}x
+                  </button>
                   <button onClick={(e) => { e.stopPropagation(); togglePiP(); }} className="text-white/80 hover:text-white transition-colors" title="Picture-in-Picture">
                     <PictureInPicture className="w-4 h-4" />
                   </button>
