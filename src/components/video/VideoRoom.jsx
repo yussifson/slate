@@ -276,10 +276,38 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
 }
 };
 
- const leaveCall = () => {
- if (!daily) return;
- daily.leave();
-};
+  const joinTimeRef = useRef(Date.now());
+
+  useEffect(() => {
+    if (joined) joinTimeRef.current = Date.now();
+  }, [joined]);
+
+  const leaveCall = async () => {
+    if (!daily) return;
+    
+    if (joined) {
+      try {
+        const durationSeconds = Math.round((Date.now() - joinTimeRef.current) / 1000);
+        const meetingTitle = `Meeting - ${new Date().toLocaleDateString()}`;
+        const summary = transcripts.length > 0 
+          ? transcripts.map(t => `${t.name}: ${t.text}`).join('\n').substring(0, 500) 
+          : 'No transcript recorded.';
+          
+        await supabase.from('clipad_meeting_records').insert({
+          title: meetingTitle,
+          meeting_link: window.location.href,
+          duration: durationSeconds,
+          ai_summary: summary,
+          created_by: user?.id || null,
+          space_id: spaceId || null
+        });
+      } catch (e) {
+        console.error('Failed to save meeting record:', e);
+      }
+    }
+    
+    daily.leave();
+  };
 
  // --- REAL-TIME AI TRANSCRIPTION ---
  useEffect(() => {

@@ -139,9 +139,10 @@ const adminSupabase = createClient(
     import.meta.env.VITE_SUPABASE_ANON_KEY,
     {
         auth: {
-            autoRefreshToken: false,
             persistSession: false,
-            detectSessionInUrl: false
+            autoRefreshToken: false,
+            detectSessionInUrl: false,
+            storageKey: 'supabase.base44.token'
         }
     }
 );

@@ -75,7 +75,7 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
     if (data && data.session && data.user) {
       const tempClient = createClient(supabaseUrl, supabaseAnonKey, {
         global: { headers: { Authorization: `Bearer ${data.session.access_token}` } },
-        auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+        auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'supabase.temp.token' }
       });
       
       const { error: profileError } = await tempClient.from('profiles').insert([

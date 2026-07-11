@@ -33,7 +33,7 @@ export default function RecordVideo() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [videoBlob, setVideoBlob] = useState(null);
   const [recordingUrl, setRecordingUrl] = useState(null);
-  const [title, setTitle] = useState('');
+  const [activeVideoId, setActiveVideoId] = useState(null);
   const [selectedSpace, setSelectedSpace] = useState('');
   const [spaces, setSpaces] = useState([]);
   const [description, setDescription] = useState('');
@@ -304,10 +304,11 @@ export default function RecordVideo() {
         analyser.fftSize = 256;
         analyserRef.current = analyser;
 
-        if (screenStream.getAudioTracks().length) {
-          audioCtx.createMediaStreamSource(new MediaStream(screenStream.getAudioTracks())).connect(dest);
+        if (screenStream && screenStream.getAudioTracks().length > 0) {
+          const screenAudio = audioCtx.createMediaStreamSource(new MediaStream(screenStream.getAudioTracks()));
+          screenAudio.connect(dest);
         }
-        if (cameraStream.getAudioTracks().length && micEnabled) {
+        if (cameraStream && cameraStream.getAudioTracks().length > 0 && micEnabled) {
           const micSource = audioCtx.createMediaStreamSource(new MediaStream(cameraStream.getAudioTracks()));
           micSource.connect(dest);
           micSource.connect(analyser); // Analyze mic specifically
@@ -362,13 +363,53 @@ export default function RecordVideo() {
       chunksRef.current = [];
 
       recorder.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data); };
-      recorder.onstop = () => {
+      recorder.onstop = async () => {
         const blob = new Blob(chunksRef.current, { type: 'video/webm' });
         const url = URL.createObjectURL(blob);
         setVideoBlob(blob);
         setRecordingUrl(url);
-        setPhase('review');
         stopEverything();
+        
+        // Auto-save immediately upon stop
+        setPhase('uploading');
+        setUploadProgress(0);
+        try {
+          // Simulate progress
+          const progressInterval = setInterval(() => setUploadProgress(p => Math.min(p + 8, 90)), 400);
+
+          const videoTitle = title.trim() || `Recording - ${new Date().toLocaleDateString()}`;
+          const fileName = `${user.id}/${Date.now()}.webm`;
+          
+          const { error: storageError } = await supabase.storage
+            .from('clipad_videos')
+            .upload(fileName, blob, { contentType: 'video/webm' });
+            
+          clearInterval(progressInterval);
+          if (storageError) throw storageError;
+          
+          setUploadProgress(95);
+          const publicUrl = supabase.storage.from('clipad_videos').getPublicUrl(fileName).data.publicUrl;
+          
+          const { data: videoRecord, error: dbError } = await supabase.from('clipad_videos').insert({
+            creator_id: user.id,
+            video_url: publicUrl,
+            title: videoTitle,
+            description: description.trim() || null,
+            space_id: selectedSpace || null,
+            duration_seconds: recordingSeconds,
+          }).select().single();
+          
+          if (dbError) throw dbError;
+          
+          setActiveVideoId(videoRecord.id);
+          toast({ title: 'Recording Auto-Saved!', description: 'Your video is securely saved. You can now edit details or share it.', variant: 'default' });
+          setUploadProgress(100);
+          setPhase('review');
+        } catch (err) {
+          console.error('Auto-save failed:', err);
+          toast({ title: 'Auto-save Failed', description: err.message || 'Please try saving manually.', variant: 'destructive' });
+          setPhase('review'); // fallback to review to allow manual save attempt
+        }
       };
 
       recorder.start(1000); // collect in 1s chunks
@@ -415,6 +456,35 @@ export default function RecordVideo() {
 
   const uploadRecording = async () => {
     if (!videoBlob || !user) return;
+    
+    // If it was auto-saved, just update details and redirect
+    if (activeVideoId) {
+      setPhase('uploading');
+      try {
+        await supabase.from('clipad_videos').update({
+          title: title.trim() || `Recording - ${new Date().toLocaleDateString()}`,
+          description: description.trim() || null,
+          space_id: selectedSpace || null,
+        }).eq('id', activeVideoId);
+        
+        if (transcript.trim().length > 10) {
+          import('@/lib/cloudflareAI').then(({ generateText }) => {
+            generateText(`Summarize this video transcript:\n\n${transcript}`).then(async (aiSummary) => {
+               await supabase.from('clipad_videos').update({ ai_summary: aiSummary }).eq('id', activeVideoId);
+            }).catch(()=>{});
+          });
+        }
+        
+        toast({ title: '✓ Details updated!', description: 'Your recording has been finalized.' });
+        setTimeout(() => navigate(`/watch/${activeVideoId}`), 1000);
+      } catch (err) {
+        toast({ title: 'Update failed', description: err.message, variant: 'destructive' });
+        setPhase('review');
+      }
+      return;
+    }
+
+    // Fallback full upload if auto-save failed
     setPhase('uploading');
     setUploadProgress(0);
 
@@ -422,7 +492,6 @@ export default function RecordVideo() {
       const videoTitle = title.trim() || `Recording - ${new Date().toLocaleDateString()}`;
       const fileName = `${user.id}/${Date.now()}.webm`;
 
-      // Simulate progress while uploading
       const progressInterval = setInterval(() => setUploadProgress(p => Math.min(p + 8, 90)), 400);
 
       const { error: storageError } = await supabase.storage
@@ -448,6 +517,7 @@ export default function RecordVideo() {
 
       if (transcript.trim().length > 10) {
         import('@/lib/cloudflareAI').then(({ generateText }) => {
+
           generateText([
             { role: 'system', content: 'You are an AI assistant. Summarize the following video transcript concisely. Identify key action items and topics.' },
             { role: 'user', content: transcript.trim() }
@@ -697,6 +767,24 @@ export default function RecordVideo() {
               </div>
             </div>
 
+            {activeVideoId && (
+              <div className="bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 p-4 rounded-xl flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-semibold text-indigo-900 dark:text-indigo-300">Share Link</h4>
+                  <p className="text-xs text-indigo-700/70 dark:text-indigo-300/70">{window.location.origin}/watch/{activeVideoId}</p>
+                </div>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.origin}/watch/${activeVideoId}`);
+                    toast({ title: 'Copied!', description: 'Share link copied to clipboard.' });
+                  }}
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold rounded-lg transition-colors"
+                >
+                  Copy
+                </button>
+              </div>
+            )}
+
             <div>
               <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Description (optional)</label>
               <textarea
@@ -709,11 +797,11 @@ export default function RecordVideo() {
             </div>
 
             <div className="flex gap-4">
-              <button onClick={discard} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-secondary hover:bg-secondary border border-border text-gray-300 font-semibold text-sm transition-all">
-                <RotateCcw className="w-4 h-4" /> Discard & Re-record
+              <button onClick={discard} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-secondary hover:bg-secondary border border-border text-gray-400 font-semibold text-sm transition-all">
+                <RotateCcw className="w-4 h-4" /> Discard
               </button>
               <button onClick={uploadRecording} className="flex items-center gap-2 px-8 py-3 rounded-xl bg-primary hover:bg-primary/90 text-foreground font-bold shadow-lg shadow-primary/25 transition-all">
-                <Upload className="w-4 h-4" /> Save to CliPad
+                <Upload className="w-4 h-4" /> {activeVideoId ? 'Save Details' : 'Save to CliPad'}
               </button>
             </div>
           </div>
