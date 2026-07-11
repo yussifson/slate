@@ -7,7 +7,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Zap, Target, Star, Brain, Camera, Rocket, MessageSquare, PhoneCall, ArrowRight, ShieldCheck, CheckCircle, Video, TrendingUp, Calendar, X, Keyboard, Sparkles, Copy, Link as LinkIcon, Users, Layers, ChevronRight, ChevronLeft, Monitor, Globe, Plus } from 'lucide-react';
+import { Zap, Target, Star, Brain, Camera, Rocket, MessageSquare, PhoneCall, ArrowRight, ShieldCheck, CheckCircle, Video, TrendingUp, Calendar, X, Keyboard, Sparkles, Copy, Link as LinkIcon, Users, Layers, ChevronRight, ChevronLeft, Monitor, Globe, Plus, Clock } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
