@@ -3,7 +3,21 @@
 -- This enforces data isolation at the DB level (bulletproof)
 -- ============================================================
 
--- 1. CLIPAD SPACES
+-- 1. DROP ALL EXISTING POLICIES ON CLIPAD TABLES TO PREVENT RECURSION
+DO $$ 
+DECLARE 
+    r RECORD;
+    t TEXT;
+    tables TEXT[] := ARRAY['clipad_spaces', 'clipad_videos', 'clipad_meeting_records', 'clipad_space_members', 'clipad_action_items'];
+BEGIN 
+    FOREACH t IN ARRAY tables LOOP
+        FOR r IN (SELECT policyname FROM pg_policies WHERE tablename = t AND schemaname = 'public') LOOP
+            EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON public.' || t; 
+        END LOOP;
+    END LOOP;
+END $$;
+
+-- 2. CLIPAD SPACES
 ALTER TABLE public.clipad_spaces ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "clipad_spaces_select" ON public.clipad_spaces;
