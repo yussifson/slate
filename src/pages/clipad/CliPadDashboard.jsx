@@ -67,6 +67,22 @@ function SpaceCard({ space, onClick }) {
   );
 }
 
+const getVideoColor = (id) => {
+  const colors = [
+    'from-blue-500 to-blue-700', 
+    'from-indigo-500 to-indigo-700', 
+    'from-purple-500 to-purple-700', 
+    'from-fuchsia-500 to-fuchsia-700',
+    'from-rose-500 to-rose-700', 
+    'from-orange-500 to-orange-700', 
+    'from-emerald-500 to-emerald-700', 
+    'from-cyan-500 to-cyan-700'
+  ];
+  if (!id) return colors[0];
+  const charCodeSum = String(id).split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return colors[charCodeSum % colors.length];
+};
+
 function VideoCard({ video, onClick }) {
   return (
     <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md flex flex-col">
@@ -74,12 +90,12 @@ function VideoCard({ video, onClick }) {
         {video.thumbnail_url ? (
           <img src={video.thumbnail_url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={video.title} />
         ) : (
-          <div className="flex flex-col items-center gap-2 text-slate-400 dark:text-slate-500">
-            <Camera className="w-8 h-8" />
+          <div className={`w-full h-full bg-gradient-to-br ${getVideoColor(video.id)} flex items-center justify-center group-hover:scale-105 transition-transform duration-500 opacity-90`}>
+            {/* Empty colored background for a clean premium look */}
           </div>
         )}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 dark:group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-          <div className="w-12 h-12 rounded-full bg-white/90 dark:bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg transform scale-75 group-hover:scale-100 transition-transform duration-300">
+        <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full bg-white/90 dark:bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
             <Play className="w-5 h-5 text-primary dark:text-white fill-current ml-1" />
           </div>
         </div>
@@ -249,11 +265,11 @@ export default function CliPadDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-8 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-8 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
           <button
             onClick={startInstantMeeting}
             disabled={isCreatingMeeting}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-primary-foreground font-semibold shadow-md shadow-primary/20 transition-all hover:-translate-y-0.5 active:translate-y-0"
+            className="flex-none sm:w-auto w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-primary-foreground font-semibold shadow-md shadow-primary/20 transition-all hover:-translate-y-0.5 active:translate-y-0"
           >
             {isCreatingMeeting ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Video className="w-4 h-4" />}
             New Meeting
@@ -261,7 +277,7 @@ export default function CliPadDashboard() {
 
           <button
             onClick={() => navigate('/record')}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 text-slate-700 dark:text-slate-200 font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
+            className="flex-none sm:w-auto w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 text-slate-700 dark:text-slate-200 font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
           >
             <Camera className="w-4 h-4 text-rose-500 group-hover:scale-110 transition-transform" />
             Record Video
@@ -269,7 +285,7 @@ export default function CliPadDashboard() {
 
           <button
             onClick={() => navigate('/spaces')}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 text-slate-700 dark:text-slate-200 font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
+            className="flex-none sm:w-auto w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 text-slate-700 dark:text-slate-200 font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
           >
             <Layers className="w-4 h-4 text-indigo-500 group-hover:scale-110 transition-transform" />
             Team Spaces

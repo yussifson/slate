@@ -260,7 +260,7 @@ export default function WatchVideo() {
                   {/* Emoji reaction bar in controls */}
                   <div className="flex items-center gap-1">
                     {EMOJIS.map(e => (
-                      <button key={e} onClick={() => addReaction(e)} className="text-base hover:scale-125 transition-transform active:scale-150">{e}</button>
+                      <button key={e} onClick={(evt) => { evt.stopPropagation(); addReaction(e); }} className="text-base hover:scale-125 transition-transform active:scale-150">{e}</button>
                     ))}
                   </div>
                 </div>

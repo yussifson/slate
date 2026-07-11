@@ -49,17 +49,35 @@ function TaskRow({ item, onToggle }) {
   );
 }
 
+const getVideoColor = (id) => {
+  const colors = [
+    'from-blue-500 to-blue-700', 
+    'from-indigo-500 to-indigo-700', 
+    'from-purple-500 to-purple-700', 
+    'from-fuchsia-500 to-fuchsia-700',
+    'from-rose-500 to-rose-700', 
+    'from-orange-500 to-orange-700', 
+    'from-emerald-500 to-emerald-700', 
+    'from-cyan-500 to-cyan-700'
+  ];
+  if (!id) return colors[0];
+  const charCodeSum = String(id).split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return colors[charCodeSum % colors.length];
+};
+
 function VideoCard({ video, onClick }) {
   return (
     <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-[#0D1117] border border-border hover:border-white/12 transition-all hover:-translate-y-0.5">
-      <div className="aspect-video bg-gradient-to-br from-slate-800 to-slate-900 relative flex items-center justify-center">
-        {video.thumbnail_url
-          ? <img src={video.thumbnail_url} className="w-full h-full object-cover" alt={video.title} />
-          : <Camera className="w-8 h-8 text-gray-700" />
-        }
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
-          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-            <Play className="w-5 h-5 text-foreground fill-white" />
+      <div className="aspect-video bg-slate-100 dark:bg-slate-800 relative flex items-center justify-center overflow-hidden">
+        {video.thumbnail_url ? (
+          <img src={video.thumbnail_url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={video.title} />
+        ) : (
+          <div className={`w-full h-full bg-gradient-to-br ${getVideoColor(video.id)} flex items-center justify-center group-hover:scale-105 transition-transform duration-500 opacity-90`}>
+          </div>
+        )}
+        <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full bg-white/90 dark:bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+            <Play className="w-5 h-5 text-primary dark:text-white fill-current ml-1" />
           </div>
         </div>
         {video.duration_seconds && (
