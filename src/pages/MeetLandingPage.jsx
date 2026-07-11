@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/compone
 import {
   Video, Keyboard, Sparkles, Copy, Link as LinkIcon, Calendar,
   Users, Brain, Layers, Zap, ChevronRight, ChevronLeft,
-  Monitor, CheckCircle, ArrowRight, Star, Globe, Plus, Camera, Target, TrendingUp
+  Monitor, CheckCircle, ArrowRight, Star, Globe, Plus, Camera, Target, TrendingUp, Clock
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 
