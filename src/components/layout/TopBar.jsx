@@ -3,7 +3,7 @@ import React, { useState} from "react";
 import { useLocation, useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
-import { LayoutDashboard, LayoutGrid, RefreshCw, Globe, PanelLeft, Sparkles, Layers, Component, ChevronDown, MoreHorizontal, Search} from "lucide-react";
+import { LayoutDashboard, LayoutGrid, RefreshCw, Globe, PanelLeft, Sparkles, Layers, Component, ChevronDown, MoreHorizontal, Search, LifeBuoy} from "lucide-react";
 import {
  DropdownMenu,
  DropdownMenuContent,
@@ -151,7 +151,16 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
 
 
-      {/* Premium Theme Toggle & Notifications */}
+      {/* Support & Premium Theme Toggle & Notifications */}
+      <Button
+        variant="ghost"
+        size="sm"
+        className={`hidden lg:flex items-center gap-1.5 text-xs font-medium text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1.5 hover:bg-muted/50 bg-card tracking-[0.02em] transition-colors focus:outline-none shadow-sm h-[28px] ${inPopover ? '!flex' : ''}`}
+        onClick={() => window.open('mailto:support@optavel.com', '_blank')}
+      >
+        <LifeBuoy className="w-3.5 h-3.5 text-primary" />
+        <span>Support</span>
+      </Button>
       <AppLauncher />
       <ThemeToggle />
       <UnivNotificationCenter />
@@ -170,10 +179,10 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
     </div>
   );
 
- return (
- <>
- {/* ── NATIVE MOBILE TOP BAR ── */}
- <div className="md:hidden sticky top-0 z-[60] w-full bg-white/80 dark:bg-card/80 backdrop-blur-2xl border-b border-black/5 dark:border-white/5 pt-[env(safe-area-inset-top)] shadow-sm">
+  return (
+  <>
+  {/* ── NATIVE MOBILE TOP BAR ── */}
+  <div className="md:hidden relative w-full bg-white/80 dark:bg-card/80 backdrop-blur-2xl border-b border-black/5 dark:border-white/5 pt-[env(safe-area-inset-top)] shadow-sm z-[60]">
  <div className="flex items-center justify-between px-4 h-[44px]">
  {/* Left: Avatar */}
  <button onClick={() => setShowAvatarDialog(true)} className="relative w-[30px] h-[30px] rounded-full bg-[#F2F2F7] dark:bg-[#2C2C2E] flex items-center justify-center overflow-hidden active:scale-95 transition-transform">

@@ -256,7 +256,10 @@ export default function RecordVideo() {
 
       if (mode === 'screen_camera' || mode === 'camera_only') {
         try {
-          cameraStream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 }, audio: micEnabled });
+          cameraStream = await navigator.mediaDevices.getUserMedia({ 
+            video: { width: 320, height: 240 }, 
+            audio: micEnabled ? { echoCancellation: true, noiseSuppression: true, autoGainControl: true } : false 
+          });
           streamsRef.current.camera = cameraStream;
         } catch (camErr) {
           console.warn("Camera failed to load:", camErr);
@@ -365,7 +368,7 @@ export default function RecordVideo() {
         } else if (screenStream.getAudioTracks().length === 0 && micEnabled) {
           // No system audio AND no camera — try to get mic directly
           try {
-            const micOnly = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            const micOnly = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false });
             streamsRef.current.mic = micOnly;
             const micSource = audioCtx.createMediaStreamSource(micOnly);
             micSource.connect(dest);
