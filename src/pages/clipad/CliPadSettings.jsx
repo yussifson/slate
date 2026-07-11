@@ -151,6 +151,7 @@ export default function CliPadSettings() {
                 </label>
               </div>
             </div>
+            )}
 
             {/* Meeting Defaults */}
             {activeTab === 'meeting' && (
