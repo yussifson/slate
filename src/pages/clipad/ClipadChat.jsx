@@ -777,7 +777,8 @@ export default function ClipadChat() {
  </div>
  )}
  </div>
- <ClipadMobileNav />
- </div>
- );
+  <ClipadMobileNav />
+  </div>
+  </div>
+  );
 }
