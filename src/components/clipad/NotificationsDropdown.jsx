@@ -197,7 +197,7 @@ export default function NotificationsDropdown() {
                     )}
 
                     <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-2 font-medium uppercase tracking-wider">
-                      {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
+                      {notification.created_at ? formatDistanceToNow(new Date(notification.created_at), { addSuffix: true }) : 'Just now'}
                     </p>
                   </div>
                   {notification.type !== 'group_join_request' && (
