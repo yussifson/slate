@@ -29,11 +29,15 @@ export function getSubdomainAndBase() {
     return { currentSubdomain: null, baseDomain: host, isCustomDomain: false };
   }
   
-  // Check against known base domains
+  // Check exact matches FIRST
   for (const base of knownBaseDomains) {
     if (host === base) {
       return { currentSubdomain: null, baseDomain: base, isCustomDomain: false };
     }
+  }
+
+  // Then check suffix matches
+  for (const base of knownBaseDomains) {
     if (host.endsWith(`.${base}`)) {
       const currentSubdomain = host.replace(`.${base}`, '');
       // Only block truly generic web prefixes like 'www'

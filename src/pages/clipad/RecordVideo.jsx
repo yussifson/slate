@@ -96,13 +96,13 @@ export default function RecordVideo() {
     if (track) track.enabled = !micEnabled;
   };
 
-  const startPip = async () => {
+  const startPip = async (stream) => {
     if (!('documentPictureInPicture' in window)) {
       toast({ title: 'PiP Not Supported', description: 'Your browser does not support Document PiP.', variant: 'destructive' });
       return;
     }
     try {
-      const pip = await window.documentPictureInPicture.requestWindow({ width: 320, height: 280 });
+      const pip = await window.documentPictureInPicture.requestWindow({ width: 340, height: 260 });
       // Copy styles
       [...document.styleSheets].forEach((styleSheet) => {
         try {
@@ -120,13 +120,107 @@ export default function RecordVideo() {
           // Cross-origin stylesheet error, skip
         }
       });
-      // Move the pip container into the PiP window
-      if (pipContainerRef.current) {
-        pip.document.body.appendChild(pipContainerRef.current);
-      }
+
+      // Construct native PiP UI inside the PiP Document to avoid React portal/ref issues
+      pip.document.body.style.margin = '0';
+      pip.document.body.style.backgroundColor = '#0f172a'; // slate-900
+      pip.document.body.style.display = 'flex';
+      pip.document.body.style.flexDirection = 'column';
+      pip.document.body.style.height = '100vh';
+      pip.document.body.style.fontFamily = "'Inter', sans-serif";
+
+      const videoWrapper = document.createElement('div');
+      videoWrapper.style.flex = '1';
+      videoWrapper.style.backgroundColor = '#000';
+      videoWrapper.style.position = 'relative';
+
+      const videoEl = document.createElement('video');
+      videoEl.autoplay = true;
+      videoEl.muted = true;
+      videoEl.playsInline = true;
+      videoEl.style.width = '100%';
+      videoEl.style.height = '100%';
+      videoEl.style.objectFit = 'cover';
+      videoEl.style.transform = 'scaleX(-1)';
+      if (stream) videoEl.srcObject = stream;
+      videoWrapper.appendChild(videoEl);
+
+      const controlsWrapper = document.createElement('div');
+      controlsWrapper.style.display = 'flex';
+      controlsWrapper.style.justifyContent = 'center';
+      controlsWrapper.style.gap = '12px';
+      controlsWrapper.style.padding = '12px';
+      controlsWrapper.style.backgroundColor = 'rgba(30, 41, 59, 0.8)';
+      controlsWrapper.style.backdropFilter = 'blur(12px)';
+
+      const createBtn = (iconSvg, bgClass) => {
+        const btn = document.createElement('button');
+        btn.innerHTML = iconSvg;
+        btn.style.padding = '12px';
+        btn.style.borderRadius = '50%';
+        btn.style.border = 'none';
+        btn.style.cursor = 'pointer';
+        btn.style.display = 'flex';
+        btn.style.alignItems = 'center';
+        btn.style.justifyContent = 'center';
+        btn.style.transition = 'all 0.2s';
+        if (bgClass === 'slate') {
+          btn.style.backgroundColor = '#334155';
+          btn.style.color = '#fff';
+        } else if (bgClass === 'red') {
+          btn.style.backgroundColor = '#ef4444';
+          btn.style.color = '#fff';
+        } else if (bgClass === 'indigo') {
+          btn.style.backgroundColor = '#6366f1';
+          btn.style.color = '#fff';
+          btn.style.boxShadow = '0 0 15px rgba(99,102,241,0.6)';
+        }
+        return btn;
+      };
+
+      // Simple SVG icons
+      const micIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>`;
+      const camIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>`;
+      const pauseIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+      const stopIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>`;
+
+      const micBtn = createBtn(micIcon, 'slate');
+      const camBtn = createBtn(camIcon, 'slate');
+      const pauseBtn = createBtn(pauseIcon, 'slate');
+      const stopBtn = createBtn(stopIcon, 'red');
+
+      // State references inside the closure for PiP
+      let pipMicState = micEnabled;
+
+      micBtn.onclick = () => {
+        toggleMicTrack();
+        pipMicState = !pipMicState;
+        if (!pipMicState) {
+          micBtn.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
+          micBtn.style.color = '#f87171';
+        } else {
+          micBtn.style.backgroundColor = '#334155';
+          micBtn.style.color = '#fff';
+        }
+      };
+
+      camBtn.onclick = () => toggleWebcam();
+      pauseBtn.onclick = () => togglePause();
+      stopBtn.onclick = () => {
+        stopRecording();
+        pip.close();
+      };
+
+      controlsWrapper.appendChild(micBtn);
+      controlsWrapper.appendChild(camBtn);
+      controlsWrapper.appendChild(pauseBtn);
+      controlsWrapper.appendChild(stopBtn);
+
+      pip.document.body.appendChild(videoWrapper);
+      pip.document.body.appendChild(controlsWrapper);
+
       pip.addEventListener('pagehide', () => {
         setPipWindow(null);
-        if (pipContainerRef.current) document.body.appendChild(pipContainerRef.current); // move back
       });
       setPipWindow(pip);
     } catch (err) {
@@ -203,6 +297,7 @@ export default function RecordVideo() {
 
         // Merge audio and setup analyzer
         const audioCtx = new AudioContext();
+        audioCtx.resume(); // Ensure context is running since we are inside a gesture
         audioContextRef.current = audioCtx;
         const dest = audioCtx.createMediaStreamDestination();
         const analyser = audioCtx.createAnalyser();
@@ -242,10 +337,23 @@ export default function RecordVideo() {
       } else if (screenStream) {
         // Fallback to screen stream if camera failed in PiP mode or if it was screen_only
         recordStream = screenStream;
+        if (previewRef.current) {
+          previewRef.current.srcObject = screenStream;
+          previewRef.current.play().catch(()=>{});
+        }
       } else if (cameraStream) {
         recordStream = cameraStream;
+        if (previewRef.current) {
+          previewRef.current.srcObject = cameraStream;
+          previewRef.current.play().catch(()=>{});
+        }
       } else {
         throw new Error('No stream available');
+      }
+
+      // Auto-open PiP if appropriate
+      if (mode === 'screen_camera' || mode === 'camera_only') {
+        startPip(cameraStream);
       }
 
       const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm';
@@ -432,18 +540,19 @@ export default function RecordVideo() {
               <p className="text-muted-foreground text-sm">Record a video message for your team. All recordings are stored in CliPad.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex flex-col md:flex-row gap-3">
               {MODES.map(m => {
                 const Icon = m.icon;
                 return (
                   <button
                     key={m.id}
                     onClick={() => setMode(m.id)}
-                    className={`p-5 rounded-2xl border text-left transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md ${mode === m.id ? 'border-primary bg-primary/5 dark:bg-primary/10' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50'}`}
+                    className={`flex-1 flex flex-col items-center justify-center p-4 rounded-full border transition-all duration-300 shadow-sm hover:shadow-md ${mode === m.id ? 'border-primary bg-gradient-to-r from-primary to-primary text-white scale-[1.02]' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-primary/50'}`}
                   >
-                    <Icon className={`w-6 h-6 mb-3 ${mode === m.id ? 'text-primary' : 'text-slate-500 dark:text-slate-400'}`} />
-                    <p className="font-semibold text-slate-900 dark:text-white text-sm mb-1">{m.label}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">{m.desc}</p>
+                    <div className="flex items-center gap-2 font-bold text-sm">
+                      <Icon className="w-4 h-4" />
+                      {m.label}
+                    </div>
                   </button>
                 );
               })}

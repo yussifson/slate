@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
-import { Layers, Plus, Search, Users, Video, Camera, ArrowRight, Settings, Clock } from 'lucide-react';
+import { Layers, Plus, Search, Users, Video, Camera, ArrowRight, Settings, Clock, ArrowLeft } from 'lucide-react';
 
 const COLORS = [
   'from-indigo-500 to-violet-500',
@@ -106,32 +106,41 @@ export default function SpacesList() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filtered.map(space => {
-              const color = COLORS[space.name?.charCodeAt(0) % COLORS.length] || COLORS[0];
-              return (
-                <div
-                  key={space.id}
-                  onClick={() => navigate(`/spaces/${space.id}`)}
-                  className="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
-                >
-                  <div className="flex items-start gap-4 mb-5">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-white font-bold text-lg shadow-sm shrink-0`}>
-                      {space.name?.[0]?.toUpperCase()}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-slate-900 dark:text-white text-base truncate">{space.name}</h3>
-                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">{space.description || 'A shared space for meetings and video updates.'}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filtered.map(space => {
+                const color = COLORS[space.name?.charCodeAt(0) % COLORS.length] || COLORS[0];
+                return (
+                  <div
+                    key={space.id}
+                    onClick={() => navigate(`/spaces/${space.id}`)}
+                    className="group relative overflow-hidden rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 hover:border-primary/50 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="p-8">
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-white font-bold text-xl shadow-lg shrink-0`}>
+                          {space.name?.[0]?.toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-extrabold text-slate-900 dark:text-white text-lg truncate group-hover:text-primary transition-colors">{space.name}</h3>
+                          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">{space.description || 'A shared space for meetings and video updates.'}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                          <Clock className="w-4 h-4 text-slate-400" />
+                          {new Date(space.created_at).toLocaleDateString()}
+                        </div>
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-800 group-hover:bg-primary group-hover:text-white text-slate-400 transition-all">
+                          <ArrowRight className="w-4 h-4" />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                    <div className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{new Date(space.created_at).toLocaleDateString()}</div>
-                    <div className="flex items-center gap-1 group-hover:text-primary transition-colors font-medium">Open <ArrowRight className="w-3.5 h-3.5" /></div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
         )}
       </div>
 

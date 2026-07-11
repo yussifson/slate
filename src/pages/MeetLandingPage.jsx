@@ -200,6 +200,19 @@ export default function MeetLandingPage() {
   const { toast } = useToast();
   const now = useLiveClock();
 
+  // Force document to light mode to prevent dark theme background bleeding below footer
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const originalClass = root.className;
+    root.classList.remove('dark');
+    root.classList.add('light');
+    root.style.colorScheme = 'light';
+    return () => {
+      root.className = originalClass;
+      root.style.colorScheme = '';
+    };
+  }, []);
+
   // Auto-advance carousel every 6s
   useEffect(() => {
     const timer = setInterval(() => {
@@ -299,8 +312,9 @@ export default function MeetLandingPage() {
           "provider": { "@type": "Organization", "name": "Optavel", "url": "https://optavel.com" }
         })}</script>
       </Helmet>
+      </Helmet>
       {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/50 bg-secondary/50 backdrop-blur-md">
+      <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 border-b border-slate-200/50 bg-white/80 backdrop-blur-md shadow-sm">
 
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 flex items-center justify-center text-primary">
@@ -477,47 +491,50 @@ export default function MeetLandingPage() {
             {pillars.map((p) => {
               const Icon = p.icon;
               return (
-                <div key={p.title} className="group p-6 rounded-2xl bg-secondary/50 border border-border hover:border-border hover:bg-secondary/80 transition-all duration-300">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.color} flex items-center justify-center mb-5 shadow-xl ${p.glow} group-hover:scale-110 transition-transform`}>
-                    <Icon className="w-6 h-6 text-foreground" />
+                <div key={p.title} className="group relative p-8 rounded-3xl bg-white border border-slate-200/60 hover:border-primary/40 shadow-sm hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 transition-all duration-300 overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className={`relative w-14 h-14 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center mb-6 shadow-xl ${p.glow} group-hover:scale-110 transition-transform duration-300`}>
+                    <Icon className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-lg font-bold text-foreground mb-3">{p.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
+                  <h3 className="relative text-xl font-extrabold text-slate-900 mb-3">{p.title}</h3>
+                  <p className="relative text-sm text-slate-500 leading-relaxed">{p.desc}</p>
                 </div>
               );
             })}
           </div>
         </section>
 
-        {/* ΓöÇΓöÇ HOW IT CONNECTS ΓöÇΓöÇ */}
-        <section className="py-24 px-6 md:px-12 max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5">The connected workflow.</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">The magic isn't any single feature ΓÇö it's how they connect.</p>
+        {/* ── HOW IT CONNECTS ── */}
+        <section className="py-32 px-6 md:px-12 max-w-6xl mx-auto relative">
+          <div className="text-center mb-20 relative z-10">
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5 text-slate-900">The connected workflow.</h2>
+            <p className="text-slate-500 text-lg max-w-2xl mx-auto">The magic isn't any single feature — it's how they seamlessly connect into a unified intelligence pipeline.</p>
           </div>
 
-          <div className="relative">
+          <div className="relative grid grid-cols-1 md:grid-cols-5 gap-8">
+            {/* SVG Pipeline Connection Line (Desktop) */}
+            <div className="hidden md:block absolute top-24 left-[10%] right-[10%] h-1 bg-slate-100 rounded-full z-0">
+              <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary via-teal-400 to-primary rounded-full animate-pulse" style={{ width: '100%' }} />
+            </div>
+            
             {[
-              { icon: Calendar, color: 'bg-indigo-500', step: '01', title: 'Schedule or start', desc: 'A meeting is scheduled. Each participant gets an AI brief: prior meeting summary, their outstanding action items, and shared async videos.' },
-              { icon: Video, color: 'bg-violet-500', step: '02', title: 'Meet live', desc: 'The call happens with real-time transcription running in the side panel. Decisions are made, screens are shared, the whiteboard is used.' },
-              { icon: Brain, color: 'bg-pink-500', step: '03', title: 'AI summary in 2 min', desc: 'Within 2 minutes of ending, every participant gets their personalised follow-up: just their action items, with full context of what was discussed.' },
-              { icon: Camera, color: 'bg-cyan-500', step: '04', title: 'Async updates', desc: "A team member records a quick video update on their action items. Others watch in their own time, react with emojis, and leave timestamped comments." },
-              { icon: TrendingUp, color: 'bg-emerald-500', step: '05', title: 'Intelligence compounds', desc: "Over time, CliPad surfaces patterns: which meetings run over, which generate action items that don't get completed, and where decisions actually happen." },
+              { icon: Calendar, color: 'bg-indigo-500 shadow-indigo-500/30', step: '01', title: 'Schedule', desc: 'Syncs with your calendar automatically.' },
+              { icon: Video, color: 'bg-violet-500 shadow-violet-500/30', step: '02', title: 'Meet', desc: 'HD video with live AI transcription.' },
+              { icon: Brain, color: 'bg-pink-500 shadow-pink-500/30', step: '03', title: 'Analyze', desc: 'AI extracts decisions & action items.' },
+              { icon: Camera, color: 'bg-cyan-500 shadow-cyan-500/30', step: '04', title: 'Follow-up', desc: 'Send async video updates seamlessly.' },
+              { icon: TrendingUp, color: 'bg-emerald-500 shadow-emerald-500/30', step: '05', title: 'Compound', desc: 'Enterprise intelligence grows over time.' },
             ].map((step, i) => {
               const Icon = step.icon;
               return (
-                <div key={step.step} className="flex gap-6 mb-10 last:mb-0">
-                  <div className="flex flex-col items-center">
-                    <div className={`w-12 h-12 rounded-xl ${step.color} flex items-center justify-center shadow-lg shrink-0`}>
-                      <Icon className="w-5 h-5 text-foreground" />
-                    </div>
-                    {i < 4 && <div className="w-px flex-1 bg-gradient-to-b from-white/10 to-transparent mt-3" />}
+                <div key={step.step} className="relative z-10 flex flex-col items-center text-center group">
+                  <div className={`w-20 h-20 rounded-2xl ${step.color} text-white flex items-center justify-center shadow-2xl mb-6 group-hover:-translate-y-2 group-hover:scale-110 transition-all duration-300`}>
+                    <Icon className="w-8 h-8" />
                   </div>
-                  <div className="pb-10">
-                    <div className="text-xs font-mono text-muted-foreground mb-1">STEP {step.step}</div>
-                    <h3 className="text-lg font-bold text-foreground mb-2">{step.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">{step.desc}</p>
+                  <div className="bg-slate-900 text-white text-[10px] font-mono font-bold px-3 py-1 rounded-full mb-4 tracking-widest shadow-sm">
+                    STEP {step.step}
                   </div>
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">{step.title}</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed">{step.desc}</p>
                 </div>
               );
             })}
@@ -597,11 +614,11 @@ export default function MeetLandingPage() {
         {/* ΓöÇΓöÇ FOOTER ΓöÇΓöÇ */}
         <footer className="border-t border-border py-10 px-6 md:px-12">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-muted-foreground text-sm">
-              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
-                <Video className="w-3 h-3 text-foreground" />
+            <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
+              <div className="text-primary mr-1">
+                <CliPadLogo size={24} />
               </div>
-              <span>┬⌐ {new Date().getFullYear()} CliPad by Optavel Technologies</span>
+              <span>&copy; {new Date().getFullYear()} CliPad by Optavel Technologies</span>
             </div>
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <span className="hover:text-muted-foreground cursor-pointer transition-colors">Privacy</span>
