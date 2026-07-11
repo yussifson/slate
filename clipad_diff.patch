@@ -1,0 +1,122 @@
+﻿diff --git a/src/pages/clipad/ClipadChat.jsx b/src/pages/clipad/ClipadChat.jsx
+index 2179096..f68ac64 100644
+--- a/src/pages/clipad/ClipadChat.jsx
++++ b/src/pages/clipad/ClipadChat.jsx
+@@ -20,6 +20,7 @@ import { CliPadLogo } from '@/components/ui/CliPadLogo';
+ import ThemeToggle from '@/components/layout/ThemeToggle';
+ import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
+ import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
++import DiscoverGroupsDialog from "@/components/chat/DiscoverGroupsDialog";
+ 
+ export default function ClipadChat() {
+  const { t} = useTranslation();
+@@ -35,6 +36,7 @@ export default function ClipadChat() {
+  const [editingMsg, setEditingMsg] = useState(null);
+  const [inputValue, setInputValue] = useState("");
+  const [isAddChatOpen, setIsAddChatOpen] = useState(false);
++ const [isDiscoverGroupsOpen, setIsDiscoverGroupsOpen] = useState(false);
+  const [loadingRooms, setLoadingRooms] = useState(false);
+  const [loadingMessages, setLoadingMessages] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+@@ -298,9 +300,9 @@ export default function ClipadChat() {
+  const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
+ 
+  return (
+-   <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-[100dvh] bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col page-enter overflow-hidden">
++   <div style={{ fontFamily: "'Inter', sans-serif" }} className="flex flex-col h-[100dvh] bg-[#f0f2f5] dark:bg-[#111b21] overflow-hidden page-enter">
+      {/* Sleek top nav */}
+-     <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shrink-0">
++     <nav className="shrink-0 flex items-center justify-between px-4 md:px-8 h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 z-40 relative shadow-sm">
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
+          <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm text-primary">
+            <CliPadLogo size={22} />
+@@ -345,24 +347,34 @@ export default function ClipadChat() {
+        </div>
+      </nav>
+ 
+-     {/* Main Chat Layout Wrapper */}
+-     <div className="flex-1 w-full flex flex-col md:flex-row min-h-0 relative overflow-hidden pb-[env(safe-area-inset-bottom)] pb-[70px] md:pb-0">
++     {/* Main layout below nav */}
++     <div className="flex-1 flex overflow-hidden relative">
+        <AddClipadChatDialog 
+-         open={isAddChatOpen} 
+-         onOpenChange={setIsAddChatOpen}
++         open={!!isAddChatOpen} 
++         mode={typeof isAddChatOpen === 'string' ? isAddChatOpen : 'chat'}
++         onOpenChange={(val) => setIsAddChatOpen(val ? 'chat' : false)}
+          onChatCreated={(room) => {
+            setActiveRoomId(room.id);
+            setIsAddChatOpen(false);
+            loadRooms();
+          }}
+        />
++       <DiscoverGroupsDialog
++         open={isDiscoverGroupsOpen}
++         onOpenChange={setIsDiscoverGroupsOpen}
++         onGroupJoined={(roomId) => {
++           setActiveRoomId(roomId);
++           setIsDiscoverGroupsOpen(false);
++           loadRooms();
++         }}
++       />
+        
+-       {/* Sidebar - Channels & DMs */}
+-       <div className={cn(
+-         "flex-shrink-0 border-r border-primary/40 bg-background dark:bg-[#202c33] flex flex-col h-full z-10 relative transition-all duration-300",
+-         isSidebarCollapsed ? "w-0 md:w-16 overflow-hidden hidden md:flex" : "w-full md:w-80 lg:w-96",
+-         activeRoomId ? "hidden md:flex" : "flex"
+-       )}>
++       {/* Sidebar - Chat List */}
++      <div className={cn(
++        "flex flex-col bg-white dark:bg-card border-r border-border transition-all duration-300 z-20 shrink-0",
++        isSidebarCollapsed ? "w-20" : "w-full md:w-80",
++        activeRoomId ? "hidden md:flex" : "flex"
++      )}>
+  <div className={cn(
+    "border-b border-primary/40 flex items-center justify-between shrink-0",
+    isSidebarCollapsed ? "p-2 flex-col gap-2" : "p-4"
+@@ -387,7 +399,10 @@ export default function ClipadChat() {
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+-           <DropdownMenuItem onClick={() => setIsAddChatOpen(true)}>New Chat</DropdownMenuItem>
++           <DropdownMenuItem onClick={() => setIsAddChatOpen('chat')}>New Chat</DropdownMenuItem>
++           <DropdownMenuItem onClick={() => setIsAddChatOpen('group')}>New Group</DropdownMenuItem>
++           <DropdownMenuSeparator />
++           <DropdownMenuItem onClick={() => setIsDiscoverGroupsOpen(true)}>Discover Groups</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        )}
+@@ -399,9 +414,19 @@ export default function ClipadChat() {
+        <PanelLeftOpen className="w-5 h-5" />
+      </Button>
+      {!isPortalUser && (
+-       <Button variant="ghost" size="icon" onClick={() => setIsAddChatOpen(true)} className="w-10 h-10 rounded-full hover:bg-primary/10 mx-auto" title="New Chat">
+-         <Plus className="w-5 h-5" />
+-       </Button>
++       <DropdownMenu>
++         <DropdownMenuTrigger asChild>
++           <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-primary/10 mx-auto" title="New Chat">
++             <Plus className="w-5 h-5" />
++           </Button>
++         </DropdownMenuTrigger>
++         <DropdownMenuContent align="end" className="w-48">
++           <DropdownMenuItem onClick={() => setIsAddChatOpen('chat')}>New Chat</DropdownMenuItem>
++           <DropdownMenuItem onClick={() => setIsAddChatOpen('group')}>New Group</DropdownMenuItem>
++           <DropdownMenuSeparator />
++           <DropdownMenuItem onClick={() => setIsDiscoverGroupsOpen(true)}>Discover Groups</DropdownMenuItem>
++         </DropdownMenuContent>
++       </DropdownMenu>
+      )}
+    </>
+  )}
+@@ -777,8 +802,8 @@ export default function ClipadChat() {
+  </div>
+  )}
+  </div>
++  {/* Mobile Nav */}
+   <ClipadMobileNav />
+   </div>
+-  </div>
+   );
+ }

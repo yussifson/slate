@@ -40,10 +40,10 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
     setLoading(true);
     try {
       const [staffData, clientsData] = await Promise.all([
-        base44.entities.StaffRecord.filter({ company_id: companyId }),
+        base44.entities.User.filter({ company_id: companyId }),
         base44.entities.Client.filter({ company_id: companyId }),
       ]);
-      setStaff(staffData || []);
+      setStaff(staffData ? staffData.map(s => ({ ...s, user_id: s.id })) : []);
       setClients(clientsData || []);
     } catch (err) {
       console.error(err);
@@ -144,10 +144,10 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
             .eq("company_id", companyId);
           const emailSet = new Set(emails);
           const { data: staffMatches } = await supabase
-            .from("staff_records")
-            .select("user_id, user_email")
+            .from("profiles")
+            .select("id as user_id, email as user_email")
             .eq("company_id", companyId)
-            .in("user_email", emails);
+            .in("email", emails);
           profileList = (staffMatches || [])
             .filter((s) => s.user_id && emailSet.has(getRecordEmail(s)))
             .map((s) => ({ id: s.user_id }));

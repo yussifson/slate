@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from '@/api/supabaseClient';
-import { Settings, User, Bell, Shield, LogOut, ArrowLeft, Video, CheckCircle, Camera } from 'lucide-react';
+import { Settings, User, Bell, Shield, LogOut, ArrowLeft, Video, CheckCircle, Camera, CreditCard } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import CliPadBilling from './CliPadBilling';

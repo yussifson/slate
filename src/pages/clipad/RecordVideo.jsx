@@ -56,6 +56,8 @@ export default function RecordVideo() {
   const [isPaused, setIsPaused] = useState(false);
   const [pipWindow, setPipWindow] = useState(null);
   const [micVolume, setMicVolume] = useState(0);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [countdown, setCountdown] = useState(null);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const pipContainerRef = useRef(null);
@@ -67,6 +69,17 @@ export default function RecordVideo() {
     });
     return () => stopEverything();
   }, []);
+
+  useEffect(() => {
+    if (countdown === null) return;
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (countdown === 0) {
+      executeStartRecording();
+      setCountdown(null);
+    }
+  }, [countdown]);
 
   const stopEverything = () => {
     clearInterval(timerRef.current);
@@ -237,7 +250,15 @@ export default function RecordVideo() {
     }
   };
 
-  const startRecording = async () => {
+  const startRecording = () => {
+    if (!title) {
+      toast({ title: 'Missing Title', description: 'Please enter a video title before recording.', variant: 'destructive' });
+      return;
+    }
+    setCountdown(5);
+  };
+
+  const executeStartRecording = async () => {
     try {
       // Initialize AudioContext immediately during the click event to avoid being suspended
       const audioCtx = new AudioContext();
@@ -781,12 +802,22 @@ export default function RecordVideo() {
 
             <button
               onClick={startRecording}
-              className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-foreground font-bold shadow-2xl shadow-red-500/25 transition-all hover:scale-[1.02]"
+              disabled={countdown !== null}
+              className={`flex items-center gap-3 px-8 py-4 rounded-2xl ${countdown !== null ? 'bg-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500'} text-white font-bold shadow-2xl shadow-red-500/25 transition-all hover:scale-[1.02]`}
             >
               <span className="w-3 h-3 rounded-full bg-white animate-pulse" />
-              Start Recording
+              {countdown !== null ? `Starting in ${countdown}...` : 'Start Recording'}
             </button>
           </>
+        )}
+
+        {/* COUNTDOWN OVERLAY */}
+        {countdown !== null && countdown > 0 && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div className="text-9xl font-black text-white animate-pulse">
+              {countdown}
+            </div>
+          </div>
         )}
 
         {/* RECORDING PHASE */}

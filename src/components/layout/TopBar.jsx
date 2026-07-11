@@ -3,7 +3,7 @@ import React, { useState} from "react";
 import { useLocation, useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
-import { LayoutDashboard, LayoutGrid, RefreshCw, Globe, PanelLeft, Sparkles, Layers, Component, ChevronDown, MoreHorizontal, Search, LifeBuoy} from "lucide-react";
+import { LayoutDashboard, LayoutGrid, RefreshCw, Globe, PanelLeft, Sparkles, Layers, Component, ChevronDown, MoreHorizontal, Search, LifeBuoy, MessageSquare } from "lucide-react";
 import {
  DropdownMenu,
  DropdownMenuContent,
@@ -210,6 +210,9 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  {/* Right: AI & Notifications */}
  <div className="flex items-center gap-1">
  <AppLauncher />
+ <button onClick={toggleChat} className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors active:scale-95", isChatOpen ? "bg-primary/10 text-primary" : "text-[#8E8E93]")}>
+ <MessageSquare className="w-[18px] h-[18px]" strokeWidth={2.5} />
+ </button>
  <button onClick={toggleAI} className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors active:scale-95", isAIOpen ? "bg-primary/10 text-primary" : "text-[#8E8E93]")}>
  <Sparkles className="w-[18px] h-[18px]" strokeWidth={2.5} />
  </button>
@@ -303,6 +306,22 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   <span className="hidden sm:inline">{t("orbit_build", "Orbit Build")}</span>
   </Button>
  )}
+
+ {/* Orbit Flow Toggle */}
+ <Button
+ onClick={toggleChat}
+ variant="ghost"
+ size="icon"
+ className={`shrink-0 relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-semibold rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${
+ isChatOpen
+ ? "bg-gradient-to-r from-primary to-primary text-white border-primary -[0_0_15px_rgba(var(--primary),0.5)] scale-95"
+ : "bg-card text-foreground border-primary/40 hover:border-primary/40 hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/10 hover:text-primary -[0_0_10px_rgba(var(--primary),0.15)]"
+ }`}
+ >
+ <span className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
+ <MessageSquare className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isChatOpen ? "text-white" : "text-primary"} sm:mr-1.5`} />
+ <span className="hidden sm:inline">{t("orbit_flow", "Orbit Flow")}</span>
+ </Button>
 
  {/* Orbit AI Toggle */}
  <Button

@@ -23,10 +23,10 @@ export function OrbitLoader({ size = 'md', className = '', label = 'Loading', co
       style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
     >
       <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`} fill="none" aria-hidden="true">
-        <circle cx={cx} cy={cy} r={r} stroke={color || 'hsl(var(--primary))'} strokeWidth={stroke} opacity={0.15} />
+        <circle cx={cx} cy={cy} r={r} stroke={color || '#10B981'} strokeWidth={stroke} opacity={0.15} />
         <circle
           cx={cx} cy={cy} r={r}
-          stroke={color || 'hsl(var(--primary))'}
+          stroke={color || '#10B981'}
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={`${arcLength} ${gapLength}`}
