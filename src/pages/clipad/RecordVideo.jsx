@@ -473,6 +473,7 @@ export default function RecordVideo() {
   const startMediaRecorder = () => {
     if (!recordStreamRef.current) return;
 
+    try {
       // Pick best mimeType with audio codec (opus) to guarantee audio in output
       const mimeType = 
         MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'video/webm;codecs=vp9,opus' :
