@@ -1,7 +1,7 @@
 import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect, useRef} from "react";
 import { useTranslation} from "react-i18next";
-import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, CheckCheck, Check, Smile, Paperclip, ImageIcon, FileText, File, X, PanelLeftClose, PanelLeftOpen, Settings} from "lucide-react";
+import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, CheckCheck, Check, Smile, Paperclip, ImageIcon, FileText, File, X, PanelLeftClose, PanelLeftOpen, Settings, ArrowLeft} from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -795,201 +795,6 @@ export default function ClipadChat() {
  Send and receive messages seamlessly without keeping your phone online.<br/>
  Use Slate Web on up to 4 linked devices and 1 phone at the same time.
  </p>
-? "bg-[#d9fdd3] dark:bg-[#005c4b] text-slate-900 dark:text-slate-100 dark:text-gray-100 rounded-tr-none" 
- : "bg-white dark:bg-card/40 dark:bg-[#202c33] text-slate-900 dark:text-slate-100 dark:text-gray-100 rounded-tl-none"
- )}>
- {msg.reply_to_id && (
- <div className="bg-primary/20 dark:bg-white dark:bg-card/40/5 border-l-4 border-primary rounded-md p-1.5 mb-1.5 text-xs opacity-80 cursor-pointer tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => {
- const el = document.getElementById(`msg-${msg.reply_to_id}`);
- if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
-}}>
- <span className="font-semibold text-primary block">{participantProfiles[messages.find(m => m.id === msg.reply_to_id)?.sender_id]?.full_name || 'User'}</span>
- <span className="truncate block max-w-[200px]">{messages.find(m => m.id === msg.reply_to_id)?.content || 'Message'}</span>
- </div>
- )}
- 
- {!isMe && showTail && activeRoom?.name !== null && (
- <div className="text-[11px] font-semibold text-primary mb-0.5">{senderName}</div>
- )}
-
- {showTail && (
- <svg viewBox="0 0 8 13" width="8" height="13" className={cn("absolute top-0", isMe ? "-right-2 text-[#d9fdd3] dark:text-[#005c4b]" : "-left-2 text-white dark:text-[#202c33]")}>
- <path opacity="0.13" d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z" />
- <path fill="currentColor" d="M5.188 0H0v11.193l6.467-8.625C7.526 1.156 6.958 0 5.188 0z" />
- </svg>
- )}
- 
- {msg.content.startsWith('[Attachment|') ? (
- <div className="pr-12 pt-1 pb-1">
- <div className="flex items-center gap-2 bg-primary/20 dark:bg-white dark:bg-card/40/5 p-2 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- {msg.content.split('|')[3] === 'data:image' ? (
- <img src={msg.content.split('|')[2]} alt="attachment" className="max-w-[200px] rounded-md object-cover cursor-pointer hover:opacity-90 transition-opacity" onClick={() => window.open(msg.content.split('|')[2], '_blank')} />
- ) : msg.content.split('|')[3] === 'data:video' ? (
- <video src={msg.content.split('|')[2]} controls className="max-w-[250px] rounded-md" />
- ) : (
- <a href={msg.content.split('|')[2]} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:bg-primary/20 dark:hover:bg-white dark:bg-card/40/5 rounded-lg p-1 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <FileText className="w-8 h-8 text-primary shrink-0" />
- <div className="flex flex-col min-w-0">
- <span className="text-sm font-semibold truncate max-w-[150px] text-primary hover:underline">{msg.content.split('|')[1]}</span>
- <span className="text-xs text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{msg.content.split('|')[1]?.split('.').pop() || 'DOCUMENT'}</span>
- </div>
- </a>
- )}
- </div>
- </div>
- ) : (
- <div className="whitespace-pre-wrap pr-12">{msg.content}</div>
- )}
- 
- <div className="float-right -mb-1 ml-2 text-[10px] text-[#71717a] dark:text-gray-400 flex items-center gap-2 mt-1">
- {msg.is_edited && <span className="mr-1 italic">edited</span>}
- {format(new Date(msg.created_at), 'h:mm a')}
- {isMe && (() => {
- const otherParticipants = activeRoom?.chat_participants?.filter(p => p.user_id !== user.id) || [];
- const isReadByAny = otherParticipants.some(p => p.last_read_at && new Date(p.last_read_at) >= new Date(msg.created_at));
- if (isReadByAny) return <CheckCheck className="w-3.5 h-3.5 text-primary" />;
- return <CheckCheck className="w-3.5 h-3.5 text-[#71717a] dark:text-gray-400" />;
-})()}
- </div>
- </div>
- 
- {/* Message Actions */}
- <div className="opacity-40 hover:opacity-100 transition-opacity flex flex-wrap items-center gap-2 bg-white dark:bg-card/40/50 dark:bg-black/20 rounded-full px-1 py-0.5 mb-1 self-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <button onClick={() => setReplyTo(msg)} className="p-1 hover:bg-primary/20 rounded-full text-[#71717a] dark:text-gray-400" title="Reply">
- <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
- </button>
- <button 
- onClick={async () => {
- const currentLikes = msg.reactions?.likes || 0;
- await (async () => {
- const _payload = {
- reactions: { ...msg.reactions, likes: currentLikes + 1}
-};
- const _keys = Object.keys(_payload);
- const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE chat_messages SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, msg.id]);
-})();
- const error = null;
- if (!error) {
- setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, reactions: { ...m.reactions, likes: currentLikes + 1}} : m));
-}
-}} 
- className="p-1 hover:bg-primary/20 rounded-full text-[#71717a] dark:text-gray-400 flex items-center gap-0.5" 
- title="Like"
- >
- <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
- {msg.reactions?.likes > 0 && <span className="text-[10px]">{msg.reactions.likes}</span>}
- </button>
- {isMe && (
- <>
- <button onClick={() => { setEditingMsg(msg); setInputValue(msg.content);}} className="p-1 hover:bg-primary/20 rounded-full text-[#71717a] dark:text-gray-400" title="Edit">
- <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
- </button>
- <button 
- className="p-1 hover:bg-rose-100 hover:text-rose-500 rounded-full text-[#71717a] dark:text-gray-400" 
- title="Delete"
- onClick={() => {
- powerSync.execute(`DELETE FROM chat_messages WHERE id = ?`, [msg.id]).then(() => {
- setMessages(prev => prev.filter(m => m.id !== msg.id));
-});
-}}
- >
- <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
- </button>
- </>
- )}
- </div>
- </div>
- );
-})}
- <div ref={messagesEndRef} className="h-2" />
- </div>
-
- {(replyTo || editingMsg) && (
- <div className="px-4 py-2 bg-[#f0f2f5] dark:bg-[#202c33] border-t border-primary/40 flex items-center justify-between z-10 text-sm">
- <div className="flex-1 min-w-0 border-l-4 border-primary pl-3">
- <p className="font-semibold text-primary">{editingMsg ? "Editing Message" : `Replying to ${participantProfiles[replyTo?.sender_id]?.full_name || 'User'}`}</p>
- <p className="text-[#71717a] dark:text-gray-400 truncate">{editingMsg ? editingMsg.content : replyTo?.content}</p>
- </div>
- <button onClick={() => { setReplyTo(null); setEditingMsg(null); setInputValue('');}} className="p-2 hover:bg-primary/20 rounded-full">
- <X className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
- </button>
- </div>
- )}
-
- {/* Input Area */}
- <div className="px-4 pt-3 pb-[80px] md:pb-3 bg-[#f0f2f5] dark:bg-[#202c33] z-10 flex items-center gap-2 border-t border-primary/40">
- <input type="file" ref={fileInputRef} className="hidden" onChange={(e) => handleFileUpload(e, 'file')} />
- <input type="file" accept="image/*" id="chat-image-upload" className="hidden" onChange={(e) => handleFileUpload(e, 'image')} />
- <input type="file" accept=".pdf,.doc,.docx,.txt" id="chat-doc-upload" className="hidden" onChange={(e) => handleFileUpload(e, 'doc')} />
- 
- <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
- <PopoverTrigger asChild>
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-primary/20 shrink-0">
- <Smile className="w-6 h-6" />
- </Button>
- </PopoverTrigger>
- <PopoverContent side="top" align="start" className="w-auto p-0 border-none bg-transparent mb-2">
- <EmojiPicker onEmojiClick={(e) => setInputValue(prev => prev + e.emoji)} />
- </PopoverContent>
- </Popover>
-
- <Popover open={showAttachMenu} onOpenChange={setShowAttachMenu}>
- <PopoverTrigger asChild>
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-primary/20 shrink-0">
- {isUploading ? <OrbitLoader size="md" /> : <Paperclip className="w-6 h-6" />}
- </Button>
- </PopoverTrigger>
- <PopoverContent side="top" align="start" className="w-48 p-2 mb-2 rounded-2xl flex flex-col gap-2 ">
- <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 dark:bg-slate-800/50 hover:text-primary" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
- <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><FileText className="w-4 h-4"/></div>
- Document
- </Button>
- <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-rose-50 hover:text-rose-600" onClick={() => document.getElementById('chat-image-upload')?.click()}>
- <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600"><ImageIcon className="w-4 h-4"/></div>
- Photos & Videos
- </Button>
- <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 dark:bg-slate-800/50 hover:text-primary" onClick={() => fileInputRef.current?.click()}>
- <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><File className="w-4 h-4"/></div>
- File
- </Button>
- </PopoverContent>
- </Popover>
- 
- <div className="flex-1 bg-white dark:bg-card/40 dark:bg-[#2a3942] rounded-xl relative flex items-center  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <input
- type="text"
- value={inputValue}
- onChange={e => setInputValue(e.target.value)}
- onKeyDown={e => e.key === 'Enter' && handleSend()}
- placeholder="Type a message"
- className="w-full bg-transparent border-none px-4 py-2.5 text-sm focus:ring-0 focus:outline-none"
- />
- <button onClick={handleAiAssist} className="absolute right-3 p-1 text-primary hover:bg-slate-100 rounded-full transition-colors" title="AI Magic Rewrite">
- <Sparkles className="w-4 h-4" />
- </button>
- </div>
- 
- <Button 
- onClick={handleSend}
- disabled={!inputValue.trim()}
- size="icon" 
- className="w-10 h-10 rounded-full bg-primary hover:bg-primary/90 shrink-0"
- >
- <Send className="w-4 h-4" />
- </Button>
- </div>
- </>
- ) : (
- <div className="flex-1 flex flex-col items-center justify-center text-center p-8 z-10">
- <div className="w-32 h-32 bg-background/50 rounded-full flex items-center justify-center mb-8 ">
- <MessageSquare className="w-12 h-12 text-[#71717a] dark:text-gray-400/30" />
- </div>
- <h2 className="text-3xl font-light text-[#41525d] dark:text-[#e9edef] mb-4 tracking-[-0.02em]">Slate Web</h2>
- <p className="text-sm text-[#8696a0] max-w-md leading-relaxed mb-8">
- Send and receive messages seamlessly without keeping your phone online.<br/>
- Use Slate Web on up to 4 linked devices and 1 phone at the same time.
- </p>
  <div className="flex items-center gap-2 text-[13px] text-[#8696a0]">
  <span className="w-3 h-3 bg-[#d9fdd3] rounded-md flex items-center justify-center"><Check className="w-2 h-2 text-[#005c4b]" /></span>
  End-to-end encrypted
@@ -997,12 +802,13 @@ export default function ClipadChat() {
  </div>
  )}
  </div>
-  </div>{/* close messages/empty state wrapper */}
-  </div>{/* close main chat area */}
-  </div>{/* close main layout */}
-  </div>{/* close sidebar */}
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
   {/* Mobile Nav */}
   <ClipadMobileNav />
-  </div>{/* close root */}
+  </div>
   );
 }
