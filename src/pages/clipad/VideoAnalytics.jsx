@@ -331,6 +331,5 @@ export default function VideoAnalytics() {
         </div>
         <ClipadMobileNav />
       </div>
-    </div>
   );
 }
