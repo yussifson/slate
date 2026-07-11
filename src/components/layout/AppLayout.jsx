@@ -83,6 +83,22 @@ export default function AppLayout() {
   });
 
   useEffect(() => {
+    // Clipad pages always use the CliPad brand regardless of company
+    const clipadRoutes = ['/chat', '/analytics', '/meetings', '/spaces', '/dashboard', '/settings', '/support'];
+    const isClipadRoute = clipadRoutes.some(r => location.pathname.startsWith(r));
+
+    if (isClipadRoute) {
+      let link = document.querySelector("link[rel~='icon']");
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+      }
+      link.href = '/clipad-logo.svg';
+      document.title = 'CliPad';
+      return; // Do not apply company branding on Clipad routes
+    }
+
     if (currentCompany) {
       if (currentCompany.favicon_url) {
         let link = document.querySelector("link[rel~='icon']");

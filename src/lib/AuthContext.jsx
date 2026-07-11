@@ -371,7 +371,20 @@ export const AuthProvider = ({ children }) => {
       // Branch switching works perfectly on the same URL by just relying on AuthContext state.
 
       // Update favicon and title if company data has it
-      if (companyData) {
+      // Clipad pages always use CliPad branding regardless of company
+      const clipadRoutes = ['/chat', '/analytics', '/meetings', '/spaces', '/dashboard', '/settings', '/support'];
+      const isClipadRoute = clipadRoutes.some(r => window.location.pathname.startsWith(r));
+
+      if (isClipadRoute) {
+        let link = document.querySelector("link[rel~='icon']");
+        if (!link) {
+          link = document.createElement('link');
+          link.rel = 'icon';
+          document.getElementsByTagName('head')[0].appendChild(link);
+        }
+        link.href = '/clipad-logo.svg';
+        document.title = 'CliPad';
+      } else if (companyData) {
         if (companyData.favicon_url) {
           let link = document.querySelector("link[rel~='icon']");
           if (!link) {

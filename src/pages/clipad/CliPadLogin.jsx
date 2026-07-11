@@ -40,6 +40,7 @@ export default function CliPadLogin() {
     <>
       <Helmet>
         <title>Sign In — CliPad</title>
+        <link rel="icon" type="image/svg+xml" href="/clipad-logo.svg" />
       </Helmet>
       <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative text-slate-900 dark:text-slate-100">
         
