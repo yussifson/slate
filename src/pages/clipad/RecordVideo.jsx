@@ -121,42 +121,33 @@ export default function RecordVideo() {
         }
       });
 
-      // Construct native PiP UI inside the PiP Document to avoid React portal/ref issues
+      // Construct native PiP UI inside the PiP Document
+      const isDark = document.documentElement.classList.contains('dark');
+      if (isDark) pip.document.documentElement.classList.add('dark');
+      
       pip.document.body.style.margin = '0';
-      pip.document.body.style.backgroundColor = '#0f172a'; // slate-900
+      pip.document.body.style.backgroundColor = isDark ? '#020617' : '#f8fafc'; // slate-950 or slate-50
       pip.document.body.style.display = 'flex';
-      pip.document.body.style.flexDirection = 'column';
+      pip.document.body.style.alignItems = 'center';
+      pip.document.body.style.justifyContent = 'center';
       pip.document.body.style.height = '100vh';
       pip.document.body.style.fontFamily = "'Inter', sans-serif";
-
-      const videoWrapper = document.createElement('div');
-      videoWrapper.style.flex = '1';
-      videoWrapper.style.backgroundColor = '#000';
-      videoWrapper.style.position = 'relative';
-
-      const videoEl = document.createElement('video');
-      videoEl.autoplay = true;
-      videoEl.muted = true;
-      videoEl.playsInline = true;
-      videoEl.style.width = '100%';
-      videoEl.style.height = '100%';
-      videoEl.style.objectFit = 'cover';
-      videoEl.style.transform = 'scaleX(-1)';
-      if (stream) videoEl.srcObject = stream;
-      videoWrapper.appendChild(videoEl);
 
       const controlsWrapper = document.createElement('div');
       controlsWrapper.style.display = 'flex';
       controlsWrapper.style.justifyContent = 'center';
-      controlsWrapper.style.gap = '12px';
-      controlsWrapper.style.padding = '12px';
-      controlsWrapper.style.backgroundColor = 'rgba(30, 41, 59, 0.8)';
+      controlsWrapper.style.gap = '16px';
+      controlsWrapper.style.padding = '16px 24px';
+      controlsWrapper.style.backgroundColor = isDark ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.9)';
       controlsWrapper.style.backdropFilter = 'blur(12px)';
+      controlsWrapper.style.borderRadius = '100px';
+      controlsWrapper.style.boxShadow = isDark ? '0 10px 25px -5px rgba(0,0,0,0.5)' : '0 10px 25px -5px rgba(0,0,0,0.1)';
+      controlsWrapper.style.border = isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)';
 
-      const createBtn = (iconSvg, bgClass) => {
+      const createBtn = (iconSvg, type) => {
         const btn = document.createElement('button');
         btn.innerHTML = iconSvg;
-        btn.style.padding = '12px';
+        btn.style.padding = '14px';
         btn.style.borderRadius = '50%';
         btn.style.border = 'none';
         btn.style.cursor = 'pointer';
@@ -164,43 +155,44 @@ export default function RecordVideo() {
         btn.style.alignItems = 'center';
         btn.style.justifyContent = 'center';
         btn.style.transition = 'all 0.2s';
-        if (bgClass === 'slate') {
-          btn.style.backgroundColor = '#334155';
-          btn.style.color = '#fff';
-        } else if (bgClass === 'red') {
+        
+        if (type === 'slate') {
+          btn.style.backgroundColor = isDark ? '#334155' : '#e2e8f0';
+          btn.style.color = isDark ? '#fff' : '#0f172a';
+        } else if (type === 'red') {
           btn.style.backgroundColor = '#ef4444';
           btn.style.color = '#fff';
-        } else if (bgClass === 'indigo') {
-          btn.style.backgroundColor = '#6366f1';
-          btn.style.color = '#fff';
-          btn.style.boxShadow = '0 0 15px rgba(99,102,241,0.6)';
+          btn.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
         }
+        
+        btn.onmouseover = () => btn.style.transform = 'scale(1.05)';
+        btn.onmouseout = () => btn.style.transform = 'scale(1)';
+        
         return btn;
       };
 
       // Simple SVG icons
-      const micIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>`;
-      const camIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>`;
-      const pauseIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
-      const stopIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>`;
+      const micIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>`;
+      const camIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>`;
+      const pauseIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+      const stopIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>`;
 
       const micBtn = createBtn(micIcon, 'slate');
       const camBtn = createBtn(camIcon, 'slate');
       const pauseBtn = createBtn(pauseIcon, 'slate');
       const stopBtn = createBtn(stopIcon, 'red');
 
-      // State references inside the closure for PiP
       let pipMicState = micEnabled;
 
       micBtn.onclick = () => {
         toggleMicTrack();
         pipMicState = !pipMicState;
         if (!pipMicState) {
-          micBtn.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
-          micBtn.style.color = '#f87171';
+          micBtn.style.backgroundColor = 'rgba(239, 68, 68, 0.15)';
+          micBtn.style.color = '#ef4444';
         } else {
-          micBtn.style.backgroundColor = '#334155';
-          micBtn.style.color = '#fff';
+          micBtn.style.backgroundColor = isDark ? '#334155' : '#e2e8f0';
+          micBtn.style.color = isDark ? '#fff' : '#0f172a';
         }
       };
 
@@ -216,7 +208,6 @@ export default function RecordVideo() {
       controlsWrapper.appendChild(pauseBtn);
       controlsWrapper.appendChild(stopBtn);
 
-      pip.document.body.appendChild(videoWrapper);
       pip.document.body.appendChild(controlsWrapper);
 
       pip.addEventListener('pagehide', () => {
@@ -560,29 +551,6 @@ export default function RecordVideo() {
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter">
       {/* Hidden canvas for PiP compositing */}
       <canvas ref={canvasRef} className="hidden" />
-
-      {/* Hidden PiP Container (moves to PiP window when requested) */}
-      <div ref={pipContainerRef} className={`w-full h-full flex flex-col items-center justify-center bg-slate-900 text-white p-4 ${pipWindow ? '' : 'hidden'}`}>
-        <div className="flex-1 w-full relative rounded-xl overflow-hidden mb-4 bg-black">
-           {/* If we want to show the camera feed in PiP, we can render it here, but canvas stream is best */}
-           <video autoPlay muted playsInline className="w-full h-full object-cover scale-x-[-1]" ref={el => { if (el && streamsRef.current.camera) el.srcObject = streamsRef.current.camera; }} />
-        </div>
-        <div className="flex items-center gap-3 bg-slate-800/80 p-3 rounded-2xl backdrop-blur-md">
-          <button onClick={() => toggleMicTrack()} className={`p-3 rounded-full transition-all ${micEnabled ? (micVolume > 10 ? 'bg-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.6)]' : 'bg-slate-700') : 'bg-red-500/20 text-red-400'}`}>
-            {micEnabled ? <Mic className="w-5 h-5 text-white" /> : <MicOff className="w-5 h-5" />}
-          </button>
-          <button onClick={toggleWebcam} className="p-3 rounded-full bg-slate-700 hover:bg-slate-600 transition-colors">
-            <Camera className="w-5 h-5 text-white" />
-          </button>
-          <div className="w-px h-8 bg-slate-600 mx-1" />
-          <button onClick={togglePause} className="p-3 rounded-full bg-slate-700 hover:bg-slate-600 transition-colors text-white">
-            {isPaused ? <Play className="w-5 h-5 text-emerald-400 fill-emerald-400" /> : <Pause className="w-5 h-5" />}
-          </button>
-          <button onClick={stopRecording} className="p-3 rounded-full bg-red-600 hover:bg-red-500 transition-colors text-white">
-            <StopCircle className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
 
       {/* Nav */}
       <nav className="sticky top-0 z-40 flex items-center gap-3 px-6 h-16 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50">
