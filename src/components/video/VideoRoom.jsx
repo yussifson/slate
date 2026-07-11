@@ -23,6 +23,8 @@ import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { useTheme } from "@/lib/ThemeContext";
 import { Tldraw } from '@tldraw/tldraw';
 import '@tldraw/tldraw/tldraw.css';
+import { supabase } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 
 // Export VIRTUAL_BACKGROUNDS so PreJoinScreen can use them
 export const VIRTUAL_BACKGROUNDS = [
@@ -45,17 +47,13 @@ export const VIRTUAL_BACKGROUNDS = [
   { id: 'bg15', label: 'Deep Ocean', type: 'background-image', url: 'https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=600&auto=format&fit=crop' }
 ];
 
-// Inner component that actually uses the Daily hooks
-const MemoizedWhiteboard = memo(() => {
-  return (
-    <div className="absolute inset-0 z-40 bg-white pointer-events-auto w-full h-full" onPointerDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()}>
-      <Tldraw />
-    </div>
-  );
-});
-
 function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBackground}) {
  const { t} = useTranslation();
+ const { user } = useAuth();
+ 
+ // Force Vite to retain supabase and use a safe reference
+ const db = typeof supabase !== 'undefined' ? supabase : window.supabase;
+ 
  const daily = useDaily();
  const localSessionId = useLocalSessionId();
  const participantIds = useParticipantIds();
@@ -301,14 +299,18 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
           ? transcriptData.map(t => `${t.name}: ${t.text}`).join('\n').substring(0, 500) 
           : 'No transcript recorded.';
           
-        await supabase.from('clipad_meeting_records').insert({
-          title: meetingTitle,
-          daily_room_name: roomUrl.split('/').pop() || 'room',
-          host_id: user?.id || null,
-          ai_summary: summary,
-          ended_at: new Date().toISOString(),
-          space_id: spaceId || null
-        });
+        if (db) {
+          await db.from('clipad_meeting_records').insert({
+            title: meetingTitle,
+            daily_room_name: roomUrl.split('/').pop() || 'room',
+            host_id: user?.id || null,
+            ai_summary: summary,
+            ended_at: new Date().toISOString(),
+            space_id: null // spaceId not available in this context
+          });
+        } else {
+          console.error("Supabase client is not available in leaveCall");
+        }
       } catch (e) {
         console.error('Failed to save meeting record:', e);
       }
@@ -469,7 +471,11 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
       <div className="flex-1 flex flex-col lg:flex-row p-4 gap-4 overflow-hidden bg-white/30 dark:bg-black/20 backdrop-blur-sm">
         {/* Main Stage Area */}
         <div className="flex-[3] relative rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-white/10 shadow-inner bg-slate-900">
-          {showWhiteboard && <MemoizedWhiteboard />}
+          {showWhiteboard && (
+            <div className="absolute inset-0 bg-white pointer-events-auto w-full h-full" style={{ zIndex: 9999 }} onPointerDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()}>
+              <Tldraw persistenceKey={`clipad-wb-${roomUrl}`} />
+            </div>
+          )}
           {screens.length > 0 ? (
             screens.map(screen => (
               <ScreenShareTile key={screen.screenId} screen={screen} className="w-full h-full absolute inset-0" />
