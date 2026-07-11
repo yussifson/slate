@@ -70,9 +70,9 @@ function VideoCard({ video, onClick }) {
     <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-[#0D1117] border border-border hover:border-white/12 transition-all hover:-translate-y-0.5">
       <div className="aspect-video bg-slate-100 dark:bg-slate-800 relative flex items-center justify-center overflow-hidden">
         {video.thumbnail_url ? (
-          <img src={video.thumbnail_url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={video.title} />
+          <img src={video.thumbnail_url} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={video.title} />
         ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${getVideoColor(video.id)} flex items-center justify-center group-hover:scale-105 transition-transform duration-500 opacity-90`}>
+          <div className={`absolute inset-0 w-full h-full bg-gradient-to-br ${getVideoColor(video.id)} group-hover:scale-105 transition-transform duration-500 opacity-90`}>
           </div>
         )}
         <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">

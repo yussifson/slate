@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { BarChart3, TrendingUp, Eye, Heart, MessageSquare, Clock, ArrowLeft, Video, Target, Users } from 'lucide-react';
+import { CliPadLogo } from '@/components/ui/CliPadLogo';
 
 function StatCard({ icon: Icon, color, value, label, trend }) {
   return (
     <div className="p-6 rounded-2xl bg-card border border-border hover:border-white/12 transition-all">
       <div className="flex items-start justify-between mb-4">
-        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg`}>
-          <Icon className="w-5 h-5 text-foreground" />
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm ${color || 'bg-primary/10 text-primary'}`}>
+          <Icon className="w-5 h-5" />
         </div>
         {trend && <span className={`text-xs font-semibold px-2 py-1 rounded-full ${trend > 0 ? 'text-emerald-500 bg-emerald-400/10' : 'text-red-400 bg-red-400/10'}`}>{trend > 0 ? '+' : ''}{trend}%</span>}
       </div>
@@ -142,10 +143,7 @@ export default function VideoAnalytics() {
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
       <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-background page-enter/80 backdrop-blur-xl border-b border-border">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
-          <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
-            <Video className="w-4 h-4 text-foreground" strokeWidth={2.5} />
-          </div>
-          <span className="text-lg font-bold tracking-tight">CliPad</span>
+          <CliPadLogo size={22} />
         </div>
         <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5"><ArrowLeft className="w-4 h-4 text-slate-500" /> Dashboard</button>
       </nav>
@@ -158,20 +156,22 @@ export default function VideoAnalytics() {
 
         {stats.totalVideos === 0 ? (
           <div className="text-center py-24 border border-dashed border-border rounded-3xl">
-            <BarChart3 className="w-16 h-16 text-gray-800 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-muted-foreground mb-2">No data yet</h3>
-            <p className="text-muted-foreground text-sm mb-6">Record a video and share it to start collecting analytics.</p>
-            <button onClick={() => navigate('/record')} className="px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-foreground font-semibold text-sm transition-all">Record Video</button>
+            <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Video className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-bold mb-2 text-foreground">No Videos Yet</h3>
+            <p className="text-muted-foreground max-w-sm mx-auto mb-6">You haven't recorded any videos yet. Start recording to see analytics.</p>
+            <button onClick={() => navigate('/record')} className="px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-all">Start Recording</button>
           </div>
         ) : (
           <div className="space-y-8">
             
             {/* Top Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <StatCard icon={Eye} color="from-indigo-500 to-violet-500" value={stats.totalViews} label="Total Views" trend={14} />
-              <StatCard icon={Video} color="from-cyan-500 to-blue-500" value={stats.totalVideos} label="Videos Recorded" />
-              <StatCard icon={MessageSquare} color="from-pink-500 to-rose-500" value={stats.totalComments} label="Comments" trend={8} />
-              <StatCard icon={Heart} color="from-amber-500 to-orange-500" value={stats.totalReactions} label="Reactions" />
+              <StatCard icon={Eye} color="bg-primary/10 text-primary" value={stats.totalViews} label="Total Views" trend={14} />
+              <StatCard icon={Video} color="bg-primary/10 text-primary" value={stats.totalVideos} label="Videos Recorded" />
+              <StatCard icon={MessageSquare} color="bg-primary/10 text-primary" value={stats.totalComments} label="Comments" trend={8} />
+              <StatCard icon={Heart} color="bg-primary/10 text-primary" value={stats.totalReactions} label="Reactions" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
