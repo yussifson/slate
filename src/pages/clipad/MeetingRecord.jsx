@@ -114,7 +114,6 @@ export default function MeetingRecord() {
         supabase.from('clipad_action_items').select('*').eq('meeting_id', meetingId).order('created_at', { ascending: true }),
         supabase.from('clipad_transcripts').select('*').eq('meeting_id', meetingId).order('start_time', { ascending: true }),
       ]);
-      ]);
       if (meetingRes.data) {
         setMeeting(meetingRes.data);
         setEditTitle(meetingRes.data.title || '');
