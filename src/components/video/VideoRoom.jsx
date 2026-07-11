@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback, memo } from 'react';
 import DailyIframe from '@daily-co/daily-js';
 import { useTranslation} from "react-i18next";
 import { 
