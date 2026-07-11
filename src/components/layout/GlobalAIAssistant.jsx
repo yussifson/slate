@@ -965,6 +965,68 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  )}
 
  {/* Input */}
+ <div className="p-3 border-t border-primary/40 bg-card/80 backdrop-blur-sm shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus-within:border-primary/70 focus-within:ring-2 focus-within:ring-primary/15 rounded-xl bg-background transition-all overflow-hidden ">
+ <textarea
+ value={input}
+ onChange={e => setInput(e.target.value)}
+ placeholder={isRecording ? ' Listening speak now' : (chatMode === 'flow' ? 'Design a workflow...' : chatMode === 'automation' ? 'Build an automation...' : 'Ask anything or give a command')}
+ rows={2}
+ className={`w-full bg-transparent border-none focus:ring-0 resize-none px-3 pt-3 pb-1 text-sm text-foreground outline-none leading-relaxed ${
+ isRecording ? 'placeholder:text-red-400 placeholder:animate-pulse' : 'placeholder:text-[#71717a] dark:text-gray-400/50'
+}`}
+ disabled={isLoading}
+ onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend();}}}
+ />
+ <div className="flex items-center justify-between px-2 pb-2">
+ <div className="flex items-center gap-0.5">
+ <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <button type="button" className="p-1.5 text-[#71717a] hover:bg-slate-50 hover:text-primary rounded-lg transition-colors" title="Change Mode">
+        <Plus className="w-4 h-4" />
+      </button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="start" side="top" className="w-48 z-[100]">
+      <DropdownMenuItem onClick={() => setChatMode('chat')} className="cursor-pointer font-medium"><MessageSquare className="w-4 h-4 mr-2 text-[#71717a]"/> Chat Mode</DropdownMenuItem>
+      <DropdownMenuItem onClick={() => setChatMode('flow')} className="cursor-pointer font-medium"><OrbitIcon className="w-4 h-4 mr-2 text-[#71717a]"/> Flow Builder Mode</DropdownMenuItem>
+      <DropdownMenuItem onClick={() => setChatMode('automation')} className="cursor-pointer font-medium"><Bot className="w-4 h-4 mr-2 text-[#71717a]"/> Automation Mode</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+ <input ref={fileInputRef} type="file" className="hidden" accept="image/*,.pdf,.txt,.csv,.docx,.xlsx,.json,.md" onChange={handleFileUpload} />
+ <button
+ type="button"
+ onClick={() => fileInputRef.current?.click()}
+ className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/30 rounded-lg transition-colors"
+ title="Attach file or image"
+ >
+ <Paperclip className="w-4 h-4" />
+ </button>
+ <button
+ type="button"
+ onClick={handleMicToggle}
+ className={`p-1.5 rounded-lg transition-colors ${
+ isRecording
+ ? 'text-red-500 bg-red-50 dark:bg-red-950/30 animate-pulse'
+ : 'text-[#71717a] dark:text-gray-400 hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/30'
+}`}
+ title={isRecording ? 'Stop recording' : 'Voice input'}
+ >
+ {isRecording ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+ </button>
+ </div>
+ <div className="flex items-center gap-2">
+ <span className="text-[9px] text-[#71717a] dark:text-gray-400/40 uppercase tracking-wider hidden sm:block tracking-[0.04em]"> {t("send_shift_newline", "Send Shift+ Newline")}</span>
+ <button
+ type="button"
+ disabled={(!input.trim() && !uploadedFile) || isLoading}
+ onClick={() => handleSend()}
+ className="h-8 w-8 bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl flex items-center justify-center transition-colors "
+ >
+ <Send className="w-3.5 h-3.5" />
+ </button>
+ </div>
+ </div>
+ </div>
  </div>
  </div>
  </div>
