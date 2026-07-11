@@ -8,6 +8,8 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
+import PaywallModal from '@/components/clipad/PaywallModal';
 
 const MODES = [
   { id: 'screen_camera', icon: Monitor, label: 'Screen + Camera', desc: 'Picture-in-picture: screen with your face overlay' },
@@ -84,7 +86,19 @@ export default function RecordVideo() {
     } else if (mediaRecorderRef.current.state === 'paused') {
       mediaRecorderRef.current.resume();
       setIsPaused(false);
-      timerRef.current = setInterval(() => setRecordingSeconds(s => s + 1), 1000);
+      
+      const startTimeOffset = recordingSeconds * 1000;
+      const newStartTime = Date.now() - startTimeOffset;
+      timerRef.current = setInterval(() => {
+        const seconds = Math.floor((Date.now() - newStartTime) / 1000);
+        setRecordingSeconds(seconds);
+        
+        // Free tier limit: 3 minutes (180 seconds)
+        if (seconds >= 180 && user?.subscription_tier !== 'pro') {
+          stopRecording();
+          setShowPaywall(true);
+        }
+      }, 1000);
     }
   };
 
@@ -483,7 +497,16 @@ export default function RecordVideo() {
       setRecordingSeconds(0);
       const startTime = Date.now();
       clearInterval(timerRef.current);
-      timerRef.current = setInterval(() => setRecordingSeconds(Math.floor((Date.now() - startTime) / 1000)), 1000);
+      timerRef.current = setInterval(() => {
+        const seconds = Math.floor((Date.now() - startTime) / 1000);
+        setRecordingSeconds(seconds);
+        
+        // Free tier limit: 3 minutes (180 seconds)
+        if (seconds >= 180 && user?.subscription_tier !== 'pro') {
+          stopRecording();
+          setShowPaywall(true);
+        }
+      }, 1000);
 
       toast({ title: '● Recording started', description: 'Click Stop when done.' });
 
@@ -667,7 +690,7 @@ export default function RecordVideo() {
   };
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
       {/* Hidden canvas for PiP compositing */}
       <canvas ref={canvasRef} className="hidden" />
 
@@ -923,6 +946,14 @@ export default function RecordVideo() {
           </div>
         )}
       </div>
+      <ClipadMobileNav />
+
+      <PaywallModal
+        isOpen={showPaywall}
+        onClose={() => setShowPaywall(false)}
+        featureName="Longer Recordings"
+        limitDescription="You have reached the 3-minute recording limit on the free plan."
+      />
     </div>
   );
 }

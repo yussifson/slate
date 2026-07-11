@@ -12,12 +12,11 @@ export default function ClipadMobileNav() {
     { label: 'Chat', path: '/chat', icon: MessageSquare },
     { label: 'Record', path: '/record', icon: Camera },
     { label: 'Meetings', path: '/meetings', icon: Video },
-    { label: 'Profile', path: '/settings', icon: User },
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl border-t border-slate-200 dark:border-slate-800 pb-[env(safe-area-inset-bottom)]">
-      <div className="flex items-center justify-around h-[56px] px-2">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-3xl border-t border-slate-200/60 dark:border-slate-800/60 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)]">
+      <div className="flex items-center justify-between px-2 h-[60px] max-w-md mx-auto">
         {navItems.map((item) => {
           const isActive = location.pathname.startsWith(item.path);
           const Icon = item.icon;
@@ -25,12 +24,24 @@ export default function ClipadMobileNav() {
             <Link
               key={item.path}
               to={item.path}
-              className="relative flex flex-col items-center justify-center w-full h-full min-w-[60px] active:scale-95 transition-transform duration-100 ease-in-out"
+              className="relative flex flex-col items-center justify-center w-full h-full min-w-[56px] py-1 active:scale-95 transition-transform duration-100 ease-out"
             >
-              <div className={cn("relative flex items-center justify-center mb-1 transition-colors duration-200", isActive ? "text-primary" : "text-slate-500 dark:text-slate-400")}>
-                <Icon className={cn("w-6 h-6 transition-transform duration-200", isActive ? "scale-110 drop-shadow-sm" : "")} strokeWidth={isActive ? 2.5 : 2} />
+              {isActive && (
+                <div className="absolute top-0 w-8 h-1 bg-primary rounded-b-full shadow-[0_2px_8px_rgba(var(--primary),0.5)]" />
+              )}
+              <div className={cn(
+                "relative flex items-center justify-center mb-1 transition-all duration-300", 
+                isActive ? "text-primary -translate-y-0.5" : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
+              )}>
+                <Icon className={cn(
+                  "transition-all duration-300", 
+                  isActive ? "w-6 h-6 scale-110 drop-shadow-md" : "w-5 h-5"
+                )} strokeWidth={isActive ? 2.5 : 2} />
               </div>
-              <span className={cn("text-[10px] font-semibold leading-none tracking-tight transition-colors duration-200 text-center w-full", isActive ? "text-primary" : "text-slate-500 dark:text-slate-400")}>
+              <span className={cn(
+                "text-[10px] font-semibold leading-none tracking-tight transition-all duration-300 text-center w-full", 
+                isActive ? "text-primary opacity-100 font-bold" : "text-slate-400 dark:text-slate-500 opacity-80"
+              )}>
                 {item.label}
               </span>
             </Link>

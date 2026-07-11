@@ -7,6 +7,7 @@ import {
   Maximize2, Share2, Copy, Check, Sparkles, MessageSquare, Heart,
   ThumbsUp, Zap, Star, BookOpen, ChevronRight, Eye, MoreHorizontal, PictureInPicture
 } from 'lucide-react';
+import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
 const EMOJIS = ['👍','❤️','🔥','😂','🎉','🤯'];
 
@@ -241,7 +242,7 @@ export default function WatchVideo() {
         }
       `}</style>
 
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter">
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
         {/* Nav */}
         <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-14 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50">
           <button onClick={() => navigate(-1)} className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5">
@@ -483,6 +484,7 @@ export default function WatchVideo() {
             </div>
           </div>
         </div>
+        <ClipadMobileNav />
       </div>
     </>
   );

@@ -8,7 +8,10 @@ import {
   Users, FileText, Calendar, Mic, Target, Flame, Star, LogOut
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
-import ThemeToggle from '@/components/layout/ThemeToggle';
+import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
+import { getSpaceIcon } from '@/utils/spaceIcons';
+import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,14 +46,17 @@ function StatCard({ icon: Icon, value, label, trend, accentColor, bgColor, iconC
 }
 
 function SpaceCard({ space, onClick }) {
+  const SpaceIcon = getSpaceIcon(space.name);
+  const color = getVideoColor(space.id); // Reusing getVideoColor for a nice gradient
+
   return (
     <div
       onClick={onClick}
       className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md"
     >
       <div className="flex items-start gap-3 mb-4">
-        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg shadow-sm">
-          {space.name?.[0]?.toUpperCase() || 'S'}
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-sm bg-gradient-to-br ${color}`}>
+          <SpaceIcon className="w-5 h-5" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-slate-900 dark:text-white text-base truncate">{space.name}</h3>
@@ -61,8 +67,8 @@ function SpaceCard({ space, onClick }) {
       <div className="flex items-center justify-between">
         <div className="flex -space-x-2">
           {[1,2,3].map(i => (
-            <div key={i} className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-white dark:border-slate-900 flex items-center justify-center text-[9px] font-bold text-slate-600 dark:text-slate-300">
-              {String.fromCharCode(65 + i)}
+            <div key={i} className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-white dark:border-slate-900 flex items-center justify-center text-slate-500 dark:text-slate-400">
+              <Users className="w-3 h-3" />
             </div>
           ))}
         </div>
@@ -211,7 +217,7 @@ export default function CliPadDashboard() {
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 overflow-x-hidden pb-24 md:pb-8">
       
       {/* Sleek top nav */}
       <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
@@ -224,16 +230,23 @@ export default function CliPadDashboard() {
         <div className="flex items-center gap-1.5 md:gap-3">
           <button onClick={() => navigate('/spaces')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Spaces</button>
           <button onClick={() => navigate('/meetings')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Meetings</button>
+          <button onClick={() => navigate('/chat')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Chat</button>
           <button onClick={() => navigate('/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Analytics</button>
           
           <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden md:block" />
           
           <ThemeToggle />
           
+          <NotificationsDropdown />
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-9 h-9 rounded-xl bg-primary hover:bg-primary/90 flex items-center justify-center font-bold text-sm text-primary-foreground shadow-sm transition-all hover:scale-105 active:scale-95 ml-1">
-                {firstName[0]?.toUpperCase()}
+              <button className="w-9 h-9 rounded-xl bg-primary hover:bg-primary/90 flex items-center justify-center font-bold text-sm text-primary-foreground shadow-sm transition-all hover:scale-105 active:scale-95 ml-1 overflow-hidden border border-primary/20">
+                {user?.avatar_url || user?.user_metadata?.avatar_url ? (
+                  <img src={user.avatar_url || user.user_metadata.avatar_url} alt={firstName} className="w-full h-full object-cover" />
+                ) : (
+                  firstName[0]?.toUpperCase()
+                )}
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 font-sans">

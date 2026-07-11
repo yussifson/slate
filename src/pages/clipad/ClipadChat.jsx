@@ -15,9 +15,15 @@ import { useToast} from "@/components/ui/use-toast";
 import { format} from "date-fns";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { useUIPreference } from "@/hooks/useUIPreference";
+import { useNavigate } from "react-router-dom";
+import { CliPadLogo } from '@/components/ui/CliPadLogo';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
+import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
+import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
 export default function ClipadChat() {
  const { t} = useTranslation();
+ const navigate = useNavigate();
  const { user, isPortalUser } = useAuth();
  const { toast} = useToast();
  
@@ -289,23 +295,74 @@ export default function ClipadChat() {
    return roomName.toLowerCase().includes(searchQuery.toLowerCase());
  });
 
+ const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
+
  return (
- <div className="flex-1 w-full h-full min-h-0 overflow-hidden bg-background flex flex-col md:flex-row">
- <AddClipadChatDialog 
-  open={isAddChatOpen} 
-  onOpenChange={setIsAddChatOpen}
-  onChatCreated={(room) => {
-  setActiveRoomId(room.id);
-  setIsAddChatOpen(false);
-  loadRooms();
- }}
-  />
- 
- {/* Sidebar - Channels & DMs */}
- <div className={cn(
-   "flex-shrink-0 border-r border-primary/40 bg-background dark:bg-[#202c33] flex flex-col h-[40%] md:h-full z-10 relative transition-all duration-300",
-   isSidebarCollapsed ? "w-0 md:w-16 overflow-hidden" : "w-full md:w-80 lg:w-96"
- )}>
+   <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-[100dvh] bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col page-enter overflow-hidden">
+     {/* Sleek top nav */}
+     <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shrink-0">
+       <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
+         <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm text-primary">
+           <CliPadLogo size={22} />
+         </div>
+         <span className="text-lg font-bold tracking-tight hidden sm:block">CliPad</span>
+       </div>
+       <div className="flex items-center gap-1.5 md:gap-3">
+         <button onClick={() => navigate('/spaces')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Spaces</button>
+         <button onClick={() => navigate('/meetings')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Meetings</button>
+         <button onClick={() => navigate('/chat')} className="hidden md:block px-3 py-2 text-sm font-medium text-primary bg-primary/10 rounded-lg transition-colors">Chat</button>
+         <button onClick={() => navigate('/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Analytics</button>
+         
+         <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden md:block" />
+         
+         <ThemeToggle />
+         <NotificationsDropdown />
+
+         <DropdownMenu>
+           <DropdownMenuTrigger asChild>
+             <button className="w-9 h-9 rounded-xl bg-primary hover:bg-primary/90 flex items-center justify-center font-bold text-sm text-primary-foreground shadow-sm transition-all hover:scale-105 active:scale-95 ml-1 overflow-hidden border border-primary/20">
+               {user?.avatar_url || user?.user_metadata?.avatar_url ? (
+                 <img src={user.avatar_url || user.user_metadata.avatar_url} alt={firstName} className="w-full h-full object-cover" />
+               ) : (
+                 firstName[0]?.toUpperCase()
+               )}
+             </button>
+           </DropdownMenuTrigger>
+           <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl shadow-xl border-slate-200 dark:border-slate-800">
+             <div className="px-3 py-3 mb-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+               <p className="font-semibold text-sm truncate">{user?.full_name || user?.user_metadata?.full_name || 'User'}</p>
+               <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user?.email}</p>
+             </div>
+             <DropdownMenuItem onClick={() => navigate('/settings')} className="rounded-xl py-2.5 px-3 cursor-pointer">
+               <Settings className="w-4 h-4 mr-2" /> Settings
+             </DropdownMenuItem>
+             <DropdownMenuSeparator className="my-1 bg-slate-100 dark:bg-slate-800" />
+             <DropdownMenuItem onClick={() => window.location.href = 'https://account.optavel.com'} className="rounded-xl py-2.5 px-3 cursor-pointer text-slate-500">
+               <UserCircle className="w-4 h-4 mr-2" /> Go to Optavel Account
+             </DropdownMenuItem>
+           </DropdownMenuContent>
+         </DropdownMenu>
+       </div>
+     </nav>
+
+     {/* Main Chat Layout Wrapper */}
+     <div className="flex-1 w-full flex flex-col md:flex-row min-h-0 relative overflow-hidden pb-[env(safe-area-inset-bottom)] pb-[70px] md:pb-0">
+       <AddClipadChatDialog 
+         open={isAddChatOpen} 
+         onOpenChange={setIsAddChatOpen}
+         onChatCreated={(room) => {
+           setActiveRoomId(room.id);
+           setIsAddChatOpen(false);
+           loadRooms();
+         }}
+       />
+       
+       {/* Sidebar - Channels & DMs */}
+       <div className={cn(
+         "flex-shrink-0 border-r border-primary/40 bg-background dark:bg-[#202c33] flex flex-col h-full z-10 relative transition-all duration-300",
+         isSidebarCollapsed ? "w-0 md:w-16 overflow-hidden hidden md:flex" : "w-full md:w-80 lg:w-96",
+         activeRoomId ? "hidden md:flex" : "flex"
+       )}>
  <div className={cn(
    "border-b border-primary/40 flex items-center justify-between shrink-0",
    isSidebarCollapsed ? "p-2 flex-col gap-2" : "p-4"
@@ -419,13 +476,16 @@ export default function ClipadChat() {
  </div>
 
  {/* Main Chat Area */}
- <div className="flex-1 flex flex-col bg-[#efeae2] dark:bg-[#0b141a] relative w-full h-full">
+ <div className={cn(
+   "flex-1 flex flex-col bg-[#efeae2] dark:bg-[#0b141a] relative w-full h-full",
+   !activeRoomId ? "hidden md:flex" : "flex"
+ )}>
  <div className="absolute inset-0 opacity-[0.06] dark:opacity-[0.03] pointer-events-none bg-[url('https://static.whatsapp.net/rsrc.php/v3/yl/r/1-vpMpu-EPE.png')]" />
 
  {activeRoom ? (
  <>
  {/* Chat Header */}
- <div className="px-4 py-3 border-b border-primary/40 flex items-center justify-between bg-[#f0f2f5] dark:bg-[#202c33] z-10 ">
+ <div className="px-4 py-3 border-b border-primary/40 flex items-center justify-between bg-[#f0f2f5] dark:bg-[#202c33] z-10 shrink-0">
  {(() => {
    const otherParticipant = activeRoom?.chat_participants?.find(p => p.user_id !== user.id);
    const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
@@ -435,6 +495,9 @@ export default function ClipadChat() {
    return (
  <>
  <div className="flex items-center gap-3">
+   <Button variant="ghost" size="icon" className="md:hidden w-8 h-8 mr-1 shrink-0" onClick={() => setActiveRoomId(null)}>
+     <ArrowLeft className="w-5 h-5" />
+   </Button>
  {activeRoom?.room_type === "group" ? (
  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden">
  <Users className="w-5 h-5 text-primary dark:text-primary/70" />
@@ -635,7 +698,7 @@ export default function ClipadChat() {
  )}
 
  {/* Input Area */}
- <div className="px-4 py-3 bg-[#f0f2f5] dark:bg-[#202c33] z-10 flex items-center gap-2 border-t border-primary/40">
+ <div className="px-4 pt-3 pb-[80px] md:pb-3 bg-[#f0f2f5] dark:bg-[#202c33] z-10 flex items-center gap-2 border-t border-primary/40">
  <input type="file" ref={fileInputRef} className="hidden" onChange={(e) => handleFileUpload(e, 'file')} />
  <input type="file" accept="image/*" id="chat-image-upload" className="hidden" onChange={(e) => handleFileUpload(e, 'image')} />
  <input type="file" accept=".pdf,.doc,.docx,.txt" id="chat-doc-upload" className="hidden" onChange={(e) => handleFileUpload(e, 'doc')} />
@@ -714,6 +777,7 @@ export default function ClipadChat() {
  </div>
  )}
  </div>
+ <ClipadMobileNav />
  </div>
  );
 }

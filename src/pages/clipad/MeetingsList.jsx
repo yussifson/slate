@@ -4,6 +4,10 @@ import { supabase } from '@/api/supabaseClient';
 import { Calendar, Video, Search, Clock, Users, ArrowRight, Sparkles, Filter, CheckCircle, Flame, ArrowLeft, Target } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
+import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
 export default function MeetingsList() {
   const { user } = useAuth();
@@ -60,16 +64,54 @@ export default function MeetingsList() {
     return true;
   });
 
+  const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
+
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter">
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
+      {/* Sleek top nav */}
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shrink-0">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
-          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center text-primary">
-            <CliPadLogo size={20} />
+          <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm text-primary">
+            <CliPadLogo size={22} />
           </div>
-          <span className="text-lg font-bold tracking-tight">Meetings</span>
+          <span className="text-lg font-bold tracking-tight hidden sm:block">CliPad</span>
         </div>
-        <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5"><ArrowLeft className="w-4 h-4 text-slate-500" /> Dashboard</button>
+        <div className="flex items-center gap-1.5 md:gap-3">
+          <button onClick={() => navigate('/spaces')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Spaces</button>
+          <button onClick={() => navigate('/meetings')} className="hidden md:block px-3 py-2 text-sm font-medium text-primary bg-primary/10 rounded-lg transition-colors">Meetings</button>
+          <button onClick={() => navigate('/chat')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Chat</button>
+          <button onClick={() => navigate('/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Analytics</button>
+          
+          <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden md:block" />
+          
+          <ThemeToggle />
+          <NotificationsDropdown />
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="w-9 h-9 rounded-xl bg-primary hover:bg-primary/90 flex items-center justify-center font-bold text-sm text-primary-foreground shadow-sm transition-all hover:scale-105 active:scale-95 ml-1 overflow-hidden border border-primary/20">
+                {user?.avatar_url || user?.user_metadata?.avatar_url ? (
+                  <img src={user.avatar_url || user.user_metadata.avatar_url} alt={firstName} className="w-full h-full object-cover" />
+                ) : (
+                  firstName[0]?.toUpperCase()
+                )}
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl shadow-xl border-slate-200 dark:border-slate-800">
+              <div className="px-3 py-3 mb-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+                <p className="font-semibold text-sm truncate">{user?.full_name || user?.user_metadata?.full_name || 'User'}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user?.email}</p>
+              </div>
+              <DropdownMenuItem onClick={() => navigate('/settings')} className="rounded-xl py-2.5 px-3 cursor-pointer">
+                <Settings className="w-4 h-4 mr-2" /> Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="my-1 bg-slate-100 dark:bg-slate-800" />
+              <DropdownMenuItem onClick={() => window.location.href = 'https://account.optavel.com'} className="rounded-xl py-2.5 px-3 cursor-pointer text-slate-500">
+                <UserCircle className="w-4 h-4 mr-2" /> Go to Optavel Account
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </nav>
 
       <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
@@ -164,6 +206,7 @@ export default function MeetingsList() {
           </div>
         )}
       </div>
+      <ClipadMobileNav />
     </div>
   );
 }

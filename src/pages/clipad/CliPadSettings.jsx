@@ -5,12 +5,14 @@ import { supabase } from '@/api/supabaseClient';
 import { Settings, User, Bell, Shield, LogOut, ArrowLeft, Video, CheckCircle, Camera } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
+import CliPadBilling from './CliPadBilling';
 
 export default function CliPadSettings() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState('profile');
 
   // Settings state (persisted locally)
   const [settings, setSettings] = useState(() => {
@@ -72,9 +74,12 @@ export default function CliPadSettings() {
           
           {/* Sidebar */}
           <div className="md:col-span-1 space-y-3">
-            {[{id: 'profile', icon: User, label: 'Profile'}, {id: 'notifs', icon: Bell, label: 'Notifications'}, {id: 'meeting', icon: Video, label: 'Meeting Defaults'}].map(tab => (
-              <button key={tab.id} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-secondary text-foreground font-semibold text-sm transition-all border border-border hover:bg-secondary/80">
-                <tab.icon className="w-4 h-4 text-primary" /> {tab.label}
+            {[{id: 'profile', icon: User, label: 'Profile'}, {id: 'notifs', icon: Bell, label: 'Notifications'}, {id: 'meeting', icon: Video, label: 'Meeting Defaults'}, {id: 'billing', icon: CreditCard, label: 'Billing & Plans'}].map(tab => (
+              <button 
+                key={tab.id} 
+                onClick={() => setActiveTab(tab.id)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all border ${activeTab === tab.id ? 'bg-primary/10 text-primary border-primary/20' : 'bg-secondary text-foreground border-border hover:bg-secondary/80'}`}>
+                <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-primary' : 'text-primary/70'}`} /> {tab.label}
               </button>
             ))}
           </div>
@@ -82,7 +87,10 @@ export default function CliPadSettings() {
           {/* Content */}
           <div className="md:col-span-3 space-y-8">
             
+            {activeTab === 'billing' && <CliPadBilling />}
+
             {/* Profile */}
+            {activeTab === 'profile' && (
             <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
               <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2"><User className="w-5 h-5 text-primary" /> Account Profile</h2>
               <div className="flex items-center gap-6 mb-8">
@@ -115,8 +123,10 @@ export default function CliPadSettings() {
                 </div>
               </div>
             </div>
+            )}
 
             {/* Notifications */}
+            {activeTab === 'notifs' && (
             <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
               <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2"><Bell className="w-5 h-5 text-primary" /> Notifications</h2>
               <div className="space-y-4">
@@ -143,6 +153,7 @@ export default function CliPadSettings() {
             </div>
 
             {/* Meeting Defaults */}
+            {activeTab === 'meeting' && (
             <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
               <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2"><Camera className="w-5 h-5 text-primary" /> Meeting Defaults</h2>
               <div className="space-y-4">
@@ -174,6 +185,7 @@ export default function CliPadSettings() {
                 </label>
               </div>
             </div>
+            )}
 
             {/* Actions */}
             <div className="flex items-center justify-between pt-4">

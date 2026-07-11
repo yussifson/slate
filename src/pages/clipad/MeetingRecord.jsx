@@ -8,6 +8,7 @@ import {
   User, Calendar, Copy, Check, Download, Zap, AlertCircle,
   Play, BarChart3
 } from 'lucide-react';
+import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
 function CopyButton({ text }) {
   const [copied, setCopied] = useState(false);
@@ -179,7 +180,7 @@ export default function MeetingRecord() {
   const doneItems = actionItems.filter(i => i.is_complete);
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground overflow-x-hidden pb-24 md:pb-8">
       {/* Nav */}
       <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-14 bg-background page-enter/90 backdrop-blur-xl border-b border-border">
           <button onClick={() => navigate('/meetings')} className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5">
@@ -226,7 +227,7 @@ export default function MeetingRecord() {
             <div className="flex justify-end mb-3">
               <CopyButton text={meeting.ai_summary} />
             </div>
-            <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-line">{meeting.ai_summary}</p>
+            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">{meeting.ai_summary}</p>
           </SectionCard>
         )}
 
@@ -236,8 +237,8 @@ export default function MeetingRecord() {
             <ul className="space-y-2">
               {meeting.key_decisions.map((d, i) => (
                 <li key={i} className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-lg bg-amber-500/15 text-amber-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">{i+1}</span>
-                  <p className="text-sm text-gray-300 leading-snug">{d}</p>
+                  <span className="w-6 h-6 rounded-lg bg-amber-500/15 text-amber-500 dark:text-amber-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">{i+1}</span>
+                  <p className="text-sm text-slate-700 dark:text-slate-300 leading-snug">{d}</p>
                 </li>
               ))}
             </ul>
@@ -253,7 +254,7 @@ export default function MeetingRecord() {
         >
           {actionItems.length === 0 ? (
             <div className="py-8 text-center">
-              <Target className="w-10 h-10 text-gray-800 mx-auto mb-3" />
+              <Target className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
               <p className="text-sm text-muted-foreground">No action items yet.</p>
               {!meeting.ai_summary && (
                 <button onClick={generateAISummary} disabled={generatingAI} className="mt-3 text-xs text-primary hover:text-primary/80 transition-colors">
@@ -281,7 +282,7 @@ export default function MeetingRecord() {
               {meeting.open_questions.map((q, i) => (
                 <li key={i} className="flex items-start gap-3">
                   <MessageSquare className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                  <p className="text-sm text-gray-300 leading-snug">{q}</p>
+                  <p className="text-sm text-slate-700 dark:text-slate-300 leading-snug">{q}</p>
                 </li>
               ))}
             </ul>
@@ -324,6 +325,7 @@ export default function MeetingRecord() {
         )}
 
       </div>
+      <ClipadMobileNav />
     </div>
   );
 }

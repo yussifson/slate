@@ -7,12 +7,9 @@ import { useToast } from '@/components/ui/use-toast';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import {
-  Video, Keyboard, Sparkles, Copy, Link as LinkIcon, Calendar,
-  Users, Brain, Layers, Zap, ChevronRight, ChevronLeft,
-  Monitor, CheckCircle, ArrowRight, Star, Globe, Plus, Camera, Target, TrendingUp, Clock, MessageSquare, PhoneCall
-} from 'lucide-react';
+import { Zap, Target, Star, Brain, Camera, Rocket, MessageSquare, PhoneCall, ArrowRight, ShieldCheck, CheckCircle, Video, TrendingUp, Calendar, X, Keyboard, Sparkles, Copy, Link as LinkIcon, Users, Layers, ChevronRight, ChevronLeft, Monitor, Globe, Plus } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
+import { AnimatePresence, motion } from 'framer-motion';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 
 
@@ -61,7 +58,6 @@ const pillars = [
   },
 ];
 
-// ΓöÇΓöÇΓöÇ Stats ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 const stats = [
   { value: '500+', label: 'Participants per call' },
   { value: '2 min', label: 'AI summary delivery' },
@@ -69,7 +65,6 @@ const stats = [
   { value: '100%', label: 'End-to-end encrypted' },
 ];
 
-// ΓöÇΓöÇΓöÇ Pricing Tiers ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 const tiers = [
   {
     name: 'Free',
@@ -95,9 +90,6 @@ const tiers = [
   },
 ];
 
-
-// ΓöÇΓöÇΓöÇ Carousel Slides ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
-// Each slide has a render function (not static JSX) so they re-render correctly
 const slides = [
   {
     id: 0,
@@ -173,7 +165,6 @@ function useLiveClock() {
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
-    // Update favicon
     const link = document.querySelector("link[rel~='icon']");
     if (link) {
       link.href = '/clipad-logo.svg';
@@ -192,6 +183,9 @@ export default function MeetLandingPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [user, setUser] = useState(null);
+  const [supportPanel, setSupportPanel] = useState(null); 
+  const [supportForm, setSupportForm] = useState({ name: '', email: '', phone: '', message: '' });
+  const [submittingSupport, setSubmittingSupport] = useState(false);
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setUser(data?.session?.user || null));
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => setUser(session?.user || null));
@@ -201,7 +195,6 @@ export default function MeetLandingPage() {
   const { toast } = useToast();
   const now = useLiveClock();
 
-  // Force document to light mode to prevent dark theme background bleeding below footer
   useEffect(() => {
     const root = window.document.documentElement;
     const originalClass = root.className;
@@ -214,7 +207,6 @@ export default function MeetLandingPage() {
     };
   }, []);
 
-  // Auto-advance carousel every 6s
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -276,58 +268,25 @@ export default function MeetLandingPage() {
 
   return (
     <div className="light min-h-screen bg-white text-slate-900 flex flex-col font-sans relative overflow-hidden">
-      {/* Realistic Background Layers */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 blur-[120px]" />
         <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-orange-500/5 blur-[120px]" />
       </div>
       <Helmet>
-        <title>CliPad ΓÇö Free HD Video Meetings for Teams</title>
-        <meta name="description" content="CliPad is a free, secure, enterprise-grade video conferencing platform. Start or join HD video meetings instantly ΓÇö no downloads required. Trusted by teams worldwide." />
-        <meta name="keywords" content="CliPad, video meeting, online video call, video conferencing, free video call, HD video call, team meeting, virtual meeting, enterprise video, secure video call, Google Meet alternative, Zoom alternative" />
-        <meta name="robots" content="index, follow" />
-        <meta name="author" content="Optavel" />
-        <link rel="canonical" href="https://clipad.optavel.com/" />
-        {/* Open Graph */}
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://clipad.optavel.com/" />
-        <meta property="og:title" content="CliPad ΓÇö Free HD Video Meetings for Teams" />
-        <meta property="og:description" content="Start or join a free HD video meeting in seconds. Secure, enterprise-grade video conferencing by Optavel ΓÇö no downloads, no friction." />
-        <meta property="og:site_name" content="CliPad" />
-        <meta property="og:locale" content="en_US" />
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="CliPad ΓÇö Free HD Video Meetings for Teams" />
-        <meta name="twitter:description" content="Start or join a free HD video meeting in seconds. Secure, enterprise-grade video conferencing by Optavel ΓÇö no downloads, no friction." />
-        <meta name="twitter:site" content="@optavel" />
-        {/* Structured Data */}
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebApplication",
-          "name": "CliPad",
-          "url": "https://clipad.optavel.com",
-          "description": "Free, secure, enterprise-grade HD video conferencing. Start or join meetings instantly ΓÇö no downloads required.",
-          "applicationCategory": "CommunicationApplication",
-          "operatingSystem": "Any",
-          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-          "provider": { "@type": "Organization", "name": "Optavel", "url": "https://optavel.com" }
-        })}</script>
+        <title>CliPad — Free HD Video Meetings for Teams</title>
+        <meta name="description" content="CliPad is a free, secure, enterprise-grade video conferencing platform. Start or join HD video meetings instantly — no downloads required. Trusted by teams worldwide." />
       </Helmet>
-      {/* Header */}
       <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 border-b border-slate-200/50 bg-white/80 backdrop-blur-md shadow-sm">
-
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 flex items-center justify-center text-primary">
             <CliPadLogo size={36} />
           </div>
           <span className="text-xl font-bold tracking-tight text-slate-900">CliPad</span>
         </div>
-        
         <div className="hidden md:flex items-center gap-1 text-sm text-muted-foreground">
           <a href="#features" className="px-4 py-2 rounded-lg hover:text-foreground hover:bg-secondary transition-colors">Features</a>
           <a href="#pricing" className="px-4 py-2 rounded-lg hover:text-foreground hover:bg-secondary transition-colors">Pricing</a>
         </div>
-
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-2 text-sm font-semibold tabular-nums bg-slate-100/80 px-3 py-1.5 rounded-xl border border-slate-200/60 shadow-inner text-slate-700">
             <Clock className="w-4 h-4 text-primary" />
@@ -345,12 +304,9 @@ export default function MeetLandingPage() {
             </Button>
           )}
         </div>
-
       </header>
 
-      {/* Main Content */}
       <main className="relative z-10 flex-1 flex flex-col md:flex-row items-center justify-center p-6 md:p-12 gap-12 md:gap-16 max-w-7xl mx-auto w-full">
-        {/* Left Side */}
         <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-8 max-w-xl">
           <h1 className="text-4xl md:text-5xl font-normal text-slate-800 leading-tight">
             Enterprise video messaging & meetings.<br />Now free for everyone.
@@ -374,14 +330,14 @@ export default function MeetLandingPage() {
               <DropdownMenuContent align="start" className="w-64 p-2 shadow-xl border-slate-100 rounded-xl">
                 <DropdownMenuItem
                   onClick={() => handleCreateMeeting('later')}
-                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50:bg-secondary"
+                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50"
                 >
                   <LinkIcon className="w-5 h-5 text-slate-500" />
                   <span className="font-medium text-slate-700">Create a meeting for later</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => handleCreateMeeting('instant')}
-                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50:bg-secondary"
+                  className="flex items-center gap-3 p-3 cursor-pointer rounded-lg hover:bg-slate-50"
                 >
                   <Plus className="w-5 h-5 text-slate-500" />
                   <span className="font-medium text-slate-700">Start an instant meeting</span>
@@ -410,21 +366,16 @@ export default function MeetLandingPage() {
               )}
             </form>
           </div>
-
         </div>
 
-        {/* Right Side: Enlarged Carousel */}
         <div className="flex-1 hidden md:flex items-center justify-center relative min-h-[520px]">
-          {/* Prev button */}
           <button
             onClick={prevSlide}
-            className="absolute left-0 z-10 w-10 h-10 rounded-full bg-white hover:bg-slate-50:bg-slate-800 shadow-md border border-slate-100 flex items-center justify-center transition-all"
+            className="absolute left-0 z-10 w-10 h-10 rounded-full bg-white hover:bg-slate-50 shadow-md border border-slate-100 flex items-center justify-center transition-all"
           >
             <ChevronLeft className="w-5 h-5 text-slate-500" />
           </button>
-
           <div className="flex flex-col items-center text-center w-full max-w-md px-12">
-            {/* Illustration frame ΓÇö larger, taller */}
             <div className="w-full h-[340px] relative mb-8">
               {slides.map((slide) => (
                 <div
@@ -437,8 +388,6 @@ export default function MeetLandingPage() {
                 </div>
               ))}
             </div>
-
-            {/* Text area with fixed height to prevent layout shift */}
             <div className="h-28">
               <h2 className="text-2xl font-semibold text-slate-900 mb-2 tracking-tight">
                 {slides[currentSlide].title}
@@ -447,8 +396,6 @@ export default function MeetLandingPage() {
                 {slides[currentSlide].description}
               </p>
             </div>
-
-            {/* Pill indicators */}
             <div className="flex gap-2 mt-2">
               {slides.map((_, i) => (
                 <button
@@ -457,17 +404,15 @@ export default function MeetLandingPage() {
                   className={`h-2 rounded-full transition-all duration-300 ${
                     i === currentSlide
                       ? 'bg-primary w-6'
-                      : 'bg-slate-200 w-2 hover:bg-slate-300:bg-slate-600'
+                      : 'bg-slate-200 w-2 hover:bg-slate-300'
                   }`}
                 />
               ))}
             </div>
           </div>
-
-          {/* Next button */}
           <button
             onClick={nextSlide}
-            className="absolute right-0 z-10 w-10 h-10 rounded-full bg-white hover:bg-slate-50:bg-slate-800 shadow-md border border-slate-100 flex items-center justify-center transition-all"
+            className="absolute right-0 z-10 w-10 h-10 rounded-full bg-white hover:bg-slate-50 shadow-md border border-slate-100 flex items-center justify-center transition-all"
           >
             <ChevronRight className="w-5 h-5 text-slate-500" />
           </button>
@@ -500,7 +445,6 @@ export default function MeetLandingPage() {
           </div>
         </section>
 
-        {/* ── HOW IT CONNECTS ── */}
         <section className="py-32 px-6 md:px-12 max-w-6xl mx-auto relative">
           <div className="text-center mb-20 relative z-10">
             <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5 text-slate-900">The connected workflow.</h2>
@@ -508,7 +452,6 @@ export default function MeetLandingPage() {
           </div>
 
           <div className="relative grid grid-cols-1 md:grid-cols-5 gap-8">
-            {/* SVG Pipeline Connection Line (Desktop) */}
             <div className="hidden md:block absolute top-24 left-[10%] right-[10%] h-1 bg-slate-100 rounded-full z-0">
               <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary via-teal-400 to-primary rounded-full animate-pulse" style={{ width: '100%' }} />
             </div>
@@ -537,7 +480,6 @@ export default function MeetLandingPage() {
           </div>
         </section>
 
-        {/* ΓöÇΓöÇ PRICING ΓöÇΓöÇ */}
         <section id="pricing" className="py-24 px-6 md:px-12 max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-semibold tracking-wider uppercase mb-6">
@@ -581,7 +523,6 @@ export default function MeetLandingPage() {
           </div>
         </section>
 
-        {/* ΓöÇΓöÇ CTA BANNER ΓöÇΓöÇ */}
         <section className="py-24 px-6 md:px-12 max-w-4xl mx-auto text-center">
           <div className="p-12 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20">
             <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5">
@@ -591,7 +532,7 @@ export default function MeetLandingPage() {
             <p className="text-muted-foreground mb-10 max-w-xl mx-auto">No account needed to join or start a meeting. Sign up to unlock AI intelligence, async video, and team spaces.</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
-                onClick={() => createRoom(true)}
+                onClick={() => handleCreateMeeting('instant')}
                 disabled={isCreating}
                 className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white font-bold shadow-2xl shadow-primary/30 transition-all hover:scale-[1.02]"
               >
@@ -607,7 +548,6 @@ export default function MeetLandingPage() {
           </div>
         </section>
 
-        {/* ΓöÇΓöÇ CONTACT SUPPORT ΓöÇΓöÇ */}
         <section id="contact" className="py-24 px-6 md:px-12 max-w-7xl mx-auto border-t border-border">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">We're here to help</h2>
@@ -615,7 +555,6 @@ export default function MeetLandingPage() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Chat Option */}
             <div className="bg-card border border-border p-8 rounded-3xl shadow-sm hover:shadow-md transition-all text-center flex flex-col items-center">
               <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
                 <MessageSquare className="w-8 h-8 text-primary" />
@@ -623,34 +562,13 @@ export default function MeetLandingPage() {
               <h3 className="text-xl font-bold mb-3">Live Support Chat</h3>
               <p className="text-muted-foreground text-sm mb-6 flex-1">Chat directly with an Optavel support agent in real-time to get your questions answered instantly.</p>
               <button 
-                onClick={async () => {
-                  try {
-                    const name = prompt("Enter your name to start chat:");
-                    if (!name) return;
-                    await supabase.from('optavel_support_tickets').insert({
-                      id: uuidv4(),
-                      company_id: 'default', // Using a default/guest identifier since they might not be logged in
-                      title: 'Live Chat Request',
-                      description: 'User initiated a live chat from the landing page.',
-                      severity: 'low',
-                      status: 'open',
-                      customer_name: name,
-                      created_at: new Date().toISOString(),
-                      updated_at: new Date().toISOString()
-                    });
-                    alert(`Thanks ${name}, an agent will connect with you shortly!`);
-                  } catch (e) {
-                    console.error(e);
-                    alert("Failed to initiate chat. Please try again later.");
-                  }
-                }}
+                onClick={() => setSupportPanel('chat')}
                 className="w-full py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold transition-colors"
               >
                 Start Chat
               </button>
             </div>
 
-            {/* Request Call Option */}
             <div className="bg-card border border-border p-8 rounded-3xl shadow-sm hover:shadow-md transition-all text-center flex flex-col items-center">
               <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6">
                 <PhoneCall className="w-8 h-8 text-blue-500" />
@@ -658,30 +576,6 @@ export default function MeetLandingPage() {
               <h3 className="text-xl font-bold mb-3">Request a Call</h3>
               <p className="text-muted-foreground text-sm mb-6 flex-1">Submit your details and a dedicated support representative will call you back shortly.</p>
               <button 
-                onClick={async () => {
-                  try {
-                    const name = prompt("Enter your name:");
-                    if (!name) return;
-                    const phone = prompt("Enter your phone number:");
-                    if (!phone) return;
-                    
-                    await supabase.from('optavel_support_tickets').insert({
-                      id: uuidv4(),
-                      company_id: 'default', // Using a default/guest identifier
-                      title: 'Call Request',
-                      description: `User requested a call back at ${phone}.`,
-                      severity: 'medium',
-                      status: 'open',
-                      customer_name: name,
-                      created_at: new Date().toISOString(),
-                      updated_at: new Date().toISOString()
-                    });
-                    alert(`Thank you ${name}. We will call you shortly at ${phone}.`);
-                  } catch(e) {
-                    console.error(e);
-                    alert("Failed to submit request.");
-                  }
-                }}
                 className="w-full py-3 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-semibold transition-colors"
               >
                 Request Call

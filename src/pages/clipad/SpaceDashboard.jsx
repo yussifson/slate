@@ -193,7 +193,7 @@ export default function SpaceDashboard() {
   const doneTasks = tasks.filter(t => t.is_complete);
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground overflow-x-hidden pb-24 md:pb-8">
       {/* Nav */}
       <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-background page-enter/80 backdrop-blur-xl border-b border-border">
         <div className="flex items-center gap-3">
@@ -204,6 +204,9 @@ export default function SpaceDashboard() {
           <span className="font-semibold text-foreground">{space.name}</span>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={() => navigate('/chat')} className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all flex items-center gap-2">
+            <MessageSquare className="w-4 h-4" /> Chat
+          </button>
           <button onClick={() => navigate('/record')} className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all flex items-center gap-2">
             <Camera className="w-4 h-4" /> Record
           </button>

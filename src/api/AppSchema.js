@@ -1641,9 +1641,21 @@ export const AppSchema = new Schema({
         department: column.text,
         bar_number: column.text,
         industry_type: column.text,
+        subscription_tier: column.text,
+        paystack_customer_id: column.text,
+        subscription_active_until: column.text,
         onboarding_completed: column.text}),
-    
-    
+        
+    clipad_payment_portals: new Table({
+        id: column.text,
+        creator_id: column.text,
+        slug: column.text,
+        company_name: column.text,
+        logo_url: column.text,
+        primary_color: column.text,
+        created_at: column.text,
+        updated_at: column.text}),
+        
     
     hospital_patients: new Table({
         id: column.text,
@@ -6498,6 +6510,23 @@ export const AppSchema = new Schema({
         notes: column.text,
         created_by: column.text,
         created_at: column.text
+    }),
+    optavel_chat_rooms: new Table({
+        id: column.text,
+        company_id: column.text,
+        name: column.text,
+        room_type: column.text,
+        created_at: column.text,
+        updated_at: column.text,
+        is_private: column.text
+    }),
+    chat_requests: new Table({
+        id: column.text,
+        room_id: column.text,
+        user_id: column.text,
+        status: column.text,
+        created_at: column.text,
+        updated_at: column.text
     }),
     optavel_employees: new Table({
         id: column.text,

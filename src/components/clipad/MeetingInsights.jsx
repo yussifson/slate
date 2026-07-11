@@ -17,26 +17,42 @@ export default function MeetingInsights({ spaceId }) {
     async function fetchInsights() {
       setLoading(true);
       try {
-        let query = supabase.from('clipad_meeting_records').select('*');
+        let meetingsQuery = supabase.from('clipad_meeting_records').select('created_at, ended_at');
+        let tasksQuery = supabase.from('clipad_action_items').select('is_complete');
+        
         if (spaceId) {
-          query = query.eq('space_id', spaceId);
+          meetingsQuery = meetingsQuery.eq('space_id', spaceId);
+          tasksQuery = tasksQuery.eq('space_id', spaceId);
         }
-        const { data, error } = await query;
-        if (error) throw error;
 
-        if (data && data.length > 0) {
-          let aiCount = 0;
-          data.forEach(m => {
-            if (Array.isArray(m.action_items)) aiCount += m.action_items.length;
-          });
+        const [meetingsRes, tasksRes] = await Promise.all([meetingsQuery, tasksQuery]);
+        
+        if (meetingsRes.error) throw meetingsRes.error;
+        if (tasksRes.error) throw tasksRes.error;
 
-          setStats({
-            totalMeetings: data.length,
-            actionItemsGenerated: aiCount,
-            actionItemsCompleted: Math.floor(aiCount * 0.4), // Mock completed 40%
-            avgDurationMin: 45, // Mock duration
-          });
-        }
+        const meetings = meetingsRes.data || [];
+        const tasks = tasksRes.data || [];
+
+        let totalDurationMin = 0;
+        let validDurations = 0;
+        meetings.forEach(m => {
+          if (m.ended_at && m.created_at) {
+            const min = (new Date(m.ended_at) - new Date(m.created_at)) / 60000;
+            if (min > 0) {
+              totalDurationMin += min;
+              validDurations++;
+            }
+          }
+        });
+
+        const completedTasks = tasks.filter(t => t.is_complete).length;
+
+        setStats({
+          totalMeetings: meetings.length,
+          actionItemsGenerated: tasks.length,
+          actionItemsCompleted: completedTasks,
+          avgDurationMin: validDurations > 0 ? Math.round(totalDurationMin / validDurations) : 0,
+        });
       } catch (err) {
         console.error('Error fetching insights:', err);
       } finally {
