@@ -1,7 +1,7 @@
-import { supabase} from '@/api/supabaseClient';
+﻿import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect, useRef} from "react";
 import { useTranslation} from "react-i18next";
-import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, CheckCheck, Check, Smile, Paperclip, ImageIcon, FileText, File, X, PanelLeftClose, PanelLeftOpen, Settings, ArrowLeft} from "lucide-react";
+import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, CheckCheck, Check, Smile, Paperclip, ArrowLeft, ImageIcon, FileText, File, X, PanelLeftClose, PanelLeftOpen, Settings} from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -802,13 +802,9 @@ export default function ClipadChat() {
  </div>
  )}
  </div>
-  </div>
-  </div>
-  </div>
-  </div>
-  </div>
   {/* Mobile Nav */}
   <ClipadMobileNav />
+  </div>
   </div>
   );
 }
