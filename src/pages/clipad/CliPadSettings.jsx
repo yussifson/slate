@@ -37,11 +37,15 @@ export default function CliPadSettings() {
       aiSummaries: true,
       cameraDefault: true,
       micDefault: true,
-      blurBackground: false
+      blurBackground: false,
+      chatMentionsDelivery: 'realtime',
+      taskAssignmentDelivery: 'realtime'
     };
   });
 
   const toggle = (key) => setSettings(s => ({ ...s, [key]: !s[key] }));
+  
+  const updateSetting = (key, value) => setSettings(s => ({ ...s, [key]: value }));
 
   const handleSave = async () => {
     setSaving(true);
@@ -169,6 +173,42 @@ export default function CliPadSettings() {
                     <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${settings.actionItemReminders ? 'left-5' : 'left-1'}`} />
                   </div>
                 </label>
+                <div className="h-px bg-secondary w-full" />
+                
+                {/* NEW PHASE 1 NOTIFICATIONS */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-foreground text-sm">Chat Mentions</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">When someone @mentions you in chat</p>
+                  </div>
+                  <select 
+                    value={settings.chatMentionsDelivery || 'realtime'} 
+                    onChange={(e) => updateSetting('chatMentionsDelivery', e.target.value)}
+                    className="bg-secondary border border-border text-foreground text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-primary"
+                  >
+                    <option value="realtime">Real-time</option>
+                    <option value="daily">Daily Digest</option>
+                    <option value="weekly">Weekly Digest</option>
+                    <option value="off">Off</option>
+                  </select>
+                </div>
+                <div className="h-px bg-secondary w-full" />
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-foreground text-sm">Task Assignments</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">When you are assigned a new task</p>
+                  </div>
+                  <select 
+                    value={settings.taskAssignmentDelivery || 'realtime'} 
+                    onChange={(e) => updateSetting('taskAssignmentDelivery', e.target.value)}
+                    className="bg-secondary border border-border text-foreground text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-primary"
+                  >
+                    <option value="realtime">Real-time</option>
+                    <option value="daily">Daily Digest</option>
+                    <option value="weekly">Weekly Digest</option>
+                    <option value="off">Off</option>
+                  </select>
+                </div>
               </div>
             </div>
             )}

@@ -316,14 +316,21 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
           : 'No transcript recorded.';
           
         if (db) {
-          await db.from('clipad_meeting_records').insert({
+          const meetingData = {
             title: meetingTitle,
             daily_room_name: roomUrl.split('/').pop() || 'room',
             host_id: user?.id || null,
             ai_summary: summary,
             ended_at: new Date().toISOString(),
             space_id: spaceId || null
-          });
+          };
+          
+          // If they recorded the meeting, mock a video URL for demo purposes
+          if (recordingSeconds > 0) {
+            meetingData.video_url = 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4';
+          }
+
+          await db.from('clipad_meeting_records').insert(meetingData);
         } else {
           console.error("Supabase client is not available in leaveCall");
         }

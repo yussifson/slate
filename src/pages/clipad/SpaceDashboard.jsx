@@ -14,13 +14,19 @@ import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import { getSpaceIcon } from '@/utils/spaceIcons';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import { useToast } from '@/components/ui/use-toast';
+import TaskBoard from '@/components/clipad/tasks/TaskBoard';
+import SpaceChat from '@/components/clipad/chat/SpaceChat';
+import SpaceDocs from '@/components/clipad/docs/SpaceDocs';
+import SpaceCalendar from '@/components/clipad/calendar/SpaceCalendar';
 
 const TABS = [
   { id: 'overview', icon: Layers, label: 'Overview' },
+  { id: 'chat', icon: MessageSquare, label: 'Chat' },
+  { id: 'calendar', icon: Calendar, label: 'Calendar' },
   { id: 'videos', icon: Camera, label: 'Videos' },
   { id: 'meetings', icon: Calendar, label: 'Meetings' },
-  { id: 'tasks', icon: CheckCircle, label: 'Action Items' },
-  { id: 'notes', icon: FileText, label: 'Notes' },
+  { id: 'tasks', icon: CheckCircle, label: 'Action Board' },
+  { id: 'docs', icon: FileText, label: 'Docs' },
 ];
 
 const COLORS = ['from-indigo-500 to-violet-500','from-cyan-500 to-blue-500','from-pink-500 to-rose-500','from-emerald-500 to-teal-500','from-amber-500 to-orange-500'];
@@ -458,51 +464,31 @@ export default function SpaceDashboard() {
           </div>
         )}
 
-        {/* ACTION ITEMS */}
-        {activeTab === 'tasks' && (
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-bold text-foreground">{openTasks.length} Open Actions</h2>
-                <p className="text-sm text-muted-foreground mt-0.5">{doneTasks.length} completed</p>
-              </div>
-              <button onClick={() => setShowNewTask(!showNewTask)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold shadow-lg transition-all">
-                <Plus className="w-4 h-4" /> Add Task
-              </button>
-            </div>
-
-            {showNewTask && (
-              <form onSubmit={addTask} className="mb-4 flex gap-3">
-                <input
-                  value={newTaskTitle}
-                  onChange={e => setNewTaskTitle(e.target.value)}
-                  placeholder="Task title..."
-                  className="flex-1 px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all"
-                  autoFocus
-                />
-                <button type="submit" disabled={creatingTask} className="px-4 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-all disabled:opacity-60">Add</button>
-                <button type="button" onClick={() => setShowNewTask(false)} className="px-3 py-3 rounded-xl bg-secondary hover:bg-secondary text-muted-foreground transition-all"><X className="w-4 h-4" /></button>
-              </form>
-            )}
-
-            <div className="bg-card border border-border rounded-2xl overflow-hidden divide-y divide-white/5">
-              {tasks.length === 0 ? (
-                <div className="py-16 text-center">
-                  <CheckCircle className="w-12 h-12 text-gray-800 mx-auto mb-3" />
-                  <p className="text-muted-foreground text-sm">No action items yet. Add one or start a meeting to generate them automatically.</p>
-                </div>
-              ) : (
-                tasks.map(item => <TaskRow key={item.id} item={item} onToggle={(id, val) => setTasks(prev => prev.map(t => t.id === id ? { ...t, is_complete: val } : t))} />)
-              )}
-            </div>
+        {/* CHAT */}
+        {activeTab === 'chat' && (
+          <div className="h-[calc(100vh-140px)] -mt-6 -mx-8 sm:-mx-12">
+             <SpaceChat spaceId={spaceId} />
           </div>
         )}
 
-        {/* NOTES */}
-        {activeTab === 'notes' && (
-          <div>
-            <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2"><FileText className="w-5 h-5 text-primary" /> Shared Notes</h2>
-            <SpaceNotes spaceId={spaceId} />
+        {/* ACTION BOARD */}
+        {activeTab === 'tasks' && (
+          <div className="h-[calc(100vh-140px)]">
+             <TaskBoard spaceId={spaceId} />
+          </div>
+        )}
+
+        {/* CALENDAR */}
+        {activeTab === 'calendar' && (
+          <div className="h-[calc(100vh-140px)]">
+             <SpaceCalendar spaceId={spaceId} />
+          </div>
+        )}
+
+        {/* DOCS */}
+        {activeTab === 'docs' && (
+          <div className="h-[calc(100vh-140px)] -mt-6 -mx-8 sm:-mx-12">
+            <SpaceDocs spaceId={spaceId} />
           </div>
         )}
 

@@ -140,17 +140,48 @@ export default function MeetingRecord() {
       if (data) {
         setMeeting(prev => ({ ...prev, ...data }));
         if (data.action_items?.length) {
-          // Insert action items
+          // Find or create default board for this space
+          let boardId = null;
+          if (meeting.space_id) {
+            let { data: board } = await supabase.from('clipad_task_boards').select('id').eq('space_id', meeting.space_id).limit(1).single();
+            if (!board) {
+              const { data: newBoard } = await supabase.from('clipad_task_boards').insert({ space_id: meeting.space_id, name: 'Main Board' }).select('id').single();
+              board = newBoard;
+            }
+            if (board) boardId = board.id;
+          }
+
+          // Insert action items into the new tasks system
           const inserts = data.action_items.map(ai => ({
             meeting_id: meetingId,
-            space_id: meeting.space_id,
+            board_id: boardId,
             title: ai.title,
-            assigned_to: ai.owner || null,
-            context: ai.context || null,
-            is_complete: false,
+            description: ai.context || null,
+            assignee_id: ai.owner || null,
+            status: 'todo',
+            source: 'ai_generated',
           }));
-          const { data: newItems } = await supabase.from('clipad_action_items').insert(inserts).select();
+          const { data: newItems } = await supabase.from('clipad_tasks').insert(inserts).select();
           if (newItems) setActionItems(prev => [...prev, ...newItems]);
+        }
+
+        // Pipe meeting notes to a new Doc in the Knowledge Layer
+        if (meeting.space_id && data.summary) {
+          const { data: newDoc } = await supabase.from('clipad_docs').insert({
+            space_id: meeting.space_id,
+            title: `Meeting Notes: ${meeting.title || 'Untitled'}`,
+            content: `**AI Summary:**\n\n${data.summary}\n\n**Decisions:**\n${data.decisions?.join('\n') || 'None'}`,
+            created_by: user?.id || null
+          }).select().single();
+          
+          if (newDoc) {
+            // Link the doc to the meeting
+            await supabase.from('clipad_doc_links').insert({
+              doc_id: newDoc.id,
+              target_id: meetingId,
+              target_type: 'meeting'
+            });
+          }
         }
       }
     } catch (err) {
