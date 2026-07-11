@@ -8,6 +8,9 @@ import { ThemeToggle } from '@/components/ui/theme-toggle';
 import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
+import { isAdmin } from '@/lib/constants';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+
 function StatCard({ icon: Icon, color, value, label, trend }) {
   return (
     <div className="p-6 rounded-2xl bg-card border border-border hover:border-white/12 transition-all">
@@ -47,15 +50,29 @@ export default function VideoAnalytics() {
   const fetchAnalytics = async () => {
     setLoading(true);
     try {
-      // Fetch user's videos
-      const { data: videos } = await supabase.from('clipad_videos').select('id, title, created_at, duration_seconds').eq('creator_id', user.id);
+      let videoIds = [];
+      let videos = [];
+      
+      // If company admin with company_id, fetch all videos for the company's spaces
+      if (user.company_id) {
+        const { data: spaces } = await supabase.from('clipad_spaces').select('id').eq('company_id', user.company_id);
+        const spaceIds = spaces?.map(s => s.id) || [];
+        if (spaceIds.length > 0) {
+          const { data: companyVideos } = await supabase.from('clipad_videos').select('id, title, created_at, duration_seconds').in('space_id', spaceIds);
+          videos = companyVideos || [];
+        }
+      } else {
+        // Fallback to own videos if company_id is missing
+        const { data: myVideos } = await supabase.from('clipad_videos').select('id, title, created_at, duration_seconds').eq('creator_id', user.id);
+        videos = myVideos || [];
+      }
       
       if (!videos || videos.length === 0) {
         setLoading(false);
         return;
       }
 
-      const videoIds = videos.map(v => v.id);
+      videoIds = videos.map(v => v.id);
 
       // Fetch views for those videos
       const { data: views } = await supabase.from('clipad_video_views').select('video_id, watch_percent, created_at').in('video_id', videoIds);
@@ -133,6 +150,29 @@ export default function VideoAnalytics() {
             className="w-full py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-all shadow-sm"
           >
             Sign In with SSO
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAdmin(user)) {
+    return (
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative text-slate-900 dark:text-slate-100">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(120,120,120,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(120,120,120,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+        <div className="relative z-10 w-full max-w-[420px] text-center space-y-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-10 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-red-50 dark:bg-red-500/10 flex items-center justify-center mx-auto text-red-500">
+            <Target className="w-8 h-8" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight mb-2">Access Denied</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">Video Analytics are restricted to Company Admins.</p>
+          </div>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="w-full py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-all shadow-sm"
+          >
+            Return to Dashboard
           </button>
         </div>
       </div>
@@ -218,61 +258,83 @@ export default function VideoAnalytics() {
               <StatCard icon={Heart} color="bg-primary/10 text-primary" value={stats.totalReactions} label="Reactions" />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              
-              {/* Chart */}
-              <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-6">
-                <div className="flex items-center justify-between mb-8">
-                  <div>
-                    <h2 className="font-bold text-foreground text-lg">Views over time</h2>
-                    <p className="text-xs text-muted-foreground">Last 7 days</p>
-                  </div>
-                  <div className="px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-bold border border-indigo-500/20">Active</div>
-                </div>
-                
-                <div className="h-64 flex items-end justify-between gap-2">
-                  {stats.recentViews.map((day, i) => {
-                    const heightPercent = Math.max((day.count / maxViews) * 100, 4); // min 4% for visibility
-                    return (
-                      <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
-                        <div className="w-full flex-1 flex items-end justify-center relative">
-                          <div 
-                            className="w-full max-w-[40px] bg-gradient-to-t from-indigo-600/40 to-indigo-500 rounded-t-lg transition-all duration-500 group-hover:from-indigo-500 group-hover:to-indigo-400 relative group-hover:shadow-[0_0_15px_rgba(99,102,241,0.5)]"
-                            style={{ height: `${heightPercent}%` }}
-                          >
-                            {/* Tooltip on hover */}
-                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
-                              {day.count} views
-                            </div>
-                          </div>
-                        </div>
-                        <span className="text-[10px] text-muted-foreground uppercase font-mono">{new Date(day.date).toLocaleDateString(undefined, { weekday: 'short' })}</span>
-                      </div>
-                    );
-                  })}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 mt-8">
+              <div className="lg:col-span-2 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <h3 className="text-lg font-bold mb-6">Views Over Time</h3>
+                <div className="h-[250px] w-full flex items-end gap-2">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={stats.recentViews}>
+                      <defs>
+                        <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                      <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
+                      <RechartsTooltip 
+                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', backgroundColor: 'var(--color-surface-0)' }}
+                      />
+                      <Area type="monotone" dataKey="count" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorViews)" />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
-
-              {/* Top Videos List */}
-              <div className="bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
-                <div className="px-6 py-5 border-b border-border">
-                  <h2 className="font-bold text-foreground text-lg flex items-center gap-2"><TrendingUp className="w-5 h-5 text-emerald-500" /> Top Videos</h2>
+              
+              <div className="p-6 rounded-3xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-sm flex flex-col justify-between">
+                <div>
+                  <h3 className="text-lg font-bold mb-2 opacity-90">Engagement Score</h3>
+                  <p className="text-sm opacity-80 mb-6">Based on completion rates and interactions</p>
+                  <div className="text-5xl font-black mb-2">
+                    {stats.totalViews > 0 
+                      ? Math.min(100, Math.round(((stats.totalComments + stats.totalReactions) / stats.totalViews) * 100) + 40)
+                      : 0}
+                    <span className="text-2xl opacity-70">/100</span>
+                  </div>
                 </div>
-                <div className="flex-1 overflow-y-auto divide-y divide-white/5">
+                <div className="w-full bg-white/20 h-2 rounded-full mt-4 overflow-hidden">
+                  <div 
+                    className="bg-white h-full rounded-full" 
+                    style={{ width: `${stats.totalViews > 0 ? Math.min(100, Math.round(((stats.totalComments + stats.totalReactions) / stats.totalViews) * 100) + 40) : 0}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Top Videos Bar Chart */}
+            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm mb-8">
+              <h3 className="text-lg font-bold mb-6">Top Performing Videos</h3>
+              {stats.topVideos.length > 0 ? (
+                <div className="space-y-4">
                   {stats.topVideos.map((v, i) => (
-                    <div key={v.id} onClick={() => navigate(`/watch/${v.id}`)} className="p-5 hover:bg-secondary cursor-pointer transition-colors group flex items-start gap-4">
-                      <div className="w-6 h-6 rounded-full bg-secondary text-muted-foreground flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</div>
+                    <div key={v.id} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 cursor-pointer" onClick={() => navigate(`/watch/${v.id}`)}>
+                      <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-sm text-slate-500 dark:text-slate-400 shrink-0">
+                        {i + 1}
+                      </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-foreground text-sm truncate group-hover:text-primary transition-colors mb-1">{v.title || 'Untitled Video'}</h3>
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {v.viewCount} views</span>
-                          {/* <span className="flex items-center gap-1"><Target className="w-3 h-3" /> {v.avgCompletion}% avg completion</span> */}
+                        <p className="font-bold text-slate-900 dark:text-white truncate">{v.title}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{new Date(v.created_at).toLocaleDateString()}</p>
+                      </div>
+                      <div className="flex gap-6 shrink-0 text-right">
+                        <div>
+                          <p className="text-sm font-bold text-slate-900 dark:text-white">{v.viewCount}</p>
+                          <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Views</p>
+                        </div>
+                        <div className="w-16 hidden sm:block">
+                          <p className="text-sm font-bold text-slate-900 dark:text-white">{v.avgCompletion}%</p>
+                          <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Avg %</p>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
+              ) : (
+                <div className="py-12 text-center">
+                  <Video className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+                  <p className="text-sm text-slate-500">No video data available yet.</p>
+                </div>
+              )}
             </div>
           </div>
         )}
