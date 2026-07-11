@@ -103,7 +103,9 @@ export default function RecordVideo() {
       return;
     }
     try {
-      const pip = await window.documentPictureInPicture.requestWindow({ width: 340, height: 260 });
+      // Shrink PiP window strictly to the buttons' size to avoid the 'big background card'
+      const pip = await window.documentPictureInPicture.requestWindow({ width: 280, height: 72 });
+      
       // Copy styles
       [...document.styleSheets].forEach((styleSheet) => {
         try {
@@ -127,23 +129,21 @@ export default function RecordVideo() {
       if (isDark) pip.document.documentElement.classList.add('dark');
       
       pip.document.body.style.margin = '0';
-      pip.document.body.style.backgroundColor = isDark ? '#020617' : '#f8fafc'; // slate-950 or slate-50
+      // Use transparent/dark theme strictly wrapping the controls
+      pip.document.body.style.backgroundColor = isDark ? '#0f172a' : '#ffffff'; 
       pip.document.body.style.display = 'flex';
       pip.document.body.style.alignItems = 'center';
       pip.document.body.style.justifyContent = 'center';
       pip.document.body.style.height = '100vh';
-      pip.document.body.style.fontFamily = "'Inter', sans-serif";
+      pip.document.body.style.overflow = 'hidden';
 
       const controlsWrapper = document.createElement('div');
       controlsWrapper.style.display = 'flex';
       controlsWrapper.style.justifyContent = 'center';
       controlsWrapper.style.gap = '16px';
-      controlsWrapper.style.padding = '16px 24px';
-      controlsWrapper.style.backgroundColor = isDark ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.9)';
-      controlsWrapper.style.backdropFilter = 'blur(12px)';
-      controlsWrapper.style.borderRadius = '100px';
-      controlsWrapper.style.boxShadow = isDark ? '0 10px 25px -5px rgba(0,0,0,0.5)' : '0 10px 25px -5px rgba(0,0,0,0.1)';
-      controlsWrapper.style.border = isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)';
+      controlsWrapper.style.width = '100%';
+      controlsWrapper.style.height = '100%';
+      controlsWrapper.style.alignItems = 'center';
 
       const createBtn = (iconSvg, type) => {
         const btn = document.createElement('button');
@@ -223,6 +223,11 @@ export default function RecordVideo() {
 
   const startRecording = async () => {
     try {
+      // Initialize AudioContext immediately during the click event to avoid being suspended
+      const audioCtx = new AudioContext();
+      audioCtx.resume();
+      audioContextRef.current = audioCtx;
+
       let screenStream = null;
       let cameraStream = null;
 
@@ -287,10 +292,8 @@ export default function RecordVideo() {
         };
         drawFrame();
 
-        // Merge audio and setup analyzer
-        const audioCtx = new AudioContext();
-        audioCtx.resume(); // Ensure context is running since we are inside a gesture
-        audioContextRef.current = audioCtx;
+        // Merge audio and setup analyzer using the early initialized audioCtx
+        const audioCtx = audioContextRef.current;
         const dest = audioCtx.createMediaStreamDestination();
         const analyser = audioCtx.createAnalyser();
         analyser.fftSize = 256;
