@@ -274,14 +274,25 @@ export default function MeetingRecord() {
             {meeting.participant_count && <span className="flex items-center gap-1.5"><Users className="w-4 h-4" />{meeting.participant_count} participants</span>}
           </div>
           <div className="mt-4">
-            <button 
-              onClick={() => {
-                toast({ title: 'Recording Loading', description: 'Your recording is being processed by the cloud provider and will be available shortly.' });
-              }}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-white font-bold shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5"
-            >
-              <Video className="w-4 h-4" /> Watch Recording
-            </button>
+            {meeting.video_url ? (
+              <a 
+                href={meeting.video_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-white font-bold shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5"
+              >
+                <Play className="w-4 h-4" /> Watch Recording
+              </a>
+            ) : (
+              <button 
+                onClick={() => {
+                  toast({ title: 'Recording Loading', description: 'Your recording is being processed by the cloud provider and will be available shortly.' });
+                }}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold transition-all hover:-translate-y-0.5"
+              >
+                <Video className="w-4 h-4" /> Recording Pending...
+              </button>
+            )}
           </div>
         </div>
 

@@ -166,32 +166,17 @@ export default function CliPadDashboard() {
   const fetchAll = async () => {
     setLoading(true);
     try {
-      // Load spaces: ones user created + ones user is a member of
-      const [mySpacesRes, memberSpacesRes] = await Promise.all([
-        supabase.from('clipad_spaces').select('*').eq('created_by', user.id).order('created_at', { ascending: false }).limit(6),
-        supabase.from('clipad_space_members').select('space_id').eq('user_id', user.id)
-      ]);
-      const memberSpaceIds = memberSpacesRes.data?.map(m => m.space_id) || [];
-      let allSpaces = mySpacesRes.data || [];
-      if (memberSpaceIds.length > 0) {
-        const { data: memberSpaceData } = await supabase.from('clipad_spaces').select('*').in('id', memberSpaceIds);
-        const existingIds = new Set(allSpaces.map(s => s.id));
-        allSpaces = [...allSpaces, ...(memberSpaceData || []).filter(s => !existingIds.has(s.id))];
-      }
+      // Load all spaces user has access to (RLS handles company & private filtering)
+      const { data: allSpaces } = await supabase.from('clipad_spaces').select('*').order('created_at', { ascending: false }).limit(6);
 
-      // Load videos + meetings for those spaces
-      const spaceIds = allSpaces.map(s => s.id);
+      // Load videos + meetings (RLS handles company filtering)
       const [videosRes, meetingsRes, actionRes] = await Promise.all([
-        supabase.from('clipad_videos').select('*').eq('creator_id', user.id).order('created_at', { ascending: false }).limit(6),
-        spaceIds.length > 0
-          ? supabase.from('clipad_meeting_records').select('*').in('space_id', spaceIds).order('created_at', { ascending: false }).limit(5)
-          : { data: [] },
+        supabase.from('clipad_videos').select('*').order('created_at', { ascending: false }).limit(6),
+        supabase.from('clipad_meeting_records').select('*').order('created_at', { ascending: false }).limit(5),
         supabase.from('clipad_action_items').select('*').eq('assigned_to', user.id).eq('is_complete', false).order('created_at', { ascending: false }).limit(8),
       ]);
 
-      const [spacesRes] = [{ data: allSpaces }];
-
-      if (spacesRes.data) setSpaces(spacesRes.data);
+      if (allSpaces) setSpaces(allSpaces);
       if (videosRes.data) setVideos(videosRes.data);
       if (meetingsRes.data) setMeetings(meetingsRes.data);
       if (actionRes.data) setActionItems(actionRes.data);

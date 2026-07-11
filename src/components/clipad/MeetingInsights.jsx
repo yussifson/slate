@@ -17,7 +17,7 @@ export default function MeetingInsights({ spaceId }) {
     async function fetchInsights() {
       setLoading(true);
       try {
-        let meetingsQuery = supabase.from('clipad_meeting_records').select('created_at, ended_at');
+        let meetingsQuery = supabase.from('clipad_meeting_records').select('created_at, updated_at');
         let tasksQuery = supabase.from('clipad_action_items').select('is_complete');
         
         if (spaceId) {
@@ -36,8 +36,8 @@ export default function MeetingInsights({ spaceId }) {
         let totalDurationMin = 0;
         let validDurations = 0;
         meetings.forEach(m => {
-          if (m.ended_at && m.created_at) {
-            const min = (new Date(m.ended_at) - new Date(m.created_at)) / 60000;
+          if (m.updated_at && m.created_at) {
+            const min = (new Date(m.updated_at) - new Date(m.created_at)) / 60000;
             if (min > 0) {
               totalDurationMin += min;
               validDurations++;
