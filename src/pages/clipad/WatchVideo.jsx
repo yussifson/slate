@@ -54,7 +54,23 @@ export default function WatchVideo() {
   const [activeCommentFilter, setActiveCommentFilter] = useState('all'); // 'all' | 'comments' | 'reactions'
   const [views, setViews] = useState(0);
 
-  useEffect(() => { fetchAll(); }, [videoId]);
+  const lastReactionTime = useRef(-1);
+
+  useEffect(() => {
+    fetchAll();
+
+    const channel = supabase.channel(`video_${videoId}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'clipad_video_comments', filter: `video_id=eq.${videoId}` }, payload => {
+        // Refetch to get nested relations like author
+        fetchAll();
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'clipad_video_reactions', filter: `video_id=eq.${videoId}` }, payload => {
+        setReactions(prev => [...prev, payload.new]);
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [videoId]);
 
   const fetchAll = async () => {
     setLoading(true);
@@ -80,8 +96,26 @@ export default function WatchVideo() {
   };
 
   const handleTimeUpdate = useCallback(() => {
-    if (videoRef.current) setCurrentTime(videoRef.current.currentTime);
-  }, []);
+    if (videoRef.current) {
+      const ct = videoRef.current.currentTime;
+      setCurrentTime(ct);
+      
+      const sec = Math.floor(ct);
+      if (sec !== lastReactionTime.current && playing) {
+        lastReactionTime.current = sec;
+        const currentReactions = reactions.filter(r => r.timestamp_seconds === sec);
+        if (currentReactions.length > 0) {
+          currentReactions.forEach((r, idx) => {
+            setTimeout(() => {
+              const x = Math.random() * 60 + 20;
+              const y = Math.random() * 40 + 30;
+              setFloatingReactions(prev => [...prev, { id: `${Date.now()}-${idx}`, emoji: r.emoji, x: `${x}%`, y: `${y}%` }]);
+            }, idx * 150);
+          });
+        }
+      }
+    }
+  }, [reactions, playing]);
 
   const handleLoadedMetadata = useCallback(() => {
     if (videoRef.current) setDuration(videoRef.current.duration);
@@ -137,6 +171,7 @@ export default function WatchVideo() {
     // Save to DB
     try {
       await supabase.from('clipad_video_reactions').insert({ video_id: videoId, user_id: user.id, emoji, timestamp_seconds: ts });
+      // Realtime subscription will handle updating the state and showing it for everyone else!
       setReactions(prev => [...prev, { emoji, timestamp_seconds: ts, user_id: user.id }]);
     } catch (err) { console.error(err); }
   };
@@ -216,16 +251,19 @@ export default function WatchVideo() {
               />
 
               {/* Floating reactions overlay */}
-              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
                 {floatingReactions.map(r => (
                   <FloatingReaction key={r.id} emoji={r.emoji} x={r.x} y={r.y} onDone={() => removeFloatingReaction(r.id)} />
                 ))}
               </div>
 
+              {/* Click to play/pause */}
+              <div className="absolute inset-0 cursor-pointer z-10" onClick={togglePlay} />
+
               {/* Controls overlay */}
-              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-30 pointer-events-none">
                 {/* Progress bar */}
-                <div className="px-4 mb-2">
+                <div className="px-4 mb-2 pointer-events-auto">
                   {/* Comment markers on timeline */}
                   <div className="relative h-1 mb-1">
                     {comments.map(c => (
@@ -248,7 +286,7 @@ export default function WatchVideo() {
                   />
                 </div>
 
-                <div className="flex items-center gap-3 px-4 pb-4">
+                <div className="flex items-center gap-3 px-4 pb-4 pointer-events-auto">
                   <button onClick={togglePlay} className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors">
                     {playing ? <Pause className="w-4 h-4 text-foreground" /> : <Play className="w-4 h-4 text-foreground fill-white" />}
                   </button>
@@ -265,9 +303,6 @@ export default function WatchVideo() {
                   </div>
                 </div>
               </div>
-
-              {/* Click to play/pause */}
-              <div className="absolute inset-0 cursor-pointer" onClick={togglePlay} />
             </div>
 
             {/* Video info */}

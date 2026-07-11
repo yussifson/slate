@@ -27,6 +27,8 @@ export default function RecordVideo() {
   const navigate = useNavigate();
 
   const [mode, setMode] = useState('screen_camera');
+  const isRecordingRef = useRef(false);
+
   const [phase, setPhase] = useState('setup'); // setup | recording | review | uploading | done
   const [micEnabled, setMicEnabled] = useState(true);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
@@ -477,8 +479,11 @@ export default function RecordVideo() {
 
       recorder.start(1000); // collect in 1s chunks
       setPhase('recording');
+      isRecordingRef.current = true;
       setRecordingSeconds(0);
-      timerRef.current = setInterval(() => setRecordingSeconds(s => s + 1), 1000);
+      const startTime = Date.now();
+      clearInterval(timerRef.current);
+      timerRef.current = setInterval(() => setRecordingSeconds(Math.floor((Date.now() - startTime) / 1000)), 1000);
 
       toast({ title: '● Recording started', description: 'Click Stop when done.' });
 
@@ -496,6 +501,11 @@ export default function RecordVideo() {
             }
             if (finalStr) setTranscript(prev => prev + finalStr);
           };
+          recognition.onend = () => {
+            if (isRecordingRef.current) {
+              try { recognition.start(); } catch (err) {}
+            }
+          };
           recognition.start();
           recognitionRef.current = recognition;
         } catch (e) { console.warn("Speech recognition failed to start", e); }
@@ -509,12 +519,15 @@ export default function RecordVideo() {
   };
 
   const stopRecording = () => {
+    isRecordingRef.current = false;
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
       mediaRecorderRef.current.stop();
     }
     clearInterval(timerRef.current);
     cancelAnimationFrame(animFrameRef.current);
-    if (recognitionRef.current) recognitionRef.current.stop();
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch (err) {}
+    }
   };
 
   const uploadRecording = async () => {
@@ -631,8 +644,8 @@ export default function RecordVideo() {
         <span className="text-foreground font-semibold">Record Async Video</span>
         {phase === 'recording' && (
           <div className="ml-auto flex items-center gap-2">
-            <span className="flex items-center gap-1.5 text-red-400 text-sm font-mono font-bold">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+            <span className="flex items-center gap-1.5 text-primary text-sm font-mono font-bold">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               {formatDuration(recordingSeconds)}
             </span>
           </div>
