@@ -21,8 +21,13 @@ const updateSW = registerSW({
   }})
 
 // Listen for Vite chunk loading errors (e.g. when Vercel deploys a new version and old chunks are missing)
-// If this happens, force reload to fetch the new index.html and fresh bundles.
 window.addEventListener('vite:preloadError', (event) => {
+  if (sessionStorage.getItem('vite-reload')) {
+    sessionStorage.removeItem('vite-reload');
+    console.error('Vite preload error persists. Stopping infinite loop.');
+    return;
+  }
+  sessionStorage.setItem('vite-reload', 'true');
   console.warn('Vite preload error (chunk missing). Forcing hard reload...');
   window.location.reload(true);
 });

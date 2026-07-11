@@ -43,13 +43,12 @@ function StandaloneMeetingInner({ url, roomName, onLeave, onToast }) {
       {/* VideoRoom creates its own DailyProvider + callObject internally — do NOT wrap in another DailyProvider */}
       <VideoRoom
         roomUrl={url}
-        userName={joinConfig.name}
+        userName={joinConfig.name || 'Guest'}
         initialAudio={joinConfig.micOn}
         initialVideo={joinConfig.videoOn}
         onLeave={onLeave}
         isPipMode={false}
         togglePipMode={() => {}}
-        initialBackground={joinConfig.backgroundConfig}
       />
     </div>
   );

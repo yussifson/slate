@@ -187,7 +187,7 @@ export default function SpaceDashboard() {
           </button>
           <button
             onClick={handleJoinMeeting}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all ${isLive ? 'bg-rose-500 hover:bg-rose-400 text-foreground shadow-lg shadow-rose-500/25 animate-pulse' : 'bg-primary hover:bg-primary/90 text-foreground shadow-lg shadow-primary/25'}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all ${isLive ? 'bg-rose-500 hover:bg-rose-400 text-white shadow-lg shadow-rose-500/25 animate-pulse' : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25'}`}
           >
             {isLive ? <Activity className="w-4 h-4" /> : <Video className="w-4 h-4" />}
             {isLive ? 'Join Live' : 'Start Meeting'}
@@ -284,7 +284,7 @@ export default function SpaceDashboard() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-foreground">{videos.length} Videos</h2>
-              <button onClick={() => navigate('/record')} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-foreground text-sm font-bold shadow-lg transition-all">
+              <button onClick={() => navigate('/record')} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold shadow-lg transition-all">
                 <Camera className="w-4 h-4" /> Record New
               </button>
             </div>
@@ -292,7 +292,7 @@ export default function SpaceDashboard() {
               <div className="text-center py-20">
                 <Camera className="w-16 h-16 text-gray-800 mx-auto mb-4" />
                 <p className="text-muted-foreground mb-4">No videos in this space yet.</p>
-                <button onClick={() => navigate('/record')} className="px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-foreground font-semibold text-sm transition-all">Record Async Video</button>
+                <button onClick={() => navigate('/record')} className="px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-all">Record Async Video</button>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -307,7 +307,7 @@ export default function SpaceDashboard() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-foreground">{meetings.length} Meetings</h2>
-              <button onClick={handleJoinMeeting} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-foreground text-sm font-bold shadow-lg transition-all">
+              <button onClick={handleJoinMeeting} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold shadow-lg transition-all">
                 <Video className="w-4 h-4" /> Start Meeting
               </button>
             </div>
@@ -346,7 +346,7 @@ export default function SpaceDashboard() {
                 <h2 className="text-xl font-bold text-foreground">{openTasks.length} Open Actions</h2>
                 <p className="text-sm text-muted-foreground mt-0.5">{doneTasks.length} completed</p>
               </div>
-              <button onClick={() => setShowNewTask(!showNewTask)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-foreground text-sm font-bold shadow-lg transition-all">
+              <button onClick={() => setShowNewTask(!showNewTask)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold shadow-lg transition-all">
                 <Plus className="w-4 h-4" /> Add Task
               </button>
             </div>
@@ -360,7 +360,7 @@ export default function SpaceDashboard() {
                   className="flex-1 px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all"
                   autoFocus
                 />
-                <button type="submit" disabled={creatingTask} className="px-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-foreground font-semibold text-sm transition-all disabled:opacity-60">Add</button>
+                <button type="submit" disabled={creatingTask} className="px-4 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-all disabled:opacity-60">Add</button>
                 <button type="button" onClick={() => setShowNewTask(false)} className="px-3 py-3 rounded-xl bg-secondary hover:bg-secondary text-muted-foreground transition-all"><X className="w-4 h-4" /></button>
               </form>
             )}

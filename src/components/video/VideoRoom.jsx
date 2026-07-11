@@ -462,7 +462,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
         {/* Main Stage Area */}
         <div className="flex-[3] relative rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-white/10 shadow-inner bg-slate-900">
           {showWhiteboard && (
-            <div className="absolute inset-0 z-40 bg-white pointer-events-auto">
+            <div className="absolute inset-0 z-40 bg-white pointer-events-auto w-full h-full" onPointerDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()}>
               <Tldraw persistenceKey="clipad-whiteboard" />
             </div>
           )}

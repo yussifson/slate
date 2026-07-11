@@ -90,8 +90,7 @@ export const AuthProvider = ({ children }) => {
                 console.warn("[AuthContext] Cross-domain setSession failed:", error.message);
                 // Fallback: try setting session with only access_token
                 const { data: fallbackData, error: fallbackError } = await supabase.auth.setSession({
-                    access_token: urlAccessToken,
-                    refresh_token: urlRefreshToken // Sometimes supabase requires it, but let's try just getting the user
+                    access_token: urlAccessToken
                 });
                 
                 if (!fallbackError && fallbackData?.session) {
@@ -102,6 +101,13 @@ export const AuthProvider = ({ children }) => {
                     if (userData?.user) {
                        // We have a valid user, so let's proceed even if the session couldn't be formally set in local storage yet
                        sessionVal = { user: userData.user, access_token: urlAccessToken, refresh_token: urlRefreshToken };
+                       // Manually persist to local storage to survive refresh
+                       try {
+                           const projectId = import.meta.env.VITE_SUPABASE_URL.split('//')[1].split('.')[0];
+                           localStorage.setItem(`sb-${projectId}-auth-token`, JSON.stringify(sessionVal));
+                       } catch (e) {
+                           console.warn("Failed to manually persist fallback session:", e);
+                       }
                     }
                 }
             }
