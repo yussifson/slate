@@ -49,7 +49,7 @@ export const VIRTUAL_BACKGROUNDS = [
 const MemoizedWhiteboard = memo(() => {
   return (
     <div className="absolute inset-0 z-40 bg-white pointer-events-auto w-full h-full" onPointerDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()}>
-      <Tldraw persistenceKey="clipad-whiteboard" />
+      <Tldraw />
     </div>
   );
 });

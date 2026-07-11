@@ -1102,11 +1102,11 @@ function GlobalSystemListener() {
 }
 
 function ProtectedRoute() {
-  const { isAuthenticated, isLoadingAuth, authChecked, user, authData } = useAuth();
+  const { isAuthenticated, isLoadingAuth, authChecked, user, authStep } = useAuth();
   
   // Show spinner while auth is loading OR while auth hasn't been checked yet
   if (isLoadingAuth || !authChecked) {
-    return <PageLoader label="Loading Slate" />;
+    return <PageLoader label={authStep || "Loading Workspace..."} />;
   }
   
   if (!isAuthenticated) {
