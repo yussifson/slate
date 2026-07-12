@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/api/supabaseClient';
-import { Layers } from 'lucide-react';
+import { useAuth } from '@/lib/AuthContext';
+import { Layers, Search } from 'lucide-react';
 
 export default function SpaceSelectorModal({ open, onOpenChange, onConfirm, title = "Select a Space" }) {
+  const { user } = useAuth();
   const [spaces, setSpaces] = useState([]);
   const [selectedSpaceId, setSelectedSpaceId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (open) {
@@ -17,59 +20,122 @@ export default function SpaceSelectorModal({ open, onOpenChange, onConfirm, titl
 
   const loadSpaces = async () => {
     setLoading(true);
-    const { data } = await supabase.from('clipad_spaces').select('id, name, type').order('name');
-    if (data) setSpaces(data);
+    try {
+      if (!user?.id) { setLoading(false); return; }
+
+      // Same pattern as SpacesList.jsx — get created_by + member spaces + public
+      const [mySpacesRes, memberSpacesRes] = await Promise.all([
+        supabase.from('clipad_spaces').select('id, name, type, is_private').eq('created_by', user.id).order('created_at', { ascending: false }),
+        supabase.from('clipad_space_members').select('space_id').eq('user_id', user.id)
+      ]);
+
+      const memberSpaceIds = memberSpacesRes.data?.map(m => m.space_id) || [];
+      let allSpaces = mySpacesRes.data || [];
+
+      if (memberSpaceIds.length > 0) {
+        const { data: memberSpaces } = await supabase.from('clipad_spaces').select('id, name, type, is_private').in('id', memberSpaceIds);
+        const existingIds = new Set(allSpaces.map(s => s.id));
+        allSpaces = [...allSpaces, ...(memberSpaces || []).filter(s => !existingIds.has(s.id))];
+      }
+
+      // Also include public spaces
+      const { data: publicSpaces } = await supabase.from('clipad_spaces').select('id, name, type, is_private').eq('is_private', false);
+      const existingIds2 = new Set(allSpaces.map(s => s.id));
+      allSpaces = [...allSpaces, ...(publicSpaces || []).filter(s => !existingIds2.has(s.id))];
+
+      allSpaces.sort((a, b) => a.name?.localeCompare(b.name));
+      setSpaces(allSpaces);
+    } catch (err) {
+      console.error('SpaceSelectorModal: failed to load spaces', err);
+    }
     setLoading(false);
   };
 
   const handleConfirm = () => {
     onConfirm(selectedSpaceId);
     onOpenChange(false);
+    setSelectedSpaceId(null);
+    setSearch('');
   };
 
+  const filtered = spaces.filter(s => s.name?.toLowerCase().includes(search.toLowerCase()));
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) { setSearch(''); setSelectedSpaceId(null); } }}>
+      <DialogContent className="sm:max-w-[440px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
-            Choose a space to associate this meeting with. If you skip, it will be public.
+            Choose a space to associate this with. Skip to leave it unassigned.
           </DialogDescription>
         </DialogHeader>
         
-        <div className="py-4 space-y-2 max-h-[300px] overflow-y-auto pr-2">
+        {/* Search bar */}
+        {spaces.length > 4 && (
+          <div className="relative mb-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search spaces..."
+              className="w-full pl-9 pr-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40"
+            />
+          </div>
+        )}
+
+        <div className="py-2 space-y-1.5 max-h-[300px] overflow-y-auto pr-1">
           {loading ? (
-            <p className="text-sm text-slate-500 text-center">Loading spaces...</p>
-          ) : spaces.length === 0 ? (
-            <p className="text-sm text-slate-500 text-center">No spaces found. You can continue without a space.</p>
+            <div className="py-8 text-center">
+              <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-3" />
+              <p className="text-sm text-slate-500">Loading spaces...</p>
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="py-10 text-center">
+              <Layers className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                {search ? 'No spaces match your search.' : 'No spaces found. You can continue without one.'}
+              </p>
+            </div>
           ) : (
-            <div className="space-y-1">
+            <>
+              {/* No space option */}
               <button
                 onClick={() => setSelectedSpaceId(null)}
-                className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl border text-left transition-colors ${selectedSpaceId === null ? 'bg-primary/5 border-primary/30 text-primary font-bold' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-primary/30'}`}
+                className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl border text-left transition-all ${selectedSpaceId === null ? 'bg-primary/5 border-primary/30 text-primary font-bold' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:border-primary/30'}`}
               >
                 <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
-                  <Layers className="w-4 h-4" />
+                  <Layers className="w-4 h-4 opacity-40" />
                 </div>
-                <span>No Space (Public)</span>
+                <span className="text-sm">No Space (Public)</span>
               </button>
-              {spaces.map(s => (
+
+              {filtered.map(s => (
                 <button
                   key={s.id}
                   onClick={() => setSelectedSpaceId(s.id)}
-                  className={`w-full flex flex-col items-start px-3 py-2.5 rounded-xl border transition-colors ${selectedSpaceId === s.id ? 'bg-primary/5 border-primary/30 text-primary font-bold' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-primary/30'}`}
+                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl border text-left transition-all ${selectedSpaceId === s.id ? 'bg-primary/5 border-primary/30 text-primary font-bold' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-primary/30'}`}
                 >
-                  <span className="text-sm">{s.name}</span>
-                  <span className="text-[10px] uppercase text-slate-400 font-mono tracking-widest">{s.type}</span>
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-white text-xs font-black ${selectedSpaceId === s.id ? 'bg-primary' : 'bg-slate-200 dark:bg-slate-700'}`}>
+                    {s.name?.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold truncate">{s.name}</p>
+                    {s.type && <p className="text-[10px] uppercase text-slate-400 font-mono tracking-widest">{s.type}</p>}
+                  </div>
+                  {s.is_private && (
+                    <span className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 px-2 py-0.5 rounded-full font-medium shrink-0">Private</span>
+                  )}
                 </button>
               ))}
-            </div>
+            </>
           )}
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={handleConfirm}>Continue</Button>
+          <Button onClick={handleConfirm}>
+            {selectedSpaceId ? 'Continue with Space' : 'Continue without Space'}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

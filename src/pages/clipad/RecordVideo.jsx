@@ -76,7 +76,7 @@ export default function RecordVideo() {
     const loadSpaces = async () => {
       if (user?.id) {
         const [mySpacesRes, memberSpacesRes] = await Promise.all([
-          supabase.from('clipad_spaces').select('id, name').eq('creator_id', user.id).order('created_at', { ascending: false }),
+          supabase.from('clipad_spaces').select('id, name').eq('created_by', user.id).order('created_at', { ascending: false }),
           supabase.from('clipad_space_members').select('space_id').eq('user_id', user.id)
         ]);
         const memberIds = memberSpacesRes.data?.map(m => m.space_id) || [];
@@ -86,6 +86,11 @@ export default function RecordVideo() {
           const existingIds = new Set(allSpaces.map(s => s.id));
           allSpaces = [...allSpaces, ...(memberSpaceData || []).filter(s => !existingIds.has(s.id))];
         }
+        // Also include public spaces
+        const { data: publicSpaceData } = await supabase.from('clipad_spaces').select('id, name').eq('is_private', false);
+        const existingIds2 = new Set(allSpaces.map(s => s.id));
+        allSpaces = [...allSpaces, ...(publicSpaceData || []).filter(s => !existingIds2.has(s.id))];
+        allSpaces.sort((a, b) => a.name?.localeCompare(b.name));
         setSpaces(allSpaces);
       }
     };

@@ -287,20 +287,38 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   const toggleAudio = async () => {
     if (!ensureJoined()) return;
     try {
-      await daily.setLocalAudio(isMuted);
+      const p = daily.participants().local;
+      await daily.setLocalAudio(!p.audio);
     } catch (err) {
       console.error(err);
-      toast({ title: 'Microphone error', description: err?.message || 'Could not access microphone.', variant: 'destructive'});
+      const isDeviceNotFound = err?.name === 'NotFoundError' || err?.message?.includes('not found') || err?.message?.includes('device');
+      const isPermission = err?.name === 'NotAllowedError' || err?.message?.includes('Permission') || err?.message?.includes('allowed');
+      if (isDeviceNotFound) {
+        toast({ title: '🎙️ No Microphone Found', description: 'Please connect a microphone and try again. Make sure it\'s plugged in and not in use by another app.', variant: 'destructive' });
+      } else if (isPermission) {
+        toast({ title: '🔒 Microphone Blocked', description: 'Browser blocked microphone access. Click the 🔒 icon in your browser address bar to allow it.', variant: 'destructive' });
+      } else {
+        toast({ title: 'Microphone Error', description: err?.message || 'Could not access your microphone.', variant: 'destructive' });
+      }
     }
   };
 
   const toggleVideo = async () => {
     if (!ensureJoined()) return;
     try {
-      await daily.setLocalVideo(isVideoOff);
+      const p = daily.participants().local;
+      await daily.setLocalVideo(!p.video);
     } catch (err) {
       console.error(err);
-      toast({ title: 'Camera error', description: err?.message || 'Could not access camera.', variant: 'destructive'});
+      const isDeviceNotFound = err?.name === 'NotFoundError' || err?.message?.includes('not found') || err?.message?.includes('device');
+      const isPermission = err?.name === 'NotAllowedError' || err?.message?.includes('Permission') || err?.message?.includes('allowed');
+      if (isDeviceNotFound) {
+        toast({ title: '📷 No Camera Found', description: 'No webcam detected. Please connect a camera and try again. Others will still be able to see your name and hear you.', variant: 'destructive' });
+      } else if (isPermission) {
+        toast({ title: '🔒 Camera Blocked', description: 'Browser blocked camera access. Click the 🔒 icon in your browser address bar to allow it.', variant: 'destructive' });
+      } else {
+        toast({ title: 'Camera Error', description: err?.message || 'Could not access your camera.', variant: 'destructive' });
+      }
     }
   };
 
