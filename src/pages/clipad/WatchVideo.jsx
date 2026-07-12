@@ -193,7 +193,7 @@ export default function WatchVideo() {
     } catch (err) { console.error(err); }
   };
 
-  const isAdmin = user?.subscription_tier === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin';
+  const isAdmin = user?.clipad_plan === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
   const canEdit = video?.creator_id === user?.id || isAdmin;
 
   const toggleMute = () => {
