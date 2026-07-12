@@ -10,6 +10,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { getPlanLimits, getUserPlan } from '@/lib/clipadPricing';
 import PaywallModal from '@/components/clipad/PaywallModal';
 import { useNavigate } from 'react-router-dom';
+import { playAlertSound } from '@/lib/audioAlerts';
 
 
 const MODES = [
@@ -37,7 +38,12 @@ export default function RecordVideo() {
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [videoBlob, setVideoBlob] = useState(null);
-  const [recordingUrl, setRecordingUrl] = useState(null);
+  const [newCompanyId, setNewCompanyId] = useState(null);
+  
+  const handlersRef = useRef({});
+  useEffect(() => {
+    handlersRef.current = { toggleMicTrack, toggleWebcam, togglePause, stopRecording };
+  });
   const [activeVideoId, setActiveVideoId] = useState(null);
   const [selectedSpace, setSelectedSpace] = useState('');
   const [spaces, setSpaces] = useState([]);
@@ -126,6 +132,7 @@ export default function RecordVideo() {
         setRecordingSeconds(seconds);
         
         if (seconds >= maxSeconds) {
+          playAlertSound();
           stopRecording();
           setShowPaywall(true);
         }
@@ -176,8 +183,8 @@ export default function RecordVideo() {
       if (isDark) pip.document.documentElement.classList.add('dark');
       
       pip.document.body.style.margin = '0';
-      // Use transparent/dark theme strictly wrapping the controls
-      pip.document.body.style.backgroundColor = isDark ? '#0f172a' : '#ffffff'; 
+      // Make the PiP window sleek and clean
+      pip.document.body.style.backgroundColor = isDark ? '#0f172a' : '#f8fafc'; 
       pip.document.body.style.display = 'flex';
       pip.document.body.style.alignItems = 'center';
       pip.document.body.style.justifyContent = 'center';
@@ -195,9 +202,9 @@ export default function RecordVideo() {
       const createBtn = (iconSvg, type) => {
         const btn = document.createElement('button');
         btn.innerHTML = iconSvg;
-        btn.style.padding = '14px';
+        btn.style.padding = '12px';
         btn.style.borderRadius = '50%';
-        btn.style.border = 'none';
+        btn.style.border = '2px solid transparent';
         btn.style.cursor = 'pointer';
         btn.style.display = 'flex';
         btn.style.alignItems = 'center';
@@ -233,23 +240,62 @@ export default function RecordVideo() {
       let pipMicState = micEnabled;
 
       micBtn.onclick = () => {
-        toggleMicTrack();
+        handlersRef.current.toggleMicTrack();
         pipMicState = !pipMicState;
         if (!pipMicState) {
           micBtn.style.backgroundColor = 'rgba(239, 68, 68, 0.15)';
           micBtn.style.color = '#ef4444';
+          micBtn.style.boxShadow = 'none';
+          micBtn.style.borderColor = 'transparent';
         } else {
           micBtn.style.backgroundColor = isDark ? '#334155' : '#e2e8f0';
           micBtn.style.color = isDark ? '#fff' : '#0f172a';
         }
       };
 
-      camBtn.onclick = () => toggleWebcam();
-      pauseBtn.onclick = () => togglePause();
-      stopBtn.onclick = () => {
-        stopRecording();
-        pip.close();
-      };
+      camBtn.onclick = () => handlersRef.current.toggleWebcam();
+      pauseBtn.onclick = () => handlersRef.current.togglePause();
+      stopBtn.onclick = () => handlersRef.current.stopRecording();
+      
+      // Mic glowing setup
+      let audioCtx, analyser, dataArray, source, glowId;
+      try {
+        const track = streamsRef.current.camera?.getAudioTracks()[0] || streamsRef.current.screen?.getAudioTracks()[0];
+        if (track) {
+          const stream = new MediaStream([track]);
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          analyser = audioCtx.createAnalyser();
+          source = audioCtx.createMediaStreamSource(stream);
+          source.connect(analyser);
+          analyser.fftSize = 256;
+          dataArray = new Uint8Array(analyser.frequencyBinCount);
+          
+          const updateGlow = () => {
+            if (!pipMicState) {
+               micBtn.style.boxShadow = 'none';
+               micBtn.style.borderColor = 'transparent';
+            } else {
+               analyser.getByteFrequencyData(dataArray);
+               const avg = dataArray.reduce((a,b)=>a+b)/dataArray.length;
+               if (avg > 15) {
+                 micBtn.style.boxShadow = `0 0 ${Math.min(15, avg/2)}px rgba(16, 185, 129, ${Math.min(0.6, avg/100)})`;
+                 micBtn.style.borderColor = `rgba(16, 185, 129, 0.4)`;
+               } else {
+                 micBtn.style.boxShadow = 'none';
+                 micBtn.style.borderColor = 'transparent';
+               }
+            }
+            glowId = pip.requestAnimationFrame(updateGlow);
+          };
+          updateGlow();
+        }
+      } catch(e) { console.error('Audio glow error:', e); }
+
+      pip.addEventListener('pagehide', () => {
+        if (glowId) pip.cancelAnimationFrame(glowId);
+        if (audioCtx && audioCtx.state !== 'closed') audioCtx.close();
+        setPipWindow(null);
+      });
 
       controlsWrapper.appendChild(micBtn);
       controlsWrapper.appendChild(camBtn);
@@ -616,6 +662,7 @@ export default function RecordVideo() {
         setRecordingSeconds(seconds);
         
         if (seconds >= maxSeconds) {
+          playAlertSound();
           stopRecording();
           setShowPaywall(true);
         }
