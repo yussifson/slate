@@ -1049,7 +1049,7 @@ export default function RecordVideo() {
         isOpen={showPaywall}
         onClose={() => setShowPaywall(false)}
         featureName="Longer Recordings"
-        limitDescription={`You have reached the recording limit for the ${getUserPlan(user)} plan.`}
+        limitDescription={`You have reached the ${getUserPlan(user) === 'pro' ? '1-hour' : '15-minute'} recording limit on the ${getUserPlan(user)} plan.`}
       />
     </div>
   );

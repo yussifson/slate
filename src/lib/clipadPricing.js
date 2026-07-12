@@ -5,7 +5,7 @@ export const PLAN_LIMITS = {
     maxParticipants: 10,
     maxVideoRecordingsPerMonth: 10,
     maxTeamSpaces: 5,
-    maxAsyncVideoDurationSeconds: 3 * 60, // 3 minutes limit on free
+    maxAsyncVideoDurationSeconds: 15 * 60, // 15 minutes limit on free
     hasAdvancedAI: false,
     hasAdvancedAnalytics: false,
     hasSmartFollowUps: false,
