@@ -559,7 +559,6 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
           {isBranded && (
             <div className="absolute top-6 left-6 z-40 flex items-center gap-2 opacity-80 select-none pointer-events-none bg-black/30 px-3 py-1.5 rounded-xl backdrop-blur-md border border-white/10">
               <CliPadLogo size={18} className="text-white drop-shadow-md" />
-              <span className="text-white font-bold tracking-widest text-xs drop-shadow-md">ENTERPRISE HUB</span>
             </div>
           )}
           {screens.length > 0 ? (
