@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
+import { useCompanyPlan } from '@/hooks/useCompanyPlan';
+import { useCompanyPlan } from '@/hooks/useCompanyPlan';
 import { Headphones, Puzzle } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { Settings, User, Users, Bell, Shield, LogOut, ArrowLeft, Video, CheckCircle, Camera, CreditCard } from 'lucide-react';
@@ -12,6 +14,7 @@ import CliPadTeamSettings from '@/components/clipad/CliPadTeamSettings';
 
 export default function CliPadSettings() {
   const { user, logout } = useAuth();
+  const { plan } = useCompanyPlan();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
@@ -129,29 +132,39 @@ export default function CliPadSettings() {
           <div className="space-y-6">
             <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between flex-wrap gap-4">
               <div>
-                <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">Branded Meeting Rooms {hasFeature(user, 'hasBrandedRooms') && <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-emerald-500/10 text-emerald-600">Active</span>}</h3>
+                <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">Branded Meeting Rooms {hasFeature(plan, 'hasBrandedRooms') && <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-emerald-500/10 text-emerald-600">Active</span>}</h3>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Customize your Daily.co meeting rooms with company colors and logos.</p>
               </div>
-              {!hasFeature(user, 'hasBrandedRooms') && <button className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold">Upgrade</button>}
-              {hasFeature(user, 'hasBrandedRooms') && <button className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-700 dark:text-slate-300 text-sm font-bold">Configure</button>}
+              {!hasFeature(plan, 'hasBrandedRooms') && <button className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold">Upgrade</button>}
+              {hasFeature(plan, 'hasBrandedRooms') && <button className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-700 dark:text-slate-300 text-sm font-bold">Configure</button>}
             </div>
 
             <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between flex-wrap gap-4">
               <div>
-                <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2"><Headphones className="w-4 h-4"/> SLA & Dedicated Support {hasFeature(user, 'hasSLA') && <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-emerald-500/10 text-emerald-600">Active</span>}</h3>
+                <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2"><Headphones className="w-4 h-4"/> SLA & Dedicated Support {hasFeature(plan, 'hasSLA') && <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-emerald-500/10 text-emerald-600">Active</span>}</h3>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">24/7 priority support and guaranteed uptime SLA.</p>
               </div>
-              {!hasFeature(user, 'hasSLA') && <button className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold">Upgrade</button>}
-              {hasFeature(user, 'hasSLA') && <button className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-700 dark:text-slate-300 text-sm font-bold">Contact Support</button>}
+              {!hasFeature(plan, 'hasSLA') && <button className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold">Upgrade</button>}
+              {hasFeature(plan, 'hasSLA') && <button className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-700 dark:text-slate-300 text-sm font-bold">Contact Support</button>}
             </div>
+
+                        <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2"><Lock className="w-4 h-4"/> SSO & Compliance Recording {hasFeature(plan, 'hasComplianceRecording') && <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-emerald-500/10 text-emerald-600">Active</span>}</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Single Sign-On enforcement and mandatory compliance recordings.</p>
+              </div>
+              {!hasFeature(plan, 'hasComplianceRecording') && <button className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold" onClick={() => navigate('/clipad/billing')}>Upgrade</button>}
+              {hasFeature(plan, 'hasComplianceRecording') && <button className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-700 dark:text-slate-300 text-sm font-bold">Configure</button>}
+            </div>
+
 
             <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between flex-wrap gap-4">
               <div>
                 <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2"><Puzzle className="w-4 h-4"/> Custom Integrations <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-amber-500/10 text-amber-600">Coming Soon</span></h3>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Connect CliPad directly into your proprietary internal systems.</p>
               </div>
-              {!hasFeature(user, 'hasCustomIntegrations') && <button className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold">Upgrade</button>}
-              {hasFeature(user, 'hasCustomIntegrations') && <button className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-700 dark:text-slate-300 text-sm font-bold disabled:opacity-50" disabled>Configure</button>}
+              {!hasFeature(plan, 'hasCustomIntegrations') && <button className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold">Upgrade</button>}
+              {hasFeature(plan, 'hasCustomIntegrations') && <button className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-700 dark:text-slate-300 text-sm font-bold disabled:opacity-50" disabled>Configure</button>}
             </div>
           </div>
         </div>

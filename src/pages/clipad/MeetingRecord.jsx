@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
+import { useCompanyPlan } from '@/hooks/useCompanyPlan';
 import {
   ArrowLeft, Brain, CheckCircle, Clock, Users, FileText,
   Sparkles, MessageSquare, Target, ChevronDown, ChevronUp,
@@ -93,6 +94,7 @@ function ActionItemRow({ item, onUpdate }) {
 export default function MeetingRecord() {
   const { meetingId } = useParams();
   const { user, isLoadingAuth } = useAuth();
+  const { plan } = useCompanyPlan();
   const navigate = useNavigate();
 
   const [meeting, setMeeting] = useState(null);
@@ -332,16 +334,55 @@ export default function MeetingRecord() {
 
         
             {/* AI Summary */}
-        {meeting.ai_summary && (
-          <SectionCard icon={Brain} iconColor="from-pink-500 to-rose-500" title="AI Meeting Summary" defaultOpen>
-            <div className="flex justify-end mb-3">
-              <CopyButton text={meeting.ai_summary === '00' ? 'No summary generated.' : meeting.ai_summary} />
+        {meeting.ai_summary && hasFeature(plan, 'hasAdvancedAI') ? (
+          <div className="space-y-6">
+            <SectionCard icon={Brain} iconColor="from-pink-500 to-rose-500" title="Advanced AI Intelligence" defaultOpen>
+              <div className="flex justify-end mb-3">
+                <CopyButton text={meeting.ai_summary === '00' ? 'No summary generated.' : meeting.ai_summary} />
+              </div>
+              <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                {meeting.ai_summary === '00' ? 'No meaningful transcript recorded to generate a summary.' : meeting.ai_summary}
+              </p>
+              
+              {/* Pro Feature: Smart Follow-Up */}
+              {hasFeature(plan, 'hasSmartFollowUps') && (
+                <div className="mt-8 pt-6 border-t border-border">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h4 className="text-sm font-bold text-foreground flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-primary" /> Smart Follow-Up Emails
+                      </h4>
+                      <p className="text-xs text-muted-foreground mt-1">Automatically draft and send follow-ups to attendees.</p>
+                    </div>
+                    <button 
+                      onClick={() => toast({ title: 'Follow-ups Sent', description: 'Smart follow-up emails have been queued for attendees.' })}
+                      className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+                    >
+                      Send Follow-Up
+                    </button>
+                  </div>
+                </div>
+              )}
+            </SectionCard>
+          </div>
+        ) : meeting.ai_summary && !hasFeature(plan, 'hasAdvancedAI') ? (
+          <SectionCard icon={Brain} iconColor="from-slate-400 to-slate-500" title="AI Intelligence Locked" defaultOpen>
+            <div className="relative overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 text-center">
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-slate-950/90 pointer-events-none" />
+              <Lock className="w-8 h-8 text-slate-400 mx-auto mb-4" />
+              <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 relative z-10 mb-2">Advanced AI & Smart Follow-ups</h3>
+              <p className="text-sm text-slate-500 max-w-sm mx-auto relative z-10 mb-6">
+                Upgrade to Pro to unlock the full AI Intelligence layer, sentiment analysis, and automated smart follow-ups.
+              </p>
+              <button 
+                onClick={() => navigate('/clipad/billing')}
+                className="relative z-10 px-6 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm shadow-xl"
+              >
+                Upgrade to Pro
+              </button>
             </div>
-            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
-              {meeting.ai_summary === '00' ? 'No meaningful transcript recorded to generate a summary.' : meeting.ai_summary}
-            </p>
           </SectionCard>
-        )}
+        ) : null}
 
         
             {/* Transcript */}

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
+import { useCompanyPlan } from '@/hooks/useCompanyPlan';
 import { BarChart3, TrendingUp, Eye, Heart, MessageSquare, Clock, ArrowLeft, Video, Target, Users, Settings, UserCircle } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ThemeToggle from '@/components/layout/ThemeToggle';
@@ -29,6 +30,7 @@ function StatCard({ icon: Icon, color, value, label, trend }) {
 
 export default function VideoAnalytics() {
   const { user, isLoadingAuth } = useAuth();
+  const { plan } = useCompanyPlan();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -171,28 +173,7 @@ export default function VideoAnalytics() {
     );
   }
 
-  if (!isAdmin(user)) {
-    return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative text-slate-900 dark:text-slate-100">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(120,120,120,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(120,120,120,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
-        <div className="relative z-10 w-full max-w-[420px] text-center space-y-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-10 shadow-sm">
-          <div className="w-16 h-16 rounded-2xl bg-red-50 dark:bg-red-500/10 flex items-center justify-center mx-auto text-red-500">
-            <Target className="w-8 h-8" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight mb-2">Access Denied</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm">Video Analytics are restricted to Company Admins.</p>
-          </div>
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="w-full py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-all shadow-sm"
-          >
-            Return to Dashboard
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // Admins check removed. Any user can view stats for their own videos.
 
   // Max value for chart scaling
   const maxViews = Math.max(10, ...stats.recentViews.map(d => d.count));
@@ -263,7 +244,9 @@ export default function VideoAnalytics() {
               <StatCard icon={Heart} color="bg-primary/10 text-primary" value={stats.totalReactions} label="Reactions" />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 mt-8">
+            {hasFeature(plan, 'hasAdvancedAnalytics') ? (
+              <>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 mt-8">
               <div className="lg:col-span-2 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
                 <h3 className="text-lg font-bold mb-6">Views Over Time</h3>
                 <div className="h-[250px] w-full flex items-end gap-2">
@@ -341,6 +324,23 @@ export default function VideoAnalytics() {
                 </div>
               )}
             </div>
+            </>
+            ) : (
+              <div className="mt-8 relative overflow-hidden rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 text-center shadow-sm">
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-slate-950/90 pointer-events-none" />
+                <BarChart3 className="w-12 h-12 text-slate-400 mx-auto mb-4 relative z-10" />
+                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 relative z-10 mb-2">Advanced Analytics Locked</h3>
+                <p className="text-sm text-slate-500 max-w-md mx-auto relative z-10 mb-6">
+                  Upgrade to Pro to unlock deep engagement scoring, views over time tracking, and top performing video charts.
+                </p>
+                <button 
+                  onClick={() => navigate('/clipad/billing')}
+                  className="relative z-10 px-6 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm shadow-xl hover:-translate-y-0.5 transition-all"
+                >
+                  Upgrade to Pro
+                </button>
+              </div>
+            )}
           </div>
         </div>
               </div>

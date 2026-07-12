@@ -26,6 +26,7 @@ import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
+import { useCompanyPlan } from '@/hooks/useCompanyPlan';
 
 // Export VIRTUAL_BACKGROUNDS so PreJoinScreen can use them
 export const VIRTUAL_BACKGROUNDS = [
@@ -58,6 +59,8 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  
  const daily = useDaily();
  const localSessionId = useLocalSessionId();
+ const { plan } = useCompanyPlan();
+ const isBranded = hasFeature(plan, 'hasBrandedRooms');
  const participantIds = useParticipantIds();
  const { screens, isSharingScreen, startScreenShare, stopScreenShare} = useScreenShare();
  const localAudioTrack = useAudioTrack(localSessionId);
@@ -539,6 +542,12 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
         <div className="flex-[3] relative rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-white/10 shadow-inner bg-slate-900">
           {showWhiteboard && (
             <CanvasWhiteboard onClose={() => setShowWhiteboard(false)} />
+          )}
+          {isBranded && (
+            <div className="absolute top-6 left-6 z-40 flex items-center gap-2 opacity-80 select-none pointer-events-none bg-black/30 px-3 py-1.5 rounded-xl backdrop-blur-md border border-white/10">
+              <CliPadLogo size={18} className="text-white drop-shadow-md" />
+              <span className="text-white font-bold tracking-widest text-xs drop-shadow-md">ENTERPRISE HUB</span>
+            </div>
           )}
           {screens.length > 0 ? (
             screens.map(screen => (
