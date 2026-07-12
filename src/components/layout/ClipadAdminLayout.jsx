@@ -12,12 +12,14 @@ export default function ClipadAdminLayout() {
     navigate('/login');
   };
 
+  const basePath = window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin';
+  
   const menuItems = [
-    { name: 'Overview', icon: LayoutDashboard, path: '/clipad/admin' },
-    { name: 'Companies', icon: Building2, path: '/clipad/admin/companies' },
-    { name: 'Pricing Tags', icon: Tags, path: '/clipad/admin/pricing' },
-    { name: 'Audit Monitor', icon: ShieldAlert, path: '/clipad/admin/audit' },
-    { name: 'Admin AI', icon: BrainCircuit, path: '/clipad/admin/ai' },
+    { name: 'Overview', icon: LayoutDashboard, path: basePath },
+    { name: 'Companies', icon: Building2, path: `${basePath}/companies` },
+    { name: 'Pricing Tags', icon: Tags, path: `${basePath}/pricing` },
+    { name: 'Audit Monitor', icon: ShieldAlert, path: `${basePath}/audit` },
+    { name: 'Admin AI', icon: BrainCircuit, path: `${basePath}/ai` },
   ];
 
   return (
@@ -37,7 +39,7 @@ export default function ClipadAdminLayout() {
               <NavLink
                 key={item.path}
                 to={item.path}
-                end={item.path === '/clipad/admin'}
+                end={item.path === basePath}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     isActive

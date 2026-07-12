@@ -298,7 +298,7 @@ export default function CliPadDashboard() {
               {user?.role === 'super_admin' && (
                 <>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/clipad/admin')} className="cursor-pointer bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400">
+                  <DropdownMenuItem onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin')} className="cursor-pointer bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400">
                     <Shield className="mr-2 h-4 w-4" />
                     <span className="font-semibold">Super Admin Dashboard</span>
                   </DropdownMenuItem>

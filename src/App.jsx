@@ -1250,6 +1250,13 @@ function App() {
                       <Route path="/join/:roomId" element={<StandaloneMeeting />} />
                       <Route path="/analytics" element={<VideoAnalytics />} />
                       <Route element={<ProtectedRoute />}>
+                        <Route element={<ClipadAdminLayout />}>
+                          <Route path="/admin" element={<ClipadAdminOverview />} />
+                          <Route path="/admin/companies" element={<CompanyManagement />} />
+                          <Route path="/admin/pricing" element={<PricingTags />} />
+                          <Route path="/admin/audit" element={<AuditMonitor />} />
+                          <Route path="/admin/ai" element={<AdminAI />} />
+                        </Route>
                         <Route element={<ClipadLayout />}>
                           <Route path="/dashboard" element={<CliPadDashboard />} />
                           <Route path="/spaces" element={<SpacesList />} />
