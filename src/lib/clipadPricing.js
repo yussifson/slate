@@ -34,7 +34,7 @@ export const PLAN_LIMITS = {
   enterprise: {
     maxParticipants: Infinity,
     maxVideoRecordingsPerMonth: Infinity,
-    maxStorageGB: Infinity,
+    maxStorageGB: 50,
     maxStorageGB: 15,
     maxTeamSpaces: Infinity,
     maxAsyncVideoDurationSeconds: Infinity,

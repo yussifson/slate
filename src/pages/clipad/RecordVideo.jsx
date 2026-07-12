@@ -273,15 +273,23 @@ export default function RecordVideo() {
     try {
       const maxStorageGB = getLimit(user, 'maxStorageGB') || 2;
       
-      // Check total storage used (heuristic: 1 min = 15MB)
-      const { data: vids } = await supabase.from('clipad_videos').select('duration_seconds').eq('creator_id', user.id);
+      // Check total storage used this month (heuristic: 1 min = 15MB)
+      const firstDayOfMonth = new Date();
+      firstDayOfMonth.setDate(1);
+      firstDayOfMonth.setHours(0, 0, 0, 0);
+      
+      const { data: vids } = await supabase
+        .from('clipad_videos')
+        .select('duration_seconds')
+        .eq('creator_id', user.id)
+        .gte('created_at', firstDayOfMonth.toISOString());
       if (vids) {
         const totalSeconds = vids.reduce((acc, curr) => acc + (curr.duration_seconds || 0), 0);
         const totalGB = (totalSeconds * 0.25) / 1024;
         if (maxStorageGB !== Infinity && totalGB >= maxStorageGB) {
           setPaywallProps({
             featureName: "Cloud Storage Limit Reached",
-            limitDescription: `You have reached the maximum storage limit of ${maxStorageGB}GB for your current plan. Please upgrade to record more videos.`
+            limitDescription: `You have reached the maximum monthly storage limit of ${maxStorageGB}GB for your current plan. Please upgrade to record more videos.`
           });
           setShowPaywall(true);
           return;

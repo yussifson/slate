@@ -200,7 +200,7 @@ export default function CliPadBilling() {
       {/* Storage Progress */}
       <div className="p-6 rounded-2xl border border-border bg-card">
         <div className="flex justify-between items-center mb-2">
-          <h3 className="font-semibold text-foreground">Cloud Storage Usage</h3>
+          <h3 className="font-semibold text-foreground">This Month's Storage Usage</h3>
           <span className="text-sm text-muted-foreground">
             {usedStorageGB.toFixed(2)} GB / {PLAN_LIMITS[currentPlan]?.maxStorageGB === Infinity ? 'Unlimited' : `${PLAN_LIMITS[currentPlan]?.maxStorageGB} GB`} Used
           </span>
@@ -224,7 +224,7 @@ export default function CliPadBilling() {
           <ul className="mt-6 space-y-3">
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 10 Video Meetings</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Basic AI Summaries</li>
-            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 2GB Cloud Storage</li>
+            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 2GB Cloud Storage / month</li>
           </ul>
           <button disabled className="w-full mt-8 py-2 rounded-xl bg-secondary text-foreground font-semibold border border-border">
             {currentPlan === 'free' ? 'Current Plan' : 'Downgrade'}
@@ -246,7 +246,7 @@ export default function CliPadBilling() {
           <ul className="mt-6 space-y-3">
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Unlimited Meetings</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Advanced AI Action Items</li>
-            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 15GB Cloud Storage</li>
+            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 15GB Cloud Storage / month</li>
           </ul>
           <button 
             onClick={() => handleUpgrade('pro')}
@@ -267,7 +267,7 @@ export default function CliPadBilling() {
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Dedicated Account Manager</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Custom Payment Subdomains</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Enterprise SLAs</li>
-            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Unlimited Cloud Storage</li>
+            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 50GB Cloud Storage / month</li>
           </ul>
           <button 
             onClick={() => handleUpgrade('enterprise')}

@@ -863,12 +863,20 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
       try {
         // --- STORAGE LIMIT CHECK ---
         const maxStorageGB = getLimit(user, 'maxStorageGB') || 2;
-        const { data: vids } = await supabase.from('clipad_videos').select('duration_seconds').eq('creator_id', user.id);
+        const firstDayOfMonth = new Date();
+        firstDayOfMonth.setDate(1);
+        firstDayOfMonth.setHours(0, 0, 0, 0);
+        
+        const { data: vids } = await supabase
+          .from('clipad_videos')
+          .select('duration_seconds')
+          .eq('creator_id', user.id)
+          .gte('created_at', firstDayOfMonth.toISOString());
         if (vids) {
           const totalSeconds = vids.reduce((acc, curr) => acc + (curr.duration_seconds || 0), 0);
           const totalGB = (totalSeconds * 0.25) / 1024;
           if (maxStorageGB !== Infinity && totalGB >= maxStorageGB) {
-            toast({ title: 'Storage Limit Reached', description: `You have used your ${maxStorageGB}GB limit. Upgrade to record more.`, variant: 'destructive' });
+            toast({ title: 'Storage Limit Reached', description: `You have used your ${maxStorageGB}GB monthly limit. Upgrade to record more.`, variant: 'destructive' });
             return;
           }
         }
