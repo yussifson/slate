@@ -28,6 +28,7 @@ export default function SpaceChat({ spaceId }) {
 
   useEffect(() => {
     let subscription;
+    let pollInterval;
     if (activeChannel) {
       fetchMessages();
       
@@ -37,9 +38,15 @@ export default function SpaceChat({ spaceId }) {
           fetchMessages();
         })
         .subscribe();
+        
+      // Fallback polling every 3 seconds in case realtime isn't enabled for the table yet
+      pollInterval = setInterval(() => {
+        fetchMessages();
+      }, 3000);
     }
     return () => {
       if (subscription) supabase.removeChannel(subscription);
+      if (pollInterval) clearInterval(pollInterval);
     };
   }, [activeChannel]);
 
@@ -135,6 +142,7 @@ export default function SpaceChat({ spaceId }) {
         });
         
       if (error) throw error;
+      fetchMessages(); // Fetch immediately after sending
     } catch (err) {
       console.error(err);
       toast({ title: 'Failed to send message', variant: 'destructive' });
@@ -241,7 +249,7 @@ export default function SpaceChat({ spaceId }) {
               </div>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+            <div className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-6 space-y-6 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
               {messages.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-muted-foreground animate-in fade-in duration-500">
                   <div className="w-16 h-16 bg-secondary/50 rounded-full flex items-center justify-center mb-4">

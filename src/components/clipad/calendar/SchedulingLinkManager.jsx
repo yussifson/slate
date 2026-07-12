@@ -7,7 +7,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-export default function SchedulingLinkManager({ spaceId, user }) {
+import { useAuth } from '@/lib/AuthContext';
+
+export default function SchedulingLinkManager({ spaceId }) {
+  const { user } = useAuth();
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
