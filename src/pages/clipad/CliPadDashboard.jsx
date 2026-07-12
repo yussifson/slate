@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ClipadLoader from '@/components/ui/ClipadLoader';
+import SpaceSelectorModal from '@/components/clipad/SpaceSelectorModal';
 
 function StatCard({ icon: Icon, value, label, trend, accentColor, bgColor, iconColor }) {
   return (
@@ -150,6 +151,7 @@ export default function CliPadDashboard() {
   const [videos, setVideos] = useState([]);
   const [meetings, setMeetings] = useState([]);
   const [actionItems, setActionItems] = useState([]);
+  const [showSpaceSelector, setShowSpaceSelector] = useState(false);
   const [stats, setStats] = useState({ meetings: 0, recordings: 0, actionItems: 0, completionRate: 0 });
   const [loading, setLoading] = useState(true);
   const [isCreatingMeeting, setIsCreatingMeeting] = useState(false);
@@ -197,7 +199,25 @@ export default function CliPadDashboard() {
     }
   };
 
+  const handleSpaceSelect = async (spaceId) => {
+    setIsCreatingMeeting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-daily-room', { body: { instant: true } });
+      if (error) throw error;
+      const url = `/meet/${data.roomName}` + (spaceId ? `?spaceId=${spaceId}` : '');
+      navigate(url);
+    } catch (err) {
+      console.error('Failed to create meeting:', err);
+    } finally {
+      setIsCreatingMeeting(false);
+    }
+  };
+
   const startInstantMeeting = async () => {
+    setShowSpaceSelector(true);
+  };
+
+  const startInstantMeeting_OLD = async () => {
     setIsCreatingMeeting(true);
     try {
       const { data, error } = await supabase.functions.invoke('create-daily-room', { body: { instant: true } });
@@ -221,6 +241,11 @@ export default function CliPadDashboard() {
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 overflow-x-hidden pb-24 md:pb-8">
+      <SpaceSelectorModal 
+        open={showSpaceSelector} 
+        onOpenChange={setShowSpaceSelector} 
+        onConfirm={handleSpaceSelect} 
+      />
       {loading && (
         <div className="absolute inset-0 z-50 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-sm flex items-center justify-center">
           <ClipadLoader />

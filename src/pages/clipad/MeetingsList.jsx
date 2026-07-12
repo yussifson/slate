@@ -17,6 +17,7 @@ export default function MeetingsList() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all'); // 'all', 'summary', 'actions'
   const [isCreating, setIsCreating] = useState(false);
+  const [showSpaceSelector, setShowSpaceSelector] = useState(false);
 
   useEffect(() => { fetchMeetings(); }, []);
 
@@ -44,7 +45,25 @@ export default function MeetingsList() {
     setLoading(false);
   };
 
+  const handleSpaceSelect = async (spaceId) => {
+    setIsCreating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-daily-room', { body: { instant: true } });
+      if (error) throw error;
+      const url = `/meet/${data.roomName}` + (spaceId ? `?spaceId=${spaceId}` : '');
+      navigate(url);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
   const startInstantMeeting = async () => {
+    setShowSpaceSelector(true);
+  };
+
+  const startInstantMeeting_OLD = async () => {
     setIsCreating(true);
     try {
       const { data } = await supabase.functions.invoke('create-daily-room', { body: { instant: true } });

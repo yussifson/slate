@@ -161,7 +161,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   };
 
  const handleCopyLink = () => {
-   navigator.clipboard.writeText(roomUrl);
+   navigator.clipboard.writeText(window.location.origin + '/meet/' + roomUrl.split('/').pop());
    setCopiedLink(true);
    toast({ title: "Link Copied", description: "Meeting link copied to clipboard." });
    setTimeout(() => setCopiedLink(false), 2000);
@@ -653,8 +653,8 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium">Copy Link</label>
           <div className="flex gap-2">
-            <Input readOnly value={roomUrl} className="bg-muted" />
-            <Button variant="secondary" onClick={() => navigator.clipboard.writeText(roomUrl)} className="w-24">
+            <Input readOnly value={window.location.origin + '/meet/' + roomUrl.split('/').pop()} className="bg-muted" />
+            <Button variant="secondary" onClick={() => navigator.clipboard.writeText(window.location.origin + '/meet/' + roomUrl.split('/').pop())} className="w-24">
               Copy
             </Button>
           </div>
