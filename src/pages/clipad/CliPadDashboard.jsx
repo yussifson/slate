@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { getSpaceIcon } from '@/utils/spaceIcons';
-import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
+import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import {
   DropdownMenu,
@@ -275,7 +275,7 @@ export default function CliPadDashboard() {
             <Sparkles className="w-3.5 h-3.5" /> OrbitFlow
           </button>
           
-          <NotificationsDropdown />
+          <NotificationCenter />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

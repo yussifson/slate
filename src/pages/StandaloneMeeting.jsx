@@ -8,17 +8,9 @@ import { useAuth } from '@/lib/AuthContext';
 import { Video, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
+import ClipadLoader from '@/components/ui/ClipadLoader';
 
-function MeetLoader({ label = 'Preparing your secure meeting...' }) {
-  return (
-    <div className="w-screen h-screen flex flex-col items-center justify-center bg-white dark:bg-slate-950">
-      <div className="w-24 h-24 relative flex items-center justify-center animate-pulse">
-        <CliPadLogo className="w-20 h-20" />
-      </div>
-      <p className="mt-8 text-slate-500 font-medium tracking-wide animate-pulse">{label}</p>
-    </div>
-  );
-}
+
 
 // ─── Pre-join screen + in-meeting screen ──────────────────────────────────────
 function StandaloneMeetingInner({ url, roomName, onLeave, onToast, spaceId }) {
@@ -255,7 +247,7 @@ export default function StandaloneMeeting() {
   }
 
   if (!meetingUrl) {
-    return <MeetLoader />;
+    return <ClipadLoader fullScreen text="Preparing your secure meeting..." />;
   }
 
   return (

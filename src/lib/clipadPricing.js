@@ -40,6 +40,7 @@ export const PLAN_LIMITS = {
     maxAsyncVideoDurationSeconds: Infinity,
     hasAdvancedAI: true,
     hasAdvancedAnalytics: true,
+    hasEnterpriseAnalytics: true,
     hasSmartFollowUps: true,
     hasCustomIntegrations: true,
     hasSLA: true,

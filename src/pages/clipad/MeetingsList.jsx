@@ -6,7 +6,7 @@ import { Calendar, Video, Search, Clock, Users, ArrowRight, Sparkles, Filter, Ch
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
 import ThemeToggle from '@/components/layout/ThemeToggle';
-import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
+import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 export default function MeetingsList() {
@@ -104,7 +104,7 @@ export default function MeetingsList() {
           <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden md:block" />
           
           <ThemeToggle />
-          <NotificationsDropdown />
+          <NotificationCenter />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

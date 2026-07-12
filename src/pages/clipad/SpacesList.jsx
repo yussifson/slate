@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { getSpaceIcon } from '@/utils/spaceIcons';
 import ThemeToggle from '@/components/layout/ThemeToggle';
-import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
+import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import PaywallModal from '@/components/clipad/PaywallModal';
 
@@ -122,7 +122,7 @@ export default function SpacesList() {
           <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden md:block" />
           
           <ThemeToggle />
-          <NotificationsDropdown />
+          <NotificationCenter />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

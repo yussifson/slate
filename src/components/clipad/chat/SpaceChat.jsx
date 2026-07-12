@@ -22,8 +22,6 @@ export default function SpaceChat({ spaceId }) {
   const [showNewChannel, setShowNewChannel] = useState(false);
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [summaryStr, setSummaryStr] = useState(null);
-  
-  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     if (spaceId) {

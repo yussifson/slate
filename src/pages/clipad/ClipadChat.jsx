@@ -1,4 +1,4 @@
-﻿import { supabase} from '@/api/supabaseClient';
+import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect, useRef} from "react";
 import { useTranslation} from "react-i18next";
 import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, CheckCheck, Check, Smile, Paperclip, ArrowLeft, ImageIcon, FileText, File, X, PanelLeftClose, PanelLeftOpen, Settings} from "lucide-react";
@@ -18,7 +18,7 @@ import { useUIPreference } from "@/hooks/useUIPreference";
 import { useNavigate } from "react-router-dom";
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ThemeToggle from '@/components/layout/ThemeToggle';
-import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
+import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
 import DiscoverGroupsDialog from "@/components/chat/DiscoverGroupsDialog";
 
 export default function ClipadChat() {
@@ -317,7 +317,7 @@ export default function ClipadChat() {
          <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden md:block" />
          
          <ThemeToggle />
-         <NotificationsDropdown />
+         <NotificationCenter />
 
          <DropdownMenu>
            <DropdownMenuTrigger asChild>

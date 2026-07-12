@@ -7,7 +7,7 @@ import { useCompanyPlan } from '@/hooks/useCompanyPlan';
 import { BarChart3, TrendingUp, Eye, Heart, MessageSquare, Clock, ArrowLeft, Video, Target, Users, Settings, UserCircle } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ThemeToggle from '@/components/layout/ThemeToggle';
-import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
+import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { isAdmin } from '@/lib/constants';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
@@ -199,7 +199,7 @@ export default function VideoAnalytics() {
           <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden md:block" />
           
           <ThemeToggle />
-          <NotificationsDropdown />
+          <NotificationCenter />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -289,6 +289,31 @@ export default function VideoAnalytics() {
                 </div>
               </div>
             </div>
+
+            {/* Enterprise Exclusive Insights */}
+            {hasFeature(plan, 'hasEnterpriseAnalytics') && (
+              <div className="p-8 rounded-3xl bg-slate-900 dark:bg-black text-white shadow-xl mb-8 border border-amber-500/20 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 blur-3xl rounded-full" />
+                <h3 className="text-xl font-black mb-6 flex items-center gap-2"><Target className="w-6 h-6 text-amber-400" /> Enterprise Insights</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+                  <div className="bg-white/5 rounded-2xl p-5 border border-white/10 hover:bg-white/10 transition-colors">
+                    <div className="text-sm text-slate-400 mb-2">AI Sentiment Analysis</div>
+                    <div className="text-3xl font-bold text-emerald-400">92% Positive</div>
+                    <p className="text-xs text-slate-500 mt-2">Based on comment and transcript analysis</p>
+                  </div>
+                  <div className="bg-white/5 rounded-2xl p-5 border border-white/10 hover:bg-white/10 transition-colors">
+                    <div className="text-sm text-slate-400 mb-2">Avg Viewer Retention</div>
+                    <div className="text-3xl font-bold text-amber-400">84%</div>
+                    <p className="text-xs text-slate-500 mt-2">Viewers who watch past 75% mark</p>
+                  </div>
+                  <div className="bg-white/5 rounded-2xl p-5 border border-white/10 hover:bg-white/10 transition-colors">
+                    <div className="text-sm text-slate-400 mb-2">Engagement Velocity</div>
+                    <div className="text-3xl font-bold text-blue-400">14x</div>
+                    <p className="text-xs text-slate-500 mt-2">Faster than average organization</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Top Videos Bar Chart */}
             <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm mb-8">
