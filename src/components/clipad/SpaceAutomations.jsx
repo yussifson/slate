@@ -95,41 +95,50 @@ export default function SpaceAutomations({ spaceId }) {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl p-5 shadow-sm space-y-4">
-        <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">Create New Workflow</h3>
-        <div className="flex flex-col md:flex-row items-center gap-4">
-          <div className="flex-1 w-full">
-            <label className="text-xs font-semibold mb-1 block">When this happens (Trigger)</label>
+      <div className="bg-card border border-border rounded-2xl p-6 shadow-sm space-y-6 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
+        <h3 className="font-bold text-sm uppercase tracking-wider text-primary flex items-center gap-2">
+          <Zap className="w-4 h-4" /> Create New Workflow
+        </h3>
+        <div className="flex flex-col md:flex-row items-center gap-6">
+          <div className="flex-1 w-full bg-secondary/30 p-4 rounded-xl border border-border">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 block flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[10px]">1</span> 
+              When this happens
+            </label>
             <select 
               value={newTrigger}
               onChange={e => setNewTrigger(e.target.value)}
-              className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full bg-background border border-border rounded-lg px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm appearance-none cursor-pointer"
             >
               <option value="meeting_ended">A meeting ends</option>
               <option value="video_recorded">A new video is recorded</option>
               <option value="task_completed">A task is marked done</option>
             </select>
           </div>
-          <ArrowRight className="hidden md:block w-5 h-5 text-muted-foreground mt-5" />
-          <div className="flex-1 w-full">
-            <label className="text-xs font-semibold mb-1 block">Do this (Action)</label>
+          <ArrowRight className="hidden md:block w-6 h-6 text-muted-foreground/50 shrink-0 mt-5" />
+          <div className="flex-1 w-full bg-secondary/30 p-4 rounded-xl border border-border">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 block flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[10px]">2</span> 
+              Do this action
+            </label>
             <select 
               value={newAction}
               onChange={e => setNewAction(e.target.value)}
-              className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full bg-background border border-border rounded-lg px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm appearance-none cursor-pointer"
             >
               <option value="create_task">Auto-generate Action Items</option>
               <option value="send_message">Send summary to Chat</option>
               <option value="notify_members">Notify Space Members</option>
             </select>
           </div>
-          <div className="pt-5">
+          <div className="pt-8">
             <button
               onClick={handleCreate}
               disabled={isCreating}
-              className="px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-lg shadow-sm hover:bg-primary/90 transition-colors flex items-center gap-2 w-full md:w-auto justify-center"
+              className="px-6 py-3 bg-primary text-primary-foreground font-bold rounded-xl shadow-md hover:bg-primary/90 transition-all flex items-center gap-2 w-full md:w-auto justify-center hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
             >
-              {isCreating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+              {isCreating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-5 h-5" />}
               Add Workflow
             </button>
           </div>
@@ -145,25 +154,33 @@ export default function SpaceAutomations({ spaceId }) {
           </div>
         ) : (
           automations.map(auto => (
-            <div key={auto.id} className="flex items-center justify-between p-4 bg-card border border-border rounded-xl shadow-sm hover:shadow transition-all group">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Zap className="w-5 h-5 text-primary" />
+            <div key={auto.id} className="flex items-center justify-between p-5 bg-card border border-border rounded-2xl shadow-sm hover:shadow-md transition-all group">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                  <Zap className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <p className="font-semibold text-foreground flex items-center gap-2">
-                    When <span className="bg-secondary px-2 py-0.5 rounded text-sm">{auto.trigger_type.replace('_', ' ')}</span>
-                  </p>
-                  <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
-                    ↳ Then <span className="font-medium text-foreground">{auto.action_type.replace('_', ' ')}</span>
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">When</span>
+                    <span className="bg-secondary/80 px-3 py-1 rounded-lg text-sm font-semibold text-foreground border border-border">
+                      {auto.trigger_type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 mt-2">
+                    <ArrowRight className="w-4 h-4 text-muted-foreground/50 ml-2" />
+                    <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Then</span>
+                    <span className="bg-primary/10 px-3 py-1 rounded-lg text-sm font-bold text-primary border border-primary/20">
+                      {auto.action_type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    </span>
+                  </div>
                 </div>
               </div>
               <button 
                 onClick={() => handleDelete(auto.id)}
-                className="p-2 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                className="p-3 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100"
+                title="Delete Automation"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-5 h-5" />
               </button>
             </div>
           ))

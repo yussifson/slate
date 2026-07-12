@@ -11,6 +11,8 @@ export default function SpaceChat({ spaceId }) {
   
   const [channels, setChannels] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
+  const messagesEndRef = useRef(null);
+  const scrollContainerRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   
@@ -58,7 +60,12 @@ export default function SpaceChat({ spaceId }) {
   }, [messages]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({
+        top: scrollContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const fetchChannels = async () => {
@@ -303,7 +310,7 @@ export default function SpaceChat({ spaceId }) {
               </div>
             )}
             
-            <div className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-6 space-y-6 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-6 space-y-6 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
               {messages.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-muted-foreground animate-in fade-in duration-500">
                   <div className="w-16 h-16 bg-secondary/50 rounded-full flex items-center justify-center mb-4">

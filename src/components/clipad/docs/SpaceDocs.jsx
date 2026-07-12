@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { supabase } from '@/api/supabaseClient';
-import { Loader2, Plus, FileText, Sparkles, Save, AlignLeft } from 'lucide-react';
+import { Loader2, Plus, FileText, Sparkles, Save, AlignLeft, Bold, Italic, List, ListOrdered, Heading1, Heading2, Quote, Code, Strikethrough } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { invokeCloudflareAi } from '@/lib/cloudflareAI';
@@ -243,12 +243,37 @@ function DocEditor({ doc, onSave, isSaving }) {
       </div>
 
       {/* Formatting Bar */}
-      <div className="px-4 py-2 border-b bg-muted/10 flex gap-1 flex-wrap">
-        <Button size="sm" className="h-7 text-xs" variant={editor.isActive('bold') ? 'secondary' : 'ghost'} onClick={() => editor.chain().focus().toggleBold().run()}>Bold</Button>
-        <Button size="sm" className="h-7 text-xs" variant={editor.isActive('italic') ? 'secondary' : 'ghost'} onClick={() => editor.chain().focus().toggleItalic().run()}>Italic</Button>
-        <Button size="sm" className="h-7 text-xs" variant={editor.isActive('heading', { level: 1 }) ? 'secondary' : 'ghost'} onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>H1</Button>
-        <Button size="sm" className="h-7 text-xs" variant={editor.isActive('heading', { level: 2 }) ? 'secondary' : 'ghost'} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>H2</Button>
-        <Button size="sm" className="h-7 text-xs" variant={editor.isActive('bulletList') ? 'secondary' : 'ghost'} onClick={() => editor.chain().focus().toggleBulletList().run()}>Bullets</Button>
+      <div className="px-4 py-2 border-b bg-muted/5 flex gap-1 flex-wrap items-center">
+        <Button size="icon" variant={editor.isActive('bold') ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleBold().run()} title="Bold">
+          <Bold className="w-4 h-4" />
+        </Button>
+        <Button size="icon" variant={editor.isActive('italic') ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleItalic().run()} title="Italic">
+          <Italic className="w-4 h-4" />
+        </Button>
+        <Button size="icon" variant={editor.isActive('strike') ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleStrike().run()} title="Strikethrough">
+          <Strikethrough className="w-4 h-4" />
+        </Button>
+        <div className="w-px h-5 bg-border mx-1" />
+        <Button size="icon" variant={editor.isActive('heading', { level: 1 }) ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} title="Heading 1">
+          <Heading1 className="w-4 h-4" />
+        </Button>
+        <Button size="icon" variant={editor.isActive('heading', { level: 2 }) ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} title="Heading 2">
+          <Heading2 className="w-4 h-4" />
+        </Button>
+        <div className="w-px h-5 bg-border mx-1" />
+        <Button size="icon" variant={editor.isActive('bulletList') ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleBulletList().run()} title="Bullet List">
+          <List className="w-4 h-4" />
+        </Button>
+        <Button size="icon" variant={editor.isActive('orderedList') ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleOrderedList().run()} title="Numbered List">
+          <ListOrdered className="w-4 h-4" />
+        </Button>
+        <div className="w-px h-5 bg-border mx-1" />
+        <Button size="icon" variant={editor.isActive('blockquote') ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleBlockquote().run()} title="Quote">
+          <Quote className="w-4 h-4" />
+        </Button>
+        <Button size="icon" variant={editor.isActive('codeBlock') ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleCodeBlock().run()} title="Code Block">
+          <Code className="w-4 h-4" />
+        </Button>
       </div>
 
       {/* Editor Area */}
