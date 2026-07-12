@@ -10,13 +10,18 @@ export function useLogActivity() {
       const error = await (async () => {
         const _payload = {
           id: crypto.randomUUID(),
-          user_id: user?.id,
-          user_email: user?.email,
-          action,
-          record_type: recordType,
-          record_id: recordId,
+          user_id: user?.id || null,
+          user_email: user?.email || 'Unknown User',
+          user_name: user?.full_name || 'Unknown User',
+          company_id: user?.company_id || null,
+          action: action || 'create',
+          record_type: recordType || null,
+          record_id: recordId || null,
           changes: changes || {},
-          created_at: new Date().toISOString()
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          ip_address: 'Unknown IP', // Server will override or log this later if needed
+          details: null
         };
         const _keys = Object.keys(_payload);
         const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);

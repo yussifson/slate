@@ -37,7 +37,9 @@ serve(async (req) => {
           enable_screenshare: true,
           start_video_off: false,
           start_audio_off: false,
-          signaling_impl: 'ws'
+          signaling_impl: 'ws',
+          enable_noise_cancellation_ui: true,
+          sfu_switchover: 1
         },
       }),
     })

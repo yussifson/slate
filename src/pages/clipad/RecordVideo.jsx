@@ -319,7 +319,7 @@ export default function RecordVideo() {
       let cameraStream = null;
 
       if (mode === 'screen_camera' || mode === 'screen_only') {
-        screenStream = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 30 }, audio: true });
+        screenStream = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: { ideal: 60 } }, audio: { echoCancellation: true, noiseSuppression: true } });
         streamsRef.current.screen = screenStream;
         // If user stops screen share from browser UI
         screenStream.getVideoTracks()[0].onended = () => stopRecording();
@@ -328,8 +328,8 @@ export default function RecordVideo() {
       if (mode === 'screen_camera' || mode === 'camera_only') {
         try {
           cameraStream = await navigator.mediaDevices.getUserMedia({ 
-            video: { width: 320, height: 240 }, 
-            audio: micEnabled ? { echoCancellation: true, noiseSuppression: true, autoGainControl: true } : false 
+            video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } }, 
+            audio: micEnabled ? { echoCancellation: true, noiseSuppression: true, autoGainControl: true, sampleRate: 48000, channelCount: 2 } : false 
           });
           streamsRef.current.camera = cameraStream;
         } catch (camErr) {
@@ -440,7 +440,7 @@ export default function RecordVideo() {
         } else if (screenStream.getAudioTracks().length === 0 && micEnabled) {
           // No system audio AND no camera — try to get mic directly
           try {
-            const micOnly = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false });
+            const micOnly = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, sampleRate: 48000, channelCount: 2 }, video: false });
             streamsRef.current.mic = micOnly;
             const micSource = audioCtx.createMediaStreamSource(micOnly);
             micSource.connect(dest);
@@ -525,7 +525,7 @@ export default function RecordVideo() {
         MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'video/webm;codecs=vp9,opus' :
         MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus') ? 'video/webm;codecs=vp8,opus' :
         MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : '';
-      const recorderOptions = mimeType ? { mimeType } : {};
+      const recorderOptions = mimeType ? { mimeType, videoBitsPerSecond: 3000000, audioBitsPerSecond: 128000 } : { videoBitsPerSecond: 3000000, audioBitsPerSecond: 128000 };
       const recorder = new MediaRecorder(recordStreamRef.current, recorderOptions);
       mediaRecorderRef.current = recorder;
       chunksRef.current = [];
