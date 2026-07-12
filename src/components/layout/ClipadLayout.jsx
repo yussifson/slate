@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import GlobalAIAssistant from '@/components/layout/GlobalAIAssistant';
+import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
 export default function ClipadLayout() {
   const [isAIOpen, setIsAIOpen] = useState(false);
@@ -28,7 +29,7 @@ export default function ClipadLayout() {
       <div className="flex flex-1 overflow-hidden relative">
         
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col h-full overflow-y-auto relative z-30 page-enter">
+        <div className="flex-1 flex flex-col h-full overflow-y-auto relative z-30 page-enter pb-[80px] md:pb-0">
           <Outlet />
         </div>
 
@@ -46,6 +47,7 @@ export default function ClipadLayout() {
         injectedContext={injectedContext} 
         onContextConsumed={() => setInjectedContext(null)} 
       />
+      <ClipadMobileNav />
     </div>
   );
 }

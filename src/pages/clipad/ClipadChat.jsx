@@ -19,7 +19,6 @@ import { useNavigate } from "react-router-dom";
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
-import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import DiscoverGroupsDialog from "@/components/chat/DiscoverGroupsDialog";
 
 export default function ClipadChat() {
@@ -803,8 +802,7 @@ export default function ClipadChat() {
  )}
  </div>
   {/* Mobile Nav */}
-  <ClipadMobileNav />
-  </div>
+    </div>
   </div>
   );
 }

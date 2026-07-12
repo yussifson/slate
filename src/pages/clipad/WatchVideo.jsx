@@ -8,7 +8,6 @@ import {
   ThumbsUp, Zap, Star, BookOpen, ChevronRight, Eye, MoreHorizontal, PictureInPicture, RotateCcw, RotateCw, Edit3, Trash2
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import DictationButton from '@/components/ui/DictationButton';
 
@@ -667,8 +666,7 @@ export default function WatchVideo() {
         </div>
       )}
 
-      <ClipadMobileNav />
-      </div>
+            </div>
     </>
   );
 }

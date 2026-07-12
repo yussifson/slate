@@ -11,7 +11,6 @@ import {
 } from 'lucide-react';
 import SpaceNotes from '@/components/clipad/SpaceNotes';
 import MeetingInsights from '@/components/clipad/MeetingInsights';
-import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import { getSpaceIcon } from '@/utils/spaceIcons';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import { useToast } from '@/components/ui/use-toast';
@@ -594,7 +593,6 @@ export default function SpaceDashboard() {
         </div>
       )}
 
-      <ClipadMobileNav />
-    </div>
+          </div>
   );
 }

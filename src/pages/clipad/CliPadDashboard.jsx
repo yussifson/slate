@@ -9,7 +9,6 @@ import {
   Users, FileText, Calendar, Mic, Target, Flame, Star, LogOut, Shield
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
-import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import { getSpaceIcon } from '@/utils/spaceIcons';
 import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
 import ThemeToggle from '@/components/layout/ThemeToggle';
@@ -468,7 +467,6 @@ export default function CliPadDashboard() {
           </div>
         </div>
       </div>
-      <ClipadMobileNav />
     </div>
   );
 }

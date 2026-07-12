@@ -8,7 +8,6 @@ import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import { isAdmin } from '@/lib/constants';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import ClipadLoader from '@/components/ui/ClipadLoader';
@@ -344,7 +343,6 @@ export default function VideoAnalytics() {
             </div>
           </div>
         </div>
-        <ClipadMobileNav />
-      </div>
+              </div>
   );
 }

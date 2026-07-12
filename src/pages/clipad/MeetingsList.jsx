@@ -8,7 +8,6 @@ import { useAuth } from '@/lib/AuthContext';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
 export default function MeetingsList() {
   const { user } = useAuth();
@@ -226,7 +225,6 @@ export default function MeetingsList() {
           </div>
         )}
       </div>
-      <ClipadMobileNav />
-    </div>
+          </div>
   );
 }

@@ -961,11 +961,10 @@ CREATE TABLE IF NOT EXISTS public.component_registry (
 
 ALTER TABLE public.component_registry ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "component_registry_all_access" ON public.component_registry;
-
-CREATE POLICY "component_registry_all_access" ON public.component_registry
-  FOR ALL USING (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()));
+-- DROP POLICY IF EXISTS "component_registry_all_access" ON public.component_registry;
+-- CREATE POLICY "component_registry_all_access" ON public.component_registry
+--   FOR ALL USING (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()))
+--   WITH CHECK (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()));
 
 GRANT ALL ON public.component_registry TO authenticated, service_role;
 
@@ -978,11 +977,10 @@ CREATE TABLE IF NOT EXISTS public.industry_templates (
 
 ALTER TABLE public.industry_templates ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "industry_templates_all_access" ON public.industry_templates;
-
-CREATE POLICY "industry_templates_all_access" ON public.industry_templates
-  FOR ALL USING (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()));
+-- DROP POLICY IF EXISTS "industry_templates_all_access" ON public.industry_templates;
+-- CREATE POLICY "industry_templates_all_access" ON public.industry_templates
+--   FOR ALL USING (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()))
+--   WITH CHECK (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()));
 
 GRANT ALL ON public.industry_templates TO authenticated, service_role;
 

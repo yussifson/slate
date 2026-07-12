@@ -12,7 +12,6 @@ import { getSpaceIcon } from '@/utils/spaceIcons';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationsDropdown from '@/components/clipad/NotificationsDropdown';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import PaywallModal from '@/components/clipad/PaywallModal';
 
 const COLORS = [
@@ -286,7 +285,6 @@ export default function SpacesList() {
         limitDescription={`You have reached the maximum limit of ${getLimit(user, 'maxTeamSpaces')} spaces on your current plan.`}
       />
 
-      <ClipadMobileNav />
-    </div>
+          </div>
   );
 }

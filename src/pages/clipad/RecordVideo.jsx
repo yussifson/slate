@@ -10,7 +10,6 @@ import { useAuth } from '@/lib/AuthContext';
 import { getLimit } from '@/lib/clipadPricing';
 import PaywallModal from '@/components/clipad/PaywallModal';
 import { useNavigate } from 'react-router-dom';
-import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
 
 const MODES = [
@@ -1049,8 +1048,7 @@ export default function RecordVideo() {
           </div>
         )}
       </div>
-      <ClipadMobileNav />
-
+      
       <PaywallModal
         isOpen={showPaywall}
         onClose={() => setShowPaywall(false)}

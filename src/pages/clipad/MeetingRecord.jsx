@@ -11,7 +11,6 @@ import {
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ClipadLoader from '@/components/ui/ClipadLoader';
-import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -477,7 +476,6 @@ export default function MeetingRecord() {
         </div>
       )}
 
-      <ClipadMobileNav />
-    </div>
+          </div>
   );
 }
