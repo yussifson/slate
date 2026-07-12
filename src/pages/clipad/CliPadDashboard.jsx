@@ -146,7 +146,7 @@ function ActionItemRow({ item }) {
 }
 
 export default function CliPadDashboard() {
-  const { user, profile, logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [spaces, setSpaces] = useState([]);
   const [videos, setVideos] = useState([]);
@@ -295,7 +295,7 @@ export default function CliPadDashboard() {
                 <Settings className="mr-2 h-4 w-4" />
                 <span>Settings</span>
               </DropdownMenuItem>
-              {profile?.role === 'super_admin' && (
+              {user?.role === 'super_admin' && (
                 <>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate('/clipad/admin')} className="cursor-pointer bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400">
