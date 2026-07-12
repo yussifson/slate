@@ -4,6 +4,7 @@ import { supabase } from "@/api/supabaseClient";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { useTranslation } from "react-i18next";
 import { getSubdomainAndBase } from "@/lib/domainUtils";
+import { logAuditEvent } from "@/lib/auditLogger";
 
 export default function SSOCallback() {
   const { t } = useTranslation();
@@ -56,6 +57,10 @@ export default function SSOCallback() {
 
         // Check if user has a company
         const userId = sessionData?.session?.user?.id;
+        if (userId) {
+          // Log successful SSO login
+          logAuditEvent({ action: 'login', user: sessionData.session.user });
+        }
         if (userId) {
           const { data: profile } = await supabase.from('profiles').select('company_id').eq('id', userId).single();
           if (!profile?.company_id && !sessionData?.session?.user?.user_metadata?.company_id) {

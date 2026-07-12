@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/api/supabaseClient';
+import { logAuditEvent } from '@/lib/auditLogger';
 import { useToast } from '@/components/ui/use-toast';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
@@ -24,21 +25,7 @@ export default function CliPadLogin() {
   };
 
   const logLoginEvent = async (user) => {
-    try {
-      const ipRes = await fetch('https://ipapi.co/json/');
-      const ipData = await ipRes.json();
-      await supabase.from('audit_logs').insert({
-        action: 'login',
-        user_id: user.id,
-        user_email: user.email,
-        user_name: user.user_metadata?.full_name || user.email,
-        ip_address: ipData.ip || 'Unknown',
-        details: `City: ${ipData.city || 'Unknown'}, Country: ${ipData.country_name || 'Unknown'}`,
-        company_id: user.user_metadata?.company_id || null
-      });
-    } catch(e) {
-      console.error('Audit log failed', e);
-    }
+    await logAuditEvent({ action: 'login', user });
   };
 
   const handleEmailLogin = async (e) => {

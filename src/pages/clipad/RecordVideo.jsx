@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
+import { logAuditEvent } from '@/lib/auditLogger';
 import { useAuth } from '@/lib/AuthContext';
 import { getPlanLimits, getUserPlan } from '@/lib/clipadPricing';
 import PaywallModal from '@/components/clipad/PaywallModal';

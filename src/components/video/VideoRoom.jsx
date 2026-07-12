@@ -24,6 +24,7 @@ import { useTheme } from "@/lib/ThemeContext";
 import CanvasWhiteboard from '@/components/clipad/CanvasWhiteboard';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { supabase } from '@/api/supabaseClient';
+import { logAuditEvent } from '@/lib/auditLogger';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature, getLimit } from '@/lib/clipadPricing';
 import { useCompanyPlan } from '@/hooks/useCompanyPlan';
@@ -952,6 +953,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
               }
 
               toast({ title: 'Recording Saved', description: 'Video has been successfully uploaded.' });
+              logAuditEvent({ action: 'video_recorded', user, details: 'Recorded Live Meeting' });
             }
           } catch (e) {
             console.error(e);
@@ -1299,6 +1301,8 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
 
    if (cancelled) return;
    setDaily(callObject);
+    // Log meeting join
+    logAuditEvent({ action: 'meeting_created', user, details: `Joined Meeting Room: ${roomUrl.split('/').pop()}` });
   };
 
   initDaily().catch(console.error);
