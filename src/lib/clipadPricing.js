@@ -4,6 +4,8 @@ export const PLAN_LIMITS = {
   free: {
     maxParticipants: 10,
     maxVideoRecordingsPerMonth: 10,
+    maxStorageGB: 2,
+    maxStorageGB: 2,
     maxTeamSpaces: 5,
     maxAsyncVideoDurationSeconds: 15 * 60, // 15 minutes limit on free
     hasAdvancedAI: false,
@@ -17,6 +19,8 @@ export const PLAN_LIMITS = {
   pro: {
     maxParticipants: 300,
     maxVideoRecordingsPerMonth: Infinity,
+    maxStorageGB: 15,
+    maxStorageGB: 15,
     maxTeamSpaces: Infinity,
     maxAsyncVideoDurationSeconds: 60 * 60, // 1 hour
     hasAdvancedAI: true,
@@ -30,6 +34,8 @@ export const PLAN_LIMITS = {
   enterprise: {
     maxParticipants: Infinity,
     maxVideoRecordingsPerMonth: Infinity,
+    maxStorageGB: Infinity,
+    maxStorageGB: 15,
     maxTeamSpaces: Infinity,
     maxAsyncVideoDurationSeconds: Infinity,
     hasAdvancedAI: true,

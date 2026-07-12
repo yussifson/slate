@@ -379,7 +379,7 @@ export default function CanvasWhiteboard({ onClose }) {
         <div className="flex items-center gap-0.5 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
           {TOOLS.map(t => (
             <button key={t.id} onClick={() => setTool(t.id)} title={`${t.label} (${t.shortcut})`}
-              className={`w-8 h-8 rounded-lg text-sm font-medium flex items-center justify-center transition-all ${tool === t.id ? 'bg-indigo-600 text-white shadow-sm' : 'hover:bg-slate-100 text-slate-600'}`}>
+              className={`w-8 h-8 rounded-lg text-sm font-medium flex items-center justify-center transition-all ${tool === t.id ? 'bg-emerald-600 text-white shadow-sm' : 'hover:bg-slate-100 text-slate-600'}`}>
               {t.icon}
             </button>
           ))}
@@ -397,7 +397,7 @@ export default function CanvasWhiteboard({ onClose }) {
               {PALETTE.map(c => (
                 <button key={c} onClick={() => { setColor(c); setShowPalette(false); }}
                   className="w-6 h-6 rounded-full border border-slate-200 hover:scale-125 transition-transform shadow-sm"
-                  style={{ background: c, outline: color === c ? '2px solid #6366f1' : 'none', outlineOffset: 2 }} />
+                  style={{ background: c, outline: color === c ? '2px solid #059669' : 'none', outlineOffset: 2 }} />
               ))}
               <input type="color" value={color} onChange={e => setColor(e.target.value)}
                 className="w-6 h-6 rounded-full cursor-pointer border-0 p-0 bg-transparent" title="Custom color" />
@@ -409,7 +409,7 @@ export default function CanvasWhiteboard({ onClose }) {
         <div className="flex items-center gap-0.5 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
           {SIZES.map(s => (
             <button key={s} onClick={() => setSize(s)}
-              className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${size === s ? 'bg-indigo-600' : 'hover:bg-slate-100'}`}>
+              className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${size === s ? 'bg-emerald-600' : 'hover:bg-slate-100'}`}>
               <div className="rounded-full bg-current" style={{ width: Math.min(s + 2, 16), height: Math.min(s + 2, 16), color: size === s ? 'white' : '#334155' }} />
             </button>
           ))}
@@ -420,7 +420,7 @@ export default function CanvasWhiteboard({ onClose }) {
             {STICKY_COLORS.map(c => (
               <button key={c} onClick={() => setStickyColor(c)}
                 className="w-6 h-6 rounded-full border-2 hover:scale-110 transition-transform"
-                style={{ background: c, borderColor: stickyColor === c ? '#6366f1' : 'transparent' }} />
+                style={{ background: c, borderColor: stickyColor === c ? '#059669' : 'transparent' }} />
             ))}
           </div>
         )}
@@ -432,28 +432,27 @@ export default function CanvasWhiteboard({ onClose }) {
           <button onClick={undo} title="Undo (Ctrl+Z)" className="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-sm">↩</button>
           <button onClick={redo} title="Redo (Ctrl+Y)" className="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-sm">↪</button>
           <button onClick={() => setShowGrid(g => !g)} title="Toggle grid"
-            className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${showGrid ? 'bg-indigo-600 text-white' : 'hover:bg-slate-100 text-slate-600'}`}>⊞</button>
+            className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${showGrid ? 'bg-emerald-600 text-white' : 'hover:bg-slate-100 text-slate-600'}`}>⊞</button>
           <button onClick={download} title="Export PNG" className="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-600 text-sm">💾</button>
           <button onClick={clearBoard} title="Clear" className="w-8 h-8 rounded-lg hover:bg-red-50 flex items-center justify-center text-red-500 text-sm">🗑</button>
         </div>
 
-        {/* Zoom */}
         <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-xl px-2 py-1 shadow-sm text-xs font-semibold text-slate-600">
           <button onClick={() => setZoom(z => Math.max(0.2, z - 0.1))} className="w-5 h-5 rounded hover:bg-slate-100 flex items-center justify-center font-bold">−</button>
           <span className="w-10 text-center">{zoomPct}%</span>
           <button onClick={() => setZoom(z => Math.min(5, z + 0.1))} className="w-5 h-5 rounded hover:bg-slate-100 flex items-center justify-center font-bold">+</button>
-          <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="ml-1 text-indigo-500 hover:text-indigo-700" title="Reset view">⊙</button>
+          <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="ml-1 text-emerald-500 hover:text-emerald-700" title="Reset view">⊙</button>
         </div>
 
         {/* Close */}
         <button onClick={onClose}
-          className="ml-auto px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5">
+          className="ml-auto px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-all flex items-center gap-1.5">
           ✕ Close
         </button>
       </div>
 
       {/* Hint bar */}
-      <div className="flex items-center justify-between px-4 py-1 bg-indigo-50 border-b border-indigo-100 text-[10px] text-indigo-400 font-medium flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-1.5 bg-emerald-50 border-b border-emerald-100 text-[11px] text-emerald-700 font-semibold flex-shrink-0">
         <span>Alt+drag or middle-mouse = Pan · Scroll = Zoom · Press 0 = Reset view · Ctrl+Z/Y = Undo/Redo</span>
         <span>Tool shortcuts: {TOOLS.map(t => `${t.shortcut}=${t.label}`).join(' · ')}</span>
       </div>

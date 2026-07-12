@@ -18,6 +18,7 @@ export default function CliPadBilling() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [receiptDetails, setReceiptDetails] = useState(null);
   const [history, setHistory] = useState([]);
+  const [usedStorageGB, setUsedStorageGB] = useState(0);
 
   useEffect(() => {
     // Load Paystack script
@@ -196,6 +197,25 @@ export default function CliPadBilling() {
         <p className="text-muted-foreground mt-2">Manage your CliPad subscription and features.</p>
       </div>
 
+      {/* Storage Progress */}
+      <div className="p-6 rounded-2xl border border-border bg-card">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="font-semibold text-foreground">Cloud Storage Usage</h3>
+          <span className="text-sm text-muted-foreground">
+            {usedStorageGB.toFixed(2)} GB / {PLAN_LIMITS[currentPlan]?.maxStorageGB === Infinity ? 'Unlimited' : `${PLAN_LIMITS[currentPlan]?.maxStorageGB} GB`} Used
+          </span>
+        </div>
+        <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3 mb-1 overflow-hidden">
+          <div 
+            className={`h-3 rounded-full transition-all duration-500 ${PLAN_LIMITS[currentPlan]?.maxStorageGB !== Infinity && (usedStorageGB / PLAN_LIMITS[currentPlan]?.maxStorageGB) > 0.9 ? 'bg-red-500' : 'bg-primary'}`}
+            style={{ width: `${PLAN_LIMITS[currentPlan]?.maxStorageGB === Infinity ? (usedStorageGB > 0 ? 5 : 0) : Math.min(100, (usedStorageGB / PLAN_LIMITS[currentPlan]?.maxStorageGB) * 100)}%` }}
+          ></div>
+        </div>
+        {PLAN_LIMITS[currentPlan]?.maxStorageGB !== Infinity && (usedStorageGB / PLAN_LIMITS[currentPlan]?.maxStorageGB) > 0.9 && (
+          <p className="text-xs text-red-500 mt-2">You are approaching your storage limit. Upgrade your plan to continue recording.</p>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* FREE PLAN */}
         <div className={`p-6 rounded-2xl border ${currentPlan === 'free' ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}>
@@ -204,7 +224,7 @@ export default function CliPadBilling() {
           <ul className="mt-6 space-y-3">
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 10 Video Meetings</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Basic AI Summaries</li>
-            <li className="flex items-center gap-2 text-sm text-muted-foreground"><Check className="w-4 h-4 text-slate-300 dark:text-slate-700" /> No Cloud Recordings</li>
+            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 2GB Cloud Storage</li>
           </ul>
           <button disabled className="w-full mt-8 py-2 rounded-xl bg-secondary text-foreground font-semibold border border-border">
             {currentPlan === 'free' ? 'Current Plan' : 'Downgrade'}
@@ -226,7 +246,7 @@ export default function CliPadBilling() {
           <ul className="mt-6 space-y-3">
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Unlimited Meetings</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Advanced AI Action Items</li>
-            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Cloud Recordings (Daily.co)</li>
+            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 15GB Cloud Storage</li>
           </ul>
           <button 
             onClick={() => handleUpgrade('pro')}
@@ -247,6 +267,7 @@ export default function CliPadBilling() {
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Dedicated Account Manager</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Custom Payment Subdomains</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Enterprise SLAs</li>
+            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Unlimited Cloud Storage</li>
           </ul>
           <button 
             onClick={() => handleUpgrade('enterprise')}

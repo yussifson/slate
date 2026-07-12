@@ -269,8 +269,25 @@ export default function RecordVideo() {
   };
 
   const startRecording = async () => {
-    // Plan Limit Check: Check if user has exceeded monthly recordings
+    // Plan Limit Check: Check if user has exceeded storage or monthly recordings
     try {
+      const maxStorageGB = getLimit(user, 'maxStorageGB') || 2;
+      
+      // Check total storage used (heuristic: 1 min = 15MB)
+      const { data: vids } = await supabase.from('clipad_videos').select('duration_seconds').eq('creator_id', user.id);
+      if (vids) {
+        const totalSeconds = vids.reduce((acc, curr) => acc + (curr.duration_seconds || 0), 0);
+        const totalGB = (totalSeconds * 0.25) / 1024;
+        if (maxStorageGB !== Infinity && totalGB >= maxStorageGB) {
+          setPaywallProps({
+            featureName: "Cloud Storage Limit Reached",
+            limitDescription: `You have reached the maximum storage limit of ${maxStorageGB}GB for your current plan. Please upgrade to record more videos.`
+          });
+          setShowPaywall(true);
+          return;
+        }
+      }
+
       const maxRecordings = getLimit(user, 'maxVideoRecordingsPerMonth');
       if (maxRecordings !== Infinity) {
         const firstDayOfMonth = new Date();

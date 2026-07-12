@@ -861,6 +861,19 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
       }
     } else {
       try {
+        // --- STORAGE LIMIT CHECK ---
+        const maxStorageGB = getLimit(user, 'maxStorageGB') || 2;
+        const { data: vids } = await supabase.from('clipad_videos').select('duration_seconds').eq('creator_id', user.id);
+        if (vids) {
+          const totalSeconds = vids.reduce((acc, curr) => acc + (curr.duration_seconds || 0), 0);
+          const totalGB = (totalSeconds * 0.25) / 1024;
+          if (maxStorageGB !== Infinity && totalGB >= maxStorageGB) {
+            toast({ title: 'Storage Limit Reached', description: `You have used your ${maxStorageGB}GB limit. Upgrade to record more.`, variant: 'destructive' });
+            return;
+          }
+        }
+        // ---------------------------
+        
         const displayStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
         let micStream;
         try {
