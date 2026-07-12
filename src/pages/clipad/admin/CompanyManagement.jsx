@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { useImpersonation } from '@/lib/ImpersonationContext';
-import { MoreVertical, UserX, Shield, LogIn, Trash2, ArrowUpCircle } from 'lucide-react';
+import { MoreVertical, UserX, Shield, LogIn, Trash2 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { OrbitLoader } from '@/components/ui/orbit-loader';
@@ -10,6 +10,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 export default function CompanyManagement() {
   const [companies, setCompanies] = useState([]);
+  const [pricingTags, setPricingTags] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { startImpersonation } = useImpersonation();
@@ -17,7 +18,13 @@ export default function CompanyManagement() {
 
   useEffect(() => {
     fetchCompanies();
+    fetchPricingTags();
   }, []);
+
+  async function fetchPricingTags() {
+    const { data } = await supabase.from('clipad_pricing_tags').select('id, name');
+    if (data) setPricingTags(data);
+  }
 
   async function fetchCompanies() {
     setLoading(true);
@@ -27,6 +34,16 @@ export default function CompanyManagement() {
     }
     setLoading(false);
   }
+
+  const handleUpdateCliPadPlan = async (companyId, tagId) => {
+    const { error } = await supabase.from('companies').update({ pricing_tag_id: tagId }).eq('id', companyId);
+    if (!error) {
+      fetchCompanies();
+      toast({ title: "Plan Updated", description: "Company plan has been updated." });
+    } else {
+      toast({ title: "Update Failed", description: error.message, variant: "destructive" });
+    }
+  };
 
   const handleImpersonate = async (company) => {
     toast({
@@ -78,7 +95,6 @@ export default function CompanyManagement() {
               <TableHead>Company Name</TableHead>
               <TableHead>Subdomain</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>System Source</TableHead>
               <TableHead>Slate Plan</TableHead>
               <TableHead>CliPad Plan</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -95,21 +111,26 @@ export default function CompanyManagement() {
                   </span>
                 </TableCell>
                 <TableCell>
-                  {company.subscription_plan ? (
-                    <span className="px-2 py-1 bg-slate-800 text-slate-100 rounded-md text-[10px] font-bold uppercase tracking-wider">Slate Member</span>
-                  ) : (
-                    <span className="px-2 py-1 bg-indigo-500/10 text-indigo-500 rounded-md text-[10px] font-bold uppercase tracking-wider">CliPad Only</span>
-                  )}
-                </TableCell>
-                <TableCell>
                   <span className="capitalize px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-md text-xs font-medium">
                     {company.subscription_plan || 'N/A'}
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span className="capitalize px-2 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-md text-xs font-bold">
-                    {company.clipad_pricing_tags?.name || 'Free Tier'}
-                  </span>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="capitalize px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-md text-xs font-bold hover:bg-emerald-500/20 transition-colors cursor-pointer border-none outline-none focus:ring-0">
+                      {company.clipad_pricing_tags?.name || 'Free Tier'}
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={() => handleUpdateCliPadPlan(company.id, null)}>
+                        Free Tier
+                      </DropdownMenuItem>
+                      {pricingTags.map(tag => (
+                        <DropdownMenuItem key={tag.id} onClick={() => handleUpdateCliPadPlan(company.id, tag.id)}>
+                          {tag.name}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
@@ -134,7 +155,7 @@ export default function CompanyManagement() {
             ))}
             {companies.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                   No companies found.
                 </TableCell>
               </TableRow>
