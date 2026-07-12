@@ -851,7 +851,31 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
       }
     } else {
       try {
-        const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+        const displayStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+        let micStream;
+        try {
+          micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        } catch (e) {
+          console.warn("No microphone access, recording without mic audio.", e);
+        }
+
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const dest = audioContext.createMediaStreamDestination();
+
+        if (displayStream.getAudioTracks().length > 0) {
+          const displaySource = audioContext.createMediaStreamSource(displayStream);
+          displaySource.connect(dest);
+        }
+        if (micStream && micStream.getAudioTracks().length > 0) {
+          const micSource = audioContext.createMediaStreamSource(micStream);
+          micSource.connect(dest);
+        }
+
+        const combinedStream = new MediaStream([
+          ...displayStream.getVideoTracks(),
+          ...dest.stream.getTracks()
+        ]);
+
         recordedChunksRef.current = [];
         
         let options = { mimeType: 'video/webm' };
@@ -861,7 +885,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
           options.mimeType = 'video/webm; codecs=vp8';
         }
         
-        const mediaRecorder = new MediaRecorder(stream, options);
+        const mediaRecorder = new MediaRecorder(combinedStream, options);
         
         mediaRecorder.ondataavailable = (e) => {
           if (e.data.size > 0) {
@@ -878,8 +902,24 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
             if (error) throw error;
             const { data } = db.storage.from('clipad_videos').getPublicUrl(fileName);
             if (data?.publicUrl) {
-              setMeetingVideoUrl(data.publicUrl);
-              meetingVideoUrlRef.current = data.publicUrl;
+              const videoUrl = data.publicUrl;
+              setMeetingVideoUrl(videoUrl);
+              meetingVideoUrlRef.current = videoUrl;
+
+              // Insert into clipad_videos so we can attach comments and reactions to it!
+              try {
+                await db.from('clipad_videos').insert({
+                  user_id: user?.id,
+                  space_id: spaceId,
+                  title: meetingTitle || 'Meeting Recording',
+                  description: 'Meeting recording uploaded automatically.',
+                  video_url: videoUrl,
+                  is_public: true
+                });
+              } catch (err) {
+                console.error("Failed to insert into clipad_videos", err);
+              }
+
               toast({ title: 'Recording Saved', description: 'Video has been successfully uploaded.' });
             }
           } catch (e) {
@@ -888,7 +928,9 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
           } finally {
             setIsUploading(false);
           }
-          stream.getTracks().forEach(track => track.stop());
+          displayStream.getTracks().forEach(track => track.stop());
+          if (micStream) micStream.getTracks().forEach(track => track.stop());
+          audioContext.close();
         };
         
         mediaRecorderRef.current = mediaRecorder;

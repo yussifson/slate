@@ -50,6 +50,8 @@ function SectionCard({ icon: Icon, iconColor, title, badge, defaultOpen = true, 
   );
 }
 
+import RichVideoPlayer from '@/components/video/RichVideoPlayer';
+
 function ActionItemRow({ item, onUpdate }) {
   const [done, setDone] = useState(item.is_complete);
   const toggle = async () => {
@@ -306,20 +308,13 @@ export default function MeetingRecord() {
           </div>
           <div className="mt-4">
             {meeting.video_url ? (
-              <a 
-                href={meeting.video_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-white font-bold shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5"
-              >
-                <Play className="w-4 h-4" /> Watch Recording
-              </a>
+              <RichVideoPlayer videoUrl={meeting.video_url} />
             ) : (
               <button 
                 onClick={() => {
                   toast({ title: 'Recording Loading', description: 'Your recording is being processed by the cloud provider and will be available shortly.' });
                 }}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold transition-all hover:-translate-y-0.5"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold transition-all hover:-translate-y-0.5 mt-4 mb-8"
               >
                 <Video className="w-4 h-4" /> Recording Pending...
               </button>

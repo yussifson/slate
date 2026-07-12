@@ -39,8 +39,8 @@ CREATE INDEX IF NOT EXISTS idx_re_team_members_company ON public.univ_re_team_me
 ALTER TABLE public.univ_re_team_members ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "re_team_members_all_access" ON public.univ_re_team_members;
 CREATE POLICY "re_team_members_all_access" ON public.univ_re_team_members
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+  FOR ALL USING (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()));
 GRANT ALL ON public.univ_re_team_members TO authenticated, service_role;
 
 -- ============================================================
@@ -76,8 +76,8 @@ CREATE INDEX IF NOT EXISTS idx_re_mls_listings_company ON public.univ_re_mls_lis
 ALTER TABLE public.univ_re_mls_listings ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "re_mls_listings_all_access" ON public.univ_re_mls_listings;
 CREATE POLICY "re_mls_listings_all_access" ON public.univ_re_mls_listings
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+  FOR ALL USING (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()));
 GRANT ALL ON public.univ_re_mls_listings TO authenticated, service_role;
 
 -- ============================================================
@@ -110,8 +110,8 @@ CREATE INDEX IF NOT EXISTS idx_re_comparable_analysis_company ON public.univ_re_
 ALTER TABLE public.univ_re_comparable_analysis ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "re_comparable_analysis_all_access" ON public.univ_re_comparable_analysis;
 CREATE POLICY "re_comparable_analysis_all_access" ON public.univ_re_comparable_analysis
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+  FOR ALL USING (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()));
 GRANT ALL ON public.univ_re_comparable_analysis TO authenticated, service_role;
 
 -- ============================================================
@@ -138,8 +138,8 @@ CREATE INDEX IF NOT EXISTS idx_re_market_trends_company ON public.univ_re_market
 ALTER TABLE public.univ_re_market_trends ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "re_market_trends_all_access" ON public.univ_re_market_trends;
 CREATE POLICY "re_market_trends_all_access" ON public.univ_re_market_trends
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+  FOR ALL USING (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()));
 GRANT ALL ON public.univ_re_market_trends TO authenticated, service_role;
 
 -- ============================================================
@@ -171,8 +171,8 @@ CREATE INDEX IF NOT EXISTS idx_re_leads_company ON public.univ_re_leads(company_
 ALTER TABLE public.univ_re_leads ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "re_leads_all_access" ON public.univ_re_leads;
 CREATE POLICY "re_leads_all_access" ON public.univ_re_leads
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+  FOR ALL USING (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()));
 GRANT ALL ON public.univ_re_leads TO authenticated, service_role;
 
 -- ============================================================
@@ -192,13 +192,15 @@ CREATE TABLE IF NOT EXISTS public.univ_re_lead_activities (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
+ALTER TABLE public.univ_re_lead_activities ADD COLUMN IF NOT EXISTS lead_id UUID;
+
 CREATE INDEX IF NOT EXISTS idx_re_lead_activities_company ON public.univ_re_lead_activities(company_id);
 CREATE INDEX IF NOT EXISTS idx_re_lead_activities_lead ON public.univ_re_lead_activities(lead_id);
 ALTER TABLE public.univ_re_lead_activities ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "re_lead_activities_all_access" ON public.univ_re_lead_activities;
 CREATE POLICY "re_lead_activities_all_access" ON public.univ_re_lead_activities
-  FOR ALL USING (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-  WITH CHECK (company_id = (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+  FOR ALL USING (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()))
+  WITH CHECK (company_id::text = (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()));
 GRANT ALL ON public.univ_re_lead_activities TO authenticated, service_role;
 
 -- ============================================================
