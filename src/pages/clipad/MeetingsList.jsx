@@ -50,7 +50,7 @@ export default function MeetingsList() {
     try {
       const { data, error } = await supabase.functions.invoke('create-daily-room', { body: { instant: true, max_participants: getLimit(user, 'maxParticipants') } });
       if (error) throw error;
-      const url = `/meet/${data.roomName}` + (spaceId ? `?spaceId=${spaceId}` : '');
+      const url = `/join/${data.name || data.roomName}` + (spaceId ? `?spaceId=${spaceId}` : '');
       navigate(url);
     } catch (err) {
       console.error(err);

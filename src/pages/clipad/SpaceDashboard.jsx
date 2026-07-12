@@ -170,12 +170,12 @@ export default function SpaceDashboard() {
   const handleJoinMeeting = async () => {
     try {
       const { data } = await supabase.functions.invoke('create-daily-room', { body: { instant: true, max_participants: getLimit(user, 'maxParticipants') } });
-      if (data?.name) {
+      if (data?.name || data?.roomName) {
         // Update space with room info
         await supabase.from('clipad_spaces').update({ meeting_url: data.url }).eq('id', spaceId);
-        navigate(`/join/${data.name}`);
+        navigate(`/join/${data.name || data.roomName}?spaceId=${spaceId}`);
       }
-    } catch { navigate(`/join/${spaceId}`); }
+    } catch { navigate(`/join/${spaceId}?spaceId=${spaceId}`); }
   };
 
   const addTask = async (e) => {
