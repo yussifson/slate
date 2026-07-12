@@ -11,6 +11,7 @@ export default function CliPadBilling() {
   const { user } = useAuth();
   const companyId = useCompanyId();
   const [currentPlan, setCurrentPlan] = useState('free');
+  const [companyName, setCompanyName] = useState('');
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
   const [exchangeRate, setExchangeRate] = useState(218 / 19); // Fallback: 218 GHS for $19
@@ -38,6 +39,14 @@ export default function CliPadBilling() {
       return;
     }
     try {
+      // 0. Fetch company name for receipts
+      const { data: companyData } = await supabase
+        .from('companies')
+        .select('name, clipad_pricing_tags(name)')
+        .eq('id', companyId)
+        .maybeSingle();
+      if (companyData?.name) setCompanyName(companyData.name);
+
       // 1. Check company_subscriptions (set by Paystack payments or admin sync trigger)
       const { data: subData } = await supabase
         .from('company_subscriptions')
@@ -119,11 +128,14 @@ export default function CliPadBilling() {
           
           setReceiptDetails({
             reference: response.reference,
+            receiptNumber: `CLIP-${Date.now().toString(36).toUpperCase()}-${planType.slice(0,3).toUpperCase()}`,
             amount: amountInPesewas,
             currency: 'GHS',
             plan: planType,
             date: new Date().toISOString(),
-            email: user?.email || 'user@example.com'
+            email: user?.email || 'user@example.com',
+            companyName: companyName || undefined,
+            isAdminAssigned: false,
           });
           
           setCurrentPlan(planType);

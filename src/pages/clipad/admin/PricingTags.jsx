@@ -52,6 +52,25 @@ export default function PricingTags() {
         updated_at: new Date().toISOString()
       }, { onConflict: 'company_id' });
 
+      // Fetch all users in this company and send them a plan_upgrade notification
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('company_id', companyId);
+
+      if (profiles && profiles.length > 0) {
+        const receiptNumber = `CLIP-${Date.now().toString(36).toUpperCase()}-${resolvedPlan.slice(0,3).toUpperCase()}`;
+        const notifRows = profiles.map(p => ({
+          user_id: p.id,
+          type: 'plan_upgrade',
+          title: `Your plan has been upgraded to ${resolvedPlan.charAt(0).toUpperCase() + resolvedPlan.slice(1)}!`,
+          message: `An admin has upgraded your CliPad workspace to the ${resolvedPlan.toUpperCase()} plan. Receipt: ${receiptNumber}`,
+          link: '/clipad/billing',
+          is_read: false,
+        }));
+        await supabase.from('clipad_notifications').insert(notifRows);
+      }
+
       toast({
         title: "Plan Updated Successfully",
         description: `The company's CliPad plan has been upgraded to ${tagName || 'Free Tier'}.`
@@ -65,6 +84,7 @@ export default function PricingTags() {
       });
     }
   };
+
 
   const handleSaveTag = async (e) => {
     e.preventDefault();

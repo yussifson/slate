@@ -37,7 +37,7 @@ serve(async (req) => {
     const email = user.user.email
 
     // 2. Map notification types to external emails
-    if (RESEND_API_KEY && ['ai_summary', 'space_invite', 'comment', 'login_alert'].includes(record.type)) {
+    if (RESEND_API_KEY && ['ai_summary', 'space_invite', 'comment', 'login_alert', 'plan_upgrade'].includes(record.type)) {
       
       const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
