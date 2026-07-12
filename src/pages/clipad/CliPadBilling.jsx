@@ -61,13 +61,7 @@ export default function CliPadBilling() {
         return;
       }
 
-      // 2. Fallback: read from companies.pricing_tag_id (set by super-admin directly)
-      const { data: companyData } = await supabase
-        .from('companies')
-        .select('pricing_tag_id, clipad_pricing_tags(name)')
-        .eq('id', companyId)
-        .maybeSingle();
-
+      // 2. Fallback: read from companies.pricing_tag_id (already fetched in step 0)
       if (companyData?.clipad_pricing_tags?.name) {
         const tagName = companyData.clipad_pricing_tags.name.toLowerCase();
         if (tagName.includes('enterprise')) {

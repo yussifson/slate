@@ -158,7 +158,7 @@ export default function CliPadSettings() {
   
         <CliPadTeamSettings />
         </>
-      )}}
+      )}
 
             {/* Profile */}
             {activeTab === 'profile' && (
