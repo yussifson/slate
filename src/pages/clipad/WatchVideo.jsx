@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import ClipadLoader from '@/components/ui/ClipadLoader';
+import VideoDownloadModal from '@/components/clipad/VideoDownloadModal';
+import { Download } from 'lucide-react';
 import DictationButton from '@/components/ui/DictationButton';
 
 const EMOJIS = ['👍','❤️','🔥','😂','🎉','🤯'];
@@ -63,6 +65,8 @@ export default function WatchVideo() {
   const [editTitle, setEditTitle] = useState('');
   const [editDesc, setEditDesc] = useState('');
   const [savingEdit, setSavingEdit] = useState(false);
+  const [blobUrl, setBlobUrl] = useState(null);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
 
   const lastReactionTime = useRef(-1);
 
@@ -79,7 +83,10 @@ export default function WatchVideo() {
       })
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => { 
+      supabase.removeChannel(channel); 
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+    };
   }, [videoId]);
 
   const fetchAll = async () => {
@@ -94,6 +101,22 @@ export default function WatchVideo() {
         setVideo(videoRes.data);
         setEditTitle(videoRes.data.title || '');
         setEditDesc(videoRes.data.description || '');
+        
+        // Secure Playback: Convert file path to signed URL, then to in-memory Blob
+        // This prevents the raw URL from being accessible in DevTools network tab
+        if (videoRes.data.file_name) {
+          try {
+            const { data: signedData } = await supabase.storage.from('clipad_videos').createSignedUrl(videoRes.data.file_name, 60 * 10);
+            if (signedData?.signedUrl) {
+              const res = await fetch(signedData.signedUrl);
+              const blob = await res.blob();
+              const objectUrl = URL.createObjectURL(blob);
+              setBlobUrl(objectUrl);
+            }
+          } catch (err) {
+            console.error("Failed to load secure video blob", err);
+          }
+        }
       }
       
       let finalComments = commentsRes.data || [];
@@ -333,6 +356,15 @@ export default function WatchVideo() {
           </div>
         </nav>
 
+        <VideoDownloadModal 
+          open={showDownloadModal} 
+          onOpenChange={setShowDownloadModal} 
+          videoId={video.id} 
+          videoFileName={video.file_name}
+          videoTitle={video.title}
+          spaceId={video.space_id}
+        />
+        
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
 
           {/* Left: Video Player */}
@@ -341,13 +373,16 @@ export default function WatchVideo() {
             <div ref={playerRef} className="relative rounded-2xl overflow-hidden bg-black aspect-video group">
               <video
                 ref={videoRef}
-                src={video.video_url}
+                src={blobUrl || video.video_url}
                 className="w-full h-full object-contain"
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
                 onPlay={() => setPlaying(true)}
                 onPause={() => setPlaying(false)}
                 onEnded={() => setPlaying(false)}
+                controlsList="nodownload"
+                onContextMenu={(e) => e.preventDefault()}
+                disablePictureInPicture={false}
               />
 
               {/* Floating reactions overlay */}
@@ -433,6 +468,9 @@ export default function WatchVideo() {
                   <button onClick={(e) => { e.stopPropagation(); toggleFullScreen(); }} className="text-white/80 hover:text-white transition-colors" title="Full Screen">
                     <Maximize2 className="w-5 h-5" />
                   </button>
+                  <button onClick={(e) => { e.stopPropagation(); setShowDownloadModal(true); }} className="text-white/80 hover:text-white transition-colors ml-2" title="Download Video">
+                    <Download className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -441,8 +479,12 @@ export default function WatchVideo() {
             <div>
               <div className="flex items-start justify-between gap-4 mb-2">
                 <h1 className="text-xl font-bold text-slate-900 dark:text-white">{video.title || 'Untitled Recording'}</h1>
-                {canEdit && (
-                  <DropdownMenu>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setShowDownloadModal(true)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors" title="Download">
+                    <Download className="w-5 h-5" />
+                  </button>
+                  {canEdit && (
+                    <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors">
                         <MoreHorizontal className="w-5 h-5" />

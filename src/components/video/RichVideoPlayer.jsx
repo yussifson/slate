@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
 import DictationButton from '@/components/ui/DictationButton';
 import { Download } from 'lucide-react';
+import VideoDownloadModal from '@/components/clipad/VideoDownloadModal';
 
 const EMOJIS = ['👍', '👎', '❤️', '😂', '🔥', '🎉', '💡', '🤔'];
 
@@ -27,6 +28,7 @@ const FloatingReaction = ({ emoji, x, y, onDone }) => {
     >
       {emoji}
     </div>
+    </>
   );
 };
 
@@ -47,6 +49,8 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
   const [isRecording, setIsRecording] = useState(false);
   const [activeTab, setActiveTab] = useState('comments'); // 'comments', 'transcript'
   const [transcripts, setTranscripts] = useState([]);
+  const [blobUrl, setBlobUrl] = useState(null);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
   
   const videoRef = useRef(null);
   const playerRef = useRef(null);
@@ -58,6 +62,20 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
       const { data, error } = await db.from('clipad_videos').select('*').eq('video_url', videoUrl).maybeSingle();
       if (!error && data) {
         setVideoRecord(data);
+        
+        // Secure playback
+        if (data.file_name) {
+          try {
+            const { data: signedData } = await db.storage.from('clipad_videos').createSignedUrl(data.file_name, 60 * 10);
+            if (signedData?.signedUrl) {
+              const res = await fetch(signedData.signedUrl);
+              const blob = await res.blob();
+              setBlobUrl(URL.createObjectURL(blob));
+            }
+          } catch (err) {
+            console.error("Failed to load secure video blob", err);
+          }
+        }
       }
     }
     loadVideo();
@@ -95,7 +113,10 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
         })
         .subscribe();
 
-    return () => { db.removeChannel(sub); };
+    return () => { 
+      db.removeChannel(sub); 
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+    };
   }, [videoRecord?.id]);
 
   const handleTimeUpdate = () => {
@@ -216,7 +237,16 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 mt-4">
+    <>
+      <VideoDownloadModal 
+        open={showDownloadModal} 
+        onOpenChange={setShowDownloadModal} 
+        videoId={videoRecord?.id} 
+        videoFileName={videoRecord?.file_name}
+        videoTitle={videoRecord?.title}
+        spaceId={videoRecord?.space_id}
+      />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 mt-4">
       <style>{`
         @keyframes floatUp {
           0% { opacity: 1; transform: translateY(0) scale(1); }
@@ -228,7 +258,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
         <div ref={playerRef} className="relative rounded-2xl overflow-hidden bg-black aspect-video group shadow-xl border border-white/10">
           <video
             ref={videoRef}
-            src={videoUrl}
+            src={blobUrl || videoUrl}
             className="w-full h-full object-contain"
             onTimeUpdate={handleTimeUpdate}
             onLoadedMetadata={handleLoadedMetadata}
@@ -236,6 +266,8 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
             onPause={() => setPlaying(false)}
             onEnded={() => setPlaying(false)}
             controlsList="nodownload"
+            onContextMenu={(e) => e.preventDefault()}
+            disablePictureInPicture={false}
           />
 
           {/* Floating reactions */}
@@ -424,5 +456,6 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
         )}
       </div>
     </div>
+    </>
   );
 }
