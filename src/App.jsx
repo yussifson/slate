@@ -27,7 +27,7 @@ const MeetingsList = React.lazy(() => import('@/pages/clipad/MeetingsList'));
 const CliPadSupport = React.lazy(() => import('@/pages/clipad/CliPadSupport'));
 const ClipadChat = React.lazy(() => import('@/pages/clipad/ClipadChat'));
 const ClipadAdminLayout = React.lazy(() => import('@/components/layout/ClipadAdminLayout'));
-const AdminOverview = React.lazy(() => import('@/pages/clipad/admin/Overview'));
+const ClipadAdminOverview = React.lazy(() => import('@/pages/clipad/admin/Overview'));
 const CompanyManagement = React.lazy(() => import('@/pages/clipad/admin/CompanyManagement'));
 const PricingTags = React.lazy(() => import('@/pages/clipad/admin/PricingTags'));
 const AuditMonitor = React.lazy(() => import('@/pages/clipad/admin/AuditMonitor'));
@@ -775,7 +775,7 @@ function PlatformRoutes() {
 
       {/* Clipad Super Admin Routes */}
       <Route element={<ClipadAdminLayout />}>
-        <Route path="/clipad/admin" element={<AdminOverview />} />
+        <Route path="/clipad/admin" element={<ClipadAdminOverview />} />
         <Route path="/clipad/admin/companies" element={<CompanyManagement />} />
         <Route path="/clipad/admin/pricing" element={<PricingTags />} />
         <Route path="/clipad/admin/audit" element={<AuditMonitor />} />
