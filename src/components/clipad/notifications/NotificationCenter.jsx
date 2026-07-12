@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, Check } from 'lucide-react';
+import { Bell, Check, Video, MessageSquare, Calendar, BrainCircuit, Users } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,10 +10,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
+import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 
 export default function NotificationCenter() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -33,6 +35,13 @@ export default function NotificationCenter() {
           }, 
           (payload) => {
             fetchNotifications();
+            if (payload.eventType === 'INSERT') {
+              toast({
+                title: payload.new.title,
+                description: payload.new.message,
+                duration: 5000,
+              });
+            }
           }
         )
         .subscribe();
