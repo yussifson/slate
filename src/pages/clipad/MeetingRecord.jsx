@@ -52,6 +52,7 @@ function SectionCard({ icon: Icon, iconColor, title, badge, defaultOpen = true, 
 }
 
 import RichVideoPlayer from '@/components/video/RichVideoPlayer';
+import VideoDownloadModal from '@/components/clipad/VideoDownloadModal';
 
 function ActionItemRow({ item, onUpdate }) {
   const [done, setDone] = useState(item.is_complete);
@@ -104,6 +105,7 @@ export default function MeetingRecord() {
   const [generatingAI, setGeneratingAI] = useState(false);
   const [showFullTranscript, setShowFullTranscript] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [savingEdit, setSavingEdit] = useState(false);
   const { toast } = useToast();
@@ -274,6 +276,14 @@ export default function MeetingRecord() {
 
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
+        <VideoDownloadModal 
+          open={showDownloadModal} 
+          onOpenChange={setShowDownloadModal} 
+          videoId={meeting.id} 
+          videoUrl={meeting.video_url}
+          videoTitle={meeting.title}
+          spaceId={meeting.space_id}
+        />
         {/* Video Player */}
         <div className="mb-6">
           {meeting.video_url ? (
@@ -306,8 +316,14 @@ export default function MeetingRecord() {
           </div>
           <div className="flex items-start justify-between gap-4 mb-2">
             <h1 className="text-2xl md:text-3xl font-black text-foreground">{meeting.title || 'Team Meeting'}</h1>
-            {canEdit && (
-              <DropdownMenu>
+            <div className="flex items-center gap-2">
+              {meeting.video_url && (
+                <button onClick={() => setShowDownloadModal(true)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors mt-1" title="Download Recording">
+                  <Download className="w-5 h-5" />
+                </button>
+              )}
+              {canEdit && (
+                <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors mt-1">
                     <MoreHorizontal className="w-5 h-5" />
@@ -323,6 +339,7 @@ export default function MeetingRecord() {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
+            </div>
           </div>
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4" />{new Date(meeting.created_at).toLocaleString()}</span>

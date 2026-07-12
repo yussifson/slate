@@ -241,7 +241,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
         open={showDownloadModal} 
         onOpenChange={setShowDownloadModal} 
         videoId={videoRecord?.id} 
-        videoFileName={videoRecord?.file_name}
+        videoUrl={videoRecord?.video_url || videoUrl}
         videoTitle={videoRecord?.title}
         spaceId={videoRecord?.space_id}
       />

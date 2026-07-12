@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import React, { useState, useRef } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
-import { Download, AlertCircle, Loader2, PlayCircle, Lock } from 'lucide-react';
+import { Download, AlertCircle, Loader2, Lock, Monitor, Smartphone, Video } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 
-export default function VideoDownloadModal({ open, onOpenChange, videoId, videoFileName, videoTitle, spaceId }) {
+export default function VideoDownloadModal({ open, onOpenChange, videoUrl, videoTitle }) {
   const { user } = useAuth();
   const [downloading, setDownloading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -15,19 +15,27 @@ export default function VideoDownloadModal({ open, onOpenChange, videoId, videoF
   const [selectedQuality, setSelectedQuality] = useState('1080p');
   
   const ffmpegRef = useRef(null);
-
   const canDownload = hasFeature(user, 'hasVideoDownload');
 
   const QUALITIES = [
-    { id: '1080p', label: '1080p HD (Original)', desc: 'Best quality, fastest download', ext: 'webm' },
-    { id: '720p', label: '720p HD', desc: 'Good balance of quality and size', ext: 'mp4' },
-    { id: '480p', label: '480p SD', desc: 'Smallest file size', ext: 'mp4' }
+    { id: '1080p', label: '1080p Original', desc: 'Highest quality, raw file', ext: 'webm', icon: Monitor },
+    { id: '720p', label: '720p Standard', desc: 'Optimized for sharing', ext: 'mp4', icon: Video },
+    { id: '480p', label: '480p Data Saver', desc: 'Smallest file size', ext: 'mp4', icon: Smartphone }
   ];
+
+  const extractPathFromUrl = (url) => {
+    if (!url) return null;
+    const parts = url.split('/clipad_videos/');
+    if (parts.length > 1) {
+      // Decode URI component in case of spaces etc.
+      return decodeURIComponent(parts[1]);
+    }
+    return null;
+  };
 
   const loadFFmpeg = async () => {
     if (ffmpegRef.current) return ffmpegRef.current;
     
-    // Lazy load so we don't increase initial bundle size
     const { FFmpeg } = await import('@ffmpeg/ffmpeg');
     const { toBlobURL } = await import('@ffmpeg/util');
     
@@ -80,7 +88,6 @@ export default function VideoDownloadModal({ open, onOpenChange, videoId, videoF
     setStatusText('Loading transcoder engine...');
     setProgress(0);
     
-    // Check if SharedArrayBuffer is available (required for ffmpeg.wasm in modern browsers)
     if (typeof SharedArrayBuffer === 'undefined') {
       console.warn("SharedArrayBuffer is not available. Falling back to original download.");
       setError("Browser security restrictions prevent transcoding. Downloading original quality instead.");
@@ -93,7 +100,6 @@ export default function VideoDownloadModal({ open, onOpenChange, videoId, videoF
       const ffmpeg = await loadFFmpeg();
       
       setStatusText('Fetching original video...');
-      // Fetch into memory array buffer
       const response = await fetch(signedUrl);
       const arrayBuffer = await response.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
@@ -105,17 +111,13 @@ export default function VideoDownloadModal({ open, onOpenChange, videoId, videoF
       
       setStatusText(`Converting to ${resolution}...`);
       
-      // Scale options
-      const scaleMap = {
-        '720p': 'scale=-2:720',
-        '480p': 'scale=-2:480'
-      };
+      const scaleMap = { '720p': 'scale=-2:720', '480p': 'scale=-2:480' };
       
       await ffmpeg.exec([
         '-i', inputName,
         '-vf', scaleMap[resolution],
         '-c:v', 'libx264',
-        '-preset', 'ultrafast', // fast for browser
+        '-preset', 'ultrafast', 
         '-crf', '28',
         '-c:a', 'aac',
         outputName
@@ -130,7 +132,6 @@ export default function VideoDownloadModal({ open, onOpenChange, videoId, videoF
       triggerDownload(url, `${filename}.mp4`);
       URL.revokeObjectURL(url);
       
-      // Cleanup memory
       await ffmpeg.deleteFile(inputName);
       await ffmpeg.deleteFile(outputName);
       
@@ -157,12 +158,13 @@ export default function VideoDownloadModal({ open, onOpenChange, videoId, videoF
     setProgress(0);
     
     try {
+      const filePath = extractPathFromUrl(videoUrl);
+      if (!filePath) throw new Error("Could not parse video path from URL.");
+
       setStatusText('Securing download link...');
-      
-      // Get short-lived signed URL for downloading
       const { data, error: signError } = await supabase.storage
         .from('clipad_videos')
-        .createSignedUrl(videoFileName, 60 * 10); // 10 minutes
+        .createSignedUrl(filePath, 60 * 10);
         
       if (signError) throw signError;
       
@@ -188,101 +190,114 @@ export default function VideoDownloadModal({ open, onOpenChange, videoId, videoF
     }
   };
 
+  const handleClose = (openState) => {
+    if (!downloading) {
+      onOpenChange(openState);
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={(v) => !downloading && onOpenChange(v)}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Download className="w-5 h-5 text-primary" /> Download Video
-          </DialogTitle>
-          <DialogDescription>
-            Save this video locally to your device.
-          </DialogDescription>
-        </DialogHeader>
-
-        {!canDownload ? (
-          <div className="py-6 px-4 bg-slate-100 dark:bg-slate-800 rounded-xl text-center space-y-4">
-            <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 text-amber-600 rounded-full flex items-center justify-center mx-auto">
-              <Lock className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-slate-900 dark:text-white">Pro Feature</h3>
-              <p className="text-sm text-slate-500 mt-1">Video downloads are only available on Pro and Enterprise plans.</p>
-            </div>
-            <Button className="w-full" onClick={() => { onOpenChange(false); /* Should trigger paywall open here, can pass callback if needed */ }}>
-              Upgrade Plan
-            </Button>
-          </div>
-        ) : (
-          <div className="py-4 space-y-4">
-            {error && (
-              <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-lg text-sm flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
-                <span>{error}</span>
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-sm p-0 overflow-hidden bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl">
+        <div className="p-6">
+          <DialogHeader className="mb-6">
+            <DialogTitle className="flex flex-col items-center gap-3 text-center">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Download className="w-6 h-6 text-primary" />
               </div>
-            )}
+              <span className="text-xl font-bold text-slate-900 dark:text-white">Download Video</span>
+            </DialogTitle>
+          </DialogHeader>
 
-            {!downloading ? (
-              <div className="space-y-3">
-                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Select Quality</label>
-                <div className="space-y-2">
-                  {QUALITIES.map(q => (
-                    <button
-                      key={q.id}
-                      onClick={() => setSelectedQuality(q.id)}
-                      className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all ${
-                        selectedQuality === q.id 
-                          ? 'border-primary bg-primary/5 shadow-sm' 
-                          : 'border-slate-200 dark:border-slate-700 hover:border-primary/40'
-                      }`}
-                    >
-                      <div>
-                        <div className={`font-medium ${selectedQuality === q.id ? 'text-primary' : 'text-slate-700 dark:text-slate-300'}`}>
-                          {q.label}
-                        </div>
-                        <div className="text-xs text-slate-500 mt-0.5">{q.desc}</div>
-                      </div>
-                      <div className="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
-                        .{q.ext}
-                      </div>
-                    </button>
-                  ))}
+          {!canDownload ? (
+            <div className="text-center space-y-5">
+              <div className="w-16 h-16 bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/40 dark:to-amber-900/10 text-amber-600 rounded-2xl flex items-center justify-center mx-auto shadow-sm border border-amber-200/50 dark:border-amber-700/30">
+                <Lock className="w-7 h-7" />
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white text-lg">Pro Feature</h3>
+                <p className="text-sm text-slate-500 mt-1.5 leading-relaxed px-2">Video downloads are exclusively available on Pro and Enterprise plans.</p>
+              </div>
+              <Button className="w-full rounded-xl py-6 font-semibold" onClick={() => onOpenChange(false)}>
+                Upgrade to Download
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {error && (
+                <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-xl text-xs font-medium flex items-start gap-2 border border-red-100 dark:border-red-900/30">
+                  <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                  <span>{error}</span>
                 </div>
-              </div>
-            ) : (
-              <div className="py-6 text-center space-y-4">
-                <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
-                <div>
-                  <div className="text-sm font-medium text-slate-700 dark:text-slate-300">{statusText}</div>
-                  {progress > 0 && (
-                    <div className="text-2xl font-black text-primary mt-2">{progress}%</div>
+              )}
+
+              {!downloading ? (
+                <div className="space-y-3">
+                  {QUALITIES.map(q => {
+                    const Icon = q.icon;
+                    return (
+                      <button
+                        key={q.id}
+                        onClick={() => setSelectedQuality(q.id)}
+                        className={`w-full flex items-center p-3.5 rounded-xl border-2 text-left transition-all group ${
+                          selectedQuality === q.id 
+                            ? 'border-primary bg-primary/5 shadow-sm' 
+                            : 'border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900/50'
+                        }`}
+                      >
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 transition-colors ${selectedQuality === q.id ? 'bg-primary/10 text-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300'}`}>
+                          <Icon className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1">
+                          <div className={`font-bold text-sm ${selectedQuality === q.id ? 'text-primary' : 'text-slate-700 dark:text-slate-300'}`}>
+                            {q.label}
+                          </div>
+                          <div className="text-xs text-slate-500 mt-0.5">{q.desc}</div>
+                        </div>
+                        <div className={`text-[10px] font-bold font-mono px-2 py-1 rounded-md uppercase tracking-wider ${selectedQuality === q.id ? 'bg-primary/10 text-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+                          {q.ext}
+                        </div>
+                      </button>
+                    )
+                  })}
+                  
+                  <div className="flex gap-3 pt-4">
+                    <Button variant="outline" className="flex-1 rounded-xl" onClick={() => onOpenChange(false)}>
+                      Cancel
+                    </Button>
+                    <Button className="flex-1 rounded-xl shadow-md" onClick={handleDownload}>
+                      Download
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="py-8 text-center space-y-5">
+                  <div className="relative w-16 h-16 mx-auto">
+                    <Loader2 className="w-16 h-16 animate-spin text-primary/20" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Download className="w-6 h-6 text-primary animate-pulse" />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-slate-900 dark:text-white">{statusText}</div>
+                    {progress > 0 && (
+                      <div className="text-3xl font-black text-primary mt-2">{progress}%</div>
+                    )}
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-primary transition-all duration-300 ease-out"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                  {selectedQuality !== '1080p' && typeof SharedArrayBuffer !== 'undefined' && (
+                    <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Processing securely on your device</p>
                   )}
                 </div>
-                {/* Progress bar */}
-                <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-primary transition-all duration-300 ease-out"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                {selectedQuality !== '1080p' && typeof SharedArrayBuffer !== 'undefined' && (
-                  <p className="text-xs text-slate-500 mt-2">Transcoding happens directly in your browser securely.</p>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={downloading}>
-            Cancel
-          </Button>
-          {canDownload && !downloading && (
-            <Button onClick={handleDownload}>
-              Start Download
-            </Button>
+              )}
+            </div>
           )}
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

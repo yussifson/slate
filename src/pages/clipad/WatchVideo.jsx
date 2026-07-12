@@ -360,7 +360,7 @@ export default function WatchVideo() {
           open={showDownloadModal} 
           onOpenChange={setShowDownloadModal} 
           videoId={video.id} 
-          videoFileName={video.file_name}
+          videoUrl={video.video_url}
           videoTitle={video.title}
           spaceId={video.space_id}
         />
@@ -467,9 +467,6 @@ export default function WatchVideo() {
                   </button>
                   <button onClick={(e) => { e.stopPropagation(); toggleFullScreen(); }} className="text-white/80 hover:text-white transition-colors" title="Full Screen">
                     <Maximize2 className="w-5 h-5" />
-                  </button>
-                  <button onClick={(e) => { e.stopPropagation(); setShowDownloadModal(true); }} className="text-white/80 hover:text-white transition-colors ml-2" title="Download Video">
-                    <Download className="w-5 h-5" />
                   </button>
                 </div>
               </div>
