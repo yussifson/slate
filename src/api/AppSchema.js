@@ -815,13 +815,26 @@ export const AppSchema = new Schema({
         sender_type: column.text,
         content: column.text,
         read_by_lawyer: column.text,
-        read_by_client: column.text}),
+        read_by_client: column.text
+    }),
+    clipad_pricing_tags: new Table({
+        id: column.text,
+        name: column.text,
+        description: column.text,
+        price: column.real,
+        currency: column.text,
+        features: column.text,
+        is_active: column.integer,
+        created_at: column.text,
+        updated_at: column.text
+    }),
     companies: new Table({
         id: column.text,
         created_at: column.text,
         updated_at: column.text,
         created_by: column.text,
         name: column.text,
+        pricing_tag_id: column.text,
         subdomain: column.text,
         custom_domain: column.text,
         email: column.text,

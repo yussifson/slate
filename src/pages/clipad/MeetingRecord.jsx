@@ -272,11 +272,10 @@ export default function MeetingRecord() {
 
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        
         {/* Video Player */}
         <div className="mb-6">
           {meeting.video_url ? (
-              <RichVideoPlayer videoUrl={meeting.video_url} />
+            <RichVideoPlayer videoUrl={meeting.video_url} recordType="meeting" entityId={meeting.id} />
             ) : (
               <button 
                 onClick={() => {

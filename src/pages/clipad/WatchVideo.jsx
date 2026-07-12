@@ -10,6 +10,7 @@ import {
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import ClipadLoader from '@/components/ui/ClipadLoader';
+import DictationButton from '@/components/ui/DictationButton';
 
 const EMOJIS = ['👍','❤️','🔥','😂','🎉','🤯'];
 
@@ -49,6 +50,7 @@ export default function WatchVideo() {
   const [commentText, setCommentText] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -542,16 +544,21 @@ export default function WatchVideo() {
 
             {/* Comment input */}
             {user && (
-              <form onSubmit={submitComment} className="relative">
-                <input
-                  value={commentText}
-                  onChange={e => setCommentText(e.target.value)}
-                  placeholder={`Comment at ${formatTime(currentTime)}…`}
-                  className="w-full pl-4 pr-12 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 shadow-sm transition-all"
-                />
-                <button type="submit" disabled={submitting || !commentText.trim()} className="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80 disabled:text-slate-400 transition-colors">
-                  <Send className="w-4 h-4" />
-                </button>
+              <form onSubmit={submitComment}>
+                <div className="relative">
+                  <input
+                    value={commentText}
+                    onChange={e => setCommentText(e.target.value)}
+                    placeholder={`Comment at ${formatTime(currentTime)}…`}
+                    className="w-full pl-4 pr-12 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 shadow-sm transition-all"
+                  />
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                    <DictationButton onResult={txt => setCommentText(prev => (prev + ' ' + txt).trim())} isRecording={isRecording} setIsRecording={setIsRecording} />
+                    <button type="submit" disabled={submitting || !commentText.trim()} className="p-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg disabled:opacity-50 transition-colors shadow-sm">
+                      <Send className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
                 <div className="flex items-center justify-end mt-2 px-1">
                   <label className="flex items-center gap-2 text-xs font-medium text-slate-500 cursor-pointer hover:text-slate-700 dark:hover:text-slate-300">
                     <input type="checkbox" checked={isAnonymous} onChange={e => setIsAnonymous(e.target.checked)} className="rounded text-primary focus:ring-primary w-3.5 h-3.5" />

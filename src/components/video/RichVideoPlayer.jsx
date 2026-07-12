@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, RotateCw, Volume2, VolumeX, Maximize2, PictureInPicture, Send, MessageSquare } from 'lucide-react';
 import { supabase as db } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
+import DictationButton from '@/components/ui/DictationButton';
+import { Download } from 'lucide-react';
 
 const EMOJIS = ['👍', '👎', '❤️', '😂', '🔥', '🎉', '💡', '🤔'];
 
@@ -27,7 +29,7 @@ const FloatingReaction = ({ emoji, x, y, onDone }) => {
   );
 };
 
-export default function RichVideoPlayer({ videoUrl }) {
+export default function RichVideoPlayer({ videoUrl, recordType = 'video', entityId }) {
   const { user } = useAuth();
   const [videoRecord, setVideoRecord] = useState(null);
   const [comments, setComments] = useState([]);
@@ -41,6 +43,9 @@ export default function RichVideoPlayer({ videoUrl }) {
   const [playbackRate, setPlaybackRate] = useState(1);
   const [commentText, setCommentText] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [activeTab, setActiveTab] = useState('comments'); // 'comments', 'transcript'
+  const [transcripts, setTranscripts] = useState([]);
   
   const videoRef = useRef(null);
   const playerRef = useRef(null);
@@ -72,17 +77,22 @@ export default function RichVideoPlayer({ videoUrl }) {
     loadData();
 
     // Setup realtime subscription
-    const sub = db.channel(`video_${videoRecord.id}`)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'clipad_video_comments', filter: `video_id=eq.${videoRecord.id}` }, (payload) => {
-        loadData(); // Re-fetch to get author info
-      })
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'clipad_video_reactions', filter: `video_id=eq.${videoRecord.id}` }, (payload) => {
-        setReactions(prev => [...prev, payload.new]);
-        const x = 10 + Math.random() * 80;
-        const y = 50 + Math.random() * 30;
-        setFloatingReactions(prev => [...prev, { id: Date.now() + Math.random(), emoji: payload.new.emoji, x, y }]);
-      })
-      .subscribe();
+          const id = entityId || videoRecord?.id;
+      if (!id) return;
+      const commentTable = recordType === 'meeting' ? 'clipad_meeting_comments' : 'clipad_video_comments';
+      const reactTable = recordType === 'meeting' ? 'clipad_meeting_reactions' : 'clipad_video_reactions';
+      const fk = recordType === 'meeting' ? 'meeting_id' : 'video_id';
+
+      const sub = db.channel(`video_${id}`)
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: commentTable, filter: `${fk}=eq.${id}` }, (payload) => {
+          loadData(); // Re-fetch to get author info
+        })
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: reactTable, filter: `${fk}=eq.${id}` }, (payload) => {
+          setReactions(prev => [...prev, payload.new]);
+          const x = 10 + Math.random() * 80;
+          setFloatingReactions(prev => [...prev, { id: Date.now() + Math.random(), emoji: payload.new.emoji, x, y: 100 }]);
+        })
+        .subscribe();
 
     return () => { db.removeChannel(sub); };
   }, [videoRecord?.id]);
@@ -146,6 +156,19 @@ export default function RichVideoPlayer({ videoUrl }) {
     }
   };
 
+  const handleExportTranscript = () => {
+    let txt = 'Meeting Transcript\n\n';
+    transcripts.forEach(t => {
+      txt += `[${formatTime(t.start_time)}] ${t.speaker || 'Speaker'}: ${t.text}\n`;
+    });
+    const blob = new Blob([txt], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'transcript.txt';
+    a.click();
+  };
+
   const submitComment = async (e) => {
     e.preventDefault();
     if (!commentText.trim() || !user || !videoRecord) return;
@@ -154,13 +177,17 @@ export default function RichVideoPlayer({ videoUrl }) {
     // Pause video when commenting
     if (playing) togglePlay();
 
-    try {
-      await db.from('clipad_video_comments').insert({
-        video_id: videoRecord.id,
-        user_id: user.id,
-        timestamp_seconds: currentTime,
-        content: commentText.trim()
-      });
+          const id = entityId || videoRecord?.id;
+      const commentTable = recordType === 'meeting' ? 'clipad_meeting_comments' : 'clipad_video_comments';
+      const fk = recordType === 'meeting' ? 'meeting_id' : 'video_id';
+
+      try {
+        await db.from(commentTable).insert({
+          [fk]: id,
+          user_id: user.id,
+          timestamp_seconds: ts,
+          content: commentText.trim()
+        });
       setCommentText('');
     } catch (err) {
       console.error(err);
@@ -293,50 +320,106 @@ export default function RichVideoPlayer({ videoUrl }) {
         </div>
       </div>
 
-      {/* Comments (Right) */}
+            {/* Sidebar (Right) */}
       <div className="flex flex-col h-[500px] bg-slate-100/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
-        <h3 className="font-bold text-slate-800 dark:text-white mb-4">Comments</h3>
         
-        <div className="flex-1 overflow-y-auto space-y-3 mb-4 pr-2">
-          {comments.length === 0 ? (
-            <div className="py-8 text-center">
-              <MessageSquare className="w-8 h-8 text-slate-300 dark:text-slate-700 mx-auto mb-2" />
-              <p className="text-xs text-slate-500">No comments yet.</p>
-            </div>
-          ) : (
-            comments.map(c => (
-              <div key={c.id} className="bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-bold text-slate-900 dark:text-white">
-                    {c.author?.full_name || 'User'}
-                  </span>
-                  <button
-                    onClick={() => seekTo(c.timestamp_seconds)}
-                    className="text-[10px] font-bold font-mono text-primary hover:text-primary/80 transition-colors bg-primary/10 px-2 py-0.5 rounded-md"
-                  >
-                    @{formatTime(c.timestamp_seconds)}
-                  </button>
-                </div>
-                <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">{c.content}</p>
-              </div>
-            ))
+        {/* Tabs */}
+        <div className="flex items-center gap-2 mb-4 bg-slate-200/50 dark:bg-slate-800/50 p-1 rounded-xl">
+          <button 
+            onClick={() => setActiveTab('comments')}
+            className={`flex-1 py-1.5 text-sm font-bold rounded-lg transition-all ${activeTab === 'comments' ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
+          >
+            Comments
+          </button>
+          {recordType === 'meeting' && (
+            <button 
+              onClick={() => setActiveTab('transcript')}
+              className={`flex-1 py-1.5 text-sm font-bold rounded-lg transition-all ${activeTab === 'transcript' ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
+            >
+              Transcript
+            </button>
           )}
         </div>
 
-        {videoRecord ? (
-          <form onSubmit={submitComment} className="relative">
-            <input
-              value={commentText}
-              onChange={e => setCommentText(e.target.value)}
-              placeholder={`Comment at ${formatTime(currentTime)}...`}
-              className="w-full pl-4 pr-10 py-3 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-primary/50 shadow-sm transition-all"
-            />
-            <button type="submit" disabled={submitting || !commentText.trim()} className="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80 disabled:text-slate-400">
-              <Send className="w-4 h-4" />
-            </button>
-          </form>
-        ) : (
-          <p className="text-xs text-slate-500 text-center italic">Video metadata not found, comments disabled.</p>
+        {activeTab === 'comments' && (
+          <>
+            <div className="flex-1 overflow-y-auto space-y-3 mb-4 pr-2">
+              {comments.length === 0 ? (
+                <div className="py-8 text-center">
+                  <MessageSquare className="w-8 h-8 text-slate-300 dark:text-slate-700 mx-auto mb-2" />
+                  <p className="text-xs text-slate-500">No comments yet.</p>
+                </div>
+              ) : (
+                comments.map(c => (
+                  <div key={c.id} className="bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-bold text-slate-900 dark:text-white">
+                        {c.author?.full_name || 'User'}
+                      </span>
+                      <button
+                        onClick={() => seekTo(c.timestamp_seconds)}
+                        className="text-[10px] font-bold font-mono text-primary hover:text-primary/80 transition-colors bg-primary/10 px-2 py-0.5 rounded-md"
+                      >
+                        @{formatTime(c.timestamp_seconds)}
+                      </button>
+                    </div>
+                    <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">{c.content}</p>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {videoRecord || entityId ? (
+              <form onSubmit={submitComment}>
+                <div className="relative">
+                  <input
+                    value={commentText}
+                    onChange={e => setCommentText(e.target.value)}
+                    placeholder={`Comment at ${formatTime(currentTime)}...`}
+                    className="w-full pl-4 pr-24 py-3 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-primary/50 shadow-sm transition-all"
+                  />
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                    <DictationButton onResult={txt => setCommentText(prev => (prev + ' ' + txt).trim())} isRecording={isRecording} setIsRecording={setIsRecording} />
+                    <button type="submit" disabled={submitting || !commentText.trim()} className="p-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg disabled:opacity-50 transition-colors shadow-sm">
+                      <Send className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </form>
+            ) : (
+              <p className="text-xs text-slate-500 text-center italic">Comments disabled.</p>
+            )}
+          </>
+        )}
+
+        {activeTab === 'transcript' && (
+          <div className="flex flex-col h-full">
+            <div className="flex-1 overflow-y-auto space-y-4 mb-4 pr-2">
+              {transcripts.length === 0 ? (
+                <div className="py-8 text-center text-slate-500 text-sm">Transcript not available.</div>
+              ) : (
+                transcripts.map((t, idx) => (
+                  <div key={t.id || idx} className="group">
+                    <div className="flex justify-between items-baseline mb-0.5">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{t.speaker || 'Speaker'}</span>
+                      <button onClick={() => seekTo(t.start_time)} className="text-[10px] text-slate-400 group-hover:text-primary transition-colors font-mono">
+                        {formatTime(t.start_time)}
+                      </button>
+                    </div>
+                    <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{t.text}</p>
+                  </div>
+                ))
+              )}
+            </div>
+            {transcripts.length > 0 && (
+              <button 
+                onClick={handleExportTranscript}
+                className="w-full flex justify-center items-center gap-2 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-bold text-slate-700 dark:text-slate-300 transition-colors shadow-sm"
+              >
+                <Download className="w-4 h-4" /> Export Transcript
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>

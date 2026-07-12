@@ -23,6 +23,24 @@ export default function CliPadLogin() {
     window.location.href = `https://account.optavel.com/sso?redirect_uri=${continueUrl}`;
   };
 
+  const logLoginEvent = async (user) => {
+    try {
+      const ipRes = await fetch('https://ipapi.co/json/');
+      const ipData = await ipRes.json();
+      await supabase.from('audit_logs').insert({
+        action: 'login',
+        user_id: user.id,
+        user_email: user.email,
+        user_name: user.user_metadata?.full_name || user.email,
+        ip_address: ipData.ip || 'Unknown',
+        details: `City: ${ipData.city || 'Unknown'}, Country: ${ipData.country_name || 'Unknown'}`,
+        company_id: user.user_metadata?.company_id || null
+      });
+    } catch(e) {
+      console.error('Audit log failed', e);
+    }
+  };
+
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     if (!email || !password) return;
@@ -43,6 +61,9 @@ export default function CliPadLogin() {
       
       const { data, error } = await supabase.auth.signInWithPassword({ email: loginEmail, password });
       if (error) throw error;
+      
+      await logLoginEvent(data.user);
+      
       navigate('/dashboard');
     } catch (err) {
       toast({ title: 'Sign in failed', description: err.message, variant: 'destructive' });
@@ -56,6 +77,9 @@ export default function CliPadLogin() {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email: saltedEmail, password });
       if (error) throw error;
+      
+      await logLoginEvent(data.user);
+      
       navigate('/dashboard');
     } catch (err) {
       toast({ title: 'Sign in failed', description: err.message, variant: 'destructive' });
