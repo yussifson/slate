@@ -783,7 +783,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  `}</style>
 
  {/* Control Bar */}
- <div className={`relative z-10 bg-white/70 dark:bg-slate-950/70 backdrop-blur-2xl border-t border-white/20 dark:border-white/5 flex items-center justify-center transition-all shadow-[0_-4px_24px_-8px_rgba(0,0,0,0.1)] ${isPipMode ? 'h-14 px-3 gap-2' : 'h-[88px] px-8 gap-3 sm:gap-5'}`}>
+ <div className={`relative z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-3xl border border-white/60 dark:border-white/10 flex items-center justify-center transition-all shadow-2xl rounded-full mx-auto mb-6 max-w-fit ${isPipMode ? 'h-14 px-3 gap-2' : 'h-[80px] px-6 gap-3 sm:gap-4'}`}>
  <div className="relative">
    {showEmojis && (
      <div className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-card border border-primary/20 shadow-xl rounded-full px-4 py-3 flex gap-3 animate-in fade-in slide-in-from-bottom-4 z-50">
@@ -829,7 +829,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  onClick={toggleScreenShare}
  variant={isSharingScreen ? "default" : "outline"}
  size="icon"
- className={`w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isSharingScreen ? '' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}
+ className={`w-12 h-12 rounded-full hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isSharingScreen ? '' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}
  title="Share Screen"
  >
  <MonitorUp className="w-5 h-5" />
@@ -838,7 +838,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  onClick={() => setShowWhiteboard(!showWhiteboard)}
  variant={showWhiteboard ? "default" : "outline"}
  size="icon"
- className={`w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${showWhiteboard ? '' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}
+ className={`w-12 h-12 rounded-full hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${showWhiteboard ? '' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}
  title="Whiteboard"
  >
  <PenTool className="w-5 h-5" />
@@ -847,7 +847,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  onClick={() => setShowChat(!showChat)}
  variant={showChat ? "default" : "outline"}
  size="icon"
- className={`w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${showChat ? '' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}
+ className={`w-12 h-12 rounded-full hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${showChat ? '' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}
  title="Chat"
  >
  <MessageSquare className="w-5 h-5" />
@@ -856,7 +856,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   onClick={() => setShowInvite(true)}
   variant="outline"
   size="icon"
-  className="w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+  className="w-12 h-12 rounded-full hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
   title="Invite People"
   >
   <UserPlus className="w-5 h-5" />
@@ -994,7 +994,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   }}
   variant={isRecording ? "destructive" : "outline"}
   size="icon"
-  className={`w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isRecording ? 'animate-pulse' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'}`}
+  className={`w-12 h-12 rounded-full hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isRecording ? 'animate-pulse' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'}`}
   title="Record Meeting"
   >
   <VideoIcon className="w-5 h-5" />
@@ -1003,7 +1003,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   onClick={() => setShowSettings(true)}
   variant="outline"
   size="icon"
-  className="w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+  className="w-12 h-12 rounded-full hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
   title="Settings"
   >
   <Settings className="w-5 h-5" />
@@ -1027,7 +1027,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   }}
   variant={isStudioAudioOn ? "default" : "outline"}
   size="icon"
-  className={`w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 relative group ${isStudioAudioOn ? 'bg-primary/20 border-primary text-primary shadow-[0_0_15px_rgba(var(--primary),0.3)]' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'}`}
+  className={`w-12 h-12 rounded-full hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 relative group ${isStudioAudioOn ? 'bg-primary/20 border-primary text-primary shadow-[0_0_15px_rgba(var(--primary),0.3)]' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'}`}
   title="Studio Audio"
   >
   <Sparkles className="w-5 h-5" />
@@ -1175,7 +1175,7 @@ function ParticipantTile({ id, isLocal, className }) {
  const activeSpeakerId = useActiveSpeakerId();
  const isSpeaking = activeSpeakerId === id;
  return (
- <div className={`relative bg-white dark:bg-card rounded-2xl overflow-hidden group flex items-center justify-center aspect-video shadow-md border transition-all duration-300 ${isSpeaking ? 'border-primary ring-4 ring-primary shadow-lg shadow-primary/50' : 'border-slate-200 dark:border-white/10'} ${className || 'w-full max-w-3xl min-w-[320px] m-2'}`}>
+ <div className={`relative bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 rounded-3xl overflow-hidden group flex items-center justify-center aspect-video shadow-xl border transition-all duration-300 ${isSpeaking ? 'border-primary ring-4 ring-primary/40 shadow-[0_0_30px_rgba(var(--primary),0.3)]' : 'border-white/50 dark:border-white/5'} ${className || 'w-full max-w-3xl min-w-[320px] m-2'}`}>
  {videoState?.state === 'playable' ? (
  <video 
  ref={videoRef}
@@ -1214,6 +1214,7 @@ function ParticipantTile({ id, isLocal, className }) {
 
 // Wrapper to initialize Daily provider
 export default function VideoRoom({ roomUrl, userName, token, initialAudio = true, initialVideo = true, initialBackground, onLeave, isPipMode, togglePipMode, spaceId }) {
+ const { user } = useAuth();
  const [daily, setDaily] = useState(null);
  // Keep a ref so the cleanup closure always has access to the latest callObject
  // without triggering re-renders on creation
@@ -1248,7 +1249,7 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
    const callObject = DailyIframe.createCallObject();
    callRef.current = callObject;
 
-   const joinOpts = { url: roomUrl, audioSource: initialAudio, videoSource: initialVideo };
+   const joinOpts = { url: roomUrl, startAudioOff: !initialAudio, startVideoOff: !initialVideo };
    if (typeof token === 'string' && token.length > 0) {
     joinOpts.token = token;
    }

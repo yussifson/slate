@@ -167,7 +167,7 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
   };
 
   return (
-    <div className="w-screen h-screen bg-slate-50 dark:bg-[#0B1121] flex flex-col md:flex-row items-center justify-center px-4 md:px-12 gap-8 md:gap-16 overflow-y-auto relative overflow-hidden">
+    <div className="w-screen h-screen bg-slate-50 dark:bg-[#050810] flex flex-col md:flex-row items-center justify-center px-4 md:px-12 gap-8 md:gap-16 overflow-y-auto relative overflow-hidden">
       {/* Back Button */}
       <button 
         onClick={() => navigate(-1)} 
@@ -184,7 +184,7 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
       
       {/* Left Side: Camera Preview */}
       <div className="relative z-10 flex-1 flex flex-col items-end justify-center w-full max-w-3xl">
-        <div className="relative w-full aspect-video bg-primary rounded-[1.5rem] overflow-hidden flex items-center justify-center transition-colors shadow-lg">
+        <div className="relative w-full aspect-video bg-gradient-to-br from-slate-900 to-black rounded-[2rem] overflow-hidden flex items-center justify-center transition-colors shadow-2xl border border-white/10">
           
           {/* Video element is always rendered to preserve srcObject, but hidden when isVideoOn is false */}
           <video 
@@ -224,7 +224,7 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
               ))}
             </div>
 
-            <div className="flex items-center gap-4 bg-black/40 backdrop-blur-md px-4 py-3 rounded-[1.2rem] shadow-sm">
+            <div className="flex items-center gap-4 bg-black/50 backdrop-blur-xl px-5 py-3 rounded-full shadow-2xl border border-white/10">
               <Button 
                 onClick={toggleMic}
                 variant={isMicOn ? "outline" : "destructive"}
@@ -261,14 +261,14 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
               placeholder="e.g. Jane Doe"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
-              className="w-full px-5 py-4 bg-white dark:bg-[#111827] border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-base transition-shadow placeholder:text-slate-400"
+              className="w-full px-5 py-4 bg-white/50 dark:bg-[#111827]/50 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 text-base transition-all shadow-sm placeholder:text-slate-400"
               autoFocus
               onKeyDown={(e) => { if (e.key === 'Enter' && userName.trim()) handleJoinClick(); }}
             />
           </div>
 
           <Button
-            className="w-full py-6 text-lg rounded-full font-medium"
+            className="w-full py-6 text-lg rounded-full font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all"
             disabled={!userName.trim()}
             onClick={handleJoinClick}
           >
