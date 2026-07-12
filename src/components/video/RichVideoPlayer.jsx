@@ -28,7 +28,6 @@ const FloatingReaction = ({ emoji, x, y, onDone }) => {
     >
       {emoji}
     </div>
-    </>
   );
 };
 
