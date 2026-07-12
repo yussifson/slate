@@ -85,6 +85,11 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const recordingIntervalRef = useRef(null);
+  
+  const [meetingVideoUrl, setMeetingVideoUrl] = useState(null);
+  const mediaRecorderRef = useRef(null);
+  const recordedChunksRef = useRef([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (isRecording) {
@@ -308,6 +313,21 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
     if (!daily) return;
     
     if (joined) {
+      // If currently recording, stop it and wait for the upload to finish before saving
+      if (isRecording && mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        toast({ title: "Finishing Recording", description: "Saving your video before leaving..." });
+        await new Promise(resolve => {
+           // Intercept the original onstop to add our resolve
+           const originalOnStop = mediaRecorderRef.current.onstop;
+           mediaRecorderRef.current.onstop = async (e) => {
+             if (originalOnStop) await originalOnStop(e);
+             resolve();
+           };
+           mediaRecorderRef.current.stop();
+           setIsRecording(false);
+        });
+      }
+
       try {
         const durationSeconds = Math.round((Date.now() - joinTimeRef.current) / 1000);
         const meetingTitle = `Meeting - ${new Date().toLocaleDateString()}`;
@@ -325,9 +345,12 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
             space_id: spaceId || null
           };
           
-          // If they recorded the meeting, mock a video URL for demo purposes
-          if (recordingSeconds > 0) {
-            meetingData.video_url = 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4';
+          // Use the real uploaded video URL if one was created during this session
+          if (meetingVideoUrl) {
+            meetingData.video_url = meetingVideoUrl;
+          } else if (recordingSeconds > 0 && isUploading) {
+             // Fallback wait if it's still somehow uploading
+             toast({ title: "Warning", description: "Video upload was not finished yet, video may be missing." });
           }
 
           await db.from('clipad_meeting_records').insert(meetingData);
@@ -808,16 +831,70 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   <UserPlus className="w-5 h-5" />
   </Button>
   <Button 
-  onClick={() => {
-    if (daily) {
-      if (isRecording) {
-        daily.stopRecording();
+  onClick={async () => {
+    if (isRecording) {
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        mediaRecorderRef.current.stop();
         setIsRecording(false);
-        toast({ title: 'Recording Stopped', description: 'The recording has been saved to your workspace.' });
-      } else {
-        daily.startRecording();
+        toast({ title: 'Recording Stopped', description: 'Processing and saving the recording to Supabase...' });
+      }
+    } else {
+      try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+        recordedChunksRef.current = [];
+        
+        let options = { mimeType: 'video/webm' };
+        if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) {
+          options.mimeType = 'video/webm; codecs=vp9';
+        } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
+          options.mimeType = 'video/webm; codecs=vp8';
+        }
+        
+        const mediaRecorder = new MediaRecorder(stream, options);
+        
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) {
+            recordedChunksRef.current.push(e.data);
+          }
+        };
+        
+        mediaRecorder.onstop = async () => {
+          setIsUploading(true);
+          try {
+            const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+            const fileName = `meetings/${user?.id || 'anon'}_${Date.now()}.webm`;
+            const { error } = await db.storage.from('clipad_videos').upload(fileName, blob, { contentType: 'video/webm' });
+            if (error) throw error;
+            const { data } = db.storage.from('clipad_videos').getPublicUrl(fileName);
+            if (data?.publicUrl) {
+              setMeetingVideoUrl(data.publicUrl);
+              // Update state so the leaveCall hook gets it, or we could mutate a ref.
+              // To ensure leaveCall gets it, setMeetingVideoUrl is fine since leaveCall uses state/refs.
+              toast({ title: 'Recording Saved', description: 'Video has been successfully uploaded.' });
+            }
+          } catch (e) {
+            console.error(e);
+            toast({ title: 'Recording Error', description: 'Failed to upload video.', variant: 'destructive' });
+          } finally {
+            setIsUploading(false);
+          }
+          stream.getTracks().forEach(track => track.stop());
+        };
+        
+        mediaRecorderRef.current = mediaRecorder;
+        mediaRecorder.start();
         setIsRecording(true);
-        toast({ title: 'Recording Started', description: 'Meeting is now being recorded.' });
+        toast({ title: 'Recording Started', description: 'Meeting is now being recorded locally.' });
+        
+        stream.getVideoTracks()[0].onended = () => {
+          if (mediaRecorderRef.current.state !== 'inactive') {
+             mediaRecorderRef.current.stop();
+             setIsRecording(false);
+          }
+        };
+      } catch (err) {
+        console.error("Failed to start screen recording:", err);
+        toast({ title: 'Recording Error', description: 'Could not access screen share for recording.', variant: 'destructive' });
       }
     }
   }}

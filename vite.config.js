@@ -84,6 +84,7 @@ export default defineConfig({
           {
             urlPattern: /^https:\/\/api\.cloudflare\.com\/.*/i,
             handler: 'NetworkFirst',
+            method: 'GET',
             options: {
               cacheName: 'api-cache',
               expiration: {
@@ -99,6 +100,7 @@ export default defineConfig({
             // Cache Supabase REST API responses (profiles, companies, etc.) for offline use
             urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/i,
             handler: 'NetworkFirst',
+            method: 'GET',
             options: {
               cacheName: 'supabase-data-cache',
               expiration: {

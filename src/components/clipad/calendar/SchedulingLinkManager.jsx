@@ -48,7 +48,6 @@ export default function SchedulingLinkManager({ spaceId, user }) {
       .insert({
         space_id: spaceId,
         title: newTitle,
-        duration_minutes: newDuration,
         slug: uniqueSlug,
         creator_id: user?.id,
         is_active: true

@@ -21,7 +21,7 @@ export default function MeetingInsights({ spaceId }) {
     async function fetchInsights() {
       setLoading(true);
       try {
-        let meetingsQuery = supabase.from('clipad_meeting_records').select('created_at, updated_at, title, summary');
+        let meetingsQuery = supabase.from('clipad_meeting_records').select('created_at, updated_at, title, ai_summary');
         
         // Fetch tasks via board id matching spaceId if needed.
         // For simplicity in this demo, fetch all tasks. In a real app we'd join space_id.

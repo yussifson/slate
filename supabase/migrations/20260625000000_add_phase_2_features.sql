@@ -1,5 +1,7 @@
 -- Phase 2 Features: Team Management, Market Intelligence, CRM Lead Management
 
+CREATE TABLE IF NOT EXISTS univ_re_companies (id UUID PRIMARY KEY);
+
 -- ===== TEAM MANAGEMENT TABLES =====
 
 CREATE TABLE IF NOT EXISTS univ_re_team_members (
