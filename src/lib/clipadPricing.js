@@ -5,7 +5,7 @@ export const PLAN_LIMITS = {
     maxParticipants: 10,
     maxVideoRecordingsPerMonth: 10,
     maxTeamSpaces: 5,
-    maxAsyncVideoDurationSeconds: 15 * 60, // 15 minutes limit on free
+    maxAsyncVideoDurationSeconds: 3 * 60, // 3 minutes limit on free
     hasAdvancedAI: false,
     hasAdvancedAnalytics: false,
     hasSmartFollowUps: false,
@@ -44,14 +44,12 @@ export const PLAN_LIMITS = {
 
 /**
  * Returns the current plan for a user.
- * Accepts either a user object (reads user_metadata.clipad_plan) or a raw plan string.
- * NOTE: Prefer using getCompanyPlan() for accurate DB-sourced plan.
+ * Reads user.clipad_plan which is injected in AuthContext.
  */
 export function getUserPlan(user) {
   if (!user) return 'free';
-  // If a raw plan string is passed directly (e.g. from DB fetch), use it
   if (typeof user === 'string') return user;
-  return user?.user_metadata?.clipad_plan || 'free';
+  return user?.clipad_plan || 'free';
 }
 
 /**

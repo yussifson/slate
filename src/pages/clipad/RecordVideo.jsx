@@ -7,7 +7,7 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
-import { getLimit } from '@/lib/clipadPricing';
+import { getPlanLimits, getUserPlan } from '@/lib/clipadPricing';
 import PaywallModal from '@/components/clipad/PaywallModal';
 import { useNavigate } from 'react-router-dom';
 
@@ -69,7 +69,7 @@ export default function RecordVideo() {
     const loadSpaces = async () => {
       if (user?.id) {
         const [mySpacesRes, memberSpacesRes] = await Promise.all([
-          supabase.from('clipad_spaces').select('id, name').eq('created_by', user.id).order('created_at', { ascending: false }),
+          supabase.from('clipad_spaces').select('id, name').eq('creator_id', user.id).order('created_at', { ascending: false }),
           supabase.from('clipad_space_members').select('space_id').eq('user_id', user.id)
         ]);
         const memberIds = memberSpacesRes.data?.map(m => m.space_id) || [];
@@ -118,18 +118,16 @@ export default function RecordVideo() {
       
       const startTimeOffset = recordingSeconds * 1000;
       const newStartTime = Date.now() - startTimeOffset;
+      const planLimits = getPlanLimits(user);
+      const maxSeconds = planLimits.maxAsyncVideoDurationSeconds;
+
       timerRef.current = setInterval(() => {
         const seconds = Math.floor((Date.now() - newStartTime) / 1000);
         setRecordingSeconds(seconds);
         
-        if (user?.role !== 'super_admin' && user?.subscription_tier !== 'enterprise') {
-          if (user?.subscription_tier === 'pro' && seconds >= 3600) {
-            stopRecording();
-            setShowPaywall(true);
-          } else if (user?.subscription_tier !== 'pro' && seconds >= 900) {
-            stopRecording();
-            setShowPaywall(true);
-          }
+        if (seconds >= maxSeconds) {
+          stopRecording();
+          setShowPaywall(true);
         }
       }, 1000);
     }
@@ -280,9 +278,9 @@ export default function RecordVideo() {
         firstDayOfMonth.setHours(0, 0, 0, 0);
         
         const { count, error } = await supabase
-          .from('clipad_video_records')
+          .from('clipad_videos')
           .select('*', { count: 'exact', head: true })
-          .eq('created_by', user.id)
+          .eq('creator_id', user.id)
           .gte('created_at', firstDayOfMonth.toISOString());
           
         if (count >= maxRecordings) {
@@ -585,18 +583,16 @@ export default function RecordVideo() {
       setRecordingSeconds(0);
       const startTime = Date.now();
       clearInterval(timerRef.current);
+      const planLimits = getPlanLimits(user);
+      const maxSeconds = planLimits.maxAsyncVideoDurationSeconds;
+
       timerRef.current = setInterval(() => {
         const seconds = Math.floor((Date.now() - startTime) / 1000);
         setRecordingSeconds(seconds);
         
-        if (user?.role !== 'super_admin' && user?.subscription_tier !== 'enterprise') {
-          if (user?.subscription_tier === 'pro' && seconds >= 3600) {
-            stopRecording();
-            setShowPaywall(true);
-          } else if (user?.subscription_tier !== 'pro' && seconds >= 900) {
-            stopRecording();
-            setShowPaywall(true);
-          }
+        if (seconds >= maxSeconds) {
+          stopRecording();
+          setShowPaywall(true);
         }
       }, 1000);
 
@@ -1053,7 +1049,7 @@ export default function RecordVideo() {
         isOpen={showPaywall}
         onClose={() => setShowPaywall(false)}
         featureName="Longer Recordings"
-        limitDescription="You have reached the 3-minute recording limit on the free plan."
+        limitDescription={`You have reached the recording limit for the ${getUserPlan(user)} plan.`}
       />
     </div>
   );

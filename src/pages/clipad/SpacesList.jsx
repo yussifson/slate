@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
-import { getLimit } from '@/lib/clipadPricing';
+import { getPlanLimits, getUserPlan } from '@/lib/clipadPricing';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { 
   Plus, Users, Video, Clock, ArrowRight, Settings, 
@@ -66,8 +66,9 @@ export default function SpacesList() {
     e.preventDefault();
     if (!newName.trim() || !user) return;
     
-          // Plan Limit Check
-      const maxSpaces = getLimit(user, 'maxTeamSpaces');
+      // Plan Limit Check
+      const planLimits = getPlanLimits(user);
+      const maxSpaces = planLimits.maxTeamSpaces;
       if (spaces.length >= maxSpaces) {
         setShowCreate(false);
         setShowPaywall(true);
@@ -96,7 +97,7 @@ export default function SpacesList() {
     }
   };
 
-  const isAdmin = user?.subscription_tier === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin';
+  const isAdmin = user?.clipad_plan === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
   const visibleSpaces = spaces.filter(s => !s.is_private || s.created_by === user?.id || isAdmin);
   const filtered = visibleSpaces.filter(s => s.name?.toLowerCase().includes(search.toLowerCase()));
 
@@ -281,8 +282,8 @@ export default function SpacesList() {
       <PaywallModal
         isOpen={showPaywall}
         onClose={() => setShowPaywall(false)}
-        featureName="Create More Spaces"
-        limitDescription={`You have reached the maximum limit of ${getLimit(user, 'maxTeamSpaces')} spaces on your current plan.`}
+        featureName="More Spaces"
+        limitDescription={`You have reached the limit of ${getPlanLimits(user).maxTeamSpaces} spaces on the ${getUserPlan(user)} plan.`}
       />
 
           </div>

@@ -246,7 +246,7 @@ export default function MeetingRecord() {
     } catch (err) { console.error(err); }
   };
 
-  const isAdmin = user?.subscription_tier === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin';
+  const isAdmin = user?.clipad_plan === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
   const canEdit = meeting?.created_by === user?.id || isAdmin;
 
   return (

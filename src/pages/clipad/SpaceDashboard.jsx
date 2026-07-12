@@ -260,7 +260,7 @@ export default function SpaceDashboard() {
   const openTasks = tasks.filter(t => !t.is_complete);
   const doneTasks = tasks.filter(t => t.is_complete);
   
-  const isAdmin = user?.subscription_tier === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin';
+  const isAdmin = user?.clipad_plan === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
   const canEdit = space.created_by === user?.id || isAdmin;
   const isMember = spaceMembers.some(m => m.user_id === user?.id);
 

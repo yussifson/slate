@@ -55,7 +55,7 @@ export default function VideoAnalytics() {
     try {
       let videoIds = [];
       
-      const isAdminUser = user.subscription_tier === 'enterprise' || user.role === 'admin' || user.role === 'super_admin';
+      const isAdminUser = user.clipad_plan === 'enterprise' || user.role === 'admin' || user.role === 'super_admin' || user.role === 'company_admin';
       let videos = [];
       let myMeetings = [];
 

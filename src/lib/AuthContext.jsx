@@ -346,20 +346,29 @@ export const AuthProvider = ({ children }) => {
       let companySubdomain = null;
       let companyData = null;
       if (profile?.company_id) {
-        const { data: company, error: companyError } = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [profile.company_id]).then(res => ({ data: res.rows._array[0] || null, error: null })).catch(() => ({ data: null, error: null }));
-        let finalCompany = company || {};
+        let companyRaw = null;
+        try {
+          const res = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [profile.company_id]);
+          companyRaw = res.rows._array[0] || null;
+          if (companyRaw?.pricing_tag_id) {
+            const tagRes = await powerSync.execute('SELECT name FROM clipad_pricing_tags WHERE id = ?', [companyRaw.pricing_tag_id]);
+            companyRaw.clipad_pricing_tags = tagRes.rows._array[0] || null;
+          }
+        } catch (err) {
+          console.warn("PowerSync fetch failed:", err);
+        }
+        
+        let finalCompany = companyRaw || {};
         
         // FALLBACK TO SUPABASE
         try {
-          const { data: supaCompany } = await supabase.from('companies').select('*').eq('id', profile.company_id).maybeSingle();
+          const { data: supaCompany } = await supabase.from('companies').select('*, clipad_pricing_tags(name)').eq('id', profile.company_id).maybeSingle();
           if (supaCompany) finalCompany = { ...finalCompany, ...supaCompany };
         } catch(e) { /* offline - use PowerSync data only */ }
         
         if (finalCompany?.id) {
           companyData = finalCompany;
           companySubdomain = finalCompany.subdomain || finalCompany.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
-        } else if (companyError) {
-          console.warn("Failed to fetch company for redirect:", companyError);
         }
       }
 
@@ -501,6 +510,7 @@ export const AuthProvider = ({ children }) => {
         full_name: staffRecord?.full_name || newUser?.full_name || sessionUser.user_metadata?.full_name || "Admin",
         avatar_url: sessionUser.user_metadata?.avatar_url || newUser?.avatar_url || null,
         subscription_plan: companyData?.subscription_plan || 'starter',
+        clipad_plan: (companyData?.clipad_pricing_tags?.name || 'free').toLowerCase(),
         subscription_status: companyData?.subscription_status || 'trial',
         company_status: companyData?.status || 'active',
         company_created_date: companyData?.created_date || null,
@@ -518,6 +528,7 @@ export const AuthProvider = ({ children }) => {
         updatedUser.email !== newUser.email ||
         updatedUser.avatar_url !== newUser.avatar_url ||
         updatedUser.subscription_status !== newUser.subscription_status ||
+        updatedUser.clipad_plan !== newUser.clipad_plan ||
         updatedUser.subscription_plan !== newUser.subscription_plan;
 
       if (hasChanged) {
