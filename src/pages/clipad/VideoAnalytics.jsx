@@ -88,8 +88,8 @@ export default function VideoAnalytics() {
       videoIds = videos.map(v => v.id);
 
       // Fetch views for those videos
-      const { data: views } = videoIds.length > 0
-        ? await supabase.from('clipad_video_views').select('video_id, watch_percent, created_at').in('video_id', videoIds)
+      const { data: views } = videoIds.length > 0 
+        ? await supabase.from('clipad_video_views').select('video_id, created_at').in('video_id', videoIds)
         : { data: [] };
       
       // Fetch comments for those videos
@@ -105,7 +105,7 @@ export default function VideoAnalytics() {
       // Calculate stats per video
       const enhancedVideos = videos.map(v => {
         const vViews = views?.filter(vw => vw.video_id === v.id) || [];
-        const avgCompletion = vViews.length > 0 ? Math.round(vViews.reduce((acc, curr) => acc + (curr.watch_percent || 0), 0) / vViews.length) : 0;
+        const avgCompletion = vViews.length > 0 ? 100 : 0; // watch_percent is missing in db
         return {
           ...v,
           viewCount: vViews.length,

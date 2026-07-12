@@ -35,6 +35,7 @@ ALTER TABLE public.sync_errors ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.sync_errors;
 DROP POLICY IF EXISTS "sync_errors_company_access" ON public.sync_errors;
+DROP POLICY IF EXISTS "sync_errors_all_access" ON public.sync_errors;
 CREATE POLICY "sync_errors_all_access" ON public.sync_errors
   FOR ALL USING (true) WITH CHECK (true);
 

@@ -47,9 +47,9 @@ export default function SchedulingLinkManager({ spaceId, user }) {
       .from('clipad_scheduling_links')
       .insert({
         space_id: spaceId,
+        user_id: user.id,
         title: newTitle,
         slug: uniqueSlug,
-        creator_id: user?.id,
         is_active: true
       });
       

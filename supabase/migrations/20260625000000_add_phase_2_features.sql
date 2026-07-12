@@ -210,15 +210,17 @@ CREATE INDEX IF NOT EXISTS idx_team_members_company ON univ_re_team_members(comp
 CREATE INDEX IF NOT EXISTS idx_mls_listings_company ON univ_re_mls_listings(company_id);
 CREATE INDEX IF NOT EXISTS idx_market_trends_company ON univ_re_market_trends(company_id);
 CREATE INDEX IF NOT EXISTS idx_leads_company ON univ_re_leads(company_id);
+ALTER TABLE univ_re_leads ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'new';
+ALTER TABLE univ_re_leads ADD COLUMN IF NOT EXISTS assigned_agent_id UUID;
 CREATE INDEX IF NOT EXISTS idx_leads_status ON univ_re_leads(status);
 CREATE INDEX IF NOT EXISTS idx_leads_agent ON univ_re_leads(assigned_agent_id);
 CREATE INDEX IF NOT EXISTS idx_activity_logs_company ON univ_re_activity_logs(company_id);
 CREATE INDEX IF NOT EXISTS idx_activity_logs_user ON univ_re_activity_logs(user_id);
 
 -- Insert default roles
-INSERT INTO univ_re_roles (company_id, role_name, description, permissions) VALUES
-  (gen_random_uuid(), 'admin', 'Full system access', '["*"]'::jsonb),
-  (gen_random_uuid(), 'agent', 'Can manage own leads and properties', '["view_properties", "edit_own_properties", "view_leads", "edit_own_leads", "create_transactions"]'::jsonb),
-  (gen_random_uuid(), 'support', 'Can view data and create reports', '["view_properties", "view_leads", "view_reports"]'::jsonb),
-  (gen_random_uuid(), 'viewer', 'Read-only access', '["view_properties", "view_leads"]'::jsonb)
-ON CONFLICT DO NOTHING;
+-- INSERT INTO univ_re_roles (company_id, role_name, description, permissions) VALUES
+--   (gen_random_uuid(), 'admin', 'Full system access', '["*"]'::jsonb),
+--   (gen_random_uuid(), 'agent', 'Can manage own leads and properties', '["view_properties", "edit_own_properties", "view_leads", "edit_own_leads", "create_transactions"]'::jsonb),
+--   (gen_random_uuid(), 'support', 'Can view data and create reports', '["view_properties", "view_leads", "view_reports"]'::jsonb),
+--   (gen_random_uuid(), 'viewer', 'Read-only access', '["view_properties", "view_leads"]'::jsonb)
+-- ON CONFLICT DO NOTHING;

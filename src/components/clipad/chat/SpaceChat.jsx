@@ -82,8 +82,7 @@ export default function SpaceChat({ spaceId }) {
         .from('clipad_channels')
         .insert({
           space_id: spaceId,
-          name: name.toLowerCase().replace(/\s+/g, '-'),
-          created_by: user.id
+          name: name.toLowerCase().replace(/\s+/g, '-')
         })
         .select()
         .single();

@@ -25,13 +25,24 @@ export default function SpaceCalendar({ spaceId, user }) {
       .eq('space_id', spaceId)
       .order('start_time', { ascending: true });
       
-    // Fetch tasks with due dates
-    const { data: tasksData } = await supabase
-      .from('clipad_tasks')
-      .select('*')
+    // Fetch tasks with due dates (requires finding the board first since tasks don't have space_id directly)
+    const { data: board } = await supabase
+      .from('clipad_task_boards')
+      .select('id')
       .eq('space_id', spaceId)
-      .not('due_date', 'is', null)
-      .order('due_date', { ascending: true });
+      .limit(1)
+      .single();
+      
+    let tasksData = [];
+    if (board && board.id) {
+      const { data } = await supabase
+        .from('clipad_tasks')
+        .select('*')
+        .eq('board_id', board.id)
+        .not('due_date', 'is', null)
+        .order('due_date', { ascending: true });
+      tasksData = data;
+    }
       
     setEvents(eventsData || []);
     setTasks(tasksData || []);

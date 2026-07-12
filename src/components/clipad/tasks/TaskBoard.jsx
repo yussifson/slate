@@ -233,9 +233,9 @@ export default function TaskBoard({ spaceId }) {
                           <MoreVertical className="w-3.5 h-3.5 text-muted-foreground" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-40 rounded-xl">
-                          {STAGES.filter(s => s.id !== task.status).map(s => (
-                            <DropdownMenuItem key={s.id} onClick={() => updateTaskStatus(task.id, s.id)} className="text-xs">
-                              Move to {s.label}
+                          {stages.filter(s => s.id !== task.status).map(s => (
+                            <DropdownMenuItem key={s.id} onClick={() => updateTaskStatus(task.id, s.id)}>
+                              <Circle className={`w-3 h-3 mr-2 ${s.color.replace('bg-', 'text-')}`} /> Move to {s.label}
                             </DropdownMenuItem>
                           ))}
                           <DropdownMenuItem onClick={() => deleteTask(task.id)} className="text-xs text-rose-500">
