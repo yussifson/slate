@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/AuthContext';
 import {
   Video, Camera, Plus, Brain, CheckCircle, Clock, TrendingUp,
   Layers, Play, BarChart3, Settings, ArrowRight, Sparkles, Activity,
-  Users, FileText, Calendar, Mic, Target, Flame, Star, LogOut
+  Users, FileText, Calendar, Mic, Target, Flame, Star, LogOut, Shield
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
@@ -146,7 +146,7 @@ function ActionItemRow({ item }) {
 }
 
 export default function CliPadDashboard() {
-  const { user, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
   const navigate = useNavigate();
   const [spaces, setSpaces] = useState([]);
   const [videos, setVideos] = useState([]);
@@ -295,6 +295,15 @@ export default function CliPadDashboard() {
                 <Settings className="mr-2 h-4 w-4" />
                 <span>Settings</span>
               </DropdownMenuItem>
+              {profile?.role === 'super_admin' && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/clipad/admin')} className="cursor-pointer bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400">
+                    <Shield className="mr-2 h-4 w-4" />
+                    <span className="font-semibold">Super Admin Dashboard</span>
+                  </DropdownMenuItem>
+                </>
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={async () => { await logout(); navigate('/login'); }} className="cursor-pointer text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400">
                 <LogOut className="mr-2 h-4 w-4" />
