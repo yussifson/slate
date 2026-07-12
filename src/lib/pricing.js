@@ -137,10 +137,10 @@ export function assertPricingIntegrity() {
 }
 
 export const PLAN_META = {
-  starter:      { name:'Starter',      tagline:'Get started for free',           quota:'Up to 5 Internal Users',   storage:'10 GB',  aiTokens:'None',                 popular:false, highlight:false, cta:'Get started free'   },
+  starter:      { name:'Starter',      tagline:'Get started for free',           quota:'Up to 10 Internal Users',   storage:'10 GB',  aiTokens:'None',                 popular:false, highlight:false, cta:'Get started free'   },
   professional: { name:'Professional', tagline:'For growing teams',               quota:'Up to 50 Internal Users',  storage:'500 GB', aiTokens:'10,000 / mo',          popular:true,  highlight:true,  cta:'Start 14-day trial'  },
   business:     { name:'Business',     tagline:'For scaling organizations',       quota:'Unlimited Internal Users', storage:'5 TB',   aiTokens:'Unlimited',            popular:false, highlight:false, cta:'Start 14-day trial'  },
-  enterprise:   { name:'Enterprise',   tagline:'Custom-fit for large enterprise', quota:'Unlimited Internal Users', storage:'Custom', aiTokens:'Unlimited + Priority', popular:false, highlight:false, cta:'Contact sales'       }};
+  enterprise:   { name:'Enterprise',   tagline:'Custom-fit for large enterprise', quota:'Unlimited Internal Users', storage:'Custom', aiTokens:'Unlimited + Priority', popular:false, highlight:false, cta:'Upgrade'       }};
 
 export const TIER_META = {
   global:    { name:'Global',    desc:'US, UK, EU, Gulf, AU, JP, KR', badge:null        },

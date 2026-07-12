@@ -67,7 +67,7 @@ export default function SpacesList() {
     if (!newName.trim() || !user) return;
     
     // Free tier limit
-    if (spaces.length >= 2 && user?.subscription_tier !== 'pro') {
+    if (spaces.length >= 5 && user?.subscription_tier !== 'pro') {
       setShowCreate(false);
       setShowPaywall(true);
       return;

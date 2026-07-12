@@ -212,29 +212,18 @@ export default function Pricing() {
  </ul>
 
  <div className="mt-auto">
- {isEnterprise ? (
- <Link to="/enterprise-contact" className="w-full block">
- <Button
- id={`cta-${planKey}`}
- className="w-full py-6 text-base font-bold tracking-tight rounded-2xl bg-primary hover:bg-primary/90 text-white shadow-[0_8px_30px_rgba(16,185,129,0.3)] transition-all hover:-translate-y-0.5"
- >
- {meta.cta} <ArrowRight className="w-4 h-4 ml-1.5" />
- </Button>
- </Link>
- ) : (
  <Link to={`/signup?plan=${planKey}&billing=${billingCycle}`} className="w-full block">
  <Button
  id={`cta-${planKey}`}
  className={`w-full py-6 text-base font-bold tracking-tight rounded-2xl transition-all hover:-translate-y-0.5 ${
- meta.highlight
+ meta.highlight || isEnterprise
  ? 'bg-primary hover:bg-primary/90 text-white shadow-[0_8px_30px_rgba(var(--primary),0.3)]'
  : 'bg-white ring-1 ring-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm'
  }`}
  >
- {meta.cta}
+ {meta.cta} {isEnterprise && <ArrowRight className="w-4 h-4 ml-1.5 inline-block" />}
  </Button>
  </Link>
- )}
  </div>
  </div>
  );

@@ -1,6 +1,6 @@
 export const SUBSCRIPTION_PLANS = {
-  free_trial: { name: "Free Trial", price: 0, maxUsers: 5, maxCases: 10, maxStorageGB: 1, maxClients: 20, maxIndustries: 1, aiLimited: true },
-  starter: { name: "Starter", price: 49, maxUsers: 5, maxCases: 50, maxStorageGB: 5, maxClients: 50, maxIndustries: 1, aiLimited: true },
+  free_trial: { name: "Free Trial", price: 0, maxUsers: 10, maxCases: 10, maxStorageGB: 1, maxClients: 20, maxIndustries: 1, aiLimited: true },
+  starter: { name: "Starter", price: 49, maxUsers: 10, maxCases: 50, maxStorageGB: 5, maxClients: 50, maxIndustries: 1, aiLimited: true },
   professional: { name: "Professional", price: 149, maxUsers: 15, maxCases: 500, maxStorageGB: 50, maxClients: 500, maxIndustries: 99, aiLimited: false },
   enterprise: { name: "Enterprise", price: 499, maxUsers: 9999, maxCases: 9999, maxStorageGB: 500, maxClients: 9999, maxIndustries: 99, aiLimited: false },
   off_cloud: { name: "Off-Cloud", price: "Custom", maxUsers: "Unlimited", isContactSales: true }

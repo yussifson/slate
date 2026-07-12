@@ -77,7 +77,7 @@ const tiers = [
     price: '$0',
     period: 'forever',
     highlight: false,
-    features: ['Unlimited HD meetings', 'Up to 50 participants', 'Screen sharing & whiteboard', '10 async video recordings/mo (15 min limit)', 'Basic AI meeting summary', 'Up to 5 Team Spaces'],
+    features: ['Unlimited HD meetings', 'Up to 10 participants', 'Screen sharing & whiteboard', '10 async video recordings/mo (15 min limit)', 'Basic AI meeting summary', 'Up to 5 Team Spaces'],
   },
   {
     name: 'Pro',
@@ -588,7 +588,7 @@ export default function MeetLandingPage() {
                   disabled={isProcessingPay}
                   className={`w-full py-3 rounded-xl font-semibold text-sm transition-all ${tier.highlight ? 'bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white shadow-lg shadow-primary/25' : 'bg-secondary hover:bg-secondary/80 text-foreground border border-border'}`}
                 >
-                  {tier.name === 'Enterprise' ? 'Contact Sales' : (user ? (tier.name === 'Free' ? 'Current Plan' : 'Upgrade') : 'Get Started')}
+                  {user ? (tier.name === 'Free' ? 'Current Plan' : 'Upgrade') : 'Get Started'}
                 </button>
               </div>
             ))}
@@ -622,7 +622,7 @@ export default function MeetLandingPage() {
                   </tr>
                   <tr className="border-b border-border hover:bg-slate-50/80 transition-colors">
                     <td className="p-5 font-semibold text-slate-700">Participants per Call</td>
-                    <td className="p-5 text-center">Up to 50</td>
+                    <td className="p-5 text-center">Up to 10</td>
                     <td className="p-5 text-center text-primary font-bold bg-primary/5">Up to 300</td>
                     <td className="p-5 text-center">Unlimited</td>
                   </tr>
