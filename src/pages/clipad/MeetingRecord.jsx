@@ -270,10 +270,32 @@ export default function MeetingRecord() {
         </div>
       </nav>
 
-      <div className="max-w-4xl mx-auto px-6 py-8 space-y-5">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        {/* Header */}
-        <div className="mb-2">
+        
+        {/* Video Player */}
+        <div className="mb-6">
+          {meeting.video_url ? (
+              <RichVideoPlayer videoUrl={meeting.video_url} />
+            ) : (
+              <button 
+                onClick={() => {
+                  toast({ title: 'Recording Loading', description: 'Your recording is being processed by the cloud provider and will be available shortly.' });
+                }}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold transition-all hover:-translate-y-0.5 mt-4 mb-8"
+              >
+                <Video className="w-4 h-4" /> Recording Pending...
+              </button>
+            )}
+        </div>
+
+        {/* 3-Column Grid for Meeting Info */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* Main Info (Col-Span-2) */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Header */}
+        <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             {meeting.ai_summary && (
               <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pink-500/10 border border-pink-500/20 text-primary text-xs font-bold">
@@ -306,23 +328,11 @@ export default function MeetingRecord() {
             {getMeetingDuration() && <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{getMeetingDuration()}</span>}
             {meeting.participant_count && <span className="flex items-center gap-1.5"><Users className="w-4 h-4" />{meeting.participant_count} participants</span>}
           </div>
-          <div className="mt-4">
-            {meeting.video_url ? (
-              <RichVideoPlayer videoUrl={meeting.video_url} />
-            ) : (
-              <button 
-                onClick={() => {
-                  toast({ title: 'Recording Loading', description: 'Your recording is being processed by the cloud provider and will be available shortly.' });
-                }}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold transition-all hover:-translate-y-0.5 mt-4 mb-8"
-              >
-                <Video className="w-4 h-4" /> Recording Pending...
-              </button>
-            )}
-          </div>
+          
         </div>
 
-        {/* AI Summary */}
+        
+            {/* AI Summary */}
         {meeting.ai_summary && (
           <SectionCard icon={Brain} iconColor="from-pink-500 to-rose-500" title="AI Meeting Summary" defaultOpen>
             <div className="flex justify-end mb-3">
@@ -334,65 +344,8 @@ export default function MeetingRecord() {
           </SectionCard>
         )}
 
-        {/* Key Decisions */}
-        {meeting.key_decisions && meeting.key_decisions.length > 0 && (
-          <SectionCard icon={Zap} iconColor="from-amber-500 to-orange-500" title="Key Decisions" badge={meeting.key_decisions.length}>
-            <ul className="space-y-2">
-              {meeting.key_decisions.map((d, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-lg bg-amber-500/15 text-amber-500 dark:text-amber-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">{i+1}</span>
-                  <p className="text-sm text-slate-700 dark:text-slate-300 leading-snug">{d}</p>
-                </li>
-              ))}
-            </ul>
-          </SectionCard>
-        )}
-
-        {/* Action Items */}
-        <SectionCard
-          icon={CheckCircle}
-          iconColor="from-emerald-500 to-teal-500"
-          title="Action Items"
-          badge={`${openItems.length} open · ${doneItems.length} done`}
-        >
-          {actionItems.length === 0 ? (
-            <div className="py-8 text-center">
-              <Target className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-              <p className="text-sm text-muted-foreground">No action items yet.</p>
-              {!meeting.ai_summary && (
-                <button onClick={generateAISummary} disabled={generatingAI} className="mt-3 text-xs text-primary hover:text-primary/80 transition-colors">
-                  Generate AI summary to extract action items →
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="divide-y divide-white/5">
-              {actionItems.map(item => (
-                <ActionItemRow
-                  key={item.id}
-                  item={item}
-                  onUpdate={(id, val) => setActionItems(prev => prev.map(i => i.id === id ? { ...i, is_complete: val } : i))}
-                />
-              ))}
-            </div>
-          )}
-        </SectionCard>
-
-        {/* Open Questions */}
-        {meeting.open_questions && meeting.open_questions.length > 0 && (
-          <SectionCard icon={AlertCircle} iconColor="from-cyan-500 to-blue-500" title="Open Questions" badge={meeting.open_questions.length}>
-            <ul className="space-y-2">
-              {meeting.open_questions.map((q, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <MessageSquare className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                  <p className="text-sm text-slate-700 dark:text-slate-300 leading-snug">{q}</p>
-                </li>
-              ))}
-            </ul>
-          </SectionCard>
-        )}
-
-        {/* Transcript */}
+        
+            {/* Transcript */}
         {(transcript.length > 0 || meeting.raw_transcript) && (
           <SectionCard icon={FileText} iconColor="from-violet-500 to-purple-500" title="Transcript" defaultOpen={false}>
             <div className="flex justify-between mb-4">
@@ -427,7 +380,76 @@ export default function MeetingRecord() {
           </SectionCard>
         )}
 
-      </div>
+      
+          </div>
+
+          {/* Sidebar (Col-Span-1) */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Key Decisions */}
+        {meeting.key_decisions && meeting.key_decisions.length > 0 && (
+          <SectionCard icon={Zap} iconColor="from-amber-500 to-orange-500" title="Key Decisions" badge={meeting.key_decisions.length}>
+            <ul className="space-y-2">
+              {meeting.key_decisions.map((d, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-lg bg-amber-500/15 text-amber-500 dark:text-amber-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">{i+1}</span>
+                  <p className="text-sm text-slate-700 dark:text-slate-300 leading-snug">{d}</p>
+                </li>
+              ))}
+            </ul>
+          </SectionCard>
+        )}
+
+        
+            {/* Action Items */}
+        <SectionCard
+          icon={CheckCircle}
+          iconColor="from-emerald-500 to-teal-500"
+          title="Action Items"
+          badge={`${openItems.length} open · ${doneItems.length} done`}
+        >
+          {actionItems.length === 0 ? (
+            <div className="py-8 text-center">
+              <Target className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground">No action items yet.</p>
+              {!meeting.ai_summary && (
+                <button onClick={generateAISummary} disabled={generatingAI} className="mt-3 text-xs text-primary hover:text-primary/80 transition-colors">
+                  Generate AI summary to extract action items →
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="divide-y divide-white/5">
+              {actionItems.map(item => (
+                <ActionItemRow
+                  key={item.id}
+                  item={item}
+                  onUpdate={(id, val) => setActionItems(prev => prev.map(i => i.id === id ? { ...i, is_complete: val } : i))}
+                />
+              ))}
+            </div>
+          )}
+        </SectionCard>
+
+        
+            {/* Open Questions */}
+        {meeting.open_questions && meeting.open_questions.length > 0 && (
+          <SectionCard icon={AlertCircle} iconColor="from-cyan-500 to-blue-500" title="Open Questions" badge={meeting.open_questions.length}>
+            <ul className="space-y-2">
+              {meeting.open_questions.map((q, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <MessageSquare className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                  <p className="text-sm text-slate-700 dark:text-slate-300 leading-snug">{q}</p>
+                </li>
+              ))}
+            </ul>
+          </SectionCard>
+        )}
+
+        
+          </div>
+
+        </div>
+</div>
       
       {/* Edit Meeting Modal */}
       {showEdit && (
