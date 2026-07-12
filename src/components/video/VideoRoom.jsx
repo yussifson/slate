@@ -85,8 +85,8 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const recordingIntervalRef = useRef(null);
-  
   const [meetingVideoUrl, setMeetingVideoUrl] = useState(null);
+  const meetingVideoUrlRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const recordedChunksRef = useRef([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -331,31 +331,42 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
       try {
         const durationSeconds = Math.round((Date.now() - joinTimeRef.current) / 1000);
         const meetingTitle = `Meeting - ${new Date().toLocaleDateString()}`;
-        const summary = transcriptData.length > 0 
-          ? transcriptData.map(t => `${t.name}: ${t.text}`).join('\n').substring(0, 500) 
-          : 'No transcript recorded.';
+        const rawTranscript = transcriptData.length > 0 
+          ? transcriptData.map(t => `${t.name}: ${t.text}`).join('\n')
+          : '';
           
         if (db) {
           const meetingData = {
             title: meetingTitle,
             daily_room_name: roomUrl.split('/').pop() || 'room',
             host_id: user?.id || null,
-            ai_summary: summary,
+            ai_summary: rawTranscript ? 'Generating summary...' : 'No transcript recorded.',
             ended_at: new Date().toISOString(),
             space_id: spaceId || null
           };
           
-          // Use the real uploaded video URL if one was created during this session
-          if (meetingVideoUrl) {
-            meetingData.video_url = meetingVideoUrl;
+          if (meetingVideoUrl || meetingVideoUrlRef.current) {
+            meetingData.video_url = meetingVideoUrl || meetingVideoUrlRef.current;
           } else if (recordingSeconds > 0 && isUploading) {
-             // Fallback wait if it's still somehow uploading
              toast({ title: "Warning", description: "Video upload was not finished yet, video may be missing." });
           }
 
-          await db.from('clipad_meeting_records').insert(meetingData);
-        } else {
-          console.error("Supabase client is not available in leaveCall");
+          const { data: insertedMeeting, error } = await db.from('clipad_meeting_records').insert(meetingData).select().single();
+          
+          if (!error && insertedMeeting && rawTranscript.trim().length > 10) {
+            import('@/lib/cloudflareAI').then(({ generateText }) => {
+              generateText([
+                { role: 'system', content: 'You are an AI assistant. Summarize the following meeting transcript. Keep it concise.' },
+                { role: 'user', content: rawTranscript.trim().substring(0, 4000) } // keep within limits
+              ]).then(async (aiResult) => {
+                try {
+                  let text = typeof aiResult === 'string' ? aiResult : aiResult?.response;
+                  if (!text) return;
+                  await db.from('clipad_meeting_records').update({ ai_summary: text }).eq('id', insertedMeeting.id);
+                } catch(e) { console.warn("Failed to update AI summary", e); }
+              }).catch(()=>{});
+            });
+          }
         }
       } catch (e) {
         console.error('Failed to save meeting record:', e);
@@ -868,8 +879,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
             const { data } = db.storage.from('clipad_videos').getPublicUrl(fileName);
             if (data?.publicUrl) {
               setMeetingVideoUrl(data.publicUrl);
-              // Update state so the leaveCall hook gets it, or we could mutate a ref.
-              // To ensure leaveCall gets it, setMeetingVideoUrl is fine since leaveCall uses state/refs.
+              meetingVideoUrlRef.current = data.publicUrl;
               toast({ title: 'Recording Saved', description: 'Video has been successfully uploaded.' });
             }
           } catch (e) {
