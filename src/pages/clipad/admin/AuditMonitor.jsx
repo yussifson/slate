@@ -18,7 +18,7 @@ export default function AuditMonitor() {
     // Fetch last 100 audit logs
     const { data, error } = await supabase
       .from('audit_logs')
-      .select('*, companies(name)')
+      .select('*')
       .order('created_at', { ascending: false })
       .limit(100);
 
@@ -56,7 +56,7 @@ export default function AuditMonitor() {
                   <div className="font-medium text-sm">{log.user_name || 'Unknown User'}</div>
                   <div className="text-xs text-muted-foreground">{log.user_email || log.user_id}</div>
                 </TableCell>
-                <TableCell className="text-sm">{log.companies?.name || 'N/A'}</TableCell>
+                <TableCell className="text-sm text-slate-500 font-mono">{log.company_id || 'N/A'}</TableCell>
                 <TableCell>
                   <span className={`px-2 py-1 rounded-md text-xs font-medium uppercase ${
                     log.action === 'login' ? 'bg-blue-500/10 text-blue-500' :

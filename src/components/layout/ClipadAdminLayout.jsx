@@ -17,7 +17,7 @@ export default function ClipadAdminLayout() {
   const menuItems = [
     { name: 'Overview', icon: LayoutDashboard, path: basePath },
     { name: 'Companies', icon: Building2, path: `${basePath}/companies` },
-    { name: 'Pricing Tags', icon: Tags, path: `${basePath}/pricing` },
+    { name: 'Pricing & Plans', icon: Tags, path: `${basePath}/pricing` },
     { name: 'Audit Monitor', icon: ShieldAlert, path: `${basePath}/audit` },
     { name: 'Admin AI', icon: BrainCircuit, path: `${basePath}/ai` },
   ];

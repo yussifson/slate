@@ -21,7 +21,7 @@ export default function CompanyManagement() {
 
   async function fetchCompanies() {
     setLoading(true);
-    const { data, error } = await supabase.from('companies').select('*, clipad_pricing_tags(name)').order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('companies').select('*').order('created_at', { ascending: false });
     if (!error) {
       setCompanies(data || []);
     }
@@ -92,7 +92,7 @@ export default function CompanyManagement() {
                     {company.status || 'Active'}
                   </span>
                 </TableCell>
-                <TableCell>{company.clipad_pricing_tags?.name || company.subscription_plan || 'Default'}</TableCell>
+                <TableCell><span className="capitalize px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-md text-xs font-medium">{company.subscription_plan || 'starter'}</span></TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger className="p-2 hover:bg-secondary rounded-md transition-colors">
