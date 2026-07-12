@@ -60,6 +60,30 @@ export default function PricingTags() {
 
       if (profiles && profiles.length > 0) {
         const receiptNumber = `CLIP-${Date.now().toString(36).toUpperCase()}-${resolvedPlan.slice(0,3).toUpperCase()}`;
+        
+        // Save to optavel_transactions so billing history sees it
+        if (resolvedPlan !== 'free') {
+          const amountInGhs = resolvedPlan === 'enterprise' ? 450 : 105;
+          const newReceipt = {
+            reference: 'ADMIN-ASSIGNED-' + Date.now().toString(36).toUpperCase(),
+            receiptNumber: receiptNumber,
+            amount: 0, // Since it's admin assigned, they might pay via invoice
+            currency: 'GHS',
+            plan: resolvedPlan,
+            date: new Date().toISOString(),
+            isAdminAssigned: true,
+          };
+          await supabase.from('optavel_transactions').insert({
+            id: receiptNumber,
+            company_id: companyId,
+            amount: 0,
+            type: 'subscription',
+            category: 'clipad_billing',
+            description: JSON.stringify(newReceipt),
+            date: new Date().toISOString(),
+            created_at: new Date().toISOString()
+          });
+        }
         const notifRows = profiles.map(p => ({
           user_id: p.id,
           type: 'plan_upgrade',
