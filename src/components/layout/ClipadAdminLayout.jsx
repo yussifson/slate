@@ -1,10 +1,11 @@
 import React from 'react';
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Building2, Tags, ShieldAlert, BrainCircuit, ArrowLeft, LogOut } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 
 export default function ClipadAdminLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, profile, signOut } = useAuth();
 
   const handleLogout = async () => {
@@ -79,7 +80,7 @@ export default function ClipadAdminLayout() {
             <h2 className="text-lg font-bold">CliPad Admin</h2>
             <button onClick={() => navigate('/dashboard')}><ArrowLeft className="w-5 h-5"/></button>
         </div>
-        <div className="p-6 md:p-8 flex-1 max-w-7xl mx-auto w-full">
+        <div className={`flex-1 w-full ${location.pathname.endsWith('/ai') ? 'p-0' : 'p-6 md:p-8 max-w-7xl mx-auto'}`}>
             <Outlet />
         </div>
       </main>

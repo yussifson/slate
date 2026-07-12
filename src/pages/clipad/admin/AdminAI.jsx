@@ -36,7 +36,7 @@ export default function AdminAI() {
   };
 
   return (
-    <div className="space-y-6 h-[calc(100vh-140px)] flex flex-col">
+    <div className="p-6 md:p-8 space-y-6 h-[calc(100vh-140px)] md:h-[calc(100vh-80px)] flex flex-col w-full max-w-full">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Admin Intelligence</h1>
         <p className="text-muted-foreground mt-2">Interact with the database using natural language.</p>

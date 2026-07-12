@@ -21,7 +21,7 @@ export default function CompanyManagement() {
 
   async function fetchCompanies() {
     setLoading(true);
-    const { data, error } = await supabase.from('companies').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('companies').select('*, clipad_pricing_tags(name)').order('created_at', { ascending: false });
     if (!error) {
       setCompanies(data || []);
     }
@@ -78,7 +78,9 @@ export default function CompanyManagement() {
               <TableHead>Company Name</TableHead>
               <TableHead>Subdomain</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Pricing Tag</TableHead>
+              <TableHead>System Source</TableHead>
+              <TableHead>Slate Plan</TableHead>
+              <TableHead>CliPad Plan</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -92,7 +94,23 @@ export default function CompanyManagement() {
                     {company.status || 'Active'}
                   </span>
                 </TableCell>
-                <TableCell><span className="capitalize px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-md text-xs font-medium">{company.subscription_plan || 'starter'}</span></TableCell>
+                <TableCell>
+                  {company.subscription_plan ? (
+                    <span className="px-2 py-1 bg-slate-800 text-slate-100 rounded-md text-[10px] font-bold uppercase tracking-wider">Slate Member</span>
+                  ) : (
+                    <span className="px-2 py-1 bg-indigo-500/10 text-indigo-500 rounded-md text-[10px] font-bold uppercase tracking-wider">CliPad Only</span>
+                  )}
+                </TableCell>
+                <TableCell>
+                  <span className="capitalize px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-md text-xs font-medium">
+                    {company.subscription_plan || 'N/A'}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <span className="capitalize px-2 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-md text-xs font-bold">
+                    {company.clipad_pricing_tags?.name || 'Free Tier'}
+                  </span>
+                </TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger className="p-2 hover:bg-secondary rounded-md transition-colors">
