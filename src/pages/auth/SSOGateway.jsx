@@ -57,26 +57,30 @@ export default function SSOGateway() {
     setIsLoading(true);
     setAuthError(null);
     try {
+      // Refresh account from local storage to prevent using stale tokens rotated by other tabs
+      const freshAccounts = getSavedAccounts();
+      const freshAccount = freshAccounts.find(a => a.id === account.id) || account;
+
       // 0. Check if already active
       const { data: { session: currentSession } } = await supabase.auth.getSession();
       
-      if (currentSession && currentSession.user.id === account.id) {
+      if (currentSession && currentSession.user.id === freshAccount.id) {
         // Already active! Skip setSession.
         await new Promise(resolve => setTimeout(resolve, 200));
       } else {
         // 1. Swap active session
         const { error: sessionError } = await supabase.auth.setSession({
-          access_token: account.access_token,
-          refresh_token: account.refresh_token
+          access_token: freshAccount.access_token,
+          refresh_token: freshAccount.refresh_token
         });
         
         if (sessionError) {
             // Attempt an explicit refresh in case setSession rejected an expired access token
-            const { error: refreshError } = await supabase.auth.refreshSession({ refresh_token: account.refresh_token });
+            const { error: refreshError } = await supabase.auth.refreshSession({ refresh_token: freshAccount.refresh_token });
             
             if (refreshError) {
                 // Token might be fully expired or revoked. Force login.
-                removeAccount(account.id);
+                removeAccount(freshAccount.id);
                 // Redirect them to login automatically instead of getting stuck on an error
                 handleAddAccount();
                 return;
@@ -88,8 +92,8 @@ export default function SSOGateway() {
       }
       
       // 3. Verify workspace access
-      if (targetHost !== 'slate.optavel.com' && targetHost !== 'account.optavel.com' && targetHost !== 'localhost' && targetHost !== '127.0.0.1') {
-        const { data: profile } = await supabase.from('profiles').select('company_id').eq('id', account.id).maybeSingle();
+      if (targetHost !== 'clipad.optavel.com' && targetHost !== 'slate.optavel.com' && targetHost !== 'account.optavel.com' && targetHost !== 'localhost' && targetHost !== '127.0.0.1') {
+        const { data: profile } = await supabase.from('profiles').select('company_id').eq('id', freshAccount.id).maybeSingle();
         
         if (!profile || !profile.company_id) {
             throw new Error(`This account is not associated with any workspace.`);
