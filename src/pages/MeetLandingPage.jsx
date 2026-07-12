@@ -81,7 +81,7 @@ const tiers = [
   },
   {
     name: 'Pro',
-    price: '$49',
+    price: '$9',
     period: 'per workspace/mo',
     highlight: true,
     badge: 'Most Popular',
@@ -89,8 +89,8 @@ const tiers = [
   },
   {
     name: 'Enterprise',
-    price: 'Custom',
-    period: 'contact us',
+    price: '$39',
+    period: 'per workspace/mo',
     highlight: false,
     features: ['Everything in Pro', 'Unlimited participants', 'Branded meeting rooms', 'SSO & compliance recording', 'Unlimited async recordings', 'SLA & dedicated support', 'Custom integrations'],
   },
@@ -253,11 +253,6 @@ export default function MeetLandingPage() {
   };
 
   const handlePricingAction = async (tierName) => {
-    if (tierName === 'Enterprise') {
-      setIsContactModalOpen(true);
-      return;
-    }
-    
     if (!user) {
       navigate('/login');
       return;
@@ -268,13 +263,15 @@ export default function MeetLandingPage() {
       return;
     }
 
-    if (tierName === 'Pro') {
+    if (tierName === 'Pro' || tierName === 'Enterprise') {
       setIsProcessingPay(true);
       try {
-        const amountInUsd = 19;
-        const amountInGhs = amountInUsd * exchangeRate;
-        const amountInPesewas = Math.round(amountInGhs * 100);
-        const planCode = import.meta.env.VITE_PAYSTACK_PLAN_CODE_PRO || 'PLN_rz16cups3jarao2';
+        const isPro = tierName === 'Pro';
+        const amountInGhs = isPro ? 105 : 450;
+        const amountInPesewas = amountInGhs * 100;
+        const planCode = isPro 
+            ? (import.meta.env.VITE_PAYSTACK_PLAN_CODE_PRO || 'PLN_rz16cups3jarao2')
+            : (import.meta.env.VITE_PAYSTACK_PLAN_CODE_ENTERPRISE || 'PLN_0g01fqqgeymnsj7');
 
         const handler = window.PaystackPop.setup({
           key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_mock',

@@ -72,19 +72,22 @@ export default function CliPadBilling() {
     }
   };
 
-  const handleUpgrade = async (planType, amountInUsd) => {
+  const handleUpgrade = async (planType) => {
     setLoading(true);
     try {
-      const amountInGhs = amountInUsd * exchangeRate;
-      const amountInPesewas = Math.round(amountInGhs * 100);
-      const planCode = import.meta.env.VITE_PAYSTACK_PLAN_CODE_PRO || 'PLN_rz16cups3jarao2';
+      const isPro = planType === 'pro';
+      const amountInGhs = isPro ? 105 : 450;
+      const amountInPesewas = amountInGhs * 100;
+      const planCode = isPro 
+            ? (import.meta.env.VITE_PAYSTACK_PLAN_CODE_PRO || 'PLN_rz16cups3jarao2')
+            : (import.meta.env.VITE_PAYSTACK_PLAN_CODE_ENTERPRISE || 'PLN_0g01fqqgeymnsj7');
 
       const handler = window.PaystackPop.setup({
         key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_mock', // Fallback for dev
         email: user?.email || 'user@example.com',
         amount: amountInPesewas, 
         currency: 'GHS',
-        plan: planType === 'pro' ? planCode : '', // Add Paystack Plan code for subscriptions
+        plan: planCode, // Add Paystack Plan code for subscriptions
         ref: '' + Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference
         callback: function (response) {
           toast({
@@ -159,9 +162,9 @@ export default function CliPadBilling() {
             </div>
           )}
           <h3 className="text-xl font-bold">Pro</h3>
-          <p className="text-3xl font-bold mt-4">$19<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
+          <p className="text-3xl font-bold mt-4">$9<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
           <p className="text-xs text-muted-foreground mt-1">
-            Billed in GHS (~{Math.round(19 * exchangeRate)} GHS)
+            Billed in GHS (105 GHS)
           </p>
           <ul className="mt-6 space-y-3">
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Unlimited Meetings</li>
@@ -169,27 +172,30 @@ export default function CliPadBilling() {
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Cloud Recordings (Daily.co)</li>
           </ul>
           <button 
-            onClick={() => handleUpgrade('pro', 19)}
+            onClick={() => handleUpgrade('pro')}
             disabled={currentPlan === 'pro' || loading}
             className={`w-full mt-8 py-2 rounded-xl font-semibold transition-all ${currentPlan === 'pro' ? 'bg-secondary text-foreground border border-border' : 'bg-primary text-white hover:bg-primary/90'}`}>
             {currentPlan === 'pro' ? 'Current Plan' : 'Upgrade to Pro'}
           </button>
         </div>
 
-        {/* CUSTOM PLAN */}
-        <div className={`p-6 rounded-2xl border ${currentPlan === 'custom' ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}>
-          <h3 className="text-xl font-bold">Custom</h3>
-          <p className="text-3xl font-bold mt-4">Let's Talk</p>
+        {/* ENTERPRISE PLAN */}
+        <div className={`p-6 rounded-2xl border ${currentPlan === 'enterprise' ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}>
+          <h3 className="text-xl font-bold">Enterprise</h3>
+          <p className="text-3xl font-bold mt-4">$39<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Billed in GHS (450 GHS)
+          </p>
           <ul className="mt-6 space-y-3">
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Dedicated Account Manager</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Custom Payment Subdomains</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Enterprise SLAs</li>
           </ul>
           <button 
-            onClick={() => setIsContactModalOpen(true)}
-            disabled={currentPlan === 'custom' || loading}
-            className={`w-full mt-8 py-2 rounded-xl font-semibold border ${currentPlan === 'custom' ? 'bg-secondary text-foreground border-border' : 'bg-background text-foreground hover:bg-secondary border-border'}`}>
-            {currentPlan === 'custom' ? 'Current Plan' : 'Contact Sales'}
+            onClick={() => handleUpgrade('enterprise')}
+            disabled={currentPlan === 'enterprise' || loading}
+            className={`w-full mt-8 py-2 rounded-xl font-semibold border ${currentPlan === 'enterprise' ? 'bg-secondary text-foreground border-border' : 'bg-background text-foreground hover:bg-secondary border-border'}`}>
+            {currentPlan === 'enterprise' ? 'Current Plan' : 'Upgrade to Enterprise'}
           </button>
         </div>
       </div>
