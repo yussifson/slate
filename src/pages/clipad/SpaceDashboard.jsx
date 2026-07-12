@@ -20,6 +20,9 @@ import SpaceDocs from '@/components/clipad/docs/SpaceDocs';
 import SpaceCalendar from '@/components/clipad/calendar/SpaceCalendar';
 import CanvasWhiteboard from '@/components/clipad/CanvasWhiteboard';
 import SpaceAutomations from '@/components/clipad/SpaceAutomations';
+import DecisionLedger from '@/components/clipad/features/DecisionLedger';
+import ContextCapsule from '@/components/clipad/features/ContextCapsule';
+import BlockerRadar from '@/components/clipad/features/BlockerRadar';
 
 const TABS = [
   { id: 'overview', icon: Layers, label: 'Overview' },
@@ -28,6 +31,7 @@ const TABS = [
   { id: 'videos', icon: Camera, label: 'Videos' },
   { id: 'meetings', icon: Calendar, label: 'Meetings' },
   { id: 'tasks', icon: CheckCircle, label: 'Action Board' },
+  { id: 'decisions', icon: ShieldAlert, label: 'Decisions' },
   { id: 'docs', icon: FileText, label: 'Docs' },
   { id: 'canvas', icon: Sparkles, label: 'Canvas' },
   { id: 'automations', icon: Settings, label: 'Automations' },
@@ -371,6 +375,18 @@ export default function SpaceDashboard() {
             <MeetingInsights spaceId={spaceId} />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <ContextCapsule 
+                spaceId={spaceId} 
+                hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
+              />
+              <BlockerRadar 
+                workspaceId={space.company_id} 
+                spaceId={spaceId} 
+                hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
+              />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Recent Videos */}
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -466,6 +482,15 @@ export default function SpaceDashboard() {
               </div>
             )}
           </div>
+        )}
+
+        {/* DECISIONS */}
+        {activeTab === 'decisions' && (
+          <DecisionLedger 
+            workspaceId={space.company_id} 
+            spaceId={spaceId} 
+            hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
+          />
         )}
 
         {/* CHAT */}

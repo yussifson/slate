@@ -20,6 +20,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import DashboardWidgets from '@/components/clipad/widgets/DashboardWidgets';
+import BlockerRadar from '@/components/clipad/features/BlockerRadar';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import SpaceSelectorModal from '@/components/clipad/SpaceSelectorModal';
 
@@ -463,9 +465,21 @@ export default function CliPadDashboard() {
                   ))
                 )}
               </div>
+              </div>
             </div>
           </div>
         </div>
+        
+        {/* Workspace Blocker Radar (Enterprise Only) */}
+        {user?.clipad_plan === 'enterprise' && activeWorkspace && (
+          <div className="mt-8">
+            <BlockerRadar 
+              workspaceId={activeWorkspace.id} 
+              isWorkspaceView={true} 
+              hasFullIntelligence={true} 
+            />
+          </div>
+        )}
       </div>
     </div>
   );

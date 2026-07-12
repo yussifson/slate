@@ -31,6 +31,11 @@ Output ONLY a JSON object (no markdown formatting, no backticks, no text outside
 - actionItems: An array of objects, each with 'assignee', 'task', and 'deadline' string properties
 - openQuestions: An array of strings
 - sentiment: A string
+- extracted_signals: An array of objects, each representing a "Signal" detected in the transcript. A Signal has:
+  - type: 'decision' or 'blocking' or 'commitment'
+  - raw_excerpt: The exact quote that triggered the signal
+  - entities: Array of people/teams mentioned
+  - detail: If 'decision', provide the reasoning. If 'blocking', explain who is blocking whom.
 
 Transcript:
 ${transcript}`;
@@ -51,7 +56,7 @@ ${transcript}`;
           },
           body: JSON.stringify({
             messages: [{ role: 'user', content: prompt }],
-            max_tokens: 1024
+            max_tokens: 1500
           })
         }
       );
@@ -75,6 +80,50 @@ ${transcript}`;
     }
 
     if (type === "meeting" && roomId) {
+      // 1. Get meeting to get workspace_id and space_id
+      const { data: meeting } = await supabase
+        .from('clipad_meeting_records')
+        .select('id, space_id, company_id')
+        .eq('room_id', roomId)
+        .single();
+
+      // 2. Insert signals if we have meeting details
+      if (meeting && aiResponse.extracted_signals && Array.isArray(aiResponse.extracted_signals)) {
+        for (const signal of aiResponse.extracted_signals) {
+          // Insert Signal Event
+          const { data: sigEvent } = await supabase.from('clipad_signal_events').insert({
+            workspace_id: meeting.company_id,
+            team_space_id: meeting.space_id,
+            type: signal.type,
+            source: 'meeting',
+            source_id: meeting.id,
+            raw_excerpt: signal.raw_excerpt,
+            extracted_entities: signal.entities
+          }).select().single();
+
+          if (sigEvent) {
+            // Insert specific table entry
+            if (signal.type === 'decision') {
+              await supabase.from('clipad_decisions').insert({
+                workspace_id: meeting.company_id,
+                team_space_id: meeting.space_id,
+                decision_text: signal.detail || 'Decision made in meeting',
+                reasoning_text: signal.raw_excerpt,
+                source_meeting_id: meeting.id,
+                source_signal_event_id: sigEvent.id
+              });
+            } else if (signal.type === 'blocking') {
+              await supabase.from('clipad_blockers').insert({
+                workspace_id: meeting.company_id,
+                team_space_id: meeting.space_id,
+                description: signal.detail || signal.raw_excerpt,
+                source_signal_event_id: sigEvent.id
+              });
+            }
+          }
+        }
+      }
+
       const { error } = await supabase
         .from('clipad_meeting_records')
         .update({
