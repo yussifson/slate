@@ -18,6 +18,7 @@ import TaskBoard from '@/components/clipad/tasks/TaskBoard';
 import SpaceChat from '@/components/clipad/chat/SpaceChat';
 import SpaceDocs from '@/components/clipad/docs/SpaceDocs';
 import SpaceCalendar from '@/components/clipad/calendar/SpaceCalendar';
+import CanvasWhiteboard from '@/components/clipad/CanvasWhiteboard';
 
 const TABS = [
   { id: 'overview', icon: Layers, label: 'Overview' },
@@ -27,6 +28,7 @@ const TABS = [
   { id: 'meetings', icon: Calendar, label: 'Meetings' },
   { id: 'tasks', icon: CheckCircle, label: 'Action Board' },
   { id: 'docs', icon: FileText, label: 'Docs' },
+  { id: 'canvas', icon: Sparkles, label: 'Canvas' },
 ];
 
 const COLORS = ['from-indigo-500 to-violet-500','from-cyan-500 to-blue-500','from-pink-500 to-rose-500','from-emerald-500 to-teal-500','from-amber-500 to-orange-500'];
@@ -489,6 +491,13 @@ export default function SpaceDashboard() {
         {activeTab === 'docs' && (
           <div className="h-[calc(100vh-140px)] -mt-6 -mx-8 sm:-mx-12">
             <SpaceDocs spaceId={spaceId} />
+          </div>
+        )}
+
+        {/* CANVAS */}
+        {activeTab === 'canvas' && (
+          <div className="h-[calc(100vh-140px)] -mt-6 -mx-8 sm:-mx-12 border border-border rounded-xl overflow-hidden shadow-sm relative bg-[#0D1117]">
+            <CanvasWhiteboard onClose={() => {}} />
           </div>
         )}
 

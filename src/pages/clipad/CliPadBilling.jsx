@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { supabase } from '@/api/supabaseClient';
-import { Check, Loader2, Sparkles } from 'lucide-react';
+import { Check, Loader2, Sparkles, FileText, ArrowUpRight } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import ContactSalesModal from '@/components/clipad/ContactSalesModal';
 import PaymentReceiptModal from '@/components/clipad/PaymentReceiptModal';
@@ -17,6 +17,7 @@ export default function CliPadBilling() {
   const [exchangeRate, setExchangeRate] = useState(218 / 19); // Fallback: 218 GHS for $19
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [receiptDetails, setReceiptDetails] = useState(null);
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     // Load Paystack script
@@ -27,6 +28,7 @@ export default function CliPadBilling() {
 
     fetchSubscription();
     fetchExchangeRate();
+    fetchHistory();
 
     return () => {
       document.body.removeChild(script);
@@ -82,6 +84,22 @@ export default function CliPadBilling() {
     }
   };
 
+  
+  const fetchHistory = async () => {
+    if (!companyId) return;
+    try {
+      const { data } = await supabase
+        .from('optavel_transactions')
+        .select('*')
+        .eq('company_id', companyId)
+        .eq('category', 'clipad_billing')
+        .order('created_at', { ascending: false });
+      if (data) setHistory(data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const fetchExchangeRate = async () => {
     try {
       const res = await fetch('https://open.er-api.com/v6/latest/USD');
@@ -120,9 +138,10 @@ export default function CliPadBilling() {
             description: `Reference: ${response.reference}. You are now on the ${planType.toUpperCase()} plan.`,
           });
           
-          setReceiptDetails({
+          const receiptNum = `CLIP-${Date.now().toString(36).toUpperCase()}-${planType.slice(0,3).toUpperCase()}`;
+          const newReceipt = {
             reference: response.reference,
-            receiptNumber: `CLIP-${Date.now().toString(36).toUpperCase()}-${planType.slice(0,3).toUpperCase()}`,
+            receiptNumber: receiptNum,
             amount: amountInPesewas,
             currency: 'GHS',
             plan: planType,
@@ -130,8 +149,8 @@ export default function CliPadBilling() {
             email: user?.email || 'user@example.com',
             companyName: companyName || undefined,
             isAdminAssigned: false,
-          });
-          
+          };
+          setReceiptDetails(newReceipt);
           setCurrentPlan(planType);
           
           if (companyId) {
@@ -142,6 +161,17 @@ export default function CliPadBilling() {
               paystack_customer_code: response.reference,
               updated_at: new Date().toISOString()
             }).then(() => fetchSubscription());
+
+            supabase.from('optavel_transactions').insert({
+              id: receiptNum,
+              company_id: companyId,
+              amount: amountInPesewas,
+              type: 'subscription',
+              category: 'clipad_billing',
+              description: JSON.stringify(newReceipt),
+              date: new Date().toISOString(),
+              created_at: new Date().toISOString()
+            }).then(() => fetchHistory());
           }
         },
         onClose: function () {
@@ -155,7 +185,6 @@ export default function CliPadBilling() {
       setLoading(false);
     }
   };
-
   if (initializing) {
     return <div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
   }
@@ -226,6 +255,67 @@ export default function CliPadBilling() {
             {currentPlan === 'enterprise' ? 'Current Plan' : 'Upgrade to Enterprise'}
           </button>
         </div>
+      </div>
+      {/* Billing History */}
+      <div className="mt-12">
+        <h3 className="text-xl font-bold text-foreground mb-6">Billing History & Receipts</h3>
+        {history.length === 0 ? (
+          <div className="p-8 text-center bg-card border border-border rounded-2xl text-muted-foreground flex flex-col items-center justify-center gap-2">
+            <FileText className="w-8 h-8 opacity-50" />
+            <p>No billing history found.</p>
+          </div>
+        ) : (
+          <div className="bg-card border border-border rounded-2xl overflow-hidden">
+            <table className="w-full text-left text-sm whitespace-nowrap">
+              <thead className="bg-slate-50 dark:bg-slate-900 border-b border-border">
+                <tr>
+                  <th className="px-6 py-4 font-semibold text-slate-500">Date</th>
+                  <th className="px-6 py-4 font-semibold text-slate-500">Receipt #</th>
+                  <th className="px-6 py-4 font-semibold text-slate-500">Plan</th>
+                  <th className="px-6 py-4 font-semibold text-slate-500">Amount</th>
+                  <th className="px-6 py-4 font-semibold text-slate-500">Status</th>
+                  <th className="px-6 py-4 font-semibold text-slate-500 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {history.map((tx) => {
+                  let rDetails = {};
+                  try { rDetails = JSON.parse(tx.description); } catch(e){}
+                  
+                  return (
+                    <tr key={tx.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                      <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
+                        {new Date(tx.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 font-medium text-foreground">
+                        {tx.id}
+                      </td>
+                      <td className="px-6 py-4 capitalize text-slate-600 dark:text-slate-400">
+                        {rDetails.plan || 'Unknown'}
+                      </td>
+                      <td className="px-6 py-4 font-medium text-foreground">
+                        {rDetails.isAdminAssigned ? 'Admin Assigned' : `GHS ${(tx.amount / 100).toFixed(2)}`}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="px-2 py-1 bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400 rounded-full text-xs font-bold uppercase tracking-wider">
+                          Paid
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button 
+                          onClick={() => setReceiptDetails(rDetails)}
+                          className="text-primary hover:text-primary/80 font-semibold flex items-center justify-end gap-1 w-full"
+                        >
+                          View Receipt <ArrowUpRight className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
       <ContactSalesModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
       <PaymentReceiptModal isOpen={!!receiptDetails} onClose={() => setReceiptDetails(null)} transactionDetails={receiptDetails} />
