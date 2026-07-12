@@ -91,26 +91,30 @@ export default function VideoAnalytics() {
 
       // Fetch views for those videos
       const { data: views } = videoIds.length > 0 
-        ? await supabase.from('clipad_video_views').select('video_id, created_at').in('video_id', videoIds)
+        ? await supabase.from('clipad_video_views').select('video_id, viewed_at').in('video_id', videoIds)
         : { data: [] };
       
       // Fetch comments for those videos
-      const { count: commentsCount } = videoIds.length > 0
-        ? await supabase.from('clipad_video_comments').select('id', { count: 'exact', head: true }).in('video_id', videoIds)
-        : { count: 0 };
+      const { data: commentsData } = videoIds.length > 0
+        ? await supabase.from('clipad_video_comments').select('id, video_id').in('video_id', videoIds)
+        : { data: [] };
       
       // Fetch reactions for those videos
-      const { count: reactionsCount } = videoIds.length > 0 
-        ? await supabase.from('clipad_video_reactions').select('id', { count: 'exact', head: true }).in('video_id', videoIds)
-        : { count: 0 };
+      const { data: reactionsData } = videoIds.length > 0 
+        ? await supabase.from('clipad_video_reactions').select('id, video_id').in('video_id', videoIds)
+        : { data: [] };
 
       // Calculate stats per video
       const enhancedVideos = videos.map(v => {
         const vViews = views?.filter(vw => vw.video_id === v.id) || [];
+        const vComments = commentsData?.filter(c => c.video_id === v.id) || [];
+        const vReactions = reactionsData?.filter(r => r.video_id === v.id) || [];
         const avgCompletion = vViews.length > 0 ? 100 : 0; // watch_percent is missing in db
         return {
           ...v,
           viewCount: vViews.length,
+          commentCount: vComments.length,
+          reactionCount: vReactions.length,
           avgCompletion
         };
       }).sort((a, b) => b.viewCount - a.viewCount); // sort by most viewed
@@ -123,7 +127,7 @@ export default function VideoAnalytics() {
       }).reverse();
 
       views?.forEach(v => {
-        const d = v.created_at.split('T')[0];
+        const d = v.viewed_at.split('T')[0];
         const day = last7Days.find(x => x.date === d);
         if (day) day.count++;
       });
@@ -131,8 +135,8 @@ export default function VideoAnalytics() {
       setStats({
         totalViews: views?.length || 0,
         totalVideos: videos.length + myMeetings.length,
-        totalComments: commentsCount || 0,
-        totalReactions: reactionsCount || 0,
+        totalComments: commentsData?.length || 0,
+        totalReactions: reactionsData?.length || 0,
         topVideos: enhancedVideos.slice(0, 5),
         recentViews: last7Days
       });
@@ -290,62 +294,49 @@ export default function VideoAnalytics() {
               </div>
             </div>
 
-            {/* Enterprise Exclusive Insights */}
-            {hasFeature(plan, 'hasEnterpriseAnalytics') && (
-              <div className="p-8 rounded-3xl bg-slate-900 dark:bg-black text-white shadow-xl mb-8 border border-amber-500/20 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 blur-3xl rounded-full" />
-                <h3 className="text-xl font-black mb-6 flex items-center gap-2"><Target className="w-6 h-6 text-amber-400" /> Enterprise Insights</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
-                  <div className="bg-white/5 rounded-2xl p-5 border border-white/10 hover:bg-white/10 transition-colors">
-                    <div className="text-sm text-slate-400 mb-2">AI Sentiment Analysis</div>
-                    <div className="text-3xl font-bold text-emerald-400">92% Positive</div>
-                    <p className="text-xs text-slate-500 mt-2">Based on comment and transcript analysis</p>
-                  </div>
-                  <div className="bg-white/5 rounded-2xl p-5 border border-white/10 hover:bg-white/10 transition-colors">
-                    <div className="text-sm text-slate-400 mb-2">Avg Viewer Retention</div>
-                    <div className="text-3xl font-bold text-amber-400">84%</div>
-                    <p className="text-xs text-slate-500 mt-2">Viewers who watch past 75% mark</p>
-                  </div>
-                  <div className="bg-white/5 rounded-2xl p-5 border border-white/10 hover:bg-white/10 transition-colors">
-                    <div className="text-sm text-slate-400 mb-2">Engagement Velocity</div>
-                    <div className="text-3xl font-bold text-blue-400">14x</div>
-                    <p className="text-xs text-slate-500 mt-2">Faster than average organization</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Top Videos Bar Chart */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm mb-8">
-              <h3 className="text-lg font-bold mb-6">Top Performing Videos</h3>
+            {/* Top Videos List */}
+            <div className="p-8 rounded-3xl bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-slate-800/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] mb-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
+              <h3 className="text-xl font-bold mb-8 flex items-center gap-2"><Video className="w-5 h-5 text-primary" /> Top Performing Videos</h3>
+              
               {stats.topVideos.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-4 relative z-10">
                   {stats.topVideos.map((v, i) => (
-                    <div key={v.id} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 cursor-pointer" onClick={() => navigate(`/watch/${v.id}`)}>
-                      <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-sm text-slate-500 dark:text-slate-400 shrink-0">
-                        {i + 1}
+                    <div key={v.id} className="flex items-center gap-4 p-5 rounded-2xl bg-white/60 dark:bg-slate-900/60 hover:bg-white dark:hover:bg-slate-800/80 backdrop-blur-md transition-all duration-300 border border-white/50 dark:border-slate-700/50 hover:border-primary/30 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-1 group" onClick={() => navigate(`/watch/${v.id}`)}>
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 transition-colors ${i === 0 ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400' : i === 1 ? 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' : i === 2 ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'}`}>
+                        #{i + 1}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-slate-900 dark:text-white truncate">{v.title}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{new Date(v.created_at).toLocaleDateString()}</p>
+                        <p className="font-bold text-slate-900 dark:text-white truncate text-base group-hover:text-primary transition-colors">{v.title}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{new Date(v.created_at).toLocaleDateString()}</p>
                       </div>
-                      <div className="flex gap-6 shrink-0 text-right">
-                        <div>
-                          <p className="text-sm font-bold text-slate-900 dark:text-white">{v.viewCount}</p>
-                          <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Views</p>
+                      <div className="flex gap-4 sm:gap-8 shrink-0 text-right">
+                        <div className="flex flex-col items-center sm:items-end justify-center">
+                          <p className="text-lg font-black text-slate-900 dark:text-white">{v.viewCount}</p>
+                          <p className="text-[10px] uppercase tracking-widest font-bold text-slate-400 flex items-center gap-1 mt-0.5"><Eye className="w-3 h-3" /> Views</p>
                         </div>
-                        <div className="w-16 hidden sm:block">
-                          <p className="text-sm font-bold text-slate-900 dark:text-white">{v.avgCompletion}%</p>
-                          <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Avg %</p>
+                        <div className="flex flex-col items-center sm:items-end justify-center hidden sm:flex">
+                          <p className="text-lg font-black text-slate-900 dark:text-white">{v.commentCount}</p>
+                          <p className="text-[10px] uppercase tracking-widest font-bold text-slate-400 flex items-center gap-1 mt-0.5"><MessageSquare className="w-3 h-3" /> Comments</p>
+                        </div>
+                        <div className="flex flex-col items-center sm:items-end justify-center hidden md:flex">
+                          <p className="text-lg font-black text-slate-900 dark:text-white">{v.reactionCount}</p>
+                          <p className="text-[10px] uppercase tracking-widest font-bold text-slate-400 flex items-center gap-1 mt-0.5"><Heart className="w-3 h-3" /> Reacts</p>
+                        </div>
+                        <div className="w-16 flex flex-col items-center sm:items-end justify-center">
+                          <p className="text-lg font-black text-emerald-500">{v.avgCompletion}%</p>
+                          <p className="text-[10px] uppercase tracking-widest font-bold text-slate-400 flex items-center gap-1 mt-0.5"><Target className="w-3 h-3" /> Avg %</p>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="py-12 text-center">
-                  <Video className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                  <p className="text-sm text-slate-500">No video data available yet.</p>
+                <div className="py-16 text-center relative z-10">
+                  <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Video className="w-8 h-8 text-slate-300 dark:text-slate-600" />
+                  </div>
+                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400">No video engagement data available yet.</p>
                 </div>
               )}
             </div>
