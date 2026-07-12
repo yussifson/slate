@@ -104,11 +104,10 @@ export default function WatchVideo() {
         
         // Secure Playback: Convert file path to signed URL, then to in-memory Blob
         // This prevents the raw URL from being accessible in DevTools network tab
-        if (videoRes.data.file_name) {
+        if (videoRes.data.video_url) {
           try {
-            const { data: signedData } = await supabase.storage.from('clipad_videos').createSignedUrl(videoRes.data.file_name, 60 * 10);
-            if (signedData?.signedUrl) {
-              const res = await fetch(signedData.signedUrl);
+            const res = await fetch(videoRes.data.video_url);
+            if (res.ok) {
               const blob = await res.blob();
               const objectUrl = URL.createObjectURL(blob);
               setBlobUrl(objectUrl);

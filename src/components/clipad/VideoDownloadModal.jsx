@@ -158,22 +158,16 @@ export default function VideoDownloadModal({ open, onOpenChange, videoUrl, video
     setProgress(0);
     
     try {
-      const filePath = extractPathFromUrl(videoUrl);
-      if (!filePath) throw new Error("Could not parse video path from URL.");
+      if (!videoUrl) throw new Error("Video URL is missing.");
 
-      setStatusText('Securing download link...');
-      const { data, error: signError } = await supabase.storage
-        .from('clipad_videos')
-        .createSignedUrl(filePath, 60 * 10);
-        
-      if (signError) throw signError;
+      setStatusText('Preparing download...');
       
       const safeTitle = (videoTitle || 'Clipad_Video').replace(/[^a-z0-9]/gi, '_').toLowerCase();
       
       if (selectedQuality === '1080p') {
-        await downloadDirect(data.signedUrl, safeTitle);
+        await downloadDirect(videoUrl, safeTitle);
       } else {
-        await transcodeAndDownload(data.signedUrl, safeTitle, selectedQuality);
+        await transcodeAndDownload(videoUrl, safeTitle, selectedQuality);
       }
       
       setTimeout(() => {

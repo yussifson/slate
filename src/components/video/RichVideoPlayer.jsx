@@ -62,12 +62,11 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
       if (!error && data) {
         setVideoRecord(data);
         
-        // Secure playback
-        if (data.file_name) {
+        // Secure playback: Fetch directly and convert to blob to hide public URL from DOM
+        if (data.video_url) {
           try {
-            const { data: signedData } = await db.storage.from('clipad_videos').createSignedUrl(data.file_name, 60 * 10);
-            if (signedData?.signedUrl) {
-              const res = await fetch(signedData.signedUrl);
+            const res = await fetch(data.video_url);
+            if (res.ok) {
               const blob = await res.blob();
               setBlobUrl(URL.createObjectURL(blob));
             }
