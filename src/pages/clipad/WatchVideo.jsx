@@ -485,21 +485,22 @@ export default function WatchVideo() {
                   </button>
                   {canEdit && (
                     <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors">
-                        <MoreHorizontal className="w-5 h-5" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40 rounded-xl">
-                      <DropdownMenuItem onClick={() => setShowEdit(true)} className="cursor-pointer gap-2">
-                        <Edit3 className="w-4 h-4" /> Edit Video
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={handleDeleteVideo} className="cursor-pointer gap-2 text-rose-500 focus:text-rose-500">
-                        <Trash2 className="w-4 h-4" /> Delete Video
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
+                      <DropdownMenuTrigger asChild>
+                        <button className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors">
+                          <MoreHorizontal className="w-5 h-5" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-40 rounded-xl">
+                        <DropdownMenuItem onClick={() => setShowEdit(true)} className="cursor-pointer gap-2">
+                          <Edit3 className="w-4 h-4" /> Edit Video
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleDeleteVideo} className="cursor-pointer gap-2 text-rose-500 focus:text-rose-500">
+                          <Trash2 className="w-4 h-4" /> Delete Video
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
+                </div>
               </div>
               <div className="flex items-center gap-3">
                 <img
