@@ -287,8 +287,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   const toggleAudio = async () => {
     if (!ensureJoined()) return;
     try {
-      const p = daily.participants().local;
-      await daily.setLocalAudio(!p.audio);
+      await daily.setLocalAudio(isMuted);
     } catch (err) {
       console.error(err);
       toast({ title: 'Microphone error', description: err?.message || 'Could not access microphone.', variant: 'destructive'});
@@ -298,8 +297,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   const toggleVideo = async () => {
     if (!ensureJoined()) return;
     try {
-      const p = daily.participants().local;
-      await daily.setLocalVideo(!p.video);
+      await daily.setLocalVideo(isVideoOff);
     } catch (err) {
       console.error(err);
       toast({ title: 'Camera error', description: err?.message || 'Could not access camera.', variant: 'destructive'});
