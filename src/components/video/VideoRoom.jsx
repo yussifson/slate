@@ -95,6 +95,16 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   const mediaRecorderRef = useRef(null);
   const recordedChunksRef = useRef([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [isStudioAudioOn, setIsStudioAudioOn] = useState(false);
+
+  useEffect(() => {
+    if (daily) {
+      try {
+        const isCurrentlyEnabled = daily.getInputSettings()?.audio?.processor?.type === 'noise-cancellation';
+        setIsStudioAudioOn(isCurrentlyEnabled);
+      } catch (e) {}
+    }
+  }, [daily]);
 
   useEffect(() => {
     if (isRecording) {
@@ -277,7 +287,8 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   const toggleAudio = async () => {
     if (!ensureJoined()) return;
     try {
-      await daily.setLocalAudio(!daily.localAudio());
+      const p = daily.participants().local;
+      await daily.setLocalAudio(!p.audio);
     } catch (err) {
       console.error(err);
       toast({ title: 'Microphone error', description: err?.message || 'Could not access microphone.', variant: 'destructive'});
@@ -287,7 +298,8 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   const toggleVideo = async () => {
     if (!ensureJoined()) return;
     try {
-      await daily.setLocalVideo(!daily.localVideo());
+      const p = daily.participants().local;
+      await daily.setLocalVideo(!p.video);
     } catch (err) {
       console.error(err);
       toast({ title: 'Camera error', description: err?.message || 'Could not access camera.', variant: 'destructive'});
@@ -1010,14 +1022,15 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
           processor: { type: isCurrentlyEnabled ? 'none' : 'noise-cancellation' }
         }
       });
+      setIsStudioAudioOn(!isCurrentlyEnabled);
       toast({ title: 'Audio Settings Updated', description: `Studio Noise Cancellation is now ${isCurrentlyEnabled ? 'OFF' : 'ON'}` });
     } catch(e) {
       toast({ title: 'Action Failed', description: 'Your browser may not support advanced audio processing.', variant: 'destructive' });
     }
   }}
-  variant="outline"
+  variant={isStudioAudioOn ? "default" : "outline"}
   size="icon"
-  className="w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 relative group"
+  className={`w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 relative group ${isStudioAudioOn ? 'bg-primary/20 border-primary text-primary shadow-[0_0_15px_rgba(var(--primary),0.3)]' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'}`}
   title="Studio Audio"
   >
   <Sparkles className="w-5 h-5" />
@@ -1162,8 +1175,10 @@ function ParticipantTile({ id, isLocal, className }) {
   }
  };
 
+ const activeSpeakerId = useActiveSpeakerId();
+ const isSpeaking = activeSpeakerId === id;
  return (
- <div className={`relative bg-white dark:bg-card rounded-2xl overflow-hidden group flex items-center justify-center aspect-video shadow-md border border-slate-200 dark:border-white/10 ${className || 'w-full max-w-3xl min-w-[320px] m-2'}`}>
+ <div className={`relative bg-white dark:bg-card rounded-2xl overflow-hidden group flex items-center justify-center aspect-video shadow-md border transition-all duration-300 ${isSpeaking ? 'border-primary ring-4 ring-primary shadow-lg shadow-primary/50' : 'border-slate-200 dark:border-white/10'} ${className || 'w-full max-w-3xl min-w-[320px] m-2'}`}>
  {videoState?.state === 'playable' ? (
  <video 
  ref={videoRef}
