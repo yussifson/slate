@@ -77,7 +77,7 @@ const tiers = [
     price: '$0',
     period: 'forever',
     highlight: false,
-    features: ['Unlimited HD meetings', 'Up to 10 participants', 'Screen sharing & whiteboard', '10 async video recordings/mo (15 min limit)', 'Basic AI meeting summary', 'Up to 5 Team Spaces'],
+    features: ['Unlimited HD meetings', 'Up to 10 participants', 'Screen sharing & whiteboard', '10 async video recordings/mo (15 min limit)', 'Basic AI meeting summary', 'Up to 5 Team Spaces', '2GB Max Cloud Storage'],
   },
   {
     name: 'Pro',
@@ -85,14 +85,14 @@ const tiers = [
     period: 'per workspace/mo',
     highlight: true,
     badge: 'Most Popular',
-    features: ['Everything in Free', 'Up to 300 participants', 'Unlimited async recordings (1 hr limit)', 'Full AI intelligence layer', 'Smart follow-up emails', 'Video engagement analytics', 'Unlimited Team Spaces'],
+    features: ['Everything in Free', 'Up to 300 participants', 'Unlimited async recordings (1 hr limit)', 'Full AI intelligence layer', 'Smart follow-up emails', 'Video engagement analytics', 'Unlimited Team Spaces', '15GB Max Cloud Storage'],
   },
   {
     name: 'Enterprise',
     price: '$39',
     period: 'per workspace/mo',
     highlight: false,
-    features: ['Everything in Pro', 'Unlimited participants', 'Branded meeting rooms', 'SSO & compliance recording', 'Unlimited async recordings', 'SLA & dedicated support', 'Custom integrations'],
+    features: ['Everything in Pro', 'Unlimited participants', 'Branded meeting rooms', 'SSO & compliance recording', 'Unlimited async recordings', 'SLA & dedicated support', 'Custom integrations', '50GB Max Cloud Storage'],
   },
 ];
 
@@ -638,11 +638,17 @@ export default function MeetLandingPage() {
                     <td className="p-5 text-center text-primary font-bold bg-primary/5">Yes</td>
                     <td className="p-5 text-center">Advanced</td>
                   </tr>
-                  <tr className="hover:bg-slate-50/80 transition-colors">
+                  <tr className="border-b border-border hover:bg-slate-50/80 transition-colors">
                     <td className="p-5 font-semibold text-slate-700">Custom Branding & SSO</td>
                     <td className="p-5 text-center">-</td>
                     <td className="p-5 text-center text-primary font-bold bg-primary/5">-</td>
                     <td className="p-5 text-center">Yes</td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/80 transition-colors">
+                    <td className="p-5 font-semibold text-slate-700">Cloud Storage Limit</td>
+                    <td className="p-5 text-center font-bold">2GB Max</td>
+                    <td className="p-5 text-center text-primary font-bold bg-primary/5">15GB Max</td>
+                    <td className="p-5 text-center font-bold">50GB Max</td>
                   </tr>
                 </tbody>
               </table>

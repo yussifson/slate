@@ -225,7 +225,7 @@ export default function CliPadBilling() {
           <ul className="mt-6 space-y-3">
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 10 Video Meetings</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Basic AI Summaries</li>
-            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 2GB Cloud Storage / month</li>
+            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 2GB Max Cloud Storage</li>
           </ul>
           <button disabled className="w-full mt-8 py-2 rounded-xl bg-secondary text-foreground font-semibold border border-border">
             {currentPlan === 'free' ? 'Current Plan' : 'Downgrade'}
@@ -247,7 +247,7 @@ export default function CliPadBilling() {
           <ul className="mt-6 space-y-3">
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Unlimited Meetings</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Advanced AI Action Items</li>
-            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 15GB Cloud Storage / month</li>
+            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 15GB Max Cloud Storage</li>
           </ul>
           <button 
             onClick={() => handleUpgrade('pro')}
@@ -268,7 +268,7 @@ export default function CliPadBilling() {
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Dedicated Account Manager</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Custom Payment Subdomains</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Enterprise SLAs</li>
-            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 50GB Cloud Storage / month</li>
+            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 50GB Max Cloud Storage</li>
           </ul>
           <button 
             onClick={() => handleUpgrade('enterprise')}
