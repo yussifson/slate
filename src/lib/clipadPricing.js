@@ -44,10 +44,51 @@ export const PLAN_LIMITS = {
 
 /**
  * Returns the current plan for a user.
- * For now, this reads from user.user_metadata.clipad_plan or defaults to 'free'
+ * Accepts either a user object (reads user_metadata.clipad_plan) or a raw plan string.
+ * NOTE: Prefer using getCompanyPlan() for accurate DB-sourced plan.
  */
 export function getUserPlan(user) {
-  return user?.user_metadata?.clipad_plan || 'free'; // 'free', 'pro', 'enterprise'
+  if (!user) return 'free';
+  // If a raw plan string is passed directly (e.g. from DB fetch), use it
+  if (typeof user === 'string') return user;
+  return user?.user_metadata?.clipad_plan || 'free';
+}
+
+/**
+ * Async function: fetches the real plan for a company from the DB.
+ * Checks company_subscriptions first, then falls back to pricing_tag.
+ * Returns 'free' | 'pro' | 'enterprise'
+ */
+export async function getCompanyPlan(supabase, companyId) {
+  if (!companyId) return 'free';
+  try {
+    // 1. Try company_subscriptions (payments + admin sync)
+    const { data: subData } = await supabase
+      .from('company_subscriptions')
+      .select('plan_id, status')
+      .eq('company_id', companyId)
+      .eq('status', 'active')
+      .maybeSingle();
+
+    if (subData?.plan_id && subData.plan_id !== 'free') return subData.plan_id;
+
+    // 2. Fallback to pricing_tag on companies table
+    const { data: companyData } = await supabase
+      .from('companies')
+      .select('pricing_tag_id, clipad_pricing_tags(name)')
+      .eq('id', companyId)
+      .maybeSingle();
+
+    if (companyData?.clipad_pricing_tags?.name) {
+      const tagName = companyData.clipad_pricing_tags.name.toLowerCase();
+      if (tagName.includes('enterprise')) return 'enterprise';
+      if (tagName.includes('pro')) return 'pro';
+    }
+
+    return subData?.plan_id || 'free';
+  } catch {
+    return 'free';
+  }
 }
 
 export function getPlanLimits(user) {

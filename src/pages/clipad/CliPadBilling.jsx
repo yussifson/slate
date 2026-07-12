@@ -38,20 +38,42 @@ export default function CliPadBilling() {
       return;
     }
     try {
-      const { data, error } = await supabase
+      // 1. Check company_subscriptions (set by Paystack payments or admin sync trigger)
+      const { data: subData } = await supabase
         .from('company_subscriptions')
         .select('plan_id, status')
         .eq('company_id', companyId)
         .eq('status', 'active')
         .maybeSingle();
 
-      if (data) {
-        setCurrentPlan(data.plan_id || 'free');
+      if (subData?.plan_id && subData.plan_id !== 'free') {
+        setCurrentPlan(subData.plan_id);
+        setInitializing(false);
+        return;
+      }
+
+      // 2. Fallback: read from companies.pricing_tag_id (set by super-admin directly)
+      const { data: companyData } = await supabase
+        .from('companies')
+        .select('pricing_tag_id, clipad_pricing_tags(name)')
+        .eq('id', companyId)
+        .maybeSingle();
+
+      if (companyData?.clipad_pricing_tags?.name) {
+        const tagName = companyData.clipad_pricing_tags.name.toLowerCase();
+        if (tagName.includes('enterprise')) {
+          setCurrentPlan('enterprise');
+        } else if (tagName.includes('pro')) {
+          setCurrentPlan('pro');
+        } else {
+          setCurrentPlan(subData?.plan_id || 'free');
+        }
       } else {
-        setCurrentPlan('free');
+        setCurrentPlan(subData?.plan_id || 'free');
       }
     } catch (e) {
       console.error(e);
+      setCurrentPlan('free');
     } finally {
       setInitializing(false);
     }

@@ -96,11 +96,27 @@ serve(async (req) => {
             .update({ role: 'enterprise_admin' })
             .eq('company_id', companyId)
             .eq('role', 'company_admin');
+
+          // ✅ CRITICAL FIX: Update all users in this company's user_metadata.clipad_plan
+          // so that feature gating in clipadPricing.js reads the correct plan immediately.
+          const { data: companyProfiles } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('company_id', companyId);
+
+          if (companyProfiles && companyProfiles.length > 0) {
+            for (const profile of companyProfiles) {
+              await supabase.auth.admin.updateUserById(profile.id, {
+                user_metadata: { clipad_plan: planId }
+              });
+            }
+          }
         }
       }
     }
 
     return new Response(JSON.stringify({ status: "success" }), { status: 200 });
+
 
   } catch (err) {
     console.error(err);

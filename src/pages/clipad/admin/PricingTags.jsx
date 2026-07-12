@@ -40,6 +40,18 @@ export default function PricingTags() {
     const { error } = await supabase.from('companies').update({ pricing_tag_id: tagId }).eq('id', companyId);
     
     if (!error) {
+      // Resolve canonical plan name from tag
+      const name = (tagName || '').toLowerCase();
+      const resolvedPlan = name.includes('enterprise') ? 'enterprise' : name.includes('pro') ? 'pro' : 'free';
+
+      // Also upsert company_subscriptions so billing page reflects the change immediately
+      await supabase.from('company_subscriptions').upsert({
+        company_id: companyId,
+        plan_id: resolvedPlan,
+        status: 'active',
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'company_id' });
+
       toast({
         title: "Plan Updated Successfully",
         description: `The company's CliPad plan has been upgraded to ${tagName || 'Free Tier'}.`
