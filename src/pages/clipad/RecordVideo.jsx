@@ -11,7 +11,7 @@ import { getLimit } from '@/lib/clipadPricing';
 import PaywallModal from '@/components/clipad/PaywallModal';
 import { useNavigate } from 'react-router-dom';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
-import PaywallModal from '@/components/clipad/PaywallModal';
+
 
 const MODES = [
   { id: 'screen_camera', icon: Monitor, label: 'Screen + Camera', desc: 'Picture-in-picture: screen with your face overlay' },
