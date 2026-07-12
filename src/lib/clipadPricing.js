@@ -15,6 +15,7 @@ export const PLAN_LIMITS = {
     hasSLA: false,
     hasBrandedRooms: false,
     hasComplianceRecording: false,
+    hasVideoDownload: false,
   },
   pro: {
     maxParticipants: 300,
@@ -30,6 +31,7 @@ export const PLAN_LIMITS = {
     hasSLA: false,
     hasBrandedRooms: false,
     hasComplianceRecording: false,
+    hasVideoDownload: true,
   },
   enterprise: {
     maxParticipants: Infinity,
@@ -46,6 +48,7 @@ export const PLAN_LIMITS = {
     hasSLA: true,
     hasBrandedRooms: true,
     hasComplianceRecording: true,
+    hasVideoDownload: true,
   }
 };
 

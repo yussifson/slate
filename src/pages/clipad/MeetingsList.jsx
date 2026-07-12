@@ -8,6 +8,7 @@ import { useAuth } from '@/lib/AuthContext';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import SpaceSelectorModal from '@/components/clipad/SpaceSelectorModal';
 
 export default function MeetingsList() {
   const { user } = useAuth();
@@ -225,6 +226,12 @@ export default function MeetingsList() {
           </div>
         )}
       </div>
-          </div>
+      <SpaceSelectorModal
+        open={showSpaceSelector}
+        onOpenChange={setShowSpaceSelector}
+        onConfirm={handleSpaceSelect}
+        title="Select Space for Meeting"
+      />
+    </div>
   );
 }

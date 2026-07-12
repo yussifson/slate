@@ -25,7 +25,7 @@ export default function SpaceSelectorModal({ open, onOpenChange, onConfirm, titl
 
       // Same pattern as SpacesList.jsx — get created_by + member spaces + public
       const [mySpacesRes, memberSpacesRes] = await Promise.all([
-        supabase.from('clipad_spaces').select('id, name, type, is_private').eq('created_by', user.id).order('created_at', { ascending: false }),
+        supabase.from('clipad_spaces').select('id, name, is_private').eq('created_by', user.id).order('created_at', { ascending: false }),
         supabase.from('clipad_space_members').select('space_id').eq('user_id', user.id)
       ]);
 
@@ -33,13 +33,13 @@ export default function SpaceSelectorModal({ open, onOpenChange, onConfirm, titl
       let allSpaces = mySpacesRes.data || [];
 
       if (memberSpaceIds.length > 0) {
-        const { data: memberSpaces } = await supabase.from('clipad_spaces').select('id, name, type, is_private').in('id', memberSpaceIds);
+        const { data: memberSpaces } = await supabase.from('clipad_spaces').select('id, name, is_private').in('id', memberSpaceIds);
         const existingIds = new Set(allSpaces.map(s => s.id));
         allSpaces = [...allSpaces, ...(memberSpaces || []).filter(s => !existingIds.has(s.id))];
       }
 
       // Also include public spaces
-      const { data: publicSpaces } = await supabase.from('clipad_spaces').select('id, name, type, is_private').eq('is_private', false);
+      const { data: publicSpaces } = await supabase.from('clipad_spaces').select('id, name, is_private').eq('is_private', false);
       const existingIds2 = new Set(allSpaces.map(s => s.id));
       allSpaces = [...allSpaces, ...(publicSpaces || []).filter(s => !existingIds2.has(s.id))];
 
