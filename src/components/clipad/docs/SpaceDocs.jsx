@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useEditor, EditorContent, FloatingMenu, BubbleMenu } from '@tiptap/react';
+import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { supabase } from '@/api/supabaseClient';
 import { Loader2, Plus, FileText, Sparkles, Save, AlignLeft } from 'lucide-react';
@@ -253,26 +253,6 @@ function DocEditor({ doc, onSave, isSaving }) {
 
       {/* Editor Area */}
       <div className="flex-1 overflow-y-auto p-8 bg-white dark:bg-[#0B1121]">
-        {editor && (
-          <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
-            <div className="flex items-center gap-1 bg-popover text-popover-foreground rounded-lg shadow-md border p-1">
-              <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={() => editor.chain().focus().toggleBold().run()}>B</Button>
-              <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={() => editor.chain().focus().toggleItalic().run()}>I</Button>
-              <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={() => editor.chain().focus().toggleStrike().run()}>S</Button>
-            </div>
-          </BubbleMenu>
-        )}
-        
-        {editor && (
-          <FloatingMenu editor={editor} tippyOptions={{ duration: 100 }}>
-            <div className="flex items-center gap-1 bg-popover text-popover-foreground rounded-lg shadow-md border p-1">
-              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>H1</Button>
-              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>H2</Button>
-              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => editor.chain().focus().toggleBulletList().run()}>Bullet</Button>
-              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => editor.chain().focus().toggleBlockquote().run()}>Quote</Button>
-            </div>
-          </FloatingMenu>
-        )}
         <EditorContent editor={editor} className="max-w-3xl mx-auto min-h-[500px]" />
       </div>
     </div>
