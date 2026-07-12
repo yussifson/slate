@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
-import { Shield, Headphones, Puzzle } from 'lucide-react';
+import { Headphones, Puzzle } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { Settings, User, Users, Bell, Shield, LogOut, ArrowLeft, Video, CheckCircle, Camera, CreditCard } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
@@ -112,7 +112,8 @@ export default function CliPadSettings() {
           <div className="md:col-span-3 space-y-8">
             
             {activeTab === 'billing' && <CliPadBilling />}
-            {activeTab === 'team' && 
+            {activeTab === 'team' && (
+        <>
         {/* Enterprise Features */}
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 mb-8 shadow-sm">
           <div className="flex items-center gap-4 mb-8">
@@ -155,7 +156,9 @@ export default function CliPadSettings() {
           </div>
         </div>
   
-        <CliPadTeamSettings />}
+        <CliPadTeamSettings />
+        </>
+      )}}
 
             {/* Profile */}
             {activeTab === 'profile' && (

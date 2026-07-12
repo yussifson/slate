@@ -55,7 +55,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
   useEffect(() => {
     if (!videoUrl) return;
     async function loadVideo() {
-      const { data, error } = await db.from('clipad_videos').select('*').eq('video_url', videoUrl).single();
+      const { data, error } = await db.from('clipad_videos').select('*').eq('video_url', videoUrl).maybeSingle();
       if (!error && data) {
         setVideoRecord(data);
       }
