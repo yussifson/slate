@@ -3,9 +3,12 @@ import { supabase } from '@/api/supabaseClient';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { BarChart3, Clock, CheckCircle, HelpCircle, Sparkles, Loader2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { generateText } from '@/lib/cloudflareAI';
+import { invokeCloudflareAi, generateText } from '@/lib/cloudflareAI';
+import { useToast } from '@/components/ui/use-toast';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function MeetingInsights({ spaceId }) {
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalMeetings: 0,
@@ -16,6 +19,8 @@ export default function MeetingInsights({ spaceId }) {
   
   const [trends, setTrends] = useState('');
   const [isSynthesizing, setIsSynthesizing] = useState(false);
+  const [isGeneratingTasks, setIsGeneratingTasks] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     async function fetchInsights() {
@@ -142,6 +147,50 @@ export default function MeetingInsights({ spaceId }) {
                 Analyze Trends
               </button>
             )}
+            <button 
+              onClick={async () => {
+                setIsGeneratingTasks(true);
+                try {
+                  const meetingsData = (await supabase.from('clipad_meeting_records').select('title, ai_summary').eq('space_id', spaceId).limit(5)).data;
+                  const context = meetingsData.map(m => `Meeting: ${m.title}\nSummary: ${m.ai_summary}`).join('\n\n');
+                  const prompt = `Based on these recent meetings, identify up to 3 distinct, specific action items. Output ONLY a raw JSON array of strings (e.g. ["Fix the login bug", "Schedule follow-up with marketing"]). No markdown, no backticks, no other text:\n\n${context}`;
+                  
+                  const res = await invokeCloudflareAi(prompt, "You are a task generator. Output ONLY a valid JSON array of strings.");
+                  let tasksToCreate = [];
+                  try {
+                    tasksToCreate = JSON.parse(res);
+                  } catch (e) {
+                    // Try to clean markdown formatting if the AI disobeyed
+                    const cleaned = res.replace(/```json/g, '').replace(/```/g, '').trim();
+                    tasksToCreate = JSON.parse(cleaned);
+                  }
+
+                  if (!Array.isArray(tasksToCreate) || tasksToCreate.length === 0) throw new Error("No tasks parsed");
+
+                  const inserts = tasksToCreate.map(title => ({
+                    space_id: spaceId,
+                    company_id: user.company_id,
+                    title,
+                    is_complete: false,
+                    created_by: user.id
+                  }));
+
+                  const { error } = await supabase.from('clipad_action_items').insert(inserts);
+                  if (error) throw error;
+                  toast({ title: "Success", description: `Generated ${inserts.length} action items!`});
+                } catch (e) {
+                  console.error(e);
+                  toast({ title: "Failed to generate tasks", variant: "destructive" });
+                } finally {
+                  setIsGeneratingTasks(false);
+                }
+              }}
+              disabled={isGeneratingTasks}
+              className="text-xs bg-amber-500/10 text-amber-500 px-3 py-1.5 rounded-lg font-semibold hover:bg-amber-500/20 transition-colors disabled:opacity-50 flex items-center gap-2"
+            >
+              {isGeneratingTasks ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+              Auto-Generate Action Items
+            </button>
           </div>
           
           {isSynthesizing && (

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
-import { Hash, Plus, Send, MessageSquare } from 'lucide-react';
+import { Hash, Plus, Send, MessageSquare, Sparkles, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { invokeCloudflareAi } from '@/lib/cloudflareAI';
 
 export default function SpaceChat({ spaceId }) {
   const { user } = useAuth();
@@ -17,6 +18,8 @@ export default function SpaceChat({ spaceId }) {
   const [creatingChannel, setCreatingChannel] = useState(false);
   const [newChannelName, setNewChannelName] = useState('');
   const [showNewChannel, setShowNewChannel] = useState(false);
+  const [isSummarizing, setIsSummarizing] = useState(false);
+  const [summaryStr, setSummaryStr] = useState(null);
   
   const messagesEndRef = useRef(null);
 
@@ -149,6 +152,30 @@ export default function SpaceChat({ spaceId }) {
     }
   };
 
+  const handleAISummarize = async () => {
+    if (!messages || messages.length === 0) {
+      toast({ title: 'No messages to summarize' });
+      return;
+    }
+    setIsSummarizing(true);
+    setSummaryStr(null);
+    try {
+      // Build a transcript of the last 100 messages
+      const recentMessages = messages.slice(-100);
+      const transcript = recentMessages.map(m => `${m.user?.full_name}: ${m.content}`).join('\n');
+      const prompt = `Summarize the following chat conversation into a concise bulleted list highlighting the key points, decisions, and action items:\n\n${transcript}`;
+      
+      const response = await invokeCloudflareAi(prompt, "You are an AI assistant. Provide a concise summary.");
+      setSummaryStr(response);
+      toast({ title: 'Summary generated successfully' });
+    } catch (err) {
+      console.error(err);
+      toast({ title: 'Failed to generate summary', variant: 'destructive' });
+    } finally {
+      setIsSummarizing(false);
+    }
+  };
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (loading) {
@@ -243,11 +270,38 @@ export default function SpaceChat({ spaceId }) {
               >
                 <MessageSquare className="w-5 h-5" />
               </button>
-              <div className="flex items-center gap-2">
-                <Hash className="w-5 h-5 text-muted-foreground/70" />
-                <h3 className="font-bold text-foreground text-lg tracking-tight">{activeChannel.name}</h3>
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                  <Hash className="w-5 h-5 text-muted-foreground/70" />
+                  <h3 className="font-bold text-foreground text-lg tracking-tight">{activeChannel.name}</h3>
+                </div>
+                <button
+                  onClick={handleAISummarize}
+                  disabled={isSummarizing || messages.length === 0}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 rounded-md text-xs font-semibold transition-colors disabled:opacity-50"
+                >
+                  {isSummarizing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                  AI Summarize
+                </button>
               </div>
             </div>
+
+            {summaryStr && (
+              <div className="mx-4 md:mx-6 mt-4 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl relative">
+                <button 
+                  onClick={() => setSummaryStr(null)}
+                  className="absolute top-2 right-2 p-1 text-amber-500/70 hover:text-amber-500 rounded-md"
+                >
+                  ✕
+                </button>
+                <h4 className="flex items-center gap-2 font-bold text-amber-500 text-sm mb-2">
+                  <Sparkles className="w-4 h-4" /> Chat Summary
+                </h4>
+                <div className="text-sm text-foreground/80 whitespace-pre-wrap">
+                  {summaryStr}
+                </div>
+              </div>
+            )}
             
             <div className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-6 space-y-6 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
               {messages.length === 0 ? (

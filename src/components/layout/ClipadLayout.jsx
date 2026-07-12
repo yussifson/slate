@@ -3,6 +3,8 @@ import { Outlet } from 'react-router-dom';
 import GlobalAIAssistant from '@/components/layout/GlobalAIAssistant';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
+import CliPadCommandPalette from '@/components/clipad/CliPadCommandPalette';
+
 export default function ClipadLayout() {
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [injectedContext, setInjectedContext] = useState(null);
@@ -47,6 +49,7 @@ export default function ClipadLayout() {
         injectedContext={injectedContext} 
         onContextConsumed={() => setInjectedContext(null)} 
       />
+      <CliPadCommandPalette />
       <ClipadMobileNav />
     </div>
   );
