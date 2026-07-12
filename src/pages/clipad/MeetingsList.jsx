@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
+import { getLimit } from '@/lib/clipadPricing';
 import { Calendar, Video, Search, Clock, Users, ArrowRight, Sparkles, Filter, CheckCircle, Flame, ArrowLeft, Target, Settings, UserCircle } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
@@ -48,7 +49,7 @@ export default function MeetingsList() {
   const handleSpaceSelect = async (spaceId) => {
     setIsCreating(true);
     try {
-      const { data, error } = await supabase.functions.invoke('create-daily-room', { body: { instant: true } });
+      const { data, error } = await supabase.functions.invoke('create-daily-room', { body: { instant: true, max_participants: getLimit(user, 'maxParticipants') } });
       if (error) throw error;
       const url = `/meet/${data.roomName}` + (spaceId ? `?spaceId=${spaceId}` : '');
       navigate(url);
@@ -66,7 +67,7 @@ export default function MeetingsList() {
   const startInstantMeeting_OLD = async () => {
     setIsCreating(true);
     try {
-      const { data } = await supabase.functions.invoke('create-daily-room', { body: { instant: true } });
+      const { data } = await supabase.functions.invoke('create-daily-room', { body: { instant: true, max_participants: getLimit(user, 'maxParticipants') } });
       if (data?.name) navigate(`/join/${data.name}`);
       else navigate(`/join/${Math.random().toString(36).substring(2, 10)}`);
     } catch {

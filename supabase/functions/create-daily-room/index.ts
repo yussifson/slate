@@ -31,7 +31,8 @@ serve(async (req) => {
         name: roomName,
         privacy: privacy || 'public',
         properties: {
-          exp: Math.round(Date.now() / 1000) + 86400, // Expires in 24 hours
+            max_participants: max_participants || undefined,
+            exp: Math.round(Date.now() / 1000) + 86400, // Expires in 24 hours
           enable_chat: true,
           enable_screenshare: true,
           start_video_off: false,

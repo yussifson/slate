@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
+import { getLimit } from '@/lib/clipadPricing';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { 
   Plus, Users, Video, Clock, ArrowRight, Settings, 
@@ -66,12 +67,13 @@ export default function SpacesList() {
     e.preventDefault();
     if (!newName.trim() || !user) return;
     
-    // Free tier limit
-    if (spaces.length >= 5 && user?.subscription_tier !== 'pro') {
-      setShowCreate(false);
-      setShowPaywall(true);
-      return;
-    }
+          // Plan Limit Check
+      const maxSpaces = getLimit(user, 'maxTeamSpaces');
+      if (spaces.length >= maxSpaces) {
+        setShowCreate(false);
+        setShowPaywall(true);
+        return;
+      }
 
     setCreating(true);
     try {
@@ -281,7 +283,7 @@ export default function SpacesList() {
         isOpen={showPaywall}
         onClose={() => setShowPaywall(false)}
         featureName="Create More Spaces"
-        limitDescription="You have reached the maximum limit of 2 spaces on the free plan."
+        limitDescription={`You have reached the maximum limit of ${getLimit(user, 'maxTeamSpaces')} spaces on your current plan.`}
       />
 
       <ClipadMobileNav />

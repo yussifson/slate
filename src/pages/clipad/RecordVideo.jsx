@@ -7,6 +7,8 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
+import { getLimit } from '@/lib/clipadPricing';
+import PaywallModal from '@/components/clipad/PaywallModal';
 import { useNavigate } from 'react-router-dom';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import PaywallModal from '@/components/clipad/PaywallModal';
@@ -270,6 +272,33 @@ export default function RecordVideo() {
   };
 
   const startRecording = async () => {
+    // Plan Limit Check: Check if user has exceeded monthly recordings
+    try {
+      const maxRecordings = getLimit(user, 'maxVideoRecordingsPerMonth');
+      if (maxRecordings !== Infinity) {
+        const firstDayOfMonth = new Date();
+        firstDayOfMonth.setDate(1);
+        firstDayOfMonth.setHours(0, 0, 0, 0);
+        
+        const { count, error } = await supabase
+          .from('clipad_video_records')
+          .select('*', { count: 'exact', head: true })
+          .eq('created_by', user.id)
+          .gte('created_at', firstDayOfMonth.toISOString());
+          
+        if (count >= maxRecordings) {
+          setPaywallProps({
+            featureName: "Record Async Videos",
+            limitDescription: `You have reached the maximum limit of ${maxRecordings} recordings this month on your current plan.`
+          });
+          setShowPaywall(true);
+          return;
+        }
+      }
+    } catch (err) {
+      console.error("Error checking limits", err);
+    }
+
     if (!title) {
       toast({ title: 'Missing Title', description: 'Please enter a video title before recording.', variant: 'destructive' });
       return;

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, RotateCw, Volume2, VolumeX, Maximize2, PictureInPicture, Send, MessageSquare } from 'lucide-react';
 import { supabase as db } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
+import { hasFeature } from '@/lib/clipadPricing';
 import DictationButton from '@/components/ui/DictationButton';
 import { Download } from 'lucide-react';
 
@@ -331,7 +332,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
           >
             Comments
           </button>
-          {recordType === 'meeting' && (
+          {recordType === 'meeting' && hasFeature(user, 'hasAdvancedAI') && (
             <button 
               onClick={() => setActiveTab('transcript')}
               className={`flex-1 py-1.5 text-sm font-bold rounded-lg transition-all ${activeTab === 'transcript' ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}

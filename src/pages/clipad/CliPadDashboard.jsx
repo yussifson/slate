@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
+import { getLimit } from '@/lib/clipadPricing';
 import { useAuth } from '@/lib/AuthContext';
 import {
   Video, Camera, Plus, Brain, CheckCircle, Clock, TrendingUp,
@@ -202,7 +203,7 @@ export default function CliPadDashboard() {
   const handleSpaceSelect = async (spaceId) => {
     setIsCreatingMeeting(true);
     try {
-      const { data, error } = await supabase.functions.invoke('create-daily-room', { body: { instant: true } });
+      const { data, error } = await supabase.functions.invoke('create-daily-room', { body: { instant: true, max_participants: getLimit(user, 'maxParticipants') } });
       if (error) throw error;
       const url = `/meet/${data.roomName}` + (spaceId ? `?spaceId=${spaceId}` : '');
       navigate(url);
@@ -220,7 +221,7 @@ export default function CliPadDashboard() {
   const startInstantMeeting_OLD = async () => {
     setIsCreatingMeeting(true);
     try {
-      const { data, error } = await supabase.functions.invoke('create-daily-room', { body: { instant: true } });
+      const { data, error } = await supabase.functions.invoke('create-daily-room', { body: { instant: true, max_participants: getLimit(user, 'maxParticipants') } });
       if (error || !data?.name) throw error || new Error('Failed');
       navigate(`/join/${data.name}`);
     } catch {

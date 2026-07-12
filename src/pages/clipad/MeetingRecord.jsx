@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
+import { hasFeature } from '@/lib/clipadPricing';
 import {
   ArrowLeft, Brain, CheckCircle, Clock, Users, FileText,
   Sparkles, MessageSquare, Target, ChevronDown, ChevronUp,

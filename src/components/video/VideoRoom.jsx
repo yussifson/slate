@@ -25,6 +25,7 @@ import CanvasWhiteboard from '@/components/clipad/CanvasWhiteboard';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
+import { hasFeature } from '@/lib/clipadPricing';
 
 // Export VIRTUAL_BACKGROUNDS so PreJoinScreen can use them
 export const VIRTUAL_BACKGROUNDS = [

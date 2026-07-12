@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
+import { hasFeature } from '@/lib/clipadPricing';
+import { Shield, Headphones, Puzzle } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { Settings, User, Users, Bell, Shield, LogOut, ArrowLeft, Video, CheckCircle, Camera, CreditCard } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
@@ -110,7 +112,50 @@ export default function CliPadSettings() {
           <div className="md:col-span-3 space-y-8">
             
             {activeTab === 'billing' && <CliPadBilling />}
-            {activeTab === 'team' && <CliPadTeamSettings />}
+            {activeTab === 'team' && 
+        {/* Enterprise Features */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 mb-8 shadow-sm">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500 shadow-sm shrink-0">
+              <Shield className="w-6 h-6" />
+            </div>
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">Enterprise Features</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Advanced capabilities for scaling organizations.</p>
+            </div>
+          </div>
+          
+          <div className="space-y-6">
+            <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">Branded Meeting Rooms {hasFeature(user, 'hasBrandedRooms') && <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-emerald-500/10 text-emerald-600">Active</span>}</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Customize your Daily.co meeting rooms with company colors and logos.</p>
+              </div>
+              {!hasFeature(user, 'hasBrandedRooms') && <button className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold">Upgrade</button>}
+              {hasFeature(user, 'hasBrandedRooms') && <button className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-700 dark:text-slate-300 text-sm font-bold">Configure</button>}
+            </div>
+
+            <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2"><Headphones className="w-4 h-4"/> SLA & Dedicated Support {hasFeature(user, 'hasSLA') && <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-emerald-500/10 text-emerald-600">Active</span>}</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">24/7 priority support and guaranteed uptime SLA.</p>
+              </div>
+              {!hasFeature(user, 'hasSLA') && <button className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold">Upgrade</button>}
+              {hasFeature(user, 'hasSLA') && <button className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-700 dark:text-slate-300 text-sm font-bold">Contact Support</button>}
+            </div>
+
+            <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2"><Puzzle className="w-4 h-4"/> Custom Integrations <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-amber-500/10 text-amber-600">Coming Soon</span></h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Connect CliPad directly into your proprietary internal systems.</p>
+              </div>
+              {!hasFeature(user, 'hasCustomIntegrations') && <button className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold">Upgrade</button>}
+              {hasFeature(user, 'hasCustomIntegrations') && <button className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-700 dark:text-slate-300 text-sm font-bold disabled:opacity-50" disabled>Configure</button>}
+            </div>
+          </div>
+        </div>
+  
+        <CliPadTeamSettings />}
 
             {/* Profile */}
             {activeTab === 'profile' && (
