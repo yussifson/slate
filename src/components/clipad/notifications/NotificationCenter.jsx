@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, Check, Video, MessageSquare, Calendar, BrainCircuit, Users } from 'lucide-react';
+import { Bell, Check, Video, MessageSquare, Calendar, BrainCircuit, Users, ShieldCheck } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
