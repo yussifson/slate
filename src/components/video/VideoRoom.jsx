@@ -25,7 +25,7 @@ import CanvasWhiteboard from '@/components/clipad/CanvasWhiteboard';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
-import { hasFeature } from '@/lib/clipadPricing';
+import { hasFeature, getLimit } from '@/lib/clipadPricing';
 import { useCompanyPlan } from '@/hooks/useCompanyPlan';
 
 // Export VIRTUAL_BACKGROUNDS so PreJoinScreen can use them
@@ -571,11 +571,11 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
 
         {/* Live Captions Overlay */}
         {transcriptData.length > 0 && (
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-2xl z-30 pointer-events-none flex flex-col items-center gap-2">
+          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-full max-w-xl z-30 pointer-events-none flex flex-col items-center gap-2 px-4">
             {transcriptData.slice(-2).map((cap, idx) => (
-              <div key={idx} className="bg-black/70 backdrop-blur-md text-white px-6 py-3 rounded-2xl shadow-xl text-center animate-in slide-in-from-bottom-4 fade-in">
-                <span className="font-semibold text-primary mr-2 opacity-80">{cap.name}:</span>
-                <span className="text-lg font-medium tracking-wide">{cap.text}</span>
+              <div key={idx} className="bg-black/40 backdrop-blur-sm text-white px-4 py-2 rounded-xl shadow-lg text-center animate-in slide-in-from-bottom-2 fade-in max-w-full">
+                <span className="font-semibold text-primary mr-2 text-sm drop-shadow-md">{cap.name}:</span>
+                <span className="text-base font-medium tracking-wide drop-shadow-md">{cap.text}</span>
               </div>
             ))}
           </div>
@@ -997,6 +997,30 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
   >
   <Settings className="w-5 h-5" />
   </Button>
+
+  {/* Advanced Noise Filtering */}
+  <Button 
+  onClick={async () => {
+    try {
+      const isCurrentlyEnabled = daily.getInputSettings()?.audio?.processor?.type === 'noise-cancellation';
+      await daily.updateInputSettings({
+        audio: {
+          processor: { type: isCurrentlyEnabled ? 'none' : 'noise-cancellation' }
+        }
+      });
+      toast({ title: 'Audio Settings Updated', description: `Studio Noise Cancellation is now ${isCurrentlyEnabled ? 'OFF' : 'ON'}` });
+    } catch(e) {
+      toast({ title: 'Action Failed', description: 'Your browser may not support advanced audio processing.', variant: 'destructive' });
+    }
+  }}
+  variant="outline"
+  size="icon"
+  className="w-14 h-14 rounded-[1.25rem] hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 relative group"
+  title="Studio Audio"
+  >
+  <Sparkles className="w-5 h-5" />
+  <span className="absolute -top-2 -right-2 bg-primary text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">PRO</span>
+  </Button>
  <Button 
   variant="default"
   onClick={handleAiAssist}
@@ -1207,23 +1231,7 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
 
    if (cancelled) return;
 
-   const callObject = DailyIframe.createCallObject({
-    dailyConfig: {
-      camSimulcastEncodings: [
-        { maxBitrate: 1200000, maxFramerate: 30, scaleResolutionDownBy: 1 },
-        { maxBitrate: 600000, maxFramerate: 24, scaleResolutionDownBy: 2 },
-        { maxBitrate: 200000, maxFramerate: 15, scaleResolutionDownBy: 4 },
-      ],
-      v2CamAndMic: true,
-      audioSource: true,
-      videoSource: true,
-      userMediaAudioConstraints: {
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-      }
-    }
-   });
+   const callObject = DailyIframe.createCallObject();
    callRef.current = callObject;
 
    const joinOpts = { url: roomUrl, audioSource: initialAudio, videoSource: initialVideo };
@@ -1235,17 +1243,37 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
    }
 
    try {
-    await callObject.startCamera();
+    try {
+      await callObject.startCamera();
+    } catch(camErr) {
+      console.warn("No camera or mic found:", camErr);
+    }
     if (cancelled) return;
 
-    // Force advanced noise cancellation if supported by browser/daily
     try {
       await callObject.updateInputSettings({
         audio: {
-          processor: { type: 'noise-cancellation' }
+          processor: { type: 'noise-cancellation' },
+          settings: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          }
         }
       });
-    } catch (e) { console.warn("Noise cancellation not supported or failed to init:", e); }
+    } catch (e) { console.warn("Noise cancellation not supported:", e); }
+    
+    try {
+      await callObject.updateSendSettings({
+        video: {
+          encodings: {
+            high: { maxBitrate: 1200000, maxFramerate: 30, scaleResolutionDownBy: 1 },
+            medium: { maxBitrate: 600000, maxFramerate: 24, scaleResolutionDownBy: 2 },
+            low: { maxBitrate: 200000, maxFramerate: 15, scaleResolutionDownBy: 4 },
+          }
+        }
+      });
+    } catch (e) { console.warn("Send settings not supported:", e); }
     
     // Apply background instantly before joining
     if (initialBackground && initialBackground.type !== 'none') {
