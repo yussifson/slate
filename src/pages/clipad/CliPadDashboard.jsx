@@ -470,10 +470,10 @@ export default function CliPadDashboard() {
         </div>
         
         {/* Workspace Blocker Radar (Enterprise Only) */}
-        {user?.clipad_plan === 'enterprise' && activeWorkspace && (
+        {user?.clipad_plan === 'enterprise' && user?.company_id && (
           <div className="mt-8">
             <BlockerRadar 
-              workspaceId={activeWorkspace.id} 
+              workspaceId={user.company_id} 
               isWorkspaceView={true} 
               hasFullIntelligence={true} 
             />
