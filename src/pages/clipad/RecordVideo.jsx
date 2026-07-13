@@ -129,6 +129,52 @@ export default function RecordVideo() {
   const [scriptPrompt, setScriptPrompt] = useState('');
   const [scrollSpeed, setScrollSpeed] = useState(3);
   const teleprompterRef = useRef(null);
+
+  const [camPos, setCamPos] = useState({ x: 75, y: 70 });
+  const camPosRef = useRef({ x: 75, y: 70 });
+  const isDraggingPiP = useRef(false);
+  const dragStartPos = useRef({ x: 0, y: 0 });
+  const initialCamPos = useRef({ x: 0, y: 0 });
+
+  const handlePiPMouseDown = (e) => {
+    isDraggingPiP.current = true;
+    dragStartPos.current = { x: e.clientX, y: e.clientY };
+    initialCamPos.current = { ...camPosRef.current };
+  };
+
+  const handlePiPMouseMove = (e) => {
+    if (!isDraggingPiP.current) return;
+    const container = document.getElementById('preview-container');
+    if (!container) return;
+    
+    const dx = e.clientX - dragStartPos.current.x;
+    const dy = e.clientY - dragStartPos.current.y;
+    
+    const dxPercent = (dx / container.clientWidth) * 100;
+    const dyPercent = (dy / container.clientHeight) * 100;
+    
+    let newX = initialCamPos.current.x + dxPercent;
+    let newY = initialCamPos.current.y + dyPercent;
+    
+    newX = Math.max(0, Math.min(newX, 78)); // max 100 - 22 width
+    newY = Math.max(0, Math.min(newY, 87)); // 100 - 13 height
+    
+    setCamPos({ x: newX, y: newY });
+    camPosRef.current = { x: newX, y: newY };
+  };
+
+  const handlePiPMouseUp = () => {
+    isDraggingPiP.current = false;
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousemove', handlePiPMouseMove);
+    document.addEventListener('mouseup', handlePiPMouseUp);
+    return () => {
+      document.removeEventListener('mousemove', handlePiPMouseMove);
+      document.removeEventListener('mouseup', handlePiPMouseUp);
+    };
+  }, []);
   
   const generateScript = async () => {
     if (!scriptPrompt.trim()) return;
@@ -603,11 +649,13 @@ ${teleprompterText}`;
         canvas.height = 1080;
 
         const screenVideo = document.createElement('video');
+        screenVideo.playsInline = true;
         screenVideo.srcObject = screenStream;
         screenVideo.muted = true;
         await screenVideo.play();
 
         const camVideo = document.createElement('video');
+        camVideo.playsInline = true;
         camVideo.srcObject = cameraStream;
         camVideo.muted = true;
         await camVideo.play();
@@ -617,8 +665,9 @@ ${teleprompterText}`;
           // PiP: bottom-right corner, 25% of canvas width
           const pipW = canvas.width * 0.22;
           const pipH = pipW * (camVideo.videoHeight / (camVideo.videoWidth || 1)) || pipW * 0.75;
-          const pipX = canvas.width - pipW - 32;
-          const pipY = canvas.height - pipH - 32;
+          // Use camPosRef percentages to position on 1920x1080 canvas
+          const pipX = (camPosRef.current.x / 100) * canvas.width;
+          const pipY = (camPosRef.current.y / 100) * canvas.height;
           // Rounded clip
           ctx.save();
           ctx.beginPath();
@@ -672,7 +721,7 @@ ${teleprompterText}`;
         
         // Show composited canvas directly in preview window
         if (previewRef.current) {
-          previewRef.current.srcObject = canvasStream;
+          previewRef.current.srcObject = mode === 'screen_camera' ? screenStream : canvasStream;
           previewRef.current.play().catch(()=>{});
         }
       } else if (screenStream) {
@@ -1301,14 +1350,14 @@ ${teleprompterText}`;
           <div className="flex flex-col items-center gap-6 relative pb-24">
             
             {teleprompterText && showTeleprompter && (
-              <div className="relative w-full max-w-4xl mx-auto mb-6 bg-white/70 dark:bg-slate-900/80 backdrop-blur-3xl border border-white/60 dark:border-slate-700/50 rounded-3xl shadow-[0_16px_40px_rgb(0,0,0,0.1)] dark:shadow-[0_16px_40px_rgb(0,0,0,0.6)] overflow-hidden z-40 transition-all flex flex-col">
-                <div className="bg-white/40 dark:bg-slate-800/40 border-b border-slate-200/50 dark:border-slate-700/50 px-5 py-3 flex items-center justify-between cursor-move backdrop-blur-xl">
+              <div className="relative w-full max-w-4xl mx-auto mb-6 bg-white dark:bg-[#090E17] border border-slate-200 dark:border-slate-800 rounded-3xl shadow-lg overflow-hidden z-40 transition-all flex flex-col">
+                <div className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-5 py-3 flex items-center justify-between cursor-move">
                   <div className="flex items-center gap-2">
                     <AlignLeft className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
                     <h3 className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest">AI Teleprompter</h3>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 bg-white/50 dark:bg-slate-900/50 px-4 py-1.5 rounded-full border border-slate-200/50 dark:border-slate-700/50">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 px-4 py-1.5 rounded-full border border-slate-200 dark:border-slate-800">
                       <span>Speed</span>
                       <input type="range" min="0" max="10" value={scrollSpeed} onChange={e => setScrollSpeed(Number(e.target.value))} className="w-24 h-2 bg-slate-300 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-indigo-500" />
                     </div>
@@ -1329,10 +1378,30 @@ ${teleprompterText}`;
               </div>
             )}
 
-            <div className="relative w-full max-w-2xl rounded-3xl overflow-hidden bg-black aspect-video shadow-2xl ring-1 ring-white/10">
+            <div id="preview-container" className="relative w-full max-w-2xl rounded-3xl overflow-hidden bg-black aspect-video shadow-2xl ring-1 ring-white/10 select-none">
               {mode === 'screen_camera' && (
                 <>
                   <video ref={previewRef} autoPlay muted playsInline className="w-full h-full object-contain" />
+                  {cameraStream && (
+                    <div 
+                      className="absolute z-50 cursor-grab active:cursor-grabbing rounded-xl overflow-hidden shadow-xl ring-2 ring-indigo-500/80 bg-black"
+                      style={{ 
+                        width: '22%', 
+                        left: `${camPos.x}%`, 
+                        top: `${camPos.y}%`, 
+                        aspectRatio: '16/9' 
+                      }}
+                      onMouseDown={handlePiPMouseDown}
+                    >
+                      <video 
+                        autoPlay 
+                        muted 
+                        playsInline 
+                        className="w-full h-full object-cover scale-x-[-1]" 
+                        ref={v => { if (v && v.srcObject !== cameraStream) v.srcObject = cameraStream; }} 
+                      />
+                    </div>
+                  )}
                 </>
               )}
               {mode === 'camera_only' && (
