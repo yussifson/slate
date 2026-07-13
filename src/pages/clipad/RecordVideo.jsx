@@ -277,8 +277,8 @@ export default function RecordVideo() {
       if (isDark) pip.document.documentElement.classList.add('dark');
       
       pip.document.body.style.margin = '0';
-      // Make the PiP window sleek and clean to match the requested design
-      pip.document.body.style.backgroundColor = '#ffffff'; 
+      // Blend the PiP background with Chrome's dark title bar
+      pip.document.body.style.backgroundColor = '#202124'; 
       pip.document.body.style.display = 'flex';
       pip.document.body.style.alignItems = 'center';
       pip.document.body.style.justifyContent = 'center';
@@ -289,8 +289,12 @@ export default function RecordVideo() {
       controlsWrapper.style.display = 'flex';
       controlsWrapper.style.justifyContent = 'center';
       controlsWrapper.style.gap = '16px';
-      controlsWrapper.style.width = '100%';
-      controlsWrapper.style.height = '100%';
+      controlsWrapper.style.padding = '12px 24px';
+      controlsWrapper.style.backgroundColor = '#ffffff';
+      controlsWrapper.style.borderRadius = '24px';
+      controlsWrapper.style.boxShadow = '0 8px 24px rgba(0,0,0,0.3)';
+      controlsWrapper.style.width = 'fit-content';
+      controlsWrapper.style.height = 'fit-content';
       controlsWrapper.style.alignItems = 'center';
 
       const createBtn = (iconSvg, type) => {
