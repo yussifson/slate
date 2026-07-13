@@ -371,37 +371,71 @@ export default function SpaceDashboard() {
       {/* Tab content */}
       <div className="max-w-7xl mx-auto px-6 md:px-10 py-8">
 
-        {/* OVERVIEW */}
+        {/* OVERVIEW (BENTO GRID REDESIGN) */}
         {activeTab === 'overview' && (
-          <div className="space-y-8">
+          <div className="space-y-6">
             <RedundantWorkAlert workspaceId={space.company_id} currentSpaceId={spaceId} />
             <MeetingInsights spaceId={spaceId} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <ContextCapsule 
-                spaceId={spaceId} 
-                hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
-              />
-              <BlockerRadar 
-                workspaceId={space.company_id} 
-                spaceId={spaceId} 
-                hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
-              />
+            {/* Premium Bento Grid Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-max">
+              
+              {/* Context Capsule (Large span) */}
+              <div className="md:col-span-2 lg:col-span-2 xl:col-span-2 flex flex-col h-full relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                <div className="relative h-full flex flex-col rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden z-10 hover:shadow-md transition-shadow">
+                  <div className={`h-1.5 w-full bg-gradient-to-r ${color}`}></div>
+                  <div className="p-1 flex-1">
+                    <ContextCapsule 
+                      spaceId={spaceId} 
+                      hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Blocker Radar (Vertical span) */}
+              <div className="md:col-span-1 lg:col-span-1 xl:col-span-1 flex flex-col h-full rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden z-10 hover:shadow-md transition-shadow">
+                <div className="p-1 flex-1">
+                  <BlockerRadar 
+                    workspaceId={space.company_id} 
+                    spaceId={spaceId} 
+                    isWorkspaceView={true}
+                    hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
+                  />
+                </div>
+              </div>
+
+              {/* Commitment Tracker */}
+              <div className="md:col-span-1 lg:col-span-3 xl:col-span-1 flex flex-col h-full rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 border border-slate-200 dark:border-slate-700/50 shadow-sm overflow-hidden z-10 hover:shadow-md transition-shadow">
+                <div className="p-1 flex-1">
+                  <CommitmentTracker spaceId={spaceId} />
+                </div>
+              </div>
+
+              {/* Decision Ledger (Full width bottom span) */}
+              <div className="md:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden z-10 hover:shadow-md transition-shadow">
+                <div className="p-1">
+                  <DecisionLedger 
+                    workspaceId={space.company_id} 
+                    spaceId={spaceId} 
+                    hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
+                    teamColor={color}
+                  />
+                </div>
+              </div>
+
             </div>
 
-            <div className="grid grid-cols-1 gap-6">
-              <CommitmentTracker spaceId={spaceId} />
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-6">
               {/* Recent Videos */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-bold text-foreground flex items-center gap-2"><Camera className="w-4 h-4 text-primary" /> Recent Videos</h2>
-                  <button onClick={() => setActiveTab('videos')} className="text-xs text-primary hover:text-primary/80 transition-colors">View all →</button>
+                  <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2"><Camera className="w-4 h-4 text-primary" /> Recent Videos</h2>
+                  <button onClick={() => setActiveTab('videos')} className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors">View all →</button>
                 </div>
                 {videos.length === 0
-                  ? <div className="p-8 rounded-2xl border border-dashed border-border text-center text-muted-foreground text-sm">No videos yet. <button className="text-primary hover:text-primary/80 transition-colors" onClick={() => navigate('/record')}>Record one →</button></div>
+                  ? <div className="p-8 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 text-center text-slate-500 dark:text-slate-400 text-sm bg-slate-50 dark:bg-slate-900/50">No videos yet. <button className="text-primary font-medium hover:text-primary/80 transition-colors" onClick={() => navigate('/record')}>Record one →</button></div>
                   : <div className="grid grid-cols-2 gap-3">{videos.slice(0,4).map(v => <VideoCard key={v.id} video={v} onClick={() => navigate(`/watch/${v.id}`)} />)}</div>
                 }
               </div>
@@ -409,20 +443,20 @@ export default function SpaceDashboard() {
               {/* Recent Meetings */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-bold text-foreground flex items-center gap-2"><Calendar className="w-4 h-4 text-primary" /> Recent Meetings</h2>
-                  <button onClick={() => setActiveTab('meetings')} className="text-xs text-primary hover:text-primary/80 transition-colors">View all →</button>
+                  <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2"><Calendar className="w-4 h-4 text-primary" /> Recent Meetings</h2>
+                  <button onClick={() => setActiveTab('meetings')} className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors">View all →</button>
                 </div>
-                <div className="bg-card border border-border rounded-2xl divide-y divide-white/5 overflow-hidden">
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden shadow-sm">
                   {meetings.length === 0
-                    ? <div className="p-8 text-center text-muted-foreground text-sm">No meetings yet.</div>
+                    ? <div className="p-8 text-center text-slate-500 dark:text-slate-400 text-sm bg-slate-50 dark:bg-slate-900/50">No meetings yet.</div>
                     : meetings.slice(0,5).map(m => (
-                        <div key={m.id} onClick={() => navigate(`/meetings/${m.id}`)} className="px-5 py-4 hover:bg-secondary cursor-pointer transition-colors">
+                        <div key={m.id} onClick={() => navigate(`/meetings/${m.id}`)} className="px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors group">
                           <div className="flex items-center justify-between">
-                            <p className="text-sm font-semibold text-foreground">{m.title || 'Team Meeting'}</p>
-                            {m.ai_summary && <Sparkles className="w-3.5 h-3.5 text-primary shrink-0" />}
+                            <p className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{m.title || 'Team Meeting'}</p>
+                            {m.ai_summary && <Sparkles className="w-3.5 h-3.5 text-primary shrink-0 opacity-70 group-hover:opacity-100" />}
                           </div>
-                          <p className="text-xs text-muted-foreground mt-0.5">{new Date(m.created_at).toLocaleString()}</p>
-                          {m.ai_summary && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{m.ai_summary}</p>}
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{new Date(m.created_at).toLocaleString()}</p>
+                          {m.ai_summary && <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 line-clamp-2 border-l-2 border-primary/30 pl-2">{m.ai_summary}</p>}
                         </div>
                       ))
                   }

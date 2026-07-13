@@ -123,6 +123,7 @@ export default function RecordVideo() {
   const [phase, setPhase] = useState('setup'); // setup | recording | review | uploading | done
   const [micEnabled, setMicEnabled] = useState(true);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const recordingSecondsRef = useRef(0);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [videoBlob, setVideoBlob] = useState(null);
   const [recordingUrl, setRecordingUrl] = useState(null);
@@ -774,7 +775,7 @@ export default function RecordVideo() {
             video_url: publicUrl,
             title: videoTitle,
             space_id: selectedSpace || null,
-            duration_seconds: recordingSeconds,
+            duration_seconds: recordingSecondsRef.current,
           }).select().single();
 
           if (!dbError) {
@@ -868,6 +869,7 @@ export default function RecordVideo() {
       timerRef.current = setInterval(() => {
         const seconds = Math.floor((Date.now() - startTime) / 1000);
         setRecordingSeconds(seconds);
+        recordingSecondsRef.current = seconds;
         
         if (seconds >= maxSeconds) {
           playAlertSound();

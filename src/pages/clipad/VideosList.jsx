@@ -166,12 +166,10 @@ export default function VideosList() {
                       <Play className="w-5 h-5 text-primary dark:text-white fill-current ml-1" />
                     </div>
                   </div>
-                  {v.duration_seconds && (
-                    <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-md text-white text-[10px] font-mono font-medium px-2 py-0.5 rounded-md flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {formatDuration(v.duration_seconds)}
-                    </div>
-                  )}
+                  <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-md text-white text-[10px] font-mono font-medium px-2 py-0.5 rounded-md flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {formatDuration(v.duration_seconds)}
+                  </div>
                 </div>
                 <div className="p-4 flex-1 flex flex-col justify-between">
                   <div>
