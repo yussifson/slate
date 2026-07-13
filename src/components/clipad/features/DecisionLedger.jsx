@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../../../api/supabaseClient';
+import { supabase } from '@/api/supabaseClient';
 import { ShieldAlert, CheckCircle, Clock, Archive } from 'lucide-react';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function DecisionLedger({ workspaceId, spaceId, hasFullIntelligence }) {
   const { user } = useAuth();

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { supabase } from '../../../api/supabaseClient';
+import { supabase } from '@/api/supabaseClient';
 import { Sparkles, Brain, FileText, CheckCircle, ShieldAlert } from 'lucide-react';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function ContextCapsule({ spaceId, hasFullIntelligence }) {
   const [capsule, setCapsule] = useState(null);

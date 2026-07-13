@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../../../api/supabaseClient';
+import { supabase } from '@/api/supabaseClient';
 import { ShieldAlert, AlertTriangle, CheckCircle, Network } from 'lucide-react';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = false, hasFullIntelligence }) {
   const { user } = useAuth();
