@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
 import { Download, AlertCircle, Loader2, Lock, Monitor, Smartphone, Video } from 'lucide-react';
-import coreURL from '@ffmpeg/core/dist/umd/ffmpeg-core.js?url';
-import wasmURL from '@ffmpeg/core/dist/umd/ffmpeg-core.wasm?url';
+import coreURL from '@ffmpeg/core?url';
+import wasmURL from '@ffmpeg/core/wasm?url';
 import { supabase } from '@/api/supabaseClient';
 
 export default function VideoDownloadModal({ open, onOpenChange, videoUrl, videoTitle }) {
