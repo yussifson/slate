@@ -42,7 +42,7 @@ wss.on('connection', (ws) => {
           const fileName = `${data.userId}/${Date.now()}.webm`;
           
           upload = new tus.Upload(passThrough, {
-            endpoint: `${process.env.SUPABASE_URL}/storage/v1/upload/resumable`,
+            endpoint: `${process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL}/storage/v1/upload/resumable`,
             retryDelays: [0, 3000, 5000, 10000, 20000],
             headers: {
               authorization: `Bearer ${data.token}`,

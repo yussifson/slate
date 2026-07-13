@@ -970,7 +970,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
                 await db.from('clipad_videos').insert({
                   user_id: user?.id,
                   space_id: spaceId,
-                  title: meetingTitle || 'Meeting Recording',
+                  title: 'Live Meeting Recording',
                   description: 'Meeting recording uploaded automatically.',
                   video_url: videoUrl,
                   is_public: true
@@ -998,7 +998,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
         setIsRecording(true);
         toast({ title: 'Recording Started', description: 'Meeting is now being recorded locally.' });
         
-        stream.getVideoTracks()[0].onended = () => {
+        displayStream.getVideoTracks()[0].onended = () => {
           if (mediaRecorderRef.current.state !== 'inactive') {
              mediaRecorderRef.current.stop();
              setIsRecording(false);
