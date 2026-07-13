@@ -10,7 +10,8 @@ import { logAuditEvent } from '@/lib/auditLogger';
 import { useAuth } from '@/lib/AuthContext';
 import { getPlanLimits, getUserPlan } from '@/lib/clipadPricing';
 import PaywallModal from '@/components/clipad/PaywallModal';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import { playAlertSound } from '@/lib/audioAlerts';
 
 
@@ -26,10 +27,90 @@ function formatDuration(seconds) {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
+
+const DB_NAME = 'ClipadRecordingsDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'recordings';
+
+const openDB = () => new Promise((resolve, reject) => {
+  const request = indexedDB.open(DB_NAME, DB_VERSION);
+  request.onupgradeneeded = (e) => {
+    e.target.result.createObjectStore(STORE_NAME, { keyPath: 'id' });
+  };
+  request.onsuccess = () => resolve(request.result);
+  request.onerror = () => reject(request.error);
+});
+
+const saveRecordingState = async (id, chunks) => {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    tx.objectStore(STORE_NAME).put({ id, chunks, timestamp: Date.now() });
+    return new Promise(resolve => tx.oncomplete = resolve);
+  } catch (err) { console.error('IDB Save Error:', err); }
+};
+
+const getRecordingState = async (id) => {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const request = tx.objectStore(STORE_NAME).get(id);
+    return new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  } catch (err) { console.error('IDB Get Error:', err); return null; }
+};
+
+const deleteRecordingState = async (id) => {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    tx.objectStore(STORE_NAME).delete(id);
+    return new Promise(resolve => tx.oncomplete = resolve);
+  } catch (err) { console.error('IDB Delete Error:', err); }
+};
+
 export default function RecordVideo() {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (!id) {
+      navigate(`/record/${uuidv4()}`, { replace: true });
+    }
+  }, [id, navigate]);
+  
+  const [showRecoverPrompt, setShowRecoverPrompt] = useState(false);
+  const [recoveredChunks, setRecoveredChunks] = useState(null);
+
+  useEffect(() => {
+    if (id && user && (user.clipad_plan === 'pro' || user.clipad_plan === 'enterprise')) {
+      getRecordingState(id).then(state => {
+        if (state && state.chunks && state.chunks.length > 0) {
+          setRecoveredChunks(state.chunks);
+          setShowRecoverPrompt(true);
+        }
+      });
+    }
+  }, [id, user]);
+
+  const handleRecover = () => {
+    chunksRef.current = recoveredChunks;
+    const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+    const url = URL.createObjectURL(blob);
+    setVideoBlob(blob);
+    setRecordingUrl(url);
+    setPhase('review');
+    setShowRecoverPrompt(false);
+  };
+  
+  const handleDiscardRecovery = () => {
+    deleteRecordingState(id);
+    setShowRecoverPrompt(false);
+  };
 
   const [mode, setMode] = useState('screen_camera');
   const isRecordingRef = useRef(false);
@@ -261,7 +342,7 @@ export default function RecordVideo() {
 
       camBtn.onclick = () => handlersRef.current.toggleWebcam();
       pauseBtn.onclick = () => handlersRef.current.togglePause();
-      stopBtn.onclick = () => handlersRef.current.stopRecording();
+      stopBtn.onclick = () => { handlersRef.current.stopRecording(); window.focus(); };
       
       // Mic glowing setup
       let audioCtx, analyser, dataArray, source, glowId;
@@ -605,7 +686,7 @@ export default function RecordVideo() {
       mediaRecorderRef.current = recorder;
       chunksRef.current = [];
 
-      recorder.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+      recorder.ondataavailable = e => { if (e.data.size > 0) { chunksRef.current.push(e.data); if (user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise') saveRecordingState(id, chunksRef.current); } };
       recorder.onstop = async () => {
         const blob = new Blob(chunksRef.current, { type: 'video/webm' });
         const url = URL.createObjectURL(blob);
@@ -647,6 +728,7 @@ export default function RecordVideo() {
           toast({ title: 'Recording Auto-Saved!', description: 'Your video is securely saved. You can now edit details or share it.', variant: 'default' });
           setUploadProgress(100);
           setPhase('review');
+          deleteRecordingState(id);
         } catch (err) {
           console.error('Auto-save failed:', err);
           toast({ title: 'Auto-save Failed', description: err.message || 'Please try saving manually.', variant: 'destructive' });

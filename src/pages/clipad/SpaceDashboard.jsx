@@ -23,6 +23,8 @@ import SpaceAutomations from '@/components/clipad/SpaceAutomations';
 import DecisionLedger from '@/components/clipad/features/DecisionLedger';
 import ContextCapsule from '@/components/clipad/features/ContextCapsule';
 import BlockerRadar from '@/components/clipad/features/BlockerRadar';
+import RedundantWorkAlert from '@/components/clipad/features/RedundantWorkAlert';
+import CommitmentTracker from '@/components/clipad/features/CommitmentTracker';
 
 const TABS = [
   { id: 'overview', icon: Layers, label: 'Overview' },
@@ -372,6 +374,7 @@ export default function SpaceDashboard() {
         {/* OVERVIEW */}
         {activeTab === 'overview' && (
           <div className="space-y-8">
+            <RedundantWorkAlert workspaceId={space.company_id} currentSpaceId={spaceId} />
             <MeetingInsights spaceId={spaceId} />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -384,6 +387,10 @@ export default function SpaceDashboard() {
                 spaceId={spaceId} 
                 hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
               />
+            </div>
+
+            <div className="grid grid-cols-1 gap-6">
+              <CommitmentTracker spaceId={spaceId} />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

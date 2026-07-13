@@ -1262,6 +1262,7 @@ function App() {
                           <Route path="/spaces" element={<SpacesList />} />
                           <Route path="/spaces/:spaceId" element={<SpaceDashboard />} />
                           <Route path="/record" element={<RecordVideo />} />
+                          <Route path="/record/:id" element={<RecordVideo />} />
                           <Route path="/meetings" element={<MeetingsList />} />
                           <Route path="/meetings/:meetingId" element={<MeetingRecord />} />
                           <Route path="/settings" element={<CliPadSettings />} />
