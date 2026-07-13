@@ -7,7 +7,7 @@ import {
   Users, Video, Calendar, Plus, Play, Monitor, Activity,
   Brain, FileText, CheckCircle, Search, Settings, ArrowLeft,
   Clock, MessageSquare, Sparkles, Camera, Layers, Target,
-  ChevronRight, X, Edit3, Trash2, User, Lock
+  ChevronRight, X, Edit3, Trash2, User, Lock, ShieldAlert
 } from 'lucide-react';
 import SpaceNotes from '@/components/clipad/SpaceNotes';
 import MeetingInsights from '@/components/clipad/MeetingInsights';
