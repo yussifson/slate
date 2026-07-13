@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
-import { ShieldAlert, AlertTriangle, CheckCircle, Network } from 'lucide-react';
+import { ShieldAlert, AlertTriangle, CheckCircle, Network, Plus, Loader2 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 
 export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = false, hasFullIntelligence }) {
   const { user } = useAuth();
   const [blockers, setBlockers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAdd, setShowAdd] = useState(false);
+  const [newBlocker, setNewBlocker] = useState('');
+  const [adding, setAdding] = useState(false);
 
-  // RBAC checks
   const isAdmin = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
-  const isCompanyAdmin = user?.role === 'super_admin' || user?.role === 'company_admin';
 
   useEffect(() => {
-    if (!workspaceId || !hasFullIntelligence) return;
-    
-    // In Workspace View, we only load if Company Admin (Enterprise feature handled via tier check)
-    if (isWorkspaceView && !isCompanyAdmin) return;
+    // Fetch if we have at least a spaceId (workspaceId is optional bonus)
+    if (spaceId || workspaceId) {
+      fetchBlockers();
+    } else {
+      setLoading(false);
+    }
+  }, [workspaceId, spaceId, isWorkspaceView]);
 
-    const fetchBlockers = async () => {
-      setLoading(true);
-      
+  const fetchBlockers = async () => {
+    setLoading(true);
+
+    try {
       let query = supabase
         .from('clipad_blockers')
         .select(`
@@ -28,136 +33,216 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
           blocked_person:blocked_person_id(id, full_name, avatar_url),
           blocking_person:blocking_person_id(id, full_name, avatar_url)
         `)
-        .eq('workspace_id', workspaceId)
         .order('detected_at', { ascending: false });
-        
+
+      // Filter by space if in space view, otherwise by workspace
       if (!isWorkspaceView && spaceId) {
         query = query.eq('team_space_id', spaceId);
+      } else if (workspaceId) {
+        query = query.eq('workspace_id', workspaceId);
       }
-      
-      const { data, error } = await query;
-      
-      if (!error && data) {
-        setBlockers(data);
-      }
-      setLoading(false);
-    };
 
-    fetchBlockers();
-  }, [workspaceId, spaceId, isWorkspaceView, isCompanyAdmin, hasFullIntelligence]);
+      const { data, error } = await query;
+      if (error) console.warn('BlockerRadar fetch:', error.message);
+      if (data) setBlockers(data);
+    } catch (err) {
+      console.error('BlockerRadar error:', err);
+    }
+    setLoading(false);
+  };
 
   const handleResolve = async (blockerId) => {
-    // Only blocked person or Admin can resolve
     const { error } = await supabase
       .from('clipad_blockers')
       .update({ status: 'resolved', resolved_at: new Date().toISOString() })
-      .eq('id', blockerId)
-      .eq('workspace_id', workspaceId); // Tenant isolation
+      .eq('id', blockerId);
 
     if (!error) {
-      setBlockers(blockers.map(b => b.id === blockerId ? { ...b, status: 'resolved', resolved_at: new Date().toISOString() } : b));
+      setBlockers(prev => prev.map(b => b.id === blockerId
+        ? { ...b, status: 'resolved', resolved_at: new Date().toISOString() }
+        : b
+      ));
     }
   };
 
+  const handleAddBlocker = async (e) => {
+    e.preventDefault();
+    if (!newBlocker.trim() || !user) return;
+    setAdding(true);
+
+    const { error } = await supabase.from('clipad_blockers').insert({
+      description: newBlocker.trim(),
+      blocked_person_id: user.id,
+      workspace_id: workspaceId || null,
+      team_space_id: spaceId || null,
+      status: 'open',
+      detected_at: new Date().toISOString(),
+    });
+
+    if (!error) {
+      setNewBlocker('');
+      setShowAdd(false);
+      await fetchBlockers();
+    }
+    setAdding(false);
+  };
+
   if (!hasFullIntelligence) {
-    if (isWorkspaceView) return null; // Don't show in dashboard if they don't have it
+    if (isWorkspaceView) return null;
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center border border-slate-700/50 rounded-xl bg-slate-800/20">
+      <div className="flex flex-col items-center justify-center p-12 text-center border border-slate-200 dark:border-slate-700/50 rounded-xl bg-slate-50 dark:bg-slate-800/20">
         <ShieldAlert className="w-12 h-12 text-indigo-400 mb-4" />
-        <h3 className="text-xl font-medium text-slate-200 mb-2">Blocker Radar Locked</h3>
-        <p className="text-slate-400 max-w-md">
+        <h3 className="text-xl font-medium text-slate-700 dark:text-slate-200 mb-2">Blocker Radar Locked</h3>
+        <p className="text-slate-500 dark:text-slate-400 max-w-md">
           Upgrade to Pro or Enterprise to access Blocker Radar and instantly identify team bottlenecks.
         </p>
       </div>
     );
   }
 
-  if (isWorkspaceView && !isCompanyAdmin) {
-    return null; // Safety check
-  }
-
   const openBlockers = blockers.filter(b => b.status === 'open');
 
+  // Dashboard widget (compact) mode
+  if (isWorkspaceView) {
+    return (
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 h-full flex flex-col">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <Network className="w-4 h-4 text-indigo-500" />
+            Team Blockers
+          </h2>
+          {openBlockers.length > 0 && (
+            <span className="text-xs font-bold bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full">
+              {openBlockers.length} open
+            </span>
+          )}
+        </div>
+        {loading ? (
+          <div className="flex-1 flex items-center justify-center">
+            <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
+          </div>
+        ) : openBlockers.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-center py-4">
+            <CheckCircle className="w-8 h-8 text-emerald-400 mb-2" />
+            <p className="text-xs text-slate-500 dark:text-slate-400">No open blockers. Team is unblocked!</p>
+          </div>
+        ) : (
+          <div className="space-y-2 flex-1">
+            {openBlockers.slice(0, 3).map(b => (
+              <div key={b.id} className="p-2.5 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-800/30 rounded-lg">
+                <p className="text-xs text-slate-700 dark:text-slate-300 line-clamp-2">{b.description}</p>
+                <p className="text-[10px] text-slate-400 mt-1">
+                  {b.blocked_person?.full_name || 'Someone'} is blocked
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Full space view
   return (
     <div className="space-y-6">
-      {!isWorkspaceView && (
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
-              <Network className="w-6 h-6 text-indigo-400" /> Blocker Radar
-            </h2>
-            <p className="text-sm text-slate-400 mt-1">Live graph of who is blocked on whom.</p>
-          </div>
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <Network className="w-6 h-6 text-indigo-400" /> Blocker Radar
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Live graph of who is blocked on whom.</p>
         </div>
+        <button
+          onClick={() => setShowAdd(v => !v)}
+          className="flex items-center gap-1.5 text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg transition-colors"
+        >
+          <Plus className="w-4 h-4" /> Report Blocker
+        </button>
+      </div>
+
+      {showAdd && (
+        <form onSubmit={handleAddBlocker} className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex gap-3">
+          <input
+            value={newBlocker}
+            onChange={e => setNewBlocker(e.target.value)}
+            placeholder="Describe what's blocking you..."
+            className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+            required
+          />
+          <button type="submit" disabled={adding} className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 disabled:opacity-50">
+            {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Add'}
+          </button>
+        </form>
       )}
 
       {loading ? (
-        <div className="flex justify-center p-12"><div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div></div>
+        <div className="flex justify-center p-12">
+          <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+        </div>
       ) : blockers.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm h-full flex flex-col justify-center items-center text-center">
-          <Network className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-3" />
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-1">Team Blockers</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">No blockers detected.</p>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-10 shadow-sm flex flex-col items-center text-center">
+          <CheckCircle className="w-10 h-10 text-emerald-400 mb-3" />
+          <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">All Clear!</h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400">No blockers detected. Team is moving freely.</p>
         </div>
       ) : (
         <div className="space-y-4">
-          {isWorkspaceView && (
-             <h3 className="text-lg font-semibold text-slate-200 flex items-center gap-2 mb-4">
-               <AlertTriangle className={`w-5 h-5 ${openBlockers.length > 0 ? 'text-amber-400' : 'text-slate-500'}`} />
-               Workspace Blocker Radar
-             </h3>
-          )}
-          
           {blockers.map(blocker => {
             const isBlockedMe = blocker.blocked_person_id === user?.id;
             const canResolve = isBlockedMe || isAdmin;
-            
+            const isOpen = blocker.status === 'open';
+
             return (
-              <div key={blocker.id} className={`p-4 rounded-xl border transition-colors ${blocker.status === 'open' ? 'border-amber-500/30 bg-amber-500/5' : 'border-slate-700/50 bg-slate-800/20 opacity-70'}`}>
+              <div
+                key={blocker.id}
+                className={`p-4 rounded-xl border transition-colors ${isOpen ? 'border-amber-500/30 bg-amber-500/5' : 'border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/20 opacity-70'}`}
+              >
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-4 flex-1">
-                    {/* Blocked Person */}
                     <div className="flex flex-col items-center">
-                      <img src={blocker.blocked_person?.avatar_url || 'https://via.placeholder.com/40'} alt="" className="w-10 h-10 rounded-full border-2 border-rose-500" />
-                      <span className="text-xs text-slate-400 mt-1 truncate w-16 text-center">{blocker.blocked_person?.full_name?.split(' ')[0]}</span>
+                      <div className="w-10 h-10 rounded-full border-2 border-rose-500 bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm font-bold text-slate-600 dark:text-slate-300 overflow-hidden">
+                        {blocker.blocked_person?.avatar_url
+                          ? <img src={blocker.blocked_person.avatar_url} alt="" className="w-full h-full object-cover" />
+                          : (blocker.blocked_person?.full_name?.[0] || '?')}
+                      </div>
+                      <span className="text-xs text-slate-400 mt-1 truncate w-16 text-center">
+                        {blocker.blocked_person?.full_name?.split(' ')[0] || 'Someone'}
+                      </span>
                     </div>
-                    
-                    {/* Connection */}
+
                     <div className="flex-1 flex flex-col items-center justify-center px-2">
                       <div className="w-full h-px bg-gradient-to-r from-rose-500 via-amber-500 to-indigo-500 relative">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 px-2 text-xs font-medium text-amber-400 border border-amber-500/30 rounded-full">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-900 px-2 text-xs font-medium text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 rounded-full whitespace-nowrap">
                           is blocked by
                         </div>
                       </div>
-                      <span className="text-sm text-slate-300 mt-3 text-center w-full truncate px-4">{blocker.description}</span>
+                      <span className="text-sm text-slate-600 dark:text-slate-300 mt-3 text-center w-full truncate px-4">
+                        {blocker.description}
+                      </span>
                     </div>
 
-                    {/* Blocking Person/Team */}
                     <div className="flex flex-col items-center">
-                      {blocker.blocking_person ? (
-                        <>
-                          <img src={blocker.blocking_person.avatar_url || 'https://via.placeholder.com/40'} alt="" className="w-10 h-10 rounded-full border-2 border-indigo-500" />
-                          <span className="text-xs text-slate-400 mt-1 truncate w-16 text-center">{blocker.blocking_person.full_name?.split(' ')[0]}</span>
-                        </>
-                      ) : (
-                        <>
-                          <div className="w-10 h-10 rounded-full border-2 border-indigo-500 bg-slate-800 flex items-center justify-center text-slate-400">?</div>
-                          <span className="text-xs text-slate-400 mt-1">Unknown</span>
-                        </>
-                      )}
+                      <div className="w-10 h-10 rounded-full border-2 border-indigo-500 bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm font-bold text-slate-600 dark:text-slate-300 overflow-hidden">
+                        {blocker.blocking_person?.avatar_url
+                          ? <img src={blocker.blocking_person.avatar_url} alt="" className="w-full h-full object-cover" />
+                          : (blocker.blocking_person?.full_name?.[0] || '?')}
+                      </div>
+                      <span className="text-xs text-slate-400 mt-1 truncate w-16 text-center">
+                        {blocker.blocking_person?.full_name?.split(' ')[0] || 'Unknown'}
+                      </span>
                     </div>
                   </div>
-                  
-                  {blocker.status === 'open' && canResolve && (
-                    <button 
+
+                  {isOpen && canResolve && (
+                    <button
                       onClick={() => handleResolve(blocker.id)}
-                      className="text-xs bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap flex items-center gap-1"
+                      className="text-xs bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap flex items-center gap-1"
                     >
                       <CheckCircle className="w-3 h-3" /> Resolve
                     </button>
                   )}
-                  {blocker.status === 'resolved' && (
-                    <span className="text-xs text-slate-500">Resolved</span>
+                  {!isOpen && (
+                    <span className="text-xs text-slate-400 font-medium">Resolved</span>
                   )}
                 </div>
               </div>

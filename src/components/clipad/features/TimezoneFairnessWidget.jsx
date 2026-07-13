@@ -1,73 +1,200 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
-import { Globe, Clock, AlertCircle } from 'lucide-react';
+import { Globe, Clock, AlertCircle, Loader2, RefreshCw, CheckCircle } from 'lucide-react';
+import { generateText } from '@/lib/cloudflareAI';
 
 export default function TimezoneFairnessWidget({ workspaceId }) {
-  const [fairnessData, setFairnessData] = useState([]);
+  const [fairnessData, setFairnessData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [analyzing, setAnalyzing] = useState(false);
 
   useEffect(() => {
     if (workspaceId) {
-      fetchFairnessData();
+      loadFairnessData();
     }
   }, [workspaceId]);
 
-  const fetchFairnessData = async () => {
+  const loadFairnessData = async () => {
     setLoading(true);
-    const { data, error } = await supabase
+
+    // Try cached result first
+    const { data: cached } = await supabase
       .from('clipad_timezone_fairness')
       .select('*')
       .eq('workspace_id', workspaceId)
       .order('created_at', { ascending: false })
-      .limit(3);
+      .limit(1)
+      .maybeSingle();
 
-    if (error) console.warn('TimezoneFairnessWidget:', error.message);
-    if (data) setFairnessData(data);
+    if (cached && cached.ai_analysis) {
+      setFairnessData(cached);
+      setLoading(false);
+      return;
+    }
+
+    // No cache — analyze from real meeting data
+    await analyzeFromMeetings();
+  };
+
+  const analyzeFromMeetings = async () => {
+    setAnalyzing(true);
+    try {
+      // Fetch recent meetings with timestamps
+      const { data: meetings } = await supabase
+        .from('clipad_meeting_records')
+        .select('meeting_title, created_at, ended_at, ai_summary')
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      if (!meetings || meetings.length === 0) {
+        setFairnessData({ fairness_score: null, ai_analysis: null, meetings_analyzed: 0 });
+        setAnalyzing(false);
+        setLoading(false);
+        return;
+      }
+
+      // Compute hour distribution of meetings
+      const hourCounts = Array(24).fill(0);
+      meetings.forEach(m => {
+        const hour = new Date(m.created_at).getUTCHours();
+        hourCounts[hour]++;
+      });
+
+      const earlyMorning = hourCounts.slice(0, 6).reduce((a, b) => a + b, 0);   // 00:00–05:59 UTC
+      const businessHours = hourCounts.slice(8, 18).reduce((a, b) => a + b, 0); // 08:00–17:59 UTC
+      const evening = hourCounts.slice(18, 24).reduce((a, b) => a + b, 0);       // 18:00–23:59 UTC
+      const lateNight = earlyMorning; // same bucket for clarity
+
+      const meetingHoursSummary = meetings.map(m => {
+        const d = new Date(m.created_at);
+        return `"${m.meeting_title || 'Meeting'}" at ${d.toUTCString().slice(17, 22)} UTC`;
+      }).join('; ');
+
+      const aiResult = await generateText([
+        {
+          role: 'system',
+          content: `You are a workplace timezone fairness analyst. Analyze the meeting schedule and return ONLY valid JSON with these keys:
+"fairness_score": integer 0-100 (100 = perfectly fair across timezones, 0 = extremely unfair/biased toward one timezone),
+"fairness_label": one of "Excellent", "Good", "Needs Attention", "Poor",
+"insight": a 1-2 sentence analysis of the meeting time distribution and its impact on global team members,
+"recommendation": a concrete 1-sentence recommendation to improve fairness.
+Do NOT wrap in markdown.`,
+        },
+        {
+          role: 'user',
+          content: `Total meetings: ${meetings.length}
+Meeting times (UTC): ${meetingHoursSummary}
+Distribution: Early morning (00-06 UTC): ${earlyMorning}, Business hours (08-18 UTC): ${businessHours}, Evening (18-24 UTC): ${evening}`,
+        },
+      ]);
+
+      const text = typeof aiResult === 'string' ? aiResult : aiResult?.response || '';
+      const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
+      let parsed = {};
+      try {
+        parsed = JSON.parse(cleanText);
+      } catch {
+        parsed = { fairness_score: 50, fairness_label: 'Good', insight: text, recommendation: '' };
+      }
+
+      const result = {
+        workspace_id: workspaceId,
+        fairness_score: parsed.fairness_score ?? 50,
+        fairness_label: parsed.fairness_label || 'Good',
+        ai_analysis: parsed.insight || '',
+        recommendation: parsed.recommendation || '',
+        meetings_analyzed: meetings.length,
+        created_at: new Date().toISOString(),
+      };
+
+      // Cache the result
+      const { error: upsertError } = await supabase
+        .from('clipad_timezone_fairness')
+        .upsert({ ...result }, { onConflict: 'workspace_id' });
+
+      if (upsertError) console.warn('Could not cache timezone fairness:', upsertError.message);
+
+      setFairnessData(result);
+    } catch (err) {
+      console.error('Timezone fairness analysis failed:', err);
+      setFairnessData({ fairness_score: null, ai_analysis: 'Analysis failed. Please try again.', meetings_analyzed: 0 });
+    }
+    setAnalyzing(false);
     setLoading(false);
   };
 
-  if (loading) return <div className="animate-pulse h-32 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>;
+  if (loading || analyzing) {
+    return (
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Globe className="w-5 h-5 text-teal-500" />
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">Timezone Fairness</h2>
+        </div>
+        <div className="flex items-center gap-3 py-6 justify-center text-slate-400 dark:text-slate-500">
+          <Loader2 className="w-5 h-5 animate-spin" />
+          <span className="text-sm">{analyzing ? 'AI is analyzing meeting patterns…' : 'Loading…'}</span>
+        </div>
+      </div>
+    );
+  }
 
-  const totalPenalty = fairnessData.reduce((acc, d) => acc + (d.fairness_penalty_score || 0), 0);
+  const score = fairnessData?.fairness_score;
+  const label = fairnessData?.fairness_label;
+  const scoreColor = score >= 75 ? 'text-emerald-600 dark:text-emerald-400'
+    : score >= 50 ? 'text-amber-600 dark:text-amber-400'
+    : 'text-red-600 dark:text-red-400';
+  const barColor = score >= 75 ? 'bg-emerald-500' : score >= 50 ? 'bg-amber-500' : 'bg-red-500';
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Globe className="w-5 h-5 text-indigo-500" />
+            <Globe className="w-5 h-5 text-teal-500" />
             Timezone Fairness
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Analyzing out-of-hours meeting burden.
-          </p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Analyzing out-of-hours meeting burden.</p>
         </div>
-        <div className={`p-2 rounded-lg ${totalPenalty > 20 ? 'bg-red-50 text-red-600 dark:bg-red-900/30' : totalPenalty > 5 ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/30' : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30'}`}>
-          <AlertCircle className="w-5 h-5" />
+        <div className="flex items-center gap-2">
+          {score !== null && (
+            <span className={`text-2xl font-bold ${scoreColor}`}>{score}</span>
+          )}
+          <button
+            onClick={analyzeFromMeetings}
+            disabled={analyzing}
+            className="text-slate-400 hover:text-primary transition-colors p-1"
+            title="Re-analyze"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
 
-      <div className="space-y-3">
-        {totalPenalty === 0 ? (
-          <div className="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 p-3 rounded-lg text-sm text-center border border-emerald-100 dark:border-emerald-900/30">
-            Perfect! Meetings are scheduled fairly across all timezones.
+      {score !== null && (
+        <div className="mb-4">
+          <div className="flex justify-between items-center mb-1">
+            <span className={`text-xs font-semibold ${scoreColor}`}>{label}</span>
+            <span className="text-xs text-slate-400">{fairnessData?.meetings_analyzed || 0} meetings analyzed</span>
           </div>
-        ) : (
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-slate-900 dark:text-slate-200">Recent Penalty Scores:</p>
-            {fairnessData.map((d, i) => (
-              <div key={i} className="flex items-center justify-between text-sm p-2 bg-slate-50 dark:bg-slate-800/50 rounded border border-slate-100 dark:border-slate-700/50">
-                <span className="text-slate-600 dark:text-slate-400 truncate pr-4">
-                  {d.clipad_meeting_records?.meeting_title || 'Meeting'}
-                </span>
-                <span className={`font-bold ${d.fairness_penalty_score > 5 ? 'text-red-500' : 'text-amber-500'}`}>
-                  +{d.fairness_penalty_score} pts
-                </span>
-              </div>
-            ))}
+          <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+            <div className={`h-full rounded-full transition-all ${barColor}`} style={{ width: `${score}%` }} />
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      {fairnessData?.ai_analysis ? (
+        <div className="space-y-2">
+          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{fairnessData.ai_analysis}</p>
+          {fairnessData.recommendation && (
+            <div className="flex items-start gap-2 mt-3 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-100 dark:border-teal-800">
+              <CheckCircle className="w-4 h-4 text-teal-500 shrink-0 mt-0.5" />
+              <p className="text-xs text-teal-700 dark:text-teal-300">{fairnessData.recommendation}</p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <p className="text-sm text-slate-400 italic">No meeting data yet. Start running meetings to see timezone fairness analysis.</p>
+      )}
     </div>
   );
 }
