@@ -21,13 +21,14 @@ export default function MeetingNecessityWidget({ workspaceId }) {
 
   const fetchMetrics = async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('clipad_meeting_metrics')
-      .select('*, clipad_meeting_records(meeting_title, created_at)')
+      .select('*')
       .eq('workspace_id', workspaceId)
       .order('created_at', { ascending: false })
       .limit(5);
-      
+
+    if (error) console.warn('MeetingNecessityWidget:', error.message);
     if (data) setMetrics(data);
     setLoading(false);
   };
@@ -62,7 +63,7 @@ export default function MeetingNecessityWidget({ workspaceId }) {
             <div key={m.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700/50">
               <div className="flex-1 min-w-0 pr-4">
                 <p className="text-sm font-medium text-slate-900 dark:text-slate-200 truncate">
-                  {m.clipad_meeting_records?.meeting_title || 'Untitled Meeting'}
+                  {m.clipad_meeting_records?.meeting_title || m.meeting_title || 'Untitled Meeting'}
                 </p>
                 <div className="flex items-center gap-3 mt-1">
                   <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">

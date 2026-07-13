@@ -14,14 +14,14 @@ export default function TimezoneFairnessWidget({ workspaceId }) {
 
   const fetchFairnessData = async () => {
     setLoading(true);
-    // Simulating aggregation of fairness penalty scores across meetings
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('clipad_timezone_fairness')
-      .select('fairness_penalty_score, created_at, clipad_meeting_records(meeting_title)')
+      .select('*')
       .eq('workspace_id', workspaceId)
       .order('created_at', { ascending: false })
       .limit(3);
-      
+
+    if (error) console.warn('TimezoneFairnessWidget:', error.message);
     if (data) setFairnessData(data);
     setLoading(false);
   };
