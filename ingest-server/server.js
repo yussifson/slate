@@ -49,6 +49,7 @@ wss.on('connection', (ws) => {
               'x-upsert': 'true'
             },
             uploadLengthDeferred: true,
+            chunkSize: 5242880,
             metadata: {
               bucketName: 'clipad_videos',
               objectName: fileName,

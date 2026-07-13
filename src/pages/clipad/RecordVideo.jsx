@@ -125,6 +125,7 @@ export default function RecordVideo() {
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [videoBlob, setVideoBlob] = useState(null);
+  const [recordingUrl, setRecordingUrl] = useState(null);
   const [newCompanyId, setNewCompanyId] = useState(null);
   
   const handlersRef = useRef({});
