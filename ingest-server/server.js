@@ -2,13 +2,27 @@ const { WebSocketServer } = require('ws');
 const { PassThrough } = require('stream');
 const tus = require('tus-js-client');
 const dotenv = require('dotenv');
+const http = require('http');
 
 dotenv.config();
 
 const PORT = process.env.PORT || 8080;
-const wss = new WebSocketServer({ port: PORT, host: '0.0.0.0' });
 
-console.log(`Ingest server running on ws://0.0.0.0:${PORT}`);
+// Create a basic HTTP server to satisfy Render's port binding 
+// and provide a ping endpoint for keep-alive bots
+const server = http.createServer((req, res) => {
+  if (req.url === '/ping') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('pong');
+  } else {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Clipad Ingest Server is running');
+  }
+});
+
+const wss = new WebSocketServer({ server });
+
+console.log(`Ingest server running on port ${PORT}`);
 
 wss.on('connection', (ws) => {
   let passThrough = null;
@@ -76,4 +90,8 @@ wss.on('connection', (ws) => {
       passThrough.end();
     }
   });
+});
+
+server.listen(PORT, () => {
+  console.log(`HTTP/WS Server listening on port ${PORT}`);
 });
