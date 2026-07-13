@@ -76,7 +76,7 @@ export default defineConfig({
         ]
       },
       workbox: {
-        maximumFileSizeToCacheInBytes: 30000000,
+        maximumFileSizeToCacheInBytes: 50 * 1024 * 1024, // 50MB for ffmpeg-core.wasm
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,wasm}'],
