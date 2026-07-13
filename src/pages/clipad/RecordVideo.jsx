@@ -146,6 +146,7 @@ export default function RecordVideo() {
   const animFrameRef = useRef(null);
   const timerRef = useRef(null);
   const streamsRef = useRef({ screen: null, camera: null });
+  const wsRef = useRef(null);
   const recognitionRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
   const [pipWindow, setPipWindow] = useState(null);
@@ -691,57 +692,23 @@ export default function RecordVideo() {
       mediaRecorderRef.current = recorder;
       chunksRef.current = [];
 
-      recorder.ondataavailable = e => { if (e.data.size > 0) { chunksRef.current.push(e.data); if (user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise') saveRecordingState(id, chunksRef.current); } };
-      recorder.onstop = async () => {
-        const blob = new Blob(chunksRef.current, { type: 'video/webm' });
-        const url = URL.createObjectURL(blob);
-        setVideoBlob(blob);
-        setRecordingUrl(url);
-        stopEverything();
-        
-        // Auto-save immediately upon stop
-        setPhase('uploading');
-        setUploadProgress(0);
-        try {
-          const videoTitle = title.trim() || `Recording - ${new Date().toLocaleDateString()}`;
-          const fileName = `${user.id}/${Date.now()}.webm`;
-          
-          const { data: { session } } = await supabase.auth.getSession();
+      const wsUrl = 'wss://slate-2fli.onrender.com';
+      const ws = new WebSocket(wsUrl);
+      wsRef.current = ws;
       
-          await new Promise((resolve, reject) => {
-            const upload = new tus.Upload(blob, {
-              endpoint: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/upload/resumable`,
-              retryDelays: [0, 3000, 5000, 10000, 20000],
-              headers: {
-                authorization: `Bearer ${session?.access_token}`,
-                'x-upsert': 'true', 
-              },
-              uploadDataDuringCreation: true,
-              removeFingerprintOnSuccess: true,
-              metadata: {
-                bucketName: 'clipad_videos',
-                objectName: fileName,
-                contentType: 'video/webm',
-                cacheControl: '3600',
-              },
-              chunkSize: 6 * 1024 * 1024,
-              onError: function (error) {
-                 reject(error);
-              },
-              onProgress: function (bytesUploaded, bytesTotal) {
-                 const percentage = ((bytesUploaded / bytesTotal) * 100);
-                 setUploadProgress(Math.min(percentage, 95));
-              },
-              onSuccess: function () {
-                 resolve();
-              }
-            });
-            upload.start();
-          });
+      ws.onopen = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        ws.send(JSON.stringify({ type: 'START', userId: user.id, token: session?.access_token }));
+        recorder.start(1000); // Start sending chunks
+      };
+
+      ws.onmessage = async (event) => {
+        const msg = JSON.parse(event.data);
+        if (msg.type === 'SUCCESS') {
+          const publicUrl = supabase.storage.from('clipad_videos').getPublicUrl(msg.fileName).data.publicUrl;
+          setRecordingUrl(publicUrl); // Review screen will fetch from cloud
           
-          setUploadProgress(95);
-          const publicUrl = supabase.storage.from('clipad_videos').getPublicUrl(fileName).data.publicUrl;
-          
+          const videoTitle = title.trim() || `Recording - ${new Date().toLocaleDateString()}`;
           const { data: videoRecord, error: dbError } = await supabase.from('clipad_videos').insert({
             creator_id: user.id,
             video_url: publicUrl,
@@ -750,21 +717,33 @@ export default function RecordVideo() {
             duration_seconds: recordingSeconds,
           }).select().single();
           
-          if (dbError) throw dbError;
-          
-          setActiveVideoId(videoRecord.id);
-          toast({ title: 'Recording Auto-Saved!', description: 'Your video is securely saved. You can now edit details or share it.', variant: 'default' });
-          setUploadProgress(100);
+          if (!dbError) {
+             setActiveVideoId(videoRecord.id);
+             toast({ title: 'Recording Saved!', description: 'Your video is securely saved in the cloud.', variant: 'default' });
+             setUploadProgress(100);
+             setPhase('review');
+             deleteRecordingState(id);
+          }
+        } else if (msg.type === 'ERROR') {
+          toast({ title: 'Upload Error', description: msg.error, variant: 'destructive' });
           setPhase('review');
-          deleteRecordingState(id);
-        } catch (err) {
-          console.error('Auto-save failed:', err);
-          toast({ title: 'Auto-save Failed', description: err.message || 'Please try saving manually.', variant: 'destructive' });
-          setPhase('review'); // fallback to review to allow manual save attempt
         }
       };
 
-      recorder.start(1000); // collect in 1s chunks
+      recorder.ondataavailable = e => { 
+        if (e.data.size > 0 && ws.readyState === WebSocket.OPEN) { 
+          ws.send(e.data); // stream pure binary instantly 
+        } 
+      };
+      
+      recorder.onstop = async () => {
+        stopEverything();
+        setPhase('uploading');
+        setUploadProgress(90);
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ type: 'END' }));
+        }
+      };
       setPhase('recording');
       isRecordingRef.current = true;
       setRecordingSeconds(0);
@@ -830,7 +809,7 @@ export default function RecordVideo() {
   };
 
   const uploadRecording = async () => {
-    if (!videoBlob || !user) return;
+    if (!user) return;
     
     // If it was auto-saved, just update details and redirect
     if (activeVideoId) {
@@ -1168,7 +1147,7 @@ export default function RecordVideo() {
             )}
             <div>
               <h2 className="text-xl font-bold text-foreground mb-1">Review your recording</h2>
-              <p className="text-muted-foreground text-sm">{formatDuration(recordingSeconds)} · {(videoBlob?.size / 1024 / 1024).toFixed(1)} MB</p>
+              <p className="text-muted-foreground text-sm">{formatDuration(recordingSeconds)} · {0} MB</p>
             </div>
 
             <div className="rounded-2xl overflow-hidden bg-black aspect-video">
