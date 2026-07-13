@@ -427,8 +427,14 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  const msg = { type: 'transcription', text, name: 'Me'};
  if (daily) daily.sendAppMessage(msg, '*');
  setTranscriptData(prev => [...prev, { name: 'Me', text}]);
-}
-};
+ }
+ };
+
+ recognition.onend = () => {
+   if (joined && !isMuted) {
+     try { recognition.start(); } catch (e) {}
+   }
+ };
  
  recognition.start();
 } catch (e) {
