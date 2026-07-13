@@ -94,8 +94,10 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
       {loading ? (
         <div className="flex justify-center p-12"><div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div></div>
       ) : blockers.length === 0 ? (
-        <div className="p-8 text-center text-slate-400 border border-slate-700/50 rounded-xl bg-slate-800/30">
-          No blockers detected.
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm h-full flex flex-col justify-center items-center text-center">
+          <Network className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-3" />
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-1">Team Blockers</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">No blockers detected.</p>
         </div>
       ) : (
         <div className="space-y-4">

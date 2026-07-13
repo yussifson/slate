@@ -268,6 +268,7 @@ export default function CliPadDashboard() {
         </div>
         <div className="flex items-center gap-1.5 md:gap-3">
           <button onClick={() => navigate('/spaces')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Spaces</button>
+          <button onClick={() => navigate('/videos')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Recordings</button>
           <button onClick={() => navigate('/meetings')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Meetings</button>
           <button onClick={() => navigate('/chat')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Chat</button>
           <button onClick={() => navigate('/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Analytics</button>
@@ -391,7 +392,10 @@ export default function CliPadDashboard() {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><Camera className="w-5 h-5 text-primary" /> Recent Recordings</h2>
-                <button onClick={() => navigate('/record')} className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors">Record new <ArrowRight className="w-4 h-4" /></button>
+                <div className="flex items-center gap-4">
+                  <button onClick={() => navigate('/videos')} className="text-sm font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">View all</button>
+                  <button onClick={() => navigate('/record')} className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors">Record new <ArrowRight className="w-4 h-4" /></button>
+                </div>
               </div>
               {videos.length === 0 ? (
                 <div className="p-10 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-white/50 dark:bg-slate-900/50 text-center">
@@ -401,7 +405,7 @@ export default function CliPadDashboard() {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-                  {videos.map(v => <VideoCard key={v.id} video={v} onClick={() => navigate(`/watch/${v.id}`)} />)}
+                  {videos.slice(0, 6).map(v => <VideoCard key={v.id} video={v} onClick={() => navigate(`/watch/${v.id}`)} />)}
                 </div>
               )}
             </div>
@@ -475,30 +479,26 @@ export default function CliPadDashboard() {
 
       {/* Culture & Intelligence Layer */}
       {user?.company_id && (
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            {user?.clipad_plan === 'enterprise' && (
+        <div className="mt-8 space-y-6">
+          {user?.clipad_plan === 'enterprise' && (
+            <div className="w-full">
               <InstitutionalMemoryVault workspaceId={user.company_id} />
-            )}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <MeetingNecessityWidget workspaceId={user.company_id} />
-              <TimezoneFairnessWidget workspaceId={user.company_id} />
             </div>
+          )}
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <MeetingNecessityWidget workspaceId={user.company_id} />
+            <TimezoneFairnessWidget workspaceId={user.company_id} />
+            {user?.clipad_plan === 'enterprise' ? (
+              <BlockerRadar 
+                workspaceId={user.company_id} 
+                isWorkspaceView={true} 
+                hasFullIntelligence={true} 
+              />
+            ) : (
+              <div className="hidden lg:block" />
+            )}
           </div>
-          <div className="lg:col-span-1">
-             {/* Reserved for future widgets or sidebars */}
-          </div>
-        </div>
-      )}
-
-      {/* Workspace Blocker Radar (Enterprise Only) */}
-      {user?.clipad_plan === 'enterprise' && user?.company_id && (
-        <div className="mt-8">
-          <BlockerRadar 
-            workspaceId={user.company_id} 
-            isWorkspaceView={true} 
-            hasFullIntelligence={true} 
-          />
         </div>
       )}
     </div>
