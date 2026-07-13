@@ -20,7 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import DashboardWidgets from '@/components/clipad/widgets/DashboardWidgets';
+
 import BlockerRadar from '@/components/clipad/features/BlockerRadar';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import SpaceSelectorModal from '@/components/clipad/SpaceSelectorModal';
