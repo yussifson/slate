@@ -90,8 +90,12 @@ export default function RecordVideo() {
     if (id && user && (user.clipad_plan === 'pro' || user.clipad_plan === 'enterprise')) {
       getRecordingState(id).then(state => {
         if (state && state.chunks && state.chunks.length > 0) {
-          setRecoveredChunks(state.chunks);
-          setShowRecoverPrompt(true);
+          if (Date.now() - state.timestamp > 86400000) {
+             deleteRecordingState(id);
+          } else {
+             setRecoveredChunks(state.chunks);
+             setShowRecoverPrompt(true);
+          }
         }
       });
     }
@@ -916,6 +920,7 @@ export default function RecordVideo() {
       setUploadProgress(100);
       setPhase('done');
       toast({ title: '✓ Video saved!', description: 'Your recording is ready to share.' });
+      deleteRecordingState(id);
 
       // Navigate to the watch page after a brief pause
       setTimeout(() => navigate(`/watch/${videoRecord.id}`), 1500);
@@ -935,6 +940,7 @@ export default function RecordVideo() {
     setDescription('');
     setTranscript('');
     setPhase('setup');
+    deleteRecordingState(id);
   };
 
   return (
@@ -1103,6 +1109,15 @@ export default function RecordVideo() {
         {/* REVIEW PHASE */}
         {phase === 'review' && recordingUrl && (
           <div className="space-y-6">
+            {!activeVideoId && (
+              <div className="bg-amber-500/10 border border-amber-500/30 p-4 rounded-xl flex items-start gap-3 mb-4">
+                <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-sm font-semibold text-amber-500">Unsaved Draft</h4>
+                  <p className="text-xs text-amber-500/80 mt-1">This recording is stored locally and will be permanently deleted in 24 hours. Please click Save to upload it.</p>
+                </div>
+              </div>
+            )}
             <div>
               <h2 className="text-xl font-bold text-foreground mb-1">Review your recording</h2>
               <p className="text-muted-foreground text-sm">{formatDuration(recordingSeconds)} · {(videoBlob?.size / 1024 / 1024).toFixed(1)} MB</p>
