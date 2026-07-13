@@ -473,7 +473,6 @@ export default function CliPadDashboard() {
               </div>
             </div>
           </div>
-          </div>
         </div>
 
         {/* Culture & Intelligence Layer */}

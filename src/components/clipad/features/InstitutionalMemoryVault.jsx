@@ -1,21 +1,130 @@
-import React, { useState } from 'react';
-import { Database, Search, Bot, Lock, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '@/api/supabaseClient';
+import { Database, Search, Bot, Lock, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
+import { generateText } from '@/lib/cloudflareAI';
 
 export default function InstitutionalMemoryVault({ workspaceId }) {
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleQuery = async (e) => {
     e.preventDefault();
     if (!query.trim()) return;
-    
+
     setLoading(true);
-    // Simulate AI querying the aggregated memory vault
-    setTimeout(() => {
-      setResponse(`Based on the Enterprise Knowledge Graph, the decision to migrate to PostgreSQL was made 8 months ago during the 'Q3 Architecture Sync'. The primary blockers resolved were cost and scalability compared to MongoDB. The stakeholders involved were Sarah (Lead Eng) and Michael (CTO).`);
-      setLoading(false);
-    }, 1500);
+    setError('');
+    setResponse('');
+
+    try {
+      // 1. Fetch real organizational context from the database
+      const [meetingsRes, decisionsRes, blockersRes, videosRes, tasksRes] = await Promise.all([
+        supabase
+          .from('clipad_meeting_records')
+          .select('meeting_title, ai_summary, created_at, ended_at, host_id')
+          .order('created_at', { ascending: false })
+          .limit(20),
+        supabase
+          .from('clipad_decisions')
+          .select('decision_text, rationale, status, created_at')
+          .order('created_at', { ascending: false })
+          .limit(10),
+        supabase
+          .from('clipad_blockers')
+          .select('description, status, detected_at, resolved_at')
+          .order('detected_at', { ascending: false })
+          .limit(10),
+        supabase
+          .from('clipad_videos')
+          .select('title, ai_summary, created_at')
+          .order('created_at', { ascending: false })
+          .limit(10),
+        supabase
+          .from('clipad_action_items')
+          .select('title, is_complete, created_at')
+          .order('created_at', { ascending: false })
+          .limit(15),
+      ]);
+
+      // 2. Build a rich context document from real data
+      const meetings = meetingsRes.data || [];
+      const decisions = decisionsRes.data || [];
+      const blockers = blockersRes.data || [];
+      const videos = videosRes.data || [];
+      const tasks = tasksRes.data || [];
+
+      const contextParts = [];
+
+      if (meetings.length > 0) {
+        contextParts.push('=== MEETING HISTORY ===');
+        meetings.forEach(m => {
+          contextParts.push(`Meeting: "${m.meeting_title || 'Untitled'}" on ${new Date(m.created_at).toLocaleDateString()}`);
+          if (m.ai_summary && m.ai_summary !== 'Generating summary...' && m.ai_summary !== 'No transcript recorded.') {
+            contextParts.push(`  Summary: ${m.ai_summary}`);
+          }
+        });
+      }
+
+      if (decisions.length > 0) {
+        contextParts.push('\n=== TEAM DECISIONS ===');
+        decisions.forEach(d => {
+          contextParts.push(`Decision [${d.status || 'active'}]: ${d.decision_text}`);
+          if (d.rationale) contextParts.push(`  Rationale: ${d.rationale}`);
+          contextParts.push(`  Date: ${new Date(d.created_at).toLocaleDateString()}`);
+        });
+      }
+
+      if (blockers.length > 0) {
+        contextParts.push('\n=== BLOCKERS & RESOLUTIONS ===');
+        blockers.forEach(b => {
+          contextParts.push(`Blocker [${b.status}]: ${b.description}`);
+          if (b.resolved_at) contextParts.push(`  Resolved: ${new Date(b.resolved_at).toLocaleDateString()}`);
+        });
+      }
+
+      if (videos.length > 0) {
+        contextParts.push('\n=== ASYNC VIDEO RECORDINGS ===');
+        videos.forEach(v => {
+          contextParts.push(`Video: "${v.title}" (${new Date(v.created_at).toLocaleDateString()})`);
+          if (v.ai_summary) contextParts.push(`  Summary: ${v.ai_summary}`);
+        });
+      }
+
+      if (tasks.length > 0) {
+        contextParts.push('\n=== ACTION ITEMS ===');
+        tasks.forEach(t => {
+          contextParts.push(`[${t.is_complete ? 'DONE' : 'OPEN'}] ${t.title}`);
+        });
+      }
+
+      if (contextParts.length === 0) {
+        setResponse("No organizational data has been recorded yet. Start by running meetings, recording decisions, or logging blockers — the Knowledge Graph will build from your team's real activity.");
+        setLoading(false);
+        return;
+      }
+
+      const knowledgeContext = contextParts.join('\n');
+
+      // 3. Query the real AI with full organizational context
+      const aiResponse = await generateText([
+        {
+          role: 'system',
+          content: `You are an Enterprise Knowledge Graph AI assistant. Your job is to answer questions about an organization based ONLY on the real data provided below. Do NOT make up facts, names, dates, or events that aren't in the data. If the data doesn't contain the answer, say "I don't have enough recorded data to answer that yet — as your team adds more meetings, decisions, and recordings, the Knowledge Graph will grow richer."\n\nORGANIZATIONAL KNOWLEDGE BASE:\n${knowledgeContext}`
+        },
+        {
+          role: 'user',
+          content: query
+        }
+      ]);
+
+      setResponse(typeof aiResponse === 'string' ? aiResponse : aiResponse?.response || 'Unable to generate a response.');
+    } catch (err) {
+      console.error('Knowledge Graph error:', err);
+      setError('Failed to query the Knowledge Graph. Please check your AI configuration.');
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -42,7 +151,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="e.g., 'Why did John decide to use Redis in 2024?'"
+            placeholder="e.g., 'Why did we decide to use this approach?' or 'What blockers did we resolve last month?'"
             className="w-full bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl pl-5 pr-14 py-4 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-sm md:text-base transition-all"
           />
           <button 
@@ -50,9 +159,16 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
             disabled={loading || !query.trim()}
             className="absolute right-2 top-2 bottom-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-4 flex items-center justify-center transition-colors disabled:opacity-50"
           >
-            {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <ArrowRight className="w-5 h-5" />}
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-5 h-5" />}
           </button>
         </form>
+
+        {error && (
+          <div className="mt-4 flex items-center gap-2 text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg px-4 py-3">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            {error}
+          </div>
+        )}
 
         {response && (
           <div className="mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 md:p-6 flex gap-4 animate-in fade-in slide-in-from-bottom-2 shadow-sm">
@@ -62,7 +178,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
               </div>
             </div>
             <div>
-              <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">{response}</p>
+              <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed whitespace-pre-wrap">{response}</p>
             </div>
           </div>
         )}
