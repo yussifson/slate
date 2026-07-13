@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   Camera, Monitor, Mic, MicOff, StopCircle, CheckCircle, Save, Trash2, Home,
   Play, Pause, AlertTriangle, AlertCircle, RefreshCw, XCircle, ArrowLeft, Info,
-  Wand2, AlignLeft, Video, Layers, Clock, Upload
+  Wand2, AlignLeft, Video, Layers, Clock, Upload, RotateCcw
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
@@ -1279,7 +1279,7 @@ export default function RecordVideo() {
               
               {!pipWindow && ('documentPictureInPicture' in window) && (
                 <button
-                  onClick={() => startPip(streamsRef.current?.camera)}
+                  onClick={() => startPip(window.documentPictureInPicture.requestWindow({ width: 280, height: 72 }).catch(console.error))}
                   className="flex items-center justify-center w-12 h-12 rounded-full bg-slate-800 text-indigo-400 hover:bg-slate-700 hover:text-indigo-300 transition-all"
                   title="Open PiP Controls"
                 >

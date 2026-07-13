@@ -129,7 +129,7 @@ export default function VideoDownloadModal({ open, onOpenChange, videoUrl, video
       
     } catch (err) {
       console.error(err);
-      throw new Error("Transcoding failed. " + err.message);
+      throw new Error("Transcoding failed. " + (err?.message || err?.toString() || 'Unknown error'));
     }
   };
 
@@ -184,7 +184,7 @@ export default function VideoDownloadModal({ open, onOpenChange, videoUrl, video
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-sm p-0 overflow-hidden bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl">
+      <DialogContent className="sm:max-w-sm p-0 overflow-y-auto max-h-[90vh] bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl">
         <div className="p-6">
           <DialogHeader className="mb-6">
             <DialogTitle className="flex flex-col items-center gap-3 text-center">
