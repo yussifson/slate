@@ -8,7 +8,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
 import { logAuditEvent } from '@/lib/auditLogger';
 import { useAuth } from '@/lib/AuthContext';
-import { getPlanLimits, getUserPlan } from '@/lib/clipadPricing';
+import { getPlanLimits, getUserPlan, getLimit } from '@/lib/clipadPricing';
 import PaywallModal from '@/components/clipad/PaywallModal';
 import { useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
@@ -277,8 +277,8 @@ export default function RecordVideo() {
       if (isDark) pip.document.documentElement.classList.add('dark');
       
       pip.document.body.style.margin = '0';
-      // Make the PiP window sleek and clean
-      pip.document.body.style.backgroundColor = isDark ? '#0f172a' : '#f8fafc'; 
+      // Make the PiP window sleek and clean to match the requested design
+      pip.document.body.style.backgroundColor = '#ffffff'; 
       pip.document.body.style.display = 'flex';
       pip.document.body.style.alignItems = 'center';
       pip.document.body.style.justifyContent = 'center';
@@ -296,18 +296,18 @@ export default function RecordVideo() {
       const createBtn = (iconSvg, type) => {
         const btn = document.createElement('button');
         btn.innerHTML = iconSvg;
-        btn.style.padding = '12px';
+        btn.style.padding = '14px';
         btn.style.borderRadius = '50%';
-        btn.style.border = '2px solid transparent';
+        btn.style.border = 'none';
         btn.style.cursor = 'pointer';
         btn.style.display = 'flex';
         btn.style.alignItems = 'center';
         btn.style.justifyContent = 'center';
-        btn.style.transition = 'all 0.2s';
+        btn.style.transition = 'all 0.2s ease';
         
         if (type === 'slate') {
-          btn.style.backgroundColor = isDark ? '#334155' : '#e2e8f0';
-          btn.style.color = isDark ? '#fff' : '#0f172a';
+          btn.style.backgroundColor = '#e2e8f0';
+          btn.style.color = '#0f172a';
         } else if (type === 'red') {
           btn.style.backgroundColor = '#ef4444';
           btn.style.color = '#fff';
@@ -321,10 +321,11 @@ export default function RecordVideo() {
       };
 
       // Simple SVG icons
-      const micIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>`;
-      const camIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>`;
-      const pauseIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
-      const stopIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>`;
+      const micIcon = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>`;
+      const camIcon = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>`;
+      const pauseIcon = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+      const playIcon = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
+      const stopIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect></svg>`;
 
       const micBtn = createBtn(micIcon, 'slate');
       const camBtn = createBtn(camIcon, 'slate');
@@ -332,6 +333,8 @@ export default function RecordVideo() {
       const stopBtn = createBtn(stopIcon, 'red');
 
       let pipMicState = micEnabled;
+      let pipCamState = true;
+      let pipPauseState = false;
 
       micBtn.onclick = () => {
         handlersRef.current.toggleMicTrack();
@@ -340,15 +343,38 @@ export default function RecordVideo() {
           micBtn.style.backgroundColor = 'rgba(239, 68, 68, 0.15)';
           micBtn.style.color = '#ef4444';
           micBtn.style.boxShadow = 'none';
-          micBtn.style.borderColor = 'transparent';
         } else {
-          micBtn.style.backgroundColor = isDark ? '#334155' : '#e2e8f0';
-          micBtn.style.color = isDark ? '#fff' : '#0f172a';
+          micBtn.style.backgroundColor = '#e2e8f0';
+          micBtn.style.color = '#0f172a';
         }
       };
 
-      camBtn.onclick = () => handlersRef.current.toggleWebcam();
-      pauseBtn.onclick = () => handlersRef.current.togglePause();
+      camBtn.onclick = () => {
+        handlersRef.current.toggleWebcam();
+        pipCamState = !pipCamState;
+        if (!pipCamState) {
+          camBtn.style.backgroundColor = 'rgba(239, 68, 68, 0.15)';
+          camBtn.style.color = '#ef4444';
+        } else {
+          camBtn.style.backgroundColor = '#e2e8f0';
+          camBtn.style.color = '#0f172a';
+        }
+      };
+
+      pauseBtn.onclick = () => {
+        handlersRef.current.togglePause();
+        pipPauseState = !pipPauseState;
+        if (pipPauseState) {
+          pauseBtn.innerHTML = playIcon;
+          pauseBtn.style.backgroundColor = 'rgba(16, 185, 129, 0.15)';
+          pauseBtn.style.color = '#10b981';
+        } else {
+          pauseBtn.innerHTML = pauseIcon;
+          pauseBtn.style.backgroundColor = '#e2e8f0';
+          pauseBtn.style.color = '#0f172a';
+        }
+      };
+
       stopBtn.onclick = () => { handlersRef.current.stopRecording(); window.focus(); };
       
       // Mic glowing setup
@@ -367,16 +393,13 @@ export default function RecordVideo() {
           const updateGlow = () => {
             if (!pipMicState) {
                micBtn.style.boxShadow = 'none';
-               micBtn.style.borderColor = 'transparent';
             } else {
                analyser.getByteFrequencyData(dataArray);
                const avg = dataArray.reduce((a,b)=>a+b)/dataArray.length;
                if (avg > 15) {
                  micBtn.style.boxShadow = `0 0 ${Math.min(15, avg/2)}px rgba(16, 185, 129, ${Math.min(0.6, avg/100)})`;
-                 micBtn.style.borderColor = `rgba(16, 185, 129, 0.4)`;
                } else {
                  micBtn.style.boxShadow = 'none';
-                 micBtn.style.borderColor = 'transparent';
                }
             }
             glowId = pip.requestAnimationFrame(updateGlow);
