@@ -376,6 +376,7 @@ export default function SpaceDashboard() {
         {activeTab === 'overview' && (
           <div className="space-y-6">
             <RedundantWorkAlert workspaceId={space.company_id} currentSpaceId={spaceId} />
+            <MeetingInsights spaceId={spaceId} />
             <MeetingROIDashboard workspaceId={space.company_id} spaceId={spaceId} />
 
             {/* Premium Bento Grid Layout */}

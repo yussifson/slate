@@ -451,11 +451,7 @@ export default function CanvasWhiteboard({ onClose }) {
         </button>
       </div>
 
-      {/* Hint bar */}
-      <div className="flex items-center justify-between px-4 py-1.5 bg-emerald-50 border-b border-emerald-100 text-[11px] text-emerald-700 font-semibold flex-shrink-0">
-        <span>Alt+drag or middle-mouse = Pan · Scroll = Zoom · Press 0 = Reset view · Ctrl+Z/Y = Undo/Redo</span>
-        <span>Tool shortcuts: {TOOLS.map(t => `${t.shortcut}=${t.label}`).join(' · ')}</span>
-      </div>
+
 
       {/* ── Canvas area ────────────────────────────────────────────────────── */}
       <div
