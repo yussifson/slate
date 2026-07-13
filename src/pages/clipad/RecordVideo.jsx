@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   Camera, Monitor, Mic, MicOff, StopCircle, CheckCircle, Save, Trash2, Home,
   Play, Pause, AlertTriangle, AlertCircle, RefreshCw, XCircle, ArrowLeft, Info,
-  Wand2, AlignLeft, Video, Layers, Clock, Upload, RotateCcw
+  Wand2, AlignLeft, Video, Layers, Clock, Upload, RotateCcw, Sparkles
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
@@ -1233,16 +1233,47 @@ ${teleprompterText}`;
               </label>
             </div>
 
-            <div>
-              <label className="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">
-                <AlignLeft className="w-4 h-4" /> Teleprompter Script (Optional)
+            <div className="bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-xl p-4 space-y-3">
+              <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-400 uppercase tracking-wider mb-2">
+                <AlignLeft className="w-4 h-4" /> Next-Level Teleprompter
               </label>
-              <textarea
-                value={teleprompterText}
-                onChange={e => setTeleprompterText(e.target.value)}
-                placeholder="Paste your script here. It will be available to read while you record."
-                className="w-full h-32 px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-primary/60 transition-all shadow-sm resize-none"
-              />
+              
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  placeholder="E.g., Announce Q3 Roadmap..."
+                  className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
+                  value={scriptPrompt}
+                  onChange={e => setScriptPrompt(e.target.value)}
+                />
+                <button 
+                  onClick={generateScript}
+                  disabled={isGeneratingScript || !scriptPrompt.trim()}
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1 transition-colors disabled:opacity-50"
+                >
+                  {isGeneratingScript ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
+                  Write Script
+                </button>
+              </div>
+
+              <div className="relative">
+                <textarea
+                  placeholder="Or paste your script here..."
+                  className="w-full h-32 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 resize-none"
+                  value={teleprompterText}
+                  onChange={e => setTeleprompterText(e.target.value)}
+                />
+                {teleprompterText && (
+                  <button 
+                    onClick={refineScript}
+                    disabled={isGeneratingScript}
+                    className="absolute bottom-3 right-3 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 px-2 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition-colors shadow-sm"
+                    title="Make it punchy!"
+                  >
+                    <Sparkles className="w-3 h-3 text-amber-500" /> Refine
+                  </button>
+                )}
+              </div>
             </div>
 
             <button
@@ -1270,19 +1301,30 @@ ${teleprompterText}`;
           <div className="flex flex-col items-center gap-6 relative pb-24">
             
             {teleprompterText && showTeleprompter && (
-              <div className="w-full max-w-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-2xl relative">
-                <button 
-                  onClick={() => setShowTeleprompter(false)}
-                  className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
-                >
-                  <XCircle className="w-5 h-5" />
-                </button>
-                <div className="flex items-center gap-2 mb-4">
-                  <AlignLeft className="w-5 h-5 text-indigo-400" />
-                  <h3 className="text-sm font-bold text-white uppercase tracking-widest">Teleprompter</h3>
+              <div className="absolute top-8 left-1/2 -translate-x-1/2 w-full max-w-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden z-40 transition-all flex flex-col">
+                <div className="bg-slate-100/80 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-2 flex items-center justify-between cursor-move">
+                  <div className="flex items-center gap-2">
+                    <AlignLeft className="w-4 h-4 text-slate-400" />
+                    <h3 className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-widest">AI Teleprompter</h3>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                      <span>Speed:</span>
+                      <input type="range" min="0" max="10" value={scrollSpeed} onChange={e => setScrollSpeed(Number(e.target.value))} className="w-24 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer" />
+                    </div>
+                    <button 
+                      onClick={() => setShowTeleprompter(false)}
+                      className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+                    >
+                      <XCircle className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
-                <div className="h-48 overflow-y-auto scrollbar-primary text-xl leading-relaxed text-slate-200 font-medium">
-                  {teleprompterText.split('\n').map((line, i) => <p key={i} className="mb-4">{line}</p>)}
+                <div 
+                  ref={teleprompterRef}
+                  className="p-8 max-h-64 overflow-y-auto text-xl md:text-2xl lg:text-3xl font-medium text-slate-800 dark:text-slate-200 leading-relaxed text-center scroll-smooth"
+                >
+                  {teleprompterText.split('\n').map((line, i) => <p key={i} className="mb-6 last:mb-0">{line}</p>)}
                 </div>
               </div>
             )}
