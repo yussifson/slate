@@ -1301,20 +1301,20 @@ ${teleprompterText}`;
           <div className="flex flex-col items-center gap-6 relative pb-24">
             
             {teleprompterText && showTeleprompter && (
-              <div className="absolute top-8 left-1/2 -translate-x-1/2 w-full max-w-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden z-40 transition-all flex flex-col">
-                <div className="bg-slate-100/80 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-2 flex items-center justify-between cursor-move">
+              <div className="absolute top-8 left-1/2 -translate-x-1/2 w-full max-w-xl bg-white/70 dark:bg-slate-900/80 backdrop-blur-3xl border border-white/60 dark:border-slate-700/50 rounded-3xl shadow-[0_16px_40px_rgb(0,0,0,0.1)] dark:shadow-[0_16px_40px_rgb(0,0,0,0.6)] overflow-hidden z-40 transition-all flex flex-col">
+                <div className="bg-white/40 dark:bg-slate-800/40 border-b border-slate-200/50 dark:border-slate-700/50 px-5 py-3 flex items-center justify-between cursor-move backdrop-blur-xl">
                   <div className="flex items-center gap-2">
-                    <AlignLeft className="w-4 h-4 text-slate-400" />
-                    <h3 className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-widest">AI Teleprompter</h3>
+                    <AlignLeft className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+                    <h3 className="text-[11px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest">AI Teleprompter</h3>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                      <span>Speed:</span>
-                      <input type="range" min="0" max="10" value={scrollSpeed} onChange={e => setScrollSpeed(Number(e.target.value))} className="w-24 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer" />
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400 bg-white/50 dark:bg-slate-900/50 px-3 py-1 rounded-full border border-slate-200/50 dark:border-slate-700/50">
+                      <span>Speed</span>
+                      <input type="range" min="0" max="10" value={scrollSpeed} onChange={e => setScrollSpeed(Number(e.target.value))} className="w-20 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-indigo-500" />
                     </div>
                     <button 
                       onClick={() => setShowTeleprompter(false)}
-                      className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+                      className="text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-white transition-colors p-1"
                     >
                       <XCircle className="w-5 h-5" />
                     </button>
@@ -1322,9 +1322,9 @@ ${teleprompterText}`;
                 </div>
                 <div 
                   ref={teleprompterRef}
-                  className="p-8 max-h-64 overflow-y-auto text-xl md:text-2xl lg:text-3xl font-medium text-slate-800 dark:text-slate-200 leading-relaxed text-center scroll-smooth"
+                  className="p-8 md:p-10 max-h-72 overflow-y-auto text-xl md:text-2xl lg:text-[26px] font-medium text-slate-800 dark:text-white leading-[1.6] text-center scroll-smooth drop-shadow-sm"
                 >
-                  {teleprompterText.split('\n').map((line, i) => <p key={i} className="mb-6 last:mb-0">{line}</p>)}
+                  {teleprompterText.split('\n').map((line, i) => <p key={i} className="mb-6 last:mb-0 opacity-90 hover:opacity-100 transition-opacity">{line}</p>)}
                 </div>
               </div>
             )}
