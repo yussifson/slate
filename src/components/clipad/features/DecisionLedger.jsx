@@ -13,20 +13,24 @@ export default function DecisionLedger({ workspaceId, spaceId, hasFullIntelligen
   const isCompanyAdmin = user?.role === 'super_admin' || user?.role === 'company_admin';
 
   useEffect(() => {
-    if (!workspaceId || !spaceId || !hasFullIntelligence) return;
-    
+    if (!spaceId) return;
+
     const fetchDecisions = async () => {
       setLoading(true);
-      const { data, error } = await supabase
+      // Query by spaceId (always available). workspaceId is used for multi-tenant isolation when available.
+      let query = supabase
         .from('clipad_decisions')
         .select('*')
-        .eq('workspace_id', workspaceId)
         .eq('team_space_id', spaceId)
         .order('created_at', { ascending: false });
-        
-      if (!error && data) {
-        setDecisions(data);
+
+      if (workspaceId) {
+        query = query.eq('workspace_id', workspaceId);
       }
+
+      const { data, error } = await query;
+      if (error) console.warn('DecisionLedger:', error.message);
+      if (data) setDecisions(data);
       setLoading(false);
     };
 

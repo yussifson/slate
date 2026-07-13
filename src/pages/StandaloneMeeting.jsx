@@ -256,6 +256,7 @@ export default function StandaloneMeeting() {
       roomName={roomName}
       onToast={toast}
       onLeave={() => navigate('/dashboard')}
+      spaceId={spaceId}
     />
   );
 }
