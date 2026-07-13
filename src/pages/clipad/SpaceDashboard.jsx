@@ -24,6 +24,7 @@ import DecisionLedger from '@/components/clipad/features/DecisionLedger';
 import ContextCapsule from '@/components/clipad/features/ContextCapsule';
 import BlockerRadar from '@/components/clipad/features/BlockerRadar';
 import RedundantWorkAlert from '@/components/clipad/features/RedundantWorkAlert';
+import MeetingROIDashboard from '@/components/clipad/features/MeetingROIDashboard';
 import CommitmentTracker from '@/components/clipad/features/CommitmentTracker';
 
 const TABS = [
@@ -375,7 +376,7 @@ export default function SpaceDashboard() {
         {activeTab === 'overview' && (
           <div className="space-y-6">
             <RedundantWorkAlert workspaceId={space.company_id} currentSpaceId={spaceId} />
-            <MeetingInsights spaceId={spaceId} />
+            <MeetingROIDashboard workspaceId={space.company_id} spaceId={spaceId} />
 
             {/* Premium Bento Grid Layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-max">

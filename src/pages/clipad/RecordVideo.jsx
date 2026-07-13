@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
-  Camera, Monitor, StopCircle, Video, Mic, MicOff, Save,
-  X, ArrowLeft, Layers, Clock, CheckCircle, AlertCircle,
-  Play, Pause, RotateCcw, Upload
+  Camera, Monitor, Mic, MicOff, StopCircle, CheckCircle, Save, Trash2, Home,
+  Play, Pause, AlertTriangle, AlertCircle, RefreshCw, XCircle, ArrowLeft, Info,
+  Wand2, AlignLeft, Video, Layers, Clock, Upload
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
@@ -122,6 +122,9 @@ export default function RecordVideo() {
 
   const [phase, setPhase] = useState('setup'); // setup | recording | review | uploading | done
   const [micEnabled, setMicEnabled] = useState(true);
+  const [teleprompterText, setTeleprompterText] = useState('');
+  const [showTeleprompter, setShowTeleprompter] = useState(true);
+  const [studioSound, setStudioSound] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const recordingSecondsRef = useRef(0);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -1157,7 +1160,7 @@ export default function RecordVideo() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
               <label className="flex items-center gap-3 cursor-pointer select-none">
                 <div
                   onClick={() => setMicEnabled(!micEnabled)}
@@ -1170,6 +1173,31 @@ export default function RecordVideo() {
                   {micEnabled ? 'Microphone on' : 'Microphone off'}
                 </span>
               </label>
+
+              <label className="flex items-center gap-3 cursor-pointer select-none">
+                <div
+                  onClick={() => setStudioSound(!studioSound)}
+                  className={`w-10 h-6 rounded-full transition-colors relative ${studioSound ? 'bg-indigo-500' : 'bg-slate-200 dark:bg-slate-700'}`}
+                >
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${studioSound ? 'left-5' : 'left-1'}`} />
+                </div>
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-300 flex items-center gap-2">
+                  <Wand2 className={`w-4 h-4 ${studioSound ? 'text-indigo-500' : 'text-slate-400'}`} />
+                  Studio Sound (AI)
+                </span>
+              </label>
+            </div>
+
+            <div>
+              <label className="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">
+                <AlignLeft className="w-4 h-4" /> Teleprompter Script (Optional)
+              </label>
+              <textarea
+                value={teleprompterText}
+                onChange={e => setTeleprompterText(e.target.value)}
+                placeholder="Paste your script here. It will be available to read while you record."
+                className="w-full h-32 px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-primary/60 transition-all shadow-sm resize-none"
+              />
             </div>
 
             <button
@@ -1194,8 +1222,27 @@ export default function RecordVideo() {
 
         {/* RECORDING PHASE */}
         {phase === 'recording' && (
-          <div className="flex flex-col items-center gap-8">
-            <div className="relative w-full max-w-2xl rounded-2xl overflow-hidden bg-black aspect-video">
+          <div className="flex flex-col items-center gap-6 relative pb-24">
+            
+            {teleprompterText && showTeleprompter && (
+              <div className="w-full max-w-2xl bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-2xl p-6 shadow-2xl relative">
+                <button 
+                  onClick={() => setShowTeleprompter(false)}
+                  className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+                >
+                  <XCircle className="w-5 h-5" />
+                </button>
+                <div className="flex items-center gap-2 mb-4">
+                  <AlignLeft className="w-5 h-5 text-indigo-400" />
+                  <h3 className="text-sm font-bold text-white uppercase tracking-widest">Teleprompter</h3>
+                </div>
+                <div className="h-48 overflow-y-auto scrollbar-primary text-xl leading-relaxed text-slate-200 font-medium">
+                  {teleprompterText.split('\n').map((line, i) => <p key={i} className="mb-4">{line}</p>)}
+                </div>
+              </div>
+            )}
+
+            <div className="relative w-full max-w-2xl rounded-3xl overflow-hidden bg-black aspect-video shadow-2xl ring-1 ring-white/10">
               {mode === 'screen_camera' && (
                 <>
                   <video ref={previewRef} autoPlay muted playsInline className="w-full h-full object-contain" />
@@ -1214,35 +1261,50 @@ export default function RecordVideo() {
               )}
 
               {/* Recording indicator */}
-              <div className="absolute top-4 left-4 flex items-center gap-2 bg-black/60 backdrop-blur-sm px-3 py-2 rounded-xl">
+              <div className="absolute top-4 left-4 flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
                 <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-                <span className="text-foreground text-sm font-mono font-bold">{formatDuration(recordingSeconds)}</span>
+                <span className="text-white text-sm font-mono font-bold">{formatDuration(recordingSeconds)}</span>
               </div>
             </div>
 
-            <div className="flex gap-4">
+            {/* FLOATING PILL CONTROLS */}
+            <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 p-2 bg-slate-900/90 backdrop-blur-xl border border-slate-700/50 rounded-full shadow-2xl">
               <button
                 onClick={togglePause}
-                className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold transition-all"
+                className={`flex items-center justify-center w-12 h-12 rounded-full transition-all ${isPaused ? 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30' : 'bg-slate-800 text-white hover:bg-slate-700'}`}
+                title={isPaused ? 'Resume' : 'Pause'}
               >
-                {isPaused ? <Play className="w-5 h-5 text-emerald-500" /> : <Pause className="w-5 h-5" />}
-                {isPaused ? 'Resume' : 'Pause'}
+                {isPaused ? <Play className="w-5 h-5 fill-current" /> : <Pause className="w-5 h-5 fill-current" />}
               </button>
               
               {!pipWindow && ('documentPictureInPicture' in window) && (
                 <button
                   onClick={() => startPip(streamsRef.current?.camera)}
-                  className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-500/20 dark:text-indigo-300 dark:hover:bg-indigo-500/30 font-bold transition-all"
+                  className="flex items-center justify-center w-12 h-12 rounded-full bg-slate-800 text-indigo-400 hover:bg-slate-700 hover:text-indigo-300 transition-all"
+                  title="Open PiP Controls"
                 >
-                  <Monitor className="w-5 h-5" /> Open PiP Controls
+                  <Monitor className="w-5 h-5" />
                 </button>
               )}
 
+              {teleprompterText && !showTeleprompter && (
+                <button
+                  onClick={() => setShowTeleprompter(true)}
+                  className="flex items-center justify-center w-12 h-12 rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all"
+                  title="Show Teleprompter"
+                >
+                  <AlignLeft className="w-5 h-5" />
+                </button>
+              )}
+
+              <div className="w-px h-8 bg-slate-700 mx-1"></div>
+
               <button
                 onClick={stopRecording}
-                className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-red-600 hover:bg-red-500 text-foreground font-bold shadow-xl shadow-red-500/25 transition-all ml-auto"
+                className="flex items-center gap-2 pl-4 pr-5 py-3 rounded-full bg-red-500 hover:bg-red-400 text-white font-bold transition-all shadow-lg shadow-red-500/20"
               >
-                <StopCircle className="w-5 h-5" /> Stop Recording
+                <div className="w-4 h-4 bg-white rounded-sm"></div>
+                Stop
               </button>
             </div>
           </div>
