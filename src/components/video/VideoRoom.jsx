@@ -1034,7 +1034,12 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
       const isCurrentlyEnabled = daily.getInputSettings()?.audio?.processor?.type === 'noise-cancellation';
       await daily.updateInputSettings({
         audio: {
-          processor: { type: isCurrentlyEnabled ? 'none' : 'noise-cancellation' }
+          processor: { type: isCurrentlyEnabled ? 'none' : 'noise-cancellation' },
+          settings: {
+            echoCancellation: true,
+            noiseSuppression: isCurrentlyEnabled,
+            autoGainControl: isCurrentlyEnabled,
+          }
         }
       });
       setIsStudioAudioOn(!isCurrentlyEnabled);
@@ -1289,8 +1294,8 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
           processor: { type: 'noise-cancellation' },
           settings: {
             echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true,
+            noiseSuppression: false,
+            autoGainControl: false,
           }
         }
       });
