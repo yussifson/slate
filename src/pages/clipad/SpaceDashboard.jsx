@@ -497,6 +497,7 @@ export default function SpaceDashboard() {
             workspaceId={space.company_id} 
             spaceId={spaceId} 
             hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
+            teamColor={color}
           />
         )}
 
