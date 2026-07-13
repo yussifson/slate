@@ -15,15 +15,20 @@ import ClipadLoader from '@/components/ui/ClipadLoader';
 
 function StatCard({ icon: Icon, color, value, label, trend }) {
   return (
-    <div className="p-6 rounded-2xl bg-card border border-border hover:border-white/12 transition-all">
-      <div className="flex items-start justify-between mb-4">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm ${color || 'bg-primary/10 text-primary'}`}>
-          <Icon className="w-5 h-5" />
+    <div className="group relative p-6 rounded-3xl bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-1 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      <div className="relative z-10 flex items-start justify-between mb-6">
+        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner ${color || 'bg-primary/10 text-primary'}`}>
+          <Icon className="w-6 h-6" />
         </div>
-        {trend && <span className={`text-xs font-semibold px-2 py-1 rounded-full ${trend > 0 ? 'text-emerald-500 bg-emerald-400/10' : 'text-red-400 bg-red-400/10'}`}>{trend > 0 ? '+' : ''}{trend}%</span>}
+        {trend !== undefined && trend !== null && (
+          <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${trend > 0 ? 'text-emerald-600 bg-emerald-50 border-emerald-100 dark:text-emerald-400 dark:bg-emerald-500/10 dark:border-emerald-500/20' : trend < 0 ? 'text-red-600 bg-red-50 border-red-100 dark:text-red-400 dark:bg-red-500/10 dark:border-red-500/20' : 'text-slate-500 bg-slate-100 border-slate-200 dark:bg-slate-800 dark:border-slate-700'}`}>
+            {trend > 0 ? '+' : ''}{trend}%
+          </span>
+        )}
       </div>
-      <div className="text-3xl font-black text-foreground mb-1">{value}</div>
-      <div className="text-sm text-muted-foreground">{label}</div>
+      <div className="relative z-10 text-4xl font-black text-slate-900 dark:text-white mb-1 tracking-tight">{value || 0}</div>
+      <div className="relative z-10 text-sm font-medium text-slate-500 dark:text-slate-400">{label}</div>
     </div>
   );
 }

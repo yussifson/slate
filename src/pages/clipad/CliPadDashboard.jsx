@@ -471,35 +471,6 @@ export default function CliPadDashboard() {
             </div>
           </div>
         </div>
-        
-        {/* Culture & Intelligence Layer */}
-        {user?.company_id && (
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6">
-              {user?.clipad_plan === 'enterprise' && (
-                <InstitutionalMemoryVault workspaceId={user.company_id} />
-              )}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <MeetingNecessityWidget workspaceId={user.company_id} />
-                <TimezoneFairnessWidget workspaceId={user.company_id} />
-              </div>
-            </div>
-            <div className="lg:col-span-1">
-               {/* Reserved for future widgets or sidebars */}
-            </div>
-          </div>
-        )}
-        
-        {/* Workspace Blocker Radar (Enterprise Only) */}
-        {user?.clipad_plan === 'enterprise' && user?.company_id && (
-          <div className="mt-8">
-            <BlockerRadar 
-              workspaceId={user.company_id} 
-              isWorkspaceView={true} 
-              hasFullIntelligence={true} 
-            />
-          </div>
-        )}
       </div>
     </div>
   );
