@@ -136,7 +136,7 @@ export default function RecordVideo() {
     try {
       const prompt = `Write a professional, engaging teleprompter script for a video recording about: ${scriptPrompt}. Keep it concise and formatted with short paragraphs.`;
       const res = await generateText([{ role: 'user', content: prompt }]);
-      if (res && res.response) setTeleprompterText(res.response);
+      if (res) setTeleprompterText(typeof res === 'string' ? res : res.response || '');
     } catch (e) {
       console.error('Failed to generate script', e);
     }
@@ -151,7 +151,7 @@ export default function RecordVideo() {
 
 ${teleprompterText}`;
       const res = await generateText([{ role: 'user', content: prompt }]);
-      if (res && res.response) setTeleprompterText(res.response);
+      if (res) setTeleprompterText(typeof res === 'string' ? res : res.response || '');
     } catch (e) {
       console.error('Failed to refine script', e);
     }
@@ -1235,7 +1235,7 @@ ${teleprompterText}`;
 
             <div className="bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-xl p-4 space-y-3">
               <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-400 uppercase tracking-wider mb-2">
-                <AlignLeft className="w-4 h-4" /> Next-Level Teleprompter
+                <AlignLeft className="w-4 h-4" /> Teleprompter
               </label>
               
               <div className="flex gap-2">
