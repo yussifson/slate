@@ -116,11 +116,10 @@ function VideoCard({ video, onClick }) {
             <Play className="w-5 h-5 text-primary dark:text-white fill-current ml-1" />
           </div>
         </div>
-        {video.duration_seconds && (
-          <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-md text-white text-[10px] font-mono font-medium px-2 py-0.5 rounded-md">
-            {Math.floor(video.duration_seconds / 60)}:{String(video.duration_seconds % 60).padStart(2, '0')}
-          </div>
-        )}
+        <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-md text-white text-[10px] font-mono font-medium px-2 py-0.5 rounded-md flex items-center gap-1">
+          <Clock className="w-3 h-3" />
+          {video.duration_seconds ? `${Math.floor(video.duration_seconds / 60)}:${String(Math.floor(video.duration_seconds % 60)).padStart(2, '0')}` : '00:00'}
+        </div>
       </div>
       <div className="p-4 flex-1 flex flex-col justify-between">
         <p className="text-sm font-semibold text-slate-900 dark:text-white line-clamp-1 mb-1">{video.title || 'Untitled Recording'}</p>
@@ -474,33 +473,34 @@ export default function CliPadDashboard() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Culture & Intelligence Layer */}
-      {user?.company_id && (
-        <div className="mt-8 space-y-6">
-          {user?.clipad_plan === 'enterprise' && (
-            <div className="w-full">
-              <InstitutionalMemoryVault workspaceId={user.company_id} />
-            </div>
-          )}
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <MeetingNecessityWidget workspaceId={user.company_id} />
-            <TimezoneFairnessWidget workspaceId={user.company_id} />
-            {user?.clipad_plan === 'enterprise' ? (
-              <BlockerRadar 
-                workspaceId={user.company_id} 
-                isWorkspaceView={true} 
-                hasFullIntelligence={true} 
-              />
-            ) : (
-              <div className="hidden lg:block" />
-            )}
           </div>
         </div>
-      )}
+
+        {/* Culture & Intelligence Layer */}
+        {user?.company_id && (
+          <div className="mt-8 space-y-6">
+            {user?.clipad_plan === 'enterprise' && (
+              <div className="w-full">
+                <InstitutionalMemoryVault workspaceId={user.company_id} />
+              </div>
+            )}
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <MeetingNecessityWidget workspaceId={user.company_id} />
+              <TimezoneFairnessWidget workspaceId={user.company_id} />
+              {user?.clipad_plan === 'enterprise' ? (
+                <BlockerRadar 
+                  workspaceId={user.company_id} 
+                  isWorkspaceView={true} 
+                  hasFullIntelligence={true} 
+                />
+              ) : (
+                <div className="hidden lg:block" />
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

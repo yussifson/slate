@@ -87,15 +87,7 @@ export default function VideoDownloadModal({ open, onOpenChange, videoUrl, video
   const transcodeAndDownload = async (signedUrl, filename, resolution) => {
     setStatusText('Loading transcoder engine...');
     setProgress(0);
-    
-    if (typeof SharedArrayBuffer === 'undefined') {
-      console.warn("SharedArrayBuffer is not available. Falling back to original download.");
-      setError("Browser security restrictions prevent transcoding. Downloading original quality instead.");
-      await new Promise(r => setTimeout(r, 2000));
-      await downloadDirect(signedUrl, filename);
-      return;
-    }
-
+    // We use the single-threaded @ffmpeg/core which does NOT require SharedArrayBuffer or Cross-Origin-Isolation.
     try {
       const ffmpeg = await loadFFmpeg();
       

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
-import { Video, Search, Clock, ArrowRight, UserCircle, Settings } from 'lucide-react';
+import { Video, Search, Clock, ArrowRight, UserCircle, Settings, Play } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
 import ThemeToggle from '@/components/layout/ThemeToggle';
@@ -9,10 +9,26 @@ import NotificationCenter from '@/components/clipad/notifications/NotificationCe
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 function formatDuration(seconds) {
+  if (!seconds) return '00:00';
   const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
+  const s = Math.floor(seconds % 60);
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
+
+const getVideoColor = (id) => {
+  const colors = [
+    'from-indigo-500 to-indigo-700', 
+    'from-purple-500 to-purple-700', 
+    'from-fuchsia-500 to-fuchsia-700',
+    'from-rose-500 to-rose-700', 
+    'from-orange-500 to-orange-700', 
+    'from-emerald-500 to-emerald-700', 
+    'from-cyan-500 to-cyan-700'
+  ];
+  if (!id) return colors[0];
+  const charCodeSum = String(id).split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return colors[charCodeSum % colors.length];
+};
 
 export default function VideosList() {
   const { user } = useAuth();
@@ -135,24 +151,34 @@ export default function VideosList() {
               <div
                 key={v.id}
                 onClick={() => navigate(`/watch/${v.id}`)}
-                className="group flex flex-col rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 overflow-hidden"
+                className="group cursor-pointer rounded-2xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md flex flex-col"
               >
-                <div className="relative aspect-video bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                <div className="aspect-video bg-slate-100 dark:bg-slate-800 relative flex items-center justify-center overflow-hidden">
                   {v.thumbnail_url ? (
-                    <img src={v.thumbnail_url} alt={v.title} className="w-full h-full object-cover" />
+                    <img src={v.thumbnail_url} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={v.title} />
                   ) : (
-                    <Video className="w-8 h-8 text-slate-300 dark:text-slate-700" />
+                    <div className={`absolute inset-0 w-full h-full bg-gradient-to-br ${getVideoColor(v.id)} group-hover:scale-105 transition-transform duration-500 opacity-90`}>
+                      {/* Empty colored background for a clean premium look */}
+                    </div>
                   )}
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-                  <div className="absolute bottom-3 right-3 px-2 py-1 bg-black/70 backdrop-blur-md rounded-lg text-white text-[10px] font-bold flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {v.duration_seconds ? formatDuration(v.duration_seconds) : '00:00'}
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-white/90 dark:bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                      <Play className="w-5 h-5 text-primary dark:text-white fill-current ml-1" />
+                    </div>
                   </div>
+                  {v.duration_seconds && (
+                    <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-md text-white text-[10px] font-mono font-medium px-2 py-0.5 rounded-md flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {formatDuration(v.duration_seconds)}
+                    </div>
+                  )}
                 </div>
-                <div className="p-4 flex-1 flex flex-col">
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate mb-1 group-hover:text-primary transition-colors">{v.title || 'Untitled Video'}</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1">{new Date(v.created_at).toLocaleDateString()} at {new Date(v.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
-                  {v.space && <span className="inline-block mt-auto px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] uppercase font-bold w-fit">{v.space.name}</span>}
+                <div className="p-4 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate mb-1 group-hover:text-primary transition-colors">{v.title || 'Untitled Video'}</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{new Date(v.created_at).toLocaleDateString()} at {new Date(v.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                  </div>
+                  {v.space && <span className="inline-block mt-2 px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] uppercase font-bold w-fit">{v.space.name}</span>}
                 </div>
               </div>
             ))}
