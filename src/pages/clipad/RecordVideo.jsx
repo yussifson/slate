@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
+import { generateText } from '@/lib/cloudflareAI';
 import { logAuditEvent } from '@/lib/auditLogger';
 import { useAuth } from '@/lib/AuthContext';
 import { getPlanLimits, getUserPlan, getLimit } from '@/lib/clipadPricing';
@@ -124,6 +125,50 @@ export default function RecordVideo() {
   const [micEnabled, setMicEnabled] = useState(true);
   const [teleprompterText, setTeleprompterText] = useState('');
   const [showTeleprompter, setShowTeleprompter] = useState(true);
+  const [isGeneratingScript, setIsGeneratingScript] = useState(false);
+  const [scriptPrompt, setScriptPrompt] = useState('');
+  const [scrollSpeed, setScrollSpeed] = useState(3);
+  const teleprompterRef = useRef(null);
+  
+  const generateScript = async () => {
+    if (!scriptPrompt.trim()) return;
+    setIsGeneratingScript(true);
+    try {
+      const prompt = `Write a professional, engaging teleprompter script for a video recording about: ${scriptPrompt}. Keep it concise and formatted with short paragraphs.`;
+      const res = await generateText([{ role: 'user', content: prompt }]);
+      if (res && res.response) setTeleprompterText(res.response);
+    } catch (e) {
+      console.error('Failed to generate script', e);
+    }
+    setIsGeneratingScript(false);
+  };
+  
+  const refineScript = async () => {
+    if (!teleprompterText.trim()) return;
+    setIsGeneratingScript(true);
+    try {
+      const prompt = `Rewrite this teleprompter script to be much more punchy, engaging, and concise. Make it sound natural to speak:
+
+${teleprompterText}`;
+      const res = await generateText([{ role: 'user', content: prompt }]);
+      if (res && res.response) setTeleprompterText(res.response);
+    } catch (e) {
+      console.error('Failed to refine script', e);
+    }
+    setIsGeneratingScript(false);
+  };
+  
+  useEffect(() => {
+    let scrollInterval;
+    if (phase === 'recording' && showTeleprompter && teleprompterText && scrollSpeed > 0) {
+      scrollInterval = setInterval(() => {
+        if (teleprompterRef.current) {
+          teleprompterRef.current.scrollTop += scrollSpeed;
+        }
+      }, 100);
+    }
+    return () => clearInterval(scrollInterval);
+  }, [phase, showTeleprompter, teleprompterText, scrollSpeed]);
   const [studioSound, setStudioSound] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const recordingSecondsRef = useRef(0);
@@ -1225,7 +1270,7 @@ export default function RecordVideo() {
           <div className="flex flex-col items-center gap-6 relative pb-24">
             
             {teleprompterText && showTeleprompter && (
-              <div className="w-full max-w-2xl bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-2xl p-6 shadow-2xl relative">
+              <div className="w-full max-w-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-2xl relative">
                 <button 
                   onClick={() => setShowTeleprompter(false)}
                   className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
@@ -1252,7 +1297,7 @@ export default function RecordVideo() {
                 <video ref={previewRef} autoPlay muted playsInline className="w-full h-full object-cover scale-x-[-1]" />
               )}
               {mode === 'screen_only' && (
-                <div className="w-full h-full flex items-center justify-center bg-slate-900">
+                <div className="w-full h-full flex items-center justify-center bg-black/5 dark:bg-slate-900">
                   <div className="text-center text-muted-foreground">
                     <Monitor className="w-16 h-16 mx-auto mb-3 opacity-50" />
                     <p className="text-sm">Recording your screen…</p>
@@ -1268,10 +1313,10 @@ export default function RecordVideo() {
             </div>
 
             {/* FLOATING PILL CONTROLS */}
-            <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 p-2 bg-slate-900/90 backdrop-blur-xl border border-slate-700/50 rounded-full shadow-2xl">
+            <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-full shadow-2xl">
               <button
                 onClick={togglePause}
-                className={`flex items-center justify-center w-12 h-12 rounded-full transition-all ${isPaused ? 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30' : 'bg-slate-800 text-white hover:bg-slate-700'}`}
+                className={`flex items-center justify-center w-12 h-12 rounded-full transition-all ${isPaused ? 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700'}`}
                 title={isPaused ? 'Resume' : 'Pause'}
               >
                 {isPaused ? <Play className="w-5 h-5 fill-current" /> : <Pause className="w-5 h-5 fill-current" />}
@@ -1280,7 +1325,7 @@ export default function RecordVideo() {
               {!pipWindow && ('documentPictureInPicture' in window) && (
                 <button
                   onClick={() => startPip(window.documentPictureInPicture.requestWindow({ width: 280, height: 72 }).catch(console.error))}
-                  className="flex items-center justify-center w-12 h-12 rounded-full bg-slate-800 text-indigo-400 hover:bg-slate-700 hover:text-indigo-300 transition-all"
+                  className="flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-indigo-500 dark:text-indigo-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-300 transition-all"
                   title="Open PiP Controls"
                 >
                   <Monitor className="w-5 h-5" />
@@ -1290,14 +1335,14 @@ export default function RecordVideo() {
               {teleprompterText && !showTeleprompter && (
                 <button
                   onClick={() => setShowTeleprompter(true)}
-                  className="flex items-center justify-center w-12 h-12 rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all"
+                  className="flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
                   title="Show Teleprompter"
                 >
                   <AlignLeft className="w-5 h-5" />
                 </button>
               )}
 
-              <div className="w-px h-8 bg-slate-700 mx-1"></div>
+              <div className="w-px h-8 bg-slate-200 dark:bg-slate-700 mx-1"></div>
 
               <button
                 onClick={stopRecording}
