@@ -12,6 +12,7 @@ import { getPlanLimits, getUserPlan } from '@/lib/clipadPricing';
 import PaywallModal from '@/components/clipad/PaywallModal';
 import { useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import * as tus from 'tus-js-client';
 import { playAlertSound } from '@/lib/audioAlerts';
 
 
@@ -702,18 +703,41 @@ export default function RecordVideo() {
         setPhase('uploading');
         setUploadProgress(0);
         try {
-          // Simulate progress
-          const progressInterval = setInterval(() => setUploadProgress(p => Math.min(p + 8, 90)), 400);
-
           const videoTitle = title.trim() || `Recording - ${new Date().toLocaleDateString()}`;
           const fileName = `${user.id}/${Date.now()}.webm`;
           
-          const { error: storageError } = await supabase.storage
-            .from('clipad_videos')
-            .upload(fileName, blob, { contentType: 'video/webm' });
-            
-          clearInterval(progressInterval);
-          if (storageError) throw storageError;
+          const { data: { session } } = await supabase.auth.getSession();
+      
+          await new Promise((resolve, reject) => {
+            const upload = new tus.Upload(blob, {
+              endpoint: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/upload/resumable`,
+              retryDelays: [0, 3000, 5000, 10000, 20000],
+              headers: {
+                authorization: `Bearer ${session?.access_token}`,
+                'x-upsert': 'true', 
+              },
+              uploadDataDuringCreation: true,
+              removeFingerprintOnSuccess: true,
+              metadata: {
+                bucketName: 'clipad_videos',
+                objectName: fileName,
+                contentType: 'video/webm',
+                cacheControl: '3600',
+              },
+              chunkSize: 6 * 1024 * 1024,
+              onError: function (error) {
+                 reject(error);
+              },
+              onProgress: function (bytesUploaded, bytesTotal) {
+                 const percentage = ((bytesUploaded / bytesTotal) * 100);
+                 setUploadProgress(Math.min(percentage, 95));
+              },
+              onSuccess: function () {
+                 resolve();
+              }
+            });
+            upload.start();
+          });
           
           setUploadProgress(95);
           const publicUrl = supabase.storage.from('clipad_videos').getPublicUrl(fileName).data.publicUrl;
@@ -865,14 +889,38 @@ export default function RecordVideo() {
       const videoTitle = title.trim() || `Recording - ${new Date().toLocaleDateString()}`;
       const fileName = `${user.id}/${Date.now()}.webm`;
 
-      const progressInterval = setInterval(() => setUploadProgress(p => Math.min(p + 8, 90)), 400);
-
-      const { error: storageError } = await supabase.storage
-        .from('clipad_videos')
-        .upload(fileName, videoBlob, { contentType: 'video/webm' });
-
-      clearInterval(progressInterval);
-      if (storageError) throw storageError;
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      await new Promise((resolve, reject) => {
+        const upload = new tus.Upload(videoBlob, {
+          endpoint: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/upload/resumable`,
+          retryDelays: [0, 3000, 5000, 10000, 20000],
+          headers: {
+            authorization: `Bearer ${session?.access_token}`,
+            'x-upsert': 'true', 
+          },
+          uploadDataDuringCreation: true,
+          removeFingerprintOnSuccess: true,
+          metadata: {
+            bucketName: 'clipad_videos',
+            objectName: fileName,
+            contentType: 'video/webm',
+            cacheControl: '3600',
+          },
+          chunkSize: 6 * 1024 * 1024,
+          onError: function (error) {
+             reject(error);
+          },
+          onProgress: function (bytesUploaded, bytesTotal) {
+             const percentage = ((bytesUploaded / bytesTotal) * 100);
+             setUploadProgress(Math.min(percentage, 95));
+          },
+          onSuccess: function () {
+             resolve();
+          }
+        });
+        upload.start();
+      });
 
       setUploadProgress(95);
       const publicUrl = supabase.storage.from('clipad_videos').getPublicUrl(fileName).data.publicUrl;
