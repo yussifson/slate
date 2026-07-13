@@ -245,14 +245,15 @@ export default function RecordVideo() {
     if (track) track.enabled = !micEnabled;
   };
 
-  const startPip = async (stream) => {
+  const startPip = async (pipPromise) => {
     if (!('documentPictureInPicture' in window)) {
       toast({ title: 'PiP Not Supported', description: 'Your browser does not support Document PiP.', variant: 'destructive' });
       return;
     }
     try {
-      // Shrink PiP window strictly to the buttons' size to avoid the 'big background card'
-      const pip = await window.documentPictureInPicture.requestWindow({ width: 280, height: 72 });
+      // Wait for the synchronously-started PiP window to resolve
+      const pip = await pipPromise;
+      if (!pip) return;
       
       // Copy styles
       [...document.styleSheets].forEach((styleSheet) => {
@@ -436,6 +437,20 @@ export default function RecordVideo() {
   };
 
   const startRecording = async () => {
+    if (!title) {
+      toast({ title: 'Missing Title', description: 'Please enter a video title before recording.', variant: 'destructive' });
+      return;
+    }
+
+    // IMMEDIATELY request PiP window to consume the synchronous user gesture
+    let pipPromise = null;
+    if (('documentPictureInPicture' in window) && (mode === 'screen_camera' || mode === 'camera_only')) {
+      pipPromise = window.documentPictureInPicture.requestWindow({ width: 280, height: 72 }).catch(e => {
+        console.error("PiP gesture consumed or failed", e);
+        return null;
+      });
+    }
+
     // Plan Limit Check: Check if user has exceeded storage or monthly recordings
     try {
       const maxStorageGB = getLimit(user, 'maxStorageGB') || 2;
@@ -492,13 +507,13 @@ export default function RecordVideo() {
       toast({ title: 'Missing Title', description: 'Please enter a video title before recording.', variant: 'destructive' });
       return;
     }
-    const success = await prepareStreamsAndPip();
+    const success = await prepareStreamsAndPip(pipPromise);
     if (success) {
       setCountdown(5);
     }
   };
 
-  const prepareStreamsAndPip = async () => {
+  const prepareStreamsAndPip = async (pipPromise) => {
     try {
       // Initialize AudioContext immediately during the click event to avoid being suspended
       const audioCtx = new AudioContext();
@@ -695,8 +710,8 @@ export default function RecordVideo() {
       }
 
       // Auto-open PiP if appropriate
-      if (mode === 'screen_camera' || mode === 'camera_only') {
-        startPip(cameraStream);
+      if (pipPromise) {
+        startPip(pipPromise);
       }
       return true;
     } catch (err) {
