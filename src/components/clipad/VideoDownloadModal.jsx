@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
 import { Download, AlertCircle, Loader2, Lock, Monitor, Smartphone, Video } from 'lucide-react';
+import coreURL from '@ffmpeg/core/dist/umd/ffmpeg-core.js?url';
+import wasmURL from '@ffmpeg/core/dist/umd/ffmpeg-core.wasm?url';
 import { supabase } from '@/api/supabaseClient';
 
 export default function VideoDownloadModal({ open, onOpenChange, videoUrl, videoTitle }) {
@@ -37,17 +39,15 @@ export default function VideoDownloadModal({ open, onOpenChange, videoUrl, video
     if (ffmpegRef.current) return ffmpegRef.current;
     
     const { FFmpeg } = await import('@ffmpeg/ffmpeg');
-    const { toBlobURL } = await import('@ffmpeg/util');
     
     const ffmpeg = new FFmpeg();
     ffmpeg.on('progress', ({ progress }) => {
       setProgress(Math.round(progress * 100));
     });
     
-    const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
     await ffmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+      coreURL,
+      wasmURL,
     });
     
     ffmpegRef.current = ffmpeg;
