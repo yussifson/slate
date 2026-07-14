@@ -402,14 +402,16 @@ export default function RecordVideo() {
       const controlsWrapper = document.createElement('div');
       controlsWrapper.style.display = 'flex';
       controlsWrapper.style.justifyContent = 'center';
-      controlsWrapper.style.gap = '16px';
-      controlsWrapper.style.padding = '12px 24px';
-      controlsWrapper.style.backgroundColor = '#ffffff';
+      controlsWrapper.style.gap = '12px';
+      controlsWrapper.style.padding = '10px 20px';
+      controlsWrapper.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+      controlsWrapper.style.backdropFilter = 'blur(10px)';
       controlsWrapper.style.borderRadius = '24px';
       controlsWrapper.style.boxShadow = '0 8px 24px rgba(0,0,0,0.3)';
-      controlsWrapper.style.width = 'fit-content';
-      controlsWrapper.style.height = 'fit-content';
-      controlsWrapper.style.alignItems = 'center';
+      controlsWrapper.style.position = 'absolute';
+      controlsWrapper.style.bottom = '16px';
+      controlsWrapper.style.transform = 'scale(0.9)';
+      controlsWrapper.style.transition = 'opacity 0.2s';
 
       const createBtn = (iconSvg, type) => {
         const btn = document.createElement('button');
@@ -537,6 +539,21 @@ export default function RecordVideo() {
       controlsWrapper.appendChild(pauseBtn);
       controlsWrapper.appendChild(stopBtn);
 
+      // Add Video element for camera preview
+      const videoEl = document.createElement('video');
+      videoEl.autoplay = true;
+      videoEl.muted = true;
+      videoEl.playsInline = true;
+      videoEl.style.width = '100%';
+      videoEl.style.height = '100%';
+      videoEl.style.objectFit = 'cover';
+      videoEl.style.transform = 'scaleX(-1)';
+      videoEl.style.backgroundColor = '#000';
+      if (streamsRef.current?.camera) {
+        videoEl.srcObject = streamsRef.current.camera;
+      }
+      
+      pip.document.body.appendChild(videoEl);
       pip.document.body.appendChild(controlsWrapper);
 
       pip.addEventListener('pagehide', () => {
@@ -558,8 +575,8 @@ export default function RecordVideo() {
     // IMMEDIATELY request PiP window to consume the synchronous user gesture
     let pipPromise = null;
     if (('documentPictureInPicture' in window) && (mode === 'screen_camera' || mode === 'camera_only')) {
-      pipPromise = window.documentPictureInPicture.requestWindow({ width: 280, height: 72 }).catch(e => {
-        console.error("PiP gesture consumed or failed", e);
+      pipPromise = window.documentPictureInPicture.requestWindow({ width: 320, height: 180 }).catch(e => {
+        console.warn('PiP auto-start failed:', e);
         return null;
       });
     }
@@ -1501,7 +1518,7 @@ export default function RecordVideo() {
               
               {!pipWindow && ('documentPictureInPicture' in window) && (
                 <button
-                  onClick={() => startPip(window.documentPictureInPicture.requestWindow({ width: 280, height: 72 }).catch(console.error))}
+                  onClick={() => startPip(window.documentPictureInPicture.requestWindow({ width: 320, height: 180 }).catch(console.error))}
                   className="flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-indigo-500 dark:text-indigo-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-300 transition-all"
                   title="Open PiP Controls"
                 >

@@ -42,7 +42,7 @@ export default function TimezoneFairnessWidget({ workspaceId }) {
       // Fetch recent meetings with timestamps
       const { data: meetings } = await supabase
         .from('clipad_meeting_records')
-        .select('meeting_title, created_at, ended_at, ai_summary')
+        .select('title, created_at, ended_at, ai_summary')
         .order('created_at', { ascending: false })
         .limit(20);
 
@@ -67,7 +67,7 @@ export default function TimezoneFairnessWidget({ workspaceId }) {
 
       const meetingHoursSummary = meetings.map(m => {
         const d = new Date(m.created_at);
-        return `"${m.meeting_title || 'Meeting'}" at ${d.toUTCString().slice(17, 22)} UTC`;
+        return `"${m.title || 'Meeting'}" at ${d.toUTCString().slice(17, 22)} UTC`;
       }).join('; ');
 
       const aiResult = await generateText([

@@ -50,7 +50,7 @@ export default function MeetingNecessityWidget({ workspaceId }) {
       // Fetch the most recent meetings with summaries
       const { data: meetings } = await supabase
         .from('clipad_meeting_records')
-        .select('id, meeting_title, ai_summary, created_at, ended_at')
+        .select('id, title, ai_summary, created_at, ended_at')
         .order('created_at', { ascending: false })
         .limit(8);
 
@@ -67,7 +67,7 @@ export default function MeetingNecessityWidget({ workspaceId }) {
           if (!meeting.ai_summary || meeting.ai_summary === 'No transcript recorded.' || meeting.ai_summary === 'Generating summary...') {
             return {
               id: meeting.id,
-              meeting_title: meeting.meeting_title || 'Untitled Meeting',
+              title: meeting.title || 'Untitled Meeting',
               necessity_score: 50,
               recommendation: 'Optimal',
               created_at: meeting.created_at,
@@ -84,7 +84,7 @@ export default function MeetingNecessityWidget({ workspaceId }) {
               },
               {
                 role: 'user',
-                content: `Meeting title: "${meeting.meeting_title}"\nMeeting summary: ${meeting.ai_summary.substring(0, 800)}`,
+                content: `Meeting title: "${meeting.title}"\nMeeting summary: ${meeting.ai_summary.substring(0, 800)}`,
               },
             ]);
 
@@ -94,7 +94,7 @@ export default function MeetingNecessityWidget({ workspaceId }) {
 
             return {
               id: meeting.id,
-              meeting_title: meeting.meeting_title || 'Untitled Meeting',
+              title: meeting.title || 'Untitled Meeting',
               necessity_score: Math.min(100, Math.max(0, parsed.necessity_score || 50)),
               recommendation: parsed.recommendation || 'Optimal',
               created_at: meeting.created_at,
@@ -104,7 +104,7 @@ export default function MeetingNecessityWidget({ workspaceId }) {
           } catch {
             return {
               id: meeting.id,
-              meeting_title: meeting.meeting_title || 'Untitled Meeting',
+              title: meeting.title || 'Untitled Meeting',
               necessity_score: 50,
               recommendation: 'Optimal',
               created_at: meeting.created_at,
@@ -119,7 +119,7 @@ export default function MeetingNecessityWidget({ workspaceId }) {
       const inserts = analyzedMetrics.map(m => ({
         workspace_id: workspaceId,
         meeting_id: m.id,
-        meeting_title: m.meeting_title,
+        title: m.title,
         necessity_score: m.necessity_score,
         recommendation: m.recommendation,
         ai_reasoning: m.ai_reasoning,
@@ -198,7 +198,7 @@ export default function MeetingNecessityWidget({ workspaceId }) {
             <div key={m.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700/50">
               <div className="flex-1 min-w-0 pr-4">
                 <p className="text-sm font-medium text-slate-900 dark:text-slate-200 truncate">
-                  {m.meeting_title || 'Untitled Meeting'}
+                  {m.title || 'Untitled Meeting'}
                 </p>
                 <div className="flex items-center gap-3 mt-1">
                   <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">

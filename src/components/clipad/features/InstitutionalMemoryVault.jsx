@@ -22,7 +22,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
       const [meetingsRes, decisionsRes, blockersRes, videosRes, tasksRes] = await Promise.all([
         supabase
           .from('clipad_meeting_records')
-          .select('meeting_title, ai_summary, created_at, ended_at, host_id')
+          .select('title, ai_summary, created_at, ended_at, host_id')
           .order('created_at', { ascending: false })
           .limit(20),
         supabase
@@ -59,7 +59,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
       if (meetings.length > 0) {
         contextParts.push('=== MEETING HISTORY ===');
         meetings.forEach(m => {
-          contextParts.push(`Meeting: "${m.meeting_title || 'Untitled'}" on ${new Date(m.created_at).toLocaleDateString()}`);
+          contextParts.push(`Meeting: "${m.title || 'Untitled'}" on ${new Date(m.created_at).toLocaleDateString()}`);
           if (m.ai_summary && m.ai_summary !== 'Generating summary...' && m.ai_summary !== 'No transcript recorded.') {
             contextParts.push(`  Summary: ${m.ai_summary}`);
           }
