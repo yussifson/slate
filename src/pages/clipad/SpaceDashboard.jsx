@@ -35,13 +35,13 @@ import MemoryTimeline from '@/components/clipad/features/MemoryTimeline';
 const TABS = [
   { id: 'overview', icon: Layers, label: 'Overview' },
   { id: 'timeline', icon: Activity, label: 'Timeline' },
-  { id: 'memory', icon: Brain, label: 'Memory Graph' },
+  { id: 'memory', icon: Brain, label: 'Memory' },
   { id: 'standup', icon: Sun, label: 'Standup' },
   { id: 'chat', icon: MessageSquare, label: 'Chat' },
   { id: 'calendar', icon: Calendar, label: 'Calendar' },
   { id: 'videos', icon: Camera, label: 'Videos' },
   { id: 'meetings', icon: Calendar, label: 'Meetings' },
-  { id: 'tasks', icon: CheckCircle, label: 'Action Board' },
+  { id: 'tasks', icon: CheckCircle, label: 'Action' },
   { id: 'decisions', icon: ShieldAlert, label: 'Decisions' },
   { id: 'docs', icon: FileText, label: 'Docs' },
   { id: 'canvas', icon: Sparkles, label: 'Canvas' },
@@ -421,8 +421,8 @@ export default function SpaceDashboard() {
       </div>
 
       {/* Tab bar */}
-      <div className="px-6 md:px-10 border-b border-border">
-        <div className="flex gap-1 -mb-px">
+      <div className="px-6 md:px-10 border-b border-border overflow-x-auto no-scrollbar scrollbar-hide">
+        <div className="flex gap-1 -mb-px min-w-max">
           {TABS.map(tab => {
             const Icon = tab.icon;
             return (
@@ -664,7 +664,7 @@ export default function SpaceDashboard() {
         {/* TIMELINE */}
         {activeTab === 'timeline' && (
           <div className="h-[calc(100vh-140px)] overflow-y-auto p-6 max-w-4xl mx-auto">
-            <OrgTimeline workspaceId={workspaceId} spaceId={spaceId} />
+            <OrgTimeline workspaceId={space.company_id} spaceId={spaceId} />
           </div>
         )}
 
@@ -679,7 +679,7 @@ export default function SpaceDashboard() {
               }} className="px-4 py-2 bg-primary text-white rounded-xl text-sm font-bold">Trace Memory</button>
             </div>
             <div id="memoryGraphContainer" data-topic="design guidelines">
-              <MemoryTimeline workspaceId={workspaceId} topic="design guidelines" />
+              <MemoryTimeline workspaceId={space.company_id} topic="design guidelines" />
             </div>
           </div>
         )}
