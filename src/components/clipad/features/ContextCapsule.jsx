@@ -56,7 +56,6 @@ export default function ContextCapsule({ spaceId, hasFullIntelligence }) {
       const decisions = decisionsRes.data || [];
       const blockers = blockersRes.data || [];
       const tasks = tasksRes.data || [];
-      const meetings = meetingsRes.data || [];
 
       // Ask AI to generate an intelligent narrative summary
       const hasData = decisions.length > 0 || blockers.length > 0 || tasks.length > 0 || meetings.length > 0;
