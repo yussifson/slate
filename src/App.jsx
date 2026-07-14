@@ -23,6 +23,7 @@ const CliPadDashboard = React.lazy(() => import('@/pages/clipad/CliPadDashboard'
 const CliPadLogin = React.lazy(() => import('@/pages/clipad/CliPadLogin'));
 const SpacesList = React.lazy(() => import('@/pages/clipad/SpacesList'));
 const MeetingRecord = React.lazy(() => import('@/pages/clipad/MeetingRecord'));
+const SaveMeetingPage = React.lazy(() => import('@/pages/clipad/SaveMeetingPage'));
 const MeetingsList = React.lazy(() => import('@/pages/clipad/MeetingsList'));
 const VideosList = React.lazy(() => import('@/pages/clipad/VideosList'));
 const CliPadSupport = React.lazy(() => import('@/pages/clipad/CliPadSupport'));
@@ -770,6 +771,8 @@ function PlatformRoutes() {
         <Route path="/clipad/space/:spaceId" element={<SpaceDashboard />} />
         <Route path="/clipad/record" element={<RecordVideo />} />
         <Route path="/clipad/watch/:videoId" element={<WatchVideo />} />
+        <Route path="/clipad/meeting/:id" element={<MeetingRecord />} />
+        <Route path="/clipad/save-meeting/:id" element={<SaveMeetingPage />} />
         <Route path="/clipad/settings" element={<CliPadSettings />} />
         <Route path="/clipad/analytics" element={<VideoAnalytics />} />
       </Route>
@@ -1267,6 +1270,7 @@ function App() {
                           <Route path="/meetings" element={<MeetingsList />} />
                           <Route path="/videos" element={<VideosList />} />
                           <Route path="/meetings/:meetingId" element={<MeetingRecord />} />
+                          <Route path="/save-meeting/:id" element={<SaveMeetingPage />} />
                           <Route path="/settings" element={<CliPadSettings />} />
                           <Route path="/support" element={<CliPadSupport />} />
                           <Route path="/chat" element={<ClipadChat />} />

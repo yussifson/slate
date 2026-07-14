@@ -12,6 +12,7 @@ import ClipadLoader from '@/components/ui/ClipadLoader';
 import VideoDownloadModal from '@/components/clipad/VideoDownloadModal';
 import { Download } from 'lucide-react';
 import DictationButton from '@/components/ui/DictationButton';
+import LockWall from '@/components/clipad/LockWall';
 
 const EMOJIS = ['👍','❤️','🔥','😂','🎉','🤯'];
 
@@ -48,6 +49,7 @@ export default function WatchVideo() {
   const [comments, setComments] = useState([]);
   const [reactions, setReactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [accessDenied, setAccessDenied] = useState(null); // { type: 'manual'|'scheduled'|'private', unlockAt? }
   const [commentText, setCommentText] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -114,6 +116,38 @@ export default function WatchVideo() {
             }
           } catch (err) {
             console.error("Failed to load secure video blob", err);
+          }
+        }
+
+        // --- ACCESS CONTROL LOGIC ---
+        const v = videoRes.data;
+        const isCreator = user && v.creator_id === user.id;
+        
+        // 1. Check Space Privacy
+        if (v.space_id && !isCreator) {
+          const { data: space } = await supabase.from('clipad_spaces').select('is_private').eq('id', v.space_id).single();
+          if (space?.is_private) {
+            const { data: member } = await supabase.from('clipad_space_members').select('id').eq('space_id', v.space_id).eq('user_id', user?.id || '').single();
+            if (!member) {
+              setAccessDenied({ type: 'private' });
+              setLoading(false);
+              return;
+            }
+          }
+        }
+
+        // 2. Check Locks
+        if (!isCreator) {
+          if (v.is_locked && v.unlock_at) {
+            if (new Date(v.unlock_at) > new Date()) {
+              setAccessDenied({ type: 'scheduled', unlockAt: v.unlock_at });
+              setLoading(false);
+              return;
+            }
+          } else if (v.is_locked) {
+            setAccessDenied({ type: 'manual' });
+            setLoading(false);
+            return;
           }
         }
       }
@@ -319,6 +353,10 @@ export default function WatchVideo() {
 
   if (loading || isLoadingAuth) {
     return <ClipadLoader fullScreen text="Loading video..." />;
+  }
+
+  if (accessDenied) {
+    return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt} title={video?.title || 'this video'} />;
   }
 
   if (!video) {

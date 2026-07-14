@@ -13,6 +13,7 @@ import {
 
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ClipadLoader from '@/components/ui/ClipadLoader';
+import LockWall from '@/components/clipad/LockWall';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -108,6 +109,7 @@ export default function MeetingRecord() {
   const [submittingComment, setSubmittingComment] = useState(false);
   const [sendingFollowUp, setSendingFollowUp] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [accessDenied, setAccessDenied] = useState(null);
   const [generatingAI, setGeneratingAI] = useState(false);
   const [showFullTranscript, setShowFullTranscript] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -128,8 +130,39 @@ export default function MeetingRecord() {
         supabase.from('clipad_video_comments').select('*, author:user_id(full_name, avatar_url)').eq('meeting_id', meetingId).order('created_at', { ascending: true }),
       ]);
       if (meetingRes.data) {
-        setMeeting(meetingRes.data);
-        setEditTitle(meetingRes.data.title || '');
+        const m = meetingRes.data;
+        const isHost = user && m.host_id === user.id;
+
+        // 1. Check Space Privacy
+        if (m.space_id && !isHost) {
+          const { data: space } = await supabase.from('clipad_spaces').select('is_private').eq('id', m.space_id).single();
+          if (space?.is_private) {
+            const { data: member } = await supabase.from('clipad_space_members').select('id').eq('space_id', m.space_id).eq('user_id', user?.id || '').single();
+            if (!member) {
+              setAccessDenied({ type: 'private' });
+              setLoading(false);
+              return;
+            }
+          }
+        }
+
+        // 2. Check Locks
+        if (!isHost) {
+          if (m.is_locked && m.unlock_at) {
+            if (new Date(m.unlock_at) > new Date()) {
+              setAccessDenied({ type: 'scheduled', unlockAt: m.unlock_at });
+              setLoading(false);
+              return;
+            }
+          } else if (m.is_locked) {
+            setAccessDenied({ type: 'manual' });
+            setLoading(false);
+            return;
+          }
+        }
+
+        setMeeting(m);
+        setEditTitle(m.title || '');
       }
       if (actionsRes.data) setActionItems(actionsRes.data);
       if (transcriptRes.data) setTranscript(transcriptRes.data);
@@ -238,6 +271,10 @@ export default function MeetingRecord() {
 
   if (loading || isLoadingAuth) {
     return <ClipadLoader fullScreen text="Loading meeting record..." />;
+  }
+
+  if (accessDenied) {
+    return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt} title={meeting?.title || 'this meeting'} />;
   }
 
   if (!meeting) {

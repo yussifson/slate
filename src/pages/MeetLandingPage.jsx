@@ -397,11 +397,11 @@ export default function MeetLandingPage() {
 
       <main className="relative z-10 flex-1 flex flex-col md:flex-row items-center justify-center p-6 md:p-12 gap-12 md:gap-16 max-w-7xl mx-auto w-full">
         <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-8 max-w-xl">
-          <h1 className="text-4xl md:text-5xl font-normal text-slate-800 leading-tight">
-            Enterprise collaboration & productivity software.<br />Now free for everyone.
+          <h1 className="text-4xl md:text-5xl font-normal text-slate-800 leading-tight tracking-tight">
+            Enterprise AI-powered organizational memory platform.<br />Now free for everyone.
           </h1>
           <p className="text-lg text-slate-500 leading-relaxed">
-            We re-engineered the service we built for secure collaborative productivity, CliPad, to make it free and available for all.
+            CliPad captures, connects, and preserves your company's knowledge—through meetings, async video, collaboration, and intelligent context.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full pt-2">

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback, memo } from 'react';
 import DailyIframe from '@daily-co/daily-js';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation} from "react-i18next";
 import { 
  DailyProvider, 
@@ -51,12 +52,13 @@ export const VIRTUAL_BACKGROUNDS = [
 ];
 
 
-function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBackground, spaceId}) {
- const { t} = useTranslation();
- const { user } = useAuth();
- 
- // Force Vite to retain supabase and use a safe reference
- const db = typeof supabase !== 'undefined' ? supabase : window.supabase;
+ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBackground, spaceId}) {
+  const navigate = useNavigate();
+  const { t} = useTranslation();
+  const { user } = useAuth();
+  
+  // Force Vite to retain supabase and use a safe reference
+  const db = typeof supabase !== 'undefined' ? supabase : window.supabase;
  
  const daily = useDaily();
  const localSessionId = useLocalSessionId();
@@ -400,6 +402,12 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
               }).catch(()=>{});
             });
           }
+          
+          daily.leave();
+          if (insertedMeeting) {
+            navigate(`/clipad/save-meeting/${insertedMeeting.id}${spaceId ? `?spaceId=${spaceId}` : ''}`);
+            return;
+          }
         }
       } catch (e) {
         console.error('Failed to save meeting record:', e);
@@ -407,6 +415,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
     }
     
     daily.leave();
+    if (onLeave) onLeave();
   };
 
  // --- REAL-TIME AI TRANSCRIPTION ---
