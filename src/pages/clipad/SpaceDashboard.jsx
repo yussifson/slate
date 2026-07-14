@@ -144,14 +144,19 @@ export default function SpaceDashboard() {
   const fetchAll = async () => {
     setLoading(true);
     try {
-      const [spaceRes, videosRes, meetingsRes, tasksRes, membersRes, profilesRes] = await Promise.all([
+      const [spaceRes, videosRes, meetingsRes, membersRes, profilesRes] = await Promise.all([
         supabase.from('clipad_spaces').select('*').eq('id', spaceId).single(),
         supabase.from('clipad_videos').select('*, creator:creator_id(full_name, avatar_url)').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(12),
         supabase.from('clipad_meeting_records').select('*').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(20),
-        supabase.from('clipad_action_items').select('*, assignedUser:assigned_to(full_name)').eq('space_id', spaceId).order('created_at', { ascending: false }),
         supabase.from('clipad_space_members').select('*').eq('space_id', spaceId),
         supabase.from('staff_records').select('user_id, full_name, user_email').eq('company_id', user.company_id || user.companies?.id)
       ]);
+      // Fetch action items via meeting_id (no space_id on that table)
+      let tasksRes = { data: [] };
+      const meetingIds = (meetingsRes.data || []).map(m => m.id);
+      if (meetingIds.length > 0) {
+        tasksRes = await supabase.from('clipad_action_items').select('*, assignedUser:assigned_to(full_name)').in('meeting_id', meetingIds).order('created_at', { ascending: false });
+      }
       if (spaceRes.data) {
         setSpace(spaceRes.data);
         setEditName(spaceRes.data.name);

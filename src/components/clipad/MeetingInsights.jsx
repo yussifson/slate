@@ -29,7 +29,7 @@ export default function MeetingInsights({ spaceId }) {
         // 1. Fetch meetings for this space
         let meetingsQuery = supabase
           .from('clipad_meeting_records')
-          .select('id, created_at, meeting_title, ai_summary, started_at, ended_at');
+          .select('id, created_at, title, ai_summary, started_at, ended_at');
         
         if (spaceId) {
           meetingsQuery = meetingsQuery.eq('space_id', spaceId);

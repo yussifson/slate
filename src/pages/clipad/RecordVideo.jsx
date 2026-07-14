@@ -255,6 +255,12 @@ export default function RecordVideo() {
   const timerRef = useRef(null);
   const streamsRef = useRef({ screen: null, camera: null });
   const wsRef = useRef(null);
+  const wsReconnectAttemptsRef = useRef(0);
+  const wsMaxReconnects = 5;
+  const wsBufferedChunksRef = useRef([]); // chunks buffered during WS outage
+  const wsIsReconnectingRef = useRef(false);
+  const wsEndRequestedRef = useRef(false); // true once user stops recording
+
   const recognitionRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
   const [pipWindow, setPipWindow] = useState(null);
@@ -845,108 +851,149 @@ export default function RecordVideo() {
       mediaRecorderRef.current = recorder;
       chunksRef.current = [];
 
+      // Reset reconnect state
+      wsReconnectAttemptsRef.current = 0;
+      wsBufferedChunksRef.current = [];
+      wsIsReconnectingRef.current = false;
+      wsEndRequestedRef.current = false;
+
       const wsUrl = 'wss://slate-2fli.onrender.com';
-      const ws = new WebSocket(wsUrl);
-      wsRef.current = ws;
 
       // ── Application-level heartbeat to keep Render from sleeping ──
-      // Send a PING every 20 seconds while recording
       let wsPingInterval = null;
-      const startPingInterval = () => {
+      const startPingInterval = (socket) => {
         wsPingInterval = setInterval(() => {
-          if (ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({ type: 'PING' }));
+          if (socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({ type: 'PING' }));
           }
         }, 20000);
       };
       const stopPingInterval = () => clearInterval(wsPingInterval);
 
-      ws.onopen = async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        ws.send(JSON.stringify({ type: 'START', userId: user.id, token: session?.access_token }));
-        recorder.start(1000); // 1-second chunks
-        startPingInterval();
-      };
-
-      ws.onmessage = async (event) => {
-        const msg = JSON.parse(event.data);
-        if (msg.type === 'PROGRESS') {
-          // Real upload progress from ingest server
-          setUploadProgress(Math.max(msg.percent || 0, uploadProgress));
-        } else if (msg.type === 'SUCCESS') {
-          stopPingInterval();
-          const publicUrl = supabase.storage.from('clipad_videos').getPublicUrl(msg.fileName).data.publicUrl;
-          setRecordingUrl(publicUrl);
-
-          const videoTitle = title.trim() || `Recording - ${new Date().toLocaleDateString()}`;
-          const { data: videoRecord, error: dbError } = await supabase.from('clipad_videos').insert({
-            creator_id: user.id,
-            video_url: publicUrl,
-            title: videoTitle,
-            space_id: selectedSpace || null,
-            duration_seconds: recordingSecondsRef.current,
-          }).select().single();
-
-          if (!dbError) {
-            setActiveVideoId(videoRecord.id);
-            toast({ title: 'Recording Saved!', description: 'Your video is securely saved in the cloud.', variant: 'default' });
-            setUploadProgress(100);
-            setPhase('review');
-            deleteRecordingState(id);
-          } else {
-            console.error('DB insert error:', dbError);
-            toast({ title: 'Save Error', description: dbError.message, variant: 'destructive' });
-            setPhase('review');
-          }
-        } else if (msg.type === 'ERROR') {
-          stopPingInterval();
-          toast({ title: 'Upload Error', description: msg.error, variant: 'destructive' });
-          setPhase('review');
-        }
-        // PONG — no-op, keepalive confirmed
-      };
-
-      ws.onerror = (err) => {
-        console.error('WebSocket error:', err);
-        stopPingInterval();
-      };
-
-      ws.onclose = (evt) => {
-        stopPingInterval();
-        // If we closed unexpectedly while still recording, warn the user
-        if (isRecordingRef.current) {
-          console.warn('WebSocket closed unexpectedly during recording', evt.code, evt.reason);
-          toast({ title: 'Connection dropped', description: 'The upload connection was interrupted. Stopping recording.', variant: 'destructive' });
-          stopRecording();
-        }
-      };
-
       // ── Backpressure-safe chunk sending ──
-      // Buffer chunks locally if WS isn't ready or is backed up
       const pendingChunks = [];
       let isFlushing = false;
-
-      const flushChunks = () => {
+      const flushChunks = (socket) => {
         if (isFlushing) return;
         isFlushing = true;
         while (pendingChunks.length > 0) {
-          if (ws.readyState !== WebSocket.OPEN) break;
-          // ws.bufferedAmount tells us if the send buffer is full (> 5MB → wait)
-          if (ws.bufferedAmount > 5 * 1024 * 1024) {
-            setTimeout(flushChunks, 200);
+          if (socket.readyState !== WebSocket.OPEN) break;
+          if (socket.bufferedAmount > 5 * 1024 * 1024) {
+            setTimeout(() => flushChunks(socket), 200);
             isFlushing = false;
             return;
           }
           const chunk = pendingChunks.shift();
-          ws.send(chunk);
+          socket.send(chunk);
         }
         isFlushing = false;
       };
 
+      const connectWS = async (isReconnect = false) => {
+        const ws = new WebSocket(wsUrl);
+        wsRef.current = ws;
+
+        ws.onopen = async () => {
+          wsIsReconnectingRef.current = false;
+          wsReconnectAttemptsRef.current = 0;
+          const { data: { session } } = await supabase.auth.getSession();
+          ws.send(JSON.stringify({ type: 'START', userId: user.id, token: session?.access_token }));
+          if (!isReconnect) {
+            // First connection — start recording
+            recorder.start(1000); // 1-second chunks
+          } else {
+            // Reconnected — replay buffered chunks first
+            toast({ title: '🔄 Reconnected', description: 'Uploading buffered recording data...' });
+            for (const bufferedChunk of wsBufferedChunksRef.current) {
+              if (ws.readyState === WebSocket.OPEN) ws.send(bufferedChunk);
+            }
+            wsBufferedChunksRef.current = [];
+            // If user already stopped, send END now
+            if (wsEndRequestedRef.current) {
+              ws.send(JSON.stringify({ type: 'END' }));
+            }
+          }
+          startPingInterval(ws);
+        };
+
+        ws.onmessage = async (event) => {
+          const msg = JSON.parse(event.data);
+          if (msg.type === 'PROGRESS') {
+            setUploadProgress(Math.max(msg.percent || 0, uploadProgress));
+          } else if (msg.type === 'SUCCESS') {
+            stopPingInterval();
+            const publicUrl = supabase.storage.from('clipad_videos').getPublicUrl(msg.fileName).data.publicUrl;
+            setRecordingUrl(publicUrl);
+
+            const videoTitle = title.trim() || `Recording - ${new Date().toLocaleDateString()}`;
+            const { data: videoRecord, error: dbError } = await supabase.from('clipad_videos').insert({
+              creator_id: user.id,
+              video_url: publicUrl,
+              title: videoTitle,
+              space_id: selectedSpace || null,
+              duration_seconds: recordingSecondsRef.current,
+            }).select().single();
+
+            if (!dbError) {
+              setActiveVideoId(videoRecord.id);
+              toast({ title: 'Recording Saved!', description: 'Your video is securely saved in the cloud.', variant: 'default' });
+              setUploadProgress(100);
+              setPhase('review');
+              deleteRecordingState(id);
+            } else {
+              console.error('DB insert error:', dbError);
+              toast({ title: 'Save Error', description: dbError.message, variant: 'destructive' });
+              setPhase('review');
+            }
+          } else if (msg.type === 'ERROR') {
+            stopPingInterval();
+            toast({ title: 'Upload Error', description: msg.error, variant: 'destructive' });
+            setPhase('review');
+          }
+          // PONG — no-op, keepalive confirmed
+        };
+
+        ws.onerror = (err) => {
+          console.error('WebSocket error:', err);
+          stopPingInterval();
+        };
+
+        ws.onclose = (evt) => {
+          stopPingInterval();
+          // Normal close (code 1000 / 1001) — do nothing
+          if (evt.code === 1000 || evt.code === 1001) return;
+
+          if (!isRecordingRef.current && !wsEndRequestedRef.current) return;
+
+          const attemptsLeft = wsMaxReconnects - wsReconnectAttemptsRef.current;
+          if (attemptsLeft > 0 && (isRecordingRef.current || wsEndRequestedRef.current)) {
+            wsIsReconnectingRef.current = true;
+            wsReconnectAttemptsRef.current++;
+            const delay = Math.min(1000 * Math.pow(2, wsReconnectAttemptsRef.current - 1), 15000);
+            console.warn(`WebSocket closed (code ${evt.code}), reconnecting in ${delay}ms (attempt ${wsReconnectAttemptsRef.current}/${wsMaxReconnects})`);
+            toast({ title: '⚠️ Connection lost', description: `Reconnecting... (${wsReconnectAttemptsRef.current}/${wsMaxReconnects})` });
+            setTimeout(() => connectWS(true), delay);
+          } else {
+            console.error('WebSocket permanently failed after max reconnect attempts.');
+            toast({ title: '❌ Upload Failed', description: 'Connection permanently lost. Your recording was saved locally — use the recovery prompt next visit.', variant: 'destructive' });
+            if (isRecordingRef.current) stopRecording();
+          }
+        };
+      };
+
       recorder.ondataavailable = e => {
         if (e.data.size > 0) {
-          pendingChunks.push(e.data);
-          flushChunks();
+          // Always save to IndexedDB for crash recovery
+          chunksRef.current.push(e.data);
+          saveRecordingState(id, chunksRef.current);
+
+          if (wsRef.current?.readyState === WebSocket.OPEN) {
+            pendingChunks.push(e.data);
+            flushChunks(wsRef.current);
+          } else {
+            // WS not ready — buffer the chunk for later replay on reconnect
+            wsBufferedChunksRef.current.push(e.data);
+          }
         }
       };
       
@@ -954,18 +1001,25 @@ export default function RecordVideo() {
         stopEverything();
         setPhase('uploading');
         setUploadProgress(10);
+        wsEndRequestedRef.current = true;
         // Flush any remaining buffered chunks before signalling END
         const waitAndEnd = () => {
-          if (pendingChunks.length > 0 || ws.bufferedAmount > 0) {
+          if (pendingChunks.length > 0 || (wsRef.current?.bufferedAmount || 0) > 0) {
             setTimeout(waitAndEnd, 300);
             return;
           }
-          if (ws && ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({ type: 'END' }));
+          if (wsRef.current?.readyState === WebSocket.OPEN) {
+            wsRef.current.send(JSON.stringify({ type: 'END' }));
+          } else if (wsIsReconnectingRef.current) {
+            // Still reconnecting — END will be sent after reconnect (handled in onopen)
+            setTimeout(waitAndEnd, 500);
           }
         };
         waitAndEnd();
       };
+
+      // Initial connection
+      connectWS(false);
 
       setPhase('recording');
       isRecordingRef.current = true;
