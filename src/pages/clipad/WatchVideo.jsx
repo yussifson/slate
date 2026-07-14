@@ -124,7 +124,8 @@ export default function WatchVideo() {
         const isCreator = user && v.creator_id === user.id;
         
         // 1. Check Space Privacy
-        if (v.space_id && !isCreator) {
+        const isAdminUser = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
+        if (v.space_id && !isCreator && !isAdminUser) {
           const { data: space } = await supabase.from('clipad_spaces').select('is_private').eq('id', v.space_id).single();
           if (space?.is_private) {
             const { data: member } = await supabase.from('clipad_space_members').select('id').eq('space_id', v.space_id).eq('user_id', user?.id || '').single();
@@ -249,7 +250,7 @@ export default function WatchVideo() {
     } catch (err) { console.error(err); }
   };
 
-  const isAdmin = user?.clipad_plan === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
   const canEdit = video?.creator_id === user?.id || isAdmin;
 
   const toggleMute = () => {

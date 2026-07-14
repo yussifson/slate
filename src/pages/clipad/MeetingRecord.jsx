@@ -134,7 +134,8 @@ export default function MeetingRecord() {
         const isHost = user && m.host_id === user.id;
 
         // 1. Check Space Privacy
-        if (m.space_id && !isHost) {
+        const isAdminUser = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
+        if (m.space_id && !isHost && !isAdminUser) {
           const { data: space } = await supabase.from('clipad_spaces').select('is_private').eq('id', m.space_id).single();
           if (space?.is_private) {
             const { data: member } = await supabase.from('clipad_space_members').select('id').eq('space_id', m.space_id).eq('user_id', user?.id || '').single();
@@ -317,8 +318,8 @@ export default function MeetingRecord() {
     } catch (err) { console.error(err); }
   };
 
-  const isAdmin = user?.clipad_plan === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
-  const canEdit = meeting?.created_by === user?.id || isAdmin;
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
+  const canEdit = meeting?.created_by === user?.id || meeting?.host_id === user?.id || isAdmin;
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground overflow-x-hidden pb-24 md:pb-8">

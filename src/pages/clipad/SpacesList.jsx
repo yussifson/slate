@@ -56,10 +56,10 @@ export default function SpacesList() {
       mySpaces = [...mySpaces, ...(memberSpaces || []).filter(s => !existingIds.has(s.id))];
     }
 
-    // Also load ALL public spaces for the company (everyone can see them)
-    const { data: publicSpaces } = await supabase.from('clipad_spaces').select('*').eq('is_private', false);
+    // Also load ALL spaces for the company (everyone can see them)
+    const { data: companySpaces } = await supabase.from('clipad_spaces').select('*');
     const existingIds2 = new Set(mySpaces.map(s => s.id));
-    const allSpaces = [...mySpaces, ...(publicSpaces || []).filter(s => !existingIds2.has(s.id))];
+    const allSpaces = [...mySpaces, ...(companySpaces || []).filter(s => !existingIds2.has(s.id))];
 
     // Tag spaces the user is a member of (for badge display)
     const memberSet = new Set([...mySpaces.map(s => s.id)]);

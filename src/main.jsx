@@ -33,7 +33,22 @@ window.addEventListener('vite:preloadError', (event) => {
 });
 
 window.addEventListener('unhandledrejection', async (event) => {
-  if (event.reason && event.reason.message && event.reason.message.includes('importScripts') && event.reason.message.includes('workbox')) {
+  const msg = event.reason?.message || '';
+
+  // Handle stale Vercel chunks: "Failed to fetch dynamically imported module"
+  if (msg.includes('Failed to fetch dynamically imported module') || msg.includes('Importing a module script failed')) {
+    if (sessionStorage.getItem('vite-reload')) {
+      sessionStorage.removeItem('vite-reload');
+      console.error('Dynamic import error persists. Stopping reload loop.');
+      return;
+    }
+    sessionStorage.setItem('vite-reload', 'true');
+    console.warn('Stale deployment chunk detected. Forcing hard reload...');
+    window.location.reload(true);
+    return;
+  }
+
+  if (msg.includes('importScripts') && msg.includes('workbox')) {
     console.warn('Workbox importScripts failed.');
     // CAUTION: Do not unregister the service worker if offline, as reloading will show the Dinosaur error.
     if (!navigator.onLine) {

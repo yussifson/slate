@@ -49,7 +49,6 @@ export default function VideosList() {
     setLoading(true);
     const { data } = await supabase.from('clipad_videos')
       .select('*, space:space_id(name, is_private)')
-      .eq('creator_id', user.id)
       .order('created_at', { ascending: false });
     
     if (data) {
