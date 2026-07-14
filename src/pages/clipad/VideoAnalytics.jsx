@@ -60,7 +60,7 @@ export default function VideoAnalytics() {
         .then(({ data }) => {
           setViewersData(data || []);
           setLoadingViewers(false);
-      loadViewers(selectedVideo.id);
+        });
     } else {
       setViewersData([]);
     }
@@ -185,23 +185,6 @@ export default function VideoAnalytics() {
       console.error(err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const loadViewers = async (videoId) => {
-    setLoadingViewers(true);
-    try {
-      const { data: views } = await supabase
-        .from('clipad_video_views')
-        .select('viewed_at, viewer_id, profiles!viewer_id(full_name, email, avatar_url)')
-        .eq('video_id', videoId)
-        .order('viewed_at', { ascending: false });
-
-      setViewersData(views || []);
-    } catch (e) {
-      console.error("Error loading viewers:", e);
-    } finally {
-      setLoadingViewers(false);
     }
   };
 
