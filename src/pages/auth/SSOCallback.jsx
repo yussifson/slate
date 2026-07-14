@@ -87,7 +87,7 @@ export default function SSOCallback() {
 
         // Clear the URL hash for security so it isn't copied/pasted, and redirect to dashboard
         const continueUrl = searchParams.get("continue");
-        navigate(continueUrl || "/", { replace: true });
+        window.location.href = continueUrl || "/";
         
       } catch (err) {
         console.error("SSO Callback Error:", err);

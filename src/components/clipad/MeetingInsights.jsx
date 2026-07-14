@@ -26,26 +26,30 @@ export default function MeetingInsights({ spaceId }) {
     async function fetchInsights() {
       setLoading(true);
       try {
+        // 1. Fetch meetings for this space
         let meetingsQuery = supabase
           .from('clipad_meeting_records')
-          .select('created_at, meeting_title, ai_summary, started_at, ended_at');
-        
-        // Fetch action items for this space
-        let actionsQuery = supabase
-          .from('clipad_action_items')
-          .select('is_complete');
+          .select('id, created_at, meeting_title, ai_summary, started_at, ended_at');
         
         if (spaceId) {
           meetingsQuery = meetingsQuery.eq('space_id', spaceId);
-          actionsQuery = actionsQuery.eq('space_id', spaceId);
         }
 
-        const [meetingsRes, actionsRes] = await Promise.all([meetingsQuery, actionsQuery]);
-        
+        const meetingsRes = await meetingsQuery;
         if (meetingsRes.error) throw meetingsRes.error;
 
         const meetings = meetingsRes.data || [];
-        const actions = actionsRes.data || [];
+        const meetingIds = meetings.map(m => m.id);
+
+        // 2. Fetch action items via meeting_id (no space_id field on this table)
+        let actions = [];
+        if (meetingIds.length > 0) {
+          const actionsRes = await supabase
+            .from('clipad_action_items')
+            .select('is_complete')
+            .in('meeting_id', meetingIds);
+          if (!actionsRes.error) actions = actionsRes.data || [];
+        }
 
         let totalDurationMin = 0;
         let validDurations = 0;

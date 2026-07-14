@@ -150,7 +150,7 @@ export default function SpaceDashboard() {
         supabase.from('clipad_meeting_records').select('*').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(20),
         supabase.from('clipad_action_items').select('*, assignedUser:assigned_to(full_name)').eq('space_id', spaceId).order('created_at', { ascending: false }),
         supabase.from('clipad_space_members').select('*').eq('space_id', spaceId),
-        supabase.from('profiles').select('id, full_name, email, avatar_url').eq('company_id', user.company_id)
+        supabase.from('staff_records').select('user_id, full_name, user_email').eq('company_id', user.company_id || user.companies?.id)
       ]);
       if (spaceRes.data) {
         setSpace(spaceRes.data);
@@ -169,7 +169,18 @@ export default function SpaceDashboard() {
       }
       if (tasksRes.data) setTasks(tasksRes.data);
       if (membersRes.data) setSpaceMembers(membersRes.data);
-      if (profilesRes.data) setProfiles(profilesRes.data);
+      if (profilesRes.data) {
+        // map staff_records to profiles structure
+        const mappedProfiles = profilesRes.data
+          .filter(s => s.user_id) // only include staff who have registered
+          .map(s => ({
+            id: s.user_id,
+            full_name: s.full_name,
+            email: s.user_email,
+            avatar_url: null
+          }));
+        setProfiles(mappedProfiles);
+      }
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
   };

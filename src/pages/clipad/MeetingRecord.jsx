@@ -8,8 +8,9 @@ import {
   ArrowLeft, Brain, CheckCircle, Clock, Users, FileText,
   Sparkles, MessageSquare, Target, ChevronDown, ChevronUp,
   User, Calendar, Copy, Check, Download, Zap, AlertCircle,
-  Play, BarChart3, Video, Edit3, Trash2, Lock, MoreHorizontal
+  Play, BarChart3, Video, Edit3, Trash2, Lock, MoreHorizontal, Send
 } from 'lucide-react';
+
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
@@ -101,6 +102,11 @@ export default function MeetingRecord() {
   const [meeting, setMeeting] = useState(null);
   const [actionItems, setActionItems] = useState([]);
   const [transcript, setTranscript] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState('');
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [submittingComment, setSubmittingComment] = useState(false);
+  const [sendingFollowUp, setSendingFollowUp] = useState(false);
   const [loading, setLoading] = useState(true);
   const [generatingAI, setGeneratingAI] = useState(false);
   const [showFullTranscript, setShowFullTranscript] = useState(false);
@@ -115,10 +121,11 @@ export default function MeetingRecord() {
   const fetchMeeting = async () => {
     setLoading(true);
     try {
-      const [meetingRes, actionsRes, transcriptRes] = await Promise.all([
+      const [meetingRes, actionsRes, transcriptRes, commentsRes] = await Promise.all([
         supabase.from('clipad_meeting_records').select('*').eq('id', meetingId).single(),
         supabase.from('clipad_action_items').select('*').eq('meeting_id', meetingId).order('created_at', { ascending: true }),
         supabase.from('clipad_transcripts').select('*').eq('meeting_id', meetingId).order('start_time', { ascending: true }),
+        supabase.from('clipad_video_comments').select('*, author:user_id(full_name, avatar_url)').eq('meeting_id', meetingId).order('created_at', { ascending: true }),
       ]);
       if (meetingRes.data) {
         setMeeting(meetingRes.data);
@@ -126,8 +133,33 @@ export default function MeetingRecord() {
       }
       if (actionsRes.data) setActionItems(actionsRes.data);
       if (transcriptRes.data) setTranscript(transcriptRes.data);
+      if (commentsRes.data) setComments(commentsRes.data);
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
+  };
+
+  const submitMeetingComment = async (e) => {
+    e.preventDefault();
+    if (!commentText.trim() || !user) return;
+    setSubmittingComment(true);
+    try {
+      const content = isAnonymous ? `[ANON]${commentText.trim()}` : commentText.trim();
+      const { data, error } = await supabase.from('clipad_video_comments').insert({
+        meeting_id: meetingId,
+        user_id: user.id,
+        content,
+        timestamp_seconds: 0,
+      }).select('*').single();
+      if (error) throw error;
+      setComments(prev => [...prev, { ...data, author: { full_name: user.full_name, avatar_url: user.avatar_url } }]);
+      setCommentText('');
+      toast({ title: 'Comment posted!' });
+    } catch (err) {
+      console.error(err);
+      toast({ title: 'Error', description: 'Failed to post comment. Please try again.', variant: 'destructive' });
+    } finally {
+      setSubmittingComment(false);
+    }
   };
 
   const generateAISummary = async () => {
@@ -372,10 +404,24 @@ export default function MeetingRecord() {
                       <p className="text-xs text-muted-foreground mt-1">Automatically draft and send follow-ups to attendees.</p>
                     </div>
                     <button 
-                      onClick={() => toast({ title: 'Follow-ups Sent', description: 'Smart follow-up emails have been queued for attendees.' })}
-                      className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+                      disabled={sendingFollowUp}
+                      onClick={async () => {
+                        setSendingFollowUp(true);
+                        try {
+                          const { data, error } = await supabase.functions.invoke('clipad-smart-followup', {
+                            body: { meetingId: meeting.id }
+                          });
+                          if (error) throw error;
+                          toast({ title: 'Follow-ups Sent! 🎉', description: data?.message || 'Smart follow-up emails have been queued.' });
+                        } catch (err) {
+                          toast({ title: 'Error', description: 'Failed to send follow-ups. Please try again.', variant: 'destructive' });
+                        } finally {
+                          setSendingFollowUp(false);
+                        }
+                      }}
+                      className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all disabled:opacity-60"
                     >
-                      Send Follow-Up
+                      {sendingFollowUp ? 'Sending...' : 'Send Follow-Up'}
                     </button>
                   </div>
                 </div>
@@ -502,7 +548,56 @@ export default function MeetingRecord() {
           </SectionCard>
         )}
 
-        
+
+        {/* Comments Section */}
+        <SectionCard icon={MessageSquare} iconColor="from-blue-500 to-indigo-500" title="Comments" badge={comments.length > 0 ? comments.length : undefined} defaultOpen>
+          <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
+            {comments.length === 0 ? (
+              <p className="text-sm text-muted-foreground italic text-center py-4">No comments yet. Be the first to comment!</p>
+            ) : (
+              comments.map((c) => {
+                const isAnon = c.content?.startsWith('[ANON]');
+                const displayContent = isAnon ? c.content.replace('[ANON]', '') : c.content;
+                const authorName = isAnon ? 'Anonymous' : (c.author?.full_name || 'Team Member');
+                return (
+                  <div key={c.id} className="flex gap-3">
+                    <div className="w-7 h-7 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-500 text-xs font-bold shrink-0">
+                      {isAnon ? '?' : authorName.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">{authorName}</p>
+                      <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mt-0.5">{displayContent}</p>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+          <form onSubmit={submitMeetingComment} className="space-y-2">
+            <textarea
+              value={commentText}
+              onChange={e => setCommentText(e.target.value)}
+              placeholder="Write a comment..."
+              rows={2}
+              className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm resize-none focus:outline-none focus:border-indigo-500/50 transition-all"
+            />
+            <div className="flex items-center justify-between gap-2">
+              <label className="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" checked={isAnonymous} onChange={e => setIsAnonymous(e.target.checked)} className="rounded" />
+                <span className="text-xs text-muted-foreground">Post Anonymously</span>
+              </label>
+              <button
+                type="submit"
+                disabled={submittingComment || !commentText.trim()}
+                className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition-all disabled:opacity-50 flex items-center gap-1.5"
+              >
+                <Send className="w-3 h-3" />
+                {submittingComment ? 'Posting...' : 'Post'}
+              </button>
+            </div>
+          </form>
+        </SectionCard>
+
           </div>
 
         </div>

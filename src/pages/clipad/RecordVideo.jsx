@@ -1394,7 +1394,7 @@ export default function RecordVideo() {
               {mode === 'screen_camera' && (
                 <>
                   <video ref={previewRef} autoPlay muted playsInline className="w-full h-full object-contain" />
-                  {cameraStream && (
+                  {streamsRef.current?.camera && (
                     <div 
                       className="absolute z-50 cursor-grab active:cursor-grabbing rounded-xl overflow-hidden shadow-xl ring-2 ring-indigo-500/80 bg-black"
                       style={{ 
@@ -1410,7 +1410,7 @@ export default function RecordVideo() {
                         muted 
                         playsInline 
                         className="w-full h-full object-cover scale-x-[-1]" 
-                        ref={v => { if (v && v.srcObject !== cameraStream) v.srcObject = cameraStream; }} 
+                        ref={v => { if (v && v.srcObject !== streamsRef.current?.camera) v.srcObject = streamsRef.current?.camera; }} 
                       />
                     </div>
                   )}
