@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/AuthContext';
 import {
   Video, Camera, Plus, Brain, CheckCircle, Clock, TrendingUp,
   Layers, Play, BarChart3, Settings, ArrowRight, Sparkles, Activity,
-  Users, FileText, Calendar, Mic, Target, Flame, Star, LogOut, Shield
+  Users, FileText, Calendar, Mic, Target, Flame, Star, LogOut, Shield, Lock, Globe
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { getSpaceIcon } from '@/utils/spaceIcons';
@@ -69,6 +69,16 @@ function SpaceCard({ space, onClick }) {
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">{space.description || 'Team space'}</p>
         </div>
         <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors shrink-0" />
+      </div>
+      <div className="flex items-center justify-between mb-4">
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
+          space.is_private
+            ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400'
+            : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+        }`}>
+          {space.is_private ? <Lock className="w-2.5 h-2.5" /> : <Globe className="w-2.5 h-2.5" />}
+          {space.is_private ? 'Private' : 'Public'}
+        </span>
       </div>
       <div className="flex items-center justify-between">
         <div className="flex -space-x-2">
@@ -133,6 +143,18 @@ function VideoCard({ video, onClick }) {
           <Clock className="w-3 h-3" />
           {formatDuration(video.duration_seconds, video.id)}
         </div>
+        <div className="absolute top-2 left-2">
+          {video.space && (
+            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-sm ${
+              video.space.is_private
+                ? 'bg-rose-50/90 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 backdrop-blur-md'
+                : 'bg-emerald-50/90 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 backdrop-blur-md'
+            }`}>
+              {video.space.is_private ? <Lock className="w-2.5 h-2.5" /> : <Globe className="w-2.5 h-2.5" />}
+              {video.space.is_private ? 'Private' : 'Public'}
+            </span>
+          )}
+        </div>
       </div>
       <div className="p-4 flex-1 flex flex-col justify-between">
         <p className="text-sm font-semibold text-slate-900 dark:text-white line-clamp-1 mb-1">{video.title || 'Untitled Recording'}</p>
@@ -190,8 +212,8 @@ export default function CliPadDashboard() {
 
       // Use count queries for accurate stats — never limit the count fetches
       const [videosRes, meetingsRes, actionRes, allActionRes] = await Promise.all([
-        supabase.from('clipad_videos').select('*').order('created_at', { ascending: false }).limit(6),
-        supabase.from('clipad_meeting_records').select('*').order('created_at', { ascending: false }).limit(5),
+        supabase.from('clipad_videos').select('*, space:space_id(name, is_private)').order('created_at', { ascending: false }).limit(6),
+        supabase.from('clipad_meeting_records').select('*, space:space_id(name, is_private)').order('created_at', { ascending: false }).limit(5),
         supabase.from('clipad_action_items').select('id', { count: 'exact' }).eq('is_complete', false),
         supabase.from('clipad_action_items').select('id', { count: 'exact' }),
       ]);
@@ -497,7 +519,19 @@ export default function CliPadDashboard() {
                   meetings.slice(0, 4).map(m => (
                     <div key={m.id} onClick={() => navigate(`/meetings/${m.id}`)} className="px-6 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors group">
                       <div className="flex items-center justify-between mb-1">
-                        <p className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{m.title || 'Team Meeting'}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{m.title || 'Team Meeting'}</p>
+                          {m.space && (
+                            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                              m.space.is_private
+                                ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400'
+                                : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                            }`}>
+                              {m.space.is_private ? <Lock className="w-2.5 h-2.5" /> : <Globe className="w-2.5 h-2.5" />}
+                              {m.space.is_private ? 'Private' : 'Public'}
+                            </span>
+                          )}
+                        </div>
                         {m.ai_summary && <Sparkles className="w-4 h-4 text-primary shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />}
                       </div>
                       <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{new Date(m.created_at).toLocaleString()}</p>

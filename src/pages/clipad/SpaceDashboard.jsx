@@ -7,7 +7,7 @@ import {
   Users, Video, Calendar, Plus, Play, Monitor, Activity,
   Brain, FileText, CheckCircle, Search, Settings, ArrowLeft,
   Clock, MessageSquare, Heart, Bookmark, Eye, MoreVertical, CheckCircle2, Circle, MoreHorizontal, ArrowRight,
-  Shield, Edit3, Lock, X, Trash2, User, ShieldAlert, Sparkles, Camera, Layers, Target, ChevronRight
+  Shield, Edit3, Lock, X, Trash2, User, ShieldAlert, Sparkles, Camera, Layers, Target, ChevronRight, Sun
 } from 'lucide-react';
 import SpaceNotes from '@/components/clipad/SpaceNotes';
 import MeetingInsights from '@/components/clipad/MeetingInsights';
@@ -27,9 +27,13 @@ import BlockerRadar from '@/components/clipad/features/BlockerRadar';
 import RedundantWorkAlert from '@/components/clipad/features/RedundantWorkAlert';
 import MeetingROIDashboard from '@/components/clipad/features/MeetingROIDashboard';
 import CommitmentTracker from '@/components/clipad/features/CommitmentTracker';
+import StandupPanel from '@/components/clipad/StandupPanel';
+import OrgTimeline from '@/components/clipad/OrgTimeline';
 
 const TABS = [
   { id: 'overview', icon: Layers, label: 'Overview' },
+  { id: 'timeline', icon: Activity, label: 'Timeline' },
+  { id: 'standup', icon: Sun, label: 'Standup' },
   { id: 'chat', icon: MessageSquare, label: 'Chat' },
   { id: 'calendar', icon: Calendar, label: 'Calendar' },
   { id: 'videos', icon: Camera, label: 'Videos' },
@@ -643,6 +647,20 @@ export default function SpaceDashboard() {
         {activeTab === 'automations' && (
           <div className="h-[calc(100vh-140px)] overflow-y-auto">
             <SpaceAutomations spaceId={spaceId} />
+          </div>
+        )}
+
+        {/* STANDUP */}
+        {activeTab === 'standup' && (
+          <div className="h-[calc(100vh-140px)] overflow-y-auto p-4">
+            <StandupPanel spaceId={spaceId} />
+          </div>
+        )}
+
+        {/* TIMELINE */}
+        {activeTab === 'timeline' && (
+          <div className="h-[calc(100vh-140px)] overflow-y-auto p-6 max-w-4xl mx-auto">
+            <OrgTimeline workspaceId={workspaceId} spaceId={spaceId} />
           </div>
         )}
 

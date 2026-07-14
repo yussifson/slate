@@ -1,0 +1,184 @@
+import React, { useState, useEffect } from 'react';
+import { supabase } from '@/api/supabaseClient';
+import { 
+  Activity, Clock, Calendar, CheckCircle, Video, ShieldAlert, 
+  MessageSquare, FileText, ChevronRight, Target, BrainCircuit 
+} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+const EVENT_ICONS = {
+  meeting_saved: Calendar,
+  decision_created: ShieldAlert,
+  task_completed: CheckCircle,
+  video_uploaded: Video,
+  blocker_raised: Target,
+  default: Activity
+};
+
+const EVENT_COLORS = {
+  meeting_saved: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400',
+  decision_created: 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400',
+  task_completed: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400',
+  video_uploaded: 'bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400',
+  blocker_raised: 'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400',
+  default: 'bg-slate-100 text-slate-600 dark:bg-slate-500/20 dark:text-slate-400'
+};
+
+export default function OrgTimeline({ workspaceId, spaceId }) {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchTimeline() {
+      setLoading(true);
+      try {
+        let query = supabase
+          .from('clipad_org_events')
+          .select('*')
+          .eq('workspace_id', workspaceId)
+          .order('created_at', { ascending: false })
+          .limit(50);
+          
+        if (spaceId) {
+          query = query.eq('space_id', spaceId);
+        }
+        
+        if (filter !== 'all') {
+          query = query.eq('event_type', filter);
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+        setEvents(data || []);
+      } catch (err) {
+        console.error('Timeline error:', err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    if (workspaceId) {
+      fetchTimeline();
+    }
+  }, [workspaceId, spaceId, filter]);
+
+  const handleNavigate = (event) => {
+    if (!event.source_id) return;
+    switch(event.source_table) {
+      case 'clipad_meeting_records':
+        navigate(`/clipad/meeting/${event.source_id}`);
+        break;
+      case 'clipad_videos':
+        navigate(`/watch/${event.source_id}`);
+        break;
+      // Add other routings as needed
+      default:
+        break;
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <Activity className="w-6 h-6 text-primary" />
+            Organizational Timeline
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Chronological record of all team events and activities.
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 hide-scrollbar">
+          {['all', 'meeting_saved', 'decision_created', 'task_completed'].map(f => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-colors ${
+                filter === f 
+                  ? 'bg-primary text-primary-foreground shadow-sm' 
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+              }`}
+            >
+              {f.replace('_', ' ')}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="flex justify-center py-12">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : events.length === 0 ? (
+        <div className="text-center py-16 px-4 bg-slate-50 dark:bg-slate-800/30 rounded-3xl border border-slate-200 dark:border-slate-700/50">
+          <Clock className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No Events Found</h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+            {filter === 'all' 
+              ? "Your organizational timeline is empty. Record meetings, make decisions, or complete tasks to see activity here."
+              : `No events of type "${filter.replace('_', ' ')}" found.`}
+          </p>
+        </div>
+      ) : (
+        <div className="relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 dark:before:via-slate-700 before:to-transparent">
+          <div className="space-y-6 md:space-y-8 relative">
+            {events.map((event, index) => {
+              const Icon = EVENT_ICONS[event.event_type] || EVENT_ICONS.default;
+              const colorClass = EVENT_COLORS[event.event_type] || EVENT_COLORS.default;
+              
+              return (
+                <div key={event.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-950 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 absolute left-0 md:left-1/2 -translate-x-1/2 md:translate-x-0 z-10 bg-white dark:bg-slate-900">
+                    <div className={`w-full h-full rounded-full flex items-center justify-center ${colorClass}`}>
+                      <Icon className="w-4 h-4" />
+                    </div>
+                  </div>
+                  
+                  <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] ml-auto md:ml-0 p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-primary/30 transition-all cursor-pointer" onClick={() => handleNavigate(event)}>
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-3">
+                      <div>
+                        <span className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-2 ${colorClass}`}>
+                          {event.event_type.replace('_', ' ')}
+                        </span>
+                        <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug">
+                          {event.title}
+                        </h4>
+                      </div>
+                      <span className="text-xs font-semibold text-slate-400 whitespace-nowrap flex items-center gap-1 shrink-0">
+                        <Clock className="w-3 h-3" />
+                        {new Date(event.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                    
+                    {event.description && (
+                      <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mt-2">
+                        {event.description}
+                      </p>
+                    )}
+                    
+                    {event.source_id && (
+                      <div className="mt-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3">
+                        <span className="text-xs font-medium text-slate-500 hover:text-primary transition-colors flex items-center gap-1">
+                          View Source <ChevronRight className="w-3 h-3" />
+                        </span>
+                        {event.importance >= 7 && (
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 dark:bg-amber-500/10 dark:text-amber-400 px-2 py-0.5 rounded-full flex items-center gap-1 border border-amber-200 dark:border-amber-500/20">
+                            <BrainCircuit className="w-3 h-3" /> Key Event
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

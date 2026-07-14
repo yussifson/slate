@@ -365,6 +365,71 @@ export default function VideoAnalytics() {
             )}
           </div>
         </div>
+
+        {/* Viewer Modal */}
+        {selectedVideo && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[80vh]">
+              <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
+                <div>
+                  <h3 className="font-bold text-lg text-slate-900 dark:text-white line-clamp-1">{selectedVideo.title}</h3>
+                  <p className="text-sm font-medium text-slate-500 flex items-center gap-1 mt-1"><Eye className="w-3.5 h-3.5" /> {viewersData.length} Unique Viewers</p>
+                </div>
+                <button onClick={() => setSelectedVideo(null)} className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0">
+                  <X className="w-4 h-4" />
+                </button>
               </div>
+
+              <div className="flex-1 overflow-y-auto p-2 min-h-[200px]">
+                {loadingViewers ? (
+                  <div className="h-full flex flex-col items-center justify-center py-10">
+                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-3"></div>
+                    <p className="text-sm text-slate-500 font-medium">Loading viewer data...</p>
+                  </div>
+                ) : viewersData.length > 0 ? (
+                  <div className="space-y-1 p-2">
+                    {viewersData.map(viewer => (
+                      <div key={viewer.id} className="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 overflow-hidden flex items-center justify-center shrink-0">
+                          {viewer.profile.avatar_url ? (
+                            <img src={viewer.profile.avatar_url} alt={viewer.profile.full_name} className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="font-bold text-primary text-sm">{viewer.profile.full_name?.charAt(0) || '?'}</span>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-sm text-slate-900 dark:text-white truncate">{viewer.profile.full_name}</p>
+                          <p className="text-xs text-slate-500 truncate">{viewer.profile.email}</p>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className="text-xs font-medium text-slate-500">{new Date(viewer.viewed_at).toLocaleDateString()}</p>
+                          <p className="text-[10px] text-slate-400">{new Date(viewer.viewed_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="h-full flex flex-col items-center justify-center py-10 text-center px-6">
+                    <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-3">
+                      <Users className="w-5 h-5 text-slate-400" />
+                    </div>
+                    <p className="text-sm font-bold text-slate-700 dark:text-slate-300">No viewers yet</p>
+                    <p className="text-xs text-slate-500 mt-1">When users watch this video, they will appear here.</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="p-4 border-t border-slate-100 dark:border-slate-800 shrink-0 bg-slate-50 dark:bg-slate-900/50">
+                <button 
+                  onClick={() => navigate(`/watch/${selectedVideo.id}`)}
+                  className="w-full py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                >
+                  <Video className="w-4 h-4" /> Watch Video
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
   );
 }

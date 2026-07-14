@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
-import { ShieldAlert, CheckCircle, Clock, Archive, BrainCircuit } from 'lucide-react';
+import { ShieldAlert, CheckCircle, Clock, Archive, BrainCircuit, Sparkles, Loader2, Star, Bot } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
+import { detectDecisions, writeOrgEvent } from '@/lib/clipadIntelligence';
 
 export default function DecisionLedger({ workspaceId, spaceId, hasFullIntelligence, teamColor }) {
   const { user } = useAuth();
   const [decisions, setDecisions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [detecting, setDetecting] = useState(false);
+  const [detected, setDetected] = useState(0);
 
   // RBAC checks
   const isAdmin = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
@@ -34,6 +37,54 @@ export default function DecisionLedger({ workspaceId, spaceId, hasFullIntelligen
 
     fetchDecisions();
   }, [workspaceId, spaceId, hasFullIntelligence]);
+
+  const handleAIDetect = async () => {
+    if (!spaceId) return;
+    setDetecting(true);
+    setDetected(0);
+    try {
+      // Pull recent meeting summaries for this space
+      const { data: meetings } = await supabase
+        .from('clipad_meeting_records')
+        .select('id, title, ai_summary, transcript')
+        .eq('space_id', spaceId)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      let totalAdded = 0;
+      for (const meeting of (meetings || [])) {
+        const text = [meeting.ai_summary, meeting.transcript].filter(Boolean).join('\n');
+        if (!text) continue;
+        const found = await detectDecisions(text, {
+          team_space_id: spaceId,
+          workspace_id: workspaceId,
+          related_meeting_id: meeting.id,
+        });
+        for (const d of found) {
+          const { error } = await supabase.from('clipad_decisions').insert(d);
+          if (!error) {
+            totalAdded++;
+            await writeOrgEvent({
+              space_id: spaceId,
+              workspace_id: workspaceId,
+              event_type: 'decision_created',
+              title: d.decision_text.substring(0, 80),
+              actor_id: user?.id,
+              source_id: meeting.id,
+              source_table: 'clipad_meeting_records',
+              importance: d.importance_score || 4,
+            });
+          }
+        }
+      }
+      setDetected(totalAdded);
+      if (totalAdded > 0) fetchDecisions();
+    } catch (err) {
+      console.warn('AI Detect error:', err.message);
+    } finally {
+      setDetecting(false);
+    }
+  };
 
   const handleSupersede = async (decisionId) => {
     if (!isAdmin) return;
@@ -74,6 +125,16 @@ export default function DecisionLedger({ workspaceId, spaceId, hasFullIntelligen
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Immutable record of team decisions to prevent relitigation.</p>
         </div>
+        {hasFullIntelligence && (
+          <button
+            onClick={handleAIDetect}
+            disabled={detecting}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold disabled:opacity-50 transition-all"
+          >
+            {detecting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+            {detecting ? 'Detecting...' : detected > 0 ? `${detected} Found` : 'AI Detect'}
+          </button>
+        )}
       </div>
 
       {loading ? (
@@ -91,7 +152,7 @@ export default function DecisionLedger({ workspaceId, spaceId, hasFullIntelligen
             <div key={decision.id} className={`p-5 rounded-xl border transition-colors ${decision.status === 'active' ? 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 shadow-sm' : 'border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/20 opacity-70'}`}>
               <div className="flex justify-between items-start gap-4">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center gap-2 mb-3 flex-wrap">
                     {decision.status === 'active' ? (
                       <span className={`flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${badgeColorClass}`}>
                         <CheckCircle className="w-3.5 h-3.5" /> Active
@@ -99,6 +160,16 @@ export default function DecisionLedger({ workspaceId, spaceId, hasFullIntelligen
                     ) : (
                       <span className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 dark:bg-slate-400/10 px-2.5 py-1 rounded-full border border-slate-200 dark:border-transparent">
                         <Archive className="w-3.5 h-3.5" /> Superseded
+                      </span>
+                    )}
+                    {decision.ai_detected && (
+                      <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-200 dark:border-indigo-500/20">
+                        <Bot className="w-2.5 h-2.5" /> AI
+                      </span>
+                    )}
+                    {decision.importance_score >= 7 && (
+                      <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-200 dark:border-amber-500/20">
+                        <Star className="w-2.5 h-2.5" /> High Impact
                       </span>
                     )}
                     <span className="text-xs font-medium text-slate-400 flex items-center gap-1">

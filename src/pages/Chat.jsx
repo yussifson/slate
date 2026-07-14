@@ -389,9 +389,9 @@ export default function Chat() {
  <Users className="w-6 h-6 text-primary dark:text-primary/70" />
  </div>
  ) : (
- <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center overflow-hidden">
- {otherProfile?.avatar_url ? <img src={avatarUrl} alt={roomName} className="w-full h-full object-cover"/> : <UserCircle className="w-7 h-7 text-amber-600 dark:text-amber-400" />}
- </div>
+ <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">
+  <img src={avatarUrl} alt={roomName} className="w-full h-full object-cover"/>
+</div>
  )}
  </div>
  {!isSidebarCollapsed && (
@@ -439,9 +439,9 @@ export default function Chat() {
  <Users className="w-5 h-5 text-primary dark:text-primary/70" />
  </div>
  ) : (
- <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center overflow-hidden">
- {otherProfile?.avatar_url ? <img src={avatarUrl} alt={roomName} className="w-full h-full object-cover"/> : <UserCircle className="w-6 h-6 text-amber-600 dark:text-amber-400" />}
- </div>
+ <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">
+  <img src={avatarUrl} alt={roomName} className="w-full h-full object-cover"/>
+</div>
  )}
  <div>
  <h3 className="font-semibold text-foreground leading-tight">{roomName}</h3>

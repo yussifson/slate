@@ -6,6 +6,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Lock, Unlock, Clock, Save, ArrowRight, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { writeOrgEvent } from '@/lib/clipadIntelligence';
 
 export default function SaveMeetingPage() {
   const { id } = useParams(); // meeting ID
@@ -94,7 +95,20 @@ export default function SaveMeetingPage() {
         .eq('id', id);
 
       if (error) throw error;
-      
+
+      // Write to Org Timeline
+      await writeOrgEvent({
+        space_id: spaceId,
+        workspace_id: user?.company_id,
+        event_type: 'meeting_saved',
+        title: `Meeting saved: ${title.trim()}`,
+        description: meeting?.ai_summary?.substring(0, 200) || null,
+        actor_id: user?.id,
+        source_id: id,
+        source_table: 'clipad_meeting_records',
+        importance: 4,
+      });
+
       toast({ title: 'Meeting Saved', description: 'Your meeting record has been updated.' });
       navigate(`/clipad/meeting/${id}`);
     } catch (err) {
