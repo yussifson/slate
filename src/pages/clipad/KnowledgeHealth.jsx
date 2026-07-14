@@ -297,7 +297,8 @@ export default function KnowledgeHealth() {
           </div>
         </div>
       </div>
-      </div>
+    </div>
+    </div>
     </div>
   );
 }
