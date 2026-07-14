@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
 import { useCompanyPlan } from '@/hooks/useCompanyPlan';
-import { Headphones, Puzzle } from 'lucide-react';
+import { Headphones, Puzzle, Lock } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { Settings, User, Users, Bell, Shield, LogOut, ArrowLeft, Video, CheckCircle, Camera, CreditCard } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
