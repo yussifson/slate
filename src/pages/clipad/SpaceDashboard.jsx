@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { getLimit } from '@/lib/clipadPricing';
 import { useAuth } from '@/lib/AuthContext';
+import { isAdmin } from '@/lib/constants';
 import {
   Users, Video, Calendar, Plus, Play, Monitor, Activity,
   Brain, FileText, CheckCircle, Search, Settings, ArrowLeft,
@@ -347,8 +348,7 @@ export default function SpaceDashboard() {
   
   // Only company admins / super admins / the platform admin can edit or delete spaces.
   // Regular staff (even space creators) can view but not modify.
-  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
-  const canEdit = isAdmin;
+  const canEdit = isAdmin(user);
   const isMember = spaceMembers.some(m => m.user_id === user?.id);
 
 

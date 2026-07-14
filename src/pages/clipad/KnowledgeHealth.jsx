@@ -18,6 +18,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from 'recharts';
+import { isAdmin } from '@/lib/constants';
 
 export default function KnowledgeHealth() {
   const { user } = useAuth();
@@ -27,10 +28,10 @@ export default function KnowledgeHealth() {
   const [rawCounts, setRawCounts] = useState(null);
   const [diagnosis, setDiagnosis] = useState('');
 
-  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin' || user?.clipad_plan === 'enterprise';
+  const isUserAdmin = isAdmin(user);
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (!isUserAdmin) {
       setLoading(false);
       return;
     }
@@ -95,11 +96,11 @@ export default function KnowledgeHealth() {
     }
 
     if (user?.company_id) fetchHealth();
-  }, [user, isAdmin]);
+  }, [user, isUserAdmin]);
 
   if (loading) return <ClipadLoader fullScreen text="Analyzing Organizational Health..." />;
 
-  if (!isAdmin) {
+  if (!isUserAdmin) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center min-h-[calc(100vh-100px)] bg-slate-50 dark:bg-slate-950">
         <div className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm relative overflow-hidden">

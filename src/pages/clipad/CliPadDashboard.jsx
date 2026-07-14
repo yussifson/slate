@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { getLimit } from '@/lib/clipadPricing';
 import { useAuth } from '@/lib/AuthContext';
+import { isAdmin } from '@/lib/constants';
 import {
   Video, Camera, Plus, Brain, CheckCircle, Clock, TrendingUp,
   Layers, Play, BarChart3, Settings, ArrowRight, Sparkles, Activity,
@@ -210,7 +211,7 @@ export default function CliPadDashboard() {
     setLoading(true);
     try {
       // Load all spaces user has access to (RLS handles company & private filtering)
-      const { data: allSpaces } = await supabase.from('clipad_spaces').select('*').order('created_at', { ascending: false }).limit(6);
+      const { data: allSpaces } = await supabase.from('clipad_spaces').select('*').eq('company_id', user.company_id).order('created_at', { ascending: false }).limit(6);
 
       // Use count queries for accurate stats — never limit the count fetches
       const [videosRes, meetingsRes, actionRes, allActionRes] = await Promise.all([
@@ -509,7 +510,7 @@ export default function CliPadDashboard() {
             <FollowUpEngine workspaceId={user?.company_id} />
 
             {/* Knowledge Health (Admin Only) */}
-            {(user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin' || user?.clipad_plan === 'enterprise') && (
+            {isAdmin(user) && (
               <div onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/health' : '/health')} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-rose-500/30 transition-all cursor-pointer group">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform">
