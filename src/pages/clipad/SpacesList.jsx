@@ -44,55 +44,47 @@ export default function SpacesList() {
     if (!user?.id) { setLoading(false); return; }
 
     try {
-      // Build queries in parallel:
-      // 1. Spaces owned by this user (in their company)
-      // 2. Spaces where user is an explicit member
-      // 3. Public spaces in user's company
-      const [mySpacesRes, membershipRes, companyPublicRes] = await Promise.all([
-        supabase.from('clipad_spaces')
-          .select('*')
-          .eq('created_by', user.id)
-          .order('created_at', { ascending: false }),
-        supabase.from('clipad_space_members')
-          .select('space_id')
-          .eq('user_id', user.id),
-        // Public spaces in user's company (company_id filter)
-        user.company_id
-          ? supabase.from('clipad_spaces')
-              .select('*')
-              .eq('company_id', user.company_id)
-              .eq('is_private', false)
-              .order('created_at', { ascending: false })
-          : { data: [] }
-      ]);
+      // Fetch membership first so we know which spaces user has access to
+      const membershipRes = await supabase
+        .from('clipad_space_members')
+        .select('space_id')
+        .eq('user_id', user.id);
+      const memberSpaceIds = new Set(membershipRes.data?.map(m => m.space_id) || []);
 
-      const memberSpaceIds = membershipRes.data?.map(m => m.space_id) || [];
-      let mySpaces = mySpacesRes.data || [];
-
-      // Fetch spaces user is a member of (could be private)
-      if (memberSpaceIds.length > 0) {
-        const { data: memberSpaces } = await supabase
+      // Fetch ALL company spaces (public AND private) for discovery
+      // RLS allows this when the SELECT policy doesn't gate on privacy
+      let allSpaces = [];
+      if (user.company_id) {
+        const { data: companySpaces } = await supabase
           .from('clipad_spaces')
           .select('*')
-          .in('id', memberSpaceIds);
-        const existingIds = new Set(mySpaces.map(s => s.id));
-        mySpaces = [...mySpaces, ...(memberSpaces || []).filter(s => !existingIds.has(s.id))];
+          .eq('company_id', user.company_id)
+          .order('created_at', { ascending: false });
+        allSpaces = companySpaces || [];
       }
 
-      // Merge company public spaces (deduplicated)
-      const existingIds2 = new Set(mySpaces.map(s => s.id));
-      const allSpaces = [
-        ...mySpaces,
-        ...(companyPublicRes.data || []).filter(s => !existingIds2.has(s.id))
-      ];
+      // Also include spaces the user owns (in case company_id wasn't set on old ones)
+      const { data: mySpaces } = await supabase
+        .from('clipad_spaces')
+        .select('*')
+        .eq('created_by', user.id)
+        .order('created_at', { ascending: false });
+      
+      // Merge, deduplicate
+      const seen = new Set(allSpaces.map(s => s.id));
+      (mySpaces || []).forEach(s => { if (!seen.has(s.id)) { allSpaces.push(s); seen.add(s.id); } });
 
-      // Tag which ones the user is an owner/member of
-      const memberSet = new Set([...mySpaces.map(s => s.id)]);
+      // Tag each space: _isMember = has full access, _isRestricted = private & not a member
       const tagged = allSpaces.map(s => ({
         ...s,
-        _isMember: memberSet.has(s.id) || s.created_by === user.id
+        _isMember: s.created_by === user.id || memberSpaceIds.has(s.id),
+        _isRestricted: s.is_private && s.created_by !== user.id && !memberSpaceIds.has(s.id) && !isAdmin(user)
       }));
-      tagged.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      tagged.sort((a, b) => {
+        // Accessible spaces first, then restricted
+        if (a._isRestricted !== b._isRestricted) return a._isRestricted ? 1 : -1;
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
       setSpaces(tagged);
     } catch (err) {
       console.error('Failed to fetch spaces:', err);
@@ -241,20 +233,35 @@ export default function SpacesList() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map(space => {
                 const color = COLORS[space.name?.charCodeAt(0) % COLORS.length] || COLORS[0];
+                const isRestricted = space._isRestricted;
                 return (
                   <div
                     key={space.id}
                     onClick={() => navigate(`/spaces/${space.id}`)}
-                    className="group relative overflow-hidden rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 hover:border-primary/50 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300"
+                    className={`group relative overflow-hidden rounded-[2rem] border cursor-pointer shadow-sm transition-all duration-300 ${
+                      isRestricted
+                        ? 'bg-slate-100/60 dark:bg-slate-900/40 border-slate-200/40 dark:border-slate-800/40 hover:border-slate-300 dark:hover:border-slate-700 opacity-80 hover:opacity-95'
+                        : 'bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800/60 hover:border-primary/50 hover:shadow-xl hover:-translate-y-1.5'
+                    }`}
                   >
+                    {/* Locked overlay for restricted private spaces */}
+                    {isRestricted && (
+                      <div className="absolute inset-0 z-10 bg-gradient-to-br from-slate-50/80 to-slate-100/60 dark:from-slate-950/80 dark:to-slate-900/60 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2 rounded-[2rem]">
+                        <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-sm">
+                          <Lock className="w-5 h-5 text-slate-400 dark:text-slate-500" />
+                        </div>
+                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Private — Request Access</span>
+                      </div>
+                    )}
+
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className="p-8">
                       <div className="flex items-center gap-4 mb-6">
-                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-lg shrink-0`}>
+                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-lg shrink-0 ${isRestricted ? 'opacity-50' : ''}`}>
                           {React.createElement(getSpaceIcon(space.name), { className: "w-7 h-7" })}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-extrabold text-slate-900 dark:text-white text-lg truncate group-hover:text-primary transition-colors">
+                          <h3 className={`font-extrabold text-lg truncate transition-colors ${isRestricted ? 'text-slate-500 dark:text-slate-500' : 'text-slate-900 dark:text-white group-hover:text-primary'}`}>
                             {space.name}
                           </h3>
                           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">{space.description || 'A shared space for meetings and video updates.'}</p>
@@ -275,8 +282,12 @@ export default function SpacesList() {
                           <Clock className="w-4 h-4 text-slate-400" />
                           {new Date(space.created_at).toLocaleDateString()}
                         </div>
-                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-800 group-hover:bg-primary group-hover:text-white text-slate-400 transition-all">
-                          <ArrowRight className="w-4 h-4" />
+                        <div className={`flex items-center justify-center w-8 h-8 rounded-full transition-all ${
+                          isRestricted
+                            ? 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                            : 'bg-slate-50 dark:bg-slate-800 group-hover:bg-primary group-hover:text-white text-slate-400'
+                        }`}>
+                          {isRestricted ? <Lock className="w-3.5 h-3.5" /> : <ArrowRight className="w-4 h-4" />}
                         </div>
                       </div>
                     </div>
