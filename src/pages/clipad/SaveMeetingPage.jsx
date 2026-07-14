@@ -3,7 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
-import { Lock, Unlock, Clock, Save, ArrowRight, Loader2, Sparkles } from 'lucide-react';
+import { Lock, Unlock, Clock, Save, ArrowRight, Loader2, Sparkles, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { writeOrgEvent } from '@/lib/clipadIntelligence';
@@ -153,46 +153,24 @@ export default function SaveMeetingPage() {
           {/* Lock Settings */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">Access Control</label>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              
-              <button
-                onClick={() => setLockType('none')}
-                className={`p-4 rounded-xl border text-left transition-all ${
-                  lockType === 'none' 
-                  ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 ring-1 ring-emerald-500' 
-                  : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
-                }`}
+            <div className="relative">
+              <select
+                value={lockType}
+                onChange={e => setLockType(e.target.value)}
+                className="w-full pl-11 pr-10 py-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/60 transition-all cursor-pointer font-medium shadow-sm"
               >
-                <Unlock className={`w-6 h-6 mb-3 ${lockType === 'none' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`} />
-                <h3 className="font-bold text-slate-900 dark:text-white mb-1">Public</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">Available immediately to all space members.</p>
-              </button>
-
-              <button
-                onClick={() => setLockType('manual')}
-                className={`p-4 rounded-xl border text-left transition-all ${
-                  lockType === 'manual' 
-                  ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/20 ring-1 ring-indigo-500' 
-                  : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
-                }`}
-              >
-                <Lock className={`w-6 h-6 mb-3 ${lockType === 'manual' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`} />
-                <h3 className="font-bold text-slate-900 dark:text-white mb-1">Locked</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">Only you can view until manually unlocked.</p>
-              </button>
-
-              <button
-                onClick={() => setLockType('scheduled')}
-                className={`p-4 rounded-xl border text-left transition-all ${
-                  lockType === 'scheduled' 
-                  ? 'border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 ring-1 ring-amber-500' 
-                  : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
-                }`}
-              >
-                <Clock className={`w-6 h-6 mb-3 ${lockType === 'scheduled' ? 'text-amber-600 dark:text-amber-400' : 'text-slate-400'}`} />
-                <h3 className="font-bold text-slate-900 dark:text-white mb-1">Scheduled</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">Unlocks automatically at a specific time.</p>
-              </button>
+                <option value="none">Public — Available immediately to all space members</option>
+                <option value="manual">Locked — Only you can view until manually unlocked</option>
+                <option value="scheduled">Scheduled — Unlocks automatically at a specific time</option>
+              </select>
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                {lockType === 'none' && <Unlock className="w-4.5 h-4.5 text-emerald-500" />}
+                {lockType === 'manual' && <Lock className="w-4.5 h-4.5 text-indigo-500" />}
+                {lockType === 'scheduled' && <Clock className="w-4.5 h-4.5 text-amber-500" />}
+              </div>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                <ChevronDown className="w-4.5 h-4.5" />
+              </div>
             </div>
 
             {lockType === 'scheduled' && (

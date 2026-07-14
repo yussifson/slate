@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   Camera, Monitor, Mic, MicOff, StopCircle, CheckCircle, Save, Trash2, Home,
   Play, Pause, AlertTriangle, AlertCircle, RefreshCw, XCircle, ArrowLeft, Info,
-  Wand2, AlignLeft, Video, Layers, Clock, Upload, RotateCcw, Sparkles, Lock, Unlock
+  Wand2, AlignLeft, Video, Layers, Clock, Upload, RotateCcw, Sparkles, Lock, Unlock, ChevronDown
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
@@ -1646,45 +1646,24 @@ export default function RecordVideo() {
             {/* Lock Settings */}
             <div className="mt-6">
               <label className="block text-xs font-semibold text-muted-foreground mb-4 uppercase tracking-wider">Access Control</label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <button
-                  onClick={() => setLockType('none')}
-                  className={`p-4 rounded-xl border text-left transition-all ${
-                    lockType === 'none' 
-                    ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 ring-1 ring-emerald-500' 
-                    : 'border-border hover:border-slate-300 dark:hover:border-slate-600'
-                  }`}
+              <div className="relative">
+                <select
+                  value={lockType}
+                  onChange={e => setLockType(e.target.value)}
+                  className="w-full pl-11 pr-10 py-3.5 rounded-xl bg-secondary border border-border text-foreground text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/60 transition-all cursor-pointer font-medium"
                 >
-                  <Unlock className={`w-6 h-6 mb-3 ${lockType === 'none' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`} />
-                  <h3 className="font-bold text-foreground mb-1">Public</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">Available immediately to all space members.</p>
-                </button>
-
-                <button
-                  onClick={() => setLockType('manual')}
-                  className={`p-4 rounded-xl border text-left transition-all ${
-                    lockType === 'manual' 
-                    ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/20 ring-1 ring-indigo-500' 
-                    : 'border-border hover:border-slate-300 dark:hover:border-slate-600'
-                  }`}
-                >
-                  <Lock className={`w-6 h-6 mb-3 ${lockType === 'manual' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`} />
-                  <h3 className="font-bold text-foreground mb-1">Locked</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">Only you can view until manually unlocked.</p>
-                </button>
-
-                <button
-                  onClick={() => setLockType('scheduled')}
-                  className={`p-4 rounded-xl border text-left transition-all ${
-                    lockType === 'scheduled' 
-                    ? 'border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 ring-1 ring-amber-500' 
-                    : 'border-border hover:border-slate-300 dark:hover:border-slate-600'
-                  }`}
-                >
-                  <Clock className={`w-6 h-6 mb-3 ${lockType === 'scheduled' ? 'text-amber-600 dark:text-amber-400' : 'text-slate-400'}`} />
-                  <h3 className="font-bold text-foreground mb-1">Scheduled</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">Unlocks automatically at a specific time.</p>
-                </button>
+                  <option value="none">Public — Available immediately to all space members</option>
+                  <option value="manual">Locked — Only you can view until manually unlocked</option>
+                  <option value="scheduled">Scheduled — Unlocks automatically at a specific time</option>
+                </select>
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  {lockType === 'none' && <Unlock className="w-4.5 h-4.5 text-emerald-500" />}
+                  {lockType === 'manual' && <Lock className="w-4.5 h-4.5 text-indigo-500" />}
+                  {lockType === 'scheduled' && <Clock className="w-4.5 h-4.5 text-amber-500" />}
+                </div>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                  <ChevronDown className="w-4.5 h-4.5" />
+                </div>
               </div>
 
               {lockType === 'scheduled' && (
