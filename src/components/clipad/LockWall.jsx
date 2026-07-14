@@ -54,8 +54,8 @@ export default function LockWall({ type = 'manual', unlockAt = null, title = 'th
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-violet-500/10 dark:bg-violet-500/10 blur-[100px] pointer-events-none" />
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] dark:opacity-[0.05] pointer-events-none mix-blend-overlay" />
 
-      <div className="max-w-md w-full relative z-10 animate-in fade-in zoom-in duration-700">
-        <div className="bg-white/70 dark:bg-slate-900/50 backdrop-blur-2xl border border-slate-200/50 dark:border-slate-800/50 rounded-3xl p-8 sm:p-10 shadow-2xl text-center flex flex-col items-center">
+      <div className="max-w-xl w-full relative z-10 animate-in fade-in zoom-in duration-700">
+        <div className="p-8 sm:p-12 text-center flex flex-col items-center">
           
           {/* Icon */}
           <div className="relative mb-8 group">
