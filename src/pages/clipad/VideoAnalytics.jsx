@@ -4,7 +4,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
 import { useCompanyPlan } from '@/hooks/useCompanyPlan';
-import { BarChart3, TrendingUp, Eye, Heart, MessageSquare, Clock, ArrowLeft, Video, Target, Users, Settings, UserCircle } from 'lucide-react';
+import { BarChart3, TrendingUp, Eye, Heart, MessageSquare, Clock, ArrowLeft, Video, Target, Users, Settings, UserCircle, ShieldAlert, X } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
@@ -46,10 +46,33 @@ export default function VideoAnalytics() {
     topVideos: [],
     recentViews: []
   });
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [viewersData, setViewersData] = useState([]);
+  const [loadingViewers, setLoadingViewers] = useState(false);
+
+  useEffect(() => {
+    if (selectedVideo) {
+      setLoadingViewers(true);
+      supabase.from('clipad_video_views')
+        .select('*, profile:clipad_profiles(*)')
+        .eq('video_id', selectedVideo.id)
+        .order('viewed_at', { ascending: false })
+        .then(({ data }) => {
+          setViewersData(data || []);
+          setLoadingViewers(false);
+        });
+    } else {
+      setViewersData([]);
+    }
+  }, [selectedVideo]);
 
   useEffect(() => { 
     if (user) {
-      fetchAnalytics(); 
+      if (isAdmin(user) || user.clipad_plan === 'enterprise') {
+        fetchAnalytics(); 
+      } else {
+        setLoading(false);
+      }
     } else if (!isLoadingAuth) {
       setLoading(false);
     }
@@ -182,7 +205,30 @@ export default function VideoAnalytics() {
     );
   }
 
-  // Admins check removed. Any user can view stats for their own videos.
+  if (!isAdmin(user) && user?.clipad_plan !== 'enterprise') {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center min-h-screen bg-slate-50 dark:bg-slate-950">
+        <div className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
+            <ShieldAlert className="w-32 h-32 text-rose-500" />
+          </div>
+          <div className="w-20 h-20 rounded-full bg-rose-100 dark:bg-rose-500/10 border-4 border-white dark:border-slate-900 shadow-md flex items-center justify-center mx-auto mb-6 relative z-10">
+            <ShieldAlert className="w-10 h-10 text-rose-500" />
+          </div>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-3 relative z-10">Admin Access Required</h2>
+          <p className="text-slate-500 dark:text-slate-400 mb-8 relative z-10 leading-relaxed">
+            The Video Analytics Dashboard provides bird's-eye organizational insights available only to workspace administrators.
+          </p>
+          <button 
+            onClick={() => navigate('/dashboard')} 
+            className="w-full py-3.5 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold rounded-xl transition-all shadow-sm relative z-10"
+          >
+            Return to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // Max value for chart scaling
   const maxViews = Math.max(10, ...stats.recentViews.map(d => d.count));
@@ -308,7 +354,7 @@ export default function VideoAnalytics() {
               {stats.topVideos.length > 0 ? (
                 <div className="space-y-4 relative z-10">
                   {stats.topVideos.map((v, i) => (
-                    <div key={v.id} className="flex items-center gap-4 p-5 rounded-2xl bg-white/60 dark:bg-slate-900/60 hover:bg-white dark:hover:bg-slate-800/80 backdrop-blur-md transition-all duration-300 border border-white/50 dark:border-slate-700/50 hover:border-primary/30 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-1 group" onClick={() => navigate(`/watch/${v.id}`)}>
+                    <div key={v.id} className="flex items-center gap-4 p-5 rounded-2xl bg-white/60 dark:bg-slate-900/60 hover:bg-white dark:hover:bg-slate-800/80 backdrop-blur-md transition-all duration-300 border border-white/50 dark:border-slate-700/50 hover:border-primary/30 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-1 group" onClick={() => setSelectedVideo(v)}>
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 transition-colors ${i === 0 ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400' : i === 1 ? 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' : i === 2 ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'}`}>
                         #{i + 1}
                       </div>
