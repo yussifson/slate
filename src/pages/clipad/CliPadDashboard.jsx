@@ -510,7 +510,7 @@ export default function CliPadDashboard() {
 
             {/* Knowledge Health (Admin Only) */}
             {(user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin' || user?.clipad_plan === 'enterprise') && (
-              <div onClick={() => navigate('/clipad/health')} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-rose-500/30 transition-all cursor-pointer group">
+              <div onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/health' : '/health')} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-rose-500/30 transition-all cursor-pointer group">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform">
                     <HeartPulse className="w-5 h-5" />
