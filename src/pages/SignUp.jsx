@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Logo} from '@/components/ui/Logo';
 import { getSubdomainAndBase, isDesktopApp } from '@/lib/domainUtils';
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { useAuth} from '@/lib/AuthContext';
 
 export default function SignUp() {
@@ -297,15 +297,17 @@ export default function SignUp() {
       Continue with Optavel
     </button>
     <div className="h-12 flex justify-center items-center w-full overflow-hidden rounded-xl border border-primary/20 bg-white hover:bg-slate-50 transition-colors shadow-sm">
-      <GoogleLogin
-        onSuccess={handleGoogleSuccess}
-        onError={() => setError("Google login failed")}
-        shape="rectangular"
-        size="large"
-        theme="outline"
-        text="signup_with"
-        width="100%"
-      />
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ""}>
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={() => setError("Google login failed")}
+          shape="rectangular"
+          size="large"
+          theme="outline"
+          text="signup_with"
+          width="100%"
+        />
+      </GoogleOAuthProvider>
     </div>
     {/*
     <button 
