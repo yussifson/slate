@@ -149,29 +149,37 @@ export default function SpaceDashboard() {
   const fetchAll = async () => {
     setLoading(true);
     try {
-      const [spaceRes, videosRes, meetingsRes, membersRes, profilesRes] = await Promise.all([
-        supabase.from('clipad_spaces').select('*').eq('id', spaceId).single(),
-        supabase.from('clipad_videos').select('*, creator:creator_id(full_name, avatar_url)').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(12),
-        supabase.from('clipad_meeting_records').select('*').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(20),
-        supabase.from('clipad_space_members').select('*').eq('space_id', spaceId),
-        supabase.from('staff_records').select('user_id, full_name, user_email').eq('company_id', user.company_id || user.companies?.id)
-      ]);
-      // Fetch action items via meeting_id (no space_id on that table)
-      let tasksRes = { data: [] };
-      const meetingIds = (meetingsRes.data || []).map(m => m.id);
-      if (meetingIds.length > 0) {
-        tasksRes = await supabase.from('clipad_action_items').select('*, assignedUser:assigned_to(full_name)').in('meeting_id', meetingIds).order('created_at', { ascending: false });
-      }
+      // Phase 1: fetch the space first so we get company_id
+      const spaceRes = await supabase.from('clipad_spaces').select('*').eq('id', spaceId).single();
       if (spaceRes.data) {
         setSpace(spaceRes.data);
         setEditName(spaceRes.data.name);
         setEditDesc(spaceRes.data.description || '');
         setEditIsPrivate(spaceRes.data.is_private || false);
       }
+
+      const companyId = spaceRes.data?.company_id || user?.company_id || user?.companies?.id;
+
+      // Phase 2: fetch everything else in parallel, using reliable companyId
+      const [videosRes, meetingsRes, membersRes, profilesRes] = await Promise.all([
+        supabase.from('clipad_videos').select('*, creator:creator_id(full_name, avatar_url)').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(12),
+        supabase.from('clipad_meeting_records').select('*').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(20),
+        supabase.from('clipad_space_members').select('*').eq('space_id', spaceId),
+        companyId
+          ? supabase.from('staff_records').select('user_id, full_name, user_email').eq('company_id', companyId)
+          : supabase.from('profiles').select('id, full_name, email, avatar_url').limit(50),
+      ]);
+
+      // Fetch action items via meeting_id (no space_id on that table)
+      let tasksRes = { data: [] };
+      const meetingIds = (meetingsRes.data || []).map(m => m.id);
+      if (meetingIds.length > 0) {
+        tasksRes = await supabase.from('clipad_action_items').select('*, assignedUser:assigned_to(full_name)').in('meeting_id', meetingIds).order('created_at', { ascending: false });
+      }
+
       if (videosRes.data) setVideos(videosRes.data);
       if (meetingsRes.data) {
         setMeetings(meetingsRes.data);
-        // Check if any meeting happened within last 2 hours
         const recent = meetingsRes.data[0];
         if (recent && Date.now() - new Date(recent.created_at).getTime() < 7200000) {
           setIsLive(true);
@@ -179,17 +187,34 @@ export default function SpaceDashboard() {
       }
       if (tasksRes.data) setTasks(tasksRes.data);
       if (membersRes.data) setSpaceMembers(membersRes.data);
-      if (profilesRes.data) {
-        // map staff_records to profiles structure
+
+      if (profilesRes.data && profilesRes.data.length > 0) {
+        // staff_records shape: { user_id, full_name, user_email }
+        // profiles shape:     { id, full_name, email, avatar_url }
+        const isStaffRecord = profilesRes.data[0] && 'user_id' in profilesRes.data[0];
         const mappedProfiles = profilesRes.data
-          .filter(s => s.user_id) // only include staff who have registered
+          .filter(s => isStaffRecord ? !!s.user_id : !!s.id)
           .map(s => ({
-            id: s.user_id,
+            id: isStaffRecord ? s.user_id : s.id,
             full_name: s.full_name,
-            email: s.user_email,
-            avatar_url: null
+            email: isStaffRecord ? s.user_email : s.email,
+            avatar_url: s.avatar_url || null,
           }));
         setProfiles(mappedProfiles);
+      } else if (companyId) {
+        // Final fallback: query profiles table directly by company_id
+        const { data: fallbackProfiles } = await supabase
+          .from('profiles')
+          .select('id, full_name, email, avatar_url')
+          .eq('company_id', companyId);
+        if (fallbackProfiles) {
+          setProfiles(fallbackProfiles.map(p => ({
+            id: p.id,
+            full_name: p.full_name,
+            email: p.email,
+            avatar_url: p.avatar_url || null,
+          })));
+        }
       }
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
@@ -700,7 +725,7 @@ export default function SpaceDashboard() {
             </div>
             
             <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
-              <button onClick={() => setShowMembers(false)} className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm hover:opacity-90 transition-opacity">Done</button>
+              <button onClick={() => setShowMembers(false)} className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition-colors shadow-sm">Done</button>
             </div>
           </div>
         </div>
