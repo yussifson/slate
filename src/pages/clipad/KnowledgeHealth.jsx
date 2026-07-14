@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
-import { Activity, BrainCircuit, HeartPulse, ShieldAlert, Target, TrendingUp, Users } from 'lucide-react';
+import { Activity, BrainCircuit, HeartPulse, ShieldAlert, Target, TrendingUp, Users, LogOut, Settings, Shield, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ClipadLoader from '@/components/ui/ClipadLoader';
+import { CliPadLogo } from '@/components/ui/CliPadLogo';
+import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
+import ThemeToggle from '@/components/layout/ThemeToggle';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Radar,
   RadarChart,
@@ -21,7 +32,7 @@ import {
 import { isAdmin } from '@/lib/constants';
 
 export default function KnowledgeHealth() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [healthData, setHealthData] = useState(null);
@@ -127,9 +138,74 @@ export default function KnowledgeHealth() {
 
 
 
+  const firstName = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'User';
+
   return (
-    <div className="max-w-6xl mx-auto px-6 py-10 page-enter">
-      <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div className="min-h-[100dvh] bg-slate-50 dark:bg-slate-950 flex flex-col w-full page-enter">
+      {/* Sleek top nav */}
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm text-primary">
+            <CliPadLogo size={22} />
+          </div>
+          <span className="text-lg font-bold tracking-tight">CliPad</span>
+        </div>
+        <div className="flex items-center gap-1.5 md:gap-3">
+          <button onClick={() => navigate('/spaces')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Spaces</button>
+          <button onClick={() => navigate('/videos')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Recordings</button>
+          <button onClick={() => navigate('/meetings')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Meetings</button>
+          <button onClick={() => navigate('/chat')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Chat</button>
+          <button onClick={() => navigate('/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Analytics</button>
+          
+          <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden md:block" />
+          
+          <ThemeToggle />
+          
+          <button onClick={() => window.dispatchEvent(new CustomEvent("toggle-clipad-orbit"))} className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all flex items-center gap-1.5 ml-2">
+            <Sparkles className="w-3.5 h-3.5" /> OrbitFlow
+          </button>
+          
+          <NotificationCenter />
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="w-9 h-9 rounded-xl bg-primary hover:bg-primary/90 flex items-center justify-center font-bold text-sm text-primary-foreground shadow-sm transition-all hover:scale-105 active:scale-95 ml-1 overflow-hidden border border-primary/20">
+                {user?.avatar_url || user?.user_metadata?.avatar_url ? (
+                  <img src={user.avatar_url || user.user_metadata.avatar_url} alt={firstName} className="w-full h-full object-cover" />
+                ) : (
+                  firstName[0]?.toUpperCase()
+                )}
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 font-sans">
+              <DropdownMenuLabel className="font-semibold">{user?.email}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+              </DropdownMenuItem>
+              {user?.role === 'super_admin' && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin')} className="cursor-pointer bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400">
+                    <Shield className="mr-2 h-4 w-4" />
+                    <span className="font-semibold">Super Admin Dashboard</span>
+                  </DropdownMenuItem>
+                </>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={async () => { await logout(); navigate('/login'); }} className="cursor-pointer text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400">
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Sign Out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </nav>
+
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-6xl mx-auto px-6 py-10">
+          <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black flex items-center gap-3">
             <HeartPulse className="w-8 h-8 text-rose-500" />
@@ -220,6 +296,7 @@ export default function KnowledgeHealth() {
             </button>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
