@@ -12,6 +12,7 @@ import { getSpaceIcon } from '@/utils/spaceIcons';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { isAdmin } from '@/lib/constants';
 import PaywallModal from '@/components/clipad/PaywallModal';
 
 const COLORS = [
@@ -104,7 +105,7 @@ export default function SpacesList() {
     }
   };
 
-  const isAdmin = user?.clipad_plan === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
+  const isAdminUser = isAdmin(user);
   // Show all spaces; SpaceDashboard handles the access wall for private ones
   const filtered = spaces.filter(s => s.name?.toLowerCase().includes(search.toLowerCase()));
 
@@ -175,6 +176,14 @@ export default function SpacesList() {
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:border-primary/50 text-sm shadow-sm transition-all"
               />
             </div>
+            {isAdminUser && (
+              <button 
+                onClick={() => navigate('/clipad/billing')}
+                className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-amber-100 dark:bg-amber-500/10 text-amber-600 font-semibold text-sm rounded-lg hover:bg-amber-200 dark:hover:bg-amber-500/20 transition-colors"
+              >
+                Billing
+              </button>
+            )}
             <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm shadow-md shadow-primary/20 transition-all shrink-0">
               <Plus className="w-4 h-4" /> New Space
             </button>

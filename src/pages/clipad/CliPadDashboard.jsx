@@ -569,10 +569,10 @@ export default function CliPadDashboard() {
           </div>
         </div>
 
-        {/* Culture & Intelligence Layer */}
-        {user?.company_id && (
+        {/* Culture & Intelligence Layer (Admins Only) */}
+        {user?.company_id && isAdmin(user) && (
           <div className="mt-8 space-y-6">
-            {user?.clipad_plan === 'enterprise' && (
+            {hasFeature(user, 'hasEnterpriseAnalytics') && (
               <div className="w-full">
                 <InstitutionalMemoryVault workspaceId={user.company_id} />
               </div>
@@ -581,14 +581,18 @@ export default function CliPadDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <MeetingNecessityWidget workspaceId={user.company_id} />
               <TimezoneFairnessWidget workspaceId={user.company_id} />
-              {user?.clipad_plan === 'enterprise' ? (
+              {hasFeature(user, 'hasAdvancedAI') ? (
                 <BlockerRadar 
                   workspaceId={user.company_id} 
                   isWorkspaceView={true} 
                   hasFullIntelligence={true} 
                 />
               ) : (
-                <div className="hidden lg:block" />
+                <div className="bg-slate-50 dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center text-center">
+                  <Target className="w-8 h-8 text-indigo-500 mb-3 opacity-50" />
+                  <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Advanced AI Required</p>
+                  <p className="text-xs text-slate-500 mt-1">Upgrade to track organizational blockers.</p>
+                </div>
               )}
             </div>
           </div>

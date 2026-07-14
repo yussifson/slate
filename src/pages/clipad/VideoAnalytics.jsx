@@ -60,7 +60,7 @@ export default function VideoAnalytics() {
         .then(({ data }) => {
           setViewersData(data || []);
           setLoadingViewers(false);
-        });
+      loadViewers(selectedVideo.id);
     } else {
       setViewersData([]);
     }
@@ -68,7 +68,7 @@ export default function VideoAnalytics() {
 
   useEffect(() => { 
     if (user) {
-      if (isAdmin(user) || user.clipad_plan === 'enterprise') {
+      if (isAdmin(user)) {
         fetchAnalytics(); 
       } else {
         setLoading(false);
@@ -83,7 +83,7 @@ export default function VideoAnalytics() {
     try {
       let videoIds = [];
       
-      const isAdminUser = user.clipad_plan === 'enterprise' || user.role === 'admin' || user.role === 'super_admin' || user.role === 'company_admin';
+      const isAdminUser = isAdmin(user);
       let videos = [];
       let myMeetings = [];
 
@@ -138,40 +138,70 @@ export default function VideoAnalytics() {
         const vComments = commentsData?.filter(c => c.video_id === v.id) || [];
         const vReactions = reactionsData?.filter(r => r.video_id === v.id) || [];
         const avgCompletion = vViews.length > 0 ? 100 : 0; // watch_percent is missing in db
+        
         return {
           ...v,
-          viewCount: vViews.length,
-          commentCount: vComments.length,
-          reactionCount: vReactions.length,
-          avgCompletion
+          viewsCount: vViews.length,
+          commentsCount: vComments.length,
+          reactionsCount: vReactions.length,
+          completionRate: avgCompletion
         };
-      }).sort((a, b) => b.viewCount - a.viewCount); // sort by most viewed
+      });
 
-      // Calculate timeline data (views per day for last 7 days)
-      const last7Days = [...Array(7)].map((_, i) => {
+      // Aggregations
+      const totalViews = views?.length || 0;
+      const totalComments = commentsData?.length || 0;
+      const totalReactions = reactionsData?.length || 0;
+      const totalVideos = enhancedVideos.length;
+
+      // Top performing
+      const sortedVideos = [...enhancedVideos].sort((a, b) => b.viewsCount - a.viewsCount).slice(0, 5);
+      
+      // Recent views chart data (last 7 days mock up based on actual view timestamps if available)
+      const recentViewsMap = new Map();
+      for (let i=6; i>=0; i--) {
         const d = new Date();
         d.setDate(d.getDate() - i);
-        return { date: d.toISOString().split('T')[0], count: 0 };
-      }).reverse();
-
-      views?.forEach(v => {
-        const d = v.viewed_at.split('T')[0];
-        const day = last7Days.find(x => x.date === d);
-        if (day) day.count++;
+        recentViewsMap.set(d.toLocaleDateString('en-US', { weekday: 'short' }), 0);
+      }
+      views?.forEach(vw => {
+        const d = new Date(vw.viewed_at);
+        const key = d.toLocaleDateString('en-US', { weekday: 'short' });
+        if (recentViewsMap.has(key)) {
+          recentViewsMap.set(key, recentViewsMap.get(key) + 1);
+        }
       });
 
       setStats({
-        totalViews: views?.length || 0,
-        totalVideos: videos.length + myMeetings.length,
-        totalComments: commentsData?.length || 0,
-        totalReactions: reactionsData?.length || 0,
-        topVideos: enhancedVideos.slice(0, 5),
-        recentViews: last7Days
+        totalViews,
+        totalVideos,
+        totalComments,
+        totalReactions,
+        topVideos: sortedVideos,
+        recentViews: Array.from(recentViewsMap.entries()).map(([name, count]) => ({ name, count }))
       });
+
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadViewers = async (videoId) => {
+    setLoadingViewers(true);
+    try {
+      const { data: views } = await supabase
+        .from('clipad_video_views')
+        .select('viewed_at, viewer_id, profiles!viewer_id(full_name, email, avatar_url)')
+        .eq('video_id', videoId)
+        .order('viewed_at', { ascending: false });
+
+      setViewersData(views || []);
+    } catch (e) {
+      console.error("Error loading viewers:", e);
+    } finally {
+      setLoadingViewers(false);
     }
   };
 
@@ -205,19 +235,19 @@ export default function VideoAnalytics() {
     );
   }
 
-  if (!isAdmin(user) && user?.clipad_plan !== 'enterprise') {
+  if (!isAdmin(user)) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center min-h-screen bg-slate-50 dark:bg-slate-950">
         <div className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
-            <ShieldAlert className="w-32 h-32 text-rose-500" />
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+          
+          <div className="w-20 h-20 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center mx-auto mb-6 text-indigo-500">
+            <Target className="w-10 h-10" />
           </div>
-          <div className="w-20 h-20 rounded-full bg-rose-100 dark:bg-rose-500/10 border-4 border-white dark:border-slate-900 shadow-md flex items-center justify-center mx-auto mb-6 relative z-10">
-            <ShieldAlert className="w-10 h-10 text-rose-500" />
-          </div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-3 relative z-10">Admin Access Required</h2>
-          <p className="text-slate-500 dark:text-slate-400 mb-8 relative z-10 leading-relaxed">
-            The Video Analytics Dashboard provides bird's-eye organizational insights available only to workspace administrators.
+          
+          <h1 className="text-3xl font-bold tracking-tight mb-3 text-slate-900 dark:text-white">Admin Exclusive</h1>
+          <p className="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
+            Company-wide video analytics and engagement metrics are only available to administrators.
           </p>
           <button 
             onClick={() => navigate('/dashboard')} 
