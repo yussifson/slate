@@ -176,13 +176,27 @@ export default function RecordVideo() {
     };
   }, []);
   
+  // Clean AI output of markdown symbols so the teleprompter reads as plain spoken text
+  const cleanScriptText = (text) => {
+    return text
+      .replace(/^#{1,6}\s*/gm, '')           // Remove heading markers (# ## ###)
+      .replace(/\*{1,3}(.*?)\*{1,3}/g, '$1') // Remove bold/italic *text*
+      .replace(/_{1,3}(.*?)_{1,3}/g, '$1')   // Remove _italic_
+      .replace(/^[-*+]\s+/gm, '')            // Remove bullet points
+      .replace(/^\d+\.\s+/gm, '')           // Remove numbered lists
+      .replace(/`{1,3}[^`]*`{1,3}/g, '')    // Remove code blocks
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove markdown links
+      .replace(/\n{3,}/g, '\n\n')            // Collapse excessive blank lines
+      .trim();
+  };
+
   const generateScript = async () => {
     if (!scriptPrompt.trim()) return;
     setIsGeneratingScript(true);
     try {
-      const prompt = `Write a professional, engaging teleprompter script for a video recording about: ${scriptPrompt}. Keep it concise and formatted with short paragraphs.`;
+      const prompt = `Write a professional, engaging teleprompter script for a video recording about: ${scriptPrompt}. Write it as plain spoken text with short paragraphs. Do NOT use any markdown formatting, bullet points, asterisks, or special characters. Just write natural spoken sentences.`;
       const res = await generateText([{ role: 'user', content: prompt }]);
-      if (res) setTeleprompterText(typeof res === 'string' ? res : res.response || '');
+      if (res) setTeleprompterText(cleanScriptText(typeof res === 'string' ? res : res.response || ''));
     } catch (e) {
       console.error('Failed to generate script', e);
     }
@@ -193,11 +207,9 @@ export default function RecordVideo() {
     if (!teleprompterText.trim()) return;
     setIsGeneratingScript(true);
     try {
-      const prompt = `Rewrite this teleprompter script to be much more punchy, engaging, and concise. Make it sound natural to speak:
-
-${teleprompterText}`;
+      const prompt = `Rewrite this teleprompter script to be much more punchy, engaging, and concise. Make it sound natural to speak. Write it as plain spoken text only. Do NOT use any markdown, bullet points, asterisks, or special characters:\n\n${teleprompterText}`;
       const res = await generateText([{ role: 'user', content: prompt }]);
-      if (res) setTeleprompterText(typeof res === 'string' ? res : res.response || '');
+      if (res) setTeleprompterText(cleanScriptText(typeof res === 'string' ? res : res.response || ''));
     } catch (e) {
       console.error('Failed to refine script', e);
     }

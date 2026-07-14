@@ -87,7 +87,7 @@ const getVideoColor = (id) => {
 
 function VideoCard({ video, onClick }) {
   return (
-    <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-[#0D1117] border border-border hover:border-white/12 transition-all hover:-translate-y-0.5">
+    <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400/50 transition-all hover:-translate-y-0.5 shadow-sm hover:shadow-md">
       <div className="aspect-video bg-slate-100 dark:bg-slate-800 relative flex items-center justify-center overflow-hidden">
         {video.thumbnail_url ? (
           <img src={video.thumbnail_url} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={video.title} />
@@ -96,19 +96,19 @@ function VideoCard({ video, onClick }) {
           </div>
         )}
         <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
-          <div className="w-12 h-12 rounded-full bg-white/90 dark:bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
-            <Play className="w-5 h-5 text-primary dark:text-white fill-current ml-1" />
+          <div className="w-12 h-12 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+            <Play className="w-5 h-5 text-indigo-600 fill-current ml-1" />
           </div>
         </div>
         {video.duration_seconds && (
-          <div className="absolute bottom-2 right-2 bg-black/70 text-foreground text-[10px] font-mono px-2 py-0.5 rounded">
+          <div className="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] font-mono font-medium px-2 py-0.5 rounded">
             {Math.floor(video.duration_seconds/60)}:{String(video.duration_seconds%60).padStart(2,'0')}
           </div>
         )}
       </div>
-      <div className="p-4">
-        <p className="text-sm font-semibold text-foreground line-clamp-1">{video.title || 'Untitled'}</p>
-        <p className="text-xs text-muted-foreground mt-1">{new Date(video.created_at).toLocaleDateString()}</p>
+      <div className="p-4 bg-white dark:bg-slate-900">
+        <p className="text-sm font-semibold text-slate-900 dark:text-white line-clamp-1">{video.title || 'Untitled'}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{new Date(video.created_at).toLocaleDateString()}</p>
       </div>
     </div>
   );

@@ -26,43 +26,47 @@ export default function MeetingInsights({ spaceId }) {
     async function fetchInsights() {
       setLoading(true);
       try {
-        let meetingsQuery = supabase.from('clipad_meeting_records').select('created_at, title, ai_summary');
+        let meetingsQuery = supabase
+          .from('clipad_meeting_records')
+          .select('created_at, meeting_title, ai_summary, started_at, ended_at');
         
-        // Fetch tasks via board id matching spaceId if needed.
-        // For simplicity in this demo, fetch all tasks. In a real app we'd join space_id.
-        let tasksQuery = supabase.from('clipad_tasks').select('status');
+        // Fetch action items for this space
+        let actionsQuery = supabase
+          .from('clipad_action_items')
+          .select('is_complete');
         
         if (spaceId) {
           meetingsQuery = meetingsQuery.eq('space_id', spaceId);
-          // Assuming tasks are implicitly filtered by space_id in a view or RLS, or we fetch boards first.
+          actionsQuery = actionsQuery.eq('space_id', spaceId);
         }
 
-        const [meetingsRes, tasksRes] = await Promise.all([meetingsQuery, tasksQuery]);
+        const [meetingsRes, actionsRes] = await Promise.all([meetingsQuery, actionsQuery]);
         
         if (meetingsRes.error) throw meetingsRes.error;
-        if (tasksRes.error) throw tasksRes.error;
 
         const meetings = meetingsRes.data || [];
-        const tasks = tasksRes.data || [];
+        const actions = actionsRes.data || [];
 
         let totalDurationMin = 0;
         let validDurations = 0;
         meetings.forEach(m => {
-          if (m.updated_at && m.created_at) {
-            const min = (new Date(m.updated_at) - new Date(m.created_at)) / 60000;
-            if (min > 0) {
+          const start = m.started_at || m.created_at;
+          const end = m.ended_at;
+          if (start && end) {
+            const min = (new Date(end) - new Date(start)) / 60000;
+            if (min > 0 && min < 480) { // sanity check: < 8 hours
               totalDurationMin += min;
               validDurations++;
             }
           }
         });
 
-        const completedTasks = tasks.filter(t => t.status === 'done').length;
+        const completedActions = actions.filter(t => t.is_complete).length;
 
         setStats({
           totalMeetings: meetings.length,
-          actionItemsGenerated: tasks.length,
-          actionItemsCompleted: completedTasks,
+          actionItemsGenerated: actions.length,
+          actionItemsCompleted: completedActions,
           avgDurationMin: validDurations > 0 ? Math.round(totalDurationMin / validDurations) : 0,
         });
       } catch (err) {

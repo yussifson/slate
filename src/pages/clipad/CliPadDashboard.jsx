@@ -188,26 +188,48 @@ export default function CliPadDashboard() {
       // Load all spaces user has access to (RLS handles company & private filtering)
       const { data: allSpaces } = await supabase.from('clipad_spaces').select('*').order('created_at', { ascending: false }).limit(6);
 
-      // Load videos + meetings (RLS handles company filtering)
-      const [videosRes, meetingsRes, actionRes] = await Promise.all([
+      // Use count queries for accurate stats — never limit the count fetches
+      const [videosRes, meetingsRes, actionRes, allActionRes] = await Promise.all([
         supabase.from('clipad_videos').select('*').order('created_at', { ascending: false }).limit(6),
         supabase.from('clipad_meeting_records').select('*').order('created_at', { ascending: false }).limit(5),
-        supabase.from('clipad_action_items').select('*').eq('assigned_to', user.id).eq('is_complete', false).order('created_at', { ascending: false }).limit(8),
+        supabase.from('clipad_action_items').select('id', { count: 'exact' }).eq('is_complete', false),
+        supabase.from('clipad_action_items').select('id', { count: 'exact' }),
       ]);
+
+      // Fetch recent action items for the sidebar (assigned to user)
+      const { data: myActionItemsData } = await supabase
+        .from('clipad_action_items')
+        .select('*')
+        .eq('assigned_to', user.id)
+        .eq('is_complete', false)
+        .order('created_at', { ascending: false })
+        .limit(8);
+
+      // Count all meetings (not limited)
+      const { count: totalMeetingCount } = await supabase
+        .from('clipad_meeting_records')
+        .select('id', { count: 'exact', head: true });
+
+      // Count all videos (not limited)
+      const { count: totalVideoCount } = await supabase
+        .from('clipad_videos')
+        .select('id', { count: 'exact', head: true });
 
       if (allSpaces) setSpaces(allSpaces);
       if (videosRes.data) setVideos(videosRes.data);
       if (meetingsRes.data) setMeetings(meetingsRes.data);
-      if (actionRes.data) setActionItems(actionRes.data);
+      if (myActionItemsData) setActionItems(myActionItemsData);
 
-      const totalActions = actionRes.data?.length || 0;
-      const totalMeetings = meetingsRes.data?.length || 0;
-      const totalVideos = videosRes.data?.length || 0;
+      const openActions = actionRes.count || 0;
+      const totalActions = allActionRes.count || 0;
+      const completedActions = totalActions - openActions;
+      const completionRate = totalActions > 0 ? Math.round((completedActions / totalActions) * 100) : 0;
+
       setStats({
-        meetings: totalMeetings,
-        recordings: totalVideos,
-        actionItems: totalActions,
-        completionRate: totalActions > 0 ? Math.round((totalActions / (totalActions + 5)) * 100) : 0,
+        meetings: totalMeetingCount || 0,
+        recordings: totalVideoCount || 0,
+        actionItems: openActions,
+        completionRate,
       });
     } catch (err) {
       console.error(err);
