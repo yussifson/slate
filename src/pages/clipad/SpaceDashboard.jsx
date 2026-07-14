@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
-import { getLimit } from '@/lib/clipadPricing';
+import { getLimit, hasFeature } from '@/lib/clipadPricing';
 import { useAuth } from '@/lib/AuthContext';
 import { isAdmin } from '@/lib/constants';
 import {
@@ -444,10 +444,16 @@ export default function SpaceDashboard() {
         {/* OVERVIEW (BENTO GRID REDESIGN) */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            <RedundantWorkAlert workspaceId={space.company_id} currentSpaceId={spaceId} />
-            <MeetingInsights spaceId={spaceId} />
-            <MeetingROIDashboard workspaceId={space.company_id} spaceId={spaceId} />
-            <AIInsightsPanel spaceId={spaceId} workspaceId={space.company_id} />
+            {isAdmin(user) && hasFeature(user, 'hasAdvancedAI') && (
+              <>
+                <RedundantWorkAlert workspaceId={space.company_id} currentSpaceId={spaceId} />
+                <MeetingInsights spaceId={spaceId} />
+                <AIInsightsPanel spaceId={spaceId} workspaceId={space.company_id} />
+              </>
+            )}
+            {isAdmin(user) && hasFeature(user, 'hasEnterpriseAnalytics') && (
+              <MeetingROIDashboard workspaceId={space.company_id} spaceId={spaceId} />
+            )}
 
             {/* Premium Bento Grid Layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-max">

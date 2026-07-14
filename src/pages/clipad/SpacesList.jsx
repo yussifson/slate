@@ -57,7 +57,7 @@ export default function SpacesList() {
     }
 
     // Also load ALL spaces for the company (everyone can see them)
-    const { data: companySpaces } = await supabase.from('clipad_spaces').select('*');
+    const { data: companySpaces } = await supabase.from('clipad_spaces').select('*').eq('company_id', user.company_id);
     const existingIds2 = new Set(mySpaces.map(s => s.id));
     const allSpaces = [...mySpaces, ...(companySpaces || []).filter(s => !existingIds2.has(s.id))];
 
