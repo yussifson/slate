@@ -25,27 +25,66 @@ export default function MeetingsList() {
 
   const fetchMeetings = async () => {
     setLoading(true);
-    // In a real app we'd fetch meetings for spaces the user is in. For now, fetch all.
-    const { data } = await supabase.from('clipad_meeting_records')
-      .select('*, space:space_id(name, is_private)')
-      .order('created_at', { ascending: false });
-    
-    // Fetch action items count for each meeting
-    const { data: actions } = await supabase.from('clipad_action_items').select('meeting_id, is_complete');
-    
-    if (data) {
-      const enhanced = data.map(m => {
-        const mActions = actions?.filter(a => a.meeting_id === m.id) || [];
-        return {
-          ...m,
-          actions_total: mActions.length,
-          actions_open: mActions.filter(a => !a.is_complete).length
-        };
-      });
-      setMeetings(enhanced);
+    if (!user?.id) { setLoading(false); return; }
+
+    try {
+      // Fetch meetings scoped to user's company
+      let query = supabase
+        .from('clipad_meeting_records')
+        .select('*, space:space_id(name, is_private)')
+        .order('created_at', { ascending: false });
+
+      // If user has a company_id, filter by it (company isolation)
+      if (user.company_id) {
+        query = query.eq('company_id', user.company_id);
+      } else {
+        // Fallback: only show meetings hosted by this user
+        query = query.eq('host_id', user.id);
+      }
+
+      const { data } = await query;
+
+      // Fetch action items count for each meeting
+      const { data: actions } = await supabase
+        .from('clipad_action_items')
+        .select('meeting_id, is_complete');
+
+      if (data) {
+        const membershipRes = await supabase
+          .from('clipad_space_members')
+          .select('space_id')
+          .eq('user_id', user.id);
+        const memberSpaceIds = new Set(membershipRes.data?.map(m => m.space_id) || []);
+        const isUserAdmin = isAdmin(user);
+
+        const filtered = data.filter(m => {
+          // Admins see all meetings in their company
+          if (isUserAdmin) return true;
+          // Members see meetings they hosted
+          if (m.host_id === user.id) return true;
+          // Members see meetings in public spaces
+          if (m.space?.is_private === false) return true;
+          // Members see meetings in spaces they're members of
+          if (m.space_id && memberSpaceIds.has(m.space_id)) return true;
+          return false;
+        });
+
+        const enhanced = filtered.map(m => {
+          const mActions = actions?.filter(a => a.meeting_id === m.id) || [];
+          return {
+            ...m,
+            actions_total: mActions.length,
+            actions_open: mActions.filter(a => !a.is_complete).length
+          };
+        });
+        setMeetings(enhanced);
+      }
+    } catch (err) {
+      console.error('Failed to fetch meetings:', err);
     }
     setLoading(false);
   };
+
 
   const handleSpaceSelect = async (spaceId) => {
     setIsCreating(true);

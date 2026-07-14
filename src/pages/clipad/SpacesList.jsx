@@ -43,32 +43,63 @@ export default function SpacesList() {
     setLoading(true);
     if (!user?.id) { setLoading(false); return; }
 
-    // Collect spaces the user owns or is a member of
-    const [mySpacesRes, memberSpacesRes] = await Promise.all([
-      supabase.from('clipad_spaces').select('*').eq('created_by', user.id).order('created_at', { ascending: false }),
-      supabase.from('clipad_space_members').select('space_id').eq('user_id', user.id)
-    ]);
+    try {
+      // Build queries in parallel:
+      // 1. Spaces owned by this user (in their company)
+      // 2. Spaces where user is an explicit member
+      // 3. Public spaces in user's company
+      const [mySpacesRes, membershipRes, companyPublicRes] = await Promise.all([
+        supabase.from('clipad_spaces')
+          .select('*')
+          .eq('created_by', user.id)
+          .order('created_at', { ascending: false }),
+        supabase.from('clipad_space_members')
+          .select('space_id')
+          .eq('user_id', user.id),
+        // Public spaces in user's company (company_id filter)
+        user.company_id
+          ? supabase.from('clipad_spaces')
+              .select('*')
+              .eq('company_id', user.company_id)
+              .eq('is_private', false)
+              .order('created_at', { ascending: false })
+          : { data: [] }
+      ]);
 
-    const memberSpaceIds = memberSpacesRes.data?.map(m => m.space_id) || [];
-    let mySpaces = mySpacesRes.data || [];
-    if (memberSpaceIds.length > 0) {
-      const { data: memberSpaces } = await supabase.from('clipad_spaces').select('*').in('id', memberSpaceIds);
-      const existingIds = new Set(mySpaces.map(s => s.id));
-      mySpaces = [...mySpaces, ...(memberSpaces || []).filter(s => !existingIds.has(s.id))];
+      const memberSpaceIds = membershipRes.data?.map(m => m.space_id) || [];
+      let mySpaces = mySpacesRes.data || [];
+
+      // Fetch spaces user is a member of (could be private)
+      if (memberSpaceIds.length > 0) {
+        const { data: memberSpaces } = await supabase
+          .from('clipad_spaces')
+          .select('*')
+          .in('id', memberSpaceIds);
+        const existingIds = new Set(mySpaces.map(s => s.id));
+        mySpaces = [...mySpaces, ...(memberSpaces || []).filter(s => !existingIds.has(s.id))];
+      }
+
+      // Merge company public spaces (deduplicated)
+      const existingIds2 = new Set(mySpaces.map(s => s.id));
+      const allSpaces = [
+        ...mySpaces,
+        ...(companyPublicRes.data || []).filter(s => !existingIds2.has(s.id))
+      ];
+
+      // Tag which ones the user is an owner/member of
+      const memberSet = new Set([...mySpaces.map(s => s.id)]);
+      const tagged = allSpaces.map(s => ({
+        ...s,
+        _isMember: memberSet.has(s.id) || s.created_by === user.id
+      }));
+      tagged.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      setSpaces(tagged);
+    } catch (err) {
+      console.error('Failed to fetch spaces:', err);
     }
-
-    // Also load ALL spaces for the company (everyone can see them)
-    const { data: companySpaces } = await supabase.from('clipad_spaces').select('*');
-    const existingIds2 = new Set(mySpaces.map(s => s.id));
-    const allSpaces = [...mySpaces, ...(companySpaces || []).filter(s => !existingIds2.has(s.id))];
-
-    // Tag spaces the user is a member of (for badge display)
-    const memberSet = new Set([...mySpaces.map(s => s.id)]);
-    const tagged = allSpaces.map(s => ({ ...s, _isMember: memberSet.has(s.id) || s.created_by === user.id }));
-    tagged.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-    setSpaces(tagged);
     setLoading(false);
   };
+
 
   const createSpace = async (e) => {
     e.preventDefault();
@@ -89,7 +120,8 @@ export default function SpacesList() {
         name: newName.trim(),
         description: newDesc.trim(),
         created_by: user.id,
-        is_private: isPrivate
+        is_private: isPrivate,
+        company_id: user.company_id || null
       }).select().single();
       if (error) throw error;
       setSpaces(prev => [data, ...prev]);

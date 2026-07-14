@@ -48,15 +48,54 @@ export default function VideosList() {
 
   const fetchVideos = async () => {
     setLoading(true);
-    const { data } = await supabase.from('clipad_videos')
-      .select('*, space:space_id(name, is_private)')
-      .order('created_at', { ascending: false });
-    
-    if (data) {
-      setVideos(data);
+    if (!user?.id) { setLoading(false); return; }
+
+    try {
+      // Build a company-scoped query for videos
+      // We fetch: own videos + videos in public/member spaces within user's company
+      const [ownVideosRes, membershipRes] = await Promise.all([
+        supabase.from('clipad_videos')
+          .select('*, space:space_id(name, is_private)')
+          .eq('creator_id', user.id)
+          .order('created_at', { ascending: false }),
+        supabase.from('clipad_space_members')
+          .select('space_id')
+          .eq('user_id', user.id)
+      ]);
+
+      let allVideos = ownVideosRes.data || [];
+      const ownVideoIds = new Set(allVideos.map(v => v.id));
+
+      // Fetch videos from company's public spaces
+      if (user.company_id) {
+        const { data: companyVideos } = await supabase
+          .from('clipad_videos')
+          .select('*, space:space_id(name, is_private)')
+          .eq('company_id', user.company_id)
+          .order('created_at', { ascending: false });
+
+        if (companyVideos) {
+          companyVideos.forEach(v => {
+            if (!ownVideoIds.has(v.id)) {
+              // Only include if from public space or user is space member
+              const memberSpaceIds = membershipRes.data?.map(m => m.space_id) || [];
+              if (!v.space?.is_private || memberSpaceIds.includes(v.space_id)) {
+                allVideos.push(v);
+                ownVideoIds.add(v.id);
+              }
+            }
+          });
+        }
+      }
+
+      allVideos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      setVideos(allVideos);
+    } catch (err) {
+      console.error('Failed to fetch videos:', err);
     }
     setLoading(false);
   };
+
 
   const filtered = videos.filter(v => {
     if (search && !v.title?.toLowerCase().includes(search.toLowerCase())) return false;

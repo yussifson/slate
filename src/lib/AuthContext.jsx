@@ -510,7 +510,12 @@ export const AuthProvider = ({ children }) => {
         full_name: staffRecord?.full_name || newUser?.full_name || sessionUser.user_metadata?.full_name || "Admin",
         avatar_url: sessionUser.user_metadata?.avatar_url || newUser?.avatar_url || null,
         subscription_plan: companyData?.subscription_plan || 'starter',
-        clipad_plan: (companyData?.clipad_pricing_tags?.name || 'free').toLowerCase(),
+        clipad_plan: (() => {
+          const tagName = (companyData?.clipad_pricing_tags?.name || '').toLowerCase().trim();
+          if (tagName.includes('enterprise')) return 'enterprise';
+          if (tagName.includes('pro')) return 'pro';
+          return 'free'; // Default: all companies start on free unless explicitly upgraded
+        })(),
         subscription_status: companyData?.subscription_status || 'trial',
         company_status: companyData?.status || 'active',
         company_created_date: companyData?.created_date || null,

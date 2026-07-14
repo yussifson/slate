@@ -210,13 +210,26 @@ export default function CliPadDashboard() {
   const fetchAll = async () => {
     setLoading(true);
     try {
-      // Load all spaces user has access to (RLS handles company & private filtering)
-      const { data: allSpaces } = await supabase.from('clipad_spaces').select('*').order('created_at', { ascending: false }).limit(6);
+      const companyId = user?.company_id;
 
-      // Use count queries for accurate stats — never limit the count fetches
-      const [videosRes, meetingsRes, actionRes, allActionRes] = await Promise.all([
-        supabase.from('clipad_videos').select('*, space:space_id(name, is_private)').order('created_at', { ascending: false }).limit(6),
-        supabase.from('clipad_meeting_records').select('*, space:space_id(name, is_private)').order('created_at', { ascending: false }).limit(5),
+      // Build company-scoped queries. All fetches are filtered by company_id.
+      // RLS is the backstop, but we also filter client-side for defense in depth.
+      const spacesQuery = companyId
+        ? supabase.from('clipad_spaces').select('*').eq('company_id', companyId).order('created_at', { ascending: false }).limit(6)
+        : supabase.from('clipad_spaces').select('*').eq('created_by', user.id).order('created_at', { ascending: false }).limit(6);
+
+      const videosQuery = companyId
+        ? supabase.from('clipad_videos').select('*, space:space_id(name, is_private)').eq('company_id', companyId).order('created_at', { ascending: false }).limit(6)
+        : supabase.from('clipad_videos').select('*, space:space_id(name, is_private)').eq('creator_id', user.id).order('created_at', { ascending: false }).limit(6);
+
+      const meetingsQuery = companyId
+        ? supabase.from('clipad_meeting_records').select('*, space:space_id(name, is_private)').eq('company_id', companyId).order('created_at', { ascending: false }).limit(5)
+        : supabase.from('clipad_meeting_records').select('*, space:space_id(name, is_private)').eq('host_id', user.id).order('created_at', { ascending: false }).limit(5);
+
+      const [spacesRes, videosRes, meetingsRes, actionRes, allActionRes] = await Promise.all([
+        spacesQuery,
+        videosQuery,
+        meetingsQuery,
         supabase.from('clipad_action_items').select('id', { count: 'exact' }).eq('is_complete', false),
         supabase.from('clipad_action_items').select('id', { count: 'exact' }),
       ]);
@@ -230,17 +243,19 @@ export default function CliPadDashboard() {
         .order('created_at', { ascending: false })
         .limit(8);
 
-      // Count all meetings (not limited)
-      const { count: totalMeetingCount } = await supabase
-        .from('clipad_meeting_records')
-        .select('id', { count: 'exact', head: true });
+      // Count all meetings in company (not limited)
+      const meetingsCountQuery = companyId
+        ? supabase.from('clipad_meeting_records').select('id', { count: 'exact', head: true }).eq('company_id', companyId)
+        : supabase.from('clipad_meeting_records').select('id', { count: 'exact', head: true }).eq('host_id', user.id);
+      const { count: totalMeetingCount } = await meetingsCountQuery;
 
-      // Count all videos (not limited)
-      const { count: totalVideoCount } = await supabase
-        .from('clipad_videos')
-        .select('id', { count: 'exact', head: true });
+      // Count all videos in company (not limited)
+      const videosCountQuery = companyId
+        ? supabase.from('clipad_videos').select('id', { count: 'exact', head: true }).eq('company_id', companyId)
+        : supabase.from('clipad_videos').select('id', { count: 'exact', head: true }).eq('creator_id', user.id);
+      const { count: totalVideoCount } = await videosCountQuery;
 
-      if (allSpaces) setSpaces(allSpaces);
+      if (spacesRes.data) setSpaces(spacesRes.data);
       if (videosRes.data) setVideos(videosRes.data);
       if (meetingsRes.data) setMeetings(meetingsRes.data);
       if (myActionItemsData) setActionItems(myActionItemsData);
