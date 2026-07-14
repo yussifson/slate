@@ -67,6 +67,12 @@ export default function VideoAnalytics() {
   }, [selectedVideo]);
 
   useEffect(() => { 
+    if (user && !isAdmin(user)) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
+
+  useEffect(() => { 
     if (user) {
       if (isAdmin(user)) {
         fetchAnalytics(); 
@@ -218,29 +224,10 @@ export default function VideoAnalytics() {
     );
   }
 
+
+
   if (!isAdmin(user)) {
-    return (
-      <div className="flex flex-col items-center justify-center p-12 text-center min-h-screen bg-slate-50 dark:bg-slate-950">
-        <div className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
-          
-          <div className="w-20 h-20 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center mx-auto mb-6 text-indigo-500">
-            <Target className="w-10 h-10" />
-          </div>
-          
-          <h1 className="text-3xl font-bold tracking-tight mb-3 text-slate-900 dark:text-white">Admin Exclusive</h1>
-          <p className="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
-            Company-wide video analytics and engagement metrics are only available to administrators.
-          </p>
-          <button 
-            onClick={() => navigate('/dashboard')} 
-            className="w-full py-3.5 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold rounded-xl transition-all shadow-sm relative z-10"
-          >
-            Return to Dashboard
-          </button>
-        </div>
-      </div>
-    );
+    return null; // Prevents rendering anything while redirect happens
   }
 
   // Max value for chart scaling
