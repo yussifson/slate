@@ -103,7 +103,9 @@ export default function MeetingRecord() {
   const [meeting, setMeeting] = useState(null);
   const [actionItems, setActionItems] = useState([]);
   const [transcript, setTranscript] = useState([]);
+  const EMOJIS = ['👍', '🎉', '🧠', '👀', '💡', '🔥', '🚀'];
   const [comments, setComments] = useState([]);
+  const [reactions, setReactions] = useState([]);
   const [commentText, setCommentText] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [submittingComment, setSubmittingComment] = useState(false);
@@ -123,11 +125,12 @@ export default function MeetingRecord() {
   const fetchMeeting = async () => {
     setLoading(true);
     try {
-      const [meetingRes, actionsRes, transcriptRes, commentsRes] = await Promise.all([
+      const [meetingRes, actionsRes, transcriptRes, commentsRes, reactionsRes] = await Promise.all([
         supabase.from('clipad_meeting_records').select('*').eq('id', meetingId).single(),
         supabase.from('clipad_action_items').select('*').eq('meeting_id', meetingId).order('created_at', { ascending: true }),
         supabase.from('clipad_transcripts').select('*').eq('meeting_id', meetingId).order('start_time', { ascending: true }),
-        supabase.from('clipad_video_comments').select('*, author:user_id(full_name, avatar_url)').eq('meeting_id', meetingId).order('created_at', { ascending: true }),
+        supabase.from('clipad_meeting_comments').select('*, author:user_id(full_name, avatar_url)').eq('meeting_id', meetingId).order('created_at', { ascending: true }),
+        supabase.from('clipad_meeting_reactions').select('*, author:user_id(full_name, avatar_url)').eq('meeting_id', meetingId),
       ]);
       if (meetingRes.data) {
         const m = meetingRes.data;
@@ -168,8 +171,30 @@ export default function MeetingRecord() {
       if (actionsRes.data) setActionItems(actionsRes.data);
       if (transcriptRes.data) setTranscript(transcriptRes.data);
       if (commentsRes.data) setComments(commentsRes.data);
+      if (reactionsRes.data) setReactions(reactionsRes.data);
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
+  };
+
+  const handleAddReaction = async (emoji) => {
+    if (!user) return;
+    try {
+      const emojiToSave = isAnonymous ? `[ANON]${emoji}` : emoji;
+      await supabase.from('clipad_meeting_reactions').insert({
+        meeting_id: meetingId,
+        user_id: user.id,
+        emoji: emojiToSave,
+        timestamp_seconds: 0
+      });
+      setReactions(prev => [...prev, {
+        emoji: emojiToSave,
+        timestamp_seconds: 0,
+        user_id: user.id,
+        author: { full_name: user.full_name, avatar_url: user.avatar_url }
+      }]);
+    } catch (err) {
+      console.error('Error adding reaction:', err);
+    }
   };
 
   const submitMeetingComment = async (e) => {
@@ -178,10 +203,10 @@ export default function MeetingRecord() {
     setSubmittingComment(true);
     try {
       const content = isAnonymous ? `[ANON]${commentText.trim()}` : commentText.trim();
-      const { data, error } = await supabase.from('clipad_video_comments').insert({
+      const { data, error } = await supabase.from('clipad_meeting_comments').insert({
         meeting_id: meetingId,
         user_id: user.id,
-        content,
+        text: content,
         timestamp_seconds: 0,
       }).select('*').single();
       if (error) throw error;
@@ -588,14 +613,39 @@ export default function MeetingRecord() {
 
 
         {/* Comments Section */}
-        <SectionCard icon={MessageSquare} iconColor="from-blue-500 to-indigo-500" title="Comments" badge={comments.length > 0 ? comments.length : undefined} defaultOpen>
+        <SectionCard icon={MessageSquare} iconColor="from-blue-500 to-indigo-500" title="Comments & Reactions" badge={comments.length > 0 ? comments.length : undefined} defaultOpen>
+          {reactions.length > 0 && (
+            <div className="flex flex-wrap gap-2 p-3 mb-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+              {EMOJIS.map(e => {
+                const count = reactions.filter(r => {
+                  const cleanEmoji = r.emoji?.startsWith('[ANON]') ? r.emoji.slice(6) : r.emoji;
+                  return cleanEmoji === e;
+                }).length;
+                if (!count) return null;
+                return (
+                  <button key={e} onClick={() => handleAddReaction(e)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-sm font-medium transition-all shadow-sm border border-slate-200 dark:border-slate-700">
+                    {e} <span className="text-xs text-slate-500 dark:text-slate-400">{count}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-2 mb-4">
+            {EMOJIS.map(e => (
+              <button key={e} onClick={() => handleAddReaction(e)} className="p-2 text-xl rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                {e}
+              </button>
+            ))}
+          </div>
+
           <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
             {comments.length === 0 ? (
               <p className="text-sm text-muted-foreground italic text-center py-4">No comments yet. Be the first to comment!</p>
             ) : (
               comments.map((c) => {
-                const isAnon = c.content?.startsWith('[ANON]');
-                const displayContent = isAnon ? c.content.replace('[ANON]', '') : c.content;
+                const isAnon = c.text?.startsWith('[ANON]');
+                const displayContent = isAnon ? c.text.replace('[ANON]', '') : c.text;
                 const authorName = isAnon ? 'Anonymous' : (c.author?.full_name || 'Team Member');
                 return (
                   <div key={c.id} className="flex gap-3">

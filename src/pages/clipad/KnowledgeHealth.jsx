@@ -24,6 +24,7 @@ export default function KnowledgeHealth() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [healthData, setHealthData] = useState(null);
+  const [rawCounts, setRawCounts] = useState(null);
   const [diagnosis, setDiagnosis] = useState('');
 
   const isAdmin = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin' || user?.clipad_plan === 'enterprise';
@@ -62,6 +63,13 @@ export default function KnowledgeHealth() {
         const silos = Math.min(100, 85 - (meetingCount % 10)); // proxy metric
         const bloat = Math.max(20, 100 - (meetingCount * 2)); // proxy metric
 
+        setRawCounts({
+          meetings: meetingCount,
+          decisions: decisionCount,
+          blockers: blockerCount,
+          completed: taskCompletedCount
+        });
+
         setHealthData([
           { subject: 'Decision Velocity', A: velocity, fullMark: 100 },
           { subject: 'Resolution Speed', A: resolution, fullMark: 100 },
@@ -93,14 +101,30 @@ export default function KnowledgeHealth() {
 
   if (!isAdmin) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center h-[calc(100vh-100px)]">
-        <ShieldAlert className="w-16 h-16 text-rose-400 mb-4" />
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-200 mb-2">Admin Access Required</h2>
-        <p className="text-slate-500 max-w-md mx-auto mb-6">The Knowledge Health Dashboard provides bird's-eye organizational insights available only to workspace administrators.</p>
-        <button onClick={() => navigate('/clipad')} className="px-6 py-2.5 bg-slate-900 text-white rounded-full font-bold">Go Back</button>
+      <div className="flex flex-col items-center justify-center p-12 text-center min-h-[calc(100vh-100px)] bg-slate-50 dark:bg-slate-950">
+        <div className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
+            <ShieldAlert className="w-32 h-32 text-rose-500" />
+          </div>
+          <div className="w-20 h-20 rounded-full bg-rose-100 dark:bg-rose-500/10 border-4 border-white dark:border-slate-900 shadow-md flex items-center justify-center mx-auto mb-6 relative z-10">
+            <ShieldAlert className="w-10 h-10 text-rose-500" />
+          </div>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-3 relative z-10">Admin Access Required</h2>
+          <p className="text-slate-500 dark:text-slate-400 mb-8 relative z-10 leading-relaxed">
+            The Knowledge Health Dashboard provides bird's-eye organizational insights available only to workspace administrators.
+          </p>
+          <button 
+            onClick={() => navigate('/dashboard')} 
+            className="w-full py-3.5 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold rounded-xl transition-all shadow-sm relative z-10"
+          >
+            Return to Dashboard
+          </button>
+        </div>
       </div>
     );
   }
+
+
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10 page-enter">
@@ -114,19 +138,52 @@ export default function KnowledgeHealth() {
         </div>
       </div>
 
+      {/* Raw Data Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {[
+          { title: 'Total Meetings', value: rawCounts?.meetings || 0, desc: 'Recorded on platform', icon: Activity, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-500/10' },
+          { title: 'Key Decisions', value: rawCounts?.decisions || 0, desc: 'Extracted automatically', icon: BrainCircuit, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
+          { title: 'Blockers Raised', value: rawCounts?.blockers || 0, desc: 'Identified in syncs', icon: ShieldAlert, color: 'text-rose-500', bg: 'bg-rose-50 dark:bg-rose-500/10' },
+          { title: 'Tasks Completed', value: rawCounts?.completed || 0, desc: 'Resolved action items', icon: Target, color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-500/10' },
+        ].map((stat, i) => (
+          <div key={i} className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col hover:border-primary/30 transition-colors">
+            <div className="flex justify-between items-start mb-4">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${stat.bg} ${stat.color}`}>
+                <stat.icon className="w-6 h-6" />
+              </div>
+            </div>
+            <h4 className="text-slate-500 dark:text-slate-400 text-sm font-bold uppercase tracking-wider mb-1">{stat.title}</h4>
+            <div className="text-3xl font-black text-slate-900 dark:text-white mb-2">{stat.value}</div>
+            <p className="text-xs text-slate-400 mt-auto">{stat.desc}</p>
+          </div>
+        ))}
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         
         {/* Radar Chart */}
-        <div className="lg:col-span-2 p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
-          <h3 className="text-xl font-bold mb-6">Operational Vectors</h3>
-          <div className="flex-1 min-h-[350px] w-full flex items-center justify-center">
+        <div className="lg:col-span-2 p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+          <h3 className="text-xl font-bold mb-1 relative z-10">Operational Vectors</h3>
+          <p className="text-sm text-slate-500 mb-6 relative z-10">Calculated from your raw organizational data</p>
+          <div className="flex-1 min-h-[400px] w-full flex items-center justify-center relative z-10">
             {healthData ? (
               <ResponsiveContainer width="100%" height="100%">
-                <RadarChart cx="50%" cy="50%" outerRadius="70%" data={healthData}>
-                  <PolarGrid stroke="#e2e8f0" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 12, fontWeight: 600 }} />
+                <RadarChart cx="50%" cy="50%" outerRadius="75%" data={healthData}>
+                  <PolarGrid stroke="#e2e8f0" strokeDasharray="3 3" />
+                  <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 13, fontWeight: 600 }} />
                   <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                  <Radar name="Org Health" dataKey="A" stroke="#6366f1" fill="#6366f1" fillOpacity={0.4} />
+                  <Radar name="Org Health" dataKey="A" stroke="#4f46e5" strokeWidth={3} fill="url(#colorRadar)" fillOpacity={1} />
+                  <defs>
+                    <linearGradient id="colorRadar" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.6}/>
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.1}/>
+                    </linearGradient>
+                  </defs>
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                    formatter={(value) => [`${value}/100`, 'Score']}
+                  />
                 </RadarChart>
               </ResponsiveContainer>
             ) : (
@@ -136,48 +193,32 @@ export default function KnowledgeHealth() {
         </div>
 
         {/* AI Diagnosis */}
-        <div className="p-8 rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-md flex flex-col relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-6 opacity-10">
-            <BrainCircuit className="w-32 h-32" />
+        <div className="p-8 rounded-3xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 text-white shadow-xl flex flex-col relative overflow-hidden ring-1 ring-indigo-500/50">
+          <div className="absolute top-0 right-0 p-6 opacity-10 pointer-events-none">
+            <BrainCircuit className="w-48 h-48 -rotate-12 translate-x-8 -translate-y-8" />
           </div>
-          <h3 className="text-xl font-bold mb-2 flex items-center gap-2 relative z-10">
-            <BrainCircuit className="w-5 h-5" /> AI Diagnosis
-          </h3>
-          <p className="text-indigo-100 text-sm mb-6 relative z-10">Based on analysis of meeting transcripts, decisions, and cross-team interactions.</p>
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay pointer-events-none" />
           
-          <div className="flex-1 bg-white/10 rounded-2xl p-6 backdrop-blur-sm border border-white/20 relative z-10 flex flex-col justify-center">
-            <p className="text-lg font-medium leading-relaxed">
-              "{diagnosis || "Analyzing data points to formulate a diagnosis..."}"
+          <h3 className="text-2xl font-black mb-3 flex items-center gap-3 relative z-10">
+            <BrainCircuit className="w-6 h-6 text-indigo-300" /> AI Diagnosis
+          </h3>
+          <p className="text-indigo-200 text-sm mb-8 relative z-10 leading-relaxed">
+            Based on analysis of <strong>{rawCounts?.meetings || 0}</strong> meeting transcripts and <strong>{rawCounts?.decisions || 0}</strong> extracted decisions across your workspace.
+          </p>
+          
+          <div className="flex-1 bg-black/20 rounded-2xl p-6 backdrop-blur-md border border-white/10 relative z-10 flex flex-col justify-center shadow-inner">
+            <div className="absolute -left-3 top-6 text-4xl text-indigo-400/30 font-serif">"</div>
+            <p className="text-lg font-medium leading-relaxed relative z-10">
+              {diagnosis || "Analyzing data points to formulate a diagnosis..."}
             </p>
           </div>
           
-          <div className="mt-6 pt-6 border-t border-white/20 relative z-10">
-            <button className="w-full py-3 bg-white text-indigo-600 font-bold rounded-xl hover:bg-indigo-50 transition-colors shadow-sm">
+          <div className="mt-8 pt-6 border-t border-white/10 relative z-10">
+            <button className="w-full py-3.5 bg-white text-indigo-900 font-black rounded-xl hover:bg-indigo-50 hover:shadow-lg hover:-translate-y-0.5 transition-all focus:ring-4 focus:ring-indigo-300">
               Generate Detailed Report
             </button>
           </div>
         </div>
-      </div>
-
-      {/* Metric Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          { title: 'Decision Velocity', value: `${healthData?.[0]?.A || 0}/100`, desc: 'Decisions made per hour of meeting', icon: TrendingUp, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
-          { title: 'Resolution Speed', value: `${healthData?.[1]?.A || 0}/100`, desc: 'Average time to resolve blockers', icon: Target, color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-500/10' },
-          { title: 'Silo Index', value: `${100 - (healthData?.[2]?.A || 0)}%`, desc: 'Risk of information isolation', icon: Users, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
-          { title: 'Meeting Bloat', value: `${100 - (healthData?.[3]?.A || 0)}%`, desc: 'Time spent in unstructured syncs', icon: Activity, color: 'text-rose-500', bg: 'bg-rose-50 dark:bg-rose-500/10' },
-        ].map((stat, i) => (
-          <div key={i} className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
-            <div className="flex justify-between items-start mb-4">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${stat.bg} ${stat.color}`}>
-                <stat.icon className="w-5 h-5" />
-              </div>
-            </div>
-            <h4 className="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">{stat.title}</h4>
-            <div className="text-2xl font-black text-slate-900 dark:text-white mb-2">{stat.value}</div>
-            <p className="text-xs text-slate-400 mt-auto">{stat.desc}</p>
-          </div>
-        ))}
       </div>
     </div>
   );

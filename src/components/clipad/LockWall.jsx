@@ -48,26 +48,26 @@ export default function LockWall({ type = 'manual', unlockAt = null, title = 'th
   const isScheduled = type === 'scheduled';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950 flex items-center justify-center p-6">
       <div className="max-w-md w-full text-center space-y-6">
         {/* Icon */}
         <div className="relative mx-auto w-24 h-24">
-          <div className="absolute inset-0 bg-indigo-500/20 rounded-full blur-2xl animate-pulse" />
-          <div className="relative w-24 h-24 rounded-full bg-slate-800/80 border border-slate-700 flex items-center justify-center shadow-2xl">
+          <div className="absolute inset-0 bg-indigo-500/20 dark:bg-indigo-500/30 rounded-full blur-2xl animate-pulse" />
+          <div className="relative w-24 h-24 rounded-full bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-2xl">
             {isScheduled ? (
-              <Clock className="w-10 h-10 text-amber-400" />
+              <Clock className="w-10 h-10 text-amber-500 dark:text-amber-400" />
             ) : (
-              <Lock className="w-10 h-10 text-indigo-400" />
+              <Lock className="w-10 h-10 text-indigo-500 dark:text-indigo-400" />
             )}
           </div>
         </div>
 
         {/* Headline */}
         <div>
-          <h1 className="text-2xl font-bold text-white mb-2">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
             {isPrivate ? 'Private Space' : isScheduled ? 'Scheduled Release' : 'Content Locked'}
           </h1>
-          <p className="text-slate-400 text-sm leading-relaxed">
+          <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
             {isPrivate
               ? `"${title}" is inside a private space. You need to be a member to access it.`
               : isScheduled
@@ -78,10 +78,10 @@ export default function LockWall({ type = 'manual', unlockAt = null, title = 'th
 
         {/* Countdown for scheduled */}
         {isScheduled && unlockAt && timeLeft && (
-          <div className="bg-slate-800/60 border border-amber-500/30 rounded-2xl p-5">
-            <p className="text-xs text-amber-400/80 uppercase tracking-widest font-semibold mb-1">Unlocks in</p>
-            <p className="text-3xl font-mono font-bold text-amber-300">{timeLeft}</p>
-            <p className="text-xs text-slate-500 mt-2">
+          <div className="bg-amber-50 dark:bg-slate-800/60 border border-amber-200 dark:border-amber-500/30 rounded-2xl p-5">
+            <p className="text-xs text-amber-600 dark:text-amber-400/80 uppercase tracking-widest font-semibold mb-1">Unlocks in</p>
+            <p className="text-3xl font-mono font-bold text-amber-500 dark:text-amber-300">{timeLeft}</p>
+            <p className="text-xs text-amber-600/70 dark:text-slate-500 mt-2">
               {new Date(unlockAt).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
             </p>
           </div>
@@ -89,11 +89,11 @@ export default function LockWall({ type = 'manual', unlockAt = null, title = 'th
 
         {/* Private space note */}
         {isPrivate && (
-          <div className="bg-slate-800/60 border border-indigo-500/30 rounded-2xl p-5 text-left">
-            <p className="text-xs text-indigo-400 uppercase tracking-widest font-semibold mb-2">How to get access</p>
-            <ul className="text-sm text-slate-400 space-y-1.5">
-              <li className="flex items-start gap-2"><span className="text-indigo-400 mt-0.5">•</span> Ask the space owner to add you as a member</li>
-              <li className="flex items-start gap-2"><span className="text-indigo-400 mt-0.5">•</span> Once added, refresh this page</li>
+          <div className="bg-indigo-50 dark:bg-slate-800/60 border border-indigo-100 dark:border-indigo-500/30 rounded-2xl p-5 text-left">
+            <p className="text-xs text-indigo-600 dark:text-indigo-400 uppercase tracking-widest font-semibold mb-2">How to get access</p>
+            <ul className="text-sm text-indigo-900/70 dark:text-slate-400 space-y-1.5">
+              <li className="flex items-start gap-2"><span className="text-indigo-500 dark:text-indigo-400 mt-0.5">•</span> Ask the space owner to add you as a member</li>
+              <li className="flex items-start gap-2"><span className="text-indigo-500 dark:text-indigo-400 mt-0.5">•</span> Once added, refresh this page</li>
             </ul>
           </div>
         )}

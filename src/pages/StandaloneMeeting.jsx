@@ -255,7 +255,10 @@ export default function StandaloneMeeting() {
       url={meetingUrl}
       roomName={roomName}
       onToast={toast}
-      onLeave={() => navigate('/dashboard')}
+      onLeave={() => {
+        const base = window.location.pathname.startsWith('/clipad') ? '/clipad' : '';
+        navigate(`${base}/save-meeting/${roomId}`);
+      }}
       spaceId={spaceId}
     />
   );

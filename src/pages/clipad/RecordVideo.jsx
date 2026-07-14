@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   Camera, Monitor, Mic, MicOff, StopCircle, CheckCircle, Save, Trash2, Home,
   Play, Pause, AlertTriangle, AlertCircle, RefreshCw, XCircle, ArrowLeft, Info,
-  Wand2, AlignLeft, Video, Layers, Clock, Upload, RotateCcw, Sparkles
+  Wand2, AlignLeft, Video, Layers, Clock, Upload, RotateCcw, Sparkles, Lock, Unlock
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
@@ -244,6 +244,9 @@ export default function RecordVideo() {
   const [spaces, setSpaces] = useState([]);
   const [description, setDescription] = useState('');
   const [title, setTitle] = useState('');
+  const [lockType, setLockType] = useState('none');
+  const [unlockDate, setUnlockDate] = useState('');
+  const [unlockTime, setUnlockTime] = useState('');
   const [transcript, setTranscript] = useState('');
 
   const canvasRef = useRef(null);
@@ -1106,6 +1109,20 @@ export default function RecordVideo() {
   const uploadRecording = async () => {
     if (!user) return;
     
+    let finalUnlockAt = null;
+    let finalIsLocked = false;
+
+    if (lockType === 'manual') {
+      finalIsLocked = true;
+    } else if (lockType === 'scheduled') {
+      if (!unlockDate || !unlockTime) {
+        toast({ title: 'Date/Time required', description: 'Please set the unlock schedule.', variant: 'destructive' });
+        return;
+      }
+      finalIsLocked = true;
+      finalUnlockAt = new Date(`${unlockDate}T${unlockTime}`).toISOString();
+    }
+    
     // If it was auto-saved, just update details and redirect
     if (activeVideoId) {
       setPhase('uploading');
@@ -1114,6 +1131,8 @@ export default function RecordVideo() {
           title: title.trim() || `Recording - ${new Date().toLocaleDateString()}`,
           description: description.trim() || null,
           space_id: selectedSpace || null,
+          is_locked: finalIsLocked,
+          unlock_at: finalUnlockAt,
         }).eq('id', activeVideoId);
         
         if (transcript.trim().length > 10) {
@@ -1205,6 +1224,8 @@ export default function RecordVideo() {
         title: videoTitle,
         space_id: selectedSpace || null,
         duration_seconds: recordingSeconds,
+        is_locked: finalIsLocked,
+        unlock_at: finalUnlockAt,
       }).select().single();
 
       if (dbError) throw dbError;
@@ -1620,6 +1641,64 @@ export default function RecordVideo() {
                 rows={2}
                 className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all resize-none"
               />
+            </div>
+
+            {/* Lock Settings */}
+            <div className="mt-6">
+              <label className="block text-xs font-semibold text-muted-foreground mb-4 uppercase tracking-wider">Access Control</label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button
+                  onClick={() => setLockType('none')}
+                  className={`p-4 rounded-xl border text-left transition-all ${
+                    lockType === 'none' 
+                    ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 ring-1 ring-emerald-500' 
+                    : 'border-border hover:border-slate-300 dark:hover:border-slate-600'
+                  }`}
+                >
+                  <Unlock className={`w-6 h-6 mb-3 ${lockType === 'none' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`} />
+                  <h3 className="font-bold text-foreground mb-1">Public</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Available immediately to all space members.</p>
+                </button>
+
+                <button
+                  onClick={() => setLockType('manual')}
+                  className={`p-4 rounded-xl border text-left transition-all ${
+                    lockType === 'manual' 
+                    ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/20 ring-1 ring-indigo-500' 
+                    : 'border-border hover:border-slate-300 dark:hover:border-slate-600'
+                  }`}
+                >
+                  <Lock className={`w-6 h-6 mb-3 ${lockType === 'manual' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`} />
+                  <h3 className="font-bold text-foreground mb-1">Locked</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Only you can view until manually unlocked.</p>
+                </button>
+
+                <button
+                  onClick={() => setLockType('scheduled')}
+                  className={`p-4 rounded-xl border text-left transition-all ${
+                    lockType === 'scheduled' 
+                    ? 'border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 ring-1 ring-amber-500' 
+                    : 'border-border hover:border-slate-300 dark:hover:border-slate-600'
+                  }`}
+                >
+                  <Clock className={`w-6 h-6 mb-3 ${lockType === 'scheduled' ? 'text-amber-600 dark:text-amber-400' : 'text-slate-400'}`} />
+                  <h3 className="font-bold text-foreground mb-1">Scheduled</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Unlocks automatically at a specific time.</p>
+                </button>
+              </div>
+
+              {lockType === 'scheduled' && (
+                <div className="mt-4 p-5 bg-amber-50 dark:bg-amber-950/10 rounded-xl border border-amber-100 dark:border-amber-900/30 flex gap-4 animate-in fade-in slide-in-from-top-2">
+                  <div className="flex-1">
+                    <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1.5">Unlock Date</label>
+                    <input type="date" value={unlockDate} onChange={e => setUnlockDate(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-border text-foreground text-sm" min={new Date().toISOString().split('T')[0]} />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1.5">Unlock Time</label>
+                    <input type="time" value={unlockTime} onChange={e => setUnlockTime(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-border text-foreground text-sm" />
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-4">
