@@ -406,7 +406,8 @@ export const VIRTUAL_BACKGROUNDS = [
           
           daily.leave();
           if (insertedMeeting) {
-            navigate(`/clipad/save-meeting/${insertedMeeting.id}${spaceId ? `?spaceId=${spaceId}` : ''}`);
+            const basePath = window.location.pathname.startsWith('/clipad') ? '/clipad' : '';
+            navigate(`${basePath}/save-meeting/${insertedMeeting.id}${spaceId ? `?spaceId=${spaceId}` : ''}`);
             return;
           }
         }
