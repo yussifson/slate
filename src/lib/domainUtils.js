@@ -56,7 +56,11 @@ export function getSubdomainAndBase() {
 export function getMainAppUrl() {
   const { baseDomain } = getSubdomainAndBase();
   const port = window.location.port ? `:${window.location.port}` : '';
-  return `${window.location.protocol}//${baseDomain}${port}`;
+  let targetDomain = baseDomain;
+  if (targetDomain === 'optavel.com') {
+    targetDomain = 'slate.optavel.com';
+  }
+  return `${window.location.protocol}//${targetDomain}${port}`;
 }
 
 export function isDesktopApp() {
