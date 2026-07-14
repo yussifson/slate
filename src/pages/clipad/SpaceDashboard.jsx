@@ -338,22 +338,13 @@ export default function SpaceDashboard() {
   const openTasks = tasks.filter(t => !t.is_complete);
   const doneTasks = tasks.filter(t => t.is_complete);
   
-  const isAdmin = user?.clipad_plan === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
-  const canEdit = space.created_by === user?.id || isAdmin;
+  // Only company admins / super admins / the platform admin can edit or delete spaces.
+  // Regular staff (even space creators) can view but not modify.
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
+  const canEdit = isAdmin;
   const isMember = spaceMembers.some(m => m.user_id === user?.id);
 
-  if (space.is_private && !canEdit && !isMember) {
-    return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter flex items-center justify-center text-foreground">
-        <div className="text-center">
-          <Lock className="w-12 h-12 text-gray-700 mx-auto mb-3" />
-          <h2 className="text-xl font-bold mb-1">Private Space</h2>
-          <p className="text-muted-foreground text-sm">You don't have permission to view this space.</p>
-          <button onClick={() => navigate('/spaces')} className="mt-4 text-primary hover:text-primary/80 text-sm transition-colors font-medium">← Back to Spaces</button>
-        </div>
-      </div>
-    );
-  }
+
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground overflow-x-hidden pb-24 md:pb-8">
