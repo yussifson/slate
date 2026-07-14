@@ -5,17 +5,19 @@ import { supabase } from '@/api/supabaseClient';
 import { Save, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
+import RecommendationPanel from '@/components/clipad/features/RecommendationPanel';
 
-export default function SpaceNotes({ spaceId }) {
+export default function SpaceNotes({ spaceId, workspaceId }) {
   const [isSaving, setIsSaving] = useState(false);
   const [initialContent, setInitialContent] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
+  const [editorText, setEditorText] = useState('');
   const { toast } = useToast();
 
   useEffect(() => {
     async function loadNotes() {
       if (!spaceId) return;
-      const { data, error } = await supabase.from('clipad_spaces').select('shared_notes').eq('id', spaceId).single();
+      const { data, error } = await supabase.from('clipad_spaces').select('shared_notes, company_id').eq('id', spaceId).single();
       if (!error && data) {
         setInitialContent(data.shared_notes || '<p>Welcome to your space notes...</p>');
       }
@@ -27,13 +29,15 @@ export default function SpaceNotes({ spaceId }) {
   const editor = useEditor({
     extensions: [StarterKit],
     content: initialContent,
+    onUpdate: ({ editor }) => {
+      setEditorText(editor.getText());
+    },
     editorProps: {
       attributes: {
         class: 'prose dark:prose-invert prose-sm sm:prose-base focus:outline-none max-w-none min-h-[300px]',
       },
     },
-    // We only want to set content when it's fully loaded the first time
-  }, [isLoaded]); // Re-initialize editor once data is loaded
+  }, [isLoaded]);
 
   const handleSave = async () => {
     if (!editor || !spaceId) return;
@@ -51,12 +55,19 @@ export default function SpaceNotes({ spaceId }) {
     }
   };
 
+  const insertRecommendation = (snippet) => {
+    if (editor) {
+      editor.commands.insertContent(`\n<blockquote>${snippet}</blockquote>\n`);
+    }
+  };
+
   if (!isLoaded || !editor) {
     return <div className="h-[400px] flex items-center justify-center bg-card rounded-2xl border"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></div>;
   }
 
   return (
-    <div className="bg-card border rounded-2xl shadow-sm flex flex-col overflow-hidden">
+    <div className="bg-card border rounded-2xl shadow-sm flex flex-col overflow-hidden relative">
+      <RecommendationPanel contextText={editorText} workspaceId={workspaceId} onInsert={insertRecommendation} />
       {/* Editor Toolbar */}
       <div className="border-b bg-muted/20 p-2 flex gap-2 flex-wrap items-center">
         <Button size="sm" variant={editor.isActive('bold') ? 'default' : 'ghost'} onClick={() => editor.chain().focus().toggleBold().run()}>Bold</Button>

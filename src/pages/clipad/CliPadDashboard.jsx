@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/AuthContext';
 import {
   Video, Camera, Plus, Brain, CheckCircle, Clock, TrendingUp,
   Layers, Play, BarChart3, Settings, ArrowRight, Sparkles, Activity,
-  Users, FileText, Calendar, Mic, Target, Flame, Star, LogOut, Shield, Lock, Globe
+  Users, FileText, Calendar, Mic, Target, Flame, Star, LogOut, Shield, Lock, Globe, HeartPulse
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { getSpaceIcon } from '@/utils/spaceIcons';
@@ -25,6 +25,8 @@ import BlockerRadar from '@/components/clipad/features/BlockerRadar';
 import MeetingNecessityWidget from '@/components/clipad/features/MeetingNecessityWidget';
 import TimezoneFairnessWidget from '@/components/clipad/features/TimezoneFairnessWidget';
 import InstitutionalMemoryVault from '@/components/clipad/features/InstitutionalMemoryVault';
+import AIInsightsPanel from '@/components/clipad/features/AIInsightsPanel';
+import FollowUpEngine from '@/components/clipad/features/FollowUpEngine';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import SpaceSelectorModal from '@/components/clipad/SpaceSelectorModal';
 
@@ -502,6 +504,26 @@ export default function CliPadDashboard() {
                   : 'Start a meeting to unlock AI-powered insights about your team\'s collaboration patterns and action item completion.'}
               </p>
             </div>
+
+            {/* Follow-Up Engine */}
+            <FollowUpEngine workspaceId={user?.company_id} />
+
+            {/* Knowledge Health (Admin Only) */}
+            {(user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin' || user?.clipad_plan === 'enterprise') && (
+              <div onClick={() => navigate('/clipad/health')} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-rose-500/30 transition-all cursor-pointer group">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform">
+                    <HeartPulse className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-900 dark:text-white">Knowledge Health</h3>
+                    <p className="text-xs font-semibold text-rose-500 uppercase tracking-widest">Admin View</p>
+                  </div>
+                </div>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-3">View organizational intelligence metrics, silo risks, and AI health diagnosis.</p>
+              </div>
+            )}
+
 
             {/* Recent Meetings */}
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">

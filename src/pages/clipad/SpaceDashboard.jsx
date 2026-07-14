@@ -27,12 +27,15 @@ import BlockerRadar from '@/components/clipad/features/BlockerRadar';
 import RedundantWorkAlert from '@/components/clipad/features/RedundantWorkAlert';
 import MeetingROIDashboard from '@/components/clipad/features/MeetingROIDashboard';
 import CommitmentTracker from '@/components/clipad/features/CommitmentTracker';
+import AIInsightsPanel from '@/components/clipad/features/AIInsightsPanel';
 import StandupPanel from '@/components/clipad/StandupPanel';
 import OrgTimeline from '@/components/clipad/OrgTimeline';
+import MemoryTimeline from '@/components/clipad/features/MemoryTimeline';
 
 const TABS = [
   { id: 'overview', icon: Layers, label: 'Overview' },
   { id: 'timeline', icon: Activity, label: 'Timeline' },
+  { id: 'memory', icon: Brain, label: 'Memory Graph' },
   { id: 'standup', icon: Sun, label: 'Standup' },
   { id: 'chat', icon: MessageSquare, label: 'Chat' },
   { id: 'calendar', icon: Calendar, label: 'Calendar' },
@@ -444,6 +447,7 @@ export default function SpaceDashboard() {
             <RedundantWorkAlert workspaceId={space.company_id} currentSpaceId={spaceId} />
             <MeetingInsights spaceId={spaceId} />
             <MeetingROIDashboard workspaceId={space.company_id} spaceId={spaceId} />
+            <AIInsightsPanel spaceId={spaceId} workspaceId={space.company_id} />
 
             {/* Premium Bento Grid Layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-max">
@@ -661,6 +665,22 @@ export default function SpaceDashboard() {
         {activeTab === 'timeline' && (
           <div className="h-[calc(100vh-140px)] overflow-y-auto p-6 max-w-4xl mx-auto">
             <OrgTimeline workspaceId={workspaceId} spaceId={spaceId} />
+          </div>
+        )}
+
+        {/* MEMORY GRAPH */}
+        {activeTab === 'memory' && (
+          <div className="h-[calc(100vh-140px)] overflow-y-auto p-6 max-w-4xl mx-auto">
+            <div className="mb-6 flex gap-2">
+              <input type="text" placeholder="Enter a topic (e.g. 'pricing strategy')..." className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm" id="memoryTopicInput" defaultValue="design guidelines" />
+              <button onClick={() => {
+                const val = document.getElementById('memoryTopicInput').value;
+                if(val) document.getElementById('memoryGraphContainer').setAttribute('data-topic', val);
+              }} className="px-4 py-2 bg-primary text-white rounded-xl text-sm font-bold">Trace Memory</button>
+            </div>
+            <div id="memoryGraphContainer" data-topic="design guidelines">
+              <MemoryTimeline workspaceId={workspaceId} topic="design guidelines" />
+            </div>
           </div>
         )}
 
