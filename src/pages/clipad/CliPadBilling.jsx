@@ -3,6 +3,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { supabase } from '@/api/supabaseClient';
 import { logAuditEvent } from '@/lib/auditLogger';
+import { PLAN_LIMITS } from '@/lib/clipadPricing';
 import { Check, Loader2, Sparkles, FileText, ArrowUpRight } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import ContactSalesModal from '@/components/clipad/ContactSalesModal';
