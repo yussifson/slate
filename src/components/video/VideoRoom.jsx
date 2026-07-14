@@ -376,6 +376,7 @@ export const VIRTUAL_BACKGROUNDS = [
             daily_room_name: roomUrl.split('/').pop() || 'room',
             host_id: user?.id || null,
             ai_summary: rawTranscript ? 'Generating summary...' : 'No transcript recorded.',
+            started_at: new Date(joinTimeRef.current).toISOString(),
             ended_at: new Date().toISOString(),
             space_id: spaceId || null
           };

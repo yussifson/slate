@@ -14,8 +14,30 @@ export default function ContextCapsule({ spaceId, hasFullIntelligence }) {
     setError(null);
 
     try {
-      // Fetch real data from the space — use tables that actually exist
-      const [decisionsRes, blockersRes, tasksRes, meetingsRes] = await Promise.all([
+      // 1. Fetch meetings for the space first
+      const { data: meetingRecords } = await supabase
+        .from('clipad_meeting_records')
+        .select('id, title, ai_summary, created_at')
+        .eq('space_id', spaceId)
+        .order('created_at', { ascending: false })
+        .limit(3);
+        
+      const meetings = meetingRecords || [];
+      const meetingIds = meetings.map(m => m.id);
+
+      // 2. Fetch other real data from the space
+      let tasksRes = { data: [] };
+      if (meetingIds.length > 0) {
+        tasksRes = await supabase
+          .from('clipad_action_items')
+          .select('id, title, is_complete, created_at')
+          .in('meeting_id', meetingIds)
+          .eq('is_complete', false)
+          .order('created_at', { ascending: false })
+          .limit(5);
+      }
+
+      const [decisionsRes, blockersRes] = await Promise.all([
         supabase
           .from('clipad_decisions')
           .select('id, decision_text, rationale, status, created_at')
@@ -28,20 +50,7 @@ export default function ContextCapsule({ spaceId, hasFullIntelligence }) {
           .select('id, description, status, detected_at')
           .eq('team_space_id', spaceId)
           .eq('status', 'open')
-          .limit(5),
-        supabase
-          .from('clipad_action_items')     // correct table name
-          .select('id, title, is_complete, created_at')
-          .eq('space_id', spaceId)
-          .eq('is_complete', false)
-          .order('created_at', { ascending: false })
-          .limit(5),
-        supabase
-          .from('clipad_meeting_records')
-          .select('id, meeting_title, ai_summary, created_at')
-          .eq('space_id', spaceId)
-          .order('created_at', { ascending: false })
-          .limit(3),
+          .limit(5)
       ]);
 
       const decisions = decisionsRes.data || [];
@@ -58,7 +67,7 @@ export default function ContextCapsule({ spaceId, hasFullIntelligence }) {
           decisions.length > 0 ? `Active Decisions: ${decisions.map(d => d.decision_text).join('; ')}` : '',
           blockers.length > 0 ? `Open Blockers: ${blockers.map(b => b.description).join('; ')}` : '',
           tasks.length > 0 ? `Open Tasks: ${tasks.map(t => t.title).join('; ')}` : '',
-          meetings.length > 0 ? `Recent Meetings: ${meetings.map(m => `"${m.meeting_title}" — ${m.ai_summary?.substring(0, 100) || 'No summary'}`).join('; ')}` : '',
+          meetings.length > 0 ? `Recent Meetings: ${meetings.map(m => `"${m.title}" — ${m.ai_summary?.substring(0, 100) || 'No summary'}`).join('; ')}` : '',
         ].filter(Boolean).join('\n');
 
         try {
