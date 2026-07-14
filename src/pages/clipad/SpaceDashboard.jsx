@@ -6,8 +6,8 @@ import { useAuth } from '@/lib/AuthContext';
 import {
   Users, Video, Calendar, Plus, Play, Monitor, Activity,
   Brain, FileText, CheckCircle, Search, Settings, ArrowLeft,
-  Clock, MessageSquare, Sparkles, Camera, Layers, Target,
-  ChevronRight, X, Edit3, Trash2, User, Lock, ShieldAlert
+  Clock, MessageSquare, Heart, Bookmark, Eye, MoreVertical, CheckCircle2, Circle, MoreHorizontal, ArrowRight,
+  Shield, Edit3, Lock, X, Trash2, User, ShieldAlert, Sparkles, Camera, Layers, Target, ChevronRight
 } from 'lucide-react';
 import SpaceNotes from '@/components/clipad/SpaceNotes';
 import MeetingInsights from '@/components/clipad/MeetingInsights';
@@ -103,6 +103,11 @@ function VideoCard({ video, onClick }) {
         {video.duration_seconds && (
           <div className="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] font-mono font-medium px-2 py-0.5 rounded">
             {Math.floor(video.duration_seconds/60)}:{String(video.duration_seconds%60).padStart(2,'0')}
+          </div>
+        )}
+        {(video.is_locked || video.unlock_at) && (
+          <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-md text-white px-2 py-1 rounded-md">
+            <Lock className="w-3.5 h-3.5 text-indigo-400" />
           </div>
         )}
       </div>
@@ -530,6 +535,11 @@ export default function SpaceDashboard() {
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-semibold text-foreground">{m.title || 'Team Meeting'}</h3>
                           {m.ai_summary && <span className="px-2 py-0.5 rounded-full bg-pink-500/10 text-primary text-[10px] font-semibold flex items-center gap-1"><Sparkles className="w-2.5 h-2.5" /> AI Summary</span>}
+                          {(m.is_locked || m.unlock_at) && (
+                            <span className="px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 text-[10px] font-semibold flex items-center gap-1">
+                              <Lock className="w-2.5 h-2.5" /> Locked
+                            </span>
+                          )}
                         </div>
                         <p className="text-xs text-muted-foreground">{new Date(m.created_at).toLocaleString()}</p>
                         {m.ai_summary && <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{m.ai_summary}</p>}
