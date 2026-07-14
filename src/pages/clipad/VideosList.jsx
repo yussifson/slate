@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
-import { Video, Search, Clock, ArrowRight, UserCircle, Settings, Play } from 'lucide-react';
+import { Video, Search, Clock, ArrowRight, UserCircle, Settings, Play, Lock, Globe } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
 import ThemeToggle from '@/components/layout/ThemeToggle';
@@ -48,7 +48,7 @@ export default function VideosList() {
   const fetchVideos = async () => {
     setLoading(true);
     const { data } = await supabase.from('clipad_videos')
-      .select('*, space:space_id(name)')
+      .select('*, space:space_id(name, is_private)')
       .eq('creator_id', user.id)
       .order('created_at', { ascending: false });
     
@@ -182,7 +182,19 @@ export default function VideosList() {
                     <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate mb-1 group-hover:text-primary transition-colors">{v.title || 'Untitled Video'}</h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{new Date(v.created_at).toLocaleDateString()} at {new Date(v.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
                   </div>
-                  {v.space && <span className="inline-block mt-2 px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] uppercase font-bold w-fit">{v.space.name}</span>}
+                  <div className="flex items-center justify-between mt-2 gap-2">
+                    {v.space && <span className="inline-block px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] uppercase font-bold truncate max-w-[120px]">{v.space.name}</span>}
+                    {v.space && (
+                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold shrink-0 ${
+                        v.space.is_private
+                          ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400'
+                          : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                      }`}>
+                        {v.space.is_private ? <Lock className="w-2.5 h-2.5" /> : <Globe className="w-2.5 h-2.5" />}
+                        {v.space.is_private ? 'Private' : 'Public'}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

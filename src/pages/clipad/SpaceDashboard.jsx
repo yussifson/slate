@@ -13,6 +13,7 @@ import SpaceNotes from '@/components/clipad/SpaceNotes';
 import MeetingInsights from '@/components/clipad/MeetingInsights';
 import { getSpaceIcon } from '@/utils/spaceIcons';
 import ClipadLoader from '@/components/ui/ClipadLoader';
+import LockWall from '@/components/clipad/LockWall';
 import { useToast } from '@/components/ui/use-toast';
 import TaskBoard from '@/components/clipad/tasks/TaskBoard';
 import SpaceChat from '@/components/clipad/chat/SpaceChat';
@@ -142,6 +143,7 @@ export default function SpaceDashboard() {
   const [profiles, setProfiles] = useState([]);
   const [spaceMembers, setSpaceMembers] = useState([]);
   const [searchMember, setSearchMember] = useState('');
+  const [accessDenied, setAccessDenied] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => { if (spaceId) fetchAll(); }, [spaceId]);
@@ -152,10 +154,29 @@ export default function SpaceDashboard() {
       // Phase 1: fetch the space first so we get company_id
       const spaceRes = await supabase.from('clipad_spaces').select('*').eq('id', spaceId).single();
       if (spaceRes.data) {
-        setSpace(spaceRes.data);
-        setEditName(spaceRes.data.name);
-        setEditDesc(spaceRes.data.description || '');
-        setEditIsPrivate(spaceRes.data.is_private || false);
+        const s = spaceRes.data;
+        const isOwner = user && s.created_by === user.id;
+
+        // Access control: block non-members from private spaces
+        if (s.is_private && !isOwner) {
+          const { data: memberRow } = await supabase
+            .from('clipad_space_members')
+            .select('id')
+            .eq('space_id', spaceId)
+            .eq('user_id', user?.id || '')
+            .single();
+          if (!memberRow) {
+            setSpace(s); // still set so LockWall can show the name
+            setAccessDenied(true);
+            setLoading(false);
+            return;
+          }
+        }
+
+        setSpace(s);
+        setEditName(s.name);
+        setEditDesc(s.description || '');
+        setEditIsPrivate(s.is_private || false);
       }
 
       const companyId = spaceRes.data?.company_id || user?.company_id || user?.companies?.id;
@@ -296,6 +317,10 @@ export default function SpaceDashboard() {
 
   if (loading || isLoadingAuth) {
     return <ClipadLoader fullScreen text="Loading space dashboard..." />;
+  }
+
+  if (accessDenied) {
+    return <LockWall type="private" title={space?.name || 'this space'} onBack={() => navigate('/spaces')} />;
   }
 
   if (!space) {

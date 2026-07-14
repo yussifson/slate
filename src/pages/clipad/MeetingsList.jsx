@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { getLimit } from '@/lib/clipadPricing';
-import { Calendar, Video, Search, Clock, Users, ArrowRight, Sparkles, Filter, CheckCircle, Flame, ArrowLeft, Target, Settings, UserCircle } from 'lucide-react';
+import { Calendar, Video, Search, Clock, Users, ArrowRight, Sparkles, Filter, CheckCircle, Flame, ArrowLeft, Target, Settings, UserCircle, Lock, Globe } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
 import ThemeToggle from '@/components/layout/ThemeToggle';
@@ -26,7 +26,7 @@ export default function MeetingsList() {
     setLoading(true);
     // In a real app we'd fetch meetings for spaces the user is in. For now, fetch all.
     const { data } = await supabase.from('clipad_meeting_records')
-      .select('*, space:space_id(name)')
+      .select('*, space:space_id(name, is_private)')
       .order('created_at', { ascending: false });
     
     // Fetch action items count for each meeting
@@ -196,6 +196,16 @@ export default function MeetingsList() {
                   <div className="flex flex-wrap items-center gap-2 mb-1">
                     <h3 className="text-base font-bold text-slate-900 dark:text-white truncate">{m.title || 'Team Meeting'}</h3>
                     {m.space && <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] uppercase font-bold">{m.space.name}</span>}
+                    {m.space && (
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        m.space.is_private
+                          ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400'
+                          : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                      }`}>
+                        {m.space.is_private ? <Lock className="w-2.5 h-2.5" /> : <Globe className="w-2.5 h-2.5" />}
+                        {m.space.is_private ? 'Private' : 'Public'}
+                      </span>
+                    )}
                   </div>
                   <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mt-2">
                     <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" />{new Date(m.created_at).toLocaleDateString()} at {new Date(m.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>

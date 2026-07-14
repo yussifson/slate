@@ -41,24 +41,31 @@ export default function SpacesList() {
   const fetchSpaces = async () => {
     setLoading(true);
     if (!user?.id) { setLoading(false); return; }
-    // Show spaces the user created, or is a member of, or are public
+
+    // Collect spaces the user owns or is a member of
     const [mySpacesRes, memberSpacesRes] = await Promise.all([
       supabase.from('clipad_spaces').select('*').eq('created_by', user.id).order('created_at', { ascending: false }),
       supabase.from('clipad_space_members').select('space_id').eq('user_id', user.id)
     ]);
+
     const memberSpaceIds = memberSpacesRes.data?.map(m => m.space_id) || [];
-    let allSpaces = mySpacesRes.data || [];
+    let mySpaces = mySpacesRes.data || [];
     if (memberSpaceIds.length > 0) {
       const { data: memberSpaces } = await supabase.from('clipad_spaces').select('*').in('id', memberSpaceIds);
-      const existingIds = new Set(allSpaces.map(s => s.id));
-      allSpaces = [...allSpaces, ...(memberSpaces || []).filter(s => !existingIds.has(s.id))];
+      const existingIds = new Set(mySpaces.map(s => s.id));
+      mySpaces = [...mySpaces, ...(memberSpaces || []).filter(s => !existingIds.has(s.id))];
     }
-    // Also include public spaces
+
+    // Also load ALL public spaces for the company (everyone can see them)
     const { data: publicSpaces } = await supabase.from('clipad_spaces').select('*').eq('is_private', false);
-    const existingIds2 = new Set(allSpaces.map(s => s.id));
-    allSpaces = [...allSpaces, ...(publicSpaces || []).filter(s => !existingIds2.has(s.id))];
-    allSpaces.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-    setSpaces(allSpaces);
+    const existingIds2 = new Set(mySpaces.map(s => s.id));
+    const allSpaces = [...mySpaces, ...(publicSpaces || []).filter(s => !existingIds2.has(s.id))];
+
+    // Tag spaces the user is a member of (for badge display)
+    const memberSet = new Set([...mySpaces.map(s => s.id)]);
+    const tagged = allSpaces.map(s => ({ ...s, _isMember: memberSet.has(s.id) || s.created_by === user.id }));
+    tagged.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    setSpaces(tagged);
     setLoading(false);
   };
 
@@ -98,8 +105,8 @@ export default function SpacesList() {
   };
 
   const isAdmin = user?.clipad_plan === 'enterprise' || user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
-  const visibleSpaces = spaces.filter(s => !s.is_private || s.created_by === user?.id || isAdmin);
-  const filtered = visibleSpaces.filter(s => s.name?.toLowerCase().includes(search.toLowerCase()));
+  // Show all spaces; SpaceDashboard handles the access wall for private ones
+  const filtered = spaces.filter(s => s.name?.toLowerCase().includes(search.toLowerCase()));
 
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
@@ -204,11 +211,19 @@ export default function SpacesList() {
                           {React.createElement(getSpaceIcon(space.name), { className: "w-7 h-7" })}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-extrabold text-slate-900 dark:text-white text-lg truncate group-hover:text-primary transition-colors flex items-center gap-2">
+                          <h3 className="font-extrabold text-slate-900 dark:text-white text-lg truncate group-hover:text-primary transition-colors">
                             {space.name}
-                            {space.is_private && <Lock className="w-4 h-4 text-slate-400" />}
                           </h3>
                           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">{space.description || 'A shared space for meetings and video updates.'}</p>
+                        </div>
+                        {/* Privacy badge */}
+                        <div className={`shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                          space.is_private
+                            ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30'
+                            : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30'
+                        }`}>
+                          {space.is_private ? <Lock className="w-3 h-3" /> : <Globe className="w-3 h-3" />}
+                          {space.is_private ? 'Private' : 'Public'}
                         </div>
                       </div>
                       
