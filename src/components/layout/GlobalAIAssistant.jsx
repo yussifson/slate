@@ -724,56 +724,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 }
 };
 
- // Session Management 
- const startNewChat = () => {
- const s = newSession();
- if (companyId && user?.email) {
- (async () => {
- const _payload = { id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s};
- const _keys = Object.keys(_payload);
- const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const existing = await powerSync.getOptional('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
-        if (existing) {
-          await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, _payload.id]);
-        } else {
-          await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
-        }
-})();
-}
- setSessions(prev => [s, ...prev]);
- setActiveId(s.id);
- setShowHistory(false);
-};
 
- const deleteSession = async (sid, e) => {
- e.stopPropagation();
- if (companyId) {
- await powerSync.execute(`DELETE FROM industry_records WHERE id = ? AND company_id = ?`, [sid, companyId]);
-}
- setSessions(prev => {
- const rest = prev.filter(s => s.id !== sid);
- if (rest.length === 0) {
- const fresh = newSession();
- if (companyId && user?.email) {
- (async () => {
- const _payload = { id: fresh.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: fresh};
- const _keys = Object.keys(_payload);
- const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const existing = await powerSync.getOptional('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
-        if (existing) {
-          await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, _payload.id]);
-        } else {
-          await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
-        }
-})();
-}
- setActiveId(fresh.id);
- return [fresh];
-}
- if (activeId === sid) setActiveId(rest[0].id);
- return rest;
-});
-};
 
  const ctx = PAGE_CONTEXT[location.pathname];
 
