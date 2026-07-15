@@ -225,12 +225,30 @@ export default function StandupPanel({ spaceId }) {
     }
   };
 
+  const getExportHTML = () => {
+    let contextStr = filterMode;
+    if (filterMode === 'advanced') {
+      contextStr = `${customStartDate || 'Start'} to ${customEndDate || 'Now'}`;
+    }
+    const paragraphs = aiSummary.split('\n').filter(p => p.trim() !== '').map(p => `<p style="margin-bottom: 12px; line-height: 1.6; color: #333;">${p}</p>`).join('');
+    return `
+      <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto;">
+        <h1 style="color: #4f46e5; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; margin-bottom: 20px;">Daily Standup Summary</h1>
+        <p style="color: #6b7280; font-size: 14px; margin-bottom: 20px;"><strong>Date/Period:</strong> ${contextStr}</p>
+        <div style="font-size: 14px;">
+          ${paragraphs}
+        </div>
+      </div>
+    `;
+  };
+
   const exportAsPDF = () => {
-    const element = document.getElementById('standup-report-container');
-    if (!element) return;
+    if (!aiSummary) return;
+    const element = document.createElement('div');
+    element.innerHTML = getExportHTML();
     const opt = {
       margin: 10,
-      filename: `Standup_Report_${filterMode}.pdf`,
+      filename: `Standup_Summary_${filterMode}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -239,16 +257,15 @@ export default function StandupPanel({ spaceId }) {
   };
 
   const exportAsWord = () => {
-    const element = document.getElementById('standup-report-container');
-    if (!element) return;
-    const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Standup Report</title></head><body>";
+    if (!aiSummary) return;
+    const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Standup Summary</title></head><body>";
     const footer = "</body></html>";
-    const sourceHTML = header + element.innerHTML + footer;
+    const sourceHTML = header + getExportHTML() + footer;
     const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
     const fileDownload = document.createElement("a");
     document.body.appendChild(fileDownload);
     fileDownload.href = source;
-    fileDownload.download = `Standup_Report_${filterMode}.doc`;
+    fileDownload.download = `Standup_Summary_${filterMode}.doc`;
     fileDownload.click();
     document.body.removeChild(fileDownload);
   };
@@ -428,7 +445,11 @@ export default function StandupPanel({ spaceId }) {
               </div>
             </div>
             {aiSummary ? (
-              <p className="text-sm text-indigo-800 dark:text-indigo-300 leading-relaxed">{aiSummary}</p>
+              <div className="text-sm text-indigo-800 dark:text-indigo-300 leading-relaxed">
+                {aiSummary.split('\n').filter(p => p.trim() !== '').map((paragraph, idx) => (
+                  <p key={idx} className="mb-2">{paragraph}</p>
+                ))}
+              </div>
             ) : (
               <p className="text-sm text-indigo-600 dark:text-indigo-400 opacity-70">
                 {isSummarizing ? 'Analyzing team updates...' : 'Click Generate to create an AI-powered team summary.'}
