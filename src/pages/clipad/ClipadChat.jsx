@@ -838,9 +838,9 @@ export default function ClipadChat({ isDockedMode = false }) {
       </DropdownMenuContent>
     </DropdownMenu>
   </div>
- 
- </div>
- );
+  </div>
+  </div>
+  );
 })}
  <div ref={messagesEndRef} className="h-2" />
  </div>
