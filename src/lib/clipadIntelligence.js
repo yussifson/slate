@@ -166,7 +166,7 @@ ${text.substring(0, 4000)}`);
 // ──────────────────────────────────────────────────────────────────
 // 5. Generate AI Standup Summary
 // ──────────────────────────────────────────────────────────────────
-export async function generateStandupSummary(updates = []) {
+export async function generateStandupSummary(updates = [], contextDate = 'today') {
   if (!updates.length) return 'No standup updates posted yet.';
 
   const formatted = updates
@@ -180,9 +180,9 @@ export async function generateStandupSummary(updates = []) {
     {
       role: 'system',
       content:
-        'You are a team standup summarizer. Create a clear, concise summary written in continuous, natural paragraphs. Do NOT use any special characters, markdown formatting, bullet points, or asterisks. Write in a clean prose format. You must strictly use the exact real names of the team members provided in the input data instead of generic terms or made-up names. Summarize key work happening, shared blockers, team mood, and items needing manager attention. Keep it under 200 words.',
+        `You are a team standup summarizer analyzing updates for this period: ${contextDate}. Create a clear, concise summary written in continuous, natural paragraphs. Do NOT use any special characters, markdown formatting, bullet points, or asterisks. Write in a clean prose format. You must strictly use the exact real names of the team members provided in the input data instead of generic terms or made-up names. Summarize key work happening, shared blockers, team mood, and items needing manager attention. Keep it under 200 words.`,
     },
-    { role: 'user', content: `Summarize this team standup:\n\n${formatted}` },
+    { role: 'user', content: `Summarize this team standup for the period (${contextDate}):\n\n${formatted}` },
   ]) || 'Unable to generate summary.';
 }
 

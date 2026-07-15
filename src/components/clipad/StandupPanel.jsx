@@ -6,8 +6,16 @@ import { writeOrgEvent } from '@/lib/clipadIntelligence';
 import { isAdmin } from '@/lib/constants';
 import {
   Sun, CheckCircle, AlertTriangle, Smile, Frown, Meh, Zap, TrendingUp,
-  Plus, Sparkles, Loader2, User, Clock, Send, ChevronDown, ChevronUp, RefreshCw
+  Plus, Sparkles, Loader2, User, Clock, Send, ChevronDown, ChevronUp, RefreshCw,
+  Download, FileText, File
 } from 'lucide-react';
+import html2pdf from 'html2pdf.js';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
 
 const MOOD_OPTIONS = [
   { value: 'great',      label: 'Great',      emoji: '🚀', color: 'text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20' },
@@ -91,6 +99,8 @@ export default function StandupPanel({ spaceId }) {
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [todayUpdate, setTodayUpdate] = useState(null);
   const [filterMode, setFilterMode] = useState('today');
+  const [customStartDate, setCustomStartDate] = useState('');
+  const [customEndDate, setCustomEndDate] = useState('');
 
   const [form, setForm] = useState({
     today: '',
@@ -131,6 +141,14 @@ export default function StandupPanel({ spaceId }) {
     } else if (filterMode === 'last7days') {
       start = new Date(today);
       start.setDate(start.getDate() - 7);
+    } else if (filterMode === 'advanced') {
+      if (customStartDate) start = new Date(customStartDate);
+      if (customEndDate) {
+        end = new Date(customEndDate);
+        end.setHours(23, 59, 59, 999);
+      } else {
+        end = null;
+      }
     }
 
     let query = supabase
@@ -196,11 +214,43 @@ export default function StandupPanel({ spaceId }) {
         blockers: u.blockers,
         mood: u.mood,
       }));
-      const summary = await generateStandupSummary(formatted);
+      let contextStr = filterMode;
+      if (filterMode === 'advanced') {
+        contextStr = `${customStartDate || 'Start'} to ${customEndDate || 'Now'}`;
+      }
+      const summary = await generateStandupSummary(formatted, contextStr);
       setAiSummary(summary);
     } finally {
       setIsSummarizing(false);
     }
+  };
+
+  const exportAsPDF = () => {
+    const element = document.getElementById('standup-report-container');
+    if (!element) return;
+    const opt = {
+      margin: 10,
+      filename: `Standup_Report_${filterMode}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
+  };
+
+  const exportAsWord = () => {
+    const element = document.getElementById('standup-report-container');
+    if (!element) return;
+    const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Standup Report</title></head><body>";
+    const footer = "</body></html>";
+    const sourceHTML = header + element.innerHTML + footer;
+    const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+    const fileDownload = document.createElement("a");
+    document.body.appendChild(fileDownload);
+    fileDownload.href = source;
+    fileDownload.download = `Standup_Report_${filterMode}.doc`;
+    fileDownload.click();
+    document.body.removeChild(fileDownload);
   };
 
   const todayLabel = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
@@ -219,6 +269,7 @@ export default function StandupPanel({ spaceId }) {
               <button onClick={() => setFilterMode('today')} className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded-md font-bold transition-all ${filterMode === 'today' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Today</button>
               <button onClick={() => setFilterMode('yesterday')} className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded-md font-bold transition-all ${filterMode === 'yesterday' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Yesterday</button>
               <button onClick={() => setFilterMode('last7days')} className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded-md font-bold transition-all ${filterMode === 'last7days' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Last 7 Days</button>
+              <button onClick={() => setFilterMode('advanced')} className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded-md font-bold transition-all ${filterMode === 'advanced' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Advanced</button>
             </div>
           </div>
         </div>
@@ -240,6 +291,21 @@ export default function StandupPanel({ spaceId }) {
           )}
         </div>
       </div>
+
+      {/* Advanced Filter Range */}
+      {filterMode === 'advanced' && (
+        <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-border mt-2">
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-semibold text-muted-foreground">From:</label>
+            <input type="date" value={customStartDate} onChange={e => setCustomStartDate(e.target.value)} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-xs text-foreground focus:outline-none focus:border-primary" />
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-semibold text-muted-foreground">To:</label>
+            <input type="date" value={customEndDate} onChange={e => setCustomEndDate(e.target.value)} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-xs text-foreground focus:outline-none focus:border-primary" />
+          </div>
+          <button onClick={fetchUpdates} className="px-3 py-1 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary/90">Apply</button>
+        </div>
+      )}
 
       {/* Post Form */}
       {showForm && !todayUpdate && (
@@ -325,48 +391,70 @@ export default function StandupPanel({ spaceId }) {
         </div>
       )}
 
-      {/* AI Summary */}
-      {isAdmin(user) && updates.length >= 2 && (
-        <div className="rounded-2xl border border-indigo-200 dark:border-indigo-500/20 bg-indigo-50 dark:bg-indigo-500/10 p-4">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-bold text-indigo-700 dark:text-indigo-400 flex items-center gap-2">
-              <Sparkles className="w-4 h-4" /> AI Team Summary
-            </h3>
-            <button
-              onClick={generateSummary}
-              disabled={isSummarizing}
-              className="text-xs px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-            >
-              {isSummarizing ? <Loader2 className="w-3 h-3 animate-spin inline" /> : 'Generate'}
-            </button>
+      {/* AI Summary and Team Updates Container */}
+      <div id="standup-report-container" className="space-y-4">
+        {/* AI Summary */}
+        {isAdmin(user) && updates.length >= 2 && (
+          <div className="rounded-2xl border border-indigo-200 dark:border-indigo-500/20 bg-indigo-50 dark:bg-indigo-500/10 p-4">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-bold text-indigo-700 dark:text-indigo-400 flex items-center gap-2">
+                <Sparkles className="w-4 h-4" /> AI Team Summary
+              </h3>
+              <div className="flex items-center gap-2">
+                {aiSummary && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="p-1.5 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 transition-colors">
+                        <Download className="w-4 h-4" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem onClick={exportAsPDF} className="gap-2 text-xs font-semibold cursor-pointer">
+                        <FileText className="w-4 h-4 text-rose-500" /> Export as PDF
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={exportAsWord} className="gap-2 text-xs font-semibold cursor-pointer">
+                        <File className="w-4 h-4 text-blue-500" /> Export as Word
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+                <button
+                  onClick={generateSummary}
+                  disabled={isSummarizing}
+                  className="text-xs px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                >
+                  {isSummarizing ? <Loader2 className="w-3 h-3 animate-spin inline" /> : 'Generate'}
+                </button>
+              </div>
+            </div>
+            {aiSummary ? (
+              <p className="text-sm text-indigo-800 dark:text-indigo-300 leading-relaxed">{aiSummary}</p>
+            ) : (
+              <p className="text-sm text-indigo-600 dark:text-indigo-400 opacity-70">
+                {isSummarizing ? 'Analyzing team updates...' : 'Click Generate to create an AI-powered team summary.'}
+              </p>
+            )}
           </div>
-          {aiSummary ? (
-            <p className="text-sm text-indigo-800 dark:text-indigo-300 leading-relaxed">{aiSummary}</p>
+        )}
+
+        {/* Team Updates */}
+        <div className="space-y-3">
+          {loading ? (
+            <div className="flex items-center justify-center py-10">
+              <Loader2 className="w-5 h-5 animate-spin text-primary" />
+            </div>
+          ) : updates.length === 0 ? (
+            <div className="text-center py-10 text-muted-foreground">
+              <Sun className="w-10 h-10 mx-auto mb-3 opacity-20" />
+              <p className="font-medium text-sm">No standup updates found.</p>
+              {filterMode === 'today' && <p className="text-xs opacity-70 mt-1">Be the first to post your update!</p>}
+            </div>
           ) : (
-            <p className="text-sm text-indigo-600 dark:text-indigo-400 opacity-70">
-              {isSummarizing ? 'Analyzing team updates...' : 'Click Generate to create an AI-powered team summary.'}
-            </p>
+            updates.map(u => (
+              <StandupCard key={u.id} update={u} isCurrentUser={u.user_id === user?.id} />
+            ))
           )}
         </div>
-      )}
-
-      {/* Team Updates */}
-      <div className="space-y-3">
-        {loading ? (
-          <div className="flex items-center justify-center py-10">
-            <Loader2 className="w-5 h-5 animate-spin text-primary" />
-          </div>
-        ) : updates.length === 0 ? (
-          <div className="text-center py-10 text-muted-foreground">
-            <Sun className="w-10 h-10 mx-auto mb-3 opacity-20" />
-            <p className="font-medium text-sm">No standup updates found.</p>
-            {filterMode === 'today' && <p className="text-xs opacity-70 mt-1">Be the first to post your update!</p>}
-          </div>
-        ) : (
-          updates.map(u => (
-            <StandupCard key={u.id} update={u} isCurrentUser={u.user_id === user?.id} />
-          ))
-        )}
       </div>
     </div>
   );
