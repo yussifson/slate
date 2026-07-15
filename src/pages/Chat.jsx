@@ -488,15 +488,18 @@ export default function Chat({ isDockedMode = false }) {
 </div>
  )}
  <div>
- <h3 className="font-semibold text-foreground leading-tight cursor-pointer hover:underline" onClick={() => {
-    if (activeRoom?.room_type === 'group') {
-      setIsGroupInfoOpen(true);
-    } else {
-      toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name || 'Unknown User'} (${otherProfile.email || 'No email'})` : 'User details not available' });
-    }
- }}>{roomName}</h3>
- <p className="text-[12px] text-[#71717a] dark:text-gray-400">{activeRoom?.room_type === 'group' ? 'View group info' : 'View contact info'}</p>
- </div>
+              <h3 className="font-semibold text-foreground leading-tight cursor-pointer hover:underline" onClick={() => {
+                if (activeRoom?.room_type === 'group') {
+                  setIsGroupInfoOpen(true);
+                } else {
+                  const otherParticipant = activeRoom?.chat_participants?.find(p => p.user_id !== user.id);
+                  const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
+                  const roomNameForInfo = activeRoom?.name || otherProfile?.full_name || 'Direct Chat';
+                  toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name} (${otherProfile.email || 'No email'})` : `Contact Info: ${roomNameForInfo}` });
+                }
+              }}>{roomName}</h3>
+              <p className="text-[12px] text-[#71717a] dark:text-gray-400">{activeRoom?.room_type === 'group' ? 'View group info' : 'View contact info'}</p>
+            </div>
  </div>
   <div className="flex items-center gap-2 sm:gap-4 text-[#54656f] dark:text-[#aebac1]">
      {messages.length > 0 && !isDockedMode && (
@@ -512,27 +515,44 @@ export default function Chat({ isDockedMode = false }) {
  <DropdownMenuTrigger asChild>
  <button className="hover:text-foreground transition-colors"><MoreVertical className="w-5 h-5" /></button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-48">
- {activeRoom?.room_type === "group" ? (
-   <>
-     {activeRoom?.chat_participants?.find(p => p.user_id === user.id)?.role === 'admin' && (
-       <DropdownMenuItem onClick={() => setIsManageMembersOpen(true)}>Manage Group</DropdownMenuItem>
-     )}
-     <DropdownMenuItem onClick={() => setIsGroupInfoOpen(true)}>Group Info</DropdownMenuItem>
-   </>
- ) : (
-   <>
-     <DropdownMenuItem onClick={() => {
-        const pInfo = otherProfile ? `${otherProfile.full_name || 'Unknown User'} (${otherProfile.email || 'No email'})` : 'User details not available';
-        toast({ title: 'Contact Info', description: pInfo });
-     }}>Contact Info</DropdownMenuItem>
-     <DropdownMenuSeparator />
-     <DropdownMenuItem className="text-red-600 focus:bg-red-50 focus:text-red-700 dark:focus:bg-red-950/30" onClick={handleDeleteChat}>
-       Delete Chat
-     </DropdownMenuItem>
-   </>
- )}
- </DropdownMenuContent>
+        <DropdownMenuContent align="end" className="w-48">
+          {activeRoom?.room_type === "group" ? (
+            <>
+              {activeRoom?.chat_participants?.find(p => p.user_id === user.id)?.role === 'admin' && (
+                <>
+                  <DropdownMenuItem onClick={() => setIsManageMembersOpen(true)}>Manage Group</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-red-600 focus:bg-red-50 focus:text-red-700 dark:focus:bg-red-950/30" onClick={async () => {
+                    if (!window.confirm("Are you sure you want to delete this group? This cannot be undone.")) return;
+                    try {
+                      await powerSync.execute(`DELETE FROM chat_rooms WHERE id = ?`, [activeRoomId]);
+                      setActiveRoomId(null);
+                      setMessages([]);
+                      loadRooms();
+                      toast({ title: "Group Deleted" });
+                    } catch (error) {
+                      console.error(error);
+                      toast({ title: "Error", description: "Could not delete group.", variant: "destructive" });
+                    }
+                  }}>
+                    Delete Group
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              )}
+              <DropdownMenuItem onClick={() => setIsGroupInfoOpen(true)}>Group Info</DropdownMenuItem>
+            </>
+          ) : (
+            <>
+              <DropdownMenuItem onClick={() => {
+                 const otherParticipant = activeRoom?.chat_participants?.find(p => p.user_id !== user.id);
+                 const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
+                 const roomNameForInfo = activeRoom?.name || otherProfile?.full_name || 'Direct Chat';
+                 toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name} (${otherProfile.email || 'No email'})` : `Contact Info: ${roomNameForInfo}` });
+              }}>Contact Info</DropdownMenuItem>
+            </>
+          )}
+        </DropdownMenuContent>
  </DropdownMenu>
  </div>
  </>

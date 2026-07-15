@@ -170,15 +170,31 @@ export default function ClipadChat({ isDockedMode = false }) {
 }
 };
 
-  const handleDeleteChat = async () => {
-    if (!activeRoomId) return;
+  const handleSummarizeChat = async () => {
+    if (messages.length === 0) return;
+    setIsSummarizing(true);
     try {
-      await powerSync.execute('DELETE FROM chat_rooms WHERE id = ?', [activeRoomId]);
-      toast({ title: "Success", description: "Chat deleted." });
+      const textBlock = messages.map(m => `${participantProfiles[m.sender_id]?.full_name || 'User'}: ${m.content}`).join('\n');
+      const summary = await generateText(`Summarize this chat conversation briefly:\n\n${textBlock}`);
+      setChatSummary(summary);
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to generate summary.', variant: 'destructive' });
+    } finally {
+      setIsSummarizing(false);
+    }
+  };
+
+  const handleDeleteGroup = async () => {
+    if (!window.confirm("Are you sure you want to delete this group? This cannot be undone.")) return;
+    try {
+      await powerSync.execute(`DELETE FROM chat_rooms WHERE id = ?`, [activeRoomId]);
       setActiveRoomId(null);
-    } catch (err) {
-      console.error(err);
-      toast({ title: "Error", description: "Failed to delete chat", variant: "destructive" });
+      setMessages([]);
+      loadRooms();
+      toast({ title: "Group Deleted" });
+    } catch (error) {
+      console.error(error);
+      toast({ title: "Error", description: "Could not delete group.", variant: "destructive" });
     }
   };
 
@@ -282,34 +298,6 @@ export default function ClipadChat({ isDockedMode = false }) {
  setInputValue(originalInput);
 }
 };
-
- const handleSummarizeChat = async () => {
-    if (chatSummary) {
-      setChatSummary(null);
-      return;
-    }
-    if (messages.length === 0) {
-      toast({ title: "No messages to summarize" });
-      return;
-    }
-    setIsSummarizing(true);
-    const tId = toast({ title: "AI is summarizing this chat..." });
-    try {
-      const recentMsgs = messages.slice(-50).map(m => {
-        const sender = participantProfiles[m.sender_id]?.full_name || 'User';
-        return `${sender}: ${m.content}`;
-      });
-      const prompt = `Summarize the following chat conversation into a brief, easy-to-read recap (3-4 bullet points max) of decisions made and outstanding items:\n\n${recentMsgs.join('\n')}`;
-      
-      const response = await generateText([{ role: 'user', content: prompt }]);
-      setChatSummary(response);
-      toast({ title: "Summary generated!" });
-    } catch (err) {
-      toast({ title: "Failed to summarize chat", variant: "destructive" });
-    } finally {
-      setIsSummarizing(false);
-    }
-  };
 
  const activeRoom = rooms.find(r => r.id === activeRoomId);
  const filteredRooms = rooms.filter(r => {
@@ -651,7 +639,10 @@ export default function ClipadChat({ isDockedMode = false }) {
                 if (activeRoom?.room_type === 'group') {
                   setIsGroupInfoOpen(true);
                 } else {
-                  toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name || 'Unknown User'} (${otherProfile.email || 'No email'})` : 'User details not available' });
+                  const otherParticipant = activeRoom?.chat_participants?.find(p => p.user_id !== user.id);
+                  const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
+                  const roomNameForInfo = activeRoom?.name || otherProfile?.full_name || 'Direct Chat';
+                  toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name} (${otherProfile.email || 'No email'})` : `Contact Info: ${roomNameForInfo}` });
                 }
               }}>{roomName}</h3>
               <p className="text-[12px] text-[#71717a] dark:text-gray-400">{activeRoom?.room_type === 'group' ? 'View group info' : 'View contact info'}</p>
@@ -683,7 +674,14 @@ export default function ClipadChat({ isDockedMode = false }) {
           {activeRoom?.room_type === "group" ? (
             <>
               {activeRoom?.chat_participants?.find(p => p.user_id === user.id)?.role === 'admin' && (
-                <DropdownMenuItem onClick={() => setIsManageMembersOpen(true)}>Manage Group</DropdownMenuItem>
+                <>
+                  <DropdownMenuItem onClick={() => setIsManageMembersOpen(true)}>Manage Group</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-red-600 focus:bg-red-50 focus:text-red-700 dark:focus:bg-red-950/30" onClick={handleDeleteGroup}>
+                    Delete Group
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
               )}
               <DropdownMenuItem onClick={() => setIsGroupInfoOpen(true)}>Group Info</DropdownMenuItem>
             </>
@@ -692,13 +690,9 @@ export default function ClipadChat({ isDockedMode = false }) {
               <DropdownMenuItem onClick={() => {
                  const otherParticipant = activeRoom?.chat_participants?.find(p => p.user_id !== user.id);
                  const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
-                 const pInfo = otherProfile ? `${otherProfile.full_name || 'Unknown User'} (${otherProfile.email || 'No email'})` : 'User details not available';
-                 toast({ title: 'Contact Info', description: pInfo });
+                 const roomNameForInfo = activeRoom?.name || otherProfile?.full_name || 'Direct Chat';
+                 toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name} (${otherProfile.email || 'No email'})` : `Contact Info: ${roomNameForInfo}` });
               }}>Contact Info</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600 focus:bg-red-50 focus:text-red-700 dark:focus:bg-red-950/30" onClick={handleDeleteChat}>
-                Delete Chat
-              </DropdownMenuItem>
             </>
           )}
         </DropdownMenuContent>

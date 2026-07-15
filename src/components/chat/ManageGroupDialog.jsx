@@ -10,6 +10,8 @@ import { Search, UserMinus, UserPlus, Shield } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { supabase } from "@/api/supabaseClient";
 
+const PRESET_AVATARS = Array.from({ length: 15 }, (_, i) => `https://api.dicebear.com/7.x/shapes/svg?seed=Group${i+1}`);
+
 export default function ManageGroupMembersDialog({ open, onOpenChange, activeRoom, participantProfiles }) {
   const { user } = useAuth();
   const companyId = useCompanyId();
@@ -191,7 +193,21 @@ export default function ManageGroupMembersDialog({ open, onOpenChange, activeRoo
                 className="w-full px-3 py-1.5 border border-border rounded-md text-sm bg-secondary/50 focus:outline-none focus:ring-2 focus:ring-primary/20"
                 placeholder="Group Avatar Image URL (optional)"
               />
-              <div className="flex gap-2 justify-end">
+              <div className="flex flex-col gap-1.5">
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Choose an Avatar</p>
+                <div className="grid grid-cols-5 sm:grid-cols-8 gap-2">
+                  {PRESET_AVATARS.map((url, i) => (
+                    <img 
+                      key={i} 
+                      src={url} 
+                      alt={`Avatar ${i+1}`} 
+                      className={`w-10 h-10 rounded-full cursor-pointer hover:opacity-80 transition-all border-2 ${editAvatarValue === url ? 'border-primary ring-2 ring-primary/20 scale-110' : 'border-transparent'}`}
+                      onClick={() => setEditAvatarValue(url)}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="flex gap-2 justify-end mt-2">
                 <Button size="sm" variant="ghost" onClick={() => { setIsEditingName(false); setEditNameValue(activeRoom.name || ""); setEditAvatarValue(activeRoom.avatar_url || ""); }}>Cancel</Button>
                 <Button size="sm" onClick={handleUpdateGroupName}>Save Details</Button>
               </div>
