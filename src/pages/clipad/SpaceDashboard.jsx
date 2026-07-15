@@ -153,6 +153,8 @@ export default function SpaceDashboard() {
   const [spaceMembers, setSpaceMembers] = useState([]);
   const [searchMember, setSearchMember] = useState('');
   const [accessDenied, setAccessDenied] = useState(false);
+  const [memoryTopic, setMemoryTopic] = useState('');
+  const [memoryInput, setMemoryInput] = useState('');
   const { toast } = useToast();
 
   useEffect(() => { if (spaceId) fetchAll(); }, [spaceId]);
@@ -692,15 +694,33 @@ export default function SpaceDashboard() {
         {activeTab === 'memory' && (
           <div className="h-[calc(100vh-140px)] overflow-y-auto p-6 max-w-4xl mx-auto">
             <div className="mb-6 flex gap-2">
-              <input type="text" placeholder="Enter a topic (e.g. 'pricing strategy')..." className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm" id="memoryTopicInput" defaultValue="design guidelines" />
-              <button onClick={() => {
-                const val = document.getElementById('memoryTopicInput').value;
-                if(val) document.getElementById('memoryGraphContainer').setAttribute('data-topic', val);
-              }} className="px-4 py-2 bg-primary text-white rounded-xl text-sm font-bold">Trace Memory</button>
+              <input 
+                type="text" 
+                placeholder="Enter a topic (e.g. 'pricing strategy')..." 
+                className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm" 
+                value={memoryInput}
+                onChange={(e) => setMemoryInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') setMemoryTopic(memoryInput);
+                }}
+              />
+              <button 
+                onClick={() => setMemoryTopic(memoryInput)} 
+                className="px-4 py-2 bg-primary text-white rounded-xl text-sm font-bold"
+              >
+                Trace Memory
+              </button>
             </div>
-            <div id="memoryGraphContainer" data-topic="design guidelines">
-              <MemoryTimeline workspaceId={space.company_id} topic="design guidelines" />
-            </div>
+            {memoryTopic ? (
+              <div id="memoryGraphContainer" data-topic={memoryTopic}>
+                <MemoryTimeline workspaceId={space.company_id} topic={memoryTopic} />
+              </div>
+            ) : (
+              <div className="p-8 flex flex-col items-center justify-center text-center bg-slate-50 dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800">
+                <Brain className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-4" />
+                <p className="text-sm font-medium text-slate-500">Enter a topic above to trace its history.</p>
+              </div>
+            )}
           </div>
         )}
 

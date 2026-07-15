@@ -46,7 +46,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
   const [commentText, setCommentText] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const [activeTab, setActiveTab] = useState('comments'); // 'comments', 'transcript'
+  const [activeTab, setActiveTab] = useState(recordType === 'meeting' ? 'transcript' : 'comments');
   const [transcripts, setTranscripts] = useState([]);
   const [blobUrl, setBlobUrl] = useState(null);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
@@ -356,12 +356,14 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
         
         {/* Tabs */}
         <div className="flex items-center gap-2 mb-4 bg-slate-200/50 dark:bg-slate-800/50 p-1 rounded-xl">
-          <button 
-            onClick={() => setActiveTab('comments')}
-            className={`flex-1 py-1.5 text-sm font-bold rounded-lg transition-all ${activeTab === 'comments' ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
-          >
-            Comments
-          </button>
+          {recordType !== 'meeting' && (
+            <button 
+              onClick={() => setActiveTab('comments')}
+              className={`flex-1 py-1.5 text-sm font-bold rounded-lg transition-all ${activeTab === 'comments' ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
+            >
+              Comments
+            </button>
+          )}
           {recordType === 'meeting' && hasFeature(user, 'hasAdvancedAI') && (
             <button 
               onClick={() => setActiveTab('transcript')}

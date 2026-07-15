@@ -129,8 +129,8 @@ export default function MeetingRecord() {
         supabase.from('clipad_meeting_records').select('*').eq('id', meetingId).single(),
         supabase.from('clipad_action_items').select('*').eq('meeting_id', meetingId).order('created_at', { ascending: true }),
         supabase.from('clipad_transcripts').select('*').eq('meeting_id', meetingId).order('start_time', { ascending: true }),
-        supabase.from('clipad_meeting_comments').select('*, author:user_id(full_name, avatar_url)').eq('meeting_id', meetingId).order('created_at', { ascending: true }),
-        supabase.from('clipad_meeting_reactions').select('*, author:user_id(full_name, avatar_url)').eq('meeting_id', meetingId),
+        supabase.from('clipad_meeting_comments').select('*, author:auth.users(full_name, avatar_url)').eq('meeting_id', meetingId).order('created_at', { ascending: true }),
+        supabase.from('clipad_meeting_reactions').select('*, author:auth.users(full_name, avatar_url)').eq('meeting_id', meetingId),
       ]);
       if (meetingRes.data) {
         const m = meetingRes.data;

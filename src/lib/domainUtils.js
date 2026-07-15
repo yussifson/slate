@@ -10,8 +10,7 @@ export function getSubdomainAndBase() {
   }
 
   // Reserved system subdomains that should never be treated as tenant subdomains
-  // Only block known Vercel/deployment preview patterns, NOT company names
-  const reservedSubdomains = ['www'];
+  const reservedSubdomains = ['www', 'test'];
 
   // Handle localhost scenarios
   if (host === 'localhost' || host.startsWith('127.0.0.1')) {
