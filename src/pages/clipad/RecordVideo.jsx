@@ -240,6 +240,17 @@ export default function RecordVideo() {
   useEffect(() => {
     handlersRef.current = { toggleMicTrack, toggleWebcam, togglePause, stopRecording };
   });
+
+  useEffect(() => {
+    const handleOffline = () => {
+      if (mediaRecorderRef.current?.state === 'recording') {
+        handlersRef.current.togglePause();
+        toast({ title: '⚠️ Network Disconnected', description: 'Recording paused automatically.', variant: 'destructive' });
+      }
+    };
+    window.addEventListener('offline', handleOffline);
+    return () => window.removeEventListener('offline', handleOffline);
+  }, [toast]);
   const [activeVideoId, setActiveVideoId] = useState(null);
   const [selectedSpace, setSelectedSpace] = useState('');
   const [spaces, setSpaces] = useState([]);
@@ -996,8 +1007,10 @@ export default function RecordVideo() {
             setTimeout(() => connectWS(true), delay);
           } else {
             console.error('WebSocket permanently failed after max reconnect attempts.');
-            toast({ title: '❌ Upload Failed', description: 'Connection permanently lost. Your recording was saved locally — use the recovery prompt next visit.', variant: 'destructive' });
-            if (isRecordingRef.current) stopRecording();
+            toast({ title: '❌ Connection Lost', description: 'Upload connection failed. Recording paused. You can wait for network or stop to save locally.', variant: 'destructive' });
+            if (isRecordingRef.current && mediaRecorderRef.current?.state === 'recording') {
+              handlersRef.current.togglePause();
+            }
           }
         };
       };
