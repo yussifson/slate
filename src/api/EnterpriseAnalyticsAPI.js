@@ -142,5 +142,103 @@ export const EnterpriseAnalyticsAPI = {
       console.error('[Enterprise] getRecentAuditLogs failed:', e);
       return [];
     }
+  },
+
+  /**
+   * Fetch all videos and meetings in the company to list in detailed analytics.
+   */
+  async getCompanyAssets(companyId) {
+    try {
+      const { data: videos } = await supabase
+        .from('clipad_videos')
+        .select('id, title, created_at, host_id')
+        .eq('company_id', companyId)
+        .order('created_at', { ascending: false });
+
+      const { data: meetings } = await supabase
+        .from('clipad_meeting_records')
+        .select('id, title, created_at, host_id')
+        .eq('company_id', companyId)
+        .order('created_at', { ascending: false });
+
+      // Fetch all profiles in company for quick mapping of host names
+      const { data: users } = await supabase.from('profiles').select('id, full_name').eq('company_id', companyId);
+      const userMap = {};
+      (users || []).forEach(u => userMap[u.id] = u.full_name);
+
+      const all = [
+        ...(videos || []).map(v => ({ ...v, type: 'video', host_name: userMap[v.host_id] || 'Unknown' })),
+        ...(meetings || []).map(m => ({ ...m, type: 'meeting', host_name: userMap[m.host_id] || 'Unknown' }))
+      ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+      return all;
+    } catch (e) {
+      console.error('[Enterprise] getCompanyAssets failed:', e);
+      return [];
+    }
+  },
+
+  /**
+   * Detailed breakdown of who watched and commented on a specific asset
+   */
+  async getAssetEngagement(assetId, assetType, companyId) {
+    try {
+      const viewsTable = assetType === 'meeting' ? 'clipad_meeting_views' : 'clipad_video_views';
+      const commentsTable = assetType === 'meeting' ? 'clipad_meeting_comments' : 'clipad_video_comments';
+      const fkCol = assetType === 'meeting' ? 'meeting_id' : 'video_id';
+
+      // 1. Get All company users (this acts as our directory)
+      const { data: companyUsers } = await supabase
+        .from('profiles')
+        .select('id, full_name, avatar_url, email, role')
+        .eq('company_id', companyId);
+
+      const usersMap = {};
+      (companyUsers || []).forEach(u => usersMap[u.id] = u);
+
+      // 2. Get views
+      const { data: views } = await supabase
+        .from(viewsTable)
+        .select('*')
+        .eq(fkCol, assetId);
+
+      const viewers = [];
+      const viewerIds = new Set();
+      
+      (views || []).forEach(v => {
+        if (!viewerIds.has(v.viewer_id) && usersMap[v.viewer_id]) {
+           viewerIds.add(v.viewer_id);
+           viewers.push({
+             ...usersMap[v.viewer_id],
+             viewed_at: v.viewed_at
+           });
+        }
+      });
+
+      // 3. Find Non-Viewers
+      const nonViewers = (companyUsers || []).filter(u => !viewerIds.has(u.id));
+
+      // 4. Get Comments
+      const { data: comments } = await supabase
+        .from(commentsTable)
+        .select('*')
+        .eq(fkCol, assetId)
+        .order('created_at', { ascending: false });
+
+      // map comment authors if needed
+      const mappedComments = (comments || []).map(c => ({
+        ...c,
+        author: usersMap[c.author_id || c.user_id] || { full_name: c.author_name || 'Anonymous' }
+      }));
+
+      return {
+        viewers,
+        nonViewers,
+        comments: mappedComments
+      };
+    } catch (e) {
+      console.error('[Enterprise] getAssetEngagement failed:', e);
+      return { viewers: [], nonViewers: [], comments: [] };
+    }
   }
 };

@@ -167,6 +167,14 @@ export default function MeetingRecord() {
 
         setMeeting(m);
         setEditTitle(m.title || '');
+
+        if (user) {
+          supabase.from('clipad_meeting_views')
+            .insert({ meeting_id: meetingId, viewer_id: user.id })
+            .select()
+            .then(() => {})
+            .catch(() => {}); // ignore duplicates (UNIQUE constraint)
+        }
       }
       if (actionsRes.data) setActionItems(actionsRes.data);
       if (transcriptRes.data) setTranscript(transcriptRes.data);
