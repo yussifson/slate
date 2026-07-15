@@ -9,12 +9,12 @@ export const PRICES = {
     education: { monthly: 0,     annual: 0     }},
   professional: {
     global:    { monthly: 4900,  annual: 3900  },
-    emerging:  { monthly: 1900,  annual: 1520  },
+    emerging:  { monthly: 2900,  annual: 2320  },
     community: { monthly: 900,   annual: 720   },
     education: { monthly: 2900,  annual: 2320  }},
   business: {
     global:    { monthly: 9900,  annual: 7900  },
-    emerging:  { monthly: 3900,  annual: 3120  },
+    emerging:  { monthly: 4900,  annual: 3920  },
     community: { monthly: 1900,  annual: 1520  },
     education: { monthly: 6900,  annual: 5520  }},
   enterprise: {
@@ -138,8 +138,8 @@ export function assertPricingIntegrity() {
 
 export const PLAN_META = {
   starter:      { name:'Starter',      tagline:'Get started for free',           quota:'Up to 10 Internal Users',   storage:'10 GB',  aiTokens:'None',                 popular:false, highlight:false, cta:'Get started free'   },
-  professional: { name:'Professional', tagline:'For growing teams',               quota:'Up to 50 Internal Users',  storage:'500 GB', aiTokens:'10,000 / mo',          popular:true,  highlight:true,  cta:'Start 14-day trial'  },
-  business:     { name:'Business',     tagline:'For scaling organizations',       quota:'Unlimited Internal Users', storage:'5 TB',   aiTokens:'Unlimited',            popular:false, highlight:false, cta:'Start 14-day trial'  },
+  professional: { name:'Professional', tagline:'For growing teams',               quota:'Up to 10 Internal Users',  storage:'500 GB', aiTokens:'50,000 / mo',          popular:true,  highlight:true,  cta:'Start 14-day trial'  },
+  business:     { name:'Business',     tagline:'For scaling organizations',       quota:'Up to 20 Internal Users',  storage:'5 TB',   aiTokens:'200,000 / mo',            popular:false, highlight:false, cta:'Start 14-day trial'  },
   enterprise:   { name:'Enterprise',   tagline:'Custom-fit for large enterprise', quota:'Unlimited Internal Users', storage:'Custom', aiTokens:'Unlimited + Priority', popular:false, highlight:false, cta:'Upgrade'       }};
 
 export const TIER_META = {
