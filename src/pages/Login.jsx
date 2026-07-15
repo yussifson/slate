@@ -72,8 +72,9 @@ export default function Login() {
       callbackPath += `?continue=${encodeURIComponent(continueUrl)}`;
     }
     
+    const theme = localStorage.getItem('theme') || 'dark';
     const redirectUri = encodeURIComponent(window.location.origin + callbackPath);
-    window.location.href = `${idpDomain}/sso?redirect_uri=${redirectUri}`;
+    window.location.href = `${idpDomain}/sso?redirect_uri=${redirectUri}&theme=${theme}`;
   };
 
   // Auto-redirect if already authenticated or if mobile user needs onboarding
@@ -88,7 +89,8 @@ export default function Login() {
   const promptParam = urlParams.get('prompt');
 
   if (!isLoadingAuth && isAuthenticated && user && promptParam !== 'login') {
-      const continueUrl = urlParams.get('continue');
+      const redirectUri = urlParams.get('redirect_uri');
+      const continueUrl = urlParams.get('continue') || redirectUri;
 
       if (isElectron) {
         if (continueUrl) navigate(continueUrl);
@@ -97,6 +99,20 @@ export default function Login() {
         else if (user.role === 'super_admin' && !currentSubdomain) navigate('/admin');
         else navigate('/');
       } else {
+        if (redirectUri) {
+          // Wrap in async IIFE to fetch fresh tokens for the cross-domain jump
+          (async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+              const hash = `#access_token=${session.access_token}&refresh_token=${session.refresh_token}`;
+              window.location.href = `${redirectUri}${hash}`;
+            } else {
+              window.location.href = redirectUri;
+            }
+          })();
+          return;
+        }
+
         if (continueUrl) window.location.href = continueUrl;
         else if (user.role === 'student') window.location.href = '/student-portal';
         else if (user.role === 'parent') window.location.href = '/parent-portal';

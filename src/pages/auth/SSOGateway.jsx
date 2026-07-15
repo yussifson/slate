@@ -22,6 +22,15 @@ export default function SSOGateway() {
   const [authError, setAuthError] = useState(null);
 
   useEffect(() => {
+    const theme = searchParams.get('theme');
+    if (theme) {
+      if (theme === 'dark') document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', theme);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     if (!redirectUri) {
       setGlobalError("Missing redirect_uri parameter");
       setIsLoading(false);
