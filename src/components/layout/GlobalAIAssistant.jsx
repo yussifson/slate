@@ -38,8 +38,7 @@ const PAGE_CONTEXT = {
   '/videos': { title: 'Videos', suite: 'Clipad', desc: 'async video recordings and memory vault'},
   '/health': { title: 'Knowledge Health', suite: 'Clipad', desc: 'knowledge graph health and stale metrics'},
   '/settings': { title: 'Settings', suite: 'Clipad', desc: 'user and workspace settings'},
-  '/': { title: 'Dashboard', suite: 'Clipad', desc: 'main dashboard'}
-};
+  '/': { title: 'Dashboard', suite: 'Clipad', desc: 'main dashboard'},
   '/promotions': { title: 'Promotions', suite: 'Retail', desc: 'discounts and campaigns'},
   
   // Hotel
