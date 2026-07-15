@@ -206,7 +206,7 @@ export default function MeetingRecord() {
       const { data, error } = await supabase.from('clipad_meeting_comments').insert({
         meeting_id: meetingId,
         user_id: user.id,
-        text: content,
+        content: content,
         timestamp_seconds: 0,
       }).select('*').single();
       if (error) throw error;
@@ -644,8 +644,8 @@ export default function MeetingRecord() {
               <p className="text-sm text-muted-foreground italic text-center py-4">No comments yet. Be the first to comment!</p>
             ) : (
               comments.map((c) => {
-                const isAnon = c.text?.startsWith('[ANON]');
-                const displayContent = isAnon ? c.text.replace('[ANON]', '') : c.text;
+                const isAnon = c.content?.startsWith('[ANON]');
+                const displayContent = isAnon ? c.content.replace('[ANON]', '') : c.content;
                 const authorName = isAnon ? 'Anonymous' : (c.author?.full_name || 'Team Member');
                 return (
                   <div key={c.id} className="flex gap-3">

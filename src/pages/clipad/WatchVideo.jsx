@@ -71,6 +71,19 @@ export default function WatchVideo() {
   const [showDownloadModal, setShowDownloadModal] = useState(false);
 
   const lastReactionTime = useRef(-1);
+  const viewTracked = useRef(false);
+
+  useEffect(() => {
+    if (videoId && user && !viewTracked.current) {
+      viewTracked.current = true;
+      supabase.from('clipad_video_views').insert({ video_id: videoId, viewer_id: user.id }).select().then(() => {
+        // Refresh view count after inserting
+        supabase.from('clipad_video_views').select('id', { count: 'exact', head: true }).eq('video_id', videoId).then(({ count }) => {
+          setViews(count || 0);
+        });
+      }).catch(err => console.error(err));
+    }
+  }, [videoId, user]);
 
   useEffect(() => {
     fetchAll();
@@ -155,13 +168,11 @@ export default function WatchVideo() {
       setComments(finalComments);
       setReactions(finalReactions);
 
-      // Log a view
-      if (user) {
-        await supabase.from('clipad_video_views').insert({ video_id: videoId, viewer_id: user.id }).select();
-      }
-      // Get view count
+      // Get initial view count without logging
       const { count } = await supabase.from('clipad_video_views').select('id', { count: 'exact', head: true }).eq('video_id', videoId);
-      setViews(count || 0);
+      if (!viewTracked.current) {
+        setViews(count || 0);
+      }
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
   };
@@ -294,7 +305,7 @@ export default function WatchVideo() {
       const { data, error } = await supabase.from('clipad_video_comments').insert({
         video_id: videoId,
         user_id: user.id,
-        body: contentToSave,
+        content: contentToSave,
         timestamp_seconds: ts,
       }).select('*').single();
       if (error) throw error;
