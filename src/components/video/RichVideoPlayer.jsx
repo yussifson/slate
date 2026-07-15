@@ -1,5 +1,49 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, RotateCw, Volume2, VolumeX, Maximize2, PictureInPicture, Send, MessageSquare } from 'lucide-react';
+import { Play, Pause, RotateCcw, RotateCw, Volume2, VolumeX, Maximize2, PictureInPicture, Send, MessageSquare, PanelRightClose, PanelRightOpen } from 'lucide-react';
+import { supabase as db } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
+import { hasFeature } from '@/lib/clipadPricing';
+import DictationButton from '@/components/ui/DictationButton';
+import { Download } from 'lucide-react';
+import VideoDownloadModal from '@/components/clipad/VideoDownloadModal';
+
+const EMOJIS = ['👍', '👎', '❤️', '😂', '🔥', '🎉', '💡', '🤔'];
+
+function formatTime(seconds) {
+  if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+const FloatingReaction = ({ emoji, x, y, onDone }) => {
+  useEffect(() => {
+    const t = setTimeout(onDone, 2000);
+    return () => clearTimeout(t);
+  }, [onDone]);
+  return (
+    <div
+      className="absolute text-3xl z-50 pointer-events-none drop-shadow-xl select-none"
+      style={{ left: `${x}%`, top: `${y}%`, animation: 'floatUp 2s cubic-bezier(0.1, 1, 0.2, 1) forwards' }}
+    >
+      {emoji}
+    </div>
+  );
+};
+
+export default function RichVideoPlayer({ videoUrl, recordType = 'video', entityId }) {
+  const { user } = useAuth();
+  const [videoRecord, setVideoRecord] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [reactions, setReactions] = useState([]);
+  const [floatingReactions, setFloatingReactions] = useState([]);
+  
+  const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+import React, { useState, useEffect, useRef } from 'react';
+import { Play, Pause, RotateCcw, RotateCw, Volume2, VolumeX, Maximize2, PictureInPicture, Send, MessageSquare, PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { supabase as db } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
@@ -50,6 +94,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
   const [transcripts, setTranscripts] = useState([]);
   const [blobUrl, setBlobUrl] = useState(null);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   
   const videoRef = useRef(null);
   const playerRef = useRef(null);
@@ -81,41 +126,53 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
 
   // 2. Fetch comments and reactions for this video
   useEffect(() => {
-    if (!videoRecord?.id) return;
+    if (!videoRecord?.id && !entityId) return;
 
     async function loadData() {
-      const [{ data: cData }, { data: rData }] = await Promise.all([
-        db.from('clipad_video_comments').select('*, author:auth.users(full_name, avatar_url)').eq('video_id', videoRecord.id).order('timestamp_seconds', { ascending: true }),
-        db.from('clipad_video_reactions').select('*').eq('video_id', videoRecord.id)
-      ]);
-      if (cData) setComments(cData);
-      if (rData) setReactions(rData);
+      const cTable = recordType === 'meeting' ? 'clipad_meeting_comments' : 'clipad_video_comments';
+      const rTable = recordType === 'meeting' ? 'clipad_meeting_reactions' : 'clipad_video_reactions';
+      const fk = recordType === 'meeting' ? 'meeting_id' : 'video_id';
+      const id = entityId || videoRecord.id;
+
+      const queries = [
+        db.from(cTable).select('*, author:auth.users(full_name, avatar_url)').eq(fk, id).order('timestamp_seconds', { ascending: true }),
+        db.from(rTable).select('*').eq(fk, id)
+      ];
+      
+      if (recordType === 'meeting') {
+        queries.push(db.from('clipad_transcripts').select('*').eq('meeting_id', id).order('start_time', { ascending: true }));
+      }
+
+      const results = await Promise.all(queries);
+      if (results[0].data) setComments(results[0].data);
+      if (results[1].data) setReactions(results[1].data);
+      if (recordType === 'meeting' && results[2]?.data) setTranscripts(results[2].data);
     }
     loadData();
 
     // Setup realtime subscription
-          const id = entityId || videoRecord?.id;
-      if (!id) return;
-      const commentTable = recordType === 'meeting' ? 'clipad_meeting_comments' : 'clipad_video_comments';
-      const reactTable = recordType === 'meeting' ? 'clipad_meeting_reactions' : 'clipad_video_reactions';
-      const fk = recordType === 'meeting' ? 'meeting_id' : 'video_id';
+    const id = entityId || videoRecord?.id;
+    if (!id) return;
+    const commentTable = recordType === 'meeting' ? 'clipad_meeting_comments' : 'clipad_video_comments';
+    const reactTable = recordType === 'meeting' ? 'clipad_meeting_reactions' : 'clipad_video_reactions';
+    const fk = recordType === 'meeting' ? 'meeting_id' : 'video_id';
 
-      const sub = db.channel(`video_${id}`)
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: commentTable, filter: `${fk}=eq.${id}` }, (payload) => {
-          loadData(); // Re-fetch to get author info
-        })
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: reactTable, filter: `${fk}=eq.${id}` }, (payload) => {
-          setReactions(prev => [...prev, payload.new]);
-          const x = 10 + Math.random() * 80;
-          setFloatingReactions(prev => [...prev, { id: Date.now() + Math.random(), emoji: payload.new.emoji, x, y: 100 }]);
-        })
-        .subscribe();
+    const sub = db.channel(`video_${id}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: commentTable, filter: `${fk}=eq.${id}` }, (payload) => {
+        loadData(); // Re-fetch to get author info
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: reactTable, filter: `${fk}=eq.${id}` }, (payload) => {
+        setReactions(prev => [...prev, payload.new]);
+        const x = 10 + Math.random() * 80;
+        setFloatingReactions(prev => [...prev, { id: Date.now() + Math.random(), emoji: payload.new.emoji, x, y: 100 }]);
+      })
+      .subscribe();
 
     return () => { 
       db.removeChannel(sub); 
       if (blobUrl) URL.revokeObjectURL(blobUrl);
     };
-  }, [videoRecord?.id]);
+  }, [videoRecord?.id, entityId]);
 
   const handleTimeUpdate = () => {
     if (videoRef.current) setCurrentTime(videoRef.current.currentTime);
@@ -191,23 +248,23 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
 
   const submitComment = async (e) => {
     e.preventDefault();
-    if (!commentText.trim() || !user || !videoRecord) return;
+    if (!commentText.trim() || !user || (!videoRecord && !entityId)) return;
     setSubmitting(true);
     
     // Pause video when commenting
     if (playing) togglePlay();
 
-          const id = entityId || videoRecord?.id;
-      const commentTable = recordType === 'meeting' ? 'clipad_meeting_comments' : 'clipad_video_comments';
-      const fk = recordType === 'meeting' ? 'meeting_id' : 'video_id';
+    const id = entityId || videoRecord?.id;
+    const commentTable = recordType === 'meeting' ? 'clipad_meeting_comments' : 'clipad_video_comments';
+    const fk = recordType === 'meeting' ? 'meeting_id' : 'video_id';
 
-      try {
-        await db.from(commentTable).insert({
-          [fk]: id,
-          user_id: user.id,
-          timestamp_seconds: ts,
-          content: commentText.trim()
-        });
+    try {
+      await db.from(commentTable).insert({
+        [fk]: id,
+        user_id: user.id,
+        timestamp_seconds: currentTime,
+        content: commentText.trim()
+      });
       setCommentText('');
     } catch (err) {
       console.error(err);
@@ -217,14 +274,18 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
   };
 
   const addReaction = async (emoji) => {
-    if (!user || !videoRecord) return;
+    if (!user || (!videoRecord && !entityId)) return;
     const x = 10 + Math.random() * 80;
     const y = 50 + Math.random() * 30;
     setFloatingReactions(prev => [...prev, { id: Date.now(), emoji, x, y }]);
     
+    const id = entityId || videoRecord?.id;
+    const rTable = recordType === 'meeting' ? 'clipad_meeting_reactions' : 'clipad_video_reactions';
+    const fk = recordType === 'meeting' ? 'meeting_id' : 'video_id';
+
     try {
-      await db.from('clipad_video_reactions').insert({
-        video_id: videoRecord.id,
+      await db.from(rTable).insert({
+        [fk]: id,
         user_id: user.id,
         timestamp_seconds: currentTime,
         emoji
@@ -244,7 +305,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
         videoTitle={videoRecord?.title}
         spaceId={videoRecord?.space_id}
       />
-      <div className={`grid grid-cols-1 ${recordType === 'meeting' ? 'lg:grid-cols-1' : 'lg:grid-cols-3'} gap-6 mb-8 mt-4`}>
+      <div className={`grid grid-cols-1 ${sidebarOpen ? 'lg:grid-cols-3' : 'lg:grid-cols-1'} gap-6 mb-8 mt-4 transition-all duration-300`}>
       <style>{`
         @keyframes floatUp {
           0% { opacity: 1; transform: translateY(0) scale(1); }
@@ -252,7 +313,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
         }
       `}</style>
       {/* Player (Left/Full) */}
-      <div className={recordType === 'meeting' ? "w-full" : "lg:col-span-2"}>
+      <div className={sidebarOpen ? "lg:col-span-2" : "w-full"}>
         <div ref={playerRef} className="relative rounded-2xl overflow-hidden bg-black aspect-video group shadow-xl border border-white/10">
           <video
             ref={videoRef}
@@ -346,25 +407,26 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
               <button onClick={(e) => { e.stopPropagation(); toggleFullScreen(); }} className="text-white/80 hover:text-white transition-colors">
                 <Maximize2 className="w-5 h-5" />
               </button>
+              <button onClick={(e) => { e.stopPropagation(); setSidebarOpen(!sidebarOpen); }} className="text-white/80 hover:text-white transition-colors ml-2" title="Toggle Sidebar">
+                {sidebarOpen ? <PanelRightClose className="w-5 h-5" /> : <PanelRightOpen className="w-5 h-5" />}
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-            {/* Sidebar (Right) */}
-      {recordType !== 'meeting' && (
-      <div className="flex flex-col h-[500px] bg-slate-100/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
+      {/* Sidebar (Right) */}
+      {sidebarOpen && (
+      <div className="flex flex-col h-[500px] bg-slate-100/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 animate-in slide-in-from-right-8 duration-300">
         
         {/* Tabs */}
         <div className="flex items-center gap-2 mb-4 bg-slate-200/50 dark:bg-slate-800/50 p-1 rounded-xl">
-          {recordType !== 'meeting' && (
-            <button 
-              onClick={() => setActiveTab('comments')}
-              className={`flex-1 py-1.5 text-sm font-bold rounded-lg transition-all ${activeTab === 'comments' ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
-            >
-              Comments
-            </button>
-          )}
+          <button 
+            onClick={() => setActiveTab('comments')}
+            className={`flex-1 py-1.5 text-sm font-bold rounded-lg transition-all ${activeTab === 'comments' ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
+          >
+            Comments
+          </button>
           {recordType === 'meeting' && hasFeature(user, 'hasAdvancedAI') && (
             <button 
               onClick={() => setActiveTab('transcript')}
@@ -403,7 +465,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
               )}
             </div>
 
-            {videoRecord || entityId ? (
+            {(videoRecord || entityId) ? (
               <form onSubmit={submitComment}>
                 <div className="relative">
                   <input
