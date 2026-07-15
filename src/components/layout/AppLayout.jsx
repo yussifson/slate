@@ -86,11 +86,12 @@ export default function AppLayout() {
   });
 
   useEffect(() => {
-    // Clipad pages always use the CliPad brand regardless of company
-    const clipadRoutes = ['/chat', '/analytics', '/meetings', '/spaces', '/dashboard', '/settings', '/support'];
-    const isClipadRoute = clipadRoutes.some(r => location.pathname.startsWith(r));
+    const host = window.location.hostname.toLowerCase();
+    const isClipadApp = host.includes('clipad');
+    const isSlateApp = host.includes('slate');
+    const isMainApp = host.includes('account') || host.includes('observel') || host.includes('optavel');
 
-    if (isClipadRoute) {
+    if (isClipadApp) {
       let link = document.querySelector("link[rel~='icon']");
       if (!link) {
         link = document.createElement('link');
@@ -98,8 +99,20 @@ export default function AppLayout() {
         document.head.appendChild(link);
       }
       link.href = '/clipad-logo.svg';
-      document.title = 'CliPad';
-      return; // Do not apply company branding on Clipad routes
+      document.title = 'CliPad - Enterprise Collaborative Productivity Workspace';
+      return; // Do not apply company branding on Clipad
+    }
+
+    if (!isSlateApp && isMainApp && !host.includes('slate')) {
+      let link = document.querySelector("link[rel~='icon']");
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+      }
+      link.href = '/optavel-favicon.svg';
+      document.title = 'Observel Account';
+      return; // Do not apply company branding on the Account main page
     }
 
     if (currentCompany) {

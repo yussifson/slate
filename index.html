@@ -102,11 +102,53 @@
     <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <div id="root">
       <div class="app-preloader">
-        <img src="/slate-logo.png" alt="Slate Loading" class="app-preloader-logo" />
+        <img src="/slate-logo.png" alt="Loading" class="app-preloader-logo" id="dynamic-preloader-logo" />
         <div class="app-preloader-spinner"></div>
         <div class="app-preloader-text">Loading...</div>
       </div>
     </div>
+    <script>
+      (function() {
+        var host = window.location.hostname.toLowerCase();
+        var isClipad = host.includes('clipad');
+        var isSlate = host.includes('slate');
+        
+        var appTitle = 'Workspace';
+        var faviconHref = '/optavel-favicon.svg';
+        var logoSrc = '/logo.png';
+
+        if (isClipad) {
+          appTitle = 'CliPad - Enterprise Collaborative Productivity Workspace';
+          faviconHref = '/clipad-logo.svg';
+          logoSrc = '/clipad-logo.svg';
+        } else if (isSlate) {
+          appTitle = 'Slate - Workspace';
+          faviconHref = '/slate-favicon.svg';
+          logoSrc = '/slate-logo.png';
+        } else {
+          // Account / Observel / Optavel / Default
+          appTitle = 'Observel Account';
+          faviconHref = '/optavel-favicon.svg'; // Main company favicon
+          logoSrc = '/logo.png'; // Main company logo
+        }
+
+        document.title = appTitle;
+        var link = document.querySelector("link[rel~='icon']");
+        if (link) {
+          link.href = faviconHref;
+        } else {
+          link = document.createElement('link');
+          link.rel = 'icon';
+          link.href = faviconHref;
+          document.head.appendChild(link);
+        }
+
+        var logoEl = document.getElementById('dynamic-preloader-logo');
+        if (logoEl) {
+          logoEl.src = logoSrc;
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
