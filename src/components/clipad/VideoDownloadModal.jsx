@@ -20,9 +20,7 @@ export default function VideoDownloadModal({ open, onOpenChange, videoUrl, video
   const canDownload = hasFeature(user, 'hasVideoDownload');
 
   const QUALITIES = [
-    { id: '1080p', label: '1080p Original', desc: 'Highest quality, raw file', ext: 'webm', icon: Monitor },
-    { id: '720p', label: '720p Standard', desc: 'Optimized for sharing', ext: 'mp4', icon: Video },
-    { id: '480p', label: '480p Data Saver', desc: 'Smallest file size', ext: 'mp4', icon: Smartphone }
+    { id: '1080p', label: '1080p Original', desc: 'Highest quality, raw file', ext: 'webm', icon: Monitor }
   ];
 
   const extractPathFromUrl = (url) => {
@@ -35,24 +33,7 @@ export default function VideoDownloadModal({ open, onOpenChange, videoUrl, video
     return null;
   };
 
-  const loadFFmpeg = async () => {
-    if (ffmpegRef.current) return ffmpegRef.current;
-    
-    const { FFmpeg } = await import('@ffmpeg/ffmpeg');
-    
-    const ffmpeg = new FFmpeg();
-    ffmpeg.on('progress', ({ progress }) => {
-      setProgress(Math.round(progress * 100));
-    });
-    
-    await ffmpeg.load({
-      coreURL,
-      wasmURL,
-    });
-    
-    ffmpegRef.current = ffmpeg;
-    return ffmpeg;
-  };
+
 
   const downloadDirect = async (signedUrl, filename) => {
     setStatusText('Downloading original video...');
@@ -84,55 +65,6 @@ export default function VideoDownloadModal({ open, onOpenChange, videoUrl, video
     URL.revokeObjectURL(url);
   };
 
-  const transcodeAndDownload = async (signedUrl, filename, resolution) => {
-    setStatusText('Loading transcoder engine...');
-    setProgress(0);
-    // We use the single-threaded @ffmpeg/core which does NOT require SharedArrayBuffer or Cross-Origin-Isolation.
-    try {
-      const ffmpeg = await loadFFmpeg();
-      
-      setStatusText('Fetching original video...');
-      const response = await fetch(signedUrl);
-      const arrayBuffer = await response.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
-      
-      const inputName = 'input.webm';
-      const outputName = 'output.mp4';
-      
-      await ffmpeg.writeFile(inputName, uint8Array);
-      
-      setStatusText(`Converting to ${resolution}...`);
-      
-      const scaleMap = { '720p': 'scale=-2:720', '480p': 'scale=-2:480' };
-      
-      await ffmpeg.exec([
-        '-i', inputName,
-        '-vf', scaleMap[resolution],
-        '-c:v', 'libx264',
-        '-preset', 'ultrafast', 
-        '-crf', '28',
-        '-c:a', 'aac',
-        outputName
-      ]);
-      
-      setStatusText('Finishing up...');
-      const fileData = await ffmpeg.readFile(outputName);
-      const data = new Uint8Array(fileData);
-      const blob = new Blob([data.buffer], { type: 'video/mp4' });
-      
-      const url = URL.createObjectURL(blob);
-      triggerDownload(url, `${filename}.mp4`);
-      URL.revokeObjectURL(url);
-      
-      await ffmpeg.deleteFile(inputName);
-      await ffmpeg.deleteFile(outputName);
-      
-    } catch (err) {
-      console.error(err);
-      throw new Error("Transcoding failed. " + (err?.message || err?.toString() || 'Unknown error'));
-    }
-  };
-
   const triggerDownload = (url, filename) => {
     const a = document.createElement('a');
     a.href = url;
@@ -156,11 +88,7 @@ export default function VideoDownloadModal({ open, onOpenChange, videoUrl, video
       
       const safeTitle = (videoTitle || 'Clipad_Video').replace(/[^a-z0-9]/gi, '_').toLowerCase();
       
-      if (selectedQuality === '1080p') {
-        await downloadDirect(videoUrl, safeTitle);
-      } else {
-        await transcodeAndDownload(videoUrl, safeTitle, selectedQuality);
-      }
+      await downloadDirect(videoUrl, safeTitle);
       
       setTimeout(() => {
         onOpenChange(false);

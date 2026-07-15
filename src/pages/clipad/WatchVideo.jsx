@@ -104,20 +104,7 @@ export default function WatchVideo() {
         setEditTitle(videoRes.data.title || '');
         setEditDesc(videoRes.data.description || '');
         
-        // Secure Playback: Convert file path to signed URL, then to in-memory Blob
-        // This prevents the raw URL from being accessible in DevTools network tab
-        if (videoRes.data.video_url) {
-          try {
-            const res = await fetch(videoRes.data.video_url);
-            if (res.ok) {
-              const blob = await res.blob();
-              const objectUrl = URL.createObjectURL(blob);
-              setBlobUrl(objectUrl);
-            }
-          } catch (err) {
-            console.error("Failed to load secure video blob", err);
-          }
-        }
+        // We stream directly from the storage URL for performance and range requests.
 
         // --- ACCESS CONTROL LOGIC ---
         const v = videoRes.data;
@@ -307,7 +294,7 @@ export default function WatchVideo() {
       const { data, error } = await supabase.from('clipad_video_comments').insert({
         video_id: videoId,
         user_id: user.id,
-        content: contentToSave,
+        body: contentToSave,
         timestamp_seconds: ts,
       }).select('*').single();
       if (error) throw error;
@@ -411,7 +398,7 @@ export default function WatchVideo() {
             <div ref={playerRef} className="relative rounded-2xl overflow-hidden bg-black aspect-video group">
               <video
                 ref={videoRef}
-                src={blobUrl || video.video_url}
+                src={video.video_url}
                 className="w-full h-full object-contain"
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
