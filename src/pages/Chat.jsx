@@ -41,7 +41,6 @@ export default function Chat({ isDockedMode = false }) {
  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
  const [showAttachMenu, setShowAttachMenu] = useState(false);
  const [isSummarizing, setIsSummarizing] = useState(false);
- const [chatSummary, setChatSummary] = useState(null);
  const [searchQuery, setSearchQuery] = useState("");
  const [isSidebarCollapsed, setIsSidebarCollapsed] = useUIPreference(user, 'chatSidebarCollapsed', false);
  const { isChatDocked, toggleChatDock } = useChatDock();
