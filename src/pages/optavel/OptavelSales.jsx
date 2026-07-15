@@ -172,8 +172,8 @@ export default function OptavelSales() {
                         className={`p-3 rounded-xl border cursor-grab active:cursor-grabbing group transition-all hover:bg-muted/80 ${selectedDeal?.id === deal.id ? 'ring-2 ring-emerald-500' : ''} ${STAGE_STYLE[deal.stage] || 'border-border bg-muted'}`}>
                         <div className="flex justify-between items-start">
                           <p className="text-xs font-bold text-foreground leading-snug flex-1 min-w-0 pr-2">{deal.lead_name}</p>
-                          <button onClick={e => { e.stopPropagation(); deleteDeal(deal.id); }} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-400 transition-all shrink-0">
-                            <X className="w-3 h-3" />
+                          <button onClick={e => { e.stopPropagation(); deleteDeal(deal.id); }} className="p-1.5 -m-1.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-full transition-all shrink-0">
+                            <X className="w-4 h-4" />
                           </button>
                         </div>
                         <p className="text-sm font-black text-emerald-400 mt-1">${Number(deal.value||0).toLocaleString()}</p>

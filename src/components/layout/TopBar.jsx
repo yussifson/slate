@@ -151,31 +151,9 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
 
 
-      {/* Support & Premium Theme Toggle & Notifications */}
-      <Button
-        variant="ghost"
-        size="sm"
-        className={`hidden lg:flex items-center gap-1.5 text-xs font-medium text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1.5 hover:bg-muted/50 bg-card tracking-[0.02em] transition-colors focus:outline-none shadow-sm h-[28px] ${inPopover ? '!flex' : ''}`}
-        onClick={() => window.open('mailto:support@optavel.com', '_blank')}
-      >
-        <LifeBuoy className="w-3.5 h-3.5 text-primary" />
-        <span>Support</span>
-      </Button>
-      <AppLauncher />
+      {/* Theme Toggle & Notifications */}
       <ThemeToggle />
       <UnivNotificationCenter />
-
-      {/* Refresh */}
-      <Button
-        variant="ghost"
-        size="sm"
-        className={`hidden md:flex gap-2.5 text-xs text-[#71717a] dark:text-gray-400 hover:text-foreground tracking-[0.04em] ${inPopover ? '!flex' : ''}`}
-        onClick={handleRefresh}
-        disabled={isRefreshing}
-      >
-        {isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" />}
-        <span className="hidden sm:block">Refresh</span>
-      </Button>
     </div>
   );
 
