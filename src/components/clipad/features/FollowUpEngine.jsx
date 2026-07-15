@@ -20,7 +20,7 @@ export default function FollowUpEngine({ spaceId, workspaceId }) {
     try {
       let query = supabase
         .from('clipad_action_items')
-        .select('*, assignee:assigned_to(id, full_name, email)')
+        .select('*, assignee:auth.users(id, full_name, email)')
         .eq('is_complete', false);
 
       if (spaceId) query = query.eq('space_id', spaceId);
