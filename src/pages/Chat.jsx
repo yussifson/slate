@@ -11,6 +11,7 @@ import { cn} from "@/lib/utils";
 import { generateText} from "@/lib/cloudflareAI";
 import { powerSync} from "@/api/PowerSyncConnector";
 import AddChatDialog from "@/components/chat/AddChatDialog";
+import ManageGroupMembersDialog from "@/components/chat/ManageGroupMembersDialog";
 import { useToast} from "@/components/ui/use-toast";
 import { format} from "date-fns";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
@@ -31,6 +32,7 @@ export default function Chat({ isDockedMode = false }) {
  const [editingMsg, setEditingMsg] = useState(null);
  const [inputValue, setInputValue] = useState("");
  const [isAddChatOpen, setIsAddChatOpen] = useState(false);
+ const [isManageMembersOpen, setIsManageMembersOpen] = useState(false);
  const [loadingRooms, setLoadingRooms] = useState(false);
  const [loadingMessages, setLoadingMessages] = useState(false);
  const [isUploading, setIsUploading] = useState(false);
@@ -303,6 +305,13 @@ export default function Chat({ isDockedMode = false }) {
 }}
  />
  
+ <ManageGroupMembersDialog 
+    open={isManageMembersOpen} 
+    onOpenChange={setIsManageMembersOpen} 
+    activeRoom={activeRoom}
+    participantProfiles={participantProfiles}
+  />
+
  {/* Sidebar - Channels & DMs */}
  <div className={cn(
    "flex-shrink-0 border-r border-primary/40 bg-background dark:bg-[#202c33] flex flex-col h-[40%] md:h-full z-10 relative transition-all duration-300",
@@ -472,6 +481,9 @@ export default function Chat({ isDockedMode = false }) {
  <button className="hover:text-foreground transition-colors"><MoreVertical className="w-5 h-5" /></button>
  </DropdownMenuTrigger>
  <DropdownMenuContent align="end" className="w-48">
+ {activeRoom?.room_type === "group" && (
+   <DropdownMenuItem onClick={() => setIsManageMembersOpen(true)}>Manage Members</DropdownMenuItem>
+ )}
  <DropdownMenuItem onClick={() => {
     toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name} (${otherProfile.email})` : 'Group details available soon.' });
  }}>Contact Info</DropdownMenuItem>
