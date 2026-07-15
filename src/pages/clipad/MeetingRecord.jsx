@@ -129,8 +129,8 @@ export default function MeetingRecord() {
         supabase.from('clipad_meeting_records').select('*').eq('id', meetingId).single(),
         supabase.from('clipad_action_items').select('*').eq('meeting_id', meetingId).order('created_at', { ascending: true }),
         supabase.from('clipad_transcripts').select('*').eq('meeting_id', meetingId).order('start_time', { ascending: true }),
-        supabase.from('clipad_meeting_comments').select('*, author:auth.users(full_name, avatar_url)').eq('meeting_id', meetingId).order('created_at', { ascending: true }),
-        supabase.from('clipad_meeting_reactions').select('*, author:auth.users(full_name, avatar_url)').eq('meeting_id', meetingId),
+        supabase.from('clipad_meeting_comments').select('*').eq('meeting_id', meetingId).order('created_at', { ascending: true }),
+        supabase.from('clipad_meeting_reactions').select('*').eq('meeting_id', meetingId),
       ]);
       if (meetingRes.data) {
         const m = meetingRes.data;
@@ -305,11 +305,18 @@ export default function MeetingRecord() {
 
   if (!meeting) {
     return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter flex items-center justify-center text-foreground">
-        <div className="text-center">
-          <Calendar className="w-12 h-12 text-gray-700 mx-auto mb-3" />
-          <p className="text-muted-foreground mb-4">Meeting not found.</p>
-          <button onClick={() => navigate('/meetings')} className="text-primary hover:text-primary/80 text-sm transition-colors">← Meetings</button>
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter flex items-center justify-center text-foreground p-6">
+        <div className="text-center max-w-md w-full">
+          <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Lock className="w-8 h-8" />
+          </div>
+          <h2 className="text-xl font-bold mb-2">Access Denied or Meeting Not Found</h2>
+          <p className="text-muted-foreground mb-8 text-sm leading-relaxed">
+            This meeting record may not exist, or it belongs to another organization. You must be logged in with an authorized account from the same company to view this recording.
+          </p>
+          <button onClick={() => navigate('/meetings')} className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm shadow-xl hover:-translate-y-0.5 transition-all mx-auto">
+            <ArrowLeft className="w-4 h-4" /> Go to Meetings
+          </button>
         </div>
       </div>
     );

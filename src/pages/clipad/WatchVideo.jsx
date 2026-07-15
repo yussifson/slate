@@ -360,10 +360,18 @@ export default function WatchVideo() {
 
   if (!video) {
     return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center text-slate-900 dark:text-slate-100 text-center">
-        <div>
-          <p className="text-slate-500 dark:text-slate-400 mb-4">Video not found.</p>
-          <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5 mx-auto"><ArrowLeft className="w-4 h-4 text-slate-500" /> Dashboard</button>
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center text-slate-900 dark:text-slate-100 text-center p-6">
+        <div className="max-w-md w-full">
+          <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Lock className="w-8 h-8" />
+          </div>
+          <h2 className="text-xl font-bold mb-2">Access Denied or Video Not Found</h2>
+          <p className="text-slate-500 dark:text-slate-400 mb-8 text-sm leading-relaxed">
+            This video may not exist, or it belongs to another organization. You must be logged in with an authorized account from the same company to view this recording.
+          </p>
+          <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm shadow-xl hover:-translate-y-0.5 transition-all mx-auto">
+            <ArrowLeft className="w-4 h-4" /> Go to Dashboard
+          </button>
         </div>
       </div>
     );
