@@ -24,7 +24,7 @@ export const PaywallModal = ({ isOpen, onClose, featureName = "This feature", li
     try {
       await PaystackAPI.initializePayment({
         email: user.email,
-        amount: 5000, // 5000 NGN for Pro Plan
+        amount: 2900, // Updated to $29 baseline
         metadata: {
           userId: user.id,
           plan: 'pro_monthly'
@@ -134,7 +134,7 @@ export const PaywallModal = ({ isOpen, onClose, featureName = "This feature", li
                 </span>
               ) : (
                 <span className="flex items-center justify-center gap-2">
-                  Upgrade Now - ₦5,000 / month
+                  Upgrade Now - $29 / month
                 </span>
               )}
             </button>
