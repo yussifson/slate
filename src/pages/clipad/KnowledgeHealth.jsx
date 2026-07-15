@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { Activity, BrainCircuit, HeartPulse, ShieldAlert, Target, TrendingUp, Users, LogOut, Settings, Shield, Sparkles } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
@@ -112,28 +112,7 @@ export default function KnowledgeHealth() {
   if (loading) return <ClipadLoader fullScreen text="Analyzing Organizational Health..." />;
 
   if (!isUserAdmin) {
-    return (
-      <div className="flex flex-col items-center justify-center p-12 text-center min-h-[calc(100vh-100px)] bg-slate-50 dark:bg-slate-950">
-        <div className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
-            <ShieldAlert className="w-32 h-32 text-rose-500" />
-          </div>
-          <div className="w-20 h-20 rounded-full bg-rose-100 dark:bg-rose-500/10 border-4 border-white dark:border-slate-900 shadow-md flex items-center justify-center mx-auto mb-6 relative z-10">
-            <ShieldAlert className="w-10 h-10 text-rose-500" />
-          </div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-3 relative z-10">Admin Access Required</h2>
-          <p className="text-slate-500 dark:text-slate-400 mb-8 relative z-10 leading-relaxed">
-            The Knowledge Health Dashboard provides bird's-eye organizational insights available only to workspace administrators.
-          </p>
-          <button 
-            onClick={() => navigate('/dashboard')} 
-            className="w-full py-3.5 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold rounded-xl transition-all shadow-sm relative z-10"
-          >
-            Return to Dashboard
-          </button>
-        </div>
-      </div>
-    );
+    return <Navigate to="/clipad" replace />;
   }
 
 

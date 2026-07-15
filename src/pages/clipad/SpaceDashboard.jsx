@@ -437,7 +437,7 @@ export default function SpaceDashboard() {
       {/* Tab bar */}
       <div className="px-6 md:px-10 border-b border-border overflow-x-auto no-scrollbar scrollbar-hide">
         <div className="flex gap-1 -mb-px min-w-max">
-          {TABS.map(tab => {
+          {TABS.filter(t => ['timeline', 'memory', 'decisions'].includes(t.id) ? isAdmin(user) : true).map(tab => {
             const Icon = tab.icon;
             return (
               <button

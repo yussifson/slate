@@ -3,6 +3,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { generateStandupSummary } from '@/lib/clipadIntelligence';
 import { writeOrgEvent } from '@/lib/clipadIntelligence';
+import { isAdmin } from '@/lib/constants';
 import {
   Sun, CheckCircle, AlertTriangle, Smile, Frown, Meh, Zap, TrendingUp,
   Plus, Sparkles, Loader2, User, Clock, Send, ChevronDown, ChevronUp, RefreshCw
@@ -295,7 +296,7 @@ export default function StandupPanel({ spaceId }) {
       )}
 
       {/* AI Summary */}
-      {updates.length >= 2 && (
+      {isAdmin(user) && updates.length >= 2 && (
         <div className="rounded-2xl border border-indigo-200 dark:border-indigo-500/20 bg-indigo-50 dark:bg-indigo-500/10 p-4">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-bold text-indigo-700 dark:text-indigo-400 flex items-center gap-2">
