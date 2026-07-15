@@ -11,8 +11,15 @@ import CliPadCommandPalette from '@/components/clipad/CliPadCommandPalette';
 export default function ClipadLayout() {
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [injectedContext, setInjectedContext] = useState(null);
-  const { isChatDocked } = useChatDock();
+  const { isChatDocked, setChatDock } = useChatDock();
   const location = useLocation();
+
+  // Auto-undock if we navigate back to the main chat page
+  React.useEffect(() => {
+    if (location.pathname === '/clipad/chat' && isChatDocked) {
+      setChatDock(false);
+    }
+  }, [location.pathname, isChatDocked, setChatDock]);
 
   // Expose toggle globally for Clipad pages to call it
   React.useEffect(() => {
@@ -51,8 +58,8 @@ export default function ClipadLayout() {
         <div 
           id="right-docked-panel-portal" 
           className={cn(
-            "flex shrink-0 h-full relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10 transition-all duration-300",
-            isChatDocked ? "w-[400px] xl:w-[450px]" : "w-0 overflow-hidden border-none"
+            "flex shrink-0 h-full relative bg-white dark:bg-[#090E17] transition-all duration-300",
+            isChatDocked ? "w-[400px] xl:w-[450px] border-l border-primary/40 shadow-xl" : "w-0 overflow-hidden border-none"
           )}
         >
           {isChatDocked && <ClipadChat isDockedMode={true} />}

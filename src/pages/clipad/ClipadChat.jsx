@@ -425,7 +425,10 @@ export default function ClipadChat({ isDockedMode = false }) {
        <h2 className="font-semibold text-lg">Chats</h2>
      </div>
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" onClick={toggleChatDock} className="w-9 h-9 rounded-full hover:bg-primary/10" title="Dock to Right Sidebar">
+        <Button variant="ghost" size="icon" onClick={() => {
+          toggleChatDock();
+          if (!isChatDocked) navigate('/clipad/dashboard');
+        }} className="w-9 h-9 rounded-full hover:bg-primary/10" title="Dock to Right Sidebar">
           <ChevronsRight className="w-5 h-5 text-muted-foreground hover:text-primary" />
         </Button>
        <Button variant="ghost" size="icon" onClick={() => setIsSidebarCollapsed(true)} className="w-9 h-9 rounded-full hover:bg-primary/10" title="Collapse Sidebar">
@@ -547,7 +550,10 @@ export default function ClipadChat({ isDockedMode = false }) {
     )}>
       <div className="p-4 border-b border-border flex items-center justify-between shrink-0">
         <h2 className="font-bold text-lg">Chats</h2>
-        <button onClick={toggleChatDock} className="hover:text-primary transition-colors text-muted-foreground p-1" title="Undock Chat">
+        <button onClick={() => {
+          toggleChatDock();
+          navigate('/clipad/chat');
+        }} className="hover:text-primary transition-colors text-muted-foreground p-1" title="Undock Chat">
           <ChevronsLeft className="w-5 h-5" />
         </button>
       </div>
@@ -557,13 +563,29 @@ export default function ClipadChat({ isDockedMode = false }) {
       </div>
 
       <div className="flex-1 overflow-y-auto custom-scrollbar">
-        <div className="p-2 space-y-1">
+        <div className="p-1 space-y-0.5">
           {filteredRooms.map((room) => {
-            const roomName = room.name || "Unknown Room";
+            const otherParticipant = room.chat_participants?.find(p => p.user_id !== user.id);
+            const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
+            const roomName = room.name || otherProfile?.full_name || 'Direct Chat';
+            const avatarUrl = otherProfile?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${roomName}`;
+
             return (
-              <div key={room.id} onClick={() => setActiveRoomId(room.id)} className="flex items-center gap-3 p-2 rounded-xl cursor-pointer hover:bg-secondary/50">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary shrink-0">
-                  {roomName.charAt(0).toUpperCase()}
+              <div key={room.id} onClick={() => setActiveRoomId(room.id)} className={cn("flex items-center gap-2 p-2 rounded-xl cursor-pointer", activeRoomId === room.id ? "bg-[#f0f2f5] dark:bg-[#2a3942]" : "hover:bg-secondary/50")}>
+                <div className="relative flex-shrink-0">
+                  {room.room_type === "group" ? (
+                    <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden">
+                      {room.avatar_url ? (
+                        <img src={room.avatar_url} alt={roomName} className="w-full h-full object-cover" />
+                      ) : (
+                        <Users className="w-5 h-5 text-primary dark:text-primary/70" />
+                      )}
+                    </div>
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">
+                      <img src={avatarUrl} alt={roomName} className="w-full h-full object-cover"/>
+                    </div>
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="font-medium text-sm truncate">{roomName}</h4>
@@ -638,7 +660,11 @@ export default function ClipadChat({ isDockedMode = false }) {
     </div>
     
     <div className="flex items-center gap-4 text-[#54656f] dark:text-[#aebac1]">
-      <button onClick={toggleChatDock} className="hover:text-primary transition-colors" title={isDockedMode ? "Undock Chat" : "Dock to Right Sidebar"}>
+      <button onClick={() => {
+        toggleChatDock();
+        if (!isChatDocked) navigate('/clipad/dashboard');
+        else navigate('/clipad/chat');
+      }} className="hover:text-primary transition-colors" title={isDockedMode ? "Undock Chat" : "Dock to Right Sidebar"}>
         {isDockedMode ? <ChevronsLeft className="w-5 h-5" /> : <ChevronsRight className="w-5 h-5" />}
       </button>
       {messages.length > 0 && (
