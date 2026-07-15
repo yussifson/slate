@@ -59,7 +59,7 @@ export default function ClipadLayout() {
           id="right-docked-panel-portal" 
           className={cn(
             "flex shrink-0 h-full relative bg-white dark:bg-[#090E17] transition-all duration-300",
-            isChatDocked ? "w-[400px] xl:w-[450px] border-l border-primary/40 shadow-xl" : "w-0 overflow-hidden border-none"
+            isChatDocked ? "w-[400px] xl:w-[450px] border-l-4 border-primary shadow-xl" : "w-0 overflow-hidden border-none"
           )}
         >
           {isChatDocked && <ClipadChat isDockedMode={true} />}

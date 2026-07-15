@@ -174,8 +174,9 @@ export default function ClipadChat({ isDockedMode = false }) {
     if (messages.length === 0) return;
     setIsSummarizing(true);
     try {
-      const textBlock = messages.map(m => `${participantProfiles[m.sender_id]?.full_name || 'User'}: ${m.content}`).join('\n');
-      const summary = await generateText(`Summarize this chat conversation briefly:\n\n${textBlock}`);
+      const textBlock = messages.slice(-50).map(m => `${participantProfiles[m.sender_id]?.full_name || 'User'}: ${m.content}`).join('\n');
+      const prompt = `Summarize the following chat conversation into a brief, easy-to-read recap (3-4 bullet points max) of decisions made and outstanding items:\n\n${textBlock}`;
+      const summary = await generateText([{ role: 'user', content: prompt }]);
       setChatSummary(summary);
     } catch (error) {
       toast({ title: 'Error', description: 'Failed to generate summary.', variant: 'destructive' });
@@ -187,6 +188,8 @@ export default function ClipadChat({ isDockedMode = false }) {
   const handleDeleteGroup = async () => {
     if (!window.confirm("Are you sure you want to delete this group? This cannot be undone.")) return;
     try {
+      await powerSync.execute(`DELETE FROM chat_messages WHERE room_id = ?`, [activeRoomId]);
+      await powerSync.execute(`DELETE FROM chat_participants WHERE room_id = ?`, [activeRoomId]);
       await powerSync.execute(`DELETE FROM chat_rooms WHERE id = ?`, [activeRoomId]);
       setActiveRoomId(null);
       setMessages([]);
@@ -691,7 +694,7 @@ export default function ClipadChat({ isDockedMode = false }) {
                  const otherParticipant = activeRoom?.chat_participants?.find(p => p.user_id !== user.id);
                  const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
                  const roomNameForInfo = activeRoom?.name || otherProfile?.full_name || 'Direct Chat';
-                 toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name} (${otherProfile.email || 'No email'})` : `Contact Info: ${roomNameForInfo}` });
+                 toast({ title: roomNameForInfo, description: otherProfile?.email ? `Email: ${otherProfile.email}` : 'No additional contact info available' });
               }}>Contact Info</DropdownMenuItem>
             </>
           )}

@@ -163,6 +163,8 @@ export default function Chat({ isDockedMode = false }) {
   const handleDeleteChat = async () => {
     if (!activeRoomId) return;
     try {
+      await powerSync.execute('DELETE FROM chat_messages WHERE room_id = ?', [activeRoomId]);
+      await powerSync.execute('DELETE FROM chat_participants WHERE room_id = ?', [activeRoomId]);
       await powerSync.execute('DELETE FROM chat_rooms WHERE id = ?', [activeRoomId]);
       toast({ title: "Success", description: "Chat deleted." });
       setActiveRoomId(null);
@@ -525,6 +527,8 @@ export default function Chat({ isDockedMode = false }) {
                   <DropdownMenuItem className="text-red-600 focus:bg-red-50 focus:text-red-700 dark:focus:bg-red-950/30" onClick={async () => {
                     if (!window.confirm("Are you sure you want to delete this group? This cannot be undone.")) return;
                     try {
+                      await powerSync.execute(`DELETE FROM chat_messages WHERE room_id = ?`, [activeRoomId]);
+                      await powerSync.execute(`DELETE FROM chat_participants WHERE room_id = ?`, [activeRoomId]);
                       await powerSync.execute(`DELETE FROM chat_rooms WHERE id = ?`, [activeRoomId]);
                       setActiveRoomId(null);
                       setMessages([]);
@@ -548,7 +552,7 @@ export default function Chat({ isDockedMode = false }) {
                  const otherParticipant = activeRoom?.chat_participants?.find(p => p.user_id !== user.id);
                  const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
                  const roomNameForInfo = activeRoom?.name || otherProfile?.full_name || 'Direct Chat';
-                 toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name} (${otherProfile.email || 'No email'})` : `Contact Info: ${roomNameForInfo}` });
+                 toast({ title: roomNameForInfo, description: otherProfile?.email ? `Email: ${otherProfile.email}` : 'No additional contact info available' });
               }}>Contact Info</DropdownMenuItem>
             </>
           )}
