@@ -84,34 +84,35 @@ export default function GlobalSearch() {
 
       setResults(formatted);
 
-      // Auto-synthesize when results exist
-      if (formatted.length > 0) {
-        setIsSynthesizing(true);
-        const context = formatted.map(r => `[${r.type.toUpperCase()} ID:${r.id}] ${r.label}: ${r.snippet || ''}`).join('\n');
-        const raw = await generateText([
-          {
-            role: 'system',
-            content: `You are the ClipPad organizational intelligence assistant. Answer the user's question based ONLY on the provided workspace data. Be concise (2-4 sentences). After your answer, list the IDs of the most relevant sources as JSON like: SOURCES:[{"id":"<id>","type":"<type>"}]. If you cannot answer from the data, say so honestly.`,
-          },
-          { role: 'user', content: `Question: "${query}"\n\nWorkspace Data:\n${context}` },
-        ]);
+      // ALWAYS run AI synthesis, even if no exact matches are found, so the user gets an intelligent fallback.
+      setIsSynthesizing(true);
+      const context = formatted.length > 0 
+        ? formatted.map(r => `[${r.type.toUpperCase()} ID:${r.id}] ${r.label}: ${r.snippet || ''}`).join('\n')
+        : 'No exact database records found for this query.';
 
-        // Parse AI answer + sources
-        const sourcesMatch = (raw || '').match(/SOURCES:\s*(\[.*?\])/s);
-        let sources = [];
-        let answer = raw || '';
-        if (sourcesMatch) {
-          try { sources = JSON.parse(sourcesMatch[1]); } catch { /* ignore */ }
-          answer = answer.replace(/SOURCES:.*$/s, '').trim();
-        }
-        setAiAnswer(answer);
-        setAiSources(
-          sources
-            .map(s => formatted.find(r => r.id === s.id))
-            .filter(Boolean)
-        );
-        setIsSynthesizing(false);
+      const raw = await generateText([
+        {
+          role: 'system',
+          content: `You are OrbitFlow, the ClipPad organizational intelligence assistant. Answer the user's question based on the provided workspace data. Be concise and helpful (2-4 sentences). If there is no workspace data, try to be helpful or explain you cannot find exact records. After your answer, list the IDs of the most relevant sources as JSON like: SOURCES:[{"id":"<id>","type":"<type>"}].`,
+        },
+        { role: 'user', content: `Question: "${query}"\n\nWorkspace Data:\n${context}` },
+      ]);
+
+      // Parse AI answer + sources
+      const sourcesMatch = (raw || '').match(/SOURCES:\s*(\[.*?\])/s);
+      let sources = [];
+      let answer = raw || '';
+      if (sourcesMatch) {
+        try { sources = JSON.parse(sourcesMatch[1]); } catch { /* ignore */ }
+        answer = answer.replace(/SOURCES:.*$/s, '').trim();
       }
+      setAiAnswer(answer);
+      setAiSources(
+        sources
+          .map(s => formatted.find(r => r.id === s.id))
+          .filter(Boolean)
+      );
+      setIsSynthesizing(false);
     } catch (err) {
       console.error(err);
     } finally {
@@ -141,43 +142,44 @@ export default function GlobalSearch() {
       </button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-2xl p-0 overflow-hidden bg-card border-border rounded-2xl gap-0">
-          {/* Search Input */}
-          <form onSubmit={handleSearch} className="flex items-center px-4 py-4 border-b border-border bg-secondary/30">
-            <Search className="w-5 h-5 text-muted-foreground mr-3 shrink-0" />
+        <DialogContent className="sm:max-w-3xl p-0 overflow-hidden bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-2xl rounded-3xl gap-0">
+          {/* Premium Search Input */}
+          <form onSubmit={handleSearch} className="flex items-center px-6 py-5 border-b border-slate-200/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/50">
+            <Search className="w-6 h-6 text-emerald-500 mr-4 shrink-0" />
             <input
               ref={inputRef}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Ask anything — decisions, meetings, videos, blockers..."
-              className="flex-1 bg-transparent border-none focus:outline-none text-foreground text-base placeholder-muted-foreground"
+              placeholder="Ask OrbitFlow anything — search across meetings, tasks, spaces..."
+              className="flex-1 bg-transparent border-none focus:outline-none text-slate-900 dark:text-white text-xl placeholder-slate-400 dark:placeholder-slate-500 font-medium"
             />
-            {(isSearching || isSynthesizing) && <Loader2 className="w-5 h-5 animate-spin text-primary ml-2 shrink-0" />}
-            {query && !isSearching && (
-              <button type="button" onClick={() => { setQuery(''); setResults([]); setAiAnswer(''); }}>
-                <X className="w-4 h-4 text-muted-foreground ml-2" />
+            {(isSearching || isSynthesizing) ? (
+              <Loader2 className="w-5 h-5 animate-spin text-emerald-500 ml-3 shrink-0" />
+            ) : query && (
+              <button type="button" onClick={() => { setQuery(''); setResults([]); setAiAnswer(''); }} className="p-1.5 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors ml-2">
+                <X className="w-4 h-4 text-slate-400" />
               </button>
             )}
           </form>
 
-          <div className="max-h-[65vh] overflow-y-auto p-4 space-y-4">
+          <div className="max-h-[70vh] overflow-y-auto p-6 space-y-6 custom-scrollbar">
             {/* AI Answer Panel */}
             {(aiAnswer || isSynthesizing) && (
-              <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 space-y-3">
+              <div className="bg-gradient-to-br from-emerald-500/10 to-teal-500/5 border border-emerald-500/20 dark:border-emerald-500/10 rounded-2xl p-5 space-y-4 shadow-inner">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-primary" />
-                  <h3 className="text-sm font-bold text-foreground">AI Answer</h3>
+                  <Sparkles className="w-5 h-5 text-emerald-500" />
+                  <h3 className="text-base font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">OrbitFlow AI</h3>
                 </div>
                 {isSynthesizing ? (
-                  <div className="text-sm text-muted-foreground flex items-center gap-2">
-                    <Loader2 className="w-3 h-3 animate-spin text-primary" /> Analyzing workspace data...
+                  <div className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-3 py-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-emerald-500" /> OrbitFlow is thinking and searching the workspace...
                   </div>
                 ) : (
-                  <>
-                    <p className="text-sm text-foreground leading-relaxed">{aiAnswer}</p>
+                  <div className="space-y-3">
+                    <p className="text-[15px] text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{aiAnswer}</p>
                     {aiSources.length > 0 && (
-                      <div className="flex flex-wrap gap-2 pt-1">
-                        <span className="text-[10px] font-semibold uppercase text-muted-foreground tracking-wider">Sources:</span>
+                      <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-emerald-500/10 mt-3">
+                        <span className="text-[10px] font-bold uppercase text-emerald-600/70 dark:text-emerald-400/70 tracking-widest">Sources:</span>
                         {aiSources.map((src, i) => {
                           const meta = TYPE_META[src.type];
                           const Icon = meta?.icon;
@@ -185,34 +187,36 @@ export default function GlobalSearch() {
                             <button
                               key={i}
                               onClick={() => handleResultClick(src)}
-                              className={`flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-lg ${meta?.bg} ${meta?.color} hover:opacity-80 transition-opacity`}
+                              className={`flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-lg ${meta?.bg} ${meta?.color} hover:shadow-sm transition-all border border-transparent hover:border-emerald-500/20`}
                             >
-                              {Icon && <Icon className="w-3 h-3" />}
+                              {Icon && <Icon className="w-3.5 h-3.5" />}
                               {src.label?.substring(0, 30)}
-                              <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                              <ExternalLink className="w-2.5 h-2.5 opacity-50" />
                             </button>
                           );
                         })}
                       </div>
                     )}
-                  </>
+                  </div>
                 )}
               </div>
             )}
 
-            {/* No Results */}
-            {results.length === 0 && query && !isSearching && !isSynthesizing && (
-              <div className="text-center py-10 text-muted-foreground text-sm">
-                No results found for "<strong>{query}</strong>"
+            {/* No Results (Only if no AI answer is available and no results) */}
+            {results.length === 0 && query && !isSearching && !isSynthesizing && !aiAnswer && (
+              <div className="text-center py-12 text-slate-500 dark:text-slate-400">
+                <Search className="w-12 h-12 mx-auto mb-4 opacity-20" />
+                <p className="text-lg font-medium">No direct matches found</p>
+                <p className="text-sm opacity-70 mt-1">Try rewording your query or asking OrbitFlow a broader question.</p>
               </div>
             )}
 
             {/* Empty State */}
             {!query && results.length === 0 && (
-              <div className="text-center py-8 text-muted-foreground text-sm">
-                <Search className="w-10 h-10 mx-auto mb-3 opacity-20" />
-                <p className="font-medium">Search across meetings, decisions, videos, tasks, docs and more</p>
-                <p className="text-xs mt-1 opacity-70">Try: "pricing decision last month" or "open blockers in marketing"</p>
+              <div className="text-center py-12 text-slate-500 dark:text-slate-400">
+                <Sparkles className="w-12 h-12 mx-auto mb-4 opacity-20 text-emerald-500" />
+                <p className="text-lg font-semibold text-slate-700 dark:text-slate-300">How can I help you today?</p>
+                <p className="text-sm mt-2 opacity-70 max-w-sm mx-auto">Search for specific documents, action items, or ask questions about recent team decisions.</p>
               </div>
             )}
 
