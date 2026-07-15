@@ -364,7 +364,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 });
 
  const univAllowedPaths = React.useMemo(() => {
- if (!univAccessData?.permissions) return null;
+ if (!univAccessData?.permissions || Object.keys(univAccessData.permissions).length === 0) return null;
  const paths = ['/', '/settings', '/chat', '/board', '/email-inbox'];
  
  // Map the permission keys back to actual paths from the industry nav
@@ -377,7 +377,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  return paths;
 }, [univAccessData, industryNavRaw]);
 
- const allowedPaths = isAdmin ? null : (customRolePermissions || univAllowedPaths || ROLE_PERMISSIONS[activeRoleName] || INDUSTRY_BASE_PERMISSIONS[activeIndustry] || INDUSTRY_BASE_PERMISSIONS.default);
+ const allowedPaths = isAdmin ? null : (customRolePermissions || univAllowedPaths || ROLE_PERMISSIONS[activeRoleName?.toLowerCase()] || INDUSTRY_BASE_PERMISSIONS[activeIndustry] || INDUSTRY_BASE_PERMISSIONS.default);
 
  const coreOrbitNav = [
  { label: "Dashboard", path: "/", icon: "Sparkles"},
