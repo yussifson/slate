@@ -42,50 +42,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
   const [muted, setMuted] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, RotateCw, Volume2, VolumeX, Maximize2, PictureInPicture, Send, MessageSquare, PanelRightClose, PanelRightOpen } from 'lucide-react';
-import { supabase as db } from '@/api/supabaseClient';
-import { useAuth } from '@/lib/AuthContext';
-import { hasFeature } from '@/lib/clipadPricing';
-import DictationButton from '@/components/ui/DictationButton';
-import { Download } from 'lucide-react';
-import VideoDownloadModal from '@/components/clipad/VideoDownloadModal';
 
-const EMOJIS = ['👍', '👎', '❤️', '😂', '🔥', '🎉', '💡', '🤔'];
-
-function formatTime(seconds) {
-  if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m}:${s.toString().padStart(2, '0')}`;
-}
-
-const FloatingReaction = ({ emoji, x, y, onDone }) => {
-  useEffect(() => {
-    const t = setTimeout(onDone, 2000);
-    return () => clearTimeout(t);
-  }, [onDone]);
-  return (
-    <div
-      className="absolute text-3xl z-50 pointer-events-none drop-shadow-xl select-none"
-      style={{ left: `${x}%`, top: `${y}%`, animation: 'floatUp 2s cubic-bezier(0.1, 1, 0.2, 1) forwards' }}
-    >
-      {emoji}
-    </div>
-  );
-};
-
-export default function RichVideoPlayer({ videoUrl, recordType = 'video', entityId }) {
-  const { user } = useAuth();
-  const [videoRecord, setVideoRecord] = useState(null);
-  const [comments, setComments] = useState([]);
-  const [reactions, setReactions] = useState([]);
-  const [floatingReactions, setFloatingReactions] = useState([]);
-  
-  const [playing, setPlaying] = useState(false);
-  const [muted, setMuted] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [commentText, setCommentText] = useState('');
   const [submitting, setSubmitting] = useState(false);
