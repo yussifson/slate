@@ -342,12 +342,12 @@ export default function CliPadDashboard() {
           <span className="text-lg font-bold tracking-tight hidden sm:block">CliPad</span>
         </div>
         
-        <div className="flex-1 max-w-2xl mx-4 flex justify-center">
+        <div className="flex-1 max-w-md mx-4 flex justify-center hidden md:flex">
           <GlobalSearch />
         </div>
 
-        <div className="flex items-center gap-1.5 md:gap-3">
-          <button onClick={() => navigate('/spaces')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Spaces</button>
+        <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
+          <button onClick={() => navigate('/spaces')} className="hidden lg:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Spaces</button>
           <button onClick={() => navigate('/videos')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Recordings</button>
           <button onClick={() => navigate('/meetings')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Meetings</button>
           <button onClick={() => navigate('/chat')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Chat</button>
