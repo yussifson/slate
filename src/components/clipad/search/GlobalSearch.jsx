@@ -28,13 +28,21 @@ export default function GlobalSearch() {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setIsOpen(true);
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    
+    const handleCustomOpen = () => setIsOpen(true);
+
+    document.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('open-global-search', handleCustomOpen);
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('open-global-search', handleCustomOpen);
+    };
   }, []);
 
   useEffect(() => {

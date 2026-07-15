@@ -7,7 +7,7 @@ import { isAdmin } from '@/lib/constants';
 import {
   Video, Camera, Plus, Brain, CheckCircle, Clock, TrendingUp,
   Layers, Play, BarChart3, Settings, ArrowRight, Sparkles, Activity,
-  Users, FileText, Calendar, Mic, Target, Flame, Star, LogOut, Shield, Lock, Globe, HeartPulse
+  Users, FileText, Calendar, Mic, Target, Flame, Star, LogOut, Shield, Lock, Globe, HeartPulse, Search
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { getSpaceIcon } from '@/utils/spaceIcons';
@@ -448,7 +448,16 @@ export default function CliPadDashboard() {
             {/* Spaces */}
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><Layers className="w-5 h-5 text-primary" /> Team Spaces</h2>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><Layers className="w-5 h-5 text-primary" /> Team Spaces</h2>
+                  <button 
+                    onClick={() => window.dispatchEvent(new CustomEvent('open-global-search'))}
+                    className="p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 transition-colors"
+                    title="Smart Global Search (Ctrl+K)"
+                  >
+                    <Search className="w-4 h-4" />
+                  </button>
+                </div>
                 <button onClick={() => navigate('/spaces')} className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors">View all <ArrowRight className="w-4 h-4" /></button>
               </div>
               {spaces.length === 0 ? (
