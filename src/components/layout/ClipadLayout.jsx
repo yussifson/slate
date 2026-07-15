@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useLocation, Outlet } from 'react-router-dom';
 import GlobalAIAssistant from '@/components/layout/GlobalAIAssistant';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
-
+import { useChatDock } from '@/hooks/useChatDock';
+import ClipadChat from '@/pages/clipad/ClipadChat';
+import { MessageSquare } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import CliPadCommandPalette from '@/components/clipad/CliPadCommandPalette';
 
 export default function ClipadLayout() {
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [injectedContext, setInjectedContext] = useState(null);
+  const { isChatDocked } = useChatDock();
+  const location = useLocation();
 
   // Expose toggle globally for Clipad pages to call it
   React.useEffect(() => {
@@ -32,14 +37,26 @@ export default function ClipadLayout() {
         
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col h-full overflow-y-auto relative z-30 page-enter pb-[80px] md:pb-0">
-          <Outlet />
+          {location.pathname === '/clipad/chat' && isChatDocked ? (
+            <div className="flex items-center justify-center h-full text-slate-500 flex-col gap-3">
+              <MessageSquare className="w-8 h-8 opacity-50" />
+              <p>Chat is currently docked to the right sidebar.</p>
+            </div>
+          ) : (
+            <Outlet />
+          )}
         </div>
 
-        {/* Right Docked Portal for Orbit AI */}
+        {/* Right Docked Portal for Orbit AI & Chat */}
         <div 
           id="right-docked-panel-portal" 
-          className="flex shrink-0 h-full empty:hidden z-[100] relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10 transition-all duration-300"
-        ></div>
+          className={cn(
+            "flex shrink-0 h-full relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10 transition-all duration-300",
+            isChatDocked ? "w-[400px] xl:w-[450px]" : "w-0 overflow-hidden border-none"
+          )}
+        >
+          {isChatDocked && <ClipadChat isDockedMode={true} />}
+        </div>
 
       </div>
 
