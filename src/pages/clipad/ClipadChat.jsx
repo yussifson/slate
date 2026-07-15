@@ -18,15 +18,17 @@ import { useToast} from "@/components/ui/use-toast";
 import { format} from "date-fns";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { useUIPreference } from "@/hooks/useUIPreference";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
 import DiscoverGroupsDialog from "@/components/chat/DiscoverGroupsDialog";
+import { useChatDock } from "@/hooks/useChatDock";
 
-export default function ClipadChat() {
+export default function ClipadChat({ isDockedMode = false }) {
  const { t} = useTranslation();
  const navigate = useNavigate();
+ const location = useLocation();
  const { user, isPortalUser } = useAuth();
  const { toast} = useToast();
  
@@ -50,6 +52,7 @@ export default function ClipadChat() {
  const [chatSummary, setChatSummary] = useState(null);
  const [searchQuery, setSearchQuery] = useState("");
  const [isSidebarCollapsed, setIsSidebarCollapsed] = useUIPreference(user, 'chatSidebarCollapsed', false);
+ const { isChatDocked, toggleChatDock } = useChatDock();
 
  const messagesEndRef = useRef(null);
  const fileInputRef = useRef(null);
@@ -317,7 +320,7 @@ export default function ClipadChat() {
 
  return (
    <div style={{ fontFamily: "'Inter', sans-serif" }} className="flex flex-col h-[100dvh] bg-[#f0f2f5] dark:bg-[#111b21] overflow-hidden page-enter">
-     {/* Sleek top nav */}
+     {!isDockedMode && (
      <nav className="shrink-0 flex items-center justify-between px-4 md:px-8 h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 z-40 relative shadow-sm">
        <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
          <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm text-primary">
@@ -365,6 +368,7 @@ export default function ClipadChat() {
          </DropdownMenu>
        </div>
      </nav>
+     )}
 
      {/* Main layout below nav */}
      <div className="flex-1 flex overflow-hidden relative">
@@ -401,6 +405,7 @@ export default function ClipadChat() {
        />
        
        {/* Sidebar - Chat List */}
+      {!isDockedMode ? (
       <div className={cn(
         "flex flex-col bg-white dark:bg-card border-r border-border transition-all duration-300 z-20 shrink-0",
         isSidebarCollapsed ? "w-20" : "w-full md:w-80",
@@ -530,6 +535,42 @@ export default function ClipadChat() {
  )}
  </div>
  </div>
+ ) : (
+    /* When docked, show a super compact or hidden sidebar */
+    <div className={cn(
+      "flex flex-col bg-white dark:bg-card border-r border-border transition-all duration-300 z-20 shrink-0",
+      activeRoomId ? "hidden" : "w-full"
+    )}>
+      <div className="p-4 border-b border-border flex items-center justify-between shrink-0">
+        <h2 className="font-bold text-lg">Chats</h2>
+        <button onClick={toggleChatDock} className="hover:text-primary transition-colors text-muted-foreground p-1" title="Undock Chat">
+          <PanelRightClose className="w-5 h-5" />
+        </button>
+      </div>
+      
+      <div className="p-3 border-b border-border shrink-0">
+        <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full bg-secondary/50 border-none rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20" />
+      </div>
+
+      <div className="flex-1 overflow-y-auto custom-scrollbar">
+        <div className="p-2 space-y-1">
+          {filteredRooms.map((room) => {
+            const roomName = room.name || "Unknown Room";
+            return (
+              <div key={room.id} onClick={() => setActiveRoomId(room.id)} className="flex items-center gap-3 p-2 rounded-xl cursor-pointer hover:bg-secondary/50">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary shrink-0">
+                  {roomName.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-medium text-sm truncate">{roomName}</h4>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+ )}
 
  {/* Main Chat Area */}
  <div className={cn(
@@ -540,82 +581,98 @@ export default function ClipadChat() {
 
  {activeRoom ? (
  <>
- {/* Chat Header */}
- <div className="px-4 py-3 border-b border-primary/40 flex items-center justify-between bg-[#f0f2f5] dark:bg-[#202c33] z-10 shrink-0">
- {(() => {
-   const otherParticipant = activeRoom?.chat_participants?.find(p => p.user_id !== user.id);
-   const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
-   const roomName = activeRoom?.name || otherProfile?.full_name || 'Direct Chat';
-   const avatarUrl = otherProfile?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${roomName}`;
-   
-   return (
- <>
- <div className="flex items-center gap-3">
-   <Button variant="ghost" size="icon" className="md:hidden w-8 h-8 mr-1 shrink-0" onClick={() => setActiveRoomId(null)}>
-     <ArrowLeft className="w-5 h-5" />
-   </Button>
-  {activeRoom?.room_type === "group" ? (
-  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden shrink-0">
-  {activeRoom?.avatar_url ? (
-    <img src={activeRoom.avatar_url} alt={roomName} className="w-full h-full object-cover" />
-  ) : (
-    <Users className="w-5 h-5 text-primary dark:text-primary/70" />
-  )}
-  </div>
-  ) : (
-  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">
-   <img src={avatarUrl} alt={roomName} className="w-full h-full object-cover"/>
- </div>
-  )}
-  <div>
-  <h3 className="font-semibold text-foreground leading-tight cursor-pointer hover:underline" onClick={() => {
-    if (activeRoom?.room_type === 'group') {
-      setIsGroupInfoOpen(true);
-    } else {
-      toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name || 'Unknown User'} (${otherProfile.email || 'No email'})` : 'User details not available' });
-    }
-  }}>{roomName}</h3>
-  <p className="text-[12px] text-[#71717a] dark:text-gray-400">{activeRoom?.room_type === 'group' ? 'View group info' : 'View contact info'}</p>
-  </div>
- </div>
- <div className="flex items-center gap-4 text-[#54656f] dark:text-[#aebac1]">
-    {messages.length > 0 && (
-      <Button onClick={handleSummarizeChat} disabled={isSummarizing} variant="ghost" size="sm" className="h-8 gap-2 hover:bg-primary/10 hover:text-primary">
-        <Sparkles className={cn("w-4 h-4", isSummarizing && "animate-pulse")} />
-        <span className="hidden sm:inline">{isSummarizing ? "Summarizing..." : "Summarize"}</span>
-      </Button>
-    )}
- <DropdownMenu>
- <DropdownMenuTrigger asChild>
- <button className="hover:text-foreground transition-colors"><MoreVertical className="w-5 h-5" /></button>
- </DropdownMenuTrigger>
-  <DropdownMenuContent align="end" className="w-48">
-  {activeRoom?.room_type === "group" ? (
-    <>
-      {activeRoom?.chat_participants?.find(p => p.user_id === user.id)?.role === 'admin' && (
-        <DropdownMenuItem onClick={() => setIsManageMembersOpen(true)}>Manage Group</DropdownMenuItem>
+  {/* Chat Header */}
+  <div className="p-4 border-b border-border flex items-center justify-between bg-white dark:bg-card sticky top-0 z-10">
+    <div className="flex items-center gap-3">
+      <button onClick={() => setActiveRoomId(null)} className="md:hidden mr-1 p-2 rounded-full hover:bg-secondary text-[#54656f] dark:text-[#aebac1]">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 4l1.4 1.4L7.8 11H20v2H7.8l5.6 5.6L12 20l-8-8 8-8z"></path></svg>
+      </button>
+      {isDockedMode && (
+        <button onClick={() => setActiveRoomId(null)} className="p-1 rounded hover:bg-secondary/50 text-[#54656f] dark:text-[#aebac1]">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 4l1.4 1.4L7.8 11H20v2H7.8l5.6 5.6L12 20l-8-8 8-8z"></path></svg>
+        </button>
       )}
-      <DropdownMenuItem onClick={() => setIsGroupInfoOpen(true)}>Group Info</DropdownMenuItem>
-    </>
-  ) : (
-    <>
-      <DropdownMenuItem onClick={() => {
-         const pInfo = otherProfile ? `${otherProfile.full_name || 'Unknown User'} (${otherProfile.email || 'No email'})` : 'User details not available';
-         toast({ title: 'Contact Info', description: pInfo });
-      }}>Contact Info</DropdownMenuItem>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem className="text-red-600 focus:bg-red-50 focus:text-red-700 dark:focus:bg-red-950/30" onClick={handleDeleteChat}>
-        Delete Chat
-      </DropdownMenuItem>
-    </>
-  )}
-  </DropdownMenuContent>
- </DropdownMenu>
- </div>
- </>
-   );
- })()}
- </div>
+      
+      {(() => {
+        const otherParticipant = activeRoom?.chat_participants?.find(p => p.user_id !== user.id);
+        const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
+        const roomName = activeRoom?.name || otherProfile?.full_name || 'Direct Chat';
+        const avatarUrl = otherProfile?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${roomName}`;
+        
+        return (
+          <>
+            {activeRoom?.room_type === "group" ? (
+              <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden shrink-0">
+                {activeRoom?.avatar_url ? (
+                  <img src={activeRoom.avatar_url} alt={roomName} className="w-full h-full object-cover" />
+                ) : (
+                  <Users className="w-5 h-5 text-primary dark:text-primary/70" />
+                )}
+              </div>
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center font-bold text-primary overflow-hidden shrink-0">
+                {otherProfile?.avatar_url ? (
+                  <img src={otherProfile.avatar_url} className="w-full h-full object-cover" alt={roomName} />
+                ) : (
+                  roomName.charAt(0).toUpperCase()
+                )}
+              </div>
+            )}
+            <div>
+              <h3 className="font-semibold text-foreground leading-tight cursor-pointer hover:underline" onClick={() => {
+                if (activeRoom?.room_type === 'group') {
+                  setIsGroupInfoOpen(true);
+                } else {
+                  toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name || 'Unknown User'} (${otherProfile.email || 'No email'})` : 'User details not available' });
+                }
+              }}>{roomName}</h3>
+              <p className="text-[12px] text-[#71717a] dark:text-gray-400">{activeRoom?.room_type === 'group' ? 'View group info' : 'View contact info'}</p>
+            </div>
+          </>
+        );
+      })()}
+    </div>
+    
+    <div className="flex items-center gap-4 text-[#54656f] dark:text-[#aebac1]">
+      <button onClick={toggleChatDock} className="hover:text-primary transition-colors" title={isDockedMode ? "Undock Chat" : "Dock to Right Sidebar"}>
+        {isDockedMode ? <PanelRightClose className="w-5 h-5" /> : <PanelRightOpen className="w-5 h-5" />}
+      </button>
+      {messages.length > 0 && (
+        <Button onClick={handleSummarizeChat} disabled={isSummarizing} variant="ghost" size="sm" className="h-8 gap-2 hover:bg-primary/10 hover:text-primary">
+          <Sparkles className={cn("w-4 h-4", isSummarizing && "animate-pulse")} />
+          <span className="hidden sm:inline">{isSummarizing ? "Summarizing..." : "Summarize"}</span>
+        </Button>
+      )}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="hover:text-foreground transition-colors"><MoreVertical className="w-5 h-5" /></button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-48">
+          {activeRoom?.room_type === "group" ? (
+            <>
+              {activeRoom?.chat_participants?.find(p => p.user_id === user.id)?.role === 'admin' && (
+                <DropdownMenuItem onClick={() => setIsManageMembersOpen(true)}>Manage Group</DropdownMenuItem>
+              )}
+              <DropdownMenuItem onClick={() => setIsGroupInfoOpen(true)}>Group Info</DropdownMenuItem>
+            </>
+          ) : (
+            <>
+              <DropdownMenuItem onClick={() => {
+                 const otherParticipant = activeRoom?.chat_participants?.find(p => p.user_id !== user.id);
+                 const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
+                 const pInfo = otherProfile ? `${otherProfile.full_name || 'Unknown User'} (${otherProfile.email || 'No email'})` : 'User details not available';
+                 toast({ title: 'Contact Info', description: pInfo });
+              }}>Contact Info</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-red-600 focus:bg-red-50 focus:text-red-700 dark:focus:bg-red-950/30" onClick={handleDeleteChat}>
+                Delete Chat
+              </DropdownMenuItem>
+            </>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  </div>
 
  {/* AI Summary Banner */}
  {chatSummary && (
