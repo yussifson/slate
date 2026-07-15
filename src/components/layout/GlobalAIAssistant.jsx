@@ -22,82 +22,24 @@ import { useAuth} from '@/lib/AuthContext';
 
 
 const PAGE_SUGGESTIONS = {
-   '/patients': ['List all patients admitted today', 'Create a new patient record', 'Show patients with pending lab results'],
-   '/appointments':['Schedule an appointment for tomorrow', 'List today\'s appointments', 'Find upcoming appointments this week'],
-   '/wards': ['Show all occupied beds', 'Assign patient to a bed in Ward A', 'List available beds'],
-   '/cases': ['Show all open cases', 'Create a new case', 'Find cases assigned to me'],
-   '/tasks': ['Show my pending tasks', 'Create an urgent task', 'Mark overdue tasks'],
-   '/employees': ['List all active employees', 'Add a new employee', 'Show employees on leave'],
-   '/payroll': ['Generate payroll for this month', 'Show pending payslips', 'Calculate overtime'],
-   '/students': ['Show students with missing fees', 'Add a new student', 'Find students by class'],
-   '/inventory': ['Show low stock items', 'Add a new product', 'Find products below reorder level'],
-   '/claims': ['List pending claims', 'Create a new claim', 'Show high-value claims this month'],
-   '/': ['Give me a summary of today\'s activity', 'Show key metrics', 'What needs my attention today?']
+   '/dashboard': ['What needs my attention today?', 'Summarize my recent meetings', 'Show me knowledge health alerts'],
+   '/spaces': ['List my active spaces', 'Find spaces about engineering', 'Summarize the latest updates across all spaces'],
+   '/meetings': ['Summarize my last meeting', 'List action items from yesterday', 'Who attended the planning meeting?'],
+   '/videos': ['Find videos about onboarding', 'Summarize the townhall recording', 'List videos I recorded recently'],
+   '/health': ['What knowledge is going stale?', 'Show me pending verification requests', 'How can I improve my team\'s knowledge score?'],
+   '/': ['What needs my attention today?', 'Summarize my recent meetings', 'Show me knowledge health alerts']
 };
 
 // Page Context Map 
 const PAGE_CONTEXT = {
-  '/': { title: 'Dashboard', suite: 'Core', desc: 'main dashboard with KPIs and quick actions'},
-  '/cases': { title: 'Cases', suite: 'Legal', desc: 'legal case management list'},
-  '/clients': { title: 'Clients', suite: 'Core', desc: 'client management'},
-  '/calendar': { title: 'Calendar', suite: 'Core', desc: 'appointments and events calendar'},
-  '/invoices': { title: 'Invoices', suite: 'Billing', desc: 'invoice management'},
-  '/tasks': { title: 'Tasks', suite: 'Core', desc: 'task management'},
-  '/documents': { title: 'Documents', suite: 'Core', desc: 'document library'},
-  '/leads': { title: 'Leads', suite: 'CRM', desc: 'sales lead pipeline'},
-  '/billing': { title: 'Billing', suite: 'Billing', desc: 'billing dashboard'},
-  
-  // Hospital
-  '/patients': { title: 'Patients', suite: 'Hospital', desc: 'patient records'},
-  '/appointments': { title: 'Appointments', suite: 'Hospital', desc: 'appointment scheduling'},
-  '/wards': { title: 'Wards', suite: 'Hospital', desc: 'hospital ward management'},
-  '/prescriptions': { title: 'Prescriptions', suite: 'Hospital', desc: 'prescription management'},
-  '/lab-results': { title: 'Lab Results', suite: 'Hospital', desc: 'lab results and diagnostics'},
-  '/pharmacy': { title: 'Pharmacy', suite: 'Hospital', desc: 'pharmacy inventory and dispensing'},
-  '/telemedicine': { title: 'Telemedicine', suite: 'Hospital', desc: 'virtual consultations'},
-  '/operation-theater': { title: 'Operation Theater', suite: 'Hospital', desc: 'surgery scheduling'},
-  '/radiology': { title: 'Radiology', suite: 'Hospital', desc: 'imaging and scans'},
-  '/ambulance-dispatch': { title: 'Ambulance Dispatch', suite: 'Hospital', desc: 'emergency fleet'},
-  
-  // School
-  '/students': { title: 'Students', suite: 'School', desc: 'student management'},
-  '/classes': { title: 'Classes', suite: 'School', desc: 'class management'},
-  '/timetable': { title: 'Timetable', suite: 'School', desc: 'academic scheduling'},
-  '/grades': { title: 'Grades', suite: 'School', desc: 'student grades'},
-  '/attendance': { title: 'Attendance', suite: 'School', desc: 'attendance tracking'},
-  '/exams': { title: 'Exams', suite: 'School', desc: 'examination management'},
-  '/fees': { title: 'Fees', suite: 'School', desc: 'student fee collection'},
-  '/library': { title: 'Library', suite: 'School', desc: 'book inventory and loans'},
-  '/gamification': { title: 'Gamification', suite: 'School', desc: 'student rewards'},
-  
-  // Religion
-  '/members': { title: 'Members', suite: 'Religion', desc: 'religion member directory'},
-  '/donations': { title: 'Donations', suite: 'Religion', desc: 'donation and offering records'},
-  '/groups': { title: 'Groups', suite: 'Religion', desc: 'ministry groups'},
-  '/events': { title: 'Events', suite: 'Religion', desc: 'church events'},
-  '/volunteers': { title: 'Volunteers', suite: 'Religion', desc: 'volunteer scheduling'},
-  '/sermons': { title: 'Sermons', suite: 'Religion', desc: 'sermon audio/video library'},
-  '/prayers': { title: 'Prayers', suite: 'Religion', desc: 'prayer requests'},
-  '/milestones': { title: 'Milestones', suite: 'Religion', desc: 'baptisms, weddings, etc'},
-  
-  // HR
-  '/employees': { title: 'Employees', suite: 'HR', desc: 'HR employee management'},
-  '/payroll': { title: 'Payroll', suite: 'HR', desc: 'payroll processing'},
-  '/recruitment': { title: 'Recruitment', suite: 'HR', desc: 'job applications and hiring'},
-  '/hr-leave': { title: 'Leave', suite: 'HR', desc: 'leave requests'},
-  
-  // Logistics
-  '/shipments': { title: 'Shipments', suite: 'Logistics', desc: 'shipment tracking'},
-  '/fleet': { title: 'Fleet', suite: 'Logistics', desc: 'vehicle fleet management'},
-  '/drivers': { title: 'Drivers', suite: 'Logistics', desc: 'driver management'},
-  '/warehouse': { title: 'Warehouse', suite: 'Logistics', desc: 'inventory storage'},
-  '/route-optimization': { title: 'Route Optimization', suite: 'Logistics', desc: 'AI route planning'},
-  
-  // Retail
-  '/inventory': { title: 'Inventory', suite: 'Retail', desc: 'product inventory'},
-  '/orders': { title: 'Sales Orders', suite: 'Retail', desc: 'sales orders'},
-  '/pos': { title: 'Point of Sale', suite: 'Retail', desc: 'retail POS system'},
-  '/purchase-orders': { title: 'Purchase Orders', suite: 'Retail', desc: 'supplier orders'},
+  '/dashboard': { title: 'Dashboard', suite: 'Clipad', desc: 'main dashboard with activity and overview'},
+  '/spaces': { title: 'Spaces', suite: 'Clipad', desc: 'team knowledge spaces'},
+  '/meetings': { title: 'Meetings', suite: 'Clipad', desc: 'recorded meetings and transcripts'},
+  '/videos': { title: 'Videos', suite: 'Clipad', desc: 'async video recordings and memory vault'},
+  '/health': { title: 'Knowledge Health', suite: 'Clipad', desc: 'knowledge graph health and stale metrics'},
+  '/settings': { title: 'Settings', suite: 'Clipad', desc: 'user and workspace settings'},
+  '/': { title: 'Dashboard', suite: 'Clipad', desc: 'main dashboard'}
+};
   '/promotions': { title: 'Promotions', suite: 'Retail', desc: 'discounts and campaigns'},
   
   // Hotel
@@ -248,37 +190,58 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
    toggleListening();
  };
 
+ const updateLocalSessions = (newSessions) => {
+    localStorage.setItem(`orbit_sessions_${user.email}_${companyId}`, JSON.stringify(newSessions));
+  };
+
+  const startNewChat = () => {
+    const s = newSession();
+    setSessions(prev => {
+      const updated = [s, ...prev];
+      updateLocalSessions(updated);
+      return updated;
+    });
+    setActiveId(s.id);
+    setShowHistory(false);
+    setIsExpanded(false);
+  };
+
+  const deleteSession = async (id, e) => {
+    e.stopPropagation();
+    setSessions(prev => {
+      let updated = prev.filter(s => s.id !== id);
+      if (updated.length === 0) {
+        const s = newSession();
+        updated = [s];
+      }
+      updateLocalSessions(updated);
+      if (activeId === id) setActiveId(updated[0].id);
+      return updated;
+    });
+  };
+
  useEffect(() => {
  if (!companyId || !user?.email || isInitialized) return;
  const loadSessions = async () => {
- const { data} = await supabase
- .from('industry_records')
- .select('*')
- .eq('company_id', companyId)
- .eq('record_type', 'ai_session')
- .eq('search_text', user.email)
- .order('created_at', { ascending: false});
- 
- if (data && data.length > 0) {
-  const loadedSessions = data.map(d => ({ ...(d.data || {}), id: d.id }));
-  setSessions(loadedSessions);
-  setActiveId(loadedSessions[0].id);
-} else {
- const s = newSession();
- setSessions([s]);
- setActiveId(s.id);
- (async () => {
- const _payload = { id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s};
- const _keys = Object.keys(_payload);
- const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const existing = await powerSync.getOptional('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
-        if (existing) {
-          await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, _payload.id]);
-        } else {
-          await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
-        }
-})();
-}
+   try {
+     const stored = localStorage.getItem(`orbit_sessions_${user.email}_${companyId}`);
+     if (stored) {
+       const parsed = JSON.parse(stored);
+       if (parsed && parsed.length > 0) {
+         setSessions(parsed);
+         setActiveId(parsed[0].id);
+       } else {
+         throw new Error("Empty array");
+       }
+     } else {
+       throw new Error("No data");
+     }
+   } catch (e) {
+     const s = newSession();
+     setSessions([s]);
+     setActiveId(s.id);
+     localStorage.setItem(`orbit_sessions_${user.email}_${companyId}`, JSON.stringify([s]));
+   }
 
  // Pre-load automation registries
  const { data: triggers } = await supabase.from('automation_triggers').select('trigger_key, display_name, data_schema').eq('is_active', true);
@@ -299,37 +262,16 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
 
 
 
- const addMessages = useCallback((sid, newMsgs) => {
- setSessions(prev => {
- const updated = prev.map(s => {
- if (s.id !== sid) return s;
- const upMsgs = [...(s.messages || []), ...newMsgs];
- const firstUser = upMsgs.find(m => m.role === 'user');
- const title = firstUser
- ? firstUser.content.replace(/\[Attached:.*?\]/g, '').trim().slice(0, 42)
- : s.title;
- const newS = { ...s, messages: upMsgs, title: title || 'New Chat'};
- 
- if (companyId && user?.email) {
- (async () => {
- const _payload = {
- id: newS.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: newS
-};
- const _keys = Object.keys(_payload);
- const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const existing = await powerSync.getOptional('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
-        if (existing) {
-          await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, _payload.id]);
-        } else {
-          await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
-        }
-})();
-}
- return newS;
-});
- return updated;
-});
-}, [companyId, user?.email]);
+ const addMessages = useCallback((sessionId, newMsgs) => {
+    setSessions(prev => {
+      const updated = prev.map(s => {
+        if (s.id === sessionId) return { ...s, messages: [...s.messages, ...newMsgs] };
+        return s;
+      });
+      updateLocalSessions(updated);
+      return updated;
+    });
+  }, [companyId, user?.email]);
 
  const getPageContext = useCallback(() => {
  const ctx = PAGE_CONTEXT[location.pathname];
@@ -577,95 +519,16 @@ CRITICAL INSTRUCTIONS:
 - The user is currently on page: ${location.pathname}
 
 EXACT VERIFIED ROUTE MAP — ALWAYS USE THESE EXACT PATHS FOR navigate_to. NEVER GUESS OR INVENT PATHS:
-# Core / Legal
-/ → Dashboard
-/cases → Cases
-/clients → Clients
-/calendar → Calendar
-/invoices → Invoices
-/tasks → Tasks
-/documents → Documents
-/team → Team
+/dashboard → Dashboard
+/spaces → Spaces
+/meetings → Meetings
+/videos → Videos / Recordings
+/record → Record Video
+/health → Knowledge Health
 /settings → Settings
-/client-portal → Client Portal
-/leads → Leads
-/billing → Billing
+/support → Support
+/chat → Chat
 
-# School
-/students → Students
-/classes → Classes
-/timetable → Timetable
-/attendance → Attendance
-/grades → Grades
-/exams → Exams
-/fees → Fee Management
-/library → Library
-/gamification → Gamification
-/parent-portal → Parent Portal
-
-# Hospital
-/patients → Patients
-/appointments → Appointments
-/wards → Wards
-/prescriptions → Prescriptions
-/lab-results → Lab Results
-/pharmacy → Pharmacy
-/telemedicine → Telemedicine
-/operation-theater → Operation Theater
-/radiology → Radiology
-/ambulance-dispatch → Ambulance Dispatch
-
-# Hotel
-/front-desk → Front Desk
-/reservations → Reservations
-/rooms → Rooms
-/housekeeping → Housekeeping
-/restaurant → Restaurant
-/guest-requests → Guest Requests
-
-# Religion
-/members → Members
-/groups → Groups
-/events → Events
-/donations → Donations
-/volunteers → Volunteers
-/sermons → Sermons
-/small-groups → Small Groups
-/prayers → Prayers
-/milestones → Milestones
-
-# Insurance
-/policies → Policies
-/claims → Claims
-/premiums → Premiums
-/underwriting → Underwriting
-/agent-performance → Agent Performance
-/reinsurance → Reinsurance
-
-# Retail
-/inventory → Inventory
-/purchase-orders → Purchase Orders
-/promotions → Promotions
-/orders → Orders
-/suppliers → Suppliers
-/pos → Point of Sale
-/retail-customers → Customers
-
-# Logistics
-/shipments → Shipments
-/fleet → Fleet
-/drivers → Drivers
-/warehouse → Warehouse
-/route-optimization → Route Optimization
-/load-board → Load Board
-/geofence-alerts → Geofence Alerts
-/smart-docs → Smart Docs
-
-# HR
-/employees → Employees
-/recruitment → Recruitment
-/payroll → Payroll
-/hr-leave → HR Leave
 
 AGENT POWERS (return EXACTLY this JSON format inline to act):
 - Search: <AGENT_ACTION>{"tool":"search_records","recordType":"patient|case|client|student|staff","query":"John"}</AGENT_ACTION>

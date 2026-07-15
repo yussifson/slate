@@ -192,7 +192,7 @@ export async function generateStandupSummary(updates = []) {
 export async function buildOrgContext(options = {}) {
   const limit = options.limit || 15;
 
-  const [meetingsRes, decisionsRes, blockersRes, videosRes, tasksRes, commitmentsRes] =
+  const [meetingsRes, decisionsRes, blockersRes, videosRes, tasksRes, commitmentsRes, spacesRes] =
     await Promise.all([
       supabase.from('clipad_meeting_records').select('id, title, ai_summary, created_at').order('created_at', { ascending: false }).limit(limit),
       supabase.from('clipad_decisions').select('id, decision_text, rationale, status, created_at').eq('status', 'active').order('created_at', { ascending: false }).limit(10),
@@ -200,6 +200,7 @@ export async function buildOrgContext(options = {}) {
       supabase.from('clipad_videos').select('id, title, ai_summary, created_at').order('created_at', { ascending: false }).limit(10),
       supabase.from('clipad_action_items').select('id, title, is_complete, due_date').eq('is_complete', false).order('created_at', { ascending: false }).limit(15),
       supabase.from('clipad_commitments').select('id, commitment_text, status, due_date').eq('status', 'pending').order('created_at', { ascending: false }).limit(10),
+      supabase.from('clipad_spaces').select('id, name, description, created_at').order('created_at', { ascending: false }).limit(10),
     ]);
 
   const meetings = meetingsRes.data || [];
@@ -208,11 +209,13 @@ export async function buildOrgContext(options = {}) {
   const videos = videosRes.data || [];
   const tasks = tasksRes.data || [];
   const commitments = commitmentsRes.data || [];
+  const spaces = spacesRes.data || [];
 
   const sourceMap = {};
   meetings.forEach((m) => { sourceMap[m.id] = { type: 'meeting', title: m.title, id: m.id }; });
   decisions.forEach((d) => { sourceMap[d.id] = { type: 'decision', title: d.decision_text?.substring(0, 60), id: d.id }; });
   videos.forEach((v) => { sourceMap[v.id] = { type: 'video', title: v.title, id: v.id }; });
+  spaces.forEach((s) => { sourceMap[s.id] = { type: 'space', title: s.name, id: s.id }; });
 
   const contextText = [
     `RECENT MEETINGS (${meetings.length}):`,
@@ -227,9 +230,11 @@ export async function buildOrgContext(options = {}) {
     tasks.map((t) => `• ${t.title}${t.due_date ? ` (due ${t.due_date})` : ''}`).join('\n'),
     `\nPENDING COMMITMENTS (${commitments.length}):`,
     commitments.map((c) => `• ${c.commitment_text}${c.due_date ? ` (by ${c.due_date})` : ''}`).join('\n'),
+    `\nACTIVE SPACES (${spaces.length}):`,
+    spaces.map((s) => `• [SPACE:${s.id}] "${s.name}": ${s.description?.substring(0, 150) || 'No description'}`).join('\n'),
   ].join('\n');
 
-  return { contextText, sourceMap, meetings, decisions, blockers, videos, tasks, commitments };
+  return { contextText, sourceMap, meetings, decisions, blockers, videos, tasks, commitments, spaces };
 }
 
 // ──────────────────────────────────────────────────────────────────
