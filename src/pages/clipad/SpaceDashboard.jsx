@@ -439,7 +439,11 @@ export default function SpaceDashboard() {
       {/* Tab bar */}
       <div className="px-6 md:px-10 border-b border-border overflow-x-auto no-scrollbar scrollbar-hide">
         <div className="flex gap-1 -mb-px min-w-max">
-          {TABS.filter(t => ['timeline', 'memory', 'decisions', 'automations'].includes(t.id) ? isAdmin(user) : true).map(tab => {
+          {TABS.filter(t => {
+            if (t.id === 'automations') return user?.role === 'super_admin';
+            if (['memory', 'decisions'].includes(t.id)) return isAdmin(user);
+            return true;
+          }).map(tab => {
             const Icon = tab.icon;
             return (
               <button
