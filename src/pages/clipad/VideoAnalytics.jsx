@@ -38,12 +38,14 @@ export default function VideoAnalytics() {
   const { plan } = useCompanyPlan();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [videoFilter, setVideoFilter] = useState('top');
   const [stats, setStats] = useState({
     totalViews: 0,
     totalVideos: 0,
     totalComments: 0,
     totalReactions: 0,
     topVideos: [],
+    allVideos: [],
     recentViews: []
   });
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -147,10 +149,10 @@ export default function VideoAnalytics() {
         
         return {
           ...v,
-          viewsCount: vViews.length,
-          commentsCount: vComments.length,
-          reactionsCount: vReactions.length,
-          completionRate: avgCompletion
+          viewCount: vViews.length,
+          commentCount: vComments.length,
+          reactionCount: vReactions.length,
+          avgCompletion: avgCompletion
         };
       });
 
@@ -184,6 +186,7 @@ export default function VideoAnalytics() {
         totalComments,
         totalReactions,
         topVideos: sortedVideos,
+        allVideos: enhancedVideos,
         recentViews: Array.from(recentViewsMap.entries()).map(([name, count]) => ({ name, count }))
       });
 
@@ -353,15 +356,33 @@ export default function VideoAnalytics() {
             {/* Top Videos List */}
             <div className="p-8 rounded-3xl bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-slate-800/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] mb-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
-              <h3 className="text-xl font-bold mb-8 flex items-center gap-2"><Video className="w-5 h-5 text-primary" /> Top Performing Videos</h3>
               
-              {stats.topVideos.length > 0 ? (
-                <div className="space-y-4 relative z-10">
-                  {stats.topVideos.map((v, i) => (
-                    <div key={v.id} className="flex items-center gap-4 p-5 rounded-2xl bg-white/60 dark:bg-slate-900/60 hover:bg-white dark:hover:bg-slate-800/80 backdrop-blur-md transition-all duration-300 border border-white/50 dark:border-slate-700/50 hover:border-primary/30 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-1 group" onClick={() => setSelectedVideo(v)}>
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 transition-colors ${i === 0 ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400' : i === 1 ? 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' : i === 2 ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'}`}>
-                        #{i + 1}
-                      </div>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 relative z-10 gap-4">
+                <h3 className="text-xl font-bold flex items-center gap-2"><Video className="w-5 h-5 text-primary" /> Video Performance</h3>
+                <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl w-full sm:w-auto shadow-inner">
+                  <button onClick={() => setVideoFilter('top')} className={`flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all ${videoFilter === 'top' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}>Top 5</button>
+                  <button onClick={() => setVideoFilter('latest')} className={`flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all ${videoFilter === 'latest' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}>Latest</button>
+                  <button onClick={() => setVideoFilter('all')} className={`flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all ${videoFilter === 'all' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}>All Videos</button>
+                </div>
+              </div>
+              
+              {(() => {
+                let displayVideos = stats.allVideos || [];
+                if (videoFilter === 'top') {
+                  displayVideos = [...displayVideos].sort((a, b) => b.viewCount - a.viewCount).slice(0, 5);
+                } else if (videoFilter === 'latest') {
+                  displayVideos = [...displayVideos].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 5);
+                } else {
+                  displayVideos = [...displayVideos].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                }
+
+                return displayVideos.length > 0 ? (
+                  <div className="space-y-4 relative z-10">
+                    {displayVideos.map((v, i) => (
+                      <div key={v.id} className="flex items-center gap-4 p-5 rounded-2xl bg-white/60 dark:bg-slate-900/60 hover:bg-white dark:hover:bg-slate-800/80 backdrop-blur-md transition-all duration-300 border border-white/50 dark:border-slate-700/50 hover:border-primary/30 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-1 group" onClick={() => setSelectedVideo(v)}>
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 transition-colors ${i === 0 && videoFilter === 'top' ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400' : i === 1 && videoFilter === 'top' ? 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' : i === 2 && videoFilter === 'top' ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'}`}>
+                          {videoFilter === 'top' ? `#${i + 1}` : <Video className="w-4 h-4" />}
+                        </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-slate-900 dark:text-white truncate text-base group-hover:text-primary transition-colors">{v.title}</p>
                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{new Date(v.created_at).toLocaleDateString()}</p>
@@ -394,7 +415,8 @@ export default function VideoAnalytics() {
                   </div>
                   <p className="text-sm font-medium text-slate-500 dark:text-slate-400">No video engagement data available yet.</p>
                 </div>
-              )}
+              );
+              })()}
             </div>
             </>
             ) : (
