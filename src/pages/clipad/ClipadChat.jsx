@@ -1,7 +1,7 @@
 import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect, useRef} from "react";
 import { useTranslation} from "react-i18next";
-import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, CheckCheck, Check, Smile, Paperclip, ArrowLeft, ImageIcon, FileText, File, X, PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, Settings} from "lucide-react";
+import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, CheckCheck, Check, Smile, Paperclip, ArrowLeft, ImageIcon, FileText, File, X, PanelLeftClose, PanelLeftOpen, ChevronsRight, ChevronsLeft, Settings} from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -68,7 +68,8 @@ export default function ClipadChat({ isDockedMode = false }) {
  if (!user?.id) return;
  loadRooms();
  
- const roomSub = supabase.channel('chat-rooms-page')
+  const channelName = `clipad-chat-rooms-${Date.now()}`;
+  const roomSub = supabase.channel(channelName)
  .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_participants', filter: `user_id=eq.${user.id}`}, () => {
  loadRooms();
 })
@@ -423,10 +424,10 @@ export default function ClipadChat({ isDockedMode = false }) {
        </div>
        <h2 className="font-semibold text-lg">Chats</h2>
      </div>
-     <div className="flex items-center gap-1">
-       <Button variant="ghost" size="icon" onClick={toggleChatDock} className="w-9 h-9 rounded-full hover:bg-primary/10" title="Dock to Right Sidebar">
-         <PanelRightOpen className="w-5 h-5 text-muted-foreground hover:text-primary" />
-       </Button>
+      <div className="flex items-center gap-1">
+        <Button variant="ghost" size="icon" onClick={toggleChatDock} className="w-9 h-9 rounded-full hover:bg-primary/10" title="Dock to Right Sidebar">
+          <ChevronsRight className="w-5 h-5 text-muted-foreground hover:text-primary" />
+        </Button>
        <Button variant="ghost" size="icon" onClick={() => setIsSidebarCollapsed(true)} className="w-9 h-9 rounded-full hover:bg-primary/10" title="Collapse Sidebar">
          <PanelLeftClose className="w-5 h-5" />
        </Button>
@@ -547,7 +548,7 @@ export default function ClipadChat({ isDockedMode = false }) {
       <div className="p-4 border-b border-border flex items-center justify-between shrink-0">
         <h2 className="font-bold text-lg">Chats</h2>
         <button onClick={toggleChatDock} className="hover:text-primary transition-colors text-muted-foreground p-1" title="Undock Chat">
-          <PanelRightClose className="w-5 h-5" />
+          <ChevronsLeft className="w-5 h-5" />
         </button>
       </div>
       
@@ -638,7 +639,7 @@ export default function ClipadChat({ isDockedMode = false }) {
     
     <div className="flex items-center gap-4 text-[#54656f] dark:text-[#aebac1]">
       <button onClick={toggleChatDock} className="hover:text-primary transition-colors" title={isDockedMode ? "Undock Chat" : "Dock to Right Sidebar"}>
-        {isDockedMode ? <PanelRightClose className="w-5 h-5" /> : <PanelRightOpen className="w-5 h-5" />}
+        {isDockedMode ? <ChevronsLeft className="w-5 h-5" /> : <ChevronsRight className="w-5 h-5" />}
       </button>
       {messages.length > 0 && (
         <Button onClick={handleSummarizeChat} disabled={isSummarizing} variant="ghost" size="sm" className="h-8 gap-2 hover:bg-primary/10 hover:text-primary">
