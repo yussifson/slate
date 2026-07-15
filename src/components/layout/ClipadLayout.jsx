@@ -65,14 +65,14 @@ export default function ClipadLayout() {
           {isChatDocked && <ClipadChat isDockedMode={true} />}
         </div>
 
+        <GlobalAIAssistant 
+          isOpen={isAIOpen} 
+          onClose={() => setIsAIOpen(false)} 
+          injectedContext={injectedContext} 
+          onContextConsumed={() => setInjectedContext(null)} 
+        />
       </div>
 
-      <GlobalAIAssistant 
-        isOpen={isAIOpen} 
-        onClose={() => setIsAIOpen(false)} 
-        injectedContext={injectedContext} 
-        onContextConsumed={() => setInjectedContext(null)} 
-      />
       <CliPadCommandPalette />
       <ClipadMobileNav />
     </div>

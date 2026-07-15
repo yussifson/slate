@@ -353,8 +353,10 @@ export default function CliPadDashboard() {
           
           <ThemeToggle />
           
-          <button onClick={() => window.dispatchEvent(new CustomEvent("toggle-clipad-orbit"))} className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all flex items-center gap-1.5 ml-2">
-            <Sparkles className="w-3.5 h-3.5" /> OrbitFlow
+          <button onClick={() => window.dispatchEvent(new CustomEvent("toggle-clipad-orbit"))} className="relative px-3 py-1.5 text-xs font-bold rounded-lg bg-white dark:bg-slate-900 border border-emerald-500/30 hover:border-emerald-500 text-emerald-600 dark:text-emerald-400 transition-all duration-300 flex items-center gap-1.5 ml-2 shadow-[0_0_15px_rgba(16,185,129,0.05)] hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] overflow-hidden group">
+            <div className="absolute inset-0 bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors" />
+            <Sparkles className="w-3.5 h-3.5 text-emerald-500 group-hover:scale-110 transition-transform" /> 
+            <span className="relative z-10 bg-gradient-to-br from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">OrbitFlow</span>
           </button>
           
           <NotificationCenter />
