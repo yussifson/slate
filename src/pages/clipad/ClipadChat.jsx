@@ -12,6 +12,7 @@ import { cn} from "@/lib/utils";
 import { generateText} from "@/lib/cloudflareAI";
 import { powerSync} from "@/api/PowerSyncConnector";
 import AddClipadChatDialog from "@/components/chat/AddClipadChatDialog";
+import ManageGroupMembersDialog from "@/components/chat/ManageGroupMembersDialog";
 import { useToast} from "@/components/ui/use-toast";
 import { format} from "date-fns";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
@@ -36,6 +37,7 @@ export default function ClipadChat() {
  const [editingMsg, setEditingMsg] = useState(null);
  const [inputValue, setInputValue] = useState("");
  const [isAddChatOpen, setIsAddChatOpen] = useState(false);
+ const [isManageMembersOpen, setIsManageMembersOpen] = useState(false);
  const [isDiscoverGroupsOpen, setIsDiscoverGroupsOpen] = useState(false);
  const [loadingRooms, setLoadingRooms] = useState(false);
  const [loadingMessages, setLoadingMessages] = useState(false);
@@ -444,7 +446,7 @@ export default function ClipadChat() {
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder={t("search_chats", "Search or start new chat")} 
- className="w-full bg-[#f0f2f5] dark:bg-[#202c33] border-none rounded-xl pl-9 pr-4 py-2 text-sm focus:ring-0 focus:outline-none transition-all"
+ className="w-full bg-[#f0f2f5] dark:bg-[#202c33] border-none rounded-xl px-4 py-2 text-sm focus:ring-0 focus:outline-none transition-all"
  />
  </div>
  </div>
@@ -526,19 +528,25 @@ export default function ClipadChat() {
    <Button variant="ghost" size="icon" className="md:hidden w-8 h-8 mr-1 shrink-0" onClick={() => setActiveRoomId(null)}>
      <ArrowLeft className="w-5 h-5" />
    </Button>
- {activeRoom?.room_type === "group" ? (
- <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden">
- <Users className="w-5 h-5 text-primary dark:text-primary/70" />
+  {activeRoom?.room_type === "group" ? (
+  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden shrink-0">
+  {activeRoom?.avatar_url ? (
+    <img src={activeRoom.avatar_url} alt={roomName} className="w-full h-full object-cover" />
+  ) : (
+    <Users className="w-5 h-5 text-primary dark:text-primary/70" />
+  )}
+  </div>
+  ) : (
+  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">
+   <img src={avatarUrl} alt={roomName} className="w-full h-full object-cover"/>
  </div>
- ) : (
- <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">
-  <img src={avatarUrl} alt={roomName} className="w-full h-full object-cover"/>
-</div>
- )}
- <div>
- <h3 className="font-semibold text-foreground leading-tight">{roomName}</h3>
- <p className="text-[12px] text-[#71717a] dark:text-gray-400">click here for contact info</p>
- </div>
+  )}
+  <div>
+  <h3 className="font-semibold text-foreground leading-tight cursor-pointer hover:underline" onClick={() => {
+     toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name} (${otherProfile.email})` : 'Group details available soon.' });
+  }}>{roomName}</h3>
+  <p className="text-[12px] text-[#71717a] dark:text-gray-400">View contact info</p>
+  </div>
  </div>
  <div className="flex items-center gap-4 text-[#54656f] dark:text-[#aebac1]">
     {messages.length > 0 && (
@@ -547,15 +555,18 @@ export default function ClipadChat() {
         <span className="hidden sm:inline">{isSummarizing ? "Summarizing..." : "Summarize"}</span>
       </Button>
     )}
- <button className="hover:text-foreground transition-colors"><Search className="w-5 h-5" /></button>
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
  <button className="hover:text-foreground transition-colors"><MoreVertical className="w-5 h-5" /></button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-48">
- <DropdownMenuItem>Contact Info</DropdownMenuItem>
- <DropdownMenuItem>Clear Chat</DropdownMenuItem>
- </DropdownMenuContent>
+  <DropdownMenuContent align="end" className="w-48">
+  {activeRoom?.room_type === "group" && (
+    <DropdownMenuItem onClick={() => setIsManageMembersOpen(true)}>Manage Members</DropdownMenuItem>
+  )}
+  <DropdownMenuItem onClick={() => {
+     toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name} (${otherProfile.email})` : 'Group details available soon.' });
+  }}>Contact Info</DropdownMenuItem>
+  </DropdownMenuContent>
  </DropdownMenu>
  </div>
  </>
