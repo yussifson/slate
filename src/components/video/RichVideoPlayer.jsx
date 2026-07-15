@@ -244,15 +244,15 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
         videoTitle={videoRecord?.title}
         spaceId={videoRecord?.space_id}
       />
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 mt-4">
+      <div className={`grid grid-cols-1 ${recordType === 'meeting' ? 'lg:grid-cols-1' : 'lg:grid-cols-3'} gap-6 mb-8 mt-4`}>
       <style>{`
         @keyframes floatUp {
           0% { opacity: 1; transform: translateY(0) scale(1); }
           100% { opacity: 0; transform: translateY(-80px) scale(1.4); }
         }
       `}</style>
-      {/* Player (Left) */}
-      <div className="lg:col-span-2">
+      {/* Player (Left/Full) */}
+      <div className={recordType === 'meeting' ? "w-full" : "lg:col-span-2"}>
         <div ref={playerRef} className="relative rounded-2xl overflow-hidden bg-black aspect-video group shadow-xl border border-white/10">
           <video
             ref={videoRef}
@@ -352,6 +352,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
       </div>
 
             {/* Sidebar (Right) */}
+      {recordType !== 'meeting' && (
       <div className="flex flex-col h-[500px] bg-slate-100/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
         
         {/* Tabs */}
@@ -455,7 +456,8 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
           </div>
         )}
       </div>
-    </div>
+      )}
+      </div>
     </>
   );
 }
