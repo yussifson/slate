@@ -16,7 +16,7 @@ export default function ClipadLayout() {
 
   // Auto-undock if we navigate back to the main chat page
   React.useEffect(() => {
-    if (location.pathname === '/clipad/chat' && isChatDocked) {
+    if (location.pathname === '/chat' && isChatDocked) {
       setChatDock(false);
     }
   }, [location.pathname, isChatDocked, setChatDock]);
@@ -44,7 +44,7 @@ export default function ClipadLayout() {
         
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col h-full overflow-y-auto relative z-30 page-enter pb-[80px] md:pb-0">
-          {location.pathname === '/clipad/chat' && isChatDocked ? (
+          {location.pathname === '/chat' && isChatDocked ? (
             <div className="flex items-center justify-center h-full text-slate-500 flex-col gap-3">
               <MessageSquare className="w-8 h-8 opacity-50" />
               <p>Chat is currently docked to the right sidebar.</p>

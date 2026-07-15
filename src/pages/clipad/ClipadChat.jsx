@@ -429,7 +429,7 @@ export default function ClipadChat({ isDockedMode = false }) {
       <div className="flex items-center gap-1">
         <Button variant="ghost" size="icon" onClick={() => {
           toggleChatDock();
-          if (!isChatDocked) navigate('/clipad/dashboard');
+          if (!isChatDocked) navigate('/dashboard');
         }} className="w-9 h-9 rounded-full hover:bg-primary/10" title="Dock to Right Sidebar">
           <ChevronsRight className="w-5 h-5 text-muted-foreground hover:text-primary" />
         </Button>
@@ -554,7 +554,7 @@ export default function ClipadChat({ isDockedMode = false }) {
         <h2 className="font-bold text-lg">Chats</h2>
         <button onClick={() => {
           toggleChatDock();
-          navigate('/clipad/chat');
+          navigate('/chat');
         }} className="hover:text-primary transition-colors text-muted-foreground p-1" title="Undock Chat">
           <ChevronsLeft className="w-5 h-5" />
         </button>
@@ -664,8 +664,8 @@ export default function ClipadChat({ isDockedMode = false }) {
     <div className="flex items-center gap-4 text-[#54656f] dark:text-[#aebac1]">
       <button onClick={() => {
         toggleChatDock();
-        if (!isChatDocked) navigate('/clipad/dashboard');
-        else navigate('/clipad/chat');
+        if (!isChatDocked) navigate('/dashboard');
+        else navigate('/chat');
       }} className="hover:text-primary transition-colors" title={isDockedMode ? "Undock Chat" : "Dock to Right Sidebar"}>
         {isDockedMode ? <ChevronsLeft className="w-5 h-5" /> : <ChevronsRight className="w-5 h-5" />}
       </button>
