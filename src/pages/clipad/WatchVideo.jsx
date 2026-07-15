@@ -121,7 +121,20 @@ export default function WatchVideo() {
 
         // --- ACCESS CONTROL LOGIC ---
         const v = videoRes.data;
-        const isCreator = user && v.creator_id === user.id;
+
+        // 0. Ensure user is logged in and belongs to the same company
+        if (!user) {
+          setAccessDenied({ type: 'private' }); // or a custom 'auth_required' type
+          setLoading(false);
+          return;
+        }
+        if (v.company_id && user.company_id && v.company_id !== user.company_id) {
+          setAccessDenied({ type: 'private' });
+          setLoading(false);
+          return;
+        }
+
+        const isCreator = v.creator_id === user.id;
         
         // 1. Check Space Privacy
         const isAdminUser = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
