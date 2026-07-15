@@ -424,6 +424,9 @@ export default function ClipadChat({ isDockedMode = false }) {
        <h2 className="font-semibold text-lg">Chats</h2>
      </div>
      <div className="flex items-center gap-1">
+       <Button variant="ghost" size="icon" onClick={toggleChatDock} className="w-9 h-9 rounded-full hover:bg-primary/10" title="Dock to Right Sidebar">
+         <PanelRightOpen className="w-5 h-5 text-muted-foreground hover:text-primary" />
+       </Button>
        <Button variant="ghost" size="icon" onClick={() => setIsSidebarCollapsed(true)} className="w-9 h-9 rounded-full hover:bg-primary/10" title="Collapse Sidebar">
          <PanelLeftClose className="w-5 h-5" />
        </Button>
