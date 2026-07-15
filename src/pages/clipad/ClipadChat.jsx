@@ -12,7 +12,8 @@ import { cn} from "@/lib/utils";
 import { generateText} from "@/lib/cloudflareAI";
 import { powerSync} from "@/api/PowerSyncConnector";
 import AddClipadChatDialog from "@/components/chat/AddClipadChatDialog";
-import ManageGroupMembersDialog from "@/components/chat/ManageGroupMembersDialog";
+import ManageGroupDialog from "@/components/chat/ManageGroupDialog";
+import GroupInfoDialog from "@/components/chat/GroupInfoDialog";
 import { useToast} from "@/components/ui/use-toast";
 import { format} from "date-fns";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
@@ -38,6 +39,7 @@ export default function ClipadChat() {
  const [inputValue, setInputValue] = useState("");
  const [isAddChatOpen, setIsAddChatOpen] = useState(false);
  const [isManageMembersOpen, setIsManageMembersOpen] = useState(false);
+ const [isGroupInfoOpen, setIsGroupInfoOpen] = useState(false);
  const [isDiscoverGroupsOpen, setIsDiscoverGroupsOpen] = useState(false);
  const [loadingRooms, setLoadingRooms] = useState(false);
  const [loadingMessages, setLoadingMessages] = useState(false);
@@ -93,7 +95,7 @@ export default function ClipadChat() {
  if (roomsData) {
    const allUserIds = [...new Set(roomsData.flatMap(r => r.chat_participants?.map(p => p.user_id) || []))];
    if (allUserIds.length > 0) {
-     const __res = await powerSync.execute(`SELECT id, full_name, avatar_url FROM profiles WHERE id IN (${allUserIds.map(()=>'?').join(',')})`, allUserIds);
+     const __res = await powerSync.execute(`SELECT id, full_name, avatar_url, email FROM profiles WHERE id IN (${allUserIds.map(()=>'?').join(',')})`, allUserIds);
      const profiles = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
      if (profiles) {
        setParticipantProfiles(prev => {
@@ -161,6 +163,18 @@ export default function ClipadChat() {
  setLoadingMessages(false);
 }
 };
+
+  const handleDeleteChat = async () => {
+    if (!activeRoomId) return;
+    try {
+      await powerSync.execute('DELETE FROM chat_rooms WHERE id = ?', [activeRoomId]);
+      toast({ title: "Success", description: "Chat deleted." });
+      setActiveRoomId(null);
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Error", description: "Failed to delete chat", variant: "destructive" });
+    }
+  };
 
  const handleSend = async () => {
  if (!inputValue.trim() || !activeRoomId) return;
@@ -364,6 +378,18 @@ export default function ClipadChat() {
            loadRooms();
          }}
        />
+       <ManageGroupDialog 
+    open={isManageMembersOpen} 
+    onOpenChange={setIsManageMembersOpen} 
+    activeRoom={activeRoom}
+    participantProfiles={participantProfiles}
+  />
+  <GroupInfoDialog
+    open={isGroupInfoOpen}
+    onOpenChange={setIsGroupInfoOpen}
+    activeRoom={activeRoom}
+    participantProfiles={participantProfiles}
+  />
        <DiscoverGroupsDialog
          open={isDiscoverGroupsOpen}
          onOpenChange={setIsDiscoverGroupsOpen}
@@ -543,9 +569,13 @@ export default function ClipadChat() {
   )}
   <div>
   <h3 className="font-semibold text-foreground leading-tight cursor-pointer hover:underline" onClick={() => {
-     toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name} (${otherProfile.email})` : 'Group details available soon.' });
+    if (activeRoom?.room_type === 'group') {
+      setIsGroupInfoOpen(true);
+    } else {
+      toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name || 'Unknown User'} (${otherProfile.email || 'No email'})` : 'User details not available' });
+    }
   }}>{roomName}</h3>
-  <p className="text-[12px] text-[#71717a] dark:text-gray-400">View contact info</p>
+  <p className="text-[12px] text-[#71717a] dark:text-gray-400">{activeRoom?.room_type === 'group' ? 'View group info' : 'View contact info'}</p>
   </div>
  </div>
  <div className="flex items-center gap-4 text-[#54656f] dark:text-[#aebac1]">
@@ -560,12 +590,25 @@ export default function ClipadChat() {
  <button className="hover:text-foreground transition-colors"><MoreVertical className="w-5 h-5" /></button>
  </DropdownMenuTrigger>
   <DropdownMenuContent align="end" className="w-48">
-  {activeRoom?.room_type === "group" && (
-    <DropdownMenuItem onClick={() => setIsManageMembersOpen(true)}>Manage Members</DropdownMenuItem>
+  {activeRoom?.room_type === "group" ? (
+    <>
+      {activeRoom?.chat_participants?.find(p => p.user_id === user.id)?.role === 'admin' && (
+        <DropdownMenuItem onClick={() => setIsManageMembersOpen(true)}>Manage Group</DropdownMenuItem>
+      )}
+      <DropdownMenuItem onClick={() => setIsGroupInfoOpen(true)}>Group Info</DropdownMenuItem>
+    </>
+  ) : (
+    <>
+      <DropdownMenuItem onClick={() => {
+         const pInfo = otherProfile ? `${otherProfile.full_name || 'Unknown User'} (${otherProfile.email || 'No email'})` : 'User details not available';
+         toast({ title: 'Contact Info', description: pInfo });
+      }}>Contact Info</DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem className="text-red-600 focus:bg-red-50 focus:text-red-700 dark:focus:bg-red-950/30" onClick={handleDeleteChat}>
+        Delete Chat
+      </DropdownMenuItem>
+    </>
   )}
-  <DropdownMenuItem onClick={() => {
-     toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name} (${otherProfile.email})` : 'Group details available soon.' });
-  }}>Contact Info</DropdownMenuItem>
   </DropdownMenuContent>
  </DropdownMenu>
  </div>
