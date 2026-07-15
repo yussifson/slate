@@ -323,7 +323,6 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
  {/* User */}
  <button onClick={() => setShowAvatarDialog(true)} className="flex items-center gap-2 sm:ml-1 hover:bg-muted/50 p-1 rounded-xl transition-colors">
- <span className="hidden sm:block text-sm font-medium text-foreground">{displayName}</span>
  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary flex items-center justify-center hover:ring-2 hover:ring-primary transition-all overflow-hidden border border-black/10 dark:border-white/10">
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
