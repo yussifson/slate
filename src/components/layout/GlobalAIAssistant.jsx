@@ -7,6 +7,7 @@ import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus
 import { Button} from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { generateText, analyzeImage} from '@/lib/cloudflareAI';
+import { buildOrgContext } from '@/lib/clipadIntelligence';
 import { toast} from 'react-hot-toast';
 import { useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
 import { useCompanyId} from '@/hooks/useCompanyId';
@@ -543,12 +544,32 @@ To create an automation, use the \`create_record\` tool with recordType "automat
     default: verticalPersona = "You are assisting in a professional business environment. Be efficient, analytical, and highly capable.";
   }
 
+   // Fetch live org context to make AI knowledge-aware
+  let orgContextSection = '';
+  if (location.pathname.startsWith('/clipad') || location.pathname === '/dashboard') {
+    try {
+      const { contextText } = await buildOrgContext({ limit: 10 });
+      if (contextText && contextText.length > 50) {
+        orgContextSection = `
+
+🏢 LIVE ORGANIZATIONAL MEMORY — REAL DATA FROM THIS COMPANY:
+You have access to the following verified, live data from this organization's memory. Use it to answer questions, provide context, and surface relevant insights. Never fabricate data not listed here.
+${contextText}
+`;
+      }
+    } catch (orgErr) {
+      // Org context is optional — don't break the assistant if it fails
+      console.warn('[OrbitAI] Could not load org context:', orgErr.message);
+    }
+  }
+
   const systemPrompt = `You are OrbitFlow — a highly enthusiastic, intelligent, and entertaining AI workflow engineer embedded in Slate SaaS.
 Your personality is that of a powerful but friendly AI companion—think of a hyper-intelligent digital lion/owl hybrid! Be cheerful, slightly playful, use emojis naturally, but remain highly capable and laser-focused on orchestrating the user's workflows flawlessly.
 Your current context is the ${ctx.suite} suite, specifically the '${ctx.title}' page.
 
 ${verticalPersona}
 ${modeContext}
+${orgContextSection}
 
 CRITICAL INSTRUCTIONS:
 - You are a Workflow Engineer. You can orchestrate complex chains of tasks and build powerful AUTOMATIONS across the system.
@@ -684,39 +705,83 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  let stepCount = 0;
  let finalCleanText = "";
 
- while (stepCount < maxSteps) {
- stepCount++;
- const responseText = await generateText(apiMessages);
- const { cleanText, actions} = parseAgentActions(responseText);
- 
- if (cleanText) finalCleanText += (finalCleanText ? "\n\n" : "") + cleanText;
+  while (stepCount < maxSteps) {
+  stepCount++;
+  
+  const tempMsgId = `stream-${Date.now()}`;
+  if (stepCount === 1) {
+    addMessages(sid, [{ id: tempMsgId, role: 'assistant', content: '...', isStreaming: true }]);
+  }
 
- if (actions.length === 0) {
- break; // AI is done
-}
+  const responseText = await generateText(apiMessages, (chunk) => {
+    if (stepCount === 1) {
+      // Strip actions to avoid flickering JSON in UI
+      const displayChunk = chunk.replace(/<[a-zA-Z0-9_]+ACTION>.*?<\/?[a-zA-Z0-9_]+ACTION>/gis, '').replace(/<[a-zA-Z0-9_]+ACTION>/gi, '');
+      setSessions(prev => prev.map(s => {
+        if (s.id !== sid) return s;
+        return {
+          ...s,
+          messages: s.messages.map(m => m.id === tempMsgId ? { ...m, content: displayChunk || '...' } : m)
+        };
+      }));
+    }
+  });
 
- let confirmationAction = actions.find(a => a.tool === 'ask_confirmation');
- if (confirmationAction) {
- addMessages(sid, [{ 
- role: 'assistant', 
- content: finalCleanText || confirmationAction.message,
- isConfirmation: true,
- pendingAction: confirmationAction.actionToConfirm 
-}]);
- finalCleanText = ""; // Handled via the confirmation message
- break; // Pause loop
-}
+  const { cleanText, actions} = parseAgentActions(responseText);
+  
+  if (cleanText) finalCleanText += (finalCleanText ? "\n\n" : "") + cleanText;
 
- const actionResults = await executeActionsAsync(actions);
- 
- apiMessages.push({ role: 'assistant', content: responseText});
- apiMessages.push({ role: 'system', content: `Action Results:\n${actionResults.join('\n')}`});
-}
+  if (actions.length === 0) {
+    if (stepCount === 1) {
+      setSessions(prev => prev.map(s => {
+        if (s.id !== sid) return s;
+        return {
+          ...s,
+          messages: s.messages.map(m => m.id === tempMsgId ? { ...m, content: finalCleanText, isStreaming: false } : m)
+        };
+      }));
+    }
+    break; // AI is done
+  }
 
- if (finalCleanText) {
- addMessages(sid, [{ role: 'assistant', content: finalCleanText}]);
-}
-}
+  let confirmationAction = actions.find(a => a.tool === 'ask_confirmation');
+  if (confirmationAction) {
+    if (stepCount === 1) {
+      setSessions(prev => prev.map(s => {
+        if (s.id !== sid) return s;
+        return {
+          ...s,
+          messages: s.messages.map(m => m.id === tempMsgId ? { ...m, content: finalCleanText || confirmationAction.message, isConfirmation: true, pendingAction: confirmationAction.actionToConfirm, isStreaming: false } : m)
+        };
+      }));
+    } else {
+      addMessages(sid, [{ 
+        role: 'assistant', 
+        content: finalCleanText || confirmationAction.message,
+        isConfirmation: true,
+        pendingAction: confirmationAction.actionToConfirm 
+      }]);
+    }
+    finalCleanText = ""; // Handled via the confirmation message
+    break; // Pause loop
+  }
+
+  const actionResults = await executeActionsAsync(actions);
+  
+  apiMessages.push({ role: 'assistant', content: responseText});
+  apiMessages.push({ role: 'system', content: `Action Results:\n${actionResults.join('\n')}`});
+ }
+
+  if (finalCleanText && stepCount > 1) {
+    addMessages(sid, [{ role: 'assistant', content: finalCleanText}]);
+  } else if (stepCount > 1) {
+    // If we had a temp message but no final text, remove the temp message
+    setSessions(prev => prev.map(s => {
+      if (s.id !== sid) return s;
+      return { ...s, messages: s.messages.filter(m => m.id !== `stream-${Date.now()}` && !m.isStreaming) };
+    }));
+  }
+ }
 } catch (err) {
  addMessages(sid, [{ role: 'assistant', content: "Error: " + err.message + ". Please try again."}]);
 } finally {

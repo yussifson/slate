@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
-import { Brain, Sparkles, MessageSquare, Plus, FileText, X } from 'lucide-react';
+import { Brain, Sparkles, MessageSquare, Plus, FileText, X, Loader2 } from 'lucide-react';
+import { generateText } from '@/lib/cloudflareAI';
 
 export default function RecommendationPanel({ contextText, workspaceId, onInsert }) {
   const [recommendations, setRecommendations] = useState([]);
@@ -8,63 +9,93 @@ export default function RecommendationPanel({ contextText, workspaceId, onInsert
   const [minimized, setMinimized] = useState(false);
 
   useEffect(() => {
-    // Debounce the analysis so we don't spam the DB/AI on every keystroke
+    // Debounce: wait 2 seconds after user stops typing before analyzing
     const timer = setTimeout(() => {
-      if (!contextText || contextText.length < 10) {
+      if (!contextText || contextText.length < 20) {
         setRecommendations([]);
         return;
       }
-      
       analyzeContext();
-    }, 1500);
-
+    }, 2000);
     return () => clearTimeout(timer);
   }, [contextText, workspaceId]);
 
   async function analyzeContext() {
     setLoading(true);
     try {
-      // Mocking context analysis
-      // Real implementation would pass `contextText` to invokeCloudflareAi to search `clipad_meeting_records` and `clipad_decisions`
-      
-      const keywords = contextText.toLowerCase().split(' ').filter(w => w.length > 4);
-      if (keywords.length === 0) return;
+      // 1. Fetch real org data to search through
+      const [decisionsRes, meetingsRes, blockersRes] = await Promise.all([
+        supabase
+          .from('clipad_decisions')
+          .select('id, decision_text, rationale, status, created_at')
+          .eq('status', 'active')
+          .order('created_at', { ascending: false })
+          .limit(15),
+        supabase
+          .from('clipad_meeting_records')
+          .select('id, title, ai_summary, created_at')
+          .order('created_at', { ascending: false })
+          .limit(10),
+        supabase
+          .from('clipad_blockers')
+          .select('id, description, severity, status')
+          .eq('status', 'open')
+          .limit(10),
+      ]);
 
-      const { data: decisions } = await supabase
-        .from('clipad_decisions')
-        .select('title, context')
-        .limit(3);
+      const decisions = decisionsRes.data || [];
+      const meetings = meetingsRes.data || [];
+      const blockers = blockersRes.data || [];
 
-      const generatedRecs = [];
+      const hasData = decisions.length > 0 || meetings.length > 0 || blockers.length > 0;
+      if (!hasData) { setRecommendations([]); setLoading(false); return; }
 
-      // Simple mock logic: if user types words that match recent decisions, surface them
-      if (decisions && decisions.length > 0 && Math.random() > 0.3) {
-        const d = decisions[0];
-        generatedRecs.push({
-          id: `dec_${Date.now()}`,
-          type: 'decision',
-          title: 'Related Decision Found',
-          content: `The team recently decided on "${d.title}".`,
-          snippet: `[Decision: ${d.title}] - ${d.context || 'Refer to organizational guidelines.'}`,
-          icon: FileText
-        });
+      // 2. Build a searchable knowledge base from real data
+      const knowledgeBase = [
+        decisions.length > 0 ? `DECISIONS:\n${decisions.map(d => `[DECISION:${d.id}] ${d.decision_text}. Rationale: ${d.rationale || 'N/A'}`).join('\n')}` : '',
+        meetings.length > 0 ? `MEETINGS:\n${meetings.map(m => `[MEETING:${m.id}] "${m.title}": ${m.ai_summary?.substring(0, 150) || 'No summary'}`).join('\n')}` : '',
+        blockers.length > 0 ? `BLOCKERS:\n${blockers.map(b => `[BLOCKER:${b.id}] ${b.description} (${b.severity})`).join('\n')}` : '',
+      ].filter(Boolean).join('\n\n');
+
+      // 3. Ask AI to find relevant context from real org data
+      const raw = await generateText([
+        {
+          role: 'system',
+          content: `You are a context recommendation engine. Given what a user is currently writing, find the top 2 most relevant items from the organization's knowledge base that could help them. 
+Return ONLY a JSON array with up to 2 items. Each item must have:
+- "type": "decision", "meeting", or "blocker"
+- "id": the exact ID from the knowledge base (e.g. "DECISION:uuid")
+- "title": short title for the recommendation card (max 8 words)
+- "content": one sentence explaining why this is relevant (max 20 words)
+- "snippet": the relevant text excerpt to potentially insert (max 100 chars)
+
+If nothing is relevant, return [].
+Do NOT invent facts. Only use data from the knowledge base provided.`,
+        },
+        {
+          role: 'user',
+          content: `User is currently writing:\n"${contextText.substring(0, 500)}"\n\nKnowledge Base:\n${knowledgeBase}`,
+        },
+      ]);
+
+      // 4. Parse AI response
+      let recs = [];
+      try {
+        const cleaned = (raw || '').replace(/```json|```/g, '').trim();
+        const parsed = JSON.parse(cleaned);
+        if (Array.isArray(parsed)) {
+          recs = parsed.slice(0, 2).map(item => ({
+            ...item,
+            icon: item.type === 'decision' ? FileText : item.type === 'blocker' ? Sparkles : MessageSquare,
+          }));
+        }
+      } catch {
+        // AI didn't return valid JSON — no recommendations to show
       }
 
-      // Mock transcript quote
-      if (Math.random() > 0.5) {
-        generatedRecs.push({
-          id: `quote_${Date.now()}`,
-          type: 'quote',
-          title: 'Relevant Meeting Quote',
-          content: 'In the latest sync, Sarah mentioned pricing strategy changes.',
-          snippet: `"We are moving to a tier-based pricing model starting Q3 to better capture enterprise value." - Sarah, Strategy Sync`,
-          icon: MessageSquare
-        });
-      }
-
-      setRecommendations(generatedRecs);
+      setRecommendations(recs);
     } catch (err) {
-      console.error(err);
+      console.error('[RecommendationPanel]', err);
     } finally {
       setLoading(false);
     }
@@ -100,8 +131,8 @@ export default function RecommendationPanel({ contextText, workspaceId, onInsert
         <div className="p-4 max-h-[400px] overflow-y-auto space-y-4">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-6 text-center">
-              <Sparkles className="w-6 h-6 text-indigo-400 animate-pulse mb-2" />
-              <p className="text-xs font-medium text-slate-500">Analyzing your context...</p>
+              <Loader2 className="w-6 h-6 text-indigo-400 animate-spin mb-2" />
+              <p className="text-xs font-medium text-slate-500">Searching org memory...</p>
             </div>
           ) : (
             recommendations.map(rec => (

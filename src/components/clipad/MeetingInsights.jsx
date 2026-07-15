@@ -177,14 +177,27 @@ export default function MeetingInsights({ spaceId }) {
 
                   const inserts = tasksToCreate.map(title => ({
                     space_id: spaceId,
-                    company_id: user.company_id,
                     title,
                     is_complete: false,
-                    created_by: user.id
                   }));
 
                   const { error } = await supabase.from('clipad_action_items').insert(inserts);
                   if (error) throw error;
+                  
+                  // Optional: write an org event
+                  try {
+                    const { writeOrgEvent } = await import('@/lib/clipadIntelligence');
+                    await writeOrgEvent({
+                      space_id: spaceId,
+                      workspace_id: user?.company_id,
+                      event_type: 'action_items_generated',
+                      title: `AI generated ${inserts.length} action items from meetings`,
+                      actor_id: user?.id,
+                      source_table: 'clipad_action_items',
+                      importance: 3,
+                    });
+                  } catch (e) { /* ignore event err */ }
+                  
                   toast({ title: "Success", description: `Generated ${inserts.length} action items!`});
                 } catch (e) {
                   console.error(e);

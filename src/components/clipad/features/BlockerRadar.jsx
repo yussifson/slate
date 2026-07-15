@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
-import { ShieldAlert, AlertTriangle, CheckCircle, Network, Plus, Loader2 } from 'lucide-react';
+import { ShieldAlert, AlertTriangle, CheckCircle, Network, Plus, Loader2, Sparkles, Bot } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
+import { detectBlockers, writeOrgEvent } from '@/lib/clipadIntelligence';
 
 export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = false, hasFullIntelligence }) {
   const { user } = useAuth();
@@ -10,6 +11,8 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
   const [showAdd, setShowAdd] = useState(false);
   const [newBlocker, setNewBlocker] = useState('');
   const [adding, setAdding] = useState(false);
+  const [detecting, setDetecting] = useState(false);
+  const [detectedCount, setDetectedCount] = useState(0);
 
   const isAdmin = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
 
@@ -87,6 +90,64 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
     setAdding(false);
   };
 
+  const handleAIDetect = async () => {
+    if (!spaceId && !workspaceId) return;
+    setDetecting(true);
+    setDetectedCount(0);
+    try {
+      // Pull recent meeting summaries and transcripts
+      let meetQuery = supabase
+        .from('clipad_meeting_records')
+        .select('id, title, ai_summary, transcript')
+        .order('created_at', { ascending: false })
+        .limit(5);
+      if (spaceId) meetQuery = meetQuery.eq('space_id', spaceId);
+      else if (workspaceId) meetQuery = meetQuery.eq('workspace_id', workspaceId);
+
+      const { data: meetings } = await meetQuery;
+      let totalAdded = 0;
+
+      for (const meeting of (meetings || [])) {
+        const text = [meeting.ai_summary, meeting.transcript].filter(Boolean).join('\n');
+        if (!text) continue;
+
+        const found = await detectBlockers(text, {
+          team_space_id: spaceId || null,
+          workspace_id: workspaceId || null,
+          source_meeting_id: meeting.id,
+        });
+
+        for (const b of found) {
+          // Avoid duplicate descriptions
+          const existing = blockers.find(existing => existing.description.toLowerCase() === b.description.toLowerCase());
+          if (existing) continue;
+
+          const { error } = await supabase.from('clipad_blockers').insert(b);
+          if (!error) {
+            totalAdded++;
+            await writeOrgEvent({
+              space_id: spaceId,
+              workspace_id: workspaceId,
+              event_type: 'blocker_detected',
+              title: b.description.substring(0, 80),
+              actor_id: user?.id,
+              source_id: meeting.id,
+              source_table: 'clipad_meeting_records',
+              importance: b.importance_score || 4,
+            });
+          }
+        }
+      }
+
+      setDetectedCount(totalAdded);
+      if (totalAdded > 0) await fetchBlockers();
+    } catch (err) {
+      console.warn('[BlockerRadar] AI Detect error:', err.message);
+    } finally {
+      setDetecting(false);
+    }
+  };
+
   if (!hasFullIntelligence) {
     if (isWorkspaceView) return null;
     return (
@@ -152,12 +213,24 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Live graph of who is blocked on whom.</p>
         </div>
-        <button
-          onClick={() => setShowAdd(v => !v)}
-          className="flex items-center gap-1.5 text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg transition-colors"
-        >
-          <Plus className="w-4 h-4" /> Report Blocker
-        </button>
+        <div className="flex items-center gap-2">
+          {hasFullIntelligence && (
+            <button
+              onClick={handleAIDetect}
+              disabled={detecting}
+              className="flex items-center gap-1.5 text-sm font-medium bg-slate-800 hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 text-white px-3 py-2 rounded-lg transition-colors disabled:opacity-50"
+            >
+              {detecting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+              {detecting ? 'Detecting...' : detectedCount > 0 ? `${detectedCount} Found` : 'AI Detect'}
+            </button>
+          )}
+          <button
+            onClick={() => setShowAdd(v => !v)}
+            className="flex items-center gap-1.5 text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg transition-colors"
+          >
+            <Plus className="w-4 h-4" /> Report Blocker
+          </button>
+        </div>
       </div>
 
       {showAdd && (

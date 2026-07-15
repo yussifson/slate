@@ -19,6 +19,7 @@ import { Button} from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { generateText} from "@/lib/cloudflareAI";
+import { detectDecisions, detectCommitments, writeOrgEvent } from '@/lib/clipadIntelligence';
 import { useToast} from "@/components/ui/use-toast";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { useTheme } from "@/lib/ThemeContext";
@@ -392,13 +393,66 @@ export const VIRTUAL_BACKGROUNDS = [
           if (!error && insertedMeeting && rawTranscript.trim().length > 10) {
             import('@/lib/cloudflareAI').then(({ generateText }) => {
               generateText([
-                { role: 'system', content: 'You are an AI assistant. Summarize the following meeting transcript. Keep it concise.' },
+                { role: 'system', content: 'You are an AI assistant. Summarize the following meeting transcript. Return ONLY valid JSON with two keys: "summary" (a string summarizing the video concisely) and "action_items" (an array of objects, each with "title", "owner", and "context"). Do not wrap the JSON in markdown blocks.' },
                 { role: 'user', content: rawTranscript.trim().substring(0, 4000) } // keep within limits
               ]).then(async (aiResult) => {
                 try {
                   let text = typeof aiResult === 'string' ? aiResult : aiResult?.response;
                   if (!text) return;
-                  await db.from('clipad_meeting_records').update({ ai_summary: text }).eq('id', insertedMeeting.id);
+                  if (text.startsWith('```json')) text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+                  const parsed = JSON.parse(text);
+
+                  if (parsed.summary) {
+                    await db.from('clipad_meeting_records').update({ ai_summary: parsed.summary }).eq('id', insertedMeeting.id);
+                  }
+                  if (parsed.action_items && Array.isArray(parsed.action_items) && parsed.action_items.length > 0) {
+                    const inserts = parsed.action_items.map(ai => ({
+                      space_id: spaceId || null,
+                      title: ai.title,
+                      assigned_to: ai.owner || null,
+                      context: ai.context || null,
+                      is_complete: false,
+                    }));
+                    await db.from('clipad_action_items').insert(inserts);
+                  }
+
+                  // --- ADDED FOR ORG MEMORY ENGINE: Decisions & Commitments ---
+                  const [foundDecisions, foundCommitments] = await Promise.all([
+                    detectDecisions(rawTranscript.trim(), { team_space_id: spaceId || null, related_meeting_id: insertedMeeting.id }),
+                    detectCommitments(rawTranscript.trim(), { team_space_id: spaceId || null, meeting_id: insertedMeeting.id })
+                  ]);
+                  
+                  for (const d of foundDecisions) {
+                    const { error } = await db.from('clipad_decisions').insert({ ...d, reasoning_text: d.rationale || null });
+                    if (!error) {
+                      await writeOrgEvent({
+                        space_id: spaceId || null,
+                        event_type: 'decision_logged',
+                        title: d.decision_text.substring(0, 80),
+                        actor_id: user?.id,
+                        source_id: insertedMeeting.id,
+                        source_table: 'clipad_meeting_records',
+                        importance: d.importance_score || 5,
+                      });
+                    }
+                  }
+                  
+                  for (const c of foundCommitments) {
+                    const { error } = await db.from('clipad_commitments').insert(c);
+                    if (!error) {
+                      await writeOrgEvent({
+                        space_id: spaceId || null,
+                        event_type: 'commitment_detected',
+                        title: c.commitment_text.substring(0, 80),
+                        actor_id: user?.id,
+                        source_id: insertedMeeting.id,
+                        source_table: 'clipad_meeting_records',
+                        importance: 4,
+                      });
+                    }
+                  }
+                  // -----------------------------------------------------------
+
                 } catch(e) { console.warn("Failed to update AI summary", e); }
               }).catch(()=>{});
             });

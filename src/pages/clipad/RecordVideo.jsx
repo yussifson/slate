@@ -7,6 +7,7 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
 import { generateText } from '@/lib/cloudflareAI';
+import { detectDecisions, detectCommitments, writeOrgEvent } from '@/lib/clipadIntelligence';
 import { logAuditEvent } from '@/lib/auditLogger';
 import { useAuth } from '@/lib/AuthContext';
 import { getPlanLimits, getUserPlan, getLimit } from '@/lib/clipadPricing';
@@ -1160,6 +1161,44 @@ export default function RecordVideo() {
                   }));
                   await supabase.from('clipad_action_items').insert(inserts);
                 }
+                
+                // --- ADDED FOR ORG MEMORY ENGINE: Decisions & Commitments ---
+                const [foundDecisions, foundCommitments] = await Promise.all([
+                  detectDecisions(transcript.trim(), { team_space_id: selectedSpace || null, related_meeting_id: activeVideoId }),
+                  detectCommitments(transcript.trim(), { team_space_id: selectedSpace || null, meeting_id: activeVideoId })
+                ]);
+                
+                for (const d of foundDecisions) {
+                  const { error } = await supabase.from('clipad_decisions').insert({ ...d, reasoning_text: d.rationale || null });
+                  if (!error) {
+                    await writeOrgEvent({
+                      space_id: selectedSpace || null,
+                      event_type: 'decision_logged',
+                      title: d.decision_text.substring(0, 80),
+                      actor_id: user?.id,
+                      source_id: activeVideoId,
+                      source_table: 'clipad_videos',
+                      importance: d.importance_score || 5,
+                    });
+                  }
+                }
+                
+                for (const c of foundCommitments) {
+                  const { error } = await supabase.from('clipad_commitments').insert(c);
+                  if (!error) {
+                    await writeOrgEvent({
+                      space_id: selectedSpace || null,
+                      event_type: 'commitment_detected',
+                      title: c.commitment_text.substring(0, 80),
+                      actor_id: user?.id,
+                      source_id: activeVideoId,
+                      source_table: 'clipad_videos',
+                      importance: 4,
+                    });
+                  }
+                }
+                // -----------------------------------------------------------
+
               } catch(e) { console.warn("Failed to parse AI output", e); }
             }).catch(()=>{});
           });
@@ -1255,6 +1294,44 @@ export default function RecordVideo() {
                 }));
                 await supabase.from('clipad_action_items').insert(inserts);
               }
+
+              // --- ADDED FOR ORG MEMORY ENGINE: Decisions & Commitments ---
+              const [foundDecisions, foundCommitments] = await Promise.all([
+                detectDecisions(transcript.trim(), { team_space_id: selectedSpace || null, related_meeting_id: videoRecord.id }),
+                detectCommitments(transcript.trim(), { team_space_id: selectedSpace || null, meeting_id: videoRecord.id })
+              ]);
+              
+              for (const d of foundDecisions) {
+                const { error } = await supabase.from('clipad_decisions').insert({ ...d, reasoning_text: d.rationale || null });
+                if (!error) {
+                  await writeOrgEvent({
+                    space_id: selectedSpace || null,
+                    event_type: 'decision_logged',
+                    title: d.decision_text.substring(0, 80),
+                    actor_id: user?.id,
+                    source_id: videoRecord.id,
+                    source_table: 'clipad_videos',
+                    importance: d.importance_score || 5,
+                  });
+                }
+              }
+              
+              for (const c of foundCommitments) {
+                const { error } = await supabase.from('clipad_commitments').insert(c);
+                if (!error) {
+                  await writeOrgEvent({
+                    space_id: selectedSpace || null,
+                    event_type: 'commitment_detected',
+                    title: c.commitment_text.substring(0, 80),
+                    actor_id: user?.id,
+                    source_id: videoRecord.id,
+                    source_table: 'clipad_videos',
+                    importance: 4,
+                  });
+                }
+              }
+              // -----------------------------------------------------------
+
             } catch(e) { console.warn("Failed to parse AI output", e); }
           }).catch(()=>{});
         });

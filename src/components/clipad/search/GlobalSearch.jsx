@@ -8,11 +8,11 @@ import { useNavigate } from 'react-router-dom';
 const TYPE_META = {
   meeting:    { icon: Calendar,      label: 'Meeting',    color: 'text-blue-500',   bg: 'bg-blue-500/10',    route: (id) => `/clipad/meetings/${id}` },
   video:      { icon: Video,         label: 'Video',      color: 'text-purple-500', bg: 'bg-purple-500/10',  route: (id) => `/clipad/videos/${id}` },
-  doc:        { icon: FileText,      label: 'Doc',        color: 'text-emerald-500',bg: 'bg-emerald-500/10', route: () => null },
-  task:       { icon: CheckCircle,   label: 'Task',       color: 'text-amber-500',  bg: 'bg-amber-500/10',   route: () => null },
-  message:    { icon: MessageSquare, label: 'Chat',       color: 'text-indigo-500', bg: 'bg-indigo-500/10',  route: () => null },
-  decision:   { icon: ShieldAlert,   label: 'Decision',   color: 'text-rose-500',   bg: 'bg-rose-500/10',    route: () => null },
-  blocker:    { icon: AlertTriangle, label: 'Blocker',    color: 'text-orange-500', bg: 'bg-orange-500/10',  route: () => null },
+  doc:        { icon: FileText,      label: 'Doc',        color: 'text-emerald-500',bg: 'bg-emerald-500/10', route: (id, spaceId) => spaceId ? `/clipad/spaces/${spaceId}?tab=docs&docId=${id}` : null },
+  task:       { icon: CheckCircle,   label: 'Task',       color: 'text-amber-500',  bg: 'bg-amber-500/10',   route: (id, spaceId) => spaceId ? `/clipad/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
+  message:    { icon: MessageSquare, label: 'Chat',       color: 'text-indigo-500', bg: 'bg-indigo-500/10',  route: (id, spaceId) => spaceId ? `/clipad/spaces/${spaceId}?tab=chat` : null },
+  decision:   { icon: ShieldAlert,   label: 'Decision',   color: 'text-rose-500',   bg: 'bg-rose-500/10',    route: (id, spaceId) => spaceId ? `/clipad/spaces/${spaceId}?tab=decisions` : null },
+  blocker:    { icon: AlertTriangle, label: 'Blocker',    color: 'text-orange-500', bg: 'bg-orange-500/10',  route: (id, spaceId) => spaceId ? `/clipad/spaces/${spaceId}?tab=overview` : null },
 };
 
 export default function GlobalSearch() {
@@ -56,22 +56,22 @@ export default function GlobalSearch() {
 
       const [docs, tasks, messages, meetings, decisions, videos, blockers] = await Promise.all([
         supabase.from('clipad_docs').select('id, title, content, space_id').ilike('title', term).limit(4),
-        supabase.from('clipad_tasks').select('id, title, description').ilike('title', term).limit(4),
+        supabase.from('clipad_action_items').select('id, title, context, space_id').ilike('title', term).limit(4),
         supabase.from('clipad_messages').select('id, content, space_id').ilike('content', term).limit(4),
         supabase.from('clipad_meeting_records').select('id, title, ai_summary, space_id').ilike('title', term).limit(4),
-        supabase.from('clipad_decisions').select('id, decision_text, rationale, status').ilike('decision_text', term).limit(4),
-        supabase.from('clipad_videos').select('id, title, ai_summary').ilike('title', term).limit(4),
-        supabase.from('clipad_blockers').select('id, description, status, severity').ilike('description', term).limit(3),
+        supabase.from('clipad_decisions').select('id, decision_text, team_space_id').ilike('decision_text', term).limit(4),
+        supabase.from('clipad_videos').select('id, title, ai_summary, space_id').ilike('title', term).limit(4),
+        supabase.from('clipad_blockers').select('id, description, team_space_id').ilike('description', term).limit(4),
       ]);
 
       const formatted = [
-        ...(docs.data || []).map(d => ({ ...d, type: 'doc', label: d.title, snippet: d.content?.substring(0, 100) })),
-        ...(tasks.data || []).map(t => ({ ...t, type: 'task', label: t.title, snippet: t.description?.substring(0, 100) })),
-        ...(messages.data || []).map(m => ({ ...m, type: 'message', label: m.content?.substring(0, 50), snippet: m.content?.substring(0, 100) })),
-        ...(meetings.data || []).map(m => ({ ...m, type: 'meeting', label: m.title, snippet: m.ai_summary?.substring(0, 100) })),
-        ...(decisions.data || []).map(d => ({ ...d, type: 'decision', label: d.decision_text, snippet: d.rationale?.substring(0, 100) })),
-        ...(videos.data || []).map(v => ({ ...v, type: 'video', label: v.title, snippet: v.ai_summary?.substring(0, 100) })),
-        ...(blockers.data || []).map(b => ({ ...b, type: 'blocker', label: b.description, snippet: `Severity: ${b.severity || 'medium'} · Status: ${b.status}` })),
+        ...(docs.data || []).map(d => ({ type: 'doc', id: d.id, space_id: d.space_id, label: d.title, snippet: d.content?.substring(0, 100) })),
+        ...(tasks.data || []).map(t => ({ type: 'task', id: t.id, space_id: t.space_id, label: t.title, snippet: t.context?.substring(0, 100) })),
+        ...(messages.data || []).map(m => ({ type: 'message', id: m.id, space_id: m.space_id, label: 'Chat Message', snippet: m.content?.substring(0, 100) })),
+        ...(meetings.data || []).map(m => ({ type: 'meeting', id: m.id, space_id: m.space_id, label: m.title, snippet: m.ai_summary?.substring(0, 100) })),
+        ...(decisions.data || []).map(d => ({ type: 'decision', id: d.id, space_id: d.team_space_id, label: 'Decision', snippet: d.decision_text?.substring(0, 100) })),
+        ...(videos.data || []).map(v => ({ type: 'video', id: v.id, space_id: v.space_id, label: v.title, snippet: v.ai_summary?.substring(0, 100) })),
+        ...(blockers.data || []).map(b => ({ type: 'blocker', id: b.id, space_id: b.team_space_id, label: 'Blocker', snippet: b.description?.substring(0, 100) })),
       ];
 
       setResults(formatted);
@@ -113,7 +113,7 @@ export default function GlobalSearch() {
 
   const handleResultClick = (res) => {
     const meta = TYPE_META[res.type];
-    const route = meta?.route(res.id);
+    const route = meta?.route(res.id, res.space_id);
     if (route) { navigate(route); setIsOpen(false); }
   };
 

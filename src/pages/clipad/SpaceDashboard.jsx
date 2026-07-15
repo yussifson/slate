@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { getLimit, hasFeature } from '@/lib/clipadPricing';
 import { useAuth } from '@/lib/AuthContext';
@@ -130,10 +130,11 @@ function VideoCard({ video, onClick }) {
 
 export default function SpaceDashboard() {
   const { spaceId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { user, isLoadingAuth } = useAuth();
   const navigate = useNavigate();
   const [space, setSpace] = useState(null);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'overview');
   const [loading, setLoading] = useState(true);
   const [videos, setVideos] = useState([]);
   const [meetings, setMeetings] = useState([]);
@@ -155,6 +156,19 @@ export default function SpaceDashboard() {
   const { toast } = useToast();
 
   useEffect(() => { if (spaceId) fetchAll(); }, [spaceId]);
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab) setActiveTab(tab);
+  }, [searchParams]);
+
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    setSearchParams(prev => {
+      prev.set('tab', tabId);
+      return prev;
+    }, { replace: true });
+  };
 
   const fetchAll = async () => {
     setLoading(true);
@@ -428,7 +442,7 @@ export default function SpaceDashboard() {
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabChange(tab.id)}
                 className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === tab.id ? 'border-indigo-500 text-primary' : 'border-transparent text-muted-foreground hover:text-gray-300 hover:border-white/20'}`}
               >
                 <Icon className="w-4 h-4" />{tab.label}

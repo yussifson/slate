@@ -99,7 +99,7 @@ async function runAI(model, payload, retryCount = 0) {
  * Generate text using LLaMA 3.3
  * @param {Array|string} input - Array of {role, content} objects or a prompt string
  */
-export async function generateText(input) {
+export async function generateText(input, onStream = null) {
   let messages = [];
   if (Array.isArray(input)) {
     messages = input;
@@ -108,17 +108,26 @@ export async function generateText(input) {
   }
   const result = await runAI(MODELS.text, { messages, max_tokens: 2500 });
   
-  // Depending on the API format returned, either it's result.response (old format)
-  // or it's inside result.choices[0].message.content (new format)
+  let finalText = result.response;
   if (result.choices && result.choices.length > 0) {
     if (result.choices[0].message && result.choices[0].message.content) {
-      return result.choices[0].message.content;
-    }
-    if (result.choices[0].text) {
-      return result.choices[0].text;
+      finalText = result.choices[0].message.content;
+    } else if (result.choices[0].text) {
+      finalText = result.choices[0].text;
     }
   }
-  return result.response;
+
+  if (onStream && typeof onStream === 'function' && finalText) {
+    const chunks = finalText.match(/.{1,12}/g) || [finalText];
+    let accumulated = '';
+    for (const chunk of chunks) {
+      accumulated += chunk;
+      onStream(accumulated);
+      await new Promise(r => setTimeout(r, 10)); // fake delay
+    }
+  }
+
+  return finalText;
 }
 
 /**

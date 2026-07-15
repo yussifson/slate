@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
-import { Database, Search, Bot, Lock, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
+import { Database, Search, Bot, Lock, ArrowRight, Loader2, AlertCircle, Link } from 'lucide-react';
 import { generateText } from '@/lib/cloudflareAI';
+import { useNavigate } from 'react-router-dom';
 
 export default function InstitutionalMemoryVault({ workspaceId }) {
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState('');
+  const [citations, setCitations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleQuery = async (e) => {
     e.preventDefault();
@@ -22,27 +25,27 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
       const [meetingsRes, decisionsRes, blockersRes, videosRes, tasksRes] = await Promise.all([
         supabase
           .from('clipad_meeting_records')
-          .select('title, ai_summary, created_at, ended_at, host_id')
+          .select('id, title, ai_summary, created_at, ended_at, host_id')
           .order('created_at', { ascending: false })
           .limit(20),
         supabase
           .from('clipad_decisions')
-          .select('decision_text, rationale, status, created_at')
+          .select('id, decision_text, rationale, status, created_at')
           .order('created_at', { ascending: false })
           .limit(10),
         supabase
           .from('clipad_blockers')
-          .select('description, status, detected_at, resolved_at')
+          .select('id, description, status, detected_at, resolved_at')
           .order('detected_at', { ascending: false })
           .limit(10),
         supabase
           .from('clipad_videos')
-          .select('title, ai_summary, created_at')
+          .select('id, title, ai_summary, created_at')
           .order('created_at', { ascending: false })
           .limit(10),
         supabase
           .from('clipad_action_items')
-          .select('title, is_complete, created_at')
+          .select('id, title, is_complete, created_at')
           .order('created_at', { ascending: false })
           .limit(15),
       ]);
@@ -59,7 +62,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
       if (meetings.length > 0) {
         contextParts.push('=== MEETING HISTORY ===');
         meetings.forEach(m => {
-          contextParts.push(`Meeting: "${m.title || 'Untitled'}" on ${new Date(m.created_at).toLocaleDateString()}`);
+          contextParts.push(`Meeting [ID: M-${m.id}]: "${m.title || 'Untitled'}" on ${new Date(m.created_at).toLocaleDateString()}`);
           if (m.ai_summary && m.ai_summary !== 'Generating summary...' && m.ai_summary !== 'No transcript recorded.') {
             contextParts.push(`  Summary: ${m.ai_summary}`);
           }
@@ -69,7 +72,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
       if (decisions.length > 0) {
         contextParts.push('\n=== TEAM DECISIONS ===');
         decisions.forEach(d => {
-          contextParts.push(`Decision [${d.status || 'active'}]: ${d.decision_text}`);
+          contextParts.push(`Decision [ID: D-${d.id}] [${d.status || 'active'}]: ${d.decision_text}`);
           if (d.rationale) contextParts.push(`  Rationale: ${d.rationale}`);
           contextParts.push(`  Date: ${new Date(d.created_at).toLocaleDateString()}`);
         });
@@ -78,7 +81,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
       if (blockers.length > 0) {
         contextParts.push('\n=== BLOCKERS & RESOLUTIONS ===');
         blockers.forEach(b => {
-          contextParts.push(`Blocker [${b.status}]: ${b.description}`);
+          contextParts.push(`Blocker [ID: B-${b.id}] [${b.status}]: ${b.description}`);
           if (b.resolved_at) contextParts.push(`  Resolved: ${new Date(b.resolved_at).toLocaleDateString()}`);
         });
       }
@@ -86,7 +89,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
       if (videos.length > 0) {
         contextParts.push('\n=== ASYNC VIDEO RECORDINGS ===');
         videos.forEach(v => {
-          contextParts.push(`Video: "${v.title}" (${new Date(v.created_at).toLocaleDateString()})`);
+          contextParts.push(`Video [ID: V-${v.id}]: "${v.title}" (${new Date(v.created_at).toLocaleDateString()})`);
           if (v.ai_summary) contextParts.push(`  Summary: ${v.ai_summary}`);
         });
       }
@@ -94,7 +97,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
       if (tasks.length > 0) {
         contextParts.push('\n=== ACTION ITEMS ===');
         tasks.forEach(t => {
-          contextParts.push(`[${t.is_complete ? 'DONE' : 'OPEN'}] ${t.title}`);
+          contextParts.push(`[ID: T-${t.id}] [${t.is_complete ? 'DONE' : 'OPEN'}] ${t.title}`);
         });
       }
 
@@ -109,8 +112,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
       // 3. Query the real AI with full organizational context
       const aiResponse = await generateText([
         {
-          role: 'system',
-          content: `You are an Enterprise Knowledge Graph AI assistant. Your job is to answer questions about an organization based ONLY on the real data provided below. Do NOT make up facts, names, dates, or events that aren't in the data. If the data doesn't contain the answer, say "I don't have enough recorded data to answer that yet — as your team adds more meetings, decisions, and recordings, the Knowledge Graph will grow richer."\n\nORGANIZATIONAL KNOWLEDGE BASE:\n${knowledgeContext}`
+          content: `You are an Enterprise Knowledge Graph AI assistant. Your job is to answer questions about an organization based ONLY on the real data provided below. Do NOT make up facts, names, dates, or events that aren't in the data. If the data doesn't contain the answer, say "I don't have enough recorded data to answer that yet — as your team adds more meetings, decisions, and recordings, the Knowledge Graph will grow richer."\n\nWhen you use data to answer, ALWAYS append a JSON array of the Source IDs you used on a new line at the very end of your response, formatted exactly like this: \nSOURCES: ["M-uuid", "D-uuid"]\n\nORGANIZATIONAL KNOWLEDGE BASE:\n${knowledgeContext}`
         },
         {
           role: 'user',
@@ -118,7 +120,20 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
         }
       ]);
 
-      setResponse(typeof aiResponse === 'string' ? aiResponse : aiResponse?.response || 'Unable to generate a response.');
+      let rawResponse = typeof aiResponse === 'string' ? aiResponse : aiResponse?.response || 'Unable to generate a response.';
+      let extractedCitations = [];
+
+      // Extract sources
+      const sourcesMatch = rawResponse.match(/SOURCES:\s*(\[.*?\])/s);
+      if (sourcesMatch) {
+        try {
+          extractedCitations = JSON.parse(sourcesMatch[1]);
+        } catch { /* ignore parse error */ }
+        rawResponse = rawResponse.replace(/SOURCES:\s*\[.*?\]/s, '').trim();
+      }
+
+      setResponse(rawResponse);
+      setCitations(extractedCitations);
     } catch (err) {
       console.error('Knowledge Graph error:', err);
       setError('Failed to query the Knowledge Graph. Please check your AI configuration.');
@@ -179,6 +194,31 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
             </div>
             <div>
               <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed whitespace-pre-wrap">{response}</p>
+              {citations.length > 0 && (
+                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-2">
+                  {citations.map((cite, i) => {
+                    const type = cite.charAt(0);
+                    const id = cite.substring(2);
+                    let route = '#';
+                    let label = cite;
+                    let colorClass = "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400";
+                    if (type === 'M') { route = `/clipad/meetings/${id}`; label = 'Meeting Record'; colorClass = "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400"; }
+                    if (type === 'V') { route = `/clipad/videos/${id}`; label = 'Video Record'; colorClass = "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400"; }
+                    if (type === 'D') { label = 'Decision'; colorClass = "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"; }
+                    if (type === 'B') { label = 'Blocker'; colorClass = "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400"; }
+                    if (type === 'T') { label = 'Action Item'; colorClass = "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400"; }
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => route !== '#' && navigate(route)}
+                        className={`text-xs px-2.5 py-1 rounded-md font-medium flex items-center gap-1.5 transition-colors ${colorClass} ${route !== '#' ? 'hover:opacity-80 cursor-pointer' : 'cursor-default'}`}
+                      >
+                        <Link className="w-3 h-3" /> {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         )}

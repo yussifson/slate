@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
-import { CheckCircle2, Clock, XCircle, FileText, Loader2 } from 'lucide-react';
+import { CheckCircle2, Clock, XCircle, FileText, Loader2, Sparkles } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
+import { detectCommitments, writeOrgEvent } from '@/lib/clipadIntelligence';
 
 export default function CommitmentTracker({ spaceId }) {
   const { user } = useAuth();
   const [commitments, setCommitments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [detecting, setDetecting] = useState(false);
+  const [detectedCount, setDetectedCount] = useState(0);
 
   useEffect(() => {
     if (spaceId) {
@@ -51,6 +54,58 @@ export default function CommitmentTracker({ spaceId }) {
     }
   };
 
+  const handleAIDetect = async () => {
+    if (!spaceId) return;
+    setDetecting(true);
+    setDetectedCount(0);
+    try {
+      const { data: meetings } = await supabase
+        .from('clipad_meeting_records')
+        .select('id, title, ai_summary, transcript')
+        .eq('space_id', spaceId)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      let totalAdded = 0;
+      for (const meeting of (meetings || [])) {
+        const text = [meeting.ai_summary, meeting.transcript].filter(Boolean).join('\n');
+        if (!text) continue;
+
+        const found = await detectCommitments(text, {
+          team_space_id: spaceId,
+          meeting_id: meeting.id,
+        });
+
+        for (const c of found) {
+          // Deduplicate by commitment_text
+          const exists = commitments.find(existing => existing.commitment_text?.toLowerCase() === c.commitment_text?.toLowerCase());
+          if (exists) continue;
+
+          const { error } = await supabase.from('clipad_commitments').insert(c);
+          if (!error) {
+            totalAdded++;
+            await writeOrgEvent({
+              space_id: spaceId,
+              event_type: 'commitment_detected',
+              title: c.commitment_text?.substring(0, 80),
+              actor_id: user?.id,
+              source_id: meeting.id,
+              source_table: 'clipad_meeting_records',
+              importance: 4,
+            });
+          }
+        }
+      }
+
+      setDetectedCount(totalAdded);
+      if (totalAdded > 0) await fetchCommitments();
+    } catch (err) {
+      console.warn('[CommitmentTracker] AI Detect error:', err.message);
+    } finally {
+      setDetecting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
@@ -67,10 +122,20 @@ export default function CommitmentTracker({ spaceId }) {
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
-      <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-4">
-        <CheckCircle2 className="w-5 h-5 text-indigo-500" />
-        AI Commitment Tracker
-      </h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <CheckCircle2 className="w-5 h-5 text-indigo-500" />
+          AI Commitment Tracker
+        </h2>
+        <button
+          onClick={handleAIDetect}
+          disabled={detecting}
+          className="flex items-center gap-1.5 text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+        >
+          {detecting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+          {detecting ? 'Detecting...' : detectedCount > 0 ? `${detectedCount} Found` : 'AI Detect'}
+        </button>
+      </div>
 
       <div className="space-y-3">
         {commitments.length === 0 ? (

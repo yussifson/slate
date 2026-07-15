@@ -61,7 +61,22 @@ export default function DecisionLedger({ workspaceId, spaceId, hasFullIntelligen
           related_meeting_id: meeting.id,
         });
         for (const d of found) {
-          const { error } = await supabase.from('clipad_decisions').insert(d);
+          // Deduplicate: skip if we already have a decision with the same text (case-insensitive)
+          const { data: existing } = await supabase
+            .from('clipad_decisions')
+            .select('id')
+            .eq('team_space_id', spaceId)
+            .ilike('decision_text', d.decision_text.substring(0, 80))
+            .limit(1);
+          if (existing && existing.length > 0) continue;
+
+          // Populate reasoning_text from rationale if available
+          const insertPayload = {
+            ...d,
+            reasoning_text: d.rationale || null,
+          };
+
+          const { error } = await supabase.from('clipad_decisions').insert(insertPayload);
           if (!error) {
             totalAdded++;
             await writeOrgEvent({
