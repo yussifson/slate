@@ -1442,9 +1442,16 @@ export default function RecordVideo() {
 
         {/* COUNTDOWN OVERLAY */}
         {countdown !== null && countdown > 0 && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-            <div className="text-9xl font-black text-white animate-pulse">
-              {countdown}
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/80 backdrop-blur-xl m-0 p-0 border-0">
+            <div className="relative flex items-center justify-center">
+              {/* Glowing animated ring */}
+              <div className="absolute inset-0 rounded-full border-[6px] border-emerald-500/20 blur-md scale-150 animate-ping duration-1000" />
+              <div className="absolute inset-0 rounded-full border-[4px] border-emerald-500 animate-[spin_2s_linear_infinite] scale-150" style={{ borderTopColor: 'transparent' }} />
+              
+              {/* Number */}
+              <div className="text-8xl md:text-9xl font-black text-white drop-shadow-[0_0_15px_rgba(16,185,129,0.5)] animate-in zoom-in duration-300">
+                {countdown}
+              </div>
             </div>
           </div>
         )}
@@ -1644,27 +1651,28 @@ export default function RecordVideo() {
             </div>
 
             {/* Lock Settings */}
-            <div className="mt-6">
-              <label className="block text-xs font-semibold text-muted-foreground mb-4 uppercase tracking-wider">Access Control</label>
-              <div className="relative">
+            <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-4">
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider shrink-0">Access Control</label>
+              <div className="relative inline-block min-w-[220px]">
                 <select
                   value={lockType}
                   onChange={e => setLockType(e.target.value)}
-                  className="w-full pl-11 pr-10 py-3.5 rounded-xl bg-secondary border border-border text-foreground text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/60 transition-all cursor-pointer font-medium"
+                  className="w-full pl-10 pr-8 py-2.5 rounded-xl bg-secondary border border-border text-foreground text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60 transition-all cursor-pointer font-semibold shadow-sm"
                 >
-                  <option value="none">Public — Available immediately to all space members</option>
-                  <option value="manual">Locked — Only you can view until manually unlocked</option>
-                  <option value="scheduled">Scheduled — Unlocks automatically at a specific time</option>
+                  <option value="none">Public (Space Members)</option>
+                  <option value="manual">Locked (Only Me)</option>
+                  <option value="scheduled">Scheduled Release</option>
                 </select>
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                  {lockType === 'none' && <Unlock className="w-4.5 h-4.5 text-emerald-500" />}
-                  {lockType === 'manual' && <Lock className="w-4.5 h-4.5 text-indigo-500" />}
-                  {lockType === 'scheduled' && <Clock className="w-4.5 h-4.5 text-amber-500" />}
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                  {lockType === 'none' && <Unlock className="w-4 h-4 text-emerald-500" />}
+                  {lockType === 'manual' && <Lock className="w-4 h-4 text-indigo-500" />}
+                  {lockType === 'scheduled' && <Clock className="w-4 h-4 text-amber-500" />}
                 </div>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
-                  <ChevronDown className="w-4.5 h-4.5" />
+                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                  <ChevronDown className="w-4 h-4" />
                 </div>
               </div>
+            </div>
 
               {lockType === 'scheduled' && (
                 <div className="mt-4 p-5 bg-amber-50 dark:bg-amber-950/10 rounded-xl border border-amber-100 dark:border-amber-900/30 flex gap-4 animate-in fade-in slide-in-from-top-2">
