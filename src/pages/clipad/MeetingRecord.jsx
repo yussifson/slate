@@ -513,7 +513,7 @@ export default function MeetingRecord() {
         
             {/* Transcript */}
         {(transcript.length > 0 || meeting.raw_transcript) && (
-          <SectionCard icon={FileText} iconColor="from-violet-500 to-purple-500" title="Transcript" defaultOpen={false}>
+          <SectionCard icon={FileText} iconColor="from-violet-500 to-purple-500" title="Transcript">
             <div className="flex justify-between mb-4">
               <span className="text-xs text-muted-foreground">{transcript.length} segments</span>
               <CopyButton text={transcript.map(t => `[${t.speaker}]: ${t.text}`).join('\n') || meeting.raw_transcript || ''} />
