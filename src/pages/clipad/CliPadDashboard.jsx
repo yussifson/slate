@@ -30,6 +30,7 @@ import AIInsightsPanel from '@/components/clipad/features/AIInsightsPanel';
 import FollowUpEngine from '@/components/clipad/features/FollowUpEngine';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import SpaceSelectorModal from '@/components/clipad/SpaceSelectorModal';
+import GlobalSearch from '@/components/clipad/search/GlobalSearch';
 
 function StatCard({ icon: Icon, value, label, trend, accentColor, bgColor, iconColor }) {
   return (
@@ -338,8 +339,13 @@ export default function CliPadDashboard() {
           <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm text-primary">
             <CliPadLogo size={22} />
           </div>
-          <span className="text-lg font-bold tracking-tight">CliPad</span>
+          <span className="text-lg font-bold tracking-tight hidden sm:block">CliPad</span>
         </div>
+        
+        <div className="flex-1 max-w-2xl mx-4 flex justify-center">
+          <GlobalSearch />
+        </div>
+
         <div className="flex items-center gap-1.5 md:gap-3">
           <button onClick={() => navigate('/spaces')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Spaces</button>
           <button onClick={() => navigate('/videos')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Recordings</button>
