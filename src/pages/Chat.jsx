@@ -19,6 +19,7 @@ import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { useUIPreference } from "@/hooks/useUIPreference";
 import { useChatDock } from "@/hooks/useChatDock";
 import { PanelRightClose, PanelRightOpen } from "lucide-react";
+import SmartDocumentViewer from "@/components/SmartDocumentViewer";
 
 export default function Chat({ isDockedMode = false }) {
  const { t} = useTranslation();
@@ -44,6 +45,7 @@ export default function Chat({ isDockedMode = false }) {
  const [searchQuery, setSearchQuery] = useState("");
  const [isSidebarCollapsed, setIsSidebarCollapsed] = useUIPreference(user, 'chatSidebarCollapsed', false);
  const { isChatDocked, toggleChatDock } = useChatDock();
+ const [viewingDoc, setViewingDoc] = useState(null);
 
  const messagesEndRef = useRef(null);
  const fileInputRef = useRef(null);
@@ -331,6 +333,12 @@ export default function Chat({ isDockedMode = false }) {
     activeRoom={activeRoom}
     participantProfiles={participantProfiles}
   />
+  
+  <SmartDocumentViewer
+    open={!!viewingDoc}
+    onOpenChange={() => setViewingDoc(null)}
+    doc={viewingDoc}
+  />
 
  {/* Sidebar - Channels & DMs */}
  <div className={cn(
@@ -597,24 +605,33 @@ export default function Chat({ isDockedMode = false }) {
  )}
  
  {msg.content.startsWith('[Attachment|') ? (
- <div className="pr-12 pt-1 pb-1">
- <div className="flex items-center gap-2 bg-primary/20 dark:bg-white dark:bg-card/40/5 p-2 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- {msg.content.split('|')[3] === 'data:image' ? (
- <img src={msg.content.split('|')[2]} alt="attachment" className="max-w-[200px] rounded-md object-cover cursor-pointer hover:opacity-90 transition-opacity" onClick={() => window.open(msg.content.split('|')[2], '_blank')} />
- ) : msg.content.split('|')[3] === 'data:video' ? (
- <video src={msg.content.split('|')[2]} controls className="max-w-[250px] rounded-md" />
- ) : (
- <a href={msg.content.split('|')[2]} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:bg-primary/20 dark:hover:bg-white dark:bg-card/40/5 rounded-lg p-1 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <FileText className="w-8 h-8 text-primary shrink-0" />
- <div className="flex flex-col min-w-0">
- <span className="text-sm font-semibold truncate max-w-[150px] text-primary hover:underline">{msg.content.split('|')[1]}</span>
- <span className="text-xs text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{msg.content.split('|')[1]?.split('.').pop() || 'DOCUMENT'}</span>
- </div>
- </a>
- )}
- </div>
- </div>
- ) : (
+  <div className="pr-12 pt-1 pb-1 w-full">
+  <div className="flex items-center gap-2 bg-primary/20 dark:bg-white dark:bg-card/40/5 p-2 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 w-full">
+  {(() => {
+    const parts = msg.content.split('|');
+    const fileName = parts[1];
+    const fileUrl = parts[2];
+    const fileType = parts[3];
+
+    if (fileType === 'data:image') {
+      return <img src={fileUrl} alt={fileName} className="max-w-[200px] rounded-md object-cover cursor-pointer hover:opacity-90 transition-opacity" onClick={() => setViewingDoc({ name: fileName, file_url: fileUrl, file_type: 'image' })} />;
+    }
+    if (fileType === 'data:video') {
+      return <video src={fileUrl} controls className="max-w-[250px] rounded-md cursor-pointer" />;
+    }
+    return (
+      <div onClick={() => setViewingDoc({ name: fileName, file_url: fileUrl, file_type: fileName.split('.').pop() || 'pdf' })} className="flex items-center gap-2 rounded-lg p-1 transition-colors cursor-pointer w-full">
+        <FileText className="w-8 h-8 text-primary shrink-0" />
+        <div className="flex flex-col min-w-0">
+          <span className="text-sm font-semibold truncate max-w-[150px] text-primary hover:underline">{fileName}</span>
+          <span className="text-xs text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{fileName.split('.').pop() || 'DOCUMENT'}</span>
+        </div>
+      </div>
+    );
+  })()}
+  </div>
+  </div>
+  ) : (
  <div className="whitespace-pre-wrap pr-12">{msg.content}</div>
  )}
  
@@ -631,7 +648,7 @@ export default function Chat({ isDockedMode = false }) {
  </div>
  
  {/* Message Actions */}
- <div className="opacity-40 hover:opacity-100 transition-opacity flex flex-wrap items-center gap-2 bg-white dark:bg-card/40/50 dark:bg-black/20 rounded-full px-1 py-0.5 mb-1 self-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className={cn("absolute -bottom-3 opacity-0 group-hover:opacity-100 transition-opacity flex flex-nowrap items-center gap-1 bg-white dark:bg-[#111b21] shadow-md border border-slate-200 dark:border-slate-800 rounded-full px-1 py-0.5 z-10", isMe ? "right-6" : "left-12")}>
  <button onClick={() => setReplyTo(msg)} className="p-1 hover:bg-primary/20 rounded-full text-[#71717a] dark:text-gray-400" title="Reply">
  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
  </button>
