@@ -134,6 +134,7 @@ export default function StandupPanel({ spaceId }) {
         space_id: spaceId,
         user_id: user.id,
         workspace_id: user.company_id,
+        user_name: user.full_name,
         today: form.today,
         yesterday: form.yesterday || null,
         blockers: form.blockers || null,
@@ -165,7 +166,7 @@ export default function StandupPanel({ spaceId }) {
     setIsSummarizing(true);
     try {
       const formatted = updates.map(u => ({
-        user_name: u.profiles?.full_name,
+        user_name: u.user_name || u.profiles?.full_name,
         today: u.today,
         yesterday: u.yesterday,
         blockers: u.blockers,
