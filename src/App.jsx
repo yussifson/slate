@@ -19,6 +19,7 @@ const RecordVideo = React.lazy(() => import('@/pages/clipad/RecordVideo'));
 const WatchVideo = React.lazy(() => import('@/pages/clipad/WatchVideo'));
 const CliPadSettings = React.lazy(() => import('@/pages/clipad/CliPadSettings'));
 const VideoAnalytics = React.lazy(() => import('@/pages/clipad/VideoAnalytics'));
+const EnterpriseDashboard = React.lazy(() => import('@/pages/clipad/admin/EnterpriseDashboard'));
 const KnowledgeHealth = React.lazy(() => import('@/pages/clipad/KnowledgeHealth'));
 const CliPadDashboard = React.lazy(() => import('@/pages/clipad/CliPadDashboard'));
 const CliPadLogin = React.lazy(() => import('@/pages/clipad/CliPadLogin'));
@@ -776,6 +777,7 @@ function PlatformRoutes() {
         <Route path="/clipad/save-meeting/:id" element={<SaveMeetingPage />} />
         <Route path="/clipad/settings" element={<CliPadSettings />} />
         <Route path="/clipad/analytics" element={<VideoAnalytics />} />
+        <Route path="/clipad/enterprise" element={<EnterpriseDashboard />} />
         <Route path="/clipad/health" element={<KnowledgeHealth />} />
       </Route>
 
