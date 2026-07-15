@@ -90,6 +90,7 @@ export default function StandupPanel({ spaceId }) {
   const [aiSummary, setAiSummary] = useState('');
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [todayUpdate, setTodayUpdate] = useState(null);
+  const [filterMode, setFilterMode] = useState('today');
 
   const [form, setForm] = useState({
     today: '',
@@ -101,7 +102,6 @@ export default function StandupPanel({ spaceId }) {
 
   useEffect(() => {
     if (spaceId) {
-      fetchUpdates();
       const sub = supabase
         .channel(`standups:${spaceId}`)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'clipad_standups', filter: `space_id=eq.${spaceId}` }, fetchUpdates)
@@ -110,17 +110,40 @@ export default function StandupPanel({ spaceId }) {
     }
   }, [spaceId]);
 
+  useEffect(() => {
+    if (spaceId) {
+      fetchUpdates();
+    }
+  }, [spaceId, filterMode]);
+
   const fetchUpdates = async () => {
     setLoading(true);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const { data } = await supabase
+    let start = today;
+    let end = null;
+
+    if (filterMode === 'yesterday') {
+      start = new Date(today);
+      start.setDate(start.getDate() - 1);
+      end = new Date(today);
+    } else if (filterMode === 'last7days') {
+      start = new Date(today);
+      start.setDate(start.getDate() - 7);
+    }
+
+    let query = supabase
       .from('clipad_standups')
       .select('*, profiles(full_name, avatar_url)')
       .eq('space_id', spaceId)
-      .gte('created_at', today.toISOString())
-      .order('created_at', { ascending: false });
+      .gte('created_at', start.toISOString());
+
+    if (end) {
+      query = query.lt('created_at', end.toISOString());
+    }
+
+    const { data } = await query.order('created_at', { ascending: false });
 
     setUpdates(data || []);
     setTodayUpdate((data || []).find(u => u.user_id === user?.id) || null);
@@ -190,7 +213,14 @@ export default function StandupPanel({ spaceId }) {
           <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
             <Sun className="w-5 h-5 text-amber-500" /> Daily Standup
           </h2>
-          <p className="text-sm text-muted-foreground">{todayLabel}</p>
+          <div className="flex items-center gap-3 mt-1.5">
+            <p className="text-sm text-muted-foreground">{todayLabel}</p>
+            <div className="flex bg-slate-100 dark:bg-slate-800 rounded-lg p-0.5 shadow-inner">
+              <button onClick={() => setFilterMode('today')} className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded-md font-bold transition-all ${filterMode === 'today' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Today</button>
+              <button onClick={() => setFilterMode('yesterday')} className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded-md font-bold transition-all ${filterMode === 'yesterday' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Yesterday</button>
+              <button onClick={() => setFilterMode('last7days')} className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded-md font-bold transition-all ${filterMode === 'last7days' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Last 7 Days</button>
+            </div>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -199,7 +229,7 @@ export default function StandupPanel({ spaceId }) {
           >
             <RefreshCw className="w-4 h-4" />
           </button>
-          {!todayUpdate && (
+          {!todayUpdate && filterMode === 'today' && (
             <button
               onClick={() => setShowForm(!showForm)}
               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors"
@@ -329,8 +359,8 @@ export default function StandupPanel({ spaceId }) {
         ) : updates.length === 0 ? (
           <div className="text-center py-10 text-muted-foreground">
             <Sun className="w-10 h-10 mx-auto mb-3 opacity-20" />
-            <p className="font-medium text-sm">No standup updates yet today.</p>
-            <p className="text-xs opacity-70 mt-1">Be the first to post your update!</p>
+            <p className="font-medium text-sm">No standup updates found.</p>
+            {filterMode === 'today' && <p className="text-xs opacity-70 mt-1">Be the first to post your update!</p>}
           </div>
         ) : (
           updates.map(u => (
