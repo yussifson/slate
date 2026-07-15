@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
@@ -140,22 +141,23 @@ export default function UnivNotificationCenter() {
       </button>
 
       {/* Dropdown Panel */}
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40" 
-              onClick={() => setIsOpen(false)} 
-            />
-            <motion.div 
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.95 }}
-              transition={{ duration: 0.15 }}
-              className="absolute right-0 mt-2 w-80 sm:w-96 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl rounded-xl z-50 overflow-hidden flex flex-col max-h-[80vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-            >
-              {/* Header */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <div className="fixed inset-0 z-[100] flex justify-end">
+              <motion.div 
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[100]" 
+                onClick={() => setIsOpen(false)} 
+              />
+              <motion.div 
+                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                transition={{ duration: 0.15 }}
+                className="fixed top-[52px] right-2 sm:right-5 w-80 sm:w-96 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-xl rounded-xl z-[101] overflow-hidden flex flex-col max-h-[80vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+              >
+                {/* Header */}
               <div className="p-4 border-b border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-between bg-muted/30">
                 <h3 className="font-semibold text-foreground">Notifications</h3>
                 <div className="flex items-center gap-2">
@@ -250,9 +252,11 @@ export default function UnivNotificationCenter() {
                 </a>
               </div>
             </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 }

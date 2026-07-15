@@ -125,7 +125,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  const isPanelOpen = isAIOpen || isBoltOpen;
 
  const renderSecondaryOptions = (inPopover = false) => (
-    <div className={`flex items-center ${inPopover ? 'flex-wrap gap-3' : 'gap-2 sm:gap-2'}`}>
+    <div className={`flex items-center ${inPopover ? 'flex-wrap gap-3' : 'gap-1.5 sm:gap-2.5'}`}>
       {/* Workspace Switcher */}
       {user?.available_companies?.length > 1 && (
         <DropdownMenu>
@@ -210,7 +210,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  </button>
  </div>
  {/* Right */}
- <div className="flex items-center justify-end gap-2 sm:gap-2 ml-auto">
+ <div className="flex items-center justify-end gap-1.5 sm:gap-3 ml-auto">
  {/* Super Admin Industry Switcher */}
  {user?.role === 'super_admin' && (
  <DropdownMenu>
@@ -318,7 +318,10 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  </PopoverContent>
  </Popover>
  ) : (
- renderSecondaryOptions(false)
+   <>
+     {renderSecondaryOptions(false)}
+     <div className="hidden sm:block w-[1px] h-5 bg-black/10 dark:bg-white/10 mx-0.5" />
+   </>
  )}
 
  {/* User */}
