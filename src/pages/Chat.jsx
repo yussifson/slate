@@ -699,7 +699,6 @@ export default function Chat({ isDockedMode = false }) {
     </DropdownMenu>
   </div>
  </div>
- </div>
  );
 })}
  <div ref={messagesEndRef} className="h-2" />
