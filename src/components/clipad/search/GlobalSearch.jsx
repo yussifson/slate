@@ -6,13 +6,13 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useNavigate } from 'react-router-dom';
 
 const TYPE_META = {
-  meeting:    { icon: Calendar,      label: 'Meeting',    color: 'text-blue-500',   bg: 'bg-blue-500/10',    route: (id) => `/clipad/meetings/${id}` },
-  video:      { icon: Video,         label: 'Video',      color: 'text-purple-500', bg: 'bg-purple-500/10',  route: (id) => `/clipad/videos/${id}` },
-  doc:        { icon: FileText,      label: 'Doc',        color: 'text-emerald-500',bg: 'bg-emerald-500/10', route: (id, spaceId) => spaceId ? `/clipad/spaces/${spaceId}?tab=docs&docId=${id}` : null },
-  task:       { icon: CheckCircle,   label: 'Task',       color: 'text-amber-500',  bg: 'bg-amber-500/10',   route: (id, spaceId) => spaceId ? `/clipad/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
-  message:    { icon: MessageSquare, label: 'Chat',       color: 'text-indigo-500', bg: 'bg-indigo-500/10',  route: (id, spaceId) => spaceId ? `/clipad/spaces/${spaceId}?tab=chat` : null },
-  decision:   { icon: ShieldAlert,   label: 'Decision',   color: 'text-rose-500',   bg: 'bg-rose-500/10',    route: (id, spaceId) => spaceId ? `/clipad/spaces/${spaceId}?tab=decisions` : null },
-  blocker:    { icon: AlertTriangle, label: 'Blocker',    color: 'text-orange-500', bg: 'bg-orange-500/10',  route: (id, spaceId) => spaceId ? `/clipad/spaces/${spaceId}?tab=overview` : null },
+  meeting:    { icon: Calendar,      label: 'Meeting',    color: 'text-blue-500',   bg: 'bg-blue-500/10',    route: (id) => `/meetings/${id}` },
+  video:      { icon: Video,         label: 'Video',      color: 'text-purple-500', bg: 'bg-purple-500/10',  route: (id) => `/videos/${id}` },
+  doc:        { icon: FileText,      label: 'Doc',        color: 'text-emerald-500',bg: 'bg-emerald-500/10', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=docs&docId=${id}` : null },
+  task:       { icon: CheckCircle,   label: 'Task',       color: 'text-amber-500',  bg: 'bg-amber-500/10',   route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
+  message:    { icon: MessageSquare, label: 'Chat',       color: 'text-indigo-500', bg: 'bg-indigo-500/10',  route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=chat` : null },
+  decision:   { icon: ShieldAlert,   label: 'Decision',   color: 'text-rose-500',   bg: 'bg-rose-500/10',    route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=decisions` : null },
+  blocker:    { icon: AlertTriangle, label: 'Blocker',    color: 'text-orange-500', bg: 'bg-orange-500/10',  route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=overview` : null },
 };
 
 export default function GlobalSearch() {
