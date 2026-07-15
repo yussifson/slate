@@ -665,53 +665,39 @@ export default function Chat({ isDockedMode = false }) {
  return <CheckCheck className="w-3.5 h-3.5 text-[#71717a] dark:text-gray-400" />;
 })()}
  </div>
- </div>
- 
- {/* Message Actions */}
- <div className={cn("absolute -bottom-3 opacity-0 group-hover:opacity-100 transition-opacity flex flex-nowrap items-center gap-1 bg-white dark:bg-[#111b21] shadow-md border border-slate-200 dark:border-slate-800 rounded-full px-1 py-0.5 z-10", isMe ? "right-6" : "left-12")}>
- <button onClick={() => setReplyTo(msg)} className="p-1 hover:bg-primary/20 rounded-full text-[#71717a] dark:text-gray-400" title="Reply">
- <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
- </button>
- <button 
- onClick={async () => {
- const currentLikes = msg.reactions?.likes || 0;
- await (async () => {
- const _payload = {
- reactions: { ...msg.reactions, likes: currentLikes + 1}
-};
- const _keys = Object.keys(_payload);
- const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE chat_messages SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, msg.id]);
-})();
- const error = null;
- if (!error) {
- setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, reactions: { ...m.reactions, likes: currentLikes + 1}} : m));
-}
-}} 
- className="p-1 hover:bg-primary/20 rounded-full text-[#71717a] dark:text-gray-400 flex items-center gap-0.5" 
- title="Like"
- >
- <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
- {msg.reactions?.likes > 0 && <span className="text-[10px]">{msg.reactions.likes}</span>}
- </button>
- {isMe && (
- <>
- <button onClick={() => { setEditingMsg(msg); setInputValue(msg.content);}} className="p-1 hover:bg-primary/20 rounded-full text-[#71717a] dark:text-gray-400" title="Edit">
- <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
- </button>
- <button 
- className="p-1 hover:bg-rose-100 hover:text-rose-500 rounded-full text-[#71717a] dark:text-gray-400" 
- title="Delete"
- onClick={() => {
- powerSync.execute(`DELETE FROM chat_messages WHERE id = ?`, [msg.id]).then(() => {
- setMessages(prev => prev.filter(m => m.id !== msg.id));
-});
-}}
- >
- <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
- </button>
- </>
- )}
+
+ {/* Message Actions Dropdown */}
+ <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="p-0.5 bg-white/70 hover:bg-white dark:bg-black/40 dark:hover:bg-black/80 rounded-full text-slate-500 dark:text-slate-300 backdrop-blur-sm shadow-sm transition-all" title="Message Options">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-36 rounded-xl">
+        <DropdownMenuItem onClick={() => setReplyTo(msg)} className="gap-2 cursor-pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg> Reply</DropdownMenuItem>
+        <DropdownMenuItem onClick={async () => {
+          const currentLikes = msg.reactions?.likes || 0;
+          const _payload = { reactions: { ...msg.reactions, likes: currentLikes + 1}};
+          const _keys = Object.keys(_payload);
+          const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`UPDATE chat_messages SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, msg.id]);
+          setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, reactions: { ...m.reactions, likes: currentLikes + 1}} : m));
+        }} className="gap-2 cursor-pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> Like {msg.reactions?.likes > 0 && `(${msg.reactions.likes})`}</DropdownMenuItem>
+        {isMe && (
+          <>
+            <DropdownMenuItem onClick={() => { setEditingMsg(msg); setInputValue(msg.content);}} className="gap-2 cursor-pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> Edit</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="text-red-600 focus:bg-red-50 focus:text-red-700 dark:focus:bg-red-950/30 gap-2 cursor-pointer" onClick={() => {
+              powerSync.execute(`DELETE FROM chat_messages WHERE id = ?`, [msg.id]).then(() => setMessages(prev => prev.filter(m => m.id !== msg.id)));
+            }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg> Delete
+            </DropdownMenuItem>
+          </>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  </div>
  </div>
  </div>
  );
