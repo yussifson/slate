@@ -181,8 +181,8 @@ export default function SpaceDashboard() {
         const s = spaceRes.data;
         const isOwner = user && s.created_by === user.id;
 
-        // Access control: block non-members from private spaces
-        if (s.is_private && !isOwner) {
+        // Access control: block non-members from private spaces (admins bypass)
+        if (s.is_private && !isOwner && !isAdmin(user)) {
           const { data: memberRow } = await supabase
             .from('clipad_space_members')
             .select('id')
