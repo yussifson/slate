@@ -464,7 +464,6 @@ export default function Chat({ isDockedMode = false }) {
          <span className="hidden sm:inline">{isSummarizing ? "Summarizing..." : "Summarize"}</span>
        </Button>
      )}
- <button className="hover:text-foreground transition-colors hidden sm:block"><Search className="w-5 h-5" /></button>
  <button onClick={toggleChatDock} className="hover:text-primary transition-colors ml-1" title={isDockedMode ? "Undock Chat" : "Dock to Right Sidebar"}>
     {isDockedMode ? <PanelRightClose className="w-5 h-5" /> : <PanelRightOpen className="w-5 h-5" />}
  </button>

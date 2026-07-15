@@ -378,6 +378,7 @@ export default function AppLayout() {
      </main>
        <GlobalVideoOverlay />
       </div>
+      </div>
       <div id="right-docked-panel-portal" className={cn(
         "flex shrink-0 h-full relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10 transition-all duration-300",
         isChatDocked ? "w-[400px] xl:w-[450px]" : "w-0 overflow-hidden border-none"
