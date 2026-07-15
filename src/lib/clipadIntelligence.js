@@ -171,8 +171,8 @@ export async function generateStandupSummary(updates = []) {
 
   const formatted = updates
     .map(
-      (u, i) =>
-        `Member ${i + 1}${u.user_name ? ` (${u.user_name})` : ''}:\n- Today: ${u.today || 'N/A'}\n- Yesterday: ${u.yesterday || 'N/A'}\n- Blockers: ${u.blockers || 'None'}\n- Mood: ${u.mood || 'neutral'}`
+      (u) =>
+        `Name: ${u.user_name || 'Team Member'}\n- Today: ${u.today || 'N/A'}\n- Yesterday: ${u.yesterday || 'N/A'}\n- Blockers: ${u.blockers || 'None'}\n- Mood: ${u.mood || 'neutral'}`
     )
     .join('\n\n');
 
@@ -180,7 +180,7 @@ export async function generateStandupSummary(updates = []) {
     {
       role: 'system',
       content:
-        'You are a team standup summarizer. Create a concise, structured summary. Highlight: key work happening, shared blockers, team mood, and items needing manager attention. Be concrete. Keep it under 200 words.',
+        'You are a team standup summarizer. Create a clear, concise summary written in continuous, natural paragraphs. Do NOT use any special characters, markdown formatting, bullet points, or asterisks. Write in a clean prose format. Explicitly use the provided names of the team members (e.g. "John worked on...", "Sarah is blocked by...") instead of generic terms like "Member 1". Summarize key work happening, shared blockers, team mood, and items needing manager attention. Keep it under 200 words.',
     },
     { role: 'user', content: `Summarize this team standup:\n\n${formatted}` },
   ]) || 'Unable to generate summary.';
