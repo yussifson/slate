@@ -130,7 +130,7 @@ export default function GlobalSearch() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="hidden md:flex items-center gap-2 px-3 lg:px-4 py-1.5 bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 rounded-xl transition-all border border-slate-200 dark:border-slate-700/50 w-48 lg:w-64"
+        className="hidden md:flex items-center gap-2 px-3 lg:px-4 h-9 bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 rounded-xl transition-all border border-slate-200 dark:border-slate-700/50 w-48 lg:w-64"
       >
         <Search className="w-4 h-4 shrink-0" />
         <span className="text-sm flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis">Search or ask anything...</span>
