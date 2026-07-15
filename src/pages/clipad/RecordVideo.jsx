@@ -1519,15 +1519,23 @@ export default function RecordVideo() {
 
         {/* COUNTDOWN OVERLAY */}
         {countdown !== null && countdown > 0 && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/80 backdrop-blur-xl m-0 p-0 border-0">
-            <div className="relative flex items-center justify-center">
-              {/* Glowing animated ring */}
-              <div className="absolute inset-0 rounded-full border-[6px] border-emerald-500/20 blur-md scale-150 animate-ping duration-1000" />
-              <div className="absolute inset-0 rounded-full border-[4px] border-emerald-500 animate-[spin_2s_linear_infinite] scale-150" style={{ borderTopColor: 'transparent' }} />
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white/60 dark:bg-slate-950/80 backdrop-blur-2xl m-0 p-0 border-0">
+            <div className="relative flex items-center justify-center w-48 h-48">
+              {/* Inner glow pulsating */}
+              <div className="absolute inset-0 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 blur-2xl animate-pulse" />
               
-              {/* Number */}
-              <div className="text-8xl md:text-9xl font-black text-white drop-shadow-[0_0_15px_rgba(16,185,129,0.5)] animate-in zoom-in duration-300">
-                {countdown}
+              {/* Expanding ping ring */}
+              <div className="absolute inset-0 rounded-full border-[2px] border-emerald-500/40 animate-ping" style={{ animationDuration: '1s' }} />
+              
+              {/* Outer spinning dashed ring */}
+              <div className="absolute -inset-4 rounded-full border-[2px] border-dashed border-emerald-400/50 animate-[spin_4s_linear_infinite]" />
+              
+              {/* Solid circle with glassy background */}
+              <div className="relative w-full h-full flex items-center justify-center rounded-full bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border border-white/50 dark:border-white/10 shadow-[0_8px_32px_rgba(16,185,129,0.3)]">
+                {/* Number */}
+                <div key={countdown} className="text-8xl md:text-9xl font-black text-emerald-600 dark:text-white drop-shadow-md animate-in zoom-in duration-300">
+                  {countdown}
+                </div>
               </div>
             </div>
           </div>
