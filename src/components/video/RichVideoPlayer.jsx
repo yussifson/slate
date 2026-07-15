@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, RotateCw, Volume2, VolumeX, Maximize2, PictureInPicture, Send, MessageSquare, PanelRightClose, PanelRightOpen } from 'lucide-react';
+import { Play, Pause, RotateCcw, RotateCw, Volume2, VolumeX, Maximize2, PictureInPicture as PipIcon, Send, MessageSquare, PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { supabase as db } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
@@ -359,7 +359,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
               </select>
 
               <button onClick={(e) => { e.stopPropagation(); togglePiP(); }} className="text-white/80 hover:text-white transition-colors ml-2">
-                <PictureInPicture className="w-5 h-5" />
+                <PipIcon className="w-5 h-5" />
               </button>
               <button onClick={(e) => { e.stopPropagation(); toggleFullScreen(); }} className="text-white/80 hover:text-white transition-colors">
                 <Maximize2 className="w-5 h-5" />
