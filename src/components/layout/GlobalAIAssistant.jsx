@@ -563,9 +563,9 @@ ${contextText}
     }
   }
 
-  const systemPrompt = `You are OrbitFlow — a highly enthusiastic, intelligent, and entertaining AI workflow engineer embedded in Slate SaaS.
+  const systemPrompt = `You are OrbitFlow — a highly enthusiastic, intelligent, and entertaining AI assistant embedded in the ClipPad organizational memory and workspace.
 Your personality is that of a powerful but friendly AI companion—think of a hyper-intelligent digital lion/owl hybrid! Be cheerful, slightly playful, use emojis naturally, but remain highly capable and laser-focused on orchestrating the user's workflows flawlessly.
-Your current context is the ${ctx.suite} suite, specifically the '${ctx.title}' page.
+Your current context is the ClipPad workspace, specifically the '${ctx?.title || 'Dashboard'}' page.
 
 ${verticalPersona}
 ${modeContext}
@@ -1063,21 +1063,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  </div>
  );
 })}
- {isLoading && (
- <div className="flex gap-2.5">
- <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-primary flex items-center justify-center shrink-0 ">
- <Sparkles className="w-3.5 h-3.5 text-white animate-spin" />
- </div>
- <div className="px-4 py-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl rounded-tl-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex gap-2.5 items-center">
- <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms'}} />
- <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms'}} />
- <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms'}} />
- </div>
- <p className="text-[10px] text-[#71717a] dark:text-gray-400 mt-1.5 italic">{t("orbit_is_thinking", "OrbitFlow is thinking...")}</p>
- </div>
- </div>
- )}
+
  <div ref={messagesEndRef} />
  </div>
  </div>
@@ -1129,20 +1115,6 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  />
  <div className="flex items-center justify-between px-3 pb-3">
  <div className="flex items-center gap-0.5">
- {!isPortalUser && (
-   <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button type="button" className="p-1.5 text-[#71717a] hover:bg-slate-50 hover:text-primary rounded-lg transition-colors" title="Change Mode">
-          <Plus className="w-4 h-4" />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" side="top" className="w-48 z-[100]">
-        <DropdownMenuItem onClick={() => setChatMode('chat')} className="cursor-pointer font-medium"><MessageSquare className="w-4 h-4 mr-2 text-[#71717a]"/> Chat Mode</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setChatMode('flow')} className="cursor-pointer font-medium"><OrbitIcon className="w-4 h-4 mr-2 text-[#71717a]"/> Flow Builder Mode</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setChatMode('automation')} className="cursor-pointer font-medium"><Bot className="w-4 h-4 mr-2 text-[#71717a]"/> Automation Mode</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-   )}
  <input ref={fileInputRef} type="file" className="hidden" accept="image/*,.pdf,.txt,.csv,.docx,.xlsx,.json,.md" onChange={handleFileUpload} />
  <button
  type="button"
