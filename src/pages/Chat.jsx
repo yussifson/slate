@@ -15,8 +15,10 @@ import { useToast} from "@/components/ui/use-toast";
 import { format} from "date-fns";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { useUIPreference } from "@/hooks/useUIPreference";
+import { useChatDock } from "@/hooks/useChatDock";
+import { PanelRightClose, PanelRightOpen } from "lucide-react";
 
-export default function Chat() {
+export default function Chat({ isDockedMode = false }) {
  const { t} = useTranslation();
  const { user, isPortalUser } = useAuth();
  const { toast} = useToast();
@@ -38,6 +40,7 @@ export default function Chat() {
  const [chatSummary, setChatSummary] = useState(null);
  const [searchQuery, setSearchQuery] = useState("");
  const [isSidebarCollapsed, setIsSidebarCollapsed] = useUIPreference(user, 'chatSidebarCollapsed', false);
+ const { isChatDocked, toggleChatDock } = useChatDock();
 
  const messagesEndRef = useRef(null);
  const fileInputRef = useRef(null);
@@ -303,7 +306,7 @@ export default function Chat() {
  {/* Sidebar - Channels & DMs */}
  <div className={cn(
    "flex-shrink-0 border-r border-primary/40 bg-background dark:bg-[#202c33] flex flex-col h-[40%] md:h-full z-10 relative transition-all duration-300",
-   isSidebarCollapsed ? "w-0 md:w-16 overflow-hidden" : "w-full md:w-80 lg:w-96"
+   isSidebarCollapsed ? "w-0 md:w-16 overflow-hidden" : (isDockedMode ? "w-[120px] sm:w-[150px]" : "w-full md:w-80 lg:w-96")
  )}>
  <div className={cn(
    "border-b border-primary/40 flex items-center justify-between shrink-0",
@@ -315,7 +318,7 @@ export default function Chat() {
        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden shrink-0">
          {user?.avatar_url ? <img src={user.avatar_url} className="w-full h-full object-cover"/> : <MessageSquare className="w-5 h-5 text-primary" />}
        </div>
-       <h2 className="font-semibold text-lg">Chats</h2>
+       {!isDockedMode && <h2 className="font-semibold text-lg">Chats</h2>}
      </div>
      <div className="flex items-center gap-1">
        <Button variant="ghost" size="icon" onClick={() => setIsSidebarCollapsed(true)} className="w-9 h-9 rounded-full hover:bg-primary/10" title="Collapse Sidebar">
@@ -394,13 +397,13 @@ export default function Chat() {
 </div>
  )}
  </div>
- {!isSidebarCollapsed && (
+ {!isSidebarCollapsed && !isDockedMode && (
  <div className="flex-1 min-w-0 border-b border-primary/40 group-last:border-none pb-3">
  <div className="flex justify-between items-baseline mb-0.5">
  <p className="text-base text-foreground truncate">{roomName}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{format(new Date(room.updated_at), 'h:mm a')}</p>
+ {!isDockedMode && <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{format(new Date(room.updated_at), 'h:mm a')}</p>}
  </div>
- <p className="text-sm text-[#71717a] dark:text-gray-400 truncate">Click to view messages...</p>
+ {!isDockedMode && <p className="text-sm text-[#71717a] dark:text-gray-400 truncate">Click to view messages...</p>}
  </div>
  )}
  </div>
@@ -435,8 +438,12 @@ export default function Chat() {
  <>
  <div className="flex items-center gap-3">
  {activeRoom?.room_type === "group" ? (
- <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden">
- <Users className="w-5 h-5 text-primary dark:text-primary/70" />
+ <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden shrink-0">
+ {activeRoom?.avatar_url ? (
+   <img src={activeRoom.avatar_url} alt={roomName} className="w-full h-full object-cover" />
+ ) : (
+   <Users className="w-5 h-5 text-primary dark:text-primary/70" />
+ )}
  </div>
  ) : (
  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">
@@ -444,25 +451,31 @@ export default function Chat() {
 </div>
  )}
  <div>
- <h3 className="font-semibold text-foreground leading-tight">{roomName}</h3>
- <p className="text-[12px] text-[#71717a] dark:text-gray-400">click here for contact info</p>
+ <h3 className="font-semibold text-foreground leading-tight cursor-pointer hover:underline" onClick={() => {
+    toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name} (${otherProfile.email})` : 'Group details available soon.' });
+ }}>{roomName}</h3>
+ <p className="text-[12px] text-[#71717a] dark:text-gray-400">View contact info</p>
  </div>
  </div>
- <div className="flex items-center gap-4 text-[#54656f] dark:text-[#aebac1]">
-    {messages.length > 0 && (
-      <Button onClick={handleSummarizeChat} disabled={isSummarizing} variant="ghost" size="sm" className="h-8 gap-2 hover:bg-primary/10 hover:text-primary">
-        <Sparkles className={cn("w-4 h-4", isSummarizing && "animate-pulse")} />
-        <span className="hidden sm:inline">{isSummarizing ? "Summarizing..." : "Summarize"}</span>
-      </Button>
-    )}
- <button className="hover:text-foreground transition-colors"><Search className="w-5 h-5" /></button>
+  <div className="flex items-center gap-2 sm:gap-4 text-[#54656f] dark:text-[#aebac1]">
+     {messages.length > 0 && !isDockedMode && (
+       <Button onClick={handleSummarizeChat} disabled={isSummarizing} variant="ghost" size="sm" className="h-8 gap-2 hover:bg-primary/10 hover:text-primary">
+         <Sparkles className={cn("w-4 h-4", isSummarizing && "animate-pulse")} />
+         <span className="hidden sm:inline">{isSummarizing ? "Summarizing..." : "Summarize"}</span>
+       </Button>
+     )}
+ <button className="hover:text-foreground transition-colors hidden sm:block"><Search className="w-5 h-5" /></button>
+ <button onClick={toggleChatDock} className="hover:text-primary transition-colors ml-1" title={isDockedMode ? "Undock Chat" : "Dock to Right Sidebar"}>
+    {isDockedMode ? <PanelRightClose className="w-5 h-5" /> : <PanelRightOpen className="w-5 h-5" />}
+ </button>
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
  <button className="hover:text-foreground transition-colors"><MoreVertical className="w-5 h-5" /></button>
  </DropdownMenuTrigger>
  <DropdownMenuContent align="end" className="w-48">
- <DropdownMenuItem>Contact Info</DropdownMenuItem>
- <DropdownMenuItem>Clear Chat</DropdownMenuItem>
+ <DropdownMenuItem onClick={() => {
+    toast({ title: 'Contact Info', description: otherProfile ? `${otherProfile.full_name} (${otherProfile.email})` : 'Group details available soon.' });
+ }}>Contact Info</DropdownMenuItem>
  </DropdownMenuContent>
  </DropdownMenu>
  </div>

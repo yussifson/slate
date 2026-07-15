@@ -2335,7 +2335,8 @@ export const AppSchema = new Schema({
         name: column.text,
         description: column.text,
         created_by: column.text,
-        company_id: column.text}),
+        company_id: column.text,
+        avatar_url: column.text}),
     chat_participants: new Table({
         id: column.text,
         room_id: column.text,

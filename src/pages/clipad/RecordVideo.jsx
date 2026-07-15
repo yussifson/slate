@@ -1650,10 +1650,10 @@ export default function RecordVideo() {
               />
             </div>
 
-            {/* Lock Settings */}
-            <div className="mt-6">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider shrink-0">Access Control</label>
+            {/* Action Row: Lock Settings & Save Buttons */}
+            <div className="mt-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <label className="hidden sm:block text-xs font-semibold text-muted-foreground uppercase tracking-wider shrink-0">Access Control</label>
                 <div className="relative inline-block min-w-[220px]">
                   <select
                     value={lockType}
@@ -1675,28 +1675,28 @@ export default function RecordVideo() {
                 </div>
               </div>
 
-              {lockType === 'scheduled' && (
-                <div className="mt-4 p-5 bg-amber-50 dark:bg-amber-950/10 rounded-xl border border-amber-100 dark:border-amber-900/30 flex gap-4 animate-in fade-in slide-in-from-top-2">
-                  <div className="flex-1">
-                    <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1.5">Unlock Date</label>
-                    <input type="date" value={unlockDate} onChange={e => setUnlockDate(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-border text-foreground text-sm" min={new Date().toISOString().split('T')[0]} />
-                  </div>
-                  <div className="flex-1">
-                    <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1.5">Unlock Time</label>
-                    <input type="time" value={unlockTime} onChange={e => setUnlockTime(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-border text-foreground text-sm" />
-                  </div>
-                </div>
-              )}
+              <div className="flex items-center gap-4">
+                <button onClick={discard} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 border border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 font-semibold text-sm transition-all shadow-sm">
+                  <RotateCcw className="w-4 h-4" /> Discard
+                </button>
+                <button onClick={uploadRecording} disabled={!title.trim() || !selectedSpace} className="flex items-center gap-2 px-8 py-3 rounded-xl bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-foreground font-bold shadow-lg shadow-primary/25 transition-all">
+                  <Upload className="w-4 h-4" /> {activeVideoId ? 'Save Details' : 'Save to CliPad'}
+                </button>
+              </div>
             </div>
 
-            <div className="flex gap-4">
-              <button onClick={discard} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-secondary hover:bg-secondary border border-border text-gray-400 font-semibold text-sm transition-all">
-                <RotateCcw className="w-4 h-4" /> Discard
-              </button>
-              <button onClick={uploadRecording} disabled={!title.trim() || !selectedSpace} className="flex items-center gap-2 px-8 py-3 rounded-xl bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-foreground font-bold shadow-lg shadow-primary/25 transition-all">
-                <Upload className="w-4 h-4" /> {activeVideoId ? 'Save Details' : 'Save to CliPad'}
-              </button>
-            </div>
+            {lockType === 'scheduled' && (
+              <div className="mt-4 p-5 bg-amber-50 dark:bg-amber-950/10 rounded-xl border border-amber-100 dark:border-amber-900/30 flex gap-4 animate-in fade-in slide-in-from-top-2">
+                <div className="flex-1">
+                  <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1.5">Unlock Date</label>
+                  <input type="date" value={unlockDate} onChange={e => setUnlockDate(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-border text-foreground text-sm" min={new Date().toISOString().split('T')[0]} />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1.5">Unlock Time</label>
+                  <input type="time" value={unlockTime} onChange={e => setUnlockTime(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-border text-foreground text-sm" />
+                </div>
+              </div>
+            )}
           </div>
         )}
 

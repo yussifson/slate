@@ -15,6 +15,8 @@ import { Button} from "@/components/ui/button";
 import Paywall from "@/pages/Paywall";
 import AiAssistant from "@/components/AiAssistant";
 import GlobalChatPanel from "@/components/chat/GlobalChatPanel";
+import Chat from "@/pages/Chat";
+import { useChatDock } from "@/hooks/useChatDock";
 import SpotlightSearch from "./SpotlightSearch";
 import GlobalVideoOverlay from "@/components/video/GlobalVideoOverlay";
 import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
@@ -40,6 +42,7 @@ export default function AppLayout() {
  const [isPrefsLoaded, setIsPrefsLoaded] = useState(false);
  const [orbitContext, setOrbitContext] = useState(null);
  const [uiPrefsId, setUiPrefsId] = useState(null);
+ const { isChatDocked } = useChatDock();
 
  useEffect(() => {
  if (!user?.email || !user?.company_id || isPrefsLoaded) return;
@@ -345,31 +348,43 @@ export default function AppLayout() {
  isBoltOpen={isBoltOpen}
  toggleBolt={toggleBolt}
  />
-  <div className="flex-1 relative flex overflow-hidden">
-   <main className={cn(
-          "flex-1 w-full mx-auto flex flex-col overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto",
-          ['/chat', '/email-inbox'].includes(location.pathname) 
-            ? "p-0" 
-            : "px-3 md:px-5 lg:px-6 pt-4 md:pt-5 pb-[calc(52px+env(safe-area-inset-bottom)+1rem)] md:pb-6"
-        )}>
-     <AnimatePresence mode="wait">
-       <motion.div
-         key={location.pathname}
-         initial={{ opacity: 0, y: 10 }}
-         animate={{ opacity: 1, y: 0 }}
-         exit={{ opacity: 0, y: -10 }}
-         transition={{ duration: 0.15, ease: "easeOut" }}
-         className="flex-1 w-full flex flex-col"
-       >
-         <Outlet />
-       </motion.div>
-     </AnimatePresence>
-   </main>
-     <GlobalVideoOverlay />
-    </div>
-    </div>
-    <div id="right-docked-panel-portal" className="flex shrink-0 h-full empty:hidden z-[100] relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10 transition-all duration-300"></div>
-    </div>
+    <div className="flex-1 relative flex overflow-hidden">
+     <main className={cn(
+            "flex-1 w-full mx-auto flex flex-col overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto",
+            ['/chat', '/email-inbox'].includes(location.pathname) 
+              ? "p-0" 
+              : "px-3 md:px-5 lg:px-6 pt-4 md:pt-5 pb-[calc(52px+env(safe-area-inset-bottom)+1rem)] md:pb-6"
+          )}>
+       <AnimatePresence mode="wait">
+         <motion.div
+           key={location.pathname}
+           initial={{ opacity: 0, y: 10 }}
+           animate={{ opacity: 1, y: 0 }}
+           exit={{ opacity: 0, y: -10 }}
+           transition={{ duration: 0.15, ease: "easeOut" }}
+           className="flex-1 w-full flex flex-col"
+         >
+           {/* If Chat is docked, don't render it in the main outlet to avoid duplicate IDs/state */}
+           {location.pathname === '/chat' && isChatDocked ? (
+             <div className="flex items-center justify-center h-full text-slate-500 flex-col gap-3">
+               <MessageSquare className="w-8 h-8 opacity-50" />
+               <p>Chat is currently docked to the right sidebar.</p>
+             </div>
+           ) : (
+             <Outlet />
+           )}
+         </motion.div>
+       </AnimatePresence>
+     </main>
+       <GlobalVideoOverlay />
+      </div>
+      <div id="right-docked-panel-portal" className={cn(
+        "flex shrink-0 h-full relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10 transition-all duration-300",
+        isChatDocked ? "w-[400px] xl:w-[450px]" : "w-0 overflow-hidden border-none"
+      )}>
+        {isChatDocked && <Chat isDockedMode={true} />}
+      </div>
+      </div>
    <MobileBottomNav />
    <AiAssistant isOpen={isAIOpen} onClose={toggleAI} injectedContext={orbitContext} onContextConsumed={() => setOrbitContext(null)} />
    <GlobalChatPanel isOpen={isChatOpen} onClose={toggleChat} />
