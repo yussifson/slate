@@ -166,7 +166,7 @@ export default function CliPadBilling() {
             }).then(() => fetchSubscription());
 
             supabase.from('optavel_transactions').insert({
-              id: receiptNum,
+              id: crypto.randomUUID(),
               company_id: companyId,
               amount: amountInPesewas,
               type: 'subscription',

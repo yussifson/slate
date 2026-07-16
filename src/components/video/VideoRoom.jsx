@@ -1343,7 +1343,11 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
    const callObject = DailyIframe.createCallObject();
    callRef.current = callObject;
 
-   const joinOpts = { url: roomUrl, startAudioOff: !initialAudio, startVideoOff: !initialVideo };
+   const userSettings = user?.user_metadata?.clipad_settings || {};
+   const startMic = userSettings.micDefault !== undefined ? userSettings.micDefault : initialAudio;
+   const startCam = userSettings.cameraDefault !== undefined ? userSettings.cameraDefault : initialVideo;
+   
+   const joinOpts = { url: roomUrl, startAudioOff: !startMic, startVideoOff: !startCam };
    if (typeof token === 'string' && token.length > 0) {
     joinOpts.token = token;
    }

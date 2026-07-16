@@ -227,11 +227,11 @@ export default function CliPadTeamSettings() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <img 
-                        src={member.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${member.full_name || member.email}`} 
+                        src={member.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${member.full_name || member.email?.split('@')[0]}`} 
                         alt="" 
                         className="w-8 h-8 rounded-full bg-secondary"
                       />
-                      <span className="text-sm font-semibold text-foreground">{member.full_name || 'Pending...'}</span>
+                      <span className="text-sm font-semibold text-foreground">{member.full_name || member.email?.split('@')[0] || 'Pending...'}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">

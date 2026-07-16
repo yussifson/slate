@@ -74,7 +74,7 @@ export default function PricingTags() {
             isAdminAssigned: true,
           };
           await supabase.from('optavel_transactions').insert({
-            id: receiptNumber,
+            id: crypto.randomUUID(),
             company_id: companyId,
             amount: 0,
             type: 'subscription',
