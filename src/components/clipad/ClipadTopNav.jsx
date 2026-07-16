@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { Sparkles, Settings, Shield, LogOut } from 'lucide-react';
-import CliPadLogo from '@/components/logo/CliPadLogo';
+import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import GlobalSearch from '@/components/clipad/features/GlobalSearch';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import NotificationCenter from '@/components/clipad/NotificationCenter';
