@@ -44,7 +44,6 @@ export default function AppLayout() {
  const [isPrefsLoaded, setIsPrefsLoaded] = useState(false);
  const [orbitContext, setOrbitContext] = useState(null);
  const [uiPrefsId, setUiPrefsId] = useState(null);
- const { isChatDocked } = useChatDock();
 
  useEffect(() => {
  if (!user?.email || !user?.company_id || isPrefsLoaded) return;
