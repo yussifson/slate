@@ -1,7 +1,7 @@
 import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect, useRef} from "react";
 import { useTranslation} from "react-i18next";
-import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, CheckCheck, Check, Smile, Paperclip, ArrowLeft, ImageIcon, FileText, File, X, PanelLeftClose, PanelLeftOpen, ChevronsRight, ChevronsLeft, Settings} from "lucide-react";
+import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Users, UserCircle, CheckCheck, Check, Smile, Paperclip, ImageIcon, FileText, File, X, PanelLeftClose, PanelLeftOpen, ChevronsRight, ChevronsLeft, Settings} from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -55,6 +55,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  const [isSidebarCollapsed, setIsSidebarCollapsed] = useUIPreference(user, 'chatSidebarCollapsed', false);
  const { isChatDocked, toggleChatDock } = useChatDock();
  const [viewingDoc, setViewingDoc] = useState(null);
+ const [viewingImage, setViewingImage] = useState(null);
 
  const messagesEndRef = useRef(null);
  const fileInputRef = useRef(null);
@@ -174,7 +175,14 @@ export default function ClipadChat({ isDockedMode = false }) {
     if (messages.length === 0) return;
     setIsSummarizing(true);
     try {
-      const textBlock = messages.slice(-50).map(m => `${participantProfiles[m.sender_id]?.full_name || 'User'}: ${m.content}`).join('\n');
+      const textBlock = messages.slice(-50).map(m => {
+        let content = m.content;
+        if (content.startsWith('[Attachment|')) {
+          const parts = content.split('|');
+          content = `[Shared an attachment: ${parts[1] || 'file'}]`;
+        }
+        return `${participantProfiles[m.sender_id]?.full_name || 'User'}: ${content}`;
+      }).join('\n');
       const prompt = `Summarize the following chat conversation into a brief, easy-to-read recap (3-4 bullet points max) of decisions made and outstanding items:\n\n${textBlock}`;
       const summary = await generateText([{ role: 'user', content: prompt }]);
       setChatSummary(summary);
@@ -258,14 +266,24 @@ export default function ClipadChat({ isDockedMode = false }) {
 }
  setIsUploading(true);
  try {
- 
- let mockUrl = `[Attachment|${file.name}|url|file]`;
- if (type === 'image') {
- mockUrl = `[Attachment|${file.name}|data:image/png;base64,mock|data:image]`;
-}
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Math.random()}.${fileExt}`;
+  const filePath = `${user.id}/${fileName}`;
+  const { data, error: uploadError } = await supabase.storage.from('chat_attachments').upload(filePath, file);
+  if (uploadError) throw uploadError;
+
+  const { data: publicUrlData } = supabase.storage.from('chat_attachments').getPublicUrl(filePath);
+  const publicUrl = publicUrlData.publicUrl;
+
+  let fileTypeCategory = 'file';
+  if (file.type.startsWith('image/')) fileTypeCategory = 'data:image';
+  if (file.type.startsWith('video/')) fileTypeCategory = 'data:video';
+  if (file.type.startsWith('audio/')) fileTypeCategory = 'data:audio';
+
+  const messageContent = `[Attachment|${file.name}|${publicUrl}|${fileTypeCategory}]`;
  
  (async () => {
- const _payload = { id: crypto.randomUUID(), room_id: activeRoomId, sender_id: user.id, content: mockUrl};
+ const _payload = { id: crypto.randomUUID(), room_id: activeRoomId, sender_id: user.id, content: messageContent};
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  const _plhdr = _keys.map(()=>'?').join(', ');
@@ -499,13 +517,13 @@ export default function ClipadChat({ isDockedMode = false }) {
    return (
  <div 
  key={room.id}
- onClick={() => setActiveRoomId(room.id)}
  className={cn(
- "flex items-center gap-3 px-3 py-3 cursor-pointer transition-colors group",
+ "flex items-center gap-3 px-3 py-3 transition-colors group relative",
  activeRoomId === room.id ? "bg-[#f0f2f5] dark:bg-[#2a3942]" : "hover:bg-[#f5f6f6] dark:hover:bg-[#202c33]",
  isSidebarCollapsed && "justify-center px-1"
  )}
  >
+ <div className="flex-1 flex items-center gap-3 min-w-0 cursor-pointer" onClick={() => setActiveRoomId(room.id)}>
  <div className="relative flex-shrink-0" title={isSidebarCollapsed ? roomName : undefined}>
  {room.room_type === "group" ? (
  <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden">
@@ -525,6 +543,22 @@ export default function ClipadChat({ isDockedMode = false }) {
  </div>
  <p className="text-sm text-[#71717a] dark:text-gray-400 truncate">Click to view messages...</p>
  </div>
+ )}
+ </div>
+ {room.room_type === "group" && !isSidebarCollapsed && (
+   <DropdownMenu>
+     <DropdownMenuTrigger asChild>
+       <button className="opacity-0 group-hover:opacity-100 p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded transition-opacity absolute right-4 top-1/2 -translate-y-1/2 bg-white dark:bg-card">
+         <MoreVertical className="w-4 h-4 text-muted-foreground" />
+       </button>
+     </DropdownMenuTrigger>
+     <DropdownMenuContent align="end">
+       <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setActiveRoomId(room.id); setIsGroupInfoOpen(true); }}>Group Info</DropdownMenuItem>
+       {room.chat_participants?.find(p => p.user_id === user.id)?.role === 'admin' && (
+         <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setActiveRoomId(room.id); setIsManageMembersOpen(true); }}>Manage Group</DropdownMenuItem>
+       )}
+     </DropdownMenuContent>
+   </DropdownMenu>
  )}
  </div>
  );
@@ -568,7 +602,8 @@ export default function ClipadChat({ isDockedMode = false }) {
             const avatarUrl = otherProfile?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${roomName}`;
 
             return (
-              <div key={room.id} onClick={() => setActiveRoomId(room.id)} className={cn("flex items-center gap-2 p-2 rounded-xl cursor-pointer", activeRoomId === room.id ? "bg-[#f0f2f5] dark:bg-[#2a3942]" : "hover:bg-secondary/50")}>
+              <div key={room.id} className={cn("flex items-center gap-2 p-2 rounded-xl transition-colors group relative", activeRoomId === room.id ? "bg-[#f0f2f5] dark:bg-[#2a3942]" : "hover:bg-secondary/50")}>
+                <div className="flex-1 flex items-center gap-2 min-w-0 cursor-pointer" onClick={() => setActiveRoomId(room.id)}>
                 <div className="relative flex-shrink-0">
                   {room.room_type === "group" ? (
                     <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden">
@@ -587,6 +622,22 @@ export default function ClipadChat({ isDockedMode = false }) {
                 <div className="flex-1 min-w-0">
                   <h4 className="font-medium text-sm truncate">{roomName}</h4>
                 </div>
+                </div>
+                {room.room_type === "group" && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="opacity-0 group-hover:opacity-100 p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded transition-opacity absolute right-2 top-1/2 -translate-y-1/2 bg-white dark:bg-card">
+                        <MoreVertical className="w-3.5 h-3.5 text-muted-foreground" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setActiveRoomId(room.id); setIsGroupInfoOpen(true); }}>Group Info</DropdownMenuItem>
+                      {room.chat_participants?.find(p => p.user_id === user.id)?.role === 'admin' && (
+                        <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setActiveRoomId(room.id); setIsManageMembersOpen(true); }}>Manage Group</DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
             );
           })}
@@ -663,13 +714,13 @@ export default function ClipadChat({ isDockedMode = false }) {
       <button onClick={() => {
         toggleChatDock();
         if (!isChatDocked && location.pathname === '/chat') navigate('/dashboard');
-      }} className="hidden md:block hover:text-primary transition-colors" title={isDockedMode ? "Undock Chat" : "Dock to Right Sidebar"}>
+      }} className={cn("hover:text-primary transition-colors", isDockedMode ? "" : "hidden md:block")} title={isDockedMode ? "Undock Chat" : "Dock to Right Sidebar"}>
         {isDockedMode ? <ChevronsLeft className="w-5 h-5" /> : <ChevronsRight className="w-5 h-5" />}
       </button>
       {messages.length > 0 && (
         <Button onClick={handleSummarizeChat} disabled={isSummarizing} variant="ghost" size="sm" className="h-8 gap-2 hover:bg-primary/10 hover:text-primary">
           <Sparkles className={cn("w-4 h-4", isSummarizing && "animate-pulse")} />
-          <span className="hidden sm:inline">{isSummarizing ? "Summarizing..." : "Summarize"}</span>
+          <span className={isDockedMode ? "hidden" : "hidden sm:inline"}>{isSummarizing ? "Summarizing..." : "Summarize"}</span>
         </Button>
       )}
       <DropdownMenu>
@@ -780,10 +831,13 @@ export default function ClipadChat({ isDockedMode = false }) {
     const fileType = parts[3];
 
     if (fileType === 'data:image') {
-      return <img src={fileUrl} alt={fileName} className="max-w-[200px] rounded-md object-cover cursor-pointer hover:opacity-90 transition-opacity" onClick={() => setViewingDoc({ name: fileName, file_url: fileUrl, file_type: 'image' })} />;
+      return <img src={fileUrl} alt={fileName} className="max-w-[200px] rounded-md object-cover cursor-pointer hover:opacity-90 transition-opacity" onClick={() => setViewingImage(fileUrl)} />;
     }
     if (fileType === 'data:video') {
       return <video src={fileUrl} controls className="max-w-[250px] rounded-md" />;
+    }
+    if (fileType === 'data:audio') {
+      return <audio src={fileUrl} controls className="w-full max-w-[250px] h-10" />;
     }
     return (
       <div onClick={() => setViewingDoc({ name: fileName, file_url: fileUrl, file_type: fileName.split('.').pop() || 'pdf' })} className="flex items-center gap-2 rounded-lg p-1 transition-colors cursor-pointer w-full">
@@ -947,6 +1001,14 @@ export default function ClipadChat({ isDockedMode = false }) {
     </div>
 
     {viewingDoc && <SmartDocumentViewer doc={viewingDoc} onClose={() => setViewingDoc(null)} />}
+    {viewingImage && (
+      <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setViewingImage(null)}>
+        <button onClick={() => setViewingImage(null)} className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors p-2 bg-black/20 rounded-full">
+          <X className="w-6 h-6" />
+        </button>
+        <img src={viewingImage} alt="Attachment Full" className="max-w-full max-h-[90vh] object-contain select-none cursor-default" onClick={(e) => e.stopPropagation()} />
+      </div>
+    )}
   </div>
   );
 }

@@ -23,6 +23,7 @@ export default function ManageGroupMembersDialog({ open, onOpenChange, activeRoo
   const [isEditingName, setIsEditingName] = useState(false);
   const [editNameValue, setEditNameValue] = useState("");
   const [editAvatarValue, setEditAvatarValue] = useState("");
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   // Check if current user is admin of this group
   const currentUserParticipant = activeRoom?.chat_participants?.find(p => p.user_id === user.id);
@@ -49,6 +50,27 @@ export default function ManageGroupMembersDialog({ open, onOpenChange, activeRoo
       toast({ title: "Error", description: "Could not load firm members.", variant: "destructive" });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingAvatar(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `avatars/${user.id}/${fileName}`;
+      const { error: uploadError } = await supabase.storage.from('chat_attachments').upload(filePath, file);
+      if (uploadError) throw uploadError;
+
+      const { data: publicUrlData } = supabase.storage.from('chat_attachments').getPublicUrl(filePath);
+      setEditAvatarValue(publicUrlData.publicUrl);
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Error", description: "Failed to upload avatar.", variant: "destructive" });
+    } finally {
+      setUploadingAvatar(false);
     }
   };
 
@@ -194,7 +216,13 @@ export default function ManageGroupMembersDialog({ open, onOpenChange, activeRoo
                 placeholder="Group Avatar Image URL (optional)"
               />
               <div className="flex flex-col gap-1.5">
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Choose an Avatar</p>
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider flex justify-between items-center">
+                  <span>Choose an Avatar</span>
+                  <label className="cursor-pointer text-primary hover:underline flex items-center gap-1">
+                    {uploadingAvatar ? "Uploading..." : "Upload from PC"}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} disabled={uploadingAvatar} />
+                  </label>
+                </p>
                 <div className="grid grid-cols-5 sm:grid-cols-8 gap-2">
                   {PRESET_AVATARS.map((url, i) => (
                     <img 
