@@ -31,7 +31,6 @@ import FollowUpEngine from '@/components/clipad/features/FollowUpEngine';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import SpaceSelectorModal from '@/components/clipad/SpaceSelectorModal';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
-import CreateSpaceModal from '@/components/clipad/CreateSpaceModal';
 import ClipadTopNav from '@/components/clipad/ClipadTopNav';
 
 function StatCard({ icon: Icon, value, label, trend, accentColor, bgColor, iconColor }) {

@@ -29,6 +29,16 @@ export default function EnterpriseDashboard() {
     }
   }, [user]);
 
+  // Guard: Restrict access to Enterprise / Off-Cloud plans or Super Admins
+  useEffect(() => {
+    if (!user) return;
+    const isSuperAdmin = ['super_admin', 'admin', 'optavelos'].includes(user.role);
+    const plan = user.clipad_plan || user.subscription_plan;
+    if (!isSuperAdmin && plan !== 'enterprise' && plan !== 'off_cloud') {
+      window.location.href = '/clipad';
+    }
+  }, [user]);
+
   const loadDashboard = async () => {
     setLoading(true);
     const [tMetrics, oHealth, aTrends, aLogs, aAssets] = await Promise.all([
@@ -387,7 +397,6 @@ export default function EnterpriseDashboard() {
               ) : null}
             </div>
           </div>
-        </div>
         </div>
       )}
       </div>

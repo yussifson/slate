@@ -47,6 +47,17 @@ export default function EnterpriseDashboard() {
 
   useEffect(() => { fetchPortfolio(); }, [fetchPortfolio]);
 
+  // Guard: Restrict access to Enterprise / Off-Cloud plans or Super Admins
+  useEffect(() => {
+    if (!user) return;
+    const isSuperAdmin = ['super_admin', 'admin', 'optavelos'].includes(user.role);
+    const plan = user.subscription_plan;
+    if (!isSuperAdmin && plan !== 'enterprise' && plan !== 'off_cloud') {
+      toast.error('This dashboard is only available on the Enterprise plan.');
+      navigate('/');
+    }
+  }, [user, navigate]);
+
   // Vertical switch: identical to Super Admin handleIndustryChange in TopBar.jsx
   // Sets sessionStorage industry override, clears React Query cache, navigates to /
   // and reloads so Sidebar + all pages re-read the new industry. No subdomain redirect.
