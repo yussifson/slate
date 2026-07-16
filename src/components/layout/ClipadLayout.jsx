@@ -8,10 +8,12 @@ import { MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CliPadCommandPalette from '@/components/clipad/CliPadCommandPalette';
 
+import DockResizer from './DockResizer';
+
 export default function ClipadLayout() {
-  const [isAIOpen, setIsAIOpen] = useState(false);
-  const [injectedContext, setInjectedContext] = useState(null);
-  const { isChatDocked, setChatDock } = useChatDock();
+  const [isAIOpen, setIsAIOpen] = React.useState(false);
+  const [injectedContext, setInjectedContext] = React.useState(null);
+  const { isChatDocked, setChatDock, dockWidth } = useChatDock();
   const location = useLocation();
 
   // Auto-undock if we navigate back to the main chat page
@@ -58,10 +60,12 @@ export default function ClipadLayout() {
         <div 
           id="right-docked-panel-portal" 
           className={cn(
-            "flex shrink-0 h-full relative bg-white dark:bg-[#090E17] transition-all duration-300",
-            isChatDocked ? "w-[400px] xl:w-[450px] border-l-4 border-primary shadow-xl" : "w-0 overflow-hidden border-none"
+            "flex shrink-0 h-full relative bg-white dark:bg-[#090E17]",
+            isChatDocked ? "border-l-4 border-primary shadow-xl" : "w-0 overflow-hidden border-none"
           )}
+          style={{ width: isChatDocked ? dockWidth : 0 }}
         >
+          {isChatDocked && <DockResizer />}
           {isChatDocked && <ClipadChat isDockedMode={true} />}
         </div>
 

@@ -153,13 +153,11 @@ export default function WatchVideo() {
         }
 
         // 2. Check Locks
-        if (!isCreator) {
-          if (v.is_locked && v.unlock_at) {
-            if (new Date(v.unlock_at) > new Date()) {
-              setAccessDenied({ type: 'scheduled', unlockAt: v.unlock_at });
-              setLoading(false);
-              return;
-            }
+        if (!isCreator && !isAdminUser) {
+          if (v.unlock_at && new Date(v.unlock_at) > new Date()) {
+            setAccessDenied({ type: 'scheduled', unlockAt: v.unlock_at });
+            setLoading(false);
+            return;
           } else if (v.is_locked) {
             setAccessDenied({ type: 'manual' });
             setLoading(false);

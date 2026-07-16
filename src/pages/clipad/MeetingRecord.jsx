@@ -163,13 +163,11 @@ export default function MeetingRecord() {
         }
 
         // 2. Check Locks
-        if (!isHost) {
-          if (m.is_locked && m.unlock_at) {
-            if (new Date(m.unlock_at) > new Date()) {
-              setAccessDenied({ type: 'scheduled', unlockAt: m.unlock_at });
-              setLoading(false);
-              return;
-            }
+        if (!isHost && !isAdminUser) {
+          if (m.unlock_at && new Date(m.unlock_at) > new Date()) {
+            setAccessDenied({ type: 'scheduled', unlockAt: m.unlock_at });
+            setLoading(false);
+            return;
           } else if (m.is_locked) {
             setAccessDenied({ type: 'manual' });
             setLoading(false);

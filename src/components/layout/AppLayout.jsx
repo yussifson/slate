@@ -22,6 +22,7 @@ import GlobalVideoOverlay from "@/components/video/GlobalVideoOverlay";
 import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
 import FeatureAnnouncementModal from "./FeatureAnnouncementModal";
 import ElectronTitleBar from "./ElectronTitleBar";
+import DockResizer from "./DockResizer";
 
 import { cn } from "@/lib/utils";
 
@@ -29,6 +30,7 @@ export default function AppLayout() {
  const { t} = useTranslation();
   const { user } = useAuth();
   const { impersonatedCompany, stopImpersonation } = useImpersonation();
+  const { isChatDocked, dockWidth } = useChatDock();
   const navigate = useNavigate();
   const location = useLocation();
   const [hideTrialBanner, setHideTrialBanner] = useState(false);
@@ -393,9 +395,10 @@ export default function AppLayout() {
       </div>
       </div>
       <div id="right-docked-panel-portal" className={cn(
-        "flex shrink-0 h-full relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10 transition-all duration-300",
-        isChatDocked ? "w-[400px] xl:w-[450px]" : "w-0 overflow-hidden border-none"
-      )}>
+        "flex shrink-0 h-full relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10",
+        isChatDocked ? "" : "w-0 overflow-hidden border-none"
+      )} style={{ width: isChatDocked ? dockWidth : 0 }}>
+        {isChatDocked && <DockResizer />}
         {isChatDocked && <Chat isDockedMode={true} />}
       </div>
       </div>
