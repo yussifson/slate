@@ -161,28 +161,53 @@ export default function MeetingInsights({ spaceId }) {
                 try {
                   const meetingsData = (await supabase.from('clipad_meeting_records').select('title, ai_summary').eq('space_id', spaceId).limit(5)).data;
                   const context = meetingsData.map(m => `Meeting: ${m.title}\nSummary: ${m.ai_summary}`).join('\n\n');
-                  const prompt = `Based on these recent meetings, identify up to 3 distinct, specific action items. Output ONLY a raw JSON array of strings (e.g. ["Fix the login bug", "Schedule follow-up with marketing"]). No markdown, no backticks, no other text:\n\n${context}`;
+                  const prompt = `Based on these recent meetings, identify up to 3 distinct, specific action items, and any new potential CRM leads mentioned (people to follow up with or sell to). 
+Output ONLY a raw JSON object with this exact structure:
+{
+  "action_items": ["item 1", "item 2"],
+  "crm_leads": [{"first_name": "John", "last_name": "Doe", "notes": "Interested in premium plan"}]
+}
+No markdown, no backticks, no other text:\n\n${context}`;
                   
-                  const res = await invokeCloudflareAi(prompt, "You are a task generator. Output ONLY a valid JSON array of strings.");
-                  let tasksToCreate = [];
+                  const res = await invokeCloudflareAi(prompt, "You are a task and CRM generator. Output ONLY a valid JSON object.");
+                  let parsedResult = { action_items: [], crm_leads: [] };
                   try {
-                    tasksToCreate = JSON.parse(res);
+                    parsedResult = JSON.parse(res);
                   } catch (e) {
-                    // Try to clean markdown formatting if the AI disobeyed
                     const cleaned = res.replace(/```json/g, '').replace(/```/g, '').trim();
-                    tasksToCreate = JSON.parse(cleaned);
+                    parsedResult = JSON.parse(cleaned);
                   }
 
-                  if (!Array.isArray(tasksToCreate) || tasksToCreate.length === 0) throw new Error("No tasks parsed");
+                  const tasksToCreate = parsedResult.action_items || [];
+                  const leadsToCreate = parsedResult.crm_leads || [];
 
-                  const inserts = tasksToCreate.map(title => ({
-                    space_id: spaceId,
-                    title,
-                    is_complete: false,
-                  }));
+                  if (tasksToCreate.length === 0 && leadsToCreate.length === 0) throw new Error("No items parsed");
 
-                  const { error } = await supabase.from('clipad_action_items').insert(inserts);
-                  if (error) throw error;
+                  if (tasksToCreate.length > 0) {
+                    const inserts = tasksToCreate.map(title => ({
+                      space_id: spaceId,
+                      title,
+                      is_complete: false,
+                    }));
+                    const { error } = await supabase.from('clipad_action_items').insert(inserts);
+                    if (error) throw error;
+                  }
+
+                  if (leadsToCreate.length > 0) {
+                    // Get company ID from user
+                    const companyId = user?.company_id;
+                    if (companyId) {
+                      const leadInserts = leadsToCreate.map(lead => ({
+                        company_id: companyId,
+                        first_name: lead.first_name || '',
+                        last_name: lead.last_name || '',
+                        notes: lead.notes || '',
+                        status: 'New',
+                        source: 'Clipad Meeting AI'
+                      }));
+                      await supabase.from('univ_crm_leads').insert(leadInserts);
+                    }
+                  }
                   
                   // Optional: write an org event
                   try {

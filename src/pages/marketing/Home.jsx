@@ -563,7 +563,7 @@ return (
  <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-slate-900 leading-[1.05] max-w-4xl mx-auto mb-6">
  {t(
  "the_work_made_effortless_that_tur",
- "The unified workspace that turns hours into"
+ "The autonomous operating system that turns hours into"
  )}{' '}
  <span className="bg-slate-100 text-slate-900 px-4 py-1.5 rounded-2xl inline-block mt-2 shadow-[inset_0_1px_3px_rgba(0,0,0,0.05)] border-[0.5px] border-slate-200">
  {t("clear_profit", "clear profit")}
@@ -576,7 +576,7 @@ return (
  <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
  {t(
  "built_for_teams_that_take_oper",
- "Built for teams that take operations seriously. Manage cases, automate client communication, log billable hours,\n process payments, and track HR — all in one place."
+ "The ERP that manages itself. Run your meetings, emails, and chats through Slate, and let our AI automatically update your CRM, generate your invoices, and assign your tasks."
  )}
  </p>
  </FadeIn>
