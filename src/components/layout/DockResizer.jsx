@@ -47,9 +47,7 @@ export default function DockResizer() {
   return (
     <div
       onMouseDown={handleMouseDown}
-      className={`absolute left-0 top-0 bottom-0 w-3 cursor-col-resize z-[100] hover:bg-primary/50 transition-colors ${
-        isDragging ? 'bg-primary' : 'bg-transparent'
-      }`}
+      className={`absolute left-0 top-0 bottom-0 w-3 cursor-col-resize z-[100] bg-transparent`}
       style={{ transform: 'translateX(-50%)' }}
     />
   );
