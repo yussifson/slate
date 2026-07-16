@@ -105,9 +105,9 @@ export default function VideosList() {
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#f0f2f5] dark:bg-background text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
       {/* Sleek top nav */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shrink-0">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/50 dark:bg-[#111b21]/50 backdrop-blur-3xl border-b border-black/5 dark:border-white/5 shrink-0">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
           <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm text-primary">
             <CliPadLogo size={22} />
@@ -181,7 +181,7 @@ export default function VideosList() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search recordings..."
-              className="w-full pl-11 pr-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 shadow-sm transition-all"
+              className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-all"
             />
           </div>
         </div>
@@ -191,7 +191,7 @@ export default function VideosList() {
             {[1,2,3,4,5,6].map(i => <div key={i} className="aspect-video rounded-2xl bg-white dark:bg-slate-900 animate-pulse border border-slate-200 dark:border-slate-800" />)}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-24 border border-dashed border-slate-300 dark:border-slate-800 rounded-3xl">
+          <div className="text-center py-24 border border-dashed border-black/10 dark:border-white/10 rounded-3xl bg-transparent">
             <Video className="w-16 h-16 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-slate-500 dark:text-slate-400 mb-2">No recordings found</h3>
             <p className="text-slate-400 dark:text-slate-500 text-sm">Click the Record Video button to create your first async video.</p>
@@ -202,7 +202,7 @@ export default function VideosList() {
               <div
                 key={v.id}
                 onClick={() => navigate(`/watch/${v.id}`)}
-                className="group cursor-pointer rounded-2xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md flex flex-col"
+                className="group cursor-pointer rounded-2xl overflow-hidden bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] flex flex-col"
               >
                 <div className="aspect-video bg-slate-100 dark:bg-slate-800 relative flex items-center justify-center overflow-hidden">
                   {v.thumbnail_url ? (

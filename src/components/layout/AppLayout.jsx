@@ -394,8 +394,8 @@ export default function AppLayout() {
       </div>
       </div>
       <div id="right-docked-panel-portal" className={cn(
-        "hidden md:flex shrink-0 h-full relative bg-white dark:bg-[#090E17] border-l border-slate-200 dark:border-white/10",
-        isChatDocked ? "" : "w-0 overflow-hidden border-none"
+        "hidden md:flex shrink-0 h-full relative bg-white dark:bg-[#090E17]",
+        isChatDocked ? "border-l border-black/5 dark:border-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.12)]" : "w-0 overflow-hidden border-none"
       )} style={{ width: isChatDocked ? dockWidth : 0 }}>
         {isChatDocked && <DockResizer />}
         {isChatDocked && <Chat isDockedMode={true} />}

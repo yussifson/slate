@@ -21,7 +21,7 @@ const DialogOverlay = React.forwardRef(({ className, ...props}, ref) => {
  <DialogPrimitive.Overlay
  ref={ref}
  className={cn(
- "fixed inset-0 z-[9999] bg-emerald-950/60 dark:bg-emerald-950/80 backdrop-blur-sm h-full w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+ "fixed inset-0 z-[9999] bg-black/60 dark:bg-black/80 backdrop-blur-sm h-full w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
  className
  )}
  {...props} />
@@ -37,12 +37,12 @@ const DialogContent = React.forwardRef(({ className, children, ...props}, ref) =
  <DialogPrimitive.Content
  ref={ref}
  className={cn(
- "fixed z-[9999] grid w-full gap-4 bg-background p-6 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 overflow-y-auto",
+ "fixed z-[9999] grid w-full gap-4 bg-white/95 dark:bg-[#111b21]/95 backdrop-blur-3xl p-6 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 overflow-y-auto",
  // Mobile (Bottom Sheet)
- "bottom-0 left-0 rounded-t-[24px] border-t border-black/10 dark:border-white/10 max-h-[90dvh]",
+ "bottom-0 left-0 rounded-t-[24px] border-t border-black/10 dark:border-white/10 max-h-[90dvh] shadow-[0_-10px_40px_rgba(0,0,0,0.1)]",
  "data-[state=closed]:slide-out-to-bottom-full data-[state=open]:slide-in-from-bottom-full",
  // Desktop (Centered Modal)
- "sm:bottom-auto sm:left-[50%] sm:top-[50%] sm:max-w-lg sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-xl sm:border sm:border-black/10 sm:dark:border-white/10 sm:max-h-[85vh]",
+ "sm:bottom-auto sm:left-[50%] sm:top-[50%] sm:max-w-lg sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-2xl sm:border sm:border-black/10 sm:dark:border-white/10 sm:max-h-[85vh] sm:shadow-2xl sm:shadow-black/20",
  "sm:data-[state=closed]:slide-out-to-bottom-0 sm:data-[state=open]:slide-in-from-bottom-0",
  "sm:data-[state=closed]:zoom-out-95 sm:data-[state=open]:zoom-in-95",
  "sm:data-[state=closed]:slide-out-to-left-1/2 sm:data-[state=closed]:slide-out-to-top-[48%]",

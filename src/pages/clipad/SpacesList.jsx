@@ -202,8 +202,7 @@ export default function SpacesList() {
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                placeholder="Find a space..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:border-primary/50 text-sm shadow-sm transition-all"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 focus:outline-none focus:border-primary/50 text-sm shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-all"
               />
             </div>
             {isAdminUser && (
@@ -244,8 +243,8 @@ export default function SpacesList() {
                     onClick={() => navigate(`/spaces/${space.id}`)}
                     className={`group relative overflow-hidden rounded-[2rem] border cursor-pointer shadow-sm transition-all duration-300 ${
                       isRestricted
-                        ? 'bg-slate-100/60 dark:bg-slate-900/40 border-slate-200/40 dark:border-slate-800/40 hover:border-slate-300 dark:hover:border-slate-700 opacity-80 hover:opacity-95'
-                        : 'bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800/60 hover:border-primary/50 hover:shadow-xl hover:-translate-y-1.5'
+                        ? 'bg-slate-100/60 dark:bg-black/20 border-black/5 dark:border-white/5 hover:border-slate-300 dark:hover:border-slate-700 opacity-80 hover:opacity-95'
+                        : 'bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border-black/5 dark:border-white/5 hover:border-primary/30 hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-1'
                     }`}
                   >
                     {/* Locked overlay for restricted private spaces */}

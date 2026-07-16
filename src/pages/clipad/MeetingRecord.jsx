@@ -357,10 +357,10 @@ export default function MeetingRecord() {
   const canEdit = meeting?.created_by === user?.id || meeting?.host_id === user?.id || isAdmin;
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground overflow-x-hidden pb-24 md:pb-8">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#f0f2f5] dark:bg-background page-enter text-slate-900 dark:text-slate-100 overflow-x-hidden pb-24 md:pb-8">
       {/* Nav */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-14 bg-background page-enter/90 backdrop-blur-xl border-b border-border">
-          <button onClick={() => navigate('/meetings')} className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-14 bg-white/50 dark:bg-[#111b21]/50 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
+          <button onClick={() => navigate('/meetings')} className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5">
             <ArrowLeft className="w-4 h-4 text-slate-500" /> Meetings
           </button>
         <div className="flex items-center gap-2">
@@ -625,7 +625,7 @@ export default function MeetingRecord() {
         {/* Comments Section */}
         <SectionCard icon={MessageSquare} iconColor="from-blue-500 to-indigo-500" title="Comments & Reactions" badge={comments.length > 0 ? comments.length : undefined} defaultOpen>
           {reactions.length > 0 && (
-            <div className="flex flex-wrap gap-2 p-3 mb-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div className="flex flex-wrap gap-2 p-3 mb-4 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 shadow-sm">
               {EMOJIS.map(e => {
                 const count = reactions.filter(r => {
                   const cleanEmoji = r.emoji?.startsWith('[ANON]') ? r.emoji.slice(6) : r.emoji;
@@ -633,7 +633,7 @@ export default function MeetingRecord() {
                 }).length;
                 if (!count) return null;
                 return (
-                  <button key={e} onClick={() => handleAddReaction(e)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-sm font-medium transition-all shadow-sm border border-slate-200 dark:border-slate-700">
+                  <button key={e} onClick={() => handleAddReaction(e)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/50 dark:bg-black/20 hover:bg-black/5 dark:hover:bg-white/5 text-sm font-medium transition-all shadow-sm border border-black/5 dark:border-white/5">
                     {e} <span className="text-xs text-slate-500 dark:text-slate-400">{count}</span>
                   </button>
                 );
@@ -677,7 +677,7 @@ export default function MeetingRecord() {
               onChange={e => setCommentText(e.target.value)}
               placeholder="Write a comment..."
               rows={2}
-              className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm resize-none focus:outline-none focus:border-indigo-500/50 transition-all"
+              className="w-full px-3 py-2 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm resize-none focus:outline-none focus:border-indigo-500/50 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.04)]"
             />
             <div className="flex items-center justify-between gap-2">
               <label className="flex items-center gap-1.5 cursor-pointer">
@@ -704,7 +704,7 @@ export default function MeetingRecord() {
       {/* Edit Meeting Modal */}
       {showEdit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+          <div className="bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 rounded-3xl p-8 max-w-md w-full shadow-[0_8px_30px_rgba(0,0,0,0.12)]">
             <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Edit Meeting</h2>
             <form onSubmit={handleEditMeeting} className="space-y-4">
               <div>
@@ -712,12 +712,12 @@ export default function MeetingRecord() {
                 <input
                   value={editTitle}
                   onChange={e => setEditTitle(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-black/20 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.04)]"
                   required
                 />
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowEdit(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all border border-slate-200 dark:border-slate-700 shadow-sm">Cancel</button>
+                <button type="button" onClick={() => setShowEdit(false)} className="flex-1 py-3 rounded-xl bg-white/50 dark:bg-black/20 hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all border border-black/5 dark:border-white/5 shadow-sm">Cancel</button>
                 <button type="submit" disabled={savingEdit} className="flex-1 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-all shadow-md disabled:opacity-60">
                   {savingEdit ? 'Saving...' : 'Save Changes'}
                 </button>

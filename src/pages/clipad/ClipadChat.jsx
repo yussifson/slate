@@ -423,12 +423,12 @@ export default function ClipadChat({ isDockedMode = false }) {
        {/* Sidebar - Chat List */}
       {!isDockedMode ? (
       <div className={cn(
-        "flex flex-col bg-white dark:bg-card border-r border-border transition-all duration-300 z-20 shrink-0",
+        "flex flex-col bg-white/50 dark:bg-black/20 backdrop-blur-3xl border-r border-black/5 dark:border-white/5 transition-all duration-300 z-20 shrink-0",
         isSidebarCollapsed ? "w-20" : "w-full md:w-80",
         activeRoomId ? "hidden md:flex" : "flex"
       )}>
  <div className={cn(
-   "border-b border-primary/40 flex items-center justify-between shrink-0",
+   "border-b border-black/5 dark:border-white/5 flex items-center justify-between shrink-0",
    isSidebarCollapsed ? "p-2 flex-col gap-2" : "p-4"
  )}>
  {!isSidebarCollapsed ? (
@@ -490,8 +490,8 @@ export default function ClipadChat({ isDockedMode = false }) {
  )}
  </div>
  
- {!isSidebarCollapsed && (
- <div className="p-3 bg-background dark:bg-[#111b21] border-b border-primary/40">
+  {!isSidebarCollapsed && (
+  <div className="p-3 bg-transparent border-b border-black/5 dark:border-white/5">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
@@ -505,7 +505,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  </div>
  )}
 
- <div className="flex-1 overflow-y-auto bg-background dark:bg-[#111b21]">
+  <div className="flex-1 overflow-y-auto bg-transparent">
  {loadingRooms ? (
  <div className="flex justify-center p-8"><OrbitLoader size="md" /></div>
  ) : filteredRooms.map(room => {
@@ -516,12 +516,12 @@ export default function ClipadChat({ isDockedMode = false }) {
 
    return (
  <div 
- key={room.id}
- className={cn(
- "flex items-center gap-3 px-3 py-3 transition-colors group relative",
- activeRoomId === room.id ? "bg-[#f0f2f5] dark:bg-[#2a3942]" : "hover:bg-[#f5f6f6] dark:hover:bg-[#202c33]",
- isSidebarCollapsed && "justify-center px-1"
- )}
+  key={room.id}
+  className={cn(
+  "flex items-center gap-3 px-3 py-3 transition-all duration-200 group relative",
+  activeRoomId === room.id ? "bg-black/5 dark:bg-white/10" : "hover:bg-black/5 dark:hover:bg-white/5",
+  isSidebarCollapsed && "justify-center px-1"
+  )}
  >
  <div className="flex-1 flex items-center gap-3 min-w-0 cursor-pointer" onClick={() => setActiveRoomId(room.id)}>
  <div className="relative flex-shrink-0" title={isSidebarCollapsed ? roomName : undefined}>
@@ -537,8 +537,8 @@ export default function ClipadChat({ isDockedMode = false }) {
  </div>
  {!isSidebarCollapsed && (
  <div className="flex-1 min-w-0 border-b border-primary/40 group-last:border-none pb-3">
- <div className="flex justify-between items-baseline mb-0.5">
- <p className="text-base text-foreground truncate">{roomName}</p>
+  <div className="flex justify-between items-baseline mb-0.5">
+  <p className="text-[15px] font-medium text-foreground truncate">{roomName}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{format(new Date(room.updated_at), 'h:mm a')}</p>
  </div>
  <p className="text-sm text-[#71717a] dark:text-gray-400 truncate">Click to view messages...</p>
@@ -576,10 +576,10 @@ export default function ClipadChat({ isDockedMode = false }) {
  ) : (
     /* When docked, show a super compact or hidden sidebar */
     <div className={cn(
-      "flex flex-col bg-white dark:bg-card border-r border-border transition-all duration-300 z-20 shrink-0",
+      "flex flex-col bg-white/50 dark:bg-black/20 backdrop-blur-3xl border-r border-black/5 dark:border-white/5 transition-all duration-300 z-20 shrink-0",
       activeRoomId ? "hidden" : "w-full"
     )}>
-      <div className="p-4 border-b border-border flex items-center justify-between shrink-0">
+      <div className="p-4 border-b border-black/5 dark:border-white/5 flex items-center justify-between shrink-0">
         <h2 className="font-bold text-lg">Chats</h2>
         <button onClick={() => {
           toggleChatDock();
@@ -795,13 +795,13 @@ export default function ClipadChat({ isDockedMode = false }) {
  )}
 
  <div className={cn(
- "relative px-3 py-1.5 text-[14.5px] leading-snug rounded-xl",
+ "relative px-3.5 py-2 text-[14.5px] leading-snug rounded-[14px] shadow-sm",
  isMe 
- ? "bg-[#d9fdd3] dark:bg-[#005c4b] text-slate-900 dark:text-slate-100 dark:text-gray-100 rounded-tr-none" 
- : "bg-white dark:bg-card/40 dark:bg-[#202c33] text-slate-900 dark:text-slate-100 dark:text-gray-100 rounded-tl-none"
+ ? "bg-[#d9fdd3] dark:bg-primary/80 text-slate-900 dark:text-white rounded-tr-none" 
+ : "bg-white dark:bg-[#202c33] text-slate-900 dark:text-white rounded-tl-none border border-black/5 dark:border-white/5"
  )}>
  {msg.reply_to_id && (
- <div className="bg-primary/20 dark:bg-white dark:bg-card/40/5 border-l-4 border-primary rounded-md p-1.5 mb-1.5 text-xs opacity-80 cursor-pointer tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => {
+ <div className="bg-primary/10 dark:bg-black/20 border-l-4 border-primary rounded-md p-2 mb-1.5 text-xs opacity-90 cursor-pointer tracking-[0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => {
  const el = document.getElementById(`msg-${msg.reply_to_id}`);
  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
 }}>
@@ -815,7 +815,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  )}
 
  {showTail && (
- <svg viewBox="0 0 8 13" width="8" height="13" className={cn("absolute top-0", isMe ? "-right-2 text-[#d9fdd3] dark:text-[#005c4b]" : "-left-2 text-white dark:text-[#202c33]")}>
+ <svg viewBox="0 0 8 13" width="8" height="13" className={cn("absolute top-0", isMe ? "-right-2 text-[#d9fdd3] dark:text-primary/80" : "-left-2 text-white dark:text-[#202c33]")}>
  <path opacity="0.13" d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z" />
  <path fill="currentColor" d="M5.188 0H0v11.193l6.467-8.625C7.526 1.156 6.958 0 5.188 0z" />
  </svg>
@@ -823,7 +823,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  
   {msg.content.startsWith('[Attachment|') ? (
   <div className="pr-12 pt-1 pb-1 w-full">
-  <div className="flex items-center gap-2 bg-primary/20 dark:bg-white dark:bg-card/40/5 p-2 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 w-full">
+  <div className="flex items-center gap-2 bg-primary/10 dark:bg-black/20 p-2 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 w-full">
   {(() => {
     const parts = msg.content.split('|');
     const fileName = parts[1];
@@ -906,26 +906,26 @@ export default function ClipadChat({ isDockedMode = false }) {
  </div>
 
  {(replyTo || editingMsg) && (
- <div className="px-4 py-2 bg-[#f0f2f5] dark:bg-[#202c33] border-t border-primary/40 flex items-center justify-between z-10 text-sm">
+ <div className="px-4 py-2 bg-[#f0f2f5]/90 dark:bg-[#111b21]/90 backdrop-blur-md border-t border-black/5 dark:border-white/5 flex items-center justify-between z-10 text-sm">
  <div className="flex-1 min-w-0 border-l-4 border-primary pl-3">
  <p className="font-semibold text-primary">{editingMsg ? "Editing Message" : `Replying to ${participantProfiles[replyTo?.sender_id]?.full_name || 'User'}`}</p>
  <p className="text-[#71717a] dark:text-gray-400 truncate">{editingMsg ? editingMsg.content : replyTo?.content}</p>
  </div>
- <button onClick={() => { setReplyTo(null); setEditingMsg(null); setInputValue('');}} className="p-2 hover:bg-primary/20 rounded-full">
+ <button onClick={() => { setReplyTo(null); setEditingMsg(null); setInputValue('');}} className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors">
  <X className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
  </button>
  </div>
  )}
 
  {/* Input Area */}
- <div className="px-4 pt-3 pb-[80px] md:pb-3 bg-[#f0f2f5] dark:bg-[#202c33] z-10 flex items-center gap-2 border-t border-primary/40">
+ <div className="px-4 pt-3 pb-[80px] md:pb-4 bg-[#f0f2f5]/95 dark:bg-[#111b21]/95 backdrop-blur-xl z-10 flex items-center gap-2 border-t border-black/5 dark:border-white/5 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.2)]">
  <input type="file" ref={fileInputRef} className="hidden" onChange={(e) => handleFileUpload(e, 'file')} />
  <input type="file" accept="image/*" id="chat-image-upload" className="hidden" onChange={(e) => handleFileUpload(e, 'image')} />
  <input type="file" accept=".pdf,.doc,.docx,.txt" id="chat-doc-upload" className="hidden" onChange={(e) => handleFileUpload(e, 'doc')} />
  
  <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
  <PopoverTrigger asChild>
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-primary/20 shrink-0">
+ <Button variant="ghost" size="icon" className="w-11 h-11 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-black/5 dark:hover:bg-white/10 shrink-0 transition-colors">
  <Smile className="w-6 h-6" />
  </Button>
  </PopoverTrigger>
@@ -936,7 +936,7 @@ export default function ClipadChat({ isDockedMode = false }) {
 
  <Popover open={showAttachMenu} onOpenChange={setShowAttachMenu}>
  <PopoverTrigger asChild>
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-primary/20 shrink-0">
+ <Button variant="ghost" size="icon" className="w-11 h-11 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-black/5 dark:hover:bg-white/10 shrink-0 transition-colors">
  {isUploading ? <OrbitLoader size="md" /> : <Paperclip className="w-6 h-6" />}
  </Button>
  </PopoverTrigger>
@@ -956,16 +956,16 @@ export default function ClipadChat({ isDockedMode = false }) {
  </PopoverContent>
  </Popover>
  
- <div className="flex-1 bg-white dark:bg-card/40 dark:bg-[#2a3942] rounded-xl relative flex items-center  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-white dark:bg-[#202c33] rounded-[20px] relative flex items-center border border-black/5 dark:border-white/5 hover:border-primary/30 hover:shadow-md transition-all duration-300 min-h-[44px]">
  <input
  type="text"
  value={inputValue}
  onChange={e => setInputValue(e.target.value)}
  onKeyDown={e => e.key === 'Enter' && handleSend()}
  placeholder="Type a message"
- className="w-full bg-transparent border-none px-4 py-2.5 text-sm focus:ring-0 focus:outline-none"
+ className="w-full bg-transparent border-none px-4 py-3 text-sm focus:ring-0 focus:outline-none placeholder:text-muted-foreground"
  />
- <button onClick={handleAiAssist} className="absolute right-3 p-1 text-primary hover:bg-slate-100 rounded-full transition-colors" title="AI Magic Rewrite">
+ <button onClick={handleAiAssist} className="absolute right-2 p-1.5 text-primary hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors" title="AI Magic Rewrite">
  <Sparkles className="w-4 h-4" />
  </button>
  </div>
@@ -974,9 +974,9 @@ export default function ClipadChat({ isDockedMode = false }) {
  onClick={handleSend}
  disabled={!inputValue.trim()}
  size="icon" 
- className="w-10 h-10 rounded-full bg-primary hover:bg-primary/90 shrink-0"
+ className="w-11 h-11 rounded-full bg-primary hover:bg-primary/90 shrink-0 shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95"
  >
- <Send className="w-4 h-4" />
+ <Send className="w-4 h-4 ml-0.5" />
  </Button>
  </div>
  </>

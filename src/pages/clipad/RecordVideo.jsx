@@ -1377,13 +1377,13 @@ export default function RecordVideo() {
   };
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#f0f2f5] dark:bg-background text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
       {/* Hidden canvas for PiP compositing */}
       <canvas ref={canvasRef} className="hidden" />
 
       {/* Nav */}
-      <nav className="sticky top-0 z-40 flex items-center gap-3 px-6 h-16 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5">
+      <nav className="sticky top-0 z-40 flex items-center gap-3 px-6 h-16 bg-white/50 dark:bg-[#111b21]/50 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5">
           <ArrowLeft className="w-4 h-4 text-slate-500" /> Back
         </button>
         <span className="text-foreground font-semibold">Record Async Video</span>
@@ -1414,7 +1414,7 @@ export default function RecordVideo() {
                   <button
                     key={m.id}
                     onClick={() => setMode(m.id)}
-                    className={`flex-1 flex flex-col items-center justify-center p-4 rounded-full border transition-all duration-300 shadow-sm hover:shadow-md ${mode === m.id ? 'border-primary bg-gradient-to-r from-primary to-primary text-white scale-[1.02]' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-primary/50'}`}
+                    className={`flex-1 flex flex-col items-center justify-center p-4 rounded-full border transition-all duration-300 shadow-sm hover:shadow-md ${mode === m.id ? 'border-primary bg-gradient-to-r from-primary to-primary text-white scale-[1.02]' : 'bg-white/95 dark:bg-[#202c33]/95 border-black/5 dark:border-white/5 text-slate-700 dark:text-slate-300 hover:border-primary/50'}`}
                   >
                     <div className="flex items-center gap-2 font-bold text-sm">
                       <Icon className="w-4 h-4" />
@@ -1432,7 +1432,7 @@ export default function RecordVideo() {
                   value={title}
                   onChange={e => setTitle(e.target.value)}
                   placeholder="e.g. Q3 Feature Walkthrough"
-                  className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-primary/60 transition-all shadow-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-primary/60 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.04)]"
                 />
               </div>
               <div>
@@ -1440,7 +1440,7 @@ export default function RecordVideo() {
                 <select
                   value={selectedSpace}
                   onChange={e => setSelectedSpace(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/60 transition-all shadow-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/60 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.04)]"
                 >
                   <option value="">No space</option>
                   {spaces.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -1476,7 +1476,7 @@ export default function RecordVideo() {
               </label>
             </div>
 
-            <div className="bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-xl p-4 space-y-3">
+            <div className="bg-white/50 dark:bg-black/20 border border-black/5 dark:border-white/5 backdrop-blur-md rounded-xl p-4 space-y-3">
               <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-400 uppercase tracking-wider mb-2">
                 <AlignLeft className="w-4 h-4" /> Teleprompter
               </label>
@@ -1485,7 +1485,7 @@ export default function RecordVideo() {
                 <input 
                   type="text" 
                   placeholder="E.g., Announce Q3 Roadmap..."
-                  className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
+                  className="flex-1 bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
                   value={scriptPrompt}
                   onChange={e => setScriptPrompt(e.target.value)}
                 />
@@ -1502,7 +1502,7 @@ export default function RecordVideo() {
               <div className="relative">
                 <textarea
                   placeholder="Or paste your script here..."
-                  className="w-full h-32 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 resize-none"
+                  className="w-full h-32 bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 rounded-lg p-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 resize-none"
                   value={teleprompterText}
                   onChange={e => setTeleprompterText(e.target.value)}
                 />
@@ -1510,7 +1510,7 @@ export default function RecordVideo() {
                   <button 
                     onClick={refineScript}
                     disabled={isGeneratingScript}
-                    className="absolute bottom-3 right-3 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 px-2 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition-colors shadow-sm"
+                    className="absolute bottom-3 right-3 bg-white dark:bg-[#202c33] hover:bg-black/5 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 border border-black/5 dark:border-white/5 px-2 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition-colors shadow-sm"
                     title="Make it punchy!"
                   >
                     <Sparkles className="w-3 h-3 text-amber-500" /> Refine
@@ -1559,14 +1559,14 @@ export default function RecordVideo() {
           <div className="flex flex-col items-center gap-6 relative pb-24">
             
             {teleprompterText && showTeleprompter && (
-              <div className="relative w-full max-w-4xl mx-auto mb-6 bg-white dark:bg-[#090E17] border border-slate-200 dark:border-slate-800 rounded-3xl shadow-lg overflow-hidden z-40 transition-all flex flex-col">
-                <div className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-5 py-3 flex items-center justify-between cursor-move">
+              <div className="relative w-full max-w-4xl mx-auto mb-6 bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] overflow-hidden z-40 transition-all flex flex-col">
+                <div className="bg-black/5 dark:bg-white/5 border-b border-black/5 dark:border-white/5 px-5 py-3 flex items-center justify-between cursor-move">
                   <div className="flex items-center gap-2">
                     <AlignLeft className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
                     <h3 className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest">AI Teleprompter</h3>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 px-4 py-1.5 rounded-full border border-slate-200 dark:border-slate-800">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 bg-white/50 dark:bg-black/20 px-4 py-1.5 rounded-full border border-black/5 dark:border-white/5">
                       <span>Speed</span>
                       <input type="range" min="0" max="10" value={scrollSpeed} onChange={e => setScrollSpeed(Number(e.target.value))} className="w-24 h-2 bg-slate-300 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-indigo-500" />
                     </div>
@@ -1633,10 +1633,10 @@ export default function RecordVideo() {
             </div>
 
             {/* FLOATING PILL CONTROLS */}
-            <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-full shadow-2xl">
+            <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 p-2 bg-white/50 dark:bg-[#111b21]/50 backdrop-blur-3xl border border-black/5 dark:border-white/5 rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.12)]">
               <button
                 onClick={togglePause}
-                className={`flex items-center justify-center w-12 h-12 rounded-full transition-all ${isPaused ? 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                className={`flex items-center justify-center w-12 h-12 rounded-full transition-all ${isPaused ? 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30' : 'bg-white/95 dark:bg-[#202c33]/95 text-slate-900 dark:text-white hover:bg-black/5 dark:hover:bg-white/10'}`}
                 title={isPaused ? 'Resume' : 'Pause'}
               >
                 {isPaused ? <Play className="w-5 h-5 fill-current" /> : <Pause className="w-5 h-5 fill-current" />}
@@ -1645,7 +1645,7 @@ export default function RecordVideo() {
               {!pipWindow && ('documentPictureInPicture' in window) && (
                 <button
                   onClick={() => startPip(window.documentPictureInPicture.requestWindow({ width: 320, height: 180 }).catch(console.error))}
-                  className="flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-indigo-500 dark:text-indigo-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-300 transition-all"
+                  className="flex items-center justify-center w-12 h-12 rounded-full bg-white/95 dark:bg-[#202c33]/95 text-indigo-500 dark:text-indigo-400 hover:bg-black/5 dark:hover:bg-white/10 transition-all"
                   title="Open PiP Controls"
                 >
                   <Monitor className="w-5 h-5" />
@@ -1655,7 +1655,7 @@ export default function RecordVideo() {
               {teleprompterText && !showTeleprompter && (
                 <button
                   onClick={() => setShowTeleprompter(true)}
-                  className="flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                  className="flex items-center justify-center w-12 h-12 rounded-full bg-white/95 dark:bg-[#202c33]/95 text-slate-600 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10 transition-all"
                   title="Show Teleprompter"
                 >
                   <AlignLeft className="w-5 h-5" />
@@ -1703,7 +1703,7 @@ export default function RecordVideo() {
                   value={title}
                   onChange={e => setTitle(e.target.value)}
                   placeholder="Give your video a title"
-                  className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] text-slate-900 dark:text-white text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all"
                 />
               </div>
               <div>
@@ -1711,7 +1711,7 @@ export default function RecordVideo() {
                 <select
                   value={selectedSpace}
                   onChange={e => setSelectedSpace(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground text-sm focus:outline-none focus:border-indigo-500/60 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] text-slate-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500/60 transition-all"
                 >
                   <option value="">No space</option>
                   {spaces.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -1744,7 +1744,7 @@ export default function RecordVideo() {
                 onChange={e => setDescription(e.target.value)}
                 placeholder="What is this video about?"
                 rows={2}
-                className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all resize-none"
+                className="w-full px-4 py-3 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] text-slate-900 dark:text-white text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/60 transition-all resize-none"
               />
             </div>
 
@@ -1756,7 +1756,7 @@ export default function RecordVideo() {
                   <select
                     value={lockType}
                     onChange={e => setLockType(e.target.value)}
-                    className="w-full pl-10 pr-8 py-2.5 rounded-xl bg-secondary border border-border text-foreground text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60 transition-all cursor-pointer font-semibold shadow-sm"
+                    className="w-full pl-10 pr-8 py-2.5 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] text-slate-900 dark:text-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60 transition-all cursor-pointer font-semibold"
                   >
                     <option value="none">Public (Space Members)</option>
                     <option value="manual">Locked (Only Me)</option>
@@ -1784,14 +1784,14 @@ export default function RecordVideo() {
             </div>
 
             {lockType === 'scheduled' && (
-              <div className="mt-4 p-5 bg-amber-50 dark:bg-amber-950/10 rounded-xl border border-amber-100 dark:border-amber-900/30 flex gap-4 animate-in fade-in slide-in-from-top-2">
+              <div className="mt-4 p-5 bg-amber-50/50 dark:bg-amber-500/10 rounded-xl border border-amber-100/50 dark:border-amber-500/20 backdrop-blur-md flex gap-4 animate-in fade-in slide-in-from-top-2">
                 <div className="flex-1">
                   <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1.5">Unlock Date</label>
-                  <input type="date" value={unlockDate} onChange={e => setUnlockDate(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-border text-foreground text-sm" min={new Date().toISOString().split('T')[0]} />
+                  <input type="date" value={unlockDate} onChange={e => setUnlockDate(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm" min={new Date().toISOString().split('T')[0]} />
                 </div>
                 <div className="flex-1">
                   <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1.5">Unlock Time</label>
-                  <input type="time" value={unlockTime} onChange={e => setUnlockTime(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-border text-foreground text-sm" />
+                  <input type="time" value={unlockTime} onChange={e => setUnlockTime(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm" />
                 </div>
               </div>
             )}

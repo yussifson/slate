@@ -36,7 +36,7 @@ const DropdownMenuSubContent = React.forwardRef(({ className, ...props}, ref) =>
  <DropdownMenuPrimitive.SubContent
  ref={ref}
  className={cn(
- "z-50 min-w-[8rem] overflow-hidden rounded-lg border-[0.5px] border-black/9 dark:border-white/8 bg-popover p-1 text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+ "z-50 min-w-[8rem] overflow-hidden rounded-lg border-[0.5px] border-black/10 dark:border-white/10 bg-white/95 dark:bg-[#111b21]/95 backdrop-blur-3xl p-1 text-popover-foreground shadow-xl shadow-black/10 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
  className
  )}
  {...props} />
@@ -50,7 +50,7 @@ const DropdownMenuContent = React.forwardRef(({ className, sideOffset = 4, ...pr
  ref={ref}
  sideOffset={sideOffset}
  className={cn(
- "z-50 min-w-[8rem] overflow-hidden rounded-xl border-[0.5px] border-black/9 dark:border-white/8 bg-popover p-1 text-popover-foreground shadow-[0_8px_24px_rgba(0,0,0,0.10)] ",
+ "z-50 min-w-[8rem] overflow-hidden rounded-xl border-[0.5px] border-black/10 dark:border-white/10 bg-white/95 dark:bg-[#111b21]/95 backdrop-blur-3xl p-1 text-popover-foreground shadow-[0_8px_30px_rgba(0,0,0,0.12)] ",
  "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
  className
  )}

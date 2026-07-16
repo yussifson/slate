@@ -127,9 +127,9 @@ export default function MeetingsList() {
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#f0f2f5] dark:bg-background text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
       {/* Sleek top nav */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shrink-0">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/50 dark:bg-[#111b21]/50 backdrop-blur-3xl border-b border-black/5 dark:border-white/5 shrink-0">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
           <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm text-primary">
             <CliPadLogo size={22} />
@@ -164,8 +164,8 @@ export default function MeetingsList() {
                 )}
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl shadow-xl border-slate-200 dark:border-slate-800">
-              <div className="px-3 py-3 mb-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+            <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border-black/5 dark:border-white/5 bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl">
+              <div className="px-3 py-3 mb-2 bg-white/50 dark:bg-black/20 rounded-xl">
                 <p className="font-semibold text-sm truncate">{user?.full_name || user?.user_metadata?.full_name || 'User'}</p>
                 <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user?.email}</p>
               </div>
@@ -204,15 +204,15 @@ export default function MeetingsList() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search meetings..."
-              className="w-full pl-11 pr-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 shadow-sm transition-all"
+              className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-all"
             />
           </div>
-          <div className="flex gap-2 p-1 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm shrink-0">
+          <div className="flex gap-2 p-1 bg-white/95 dark:bg-[#202c33]/95 rounded-xl border border-black/5 dark:border-white/5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] shrink-0">
             {[{id: 'all', label: 'All'}, {id: 'summary', label: 'Has AI Summary'}, {id: 'actions', label: 'Open Actions'}].map(f => (
               <button
                 key={f.id}
                 onClick={() => setFilter(f.id)}
-                className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${filter === f.id ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
+                className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${filter === f.id ? 'bg-black/5 dark:bg-white/10 text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
               >
                 {f.label}
               </button>
@@ -236,7 +236,7 @@ export default function MeetingsList() {
               <div
                 key={m.id}
                 onClick={() => navigate(`/meetings/${m.id}`)}
-                className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex flex-col md:flex-row md:items-center gap-4"
+                className="group p-5 rounded-2xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all hover:-translate-y-0.5 flex flex-col md:flex-row md:items-center gap-4"
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -271,7 +271,7 @@ export default function MeetingsList() {
                       <Target className="w-3.5 h-3.5" /> {m.actions_open} open tasks
                     </div>
                   ) : m.actions_total > 0 ? (
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary border border-border text-muted-foreground text-xs font-semibold">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 text-muted-foreground text-xs font-semibold">
                       <CheckCircle className="w-3.5 h-3.5" /> All tasks done
                     </div>
                   ) : null}
