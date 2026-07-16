@@ -4,7 +4,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
 import { useCompanyPlan } from '@/hooks/useCompanyPlan';
-import { Eye, Users, Search, Video, BarChart3, TrendingUp, UserCircle, Play, Settings, Bell, X, Shield } from 'lucide-react';
+import { Eye, Users, Search, Video, BarChart3, TrendingUp, UserCircle, Play, Settings, Bell, X, Shield, MessageSquare, Heart, Target } from 'lucide-react';
 import ClipadTopNav from '@/components/clipad/ClipadTopNav';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ThemeToggle from '@/components/layout/ThemeToggle';
