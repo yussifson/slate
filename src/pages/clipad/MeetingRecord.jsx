@@ -5,10 +5,9 @@ import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
 import { useCompanyPlan } from '@/hooks/useCompanyPlan';
 import {
-  ArrowLeft, Brain, CheckCircle, Clock, Users, FileText,
-  Sparkles, MessageSquare, Target, ChevronDown, ChevronUp,
-  User, Calendar, Copy, Check, Download, Zap, AlertCircle,
-  Play, BarChart3, Video, Edit3, Trash2, Lock, MoreHorizontal, Send
+  ArrowLeft, Brain, Calendar, Clock, Download, Edit3, Lock, MoreHorizontal, Play, Plus, Send, Share2, Sparkles, Trash2, Users, Video,
+  CheckCircle, FileText, MessageSquare, Target, ChevronDown, ChevronUp,
+  User, Copy, Check, Zap, AlertCircle, BarChart3
 } from 'lucide-react';
 
 import { CliPadLogo } from '@/components/ui/CliPadLogo';

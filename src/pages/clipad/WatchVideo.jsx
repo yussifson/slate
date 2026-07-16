@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/AuthContext';
 import {
   ArrowLeft, Send, Smile, Clock, Play, Pause, Volume2, VolumeX,
   Maximize2, Share2, Copy, Check, Sparkles, MessageSquare, Heart,
-  ThumbsUp, Zap, Star, BookOpen, ChevronRight, Eye, MoreHorizontal, PictureInPicture, RotateCcw, RotateCw, Edit3, Trash2
+  ThumbsUp, Zap, Star, BookOpen, ChevronRight, Eye, MoreHorizontal, PictureInPicture, RotateCcw, RotateCw, Edit3, Trash2, Lock
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import ClipadLoader from '@/components/ui/ClipadLoader';
