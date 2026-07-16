@@ -636,7 +636,17 @@ export const AuthProvider = ({ children }) => {
 
       if (newSession) {
         // For SIGNED_IN, TOKEN_REFRESHED events
-        checkUserAuth(newSession);
+        checkUserAuth(newSession).then((userData) => {
+          // Log security event for explicit sign ins
+          if (event === 'SIGNED_IN' && userData?.company_id) {
+            supabase.from('clipad_org_events').insert({
+              workspace_id: userData.company_id,
+              type: 'security',
+              title: 'User logged in securely',
+              user_id: userData.id
+            }).then();
+          }
+        }).catch(() => {});
       }
     });
 
@@ -681,6 +691,15 @@ export const AuthProvider = ({ children }) => {
         markAccountLoggedOut(currentUser.id);
       } else {
         removeAccount(currentUser.id);
+      }
+      // Log logout security event
+      if (currentUser.company_id) {
+        supabase.from('clipad_org_events').insert({
+          workspace_id: currentUser.company_id,
+          type: 'security',
+          title: 'User logged out securely',
+          user_id: currentUser.id
+        }).then();
       }
     }
     

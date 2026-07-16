@@ -9,6 +9,7 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend
 } from 'recharts';
 import ClipadLoader from '@/components/ui/ClipadLoader';
+import ClipadTopNav from '@/components/clipad/ClipadTopNav';
 
 export default function EnterpriseDashboard() {
   const { user } = useAuth();
@@ -59,9 +60,11 @@ export default function EnterpriseDashboard() {
   const storagePercentage = ((metrics?.storageUsedGB || 0) / 50) * 100;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6">
-      {/* Header */}
-      <div className="max-w-7xl mx-auto mb-8">
+    <div className="min-h-[100dvh] bg-slate-50 dark:bg-slate-950 pb-[80px] md:pb-8 flex flex-col">
+      <ClipadTopNav />
+      <div className="flex-1 p-6 w-full max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-black text-slate-900 dark:text-white flex items-center gap-3">
@@ -223,18 +226,28 @@ export default function EnterpriseDashboard() {
                 auditLogs.map((log) => (
                   <div key={log.id} className="flex gap-4 group">
                     <div className="relative flex flex-col items-center">
-                      <div className="w-2 h-2 rounded-full bg-indigo-500 ring-4 ring-indigo-500/20 z-10" />
-                      <div className="w-px h-full bg-slate-200 dark:bg-slate-700 absolute top-2 group-last:hidden" />
+                      <div className={`w-3 h-3 rounded-full z-10 flex items-center justify-center ${log.type === 'security' ? 'bg-emerald-500 ring-4 ring-emerald-500/20' : 'bg-indigo-500 ring-4 ring-indigo-500/20'}`} />
+                      <div className="w-px h-full bg-slate-200 dark:bg-slate-700 absolute top-3 group-last:hidden" />
                     </div>
-                    <div className="pb-4">
-                      <div className="flex items-baseline gap-2">
-                        <p className="text-sm font-semibold text-slate-900 dark:text-white">{log.title}</p>
+                    <div className="pb-5 w-full">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                          {log.title}
+                          {log.type === 'security' && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">Security</span>}
+                        </p>
                         <span className="text-[10px] font-medium text-slate-400 whitespace-nowrap">
-                          {new Date(log.created_at).toLocaleString()}
+                          {new Date(log.created_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1.5 mt-2">
-                        <span className="text-[10px] font-medium text-slate-500">{log.profiles?.full_name || 'System'}</span>
+                      <div className="flex items-center gap-2 mt-2 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg border border-slate-100 dark:border-slate-800 w-fit">
+                        <div className="w-5 h-5 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
+                          {log.profiles?.avatar_url ? (
+                            <img src={log.profiles.avatar_url} className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-[9px] font-bold text-slate-500">{(log.profiles?.full_name || 'S').charAt(0)}</span>
+                          )}
+                        </div>
+                        <span className="text-[11px] font-medium text-slate-600 dark:text-slate-300">{log.profiles?.full_name || 'System User'}</span>
                       </div>
                     </div>
                   </div>
@@ -298,10 +311,10 @@ export default function EnterpriseDashboard() {
                             {engagement.viewers.map(u => (
                               <div key={u.id} className="p-3 flex items-center gap-3">
                                 <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center overflow-hidden shrink-0">
-                                  {u.avatar ? <img src={u.avatar} className="w-full h-full object-cover" /> : <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">{u.name?.charAt(0)}</span>}
+                                  {u.avatar_url ? <img src={u.avatar_url} className="w-full h-full object-cover" /> : <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">{(u.full_name || u.email || 'U').charAt(0).toUpperCase()}</span>}
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                  <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{u.name}</p>
+                                  <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{u.full_name || u.email || 'Unknown User'}</p>
                                   <p className="text-[10px] text-slate-500">Viewed {new Date(u.viewed_at).toLocaleString()}</p>
                                 </div>
                               </div>
@@ -325,10 +338,10 @@ export default function EnterpriseDashboard() {
                             {engagement.nonViewers.map(u => (
                               <div key={u.id} className="p-3 flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
                                 <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0">
-                                  {u.avatar_url ? <img src={u.avatar_url} className="w-full h-full object-cover" /> : <span className="text-xs font-bold text-slate-500">{u.full_name?.charAt(0)}</span>}
+                                  {u.avatar_url ? <img src={u.avatar_url} className="w-full h-full object-cover" /> : <span className="text-xs font-bold text-slate-500">{(u.full_name || u.email || 'U').charAt(0).toUpperCase()}</span>}
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                  <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{u.full_name}</p>
+                                  <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{u.full_name || u.email || 'Unknown User'}</p>
                                 </div>
                               </div>
                             ))}
@@ -356,9 +369,9 @@ export default function EnterpriseDashboard() {
                             <div key={c.id} className="p-4">
                               <div className="flex items-center gap-2 mb-2">
                                 <div className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center overflow-hidden">
-                                  {c.author?.avatar_url ? <img src={c.author?.avatar_url} className="w-full h-full object-cover" /> : <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400">{c.author?.full_name?.charAt(0) || '?'}</span>}
+                                  {c.author?.avatar_url ? <img src={c.author?.avatar_url} className="w-full h-full object-cover" /> : <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400">{(c.author?.full_name || c.author?.email || 'U').charAt(0).toUpperCase()}</span>}
                                 </div>
-                                <p className="text-xs font-semibold text-slate-900 dark:text-white">{c.author?.full_name}</p>
+                                <p className="text-xs font-semibold text-slate-900 dark:text-white">{c.author?.full_name || c.author?.email || 'Unknown User'}</p>
                                 <span className="text-[10px] text-slate-500 ml-auto">{new Date(c.created_at).toLocaleString()}</span>
                               </div>
                               <p className="text-sm text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
@@ -375,7 +388,9 @@ export default function EnterpriseDashboard() {
             </div>
           </div>
         </div>
+        </div>
       )}
+      </div>
     </div>
   );
 }

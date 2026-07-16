@@ -31,6 +31,8 @@ import FollowUpEngine from '@/components/clipad/features/FollowUpEngine';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import SpaceSelectorModal from '@/components/clipad/SpaceSelectorModal';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
+import CreateSpaceModal from '@/components/clipad/CreateSpaceModal';
+import ClipadTopNav from '@/components/clipad/ClipadTopNav';
 
 function StatCard({ icon: Icon, value, label, trend, accentColor, bgColor, iconColor }) {
   return (
@@ -334,80 +336,7 @@ export default function CliPadDashboard() {
 
       
       {/* Sleek top nav */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm text-primary">
-            <CliPadLogo size={22} />
-          </div>
-          <span className="text-lg font-bold tracking-tight hidden sm:block">CliPad</span>
-        </div>
-        
-        <div className="flex-1 max-w-md mx-4 flex justify-center hidden md:flex">
-          <GlobalSearch />
-        </div>
-
-        <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
-          <button onClick={() => navigate('/spaces')} className="hidden lg:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Spaces</button>
-          <button onClick={() => navigate('/videos')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Recordings</button>
-          <button onClick={() => navigate('/meetings')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Meetings</button>
-          <button onClick={() => navigate('/chat')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Chat</button>
-          {isAdmin(user) && (
-              <>
-                {user?.clipad_plan === 'enterprise' ? (
-                  <button onClick={() => navigate('/enterprise')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Enterprise</button>
-                ) : (
-                  <button onClick={() => navigate('/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Analytics</button>
-                )}
-              </>
-          )}
-          
-          <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden md:block" />
-          
-          <ThemeToggle />
-          
-          <button onClick={() => window.dispatchEvent(new CustomEvent("toggle-clipad-orbit"))} className="relative px-3 py-1.5 text-xs font-bold rounded-lg bg-white dark:bg-slate-900 border border-emerald-500/30 hover:border-emerald-500 text-emerald-600 dark:text-emerald-400 transition-all duration-300 flex items-center gap-1.5 ml-2 shadow-[0_0_15px_rgba(16,185,129,0.05)] hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] overflow-hidden group">
-            <div className="absolute inset-0 bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors" />
-            <Sparkles className="w-3.5 h-3.5 text-emerald-500 group-hover:scale-110 transition-transform" /> 
-            <span className="relative z-10 bg-gradient-to-br from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">OrbitFlow</span>
-          </button>
-          
-          <NotificationCenter />
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="w-9 h-9 rounded-xl bg-primary hover:bg-primary/90 flex items-center justify-center font-bold text-sm text-primary-foreground shadow-sm transition-all hover:scale-105 active:scale-95 ml-1 overflow-hidden border border-primary/20">
-                {user?.avatar_url || user?.user_metadata?.avatar_url ? (
-                  <img src={user.avatar_url || user.user_metadata.avatar_url} alt={firstName} className="w-full h-full object-cover" />
-                ) : (
-                  firstName[0]?.toUpperCase()
-                )}
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 font-sans">
-              <DropdownMenuLabel className="font-semibold">{user?.email}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
-              </DropdownMenuItem>
-              {user?.role === 'super_admin' && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin')} className="cursor-pointer bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400">
-                    <Shield className="mr-2 h-4 w-4" />
-                    <span className="font-semibold">Super Admin Dashboard</span>
-                  </DropdownMenuItem>
-                </>
-              )}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={async () => { await logout(); navigate('/login'); }} className="cursor-pointer text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400">
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Sign Out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </nav>
+      <ClipadTopNav />
 
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
 

@@ -4,7 +4,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
 import { useCompanyPlan } from '@/hooks/useCompanyPlan';
-import { BarChart3, TrendingUp, Eye, Heart, MessageSquare, Clock, ArrowLeft, Video, Target, Users, Settings, UserCircle, ShieldAlert, X } from 'lucide-react';
+import { BarChart3, TrendingUp, Eye, Heart, MessageSquare, Clock, ArrowLeft, Video, Target, Users, Settings, UserCircle, Shield, ShieldAlert, X } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
@@ -421,6 +421,23 @@ export default function VideoAnalytics() {
               );
               })()}
             </div>
+              {/* Enterprise Upgrade Prompt for Pro users */}
+              {user?.clipad_plan === 'pro' && (
+                <div className="mt-8 relative overflow-hidden rounded-3xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 p-10 text-center shadow-sm">
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/50 dark:to-slate-950/50 pointer-events-none" />
+                  <Shield className="w-12 h-12 text-indigo-500 mx-auto mb-4 relative z-10" />
+                  <h3 className="text-xl font-bold text-indigo-900 dark:text-indigo-100 relative z-10 mb-2">Ready for Enterprise Oversight?</h3>
+                  <p className="text-sm text-indigo-700/80 dark:text-indigo-300 max-w-md mx-auto relative z-10 mb-6">
+                    Upgrade to Enterprise to unlock the Command Center, cross-tenant visibility, administrative oversight, and comprehensive Security & Audit Logs.
+                  </p>
+                  <button 
+                    onClick={() => navigate('/clipad/enterprise')}
+                    className="relative z-10 px-6 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-xl shadow-indigo-500/20 hover:-translate-y-0.5 transition-all"
+                  >
+                    Upgrade to Enterprise
+                  </button>
+                </div>
+              )}
             </>
             ) : (
               <div className="mt-8 relative overflow-hidden rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 text-center shadow-sm">
