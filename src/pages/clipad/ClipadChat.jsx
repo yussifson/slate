@@ -424,7 +424,7 @@ export default function ClipadChat({ isDockedMode = false }) {
       <div className="flex items-center gap-1">
         <Button variant="ghost" size="icon" onClick={() => {
           toggleChatDock();
-          if (!isChatDocked) navigate('/dashboard');
+          if (!isChatDocked && location.pathname === '/chat') navigate('/dashboard');
         }} className="w-9 h-9 rounded-full hover:bg-primary/10" title="Dock to Right Sidebar">
           <ChevronsRight className="w-5 h-5 text-muted-foreground hover:text-primary" />
         </Button>
@@ -549,7 +549,7 @@ export default function ClipadChat({ isDockedMode = false }) {
         <h2 className="font-bold text-lg">Chats</h2>
         <button onClick={() => {
           toggleChatDock();
-          navigate('/chat');
+          if (!isChatDocked && location.pathname === '/chat') navigate('/dashboard');
         }} className="hover:text-primary transition-colors text-muted-foreground p-1" title="Undock Chat">
           <ChevronsLeft className="w-5 h-5" />
         </button>
@@ -662,8 +662,7 @@ export default function ClipadChat({ isDockedMode = false }) {
     <div className="flex items-center gap-4 text-[#54656f] dark:text-[#aebac1]">
       <button onClick={() => {
         toggleChatDock();
-        if (!isChatDocked) navigate('/dashboard');
-        else navigate('/chat');
+        if (!isChatDocked && location.pathname === '/chat') navigate('/dashboard');
       }} className="hover:text-primary transition-colors" title={isDockedMode ? "Undock Chat" : "Dock to Right Sidebar"}>
         {isDockedMode ? <ChevronsLeft className="w-5 h-5" /> : <ChevronsRight className="w-5 h-5" />}
       </button>
@@ -934,8 +933,8 @@ export default function ClipadChat({ isDockedMode = false }) {
  </div>
  <h2 className="text-3xl font-light text-[#41525d] dark:text-[#e9edef] mb-4 tracking-[-0.02em]">Slate Web</h2>
  <p className="text-sm text-[#8696a0] max-w-md leading-relaxed mb-8">
- Send and receive messages seamlessly without keeping your phone online.<br/>
- Use Slate Web on up to 4 linked devices and 1 phone at the same time.
+ Collaborate seamlessly with your team across any device.<br/>
+ Your organizational memory is securely synchronized and always accessible.
  </p>
  <div className="flex items-center gap-2 text-[13px] text-[#8696a0]">
  <span className="w-3 h-3 bg-[#d9fdd3] rounded-md flex items-center justify-center"><Check className="w-2 h-2 text-[#005c4b]" /></span>

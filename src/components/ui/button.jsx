@@ -29,11 +29,22 @@ const buttonVariants = cva(
  size: "default"}}
 )
 
+import { getPlatform } from "@/lib/platform"
+
 const Button = React.forwardRef(({ className, variant, size, asChild = false, ...props}, ref) => {
  const Comp = asChild ? Slot : "button"
+ const platform = getPlatform();
+ 
+ let platformClasses = "";
+ if (platform === 'ios') {
+   platformClasses = "rounded-full shadow-none active:opacity-50 active:scale-100 font-normal tracking-normal";
+ } else if (platform === 'android') {
+   platformClasses = "rounded-full shadow-md uppercase tracking-wide font-medium relative overflow-hidden active:bg-black/10 dark:active:bg-white/10";
+ }
+
  return (
  (<Comp
- className={cn(buttonVariants({ variant, size, className}))}
+ className={cn(buttonVariants({ variant, size }), platformClasses, className)}
  ref={ref}
  {...props} />)
  );

@@ -265,7 +265,7 @@ export default function AppLayout() {
 }
 
  return (
- <div className="flex flex-col h-[100dvh] bg-[#F2F2F7] dark:bg-background overflow-hidden relative selection:bg-primary/20 w-full max-w-full md:bg-slate-50/50 overscroll-y-none">
+ <div className="flex flex-col h-[100dvh] bg-[#F2F2F7] dark:bg-background overflow-hidden relative selection:bg-primary/20 w-full max-w-full md:bg-slate-50/50 overscroll-y-none pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
   {/* Custom Electron Title Bar - only renders in the desktop app */}
   <ElectronTitleBar />
   <div className="flex flex-1 overflow-hidden relative overscroll-y-none">

@@ -4,6 +4,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Native Mobile Base Styles */
+html, body {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  overscroll-behavior-y: none; /* Prevents pull-to-refresh bounce on body */
+  background-color: var(--background);
+}
+
+/* Allow text selection in inputs and textareas */
+input, textarea, [contenteditable="true"] {
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+
+/* Safe area variables with fallbacks */
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+}
 
 @layer base {
   :root, .light {
