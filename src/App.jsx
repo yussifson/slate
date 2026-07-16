@@ -1267,6 +1267,7 @@ function App() {
                         </Route>
                         <Route element={<ClipadLayout />}>
                           <Route path="/dashboard" element={<CliPadDashboard />} />
+                          <Route path="/enterprise" element={<CliPadEnterpriseDashboard />} />
                           <Route path="/spaces" element={<SpacesList />} />
                           <Route path="/spaces/:spaceId" element={<SpaceDashboard />} />
                           <Route path="/health" element={<KnowledgeHealth />} />

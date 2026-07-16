@@ -354,12 +354,11 @@ export default function CliPadDashboard() {
           {isAdmin(user) && (
               <>
                 {user?.clipad_plan === 'enterprise' ? (
-                  <button onClick={() => navigate('/clipad/enterprise')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Enterprise</button>
+                  <button onClick={() => navigate('/enterprise')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Enterprise</button>
                 ) : (
                   <button onClick={() => navigate('/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Analytics</button>
                 )}
               </>
-            )}
           )}
           
           <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden md:block" />
