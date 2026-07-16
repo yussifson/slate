@@ -60,7 +60,7 @@ export default function ClipadLayout() {
         <div 
           id="right-docked-panel-portal" 
           className={cn(
-            "flex shrink-0 h-full relative bg-white dark:bg-[#090E17]",
+            "hidden md:flex shrink-0 h-full relative bg-white dark:bg-[#090E17]",
             isChatDocked ? "border-l-4 border-primary shadow-xl" : "w-0 overflow-hidden border-none"
           )}
           style={{ width: isChatDocked ? dockWidth : 0 }}

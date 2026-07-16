@@ -425,7 +425,7 @@ export default function ClipadChat({ isDockedMode = false }) {
         <Button variant="ghost" size="icon" onClick={() => {
           toggleChatDock();
           if (!isChatDocked && location.pathname === '/chat') navigate('/dashboard');
-        }} className="w-9 h-9 rounded-full hover:bg-primary/10" title="Dock to Right Sidebar">
+        }} className="hidden md:inline-flex w-9 h-9 rounded-full hover:bg-primary/10" title="Dock to Right Sidebar">
           <ChevronsRight className="w-5 h-5 text-muted-foreground hover:text-primary" />
         </Button>
        <Button variant="ghost" size="icon" onClick={() => setIsSidebarCollapsed(true)} className="w-9 h-9 rounded-full hover:bg-primary/10" title="Collapse Sidebar">
@@ -550,7 +550,7 @@ export default function ClipadChat({ isDockedMode = false }) {
         <button onClick={() => {
           toggleChatDock();
           if (!isChatDocked && location.pathname === '/chat') navigate('/dashboard');
-        }} className="hover:text-primary transition-colors text-muted-foreground p-1" title="Undock Chat">
+        }} className="hidden md:block hover:text-primary transition-colors text-muted-foreground p-1" title="Undock Chat">
           <ChevronsLeft className="w-5 h-5" />
         </button>
       </div>
@@ -663,7 +663,7 @@ export default function ClipadChat({ isDockedMode = false }) {
       <button onClick={() => {
         toggleChatDock();
         if (!isChatDocked && location.pathname === '/chat') navigate('/dashboard');
-      }} className="hover:text-primary transition-colors" title={isDockedMode ? "Undock Chat" : "Dock to Right Sidebar"}>
+      }} className="hidden md:block hover:text-primary transition-colors" title={isDockedMode ? "Undock Chat" : "Dock to Right Sidebar"}>
         {isDockedMode ? <ChevronsLeft className="w-5 h-5" /> : <ChevronsRight className="w-5 h-5" />}
       </button>
       {messages.length > 0 && (
