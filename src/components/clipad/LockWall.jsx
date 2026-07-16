@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 /**
  * LockWall — displayed when content is locked (manually or scheduled).
  * Props:
- *   type: 'manual' | 'scheduled' | 'private'
+ *   type: 'manual' | 'scheduled' | 'private' | 'not-found'
  *   unlockAt: Date | null  (for scheduled locks)
  *   title: string  (name of the content)
  *   onBack: fn  (navigate away)
@@ -46,12 +46,13 @@ export default function LockWall({ type = 'manual', unlockAt = null, title = 'th
 
   const isPrivate = type === 'private';
   const isScheduled = type === 'scheduled';
+  const isNotFound = type === 'not-found';
 
   return (
     <div className="min-h-[100dvh] w-full bg-slate-50 dark:bg-[#0B0F19] flex items-center justify-center p-6 relative overflow-hidden">
       {/* Premium Background Effects */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-500/10 dark:bg-emerald-500/10 blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-teal-500/10 dark:bg-teal-500/10 blur-[100px] pointer-events-none" />
+      <div className={`absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[100px] pointer-events-none ${isNotFound ? 'bg-rose-500/10 dark:bg-rose-500/10' : 'bg-emerald-500/10 dark:bg-emerald-500/10'}`} />
+      <div className={`absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full blur-[100px] pointer-events-none ${isNotFound ? 'bg-orange-500/10 dark:bg-orange-500/10' : 'bg-teal-500/10 dark:bg-teal-500/10'}`} />
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] dark:opacity-[0.05] pointer-events-none mix-blend-overlay" />
 
       <div className="max-w-xl w-full relative z-10 animate-in fade-in zoom-in duration-700">
@@ -59,12 +60,12 @@ export default function LockWall({ type = 'manual', unlockAt = null, title = 'th
           
           {/* Icon */}
           <div className="relative mb-8 group">
-            <div className="absolute inset-0 bg-emerald-500/20 dark:bg-emerald-500/30 rounded-full blur-xl group-hover:blur-2xl transition-all duration-500 animate-pulse" />
+            <div className={`absolute inset-0 rounded-full blur-xl group-hover:blur-2xl transition-all duration-500 animate-pulse ${isNotFound ? 'bg-rose-500/20 dark:bg-rose-500/30' : 'bg-emerald-500/20 dark:bg-emerald-500/30'}`} />
             <div className="relative w-24 h-24 rounded-full bg-gradient-to-tr from-white to-slate-100 dark:from-slate-800 dark:to-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-500">
               {isScheduled ? (
                 <Clock className="w-10 h-10 text-amber-500" />
               ) : (
-                <Lock className="w-10 h-10 text-emerald-500 dark:text-emerald-400" />
+                <Lock className={`w-10 h-10 ${isNotFound ? 'text-rose-500 dark:text-rose-400' : 'text-emerald-500 dark:text-emerald-400'}`} />
               )}
             </div>
           </div>
@@ -72,10 +73,12 @@ export default function LockWall({ type = 'manual', unlockAt = null, title = 'th
           {/* Headline */}
           <div className="mb-8">
             <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-              {isPrivate ? 'Private Space' : isScheduled ? 'Scheduled Release' : 'Content Locked'}
+              {isNotFound ? 'Content Not Found' : isPrivate ? 'Private Space' : isScheduled ? 'Scheduled Release' : 'Content Locked'}
             </h1>
             <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed max-w-sm mx-auto">
-              {isPrivate
+              {isNotFound
+                ? `This content may not exist, or it belongs to another organization. You must be logged in with an authorized account from the same company to view this.`
+                : isPrivate
                 ? `"${title}" is inside a private space. You need to be a member to access it.`
                 : isScheduled
                 ? `"${title}" will be available to everyone once the scheduled time arrives.`
@@ -114,7 +117,11 @@ export default function LockWall({ type = 'manual', unlockAt = null, title = 'th
           {/* Back button */}
           <button
             onClick={handleBack}
-            className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold transition-all shadow-md shadow-emerald-500/20 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+            className={`group flex items-center gap-2 px-6 py-3 rounded-xl text-white text-sm font-bold transition-all hover:-translate-y-0.5 active:translate-y-0 ${
+              isNotFound 
+                ? 'bg-rose-500 hover:bg-rose-600 shadow-md shadow-rose-500/20 hover:shadow-xl' 
+                : 'bg-emerald-500 hover:bg-emerald-600 shadow-md shadow-emerald-500/20 hover:shadow-xl'
+            }`}
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Go Back
