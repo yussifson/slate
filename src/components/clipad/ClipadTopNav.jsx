@@ -5,7 +5,7 @@ import { Sparkles, Settings, Shield, LogOut } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
 import ThemeToggle from '@/components/layout/ThemeToggle';
-import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
+import NotificationCenter from '@/components/clipad/NotificationCenter';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { isAdmin } from '@/lib/utils';
+import { isAdmin } from '@/lib/constants';
 
 export default function ClipadTopNav() {
   const { user, logout } = useAuth();

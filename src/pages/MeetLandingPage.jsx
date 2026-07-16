@@ -520,8 +520,8 @@ export default function MeetLandingPage() {
 
         <section className="py-32 px-6 md:px-12 max-w-6xl mx-auto relative">
           <div className="text-center mb-20 relative z-10">
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5 text-slate-900">The autonomous workflow.</h2>
-            <p className="text-slate-500 text-lg max-w-2xl mx-auto">The magic isn't any single feature — it's how they observe your work and autonomously update your entire system.</p>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5 text-slate-900">The connected workflow.</h2>
+            <p className="text-slate-500 text-lg max-w-2xl mx-auto">The magic isn't any single feature — it's how they seamlessly connect into a unified intelligence pipeline.</p>
           </div>
 
           <div className="relative grid grid-cols-1 md:grid-cols-5 gap-8">

@@ -20,7 +20,7 @@ const LOGIN_QUOTES = [
   { quote: "\"We migrated our entire team in less than a week. The adoption rate was 100% because the interface is so seamless.\"", name: "Michael Rossi", initials: "MR" },
   { quote: "\"Finally, an enterprise solution that doesn't feel like a legacy dinosaur. It's fast, modern, and genuinely a joy to use.\"", name: "Elena Rostova", initials: "ER" },
   { quote: "\"The analytics dashboard alone saved us dozens of hours in reporting each month. The ROI was immediate.\"", name: "James Thorne", initials: "JT" },
-  { quote: "\"Slate runs our meetings, reads our emails, and literally fills itself out. I haven't manually entered a CRM record in months.\"", name: "Aisha Patel", initials: "AP" },
+  { quote: "\"Everything we need is unified in one place. No more jumping between five different tabs to close a single deal.\"", name: "Aisha Patel", initials: "AP" },
   { quote: "\"The customizable workflows adapt perfectly to our unconventional processes. We didn't have to change how we work.\"", name: "Liam O'Connor", initials: "LO" },
   { quote: "\"Security and speed were our top priorities. This platform delivered on both without compromising on design.\"", name: "Nina Matsumoto", initials: "NM" },
   { quote: "\"Customer support is practically unnecessary because the UI is so straightforward. But when we do reach out, they are stellar.\"", name: "Omar Farooq", initials: "OF" },

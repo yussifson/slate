@@ -16,7 +16,7 @@ export default function NativeOnboarding() {
       id: 'welcome',
       icon: <Logo className="w-16 h-16 text-primary drop-shadow-md" />,
       title: 'Welcome to Slate',
-      description: 'The zero-entry autonomous operating system engineered for modern enterprises.',
+      description: 'The unified business operating system engineered for modern enterprises.',
     },
     {
       id: 'features',
