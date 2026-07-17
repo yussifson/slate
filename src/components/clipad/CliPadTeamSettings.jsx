@@ -4,7 +4,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { registerSchoolUser } from '@/api/authUtils';
 import { useToast } from '@/components/ui/use-toast';
 import { Users, Mail, UserPlus, Shield, User, X, CheckCircle, RefreshCcw, UserMinus } from 'lucide-react';
-import { getSubdomainAndBase } from '@/lib/domainUtils';
+import { getSubdomainAndBase, getMainAppUrl } from '@/lib/domainUtils';
 
 export default function CliPadTeamSettings() {
   const { user } = useAuth();
