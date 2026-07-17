@@ -122,7 +122,7 @@ export default function CliPadBilling() {
     setLoading(true);
     try {
       const isPro = planType === 'pro';
-      const amountInGhs = isPro ? Math.ceil(29 * exchangeRate) : Math.ceil(49 * exchangeRate);
+      const amountInGhs = isPro ? Math.ceil(15 * exchangeRate) : Math.ceil(39 * exchangeRate);
       const amountInPesewas = amountInGhs * 100;
       const planCode = isPro 
             ? (import.meta.env.VITE_PAYSTACK_PLAN_CODE_PRO || 'PLN_rz16cups3jarao2')
@@ -241,9 +241,9 @@ export default function CliPadBilling() {
             </div>
           )}
           <h3 className="text-xl font-bold">Pro</h3>
-          <p className="text-3xl font-bold mt-4">$29<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
+          <p className="text-3xl font-bold mt-4">$15<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
           <p className="text-xs text-muted-foreground mt-1">
-            Billed in GHS ({Math.ceil(29 * exchangeRate)} GHS)
+            Billed in GHS ({Math.ceil(15 * exchangeRate)} GHS)
           </p>
           <ul className="mt-6 space-y-3">
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Unlimited Meetings</li>
@@ -261,9 +261,9 @@ export default function CliPadBilling() {
         {/* ENTERPRISE PLAN */}
         <div className={`p-6 rounded-2xl border ${currentPlan === 'enterprise' ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}>
           <h3 className="text-xl font-bold">Enterprise</h3>
-          <p className="text-3xl font-bold mt-4">$49<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
+          <p className="text-3xl font-bold mt-4">$39<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
           <p className="text-xs text-muted-foreground mt-1">
-            Billed in GHS ({Math.ceil(49 * exchangeRate)} GHS)
+            Billed in GHS ({Math.ceil(39 * exchangeRate)} GHS)
           </p>
           <ul className="mt-6 space-y-3">
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Dedicated Account Manager</li>

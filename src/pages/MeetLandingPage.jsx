@@ -81,7 +81,7 @@ const tiers = [
   },
   {
     name: 'Pro',
-    price: '$9',
+    price: '$15',
     period: 'per workspace/mo',
     highlight: true,
     badge: 'Most Popular',
