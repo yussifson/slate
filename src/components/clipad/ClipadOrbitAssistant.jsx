@@ -88,6 +88,14 @@ export default function ClipadOrbitAssistant({ isOpen = true, onClose }) {
 
       const systemPrompt = `You are Orbit, the organizational intelligence assistant for ClipPad. You have access to real-time workspace data. Answer questions concisely and accurately. Always cite your sources by including at the end: SOURCES:[{"id":"<source_id>","type":"<type>"},...] for the relevant items you used. If you cannot find the answer in the data, say so honestly. Never invent meetings, decisions, or facts.
 
+AGENTIC CAPABILITIES:
+You can proactively execute actions on behalf of the user by outputting a JSON block starting with ACTION: followed by a JSON object. 
+Available actions:
+1. create_task: {"action": "create_task", "title": "...", "assignee": "..."}
+2. send_message: {"action": "send_message", "recipient": "...", "message": "..."}
+
+If you decide to take an action, output the ACTION: block at the very end of your response (before SOURCES).
+
 CURRENT WORKSPACE KNOWLEDGE:
 ${orgContext?.contextText || 'No workspace data loaded yet. Ask the user to refresh.'}`;
 
@@ -100,11 +108,32 @@ ${orgContext?.contextText || 'No workspace data loaded yet. Ask the user to refr
       const raw = await generateText(allMessages);
       const { text, sources } = parseSourcesFromResponse(raw, orgContext?.sourceMap || {});
 
+      // Agentic Parse
+      const actionMatch = text.match(/ACTION:\s*({.*})/s);
+      let executedAction = null;
+      let cleanText = text;
+
+      if (actionMatch) {
+        try {
+          executedAction = JSON.parse(actionMatch[1]);
+          cleanText = text.replace(/ACTION:.*$/s, '').trim();
+          
+          if (executedAction.action === 'create_task') {
+             console.log("[Orbit Agent] Simulated create_task", executedAction);
+          } else if (executedAction.action === 'send_message') {
+             console.log("[Orbit Agent] Simulated send_message", executedAction);
+          }
+        } catch(e) {
+          console.error("Failed to parse action JSON", e);
+        }
+      }
+
       setMessages(prev => [...prev, {
         id: Date.now() + 1,
         role: 'assistant',
-        text: text || 'I was unable to generate a response. Please try again.',
+        text: cleanText || 'I was unable to generate a response. Please try again.',
         sources,
+        executedAction,
       }]);
     } catch (err) {
       console.error('[Orbit] Error:', err);
@@ -212,6 +241,22 @@ ${orgContext?.contextText || 'No workspace data loaded yet. Ask the user to refr
                       </span>
                     );
                   })}
+                </div>
+              )}
+              {/* Executed Action Callout */}
+              {msg.executedAction && (
+                <div className="mt-2 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 rounded-xl p-3 flex items-start gap-3 w-full">
+                  <Sparkles className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs font-semibold text-indigo-700 dark:text-indigo-400">Orbit Agent Action</p>
+                    <p className="text-xs text-indigo-600/80 dark:text-indigo-300/80 mt-1">
+                      {msg.executedAction.action === 'create_task' 
+                        ? `Created task: "${msg.executedAction.title}"` + (msg.executedAction.assignee ? ` assigned to ${msg.executedAction.assignee}` : '')
+                        : msg.executedAction.action === 'send_message'
+                        ? `Sent message to ${msg.executedAction.recipient || 'channel'}: "${msg.executedAction.message}"`
+                        : `Executed: ${msg.executedAction.action}`}
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
