@@ -267,7 +267,7 @@ export default function MobileBottomNav() {
               }}
               className="w-full flex items-center justify-center gap-2 px-4 py-3.5 transition-colors active:bg-[#E5E5EA] dark:active:bg-[#3A3A3C] text-[#FF3B30] dark:text-[#FF453A]"
             >
-              <LogOut className="w-[18px] h-[18px]" strokeWidth={2} />
+              <LucideIcons.LogOut className="w-[18px] h-[18px]" strokeWidth={2} />
               <span className="text-[17px] font-normal tracking-[-0.41px]">
                 {t('log_out', 'Log out')}
               </span>
