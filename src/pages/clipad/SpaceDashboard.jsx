@@ -341,6 +341,7 @@ export default function SpaceDashboard() {
   };
 
   const toggleMember = async (profileId) => {
+    if (profileId.startsWith('pending-')) return;
     const isMember = spaceMembers.some(m => m.user_id === profileId);
     try {
       if (isMember) {
@@ -349,7 +350,23 @@ export default function SpaceDashboard() {
       } else {
         const { data, error } = await supabase.from('clipad_space_members').insert({ space_id: spaceId, user_id: profileId }).select().single();
         if (error) throw error;
-        if (data) setSpaceMembers(prev => [...prev, data]);
+        if (data) {
+          setSpaceMembers(prev => [...prev, data]);
+          
+          // Send notification
+          try {
+            await supabase.from('clipad_notifications').insert({
+              user_id: profileId,
+              type: 'space_invite',
+              title: 'Added to Workspace',
+              message: `You have been added to the workspace "${space?.name || 'Workspace'}"`,
+              link: `/space/${spaceId}`,
+              source_id: spaceId
+            });
+          } catch (notifErr) {
+            console.error('Failed to send notification', notifErr);
+          }
+        }
       }
     } catch (err) { console.error(err); }
   };

@@ -12,7 +12,11 @@ import { motion, AnimatePresence} from 'framer-motion';
 import { Bell, Check, Trash2, Settings, Info, AlertTriangle, CheckCircle2, Clock} from 'lucide-react';
 import { toast} from 'react-hot-toast';
 
+import { useAuth } from '@/lib/AuthContext';
+import { Navigate } from 'react-router-dom';
+
 export default function UnivNotification() {
+ const { user } = useAuth();
  const companyId = useCompanyId();
  const [view, setView] = useState('Default');
  const [notifications, setNotifications] = useState([]);
@@ -120,6 +124,10 @@ export default function UnivNotification() {
  if (diffDays === 1) return 'Yesterday';
  return date.toLocaleDateString();
 };
+
+  if (user && user.role !== 'company_admin' && user.role !== 'super_admin') {
+    return <Navigate to="/notifications" replace />;
+  }
 
  return (
  <div className="flex flex-col h-full bg-background overflow-hidden relative ${view !== 'Default' ? 'hide-default' : ''}">
