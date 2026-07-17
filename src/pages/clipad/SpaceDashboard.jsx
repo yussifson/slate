@@ -214,7 +214,7 @@ export default function SpaceDashboard() {
           ? supabase.from('profiles').select('id, full_name, email, avatar_url').eq('company_id', companyId).limit(500)
           : supabase.from('profiles').select('id, full_name, email, avatar_url').limit(50),
         companyId
-          ? supabase.from('staff_records').select('user_email, full_name').eq('company_id', companyId)
+          ? supabase.from('staff_records').select('user_id, user_email, full_name').eq('company_id', companyId)
           : { data: [] }
       ]);
 
@@ -238,15 +238,46 @@ export default function SpaceDashboard() {
 
       if (profilesRes.data) {
         const staffData = staffRes.data || [];
-        setProfiles(profilesRes.data.map(p => {
-          const staffMatch = staffData.find(s => s.user_email && s.user_email.toLowerCase() === (p.email || '').toLowerCase());
-          return {
-            id: p.id,
-            full_name: p.full_name || staffMatch?.full_name || 'Unknown User',
-            email: p.email || '',
-            avatar_url: p.avatar_url || null,
-          };
-        }));
+        const profilesData = profilesRes.data || [];
+
+        const mergedMap = new Map();
+
+        staffData.forEach(s => {
+          const email = (s.user_email || '').toLowerCase();
+          if (email) {
+            mergedMap.set(email, {
+              id: s.user_id || `pending-${email}`,
+              email: s.user_email,
+              full_name: s.full_name,
+              avatar_url: null,
+              isPending: !s.user_id
+            });
+          }
+        });
+
+        profilesData.forEach(p => {
+          const email = (p.email || '').toLowerCase();
+          if (email && mergedMap.has(email)) {
+            const existing = mergedMap.get(email);
+            mergedMap.set(email, {
+              ...existing,
+              id: p.id || existing.id,
+              full_name: p.full_name || existing.full_name || 'Unknown User',
+              avatar_url: p.avatar_url || null,
+              isPending: false
+            });
+          } else {
+            mergedMap.set(email || p.id, {
+              id: p.id,
+              full_name: p.full_name || 'Unknown User',
+              email: p.email || '',
+              avatar_url: p.avatar_url || null,
+              isPending: false
+            });
+          }
+        });
+
+        setProfiles(Array.from(mergedMap.values()));
       }
     } catch (err) { console.error(err); }
     finally { setLoading(false); }

@@ -41,15 +41,46 @@ export default function CliPadTeamSettings() {
         
       if (profilesRes.error) throw profilesRes.error;
       
-      const merged = (profilesRes.data || []).map(p => {
-        const staffMatch = (staffRes.data || []).find(s => s.user_email && s.user_email.toLowerCase() === (p.email || '').toLowerCase());
-        return {
-          ...p,
-          full_name: p.full_name || staffMatch?.full_name || '',
-        };
+      const staffData = staffRes.data || [];
+      const profilesData = profilesRes.data || [];
+
+      const mergedMap = new Map();
+
+      staffData.forEach(s => {
+        const email = (s.user_email || '').toLowerCase();
+        if (email) {
+          mergedMap.set(email, {
+            id: s.user_id || `pending-${email}`,
+            email: s.user_email,
+            full_name: s.full_name,
+            role: 'user',
+            avatar_url: null,
+            isPending: !s.user_id
+          });
+        }
+      });
+
+      profilesData.forEach(p => {
+        const email = (p.email || '').toLowerCase();
+        if (email && mergedMap.has(email)) {
+          const existing = mergedMap.get(email);
+          mergedMap.set(email, {
+            ...existing,
+            ...p,
+            id: p.id || existing.id,
+            full_name: p.full_name || existing.full_name || 'Unknown User',
+            isPending: false
+          });
+        } else {
+          mergedMap.set(email || p.id, {
+            ...p,
+            full_name: p.full_name || 'Unknown User',
+            isPending: false
+          });
+        }
       });
       
-      setMembers(merged);
+      setMembers(Array.from(mergedMap.values()));
     } catch (err) {
       console.error('Error fetching team members:', err);
       toast({ title: 'Error loading team', description: err.message, variant: 'destructive' });
