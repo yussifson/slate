@@ -36,3 +36,5 @@ BEGIN
         ALTER PUBLICATION powersync ADD TABLE public.clipad_standups;
     END IF;
 END $$;
+
+ALTER TABLE public.clipad_standups ADD COLUMN IF NOT EXISTS user_name TEXT;
