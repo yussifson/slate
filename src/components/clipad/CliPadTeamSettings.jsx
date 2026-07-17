@@ -177,9 +177,12 @@ export default function CliPadTeamSettings() {
       
       if (sendError) {
         console.error("Failed to send invite email:", sendError);
-        // Fallback to reset password if edge function fails
-        await supabase.auth.resetPasswordForEmail(inviteEmail.trim(), {
-          redirectTo: `${base}/reset-password`
+        // Fallback to Magic Link if edge function fails
+        await supabase.auth.signInWithOtp({
+          email: inviteEmail.trim(),
+          options: {
+            emailRedirectTo: `${base}/reset-password`
+          }
         });
       }
 

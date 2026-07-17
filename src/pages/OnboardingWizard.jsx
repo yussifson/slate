@@ -417,8 +417,11 @@ export default function OnboardingWizard() {
           
           if (sendError) {
             console.error("Failed to send invite email:", sendError);
-            await supabase.auth.resetPasswordForEmail(staff.email, {
-              redirectTo: `${base}/reset-password`
+            await supabase.auth.signInWithOtp({
+              email: staff.email,
+              options: {
+                emailRedirectTo: `${base}/reset-password`
+              }
             });
           }
         }

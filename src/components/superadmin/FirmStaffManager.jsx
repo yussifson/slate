@@ -124,8 +124,11 @@ export default function FirmStaffManager({ firm, onClose }) {
           
           if (sendError) {
             console.error("Failed to send invite email:", sendError);
-            await supabase.auth.resetPasswordForEmail(invite.user_email, {
-              redirectTo: `${base}/reset-password`
+            await supabase.auth.signInWithOtp({
+              email: invite.user_email,
+              options: {
+                emailRedirectTo: `${base}/reset-password`
+              }
             });
           }
         }
