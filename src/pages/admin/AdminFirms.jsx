@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { useImpersonation } from '@/lib/ImpersonationContext';
 import PageHeader from '@/components/shared/PageHeader';
 import FirmFeaturesManager from '@/components/superadmin/FirmFeaturesManager';
+import FirmStaffManager from '@/components/superadmin/FirmStaffManager';
 import { useNotifications } from '@/hooks/useNotifications';
 import { supabase } from '@/api/supabaseClient';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
@@ -80,6 +81,7 @@ export default function AdminFirms() {
 
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [featuresCompany, setFeaturesCompany] = useState(null);
+  const [staffCompany, setStaffCompany] = useState(null);
 
   // Quota Modal
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -345,7 +347,10 @@ export default function AdminFirms() {
 
                     <div className="flex flex-wrap md:flex-nowrap items-center gap-2 pt-3 md:pt-0 border-t border-slate-100 dark:border-slate-800/50 md:border-none mt-2 md:mt-0">
                       <Button variant="outline" size="sm" onClick={() => setFeaturesCompany(c)} className="flex-1 md:flex-none h-9 text-xs gap-2.5 px-3 rounded-xl border-primary/20 text-violet-700 bg-violet-50 hover:bg-violet-100 tracking-[0.04em]">
-                        <Layers className="w-3.5 h-3.5" /> Features
+                        <Layers className="w-3.5 h-3.5" /> Workspaces
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => setStaffCompany(c)} className="flex-1 md:flex-none h-9 text-xs gap-2.5 px-3 rounded-xl border-primary/20 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 tracking-[0.04em]">
+                        <Users className="w-3.5 h-3.5" /> Team
                       </Button>
                       <Button variant="outline" size="sm" onClick={() => handleImpersonate(c)} className="flex-1 md:flex-none h-9 text-xs gap-2.5 px-3 rounded-xl border-primary/20 text-primary/90 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 hover:text-primary/80 tracking-[0.04em]">
                         <UserCheck className="w-3.5 h-3.5" /> {t("impersonate", "Impersonate")}
@@ -478,6 +483,12 @@ export default function AdminFirms() {
         <FirmFeaturesManager
           firm={featuresCompany}
           onClose={() => setFeaturesCompany(null)}
+        />
+      )}
+      {staffCompany && (
+        <FirmStaffManager
+          firm={staffCompany}
+          onClose={() => setStaffCompany(null)}
         />
       )}
     </div>
