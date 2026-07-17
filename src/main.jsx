@@ -21,7 +21,7 @@ const updateSW = registerSW({
   }})
 
 // Listen for Vite chunk loading errors (e.g. when Vercel deploys a new version and old chunks are missing)
-window.addEventListener('vite:preloadError', (event) => {
+window.addEventListener('vite:preloadError', async (event) => {
   if (sessionStorage.getItem('vite-reload')) {
     sessionStorage.removeItem('vite-reload');
     console.error('Vite preload error persists. Stopping infinite loop.');
@@ -29,6 +29,12 @@ window.addEventListener('vite:preloadError', (event) => {
   }
   sessionStorage.setItem('vite-reload', 'true');
   console.warn('Vite preload error (chunk missing). Forcing hard reload...');
+  if ('serviceWorker' in navigator) {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    for (const registration of registrations) {
+      await registration.unregister();
+    }
+  }
   window.location.reload(true);
 });
 
@@ -44,6 +50,12 @@ window.addEventListener('unhandledrejection', async (event) => {
     }
     sessionStorage.setItem('vite-reload', 'true');
     console.warn('Stale deployment chunk detected. Forcing hard reload...');
+    if ('serviceWorker' in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (const registration of registrations) {
+        await registration.unregister();
+      }
+    }
     window.location.reload(true);
     return;
   }
