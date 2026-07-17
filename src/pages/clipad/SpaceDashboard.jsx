@@ -826,12 +826,22 @@ export default function SpaceDashboard() {
                           <p className="text-xs text-slate-500">{p.email}</p>
                         </div>
                       </div>
-                      <button 
-                        onClick={() => toggleMember(p.id)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${isMem ? 'bg-rose-50 text-rose-600 hover:bg-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:hover:bg-rose-500/20 border border-rose-200 dark:border-rose-500/30' : 'bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20'}`}
-                      >
-                        {isMem ? 'Remove' : 'Add'}
-                      </button>
+                      {p.isPending ? (
+                        <button 
+                          disabled
+                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500 border border-slate-200 dark:border-slate-700 cursor-not-allowed"
+                          title="User must complete signup before they can be added to spaces."
+                        >
+                          Pending Signup
+                        </button>
+                      ) : (
+                        <button 
+                          onClick={() => toggleMember(p.id)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${isMem ? 'bg-rose-50 text-rose-600 hover:bg-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:hover:bg-rose-500/20 border border-rose-200 dark:border-rose-500/30' : 'bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20'}`}
+                        >
+                          {isMem ? 'Remove' : 'Add'}
+                        </button>
+                      )}
                     </div>
                   );
                 })}
