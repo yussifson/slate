@@ -206,13 +206,16 @@ export default function SpaceDashboard() {
       const companyId = spaceRes.data?.company_id || user?.company_id || user?.companies?.id;
 
       // Phase 2: fetch everything else in parallel, using reliable companyId
-      const [videosRes, meetingsRes, membersRes, profilesRes] = await Promise.all([
+      const [videosRes, meetingsRes, membersRes, profilesRes, staffRes] = await Promise.all([
         supabase.from('clipad_videos').select('*, creator:creator_id(full_name, avatar_url)').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(12),
         supabase.from('clipad_meeting_records').select('*').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(20),
         supabase.from('clipad_space_members').select('*').eq('space_id', spaceId),
         companyId
           ? supabase.from('profiles').select('id, full_name, email, avatar_url').eq('company_id', companyId).limit(500)
           : supabase.from('profiles').select('id, full_name, email, avatar_url').limit(50),
+        companyId
+          ? supabase.from('staff_records').select('user_email, full_name').eq('company_id', companyId)
+          : { data: [] }
       ]);
 
       // Fetch action items via meeting_id (no space_id on that table)
@@ -234,12 +237,16 @@ export default function SpaceDashboard() {
       if (membersRes.data) setSpaceMembers(membersRes.data);
 
       if (profilesRes.data) {
-        setProfiles(profilesRes.data.map(p => ({
-          id: p.id,
-          full_name: p.full_name || 'Unknown User',
-          email: p.email || '',
-          avatar_url: p.avatar_url || null,
-        })));
+        const staffData = staffRes.data || [];
+        setProfiles(profilesRes.data.map(p => {
+          const staffMatch = staffData.find(s => s.user_email && s.user_email.toLowerCase() === (p.email || '').toLowerCase());
+          return {
+            id: p.id,
+            full_name: p.full_name || staffMatch?.full_name || 'Unknown User',
+            email: p.email || '',
+            avatar_url: p.avatar_url || null,
+          };
+        }));
       }
     } catch (err) { console.error(err); }
     finally { setLoading(false); }

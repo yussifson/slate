@@ -27,14 +27,29 @@ export default function CliPadTeamSettings() {
   const fetchMembers = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, full_name, email, role, avatar_url')
-        .eq('company_id', user.company_id)
-        .order('created_at', { ascending: false });
+      const [profilesRes, staffRes] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('id, full_name, email, role, avatar_url')
+          .eq('company_id', user.company_id)
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('staff_records')
+          .select('user_email, full_name')
+          .eq('company_id', user.company_id)
+      ]);
         
-      if (error) throw error;
-      setMembers(data || []);
+      if (profilesRes.error) throw profilesRes.error;
+      
+      const merged = (profilesRes.data || []).map(p => {
+        const staffMatch = (staffRes.data || []).find(s => s.user_email && s.user_email.toLowerCase() === (p.email || '').toLowerCase());
+        return {
+          ...p,
+          full_name: p.full_name || staffMatch?.full_name || '',
+        };
+      });
+      
+      setMembers(merged);
     } catch (err) {
       console.error('Error fetching team members:', err);
       toast({ title: 'Error loading team', description: err.message, variant: 'destructive' });
