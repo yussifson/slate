@@ -144,22 +144,48 @@ export default function CliPadTeamSettings() {
         throw error;
       }
       
-      // Send the setup/magic link
+      // Send a proper invitation email with the temporary password
       const { currentSubdomain, baseDomain } = getSubdomainAndBase();
       const port = window.location.port ? `:${window.location.port}` : '';
       const base = currentSubdomain
         ? `${window.location.protocol}//${currentSubdomain}.${baseDomain}${port}`
         : `${window.location.protocol}//${baseDomain}${port}`;
 
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(inviteEmail.trim(), {
-        redirectTo: `${base}/reset-password`
+      const loginUrl = `${base}/login`;
+      
+      const emailHtml = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>You've been invited to CliPad!</h2>
+          <p>Hi ${inviteName},</p>
+          <p>You have been invited to join the team on CliPad.</p>
+          <p>You can log in using your email address and the following temporary password:</p>
+          <div style="background-color: #f4f4f5; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 18px; margin: 16px 0; letter-spacing: 1px;">
+            <strong>${tempPassword}</strong>
+          </div>
+          <p>Please log in and change your password immediately in your account settings.</p>
+          <a href="${loginUrl}" style="display: inline-block; background-color: #000; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 16px;">Log In to CliPad</a>
+        </div>
+      `;
+
+      const { error: sendError } = await supabase.functions.invoke('send-email', {
+        body: {
+          to: [inviteEmail.trim()],
+          subject: 'You have been invited to CliPad',
+          html: emailHtml
+        }
       });
       
-      if (resetError) throw resetError;
+      if (sendError) {
+        console.error("Failed to send invite email:", sendError);
+        // Fallback to reset password if edge function fails
+        await supabase.auth.resetPasswordForEmail(inviteEmail.trim(), {
+          redirectTo: `${base}/reset-password`
+        });
+      }
 
       toast({ 
         title: `Invited ${inviteName}`, 
-        description: `A setup link has been emailed to ${inviteEmail}.`,
+        description: `An invitation has been emailed to ${inviteEmail}.`,
       });
       
       // Reset form & refresh

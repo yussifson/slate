@@ -391,11 +391,37 @@ export default function OnboardingWizard() {
          staff.name,
          false
        );
-       if (!regError || regError.message === 'already registered in this firm') {
-         await supabase.auth.resetPasswordForEmail(staff.email, {
-           redirectTo: `${base}/reset-password`
-         });
-       }
+        if (!regError || regError.message === 'already registered in this firm') {
+          const loginUrl = `${base}/login`;
+          const emailHtml = `
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2>You've been invited!</h2>
+              <p>Hi ${staff.name},</p>
+              <p>You have been invited to join the team.</p>
+              <p>You can log in using your email address and the following temporary password:</p>
+              <div style="background-color: #f4f4f5; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 18px; margin: 16px 0; letter-spacing: 1px;">
+                <strong>${tempPassword}</strong>
+              </div>
+              <p>Please log in and change your password immediately in your account settings.</p>
+              <a href="${loginUrl}" style="display: inline-block; background-color: #000; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 16px;">Log In</a>
+            </div>
+          `;
+
+          const { error: sendError } = await supabase.functions.invoke('send-email', {
+            body: {
+              to: [staff.email],
+              subject: 'You have been invited to join the team',
+              html: emailHtml
+            }
+          });
+          
+          if (sendError) {
+            console.error("Failed to send invite email:", sendError);
+            await supabase.auth.resetPasswordForEmail(staff.email, {
+              redirectTo: `${base}/reset-password`
+            });
+          }
+        }
      } catch (e) {
        console.error("Failed to register staff:", e);
      }
