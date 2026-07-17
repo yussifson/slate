@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Bot, Send, Sparkles, X, Brain, Loader2, ExternalLink, Calendar, Video, ShieldAlert, AlertTriangle, RefreshCw, ChevronDown } from 'lucide-react';
 import { buildOrgContext } from '@/lib/clipadIntelligence';
 import { generateText } from '@/lib/cloudflareAI';
+import { supabase } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 
 const SOURCE_META = {
   meeting:  { icon: Calendar,      color: 'text-blue-500',   bg: 'bg-blue-500/10'   },
@@ -18,7 +20,8 @@ const STARTER_QUESTIONS = [
   'What commitments are still pending?',
 ];
 
-export default function ClipadOrbitAssistant({ isOpen = true, onClose }) {
+export default function ClipadOrbitAssistant({ isOpen = true, onClose, spaceId = null }) {
+  const { user } = useAuth();
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -119,9 +122,31 @@ ${orgContext?.contextText || 'No workspace data loaded yet. Ask the user to refr
           cleanText = text.replace(/ACTION:.*$/s, '').trim();
           
           if (executedAction.action === 'create_task') {
-             console.log("[Orbit Agent] Simulated create_task", executedAction);
+             console.log("[Orbit Agent] Executing create_task", executedAction);
+             try {
+               await supabase.from('clipad_tasks').insert({
+                 title: executedAction.title || 'Orbit Automated Task',
+                 status: 'todo',
+                 space_id: spaceId || null,
+                 assignee_id: user?.id || null,
+                 is_complete: false
+               });
+             } catch (err) {
+               console.error("Failed to insert task:", err);
+             }
           } else if (executedAction.action === 'send_message') {
-             console.log("[Orbit Agent] Simulated send_message", executedAction);
+             console.log("[Orbit Agent] Executing send_message", executedAction);
+             try {
+                // If it fails due to RLS, it means the channel_id needs to be correct. We default to general channel if available.
+                await supabase.from('chat_messages').insert({
+                  channel_id: 'general', // We could try to extract from executedAction.recipient if it was an ID
+                  user_id: user?.id,
+                  content: executedAction.message || '',
+                  created_at: new Date().toISOString()
+                });
+             } catch (err) {
+               console.error("Failed to send message:", err);
+             }
           }
         } catch(e) {
           console.error("Failed to parse action JSON", e);
