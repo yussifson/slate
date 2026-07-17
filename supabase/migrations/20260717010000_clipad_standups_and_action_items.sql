@@ -47,7 +47,13 @@ WHERE a.space_id = s.id AND a.company_id IS NULL;
 -- 4. Enable PowerSync publication
 DO $$
 BEGIN
-    ALTER PUBLICATION powersync ADD TABLE public.clipad_standups;
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM pg_publication_tables 
+        WHERE pubname = 'powersync' AND tablename = 'clipad_standups'
+    ) THEN
+        ALTER PUBLICATION powersync ADD TABLE public.clipad_standups;
+    END IF;
 EXCEPTION
     WHEN OTHERS THEN null;
 END $$;
