@@ -31,7 +31,7 @@ serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'Slate Notifications <notifications@slate.optavel.com>',
+        from: 'Optavel Notifications <notifications@optavel.com>',
         to: to,
         subject: subject,
         html: html,

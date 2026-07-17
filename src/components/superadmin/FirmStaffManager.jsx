@@ -93,13 +93,9 @@ export default function FirmStaffManager({ firm, onClose }) {
 
         if (loginMethod === 'invite') {
           const { supabase } = await import('@/api/supabaseClient');
-          const { currentSubdomain, baseDomain } = await import('@/lib/domainUtils').then(m => m.getSubdomainAndBase());
-          const port = window.location.port ? `:${window.location.port}` : '';
-          const base = currentSubdomain
-            ? `${window.location.protocol}//${currentSubdomain}.${baseDomain}${port}`
-            : `${window.location.protocol}//${baseDomain}${port}`;
-
-          const loginUrl = `${base}/login`;
+          const { getMainAppUrl } = await import('@/lib/domainUtils');
+          const centralBaseUrl = getMainAppUrl();
+          const loginUrl = `${centralBaseUrl}/login`;
           const emailHtml = `
             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
               <h2>You've been invited!</h2>
@@ -127,7 +123,7 @@ export default function FirmStaffManager({ firm, onClose }) {
             await supabase.auth.signInWithOtp({
               email: invite.user_email,
               options: {
-                emailRedirectTo: `${base}/reset-password`
+                emailRedirectTo: `${centralBaseUrl}/reset-password`
               }
             });
           }

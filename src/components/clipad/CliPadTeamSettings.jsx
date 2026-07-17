@@ -145,13 +145,8 @@ export default function CliPadTeamSettings() {
       }
       
       // Send a proper invitation email with the temporary password
-      const { currentSubdomain, baseDomain } = getSubdomainAndBase();
-      const port = window.location.port ? `:${window.location.port}` : '';
-      const base = currentSubdomain
-        ? `${window.location.protocol}//${currentSubdomain}.${baseDomain}${port}`
-        : `${window.location.protocol}//${baseDomain}${port}`;
-
-      const loginUrl = `${base}/login`;
+      const centralBaseUrl = getMainAppUrl();
+      const loginUrl = `${centralBaseUrl}/login`;
       
       const emailHtml = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -181,7 +176,7 @@ export default function CliPadTeamSettings() {
         await supabase.auth.signInWithOtp({
           email: inviteEmail.trim(),
           options: {
-            emailRedirectTo: `${base}/reset-password`
+            emailRedirectTo: `${centralBaseUrl}/reset-password`
           }
         });
       }

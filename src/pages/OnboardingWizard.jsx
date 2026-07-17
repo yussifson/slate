@@ -13,7 +13,7 @@ import confetti from 'canvas-confetti';
 import { useToast} from '@/components/ui/use-toast';
 import { useNavigate as useHookNavigate } from "react-router-dom";
 import { registerSchoolUser } from '@/api/authUtils';
-import { getSubdomainAndBase, isDesktopApp} from '@/lib/domainUtils';
+import { getSubdomainAndBase, isDesktopApp, getMainAppUrl } from '@/lib/domainUtils';
 import { getTerm, INDUSTRIES} from '@/config/industries';
 import { COUNTRIES_CURRENCIES } from '@/config/countries';
 import { generateOrbitBuildWorkspace } from '@/lib/orbitBuildGenerator';
@@ -373,12 +373,7 @@ export default function OnboardingWizard() {
    const { error: staffErr } = await supabase.from('staff_records').insert(staffInserts);
    if (staffErr) console.error("Failed to save staff records:", staffErr);
 
-   // Create Auth Logins and send Invite Emails
-   const { currentSubdomain, baseDomain } = getSubdomainAndBase();
-   const port = window.location.port ? `:${window.location.port}` : '';
-   const base = currentSubdomain
-     ? `${window.location.protocol}//${currentSubdomain}.${baseDomain}${port}`
-     : `${window.location.protocol}//${baseDomain}${port}`;
+   const centralBaseUrl = getMainAppUrl();
 
    for (const staff of invitedStaff) {
      try {
@@ -392,7 +387,7 @@ export default function OnboardingWizard() {
          false
        );
         if (!regError || regError.message === 'already registered in this firm') {
-          const loginUrl = `${base}/login`;
+          const loginUrl = `${centralBaseUrl}/login`;
           const emailHtml = `
             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
               <h2>You've been invited!</h2>
@@ -420,7 +415,7 @@ export default function OnboardingWizard() {
             await supabase.auth.signInWithOtp({
               email: staff.email,
               options: {
-                emailRedirectTo: `${base}/reset-password`
+                emailRedirectTo: `${centralBaseUrl}/reset-password`
               }
             });
           }
