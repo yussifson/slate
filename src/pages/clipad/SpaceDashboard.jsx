@@ -211,7 +211,7 @@ export default function SpaceDashboard() {
         supabase.from('clipad_meeting_records').select('*').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(20),
         supabase.from('clipad_space_members').select('*').eq('space_id', spaceId),
         companyId
-          ? supabase.from('staff_records').select('user_id, full_name, user_email').eq('company_id', companyId)
+          ? supabase.from('profiles').select('id, full_name, email, avatar_url').eq('company_id', companyId).limit(500)
           : supabase.from('profiles').select('id, full_name, email, avatar_url').limit(50),
       ]);
 
@@ -233,33 +233,13 @@ export default function SpaceDashboard() {
       if (tasksRes.data) setTasks(tasksRes.data);
       if (membersRes.data) setSpaceMembers(membersRes.data);
 
-      if (profilesRes.data && profilesRes.data.length > 0) {
-        // staff_records shape: { user_id, full_name, user_email }
-        // profiles shape:     { id, full_name, email, avatar_url }
-        const isStaffRecord = profilesRes.data[0] && 'user_id' in profilesRes.data[0];
-        const mappedProfiles = profilesRes.data
-          .filter(s => isStaffRecord ? !!s.user_id : !!s.id)
-          .map(s => ({
-            id: isStaffRecord ? s.user_id : s.id,
-            full_name: s.full_name,
-            email: isStaffRecord ? s.user_email : s.email,
-            avatar_url: s.avatar_url || null,
-          }));
-        setProfiles(mappedProfiles);
-      } else if (companyId) {
-        // Final fallback: query profiles table directly by company_id
-        const { data: fallbackProfiles } = await supabase
-          .from('profiles')
-          .select('id, full_name, email, avatar_url')
-          .eq('company_id', companyId);
-        if (fallbackProfiles) {
-          setProfiles(fallbackProfiles.map(p => ({
-            id: p.id,
-            full_name: p.full_name,
-            email: p.email,
-            avatar_url: p.avatar_url || null,
-          })));
-        }
+      if (profilesRes.data) {
+        setProfiles(profilesRes.data.map(p => ({
+          id: p.id,
+          full_name: p.full_name || 'Unknown User',
+          email: p.email || '',
+          avatar_url: p.avatar_url || null,
+        })));
       }
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
@@ -796,7 +776,7 @@ export default function SpaceDashboard() {
 
             <div className="flex-1 overflow-y-auto pr-2 space-y-2">
               {profiles
-                .filter(p => p.id !== space.created_by && (p.full_name?.toLowerCase().includes(searchMember.toLowerCase()) || p.email?.toLowerCase().includes(searchMember.toLowerCase())))
+                .filter(p => p.id !== space.created_by && ((p.full_name || '').toLowerCase().includes((searchMember || '').toLowerCase()) || (p.email || '').toLowerCase().includes((searchMember || '').toLowerCase())))
                 .map(p => {
                   const isMem = spaceMembers.some(m => m.user_id === p.id);
                   return (
@@ -817,7 +797,7 @@ export default function SpaceDashboard() {
                     </div>
                   );
                 })}
-              {profiles.filter(p => p.id !== space.created_by && (p.full_name?.toLowerCase().includes(searchMember.toLowerCase()) || p.email?.toLowerCase().includes(searchMember.toLowerCase()))).length === 0 && (
+              {profiles.filter(p => p.id !== space.created_by && ((p.full_name || '').toLowerCase().includes((searchMember || '').toLowerCase()) || (p.email || '').toLowerCase().includes((searchMember || '').toLowerCase()))).length === 0 && (
                 <p className="text-center text-slate-500 text-sm py-4">No users found.</p>
               )}
             </div>
