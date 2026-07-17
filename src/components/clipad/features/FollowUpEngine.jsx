@@ -20,11 +20,11 @@ export default function FollowUpEngine({ spaceId, workspaceId }) {
     try {
       let query = supabase
         .from('clipad_action_items')
-        .select('*, assignee:auth.users(id, full_name, email)')
+        .select('*, assignee:assigned_to(id, full_name, email)')
         .eq('is_complete', false);
 
       if (spaceId) query = query.eq('space_id', spaceId);
-      else if (workspaceId) query = query.eq('workspace_id', workspaceId);
+      else if (workspaceId) query = query.eq('company_id', workspaceId);
 
       const { data: items } = await query;
       if (!items || items.length === 0) { setLoading(false); return; }
