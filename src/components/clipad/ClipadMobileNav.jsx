@@ -31,7 +31,7 @@ export default function ClipadMobileNav() {
 
   return (
     <>
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-background/90 backdrop-blur-3xl border-t border-slate-200/60 dark:border-border/60 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)]">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-background/90 backdrop-blur-3xl border-t border-slate-200/60 dark:border-border/60 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)]">
         <div className="flex items-center justify-between px-2 h-[60px] max-w-md mx-auto overflow-x-auto no-scrollbar">
           {navItems.map((item) => {
             const isActive = item.path ? location.pathname.startsWith(item.path) : isMenuOpen;
@@ -92,7 +92,7 @@ export default function ClipadMobileNav() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="md:hidden fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-sm"
+            className="lg:hidden fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-sm"
             onClick={() => setIsMenuOpen(false)}
           >
             <motion.div 

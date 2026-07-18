@@ -275,22 +275,22 @@ export default function StandupPanel({ spaceId }) {
   return (
     <div className="space-y-4 p-1">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="w-full sm:w-auto overflow-hidden">
           <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
             <Sun className="w-5 h-5 text-amber-500" /> Daily Standup
           </h2>
-          <div className="flex items-center gap-3 mt-1.5">
-            <p className="text-sm text-muted-foreground">{todayLabel}</p>
-            <div className="flex bg-slate-100 dark:bg-secondary rounded-lg p-0.5 shadow-inner">
-              <button onClick={() => setFilterMode('today')} className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded-md font-bold transition-all ${filterMode === 'today' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Today</button>
-              <button onClick={() => setFilterMode('yesterday')} className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded-md font-bold transition-all ${filterMode === 'yesterday' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Yesterday</button>
-              <button onClick={() => setFilterMode('last7days')} className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded-md font-bold transition-all ${filterMode === 'last7days' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Last 7 Days</button>
-              <button onClick={() => setFilterMode('advanced')} className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded-md font-bold transition-all ${filterMode === 'advanced' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Advanced</button>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mt-1.5 w-full">
+            <p className="text-sm text-muted-foreground hidden sm:block">{todayLabel}</p>
+            <div className="flex overflow-x-auto no-scrollbar bg-slate-100 dark:bg-secondary rounded-lg p-0.5 shadow-inner max-w-full">
+              <button onClick={() => setFilterMode('today')} className={`text-[10px] whitespace-nowrap uppercase tracking-wider px-3 py-1.5 rounded-md font-bold transition-all ${filterMode === 'today' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Today</button>
+              <button onClick={() => setFilterMode('yesterday')} className={`text-[10px] whitespace-nowrap uppercase tracking-wider px-3 py-1.5 rounded-md font-bold transition-all ${filterMode === 'yesterday' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Yesterday</button>
+              <button onClick={() => setFilterMode('last7days')} className={`text-[10px] whitespace-nowrap uppercase tracking-wider px-3 py-1.5 rounded-md font-bold transition-all ${filterMode === 'last7days' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Last 7 Days</button>
+              <button onClick={() => setFilterMode('advanced')} className={`text-[10px] whitespace-nowrap uppercase tracking-wider px-3 py-1.5 rounded-md font-bold transition-all ${filterMode === 'advanced' ? 'bg-white dark:bg-slate-700 shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Advanced</button>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 self-end sm:self-auto">
           <button
             onClick={fetchUpdates}
             className="p-2 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"

@@ -160,11 +160,11 @@ export default function TaskBoard({ spaceId }) {
       </div>
 
       <div className="flex-1 overflow-x-auto overflow-y-hidden">
-        <div className="flex items-start gap-4 min-w-max pb-4 h-full">
+        <div className="flex items-start gap-4 pb-4 h-full md:min-w-max max-md:snap-x max-md:snap-mandatory">
           {stages.map(stage => (
             <div 
               key={stage.id} 
-              className="w-[320px] h-full flex flex-col bg-card/40 backdrop-blur rounded-2xl border border-border shadow-sm overflow-hidden"
+              className="w-[85vw] md:w-[320px] shrink-0 max-md:snap-center h-full flex flex-col bg-card/40 backdrop-blur rounded-2xl border border-border shadow-sm overflow-hidden"
               onDrop={(e) => handleDrop(e, stage.id)}
               onDragOver={handleDragOver}
             >
@@ -272,7 +272,7 @@ export default function TaskBoard({ spaceId }) {
           ))}
 
           {/* Add Column Button */}
-          <div className="w-[320px] shrink-0 h-full flex flex-col">
+          <div className="w-[85vw] md:w-[320px] shrink-0 max-md:snap-center h-full flex flex-col">
             {!showAddStage ? (
               <button 
                 onClick={() => setShowAddStage(true)}

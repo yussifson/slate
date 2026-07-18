@@ -75,9 +75,9 @@ export default function SpaceDocs({ spaceId }) {
   };
 
   return (
-    <div className="flex h-[600px] border rounded-2xl bg-card overflow-hidden shadow-sm">
+    <div className="flex flex-col md:flex-row h-[calc(100vh-200px)] md:h-[600px] md:border rounded-2xl bg-card overflow-hidden md:shadow-sm">
       {/* Sidebar */}
-      <div className="w-64 border-r bg-muted/20 flex flex-col">
+      <div className={`${selectedDoc ? 'hidden md:flex' : 'flex'} w-full md:w-64 border-b md:border-b-0 md:border-r bg-muted/20 flex-col shrink-0`}>
         <div className="p-4 border-b flex justify-between items-center bg-card">
           <h3 className="font-semibold text-sm">Documents</h3>
           <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleCreateDoc}>
@@ -114,12 +114,13 @@ export default function SpaceDocs({ spaceId }) {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col bg-background">
+      <div className={`${selectedDoc ? 'flex' : 'hidden md:flex'} flex-1 flex-col bg-background min-h-0`}>
         {selectedDoc ? (
           <DocEditor 
             doc={selectedDoc} 
             onSave={(title, content) => handleSaveDoc(selectedDoc.id, title, content)}
             isSaving={isSaving}
+            onBack={() => setSelectedDocId(null)}
           />
         ) : (
           <div className="flex-1 flex items-center justify-center text-muted-foreground flex-col gap-4 bg-card/50">
@@ -132,7 +133,7 @@ export default function SpaceDocs({ spaceId }) {
   );
 }
 
-function DocEditor({ doc, onSave, isSaving }) {
+function DocEditor({ doc, onSave, isSaving, onBack }) {
   const [title, setTitle] = useState(doc.title);
   const [isAiLoading, setIsAiLoading] = useState(false);
   const { toast } = useToast();
@@ -196,11 +197,16 @@ function DocEditor({ doc, onSave, isSaving }) {
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
-      <div className="flex items-center gap-4 p-4 border-b bg-card">
+      <div className="flex items-center gap-2 md:gap-4 p-2 md:p-4 border-b bg-card overflow-x-auto no-scrollbar">
+        {onBack && (
+          <Button variant="ghost" size="icon" className="md:hidden shrink-0" onClick={onBack}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          </Button>
+        )}
         <input
           value={title || ''}
           onChange={(e) => setTitle(e.target.value)}
-          className="text-lg font-semibold bg-transparent border-none focus:outline-none focus:ring-0 flex-1 placeholder:text-muted-foreground/50"
+          className="text-lg font-semibold bg-transparent border-none focus:outline-none focus:ring-0 flex-1 placeholder:text-muted-foreground/50 min-w-[100px]"
           placeholder="Document Title"
         />
         

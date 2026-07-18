@@ -192,7 +192,7 @@ export default function SpaceChat({ spaceId }) {
   }
 
   return (
-    <div className="flex h-[75vh] min-h-[500px] border border-border rounded-2xl overflow-hidden bg-background relative font-sans shadow-lg">
+    <div className="flex h-[calc(100vh-180px)] md:h-[75vh] md:min-h-[500px] md:border border-border md:rounded-2xl overflow-hidden bg-background relative font-sans md:shadow-lg">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div 

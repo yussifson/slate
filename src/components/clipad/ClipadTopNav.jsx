@@ -31,7 +31,7 @@ export default function ClipadTopNav() {
   ];
 
   return (
-    <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
+    <nav className="sticky top-0 z-40 shrink-0 hidden lg:flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
       <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
         <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center border border-slate-200 dark:border-border shadow-sm text-primary">
           <CliPadLogo size={22} />
