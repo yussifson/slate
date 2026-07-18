@@ -50,6 +50,23 @@ export default function PullToRefresh({ onRefresh, children, className = "" }) {
           
           // Wait briefly to show the spinner spinning, giving satisfying feedback
           await new Promise(resolve => setTimeout(resolve, 800));
+          
+          // Clear service worker caches and hard-reload to fetch new UI updates
+          if ('caches' in window) {
+            try {
+              const keys = await window.caches.keys();
+              await Promise.all(keys.map(key => window.caches.delete(key)));
+            } catch (e) {}
+          }
+          if ('serviceWorker' in navigator) {
+            try {
+              const registrations = await navigator.serviceWorker.getRegistrations();
+              for (const registration of registrations) {
+                await registration.unregister();
+              }
+            } catch (e) {}
+          }
+          window.location.reload(true);
         }
       } finally {
         setIsRefreshing(false);
