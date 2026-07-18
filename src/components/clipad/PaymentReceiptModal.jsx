@@ -150,8 +150,8 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
             <div class="header">
               <div>
                 <!-- We inject the absolute URL for the logo so it prints correctly -->
-                <img src="${window.location.origin}/logo.png" alt="Optavel Logo" class="logo" onerror="this.style.display='none'" />
-                <div style="font-size: 12px; font-weight: 600; color: #64748b; margin-top: 8px;">CliPad Workspace</div>
+                <img src="${window.location.origin}/clipad-logo-full.png" alt="CliPad Logo" class="logo" onerror="this.style.display='none'" />
+                <div style="font-size: 12px; font-weight: 600; color: #64748b; margin-top: 8px;">Workspace Billing</div>
               </div>
               <div>
                 <h2 class="receipt-title">RECEIPT</h2>
@@ -256,9 +256,9 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
               
               <div className="relative z-10">
                 <div className="mb-12">
-                  <img src="/logo.png" alt="Optavel" className="h-8 mb-4 object-contain" onError={(e) => e.target.style.display='none'} />
+                  <img src="/clipad-logo-full.png" alt="CliPad" className="h-8 mb-4 object-contain" onError={(e) => e.target.style.display='none'} />
                   <div className="flex items-center gap-2 text-slate-500 font-medium text-sm">
-                    <FileText className="w-4 h-4" /> CliPad Receipt
+                    <FileText className="w-4 h-4" /> Receipt
                   </div>
                 </div>
 
@@ -343,16 +343,16 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
               {/* Actions Footer */}
               <div className="pt-6 mt-2 border-t border-slate-100 flex justify-end gap-2 shrink-0">
                 <button
-                  onClick={handlePrint}
-                  className="px-5 py-2 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold flex items-center gap-1.5 transition-all shadow-sm text-sm"
-                >
-                  <Printer className="w-3.5 h-3.5" /> Save PDF
-                </button>
-                <button
                   onClick={onClose}
-                  className="px-6 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold transition-all shadow-md shadow-slate-900/10 text-sm"
+                  className="px-5 py-2 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold transition-all shadow-sm text-sm"
                 >
                   Done
+                </button>
+                <button
+                  onClick={handlePrint}
+                  className="px-6 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold flex items-center gap-1.5 transition-all shadow-md shadow-primary/20 text-sm"
+                >
+                  <Printer className="w-3.5 h-3.5" /> Download PDF
                 </button>
               </div>
             </div>
