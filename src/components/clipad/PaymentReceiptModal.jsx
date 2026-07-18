@@ -256,7 +256,7 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
               
               <div className="relative z-10">
                 <div className="mb-12">
-                  <img src="/clipad-logo-green.svg" alt="CliPad" className="h-8 mb-4 object-contain" onError={(e) => e.target.style.display='none'} />
+                  <img src="/clipad-logo-green.png" alt="CliPad Logo" className="h-10 w-auto object-contain" onError={(e) => e.target.style.display='none'} />
                   <div className="flex items-center gap-2 text-slate-500 font-medium text-sm">
                     <FileText className="w-4 h-4" /> Receipt
                   </div>
