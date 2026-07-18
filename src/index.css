@@ -88,60 +88,63 @@ input, textarea, [contenteditable="true"] {
   }
 
   .dark {
-    --bg-base-rgb-dark: 15, 15, 15;
+    --bg-base-rgb-dark: 11, 15, 20;
 
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
     ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
-    /* Sleek Deep Neutral Base (#0A0A0A) */
-    --background: 222 47% 7%;
+    /* SaaSPO Style - Main Background #0B0F14 */
+    --background: 213 29% 6%;
     
-    /* Crisp White-Gray Typography */
-    --foreground: 0 0% 95%;
+    /* Primary White Typography #FFFFFF */
+    --foreground: 0 0% 100%;
     
-    /* Sleek elevated cards */
-    --card: 222 47% 11%;
-    --card-foreground: 0 0% 95%;
-    --popover: 222 47% 11%;
-    --popover-foreground: 0 0% 95%;
+    /* Secondary Surface / Card Background #141B22 */
+    --card: 210 26% 11%;
+    --card-foreground: 0 0% 100%;
+    --popover: 210 26% 11%;
+    --popover-foreground: 0 0% 100%;
     
-    /* Vivid Primary Emerald */
-    --primary: 149 100% 33%;
-    --primary-foreground: 0 0% 98%;
+    /* Brand Green Accent #0AF395 */
+    --primary: 156 92% 50%;
+    --primary-foreground: 213 29% 6%; /* Dark text on bright green */
     
-    /* Sleek secondary/muted elements */
-    --secondary: 222 47% 16%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 222 47% 16%;
-    --muted-foreground: 214 32% 75%;
+    /* Secondary Surface elements */
+    --secondary: 210 26% 11%;
+    --secondary-foreground: 0 0% 100%;
     
-    --accent: 222 47% 16%;
-    --accent-foreground: 0 0% 98%;
+    /* Secondary Text #A7B0BA */
+    --muted: 210 26% 11%;
+    --muted-foreground: 212 11% 69%;
+    
+    /* Hover / Borders / Divider Color #1C2935 */
+    --accent: 209 31% 16%;
+    --accent-foreground: 0 0% 100%;
     
     /* Destructive Accents */
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 98%;
     
-    /* Soft Indigo-Navy Borders */
-    --border: 217 32% 17%;
-    --input: 217 32% 17%;
-    --ring: 149 100% 33%;
+    /* Border / Divider Color #1C2935 */
+    --border: 209 31% 16%;
+    --input: 209 31% 16%;
+    --ring: 156 92% 50%;
     
-    --chart-1: 152 76% 50%;
+    --chart-1: 156 92% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 38 92% 50%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     
-    /* Sidebar */
-    --sidebar-background: 222 47% 8%;
-    --sidebar-foreground: 214 32% 91%;
-    --sidebar-primary: 149 100% 33%;
-    --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 217 32% 17%;
-    --sidebar-accent-foreground: 214 32% 91%;
-    --sidebar-border: 217 32% 17%;
-    --sidebar-ring: 152 76% 50%;
+    /* Sidebar matching the SaaSPO palette */
+    --sidebar-background: 213 29% 6%;
+    --sidebar-foreground: 212 11% 69%;
+    --sidebar-primary: 156 92% 50%;
+    --sidebar-primary-foreground: 213 29% 6%;
+    --sidebar-accent: 209 31% 16%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 209 31% 16%;
+    --sidebar-ring: 156 92% 50%;
   }
 }
 
@@ -450,9 +453,9 @@ input, textarea, [contenteditable="true"] {
   }
   
   .dark body {
-    background-image: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15) 0%, transparent 60%),
-                      radial-gradient(circle at 0% 100%, rgba(249, 115, 22, 0.08) 0%, transparent 60%),
-                      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='rgba(255,255,255,0.03)' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-image: radial-gradient(circle at 50% 0%, rgba(10, 243, 149, 0.08) 0%, transparent 60%),
+                      radial-gradient(circle at 0% 100%, rgba(10, 243, 149, 0.03) 0%, transparent 60%),
+                      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='rgba(255,255,255,0.02)' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     background-attachment: fixed;
   }
 
