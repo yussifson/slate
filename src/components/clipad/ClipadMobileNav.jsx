@@ -17,7 +17,7 @@ export default function ClipadMobileNav() {
     { label: 'Home', path: '/dashboard', icon: Home },
     { label: 'Spaces', path: '/spaces', icon: Layers },
     { label: 'Chat', path: '/chat', icon: MessageSquare },
-    { label: 'Videos', path: '/videos', icon: Camera },
+    { label: 'Record', path: '/videos', icon: Camera },
     { label: 'Meetings', path: '/meetings', icon: Video },
     { label: 'Menu', action: () => setIsMenuOpen(true), icon: Menu },
   ];
