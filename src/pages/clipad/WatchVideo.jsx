@@ -385,8 +385,8 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
       `}</style>
 
       <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-[#f0f2f5] dark:bg-background text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
-        {/* Nav */}
-        <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-14 bg-white/50 dark:bg-background/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
+        {/* Contextual Action Bar */}
+        <div className="flex items-center justify-between px-6 py-4 bg-transparent border-b border-black/5 dark:border-white/5 mb-4">
           <button onClick={() => navigate(-1)} className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-foreground transition-all hover:-translate-y-0.5">
             <ArrowLeft className="w-4 h-4 text-slate-500" /> Back
           </button>
@@ -396,7 +396,7 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
               {copied ? <><Check className="w-3.5 h-3.5" /> Copied!</> : <><Share2 className="w-3.5 h-3.5" /> Share</>}
             </button>
           </div>
-        </nav>
+        </div>
 
         <VideoDownloadModal 
           open={showDownloadModal} 

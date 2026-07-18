@@ -1318,9 +1318,9 @@ function App() {
                           <Route path="/support" element={<CliPadSupport />} />
                           <Route path="/chat" element={<ClipadChat />} />
                           <Route path="/chat/:roomId" element={<ClipadChat />} />
+                          <Route path="/watch/:videoId" element={<WatchVideo />} />
                         </Route>
                       </Route>
-                      <Route path="/watch/:videoId" element={<WatchVideo />} />
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                   </React.Suspense>

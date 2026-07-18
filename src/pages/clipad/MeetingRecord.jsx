@@ -359,8 +359,8 @@ export default function MeetingRecord() {
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-[#f0f2f5] dark:bg-background page-enter text-slate-900 dark:text-slate-100 overflow-x-hidden pb-24 md:pb-8">
-      {/* Nav */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-14 bg-white/50 dark:bg-background/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
+      {/* Contextual Action Bar */}
+      <div className="flex items-center justify-between px-6 py-4 bg-transparent border-b border-black/5 dark:border-white/5 mb-4">
           <button onClick={() => navigate('/meetings')} className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] text-sm font-semibold text-slate-700 dark:text-foreground transition-all hover:-translate-y-0.5">
             <ArrowLeft className="w-4 h-4 text-slate-500" /> Meetings
           </button>
@@ -378,7 +378,7 @@ export default function MeetingRecord() {
             </button>
           )}
         </div>
-      </nav>
+      </div>
 
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
