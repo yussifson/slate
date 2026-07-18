@@ -148,11 +148,36 @@ class ErrorBoundary extends React.Component {
       
       if (isChunkError) {
         return (
-          <div style={{ padding: 40, background: '#ffffff', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui, sans-serif' }}>
-            <div style={{ width: 64, height: 64, marginBottom: 24 }}><img src="/clipad-logo-green.png" alt="Logo" style={{width: '100%', height: '100%'}}/></div>
-            <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#0f172a', marginBottom: '16px' }}>Updating Workspace...</h2>
-            <p style={{ color: '#64748b', marginBottom: '24px', textAlign: 'center', maxWidth: 400 }}>We've just released a new update. Please refresh the page to load the latest version.</p>
-            <button onClick={() => { sessionStorage.removeItem('chunk-error-reload'); window.location.reload(); }} style={{ padding: '12px 24px', background: '#10B981', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Refresh Page</button>
+          <div className="min-h-screen bg-slate-50 dark:bg-[#090E17] flex flex-col items-center justify-center p-6 font-sans">
+            <div className="bg-white dark:bg-[#15161C] p-8 md:p-12 rounded-[24px] border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col items-center text-center max-w-md w-full relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
+              
+              <div className="w-20 h-20 relative flex items-center justify-center mb-6">
+                 <div className="absolute inset-0 rounded-full border-4 border-slate-100 dark:border-white/5" />
+                 <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+                 {(() => {
+                   let logoSrc = '/optavel-favicon.svg';
+                   try {
+                     const host = window.location.hostname.toLowerCase();
+                     if (host.includes('clipad')) logoSrc = '/clipad-logo-green.svg';
+                     else if (host.includes('slate') && !host.includes('optavel')) logoSrc = '/slate-favicon.svg';
+                   } catch(e) {}
+                   return <img src={logoSrc} alt="Logo" className="w-10 h-10 object-contain animate-pulse" />;
+                 })()}
+              </div>
+
+              <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-3">Updating Workspace</h2>
+              <p className="text-slate-500 dark:text-slate-400 mb-8 text-sm font-medium leading-relaxed">
+                We've just released a new update to improve your experience. Please refresh the page to load the latest version.
+              </p>
+              
+              <button 
+                onClick={() => { sessionStorage.removeItem('chunk-error-reload'); window.location.reload(); }} 
+                className="w-full py-4 px-6 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 active:translate-y-0"
+              >
+                Refresh Page
+              </button>
+            </div>
           </div>
         );
       }
