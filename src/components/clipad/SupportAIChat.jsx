@@ -32,14 +32,16 @@ export default function SupportAIChat({ onEscalate }) {
       let aiResponse = "I understand. I can help with general questions about CliPad's features, pricing, or getting started.";
       
       const lowerInput = userMessage.text.toLowerCase();
-      if (lowerInput.includes('pricing') || lowerInput.includes('cost')) {
-        aiResponse = "CliPad is free for everyone! We also have a Pro plan for $2/mo and an Enterprise plan. You can view them on the pricing section of our homepage.";
+      if (lowerInput.includes('pricing') || lowerInput.includes('cost') || lowerInput.includes('plan')) {
+        aiResponse = "CliPad has a generous Free Starter plan for up to 10 internal users, and unlimited external users. For growing teams, we offer a Professional plan starting at $49/month, a Business plan, and custom Enterprise solutions. We also offer significant regional discounts for emerging markets, nonprofits, and education! You can check the Pricing page for exact details.";
       } else if (lowerInput.includes('record') || lowerInput.includes('video')) {
         aiResponse = "You can record HD video messages by logging in and navigating to the 'Record' section in your dashboard. You'll need to select a Space to save it in.";
-      } else if (lowerInput.includes('human') || lowerInput.includes('agent') || lowerInput.includes('help')) {
-        aiResponse = "It looks like you might need to speak with a live agent for this. Click the button below to escalate your request.";
+      } else if (lowerInput.includes('human') || lowerInput.includes('agent') || lowerInput.includes('help') || lowerInput.includes('support')) {
+        aiResponse = "It looks like you might need to speak with a live agent for this. Click the button below to escalate your request, and a human support specialist will get back to you shortly.";
+      } else if (lowerInput.includes('hello') || lowerInput.includes('hi ') || lowerInput.trim() === 'hi') {
+        aiResponse = "Hello! How can I assist you with CliPad today? I can answer questions about our features, plans, pricing, or help you connect with a human agent.";
       } else {
-        aiResponse = "I can help with questions about features, pricing, and how to get started! Let me know what you need. You can also connect with a human agent anytime by clicking the button below.";
+        aiResponse = "I am currently an automated support assistant for CliPad. I can answer basic questions about our plans, pricing, and features. If your question is more complex, please feel free to escalate to a human agent using the button below!";
       }
 
       setMessages(prev => [...prev, { id: Date.now() + 1, text: aiResponse, sender: 'ai' }]);
