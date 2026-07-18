@@ -22,7 +22,6 @@ import {
  CreditCard,
  Sparkles} from 'lucide-react';
 import { Button} from '@/components/ui/button';
-import SEO from '@/components/seo/SEO';
 
 /* ------------------------------------------------------------------ */
 /* Fade-in-up observer hook */
