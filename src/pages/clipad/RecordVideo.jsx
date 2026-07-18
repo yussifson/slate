@@ -124,6 +124,42 @@ export default function RecordVideo() {
 
   const [phase, setPhase] = useState('setup'); // setup | recording | review | uploading | done
   const [micEnabled, setMicEnabled] = useState(true);
+
+  const [activeVideoId, setActiveVideoId] = useState(null);
+  const [selectedSpace, setSelectedSpace] = useState('');
+  const [spaces, setSpaces] = useState([]);
+  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState('');
+  const [lockType, setLockType] = useState('none');
+  const [unlockDate, setUnlockDate] = useState('');
+  const [unlockTime, setUnlockTime] = useState('');
+  const [transcript, setTranscript] = useState('');
+
+  const canvasRef = useRef(null);
+  const previewRef = useRef(null); // main preview for screen + camera
+  const playbackRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+  const animFrameRef = useRef(null);
+  const timerRef = useRef(null);
+  const streamsRef = useRef({ screen: null, camera: null });
+  const wsRef = useRef(null);
+  const wsReconnectAttemptsRef = useRef(0);
+  const wsMaxReconnects = 5;
+  const wsBufferedChunksRef = useRef([]); // chunks buffered during WS outage
+  const wsIsReconnectingRef = useRef(false);
+  const wsEndRequestedRef = useRef(false); // true once user stops recording
+
+  const recognitionRef = useRef(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [pipWindow, setPipWindow] = useState(null);
+  const [micVolume, setMicVolume] = useState(0);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [countdown, setCountdown] = useState(null);
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const pipContainerRef = useRef(null);
+  const recordStreamRef = useRef(null);
   const [teleprompterText, setTeleprompterText] = useState('');
   const [showTeleprompter, setShowTeleprompter] = useState(true);
   const [isGeneratingScript, setIsGeneratingScript] = useState(false);
@@ -286,41 +322,6 @@ export default function RecordVideo() {
       }
     } catch (err) {}
   }, [isPaused, micEnabled, pipWindow]);
-  const [activeVideoId, setActiveVideoId] = useState(null);
-  const [selectedSpace, setSelectedSpace] = useState('');
-  const [spaces, setSpaces] = useState([]);
-  const [description, setDescription] = useState('');
-  const [title, setTitle] = useState('');
-  const [lockType, setLockType] = useState('none');
-  const [unlockDate, setUnlockDate] = useState('');
-  const [unlockTime, setUnlockTime] = useState('');
-  const [transcript, setTranscript] = useState('');
-
-  const canvasRef = useRef(null);
-  const previewRef = useRef(null); // main preview for screen + camera
-  const playbackRef = useRef(null);
-  const mediaRecorderRef = useRef(null);
-  const chunksRef = useRef([]);
-  const animFrameRef = useRef(null);
-  const timerRef = useRef(null);
-  const streamsRef = useRef({ screen: null, camera: null });
-  const wsRef = useRef(null);
-  const wsReconnectAttemptsRef = useRef(0);
-  const wsMaxReconnects = 5;
-  const wsBufferedChunksRef = useRef([]); // chunks buffered during WS outage
-  const wsIsReconnectingRef = useRef(false);
-  const wsEndRequestedRef = useRef(false); // true once user stops recording
-
-  const recognitionRef = useRef(null);
-  const [isPaused, setIsPaused] = useState(false);
-  const [pipWindow, setPipWindow] = useState(null);
-  const [micVolume, setMicVolume] = useState(0);
-  const [showPaywall, setShowPaywall] = useState(false);
-  const [countdown, setCountdown] = useState(null);
-  const audioContextRef = useRef(null);
-  const analyserRef = useRef(null);
-  const pipContainerRef = useRef(null);
-  const recordStreamRef = useRef(null);
 
   useEffect(() => {
     // Load spaces user has access to

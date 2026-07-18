@@ -105,15 +105,7 @@ export default function ClipadMobileNav() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.88, y: 8 }}
               transition={{ type: "spring", damping: 24, stiffness: 380 }}
-              className="lg:hidden fixed bottom-[80px] right-3 z-[60] w-[230px] overflow-hidden"
-              style={{
-                borderRadius: '18px',
-                background: 'rgba(255,255,255,0.88)',
-                backdropFilter: 'blur(28px) saturate(180%)',
-                WebkitBackdropFilter: 'blur(28px) saturate(180%)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8)',
-                border: '1px solid rgba(0,0,0,0.08)',
-              }}
+              className="lg:hidden fixed bottom-[80px] right-3 z-[60] w-[230px] overflow-hidden rounded-[18px] bg-white/90 dark:bg-[#111827]/85 backdrop-blur-[28px] saturate-[1.8] shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.8)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4),0_2px_8px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.05)] border border-black/[0.08] dark:border-white/[0.12]"
               onClick={(e) => e.stopPropagation()}
             >
               {/* User Info */}
