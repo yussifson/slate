@@ -134,14 +134,35 @@ class ErrorBoundary extends React.Component {
   }
   componentDidCatch(error, errorInfo) {
     console.error("ErrorBoundary caught an error", error, errorInfo);
+    const isChunkError = error?.message?.includes('Failed to fetch dynamically imported module') || error?.toString()?.includes('Failed to fetch dynamically imported module');
+    if (isChunkError) {
+      if (!sessionStorage.getItem('chunk-error-reload')) {
+        sessionStorage.setItem('chunk-error-reload', 'true');
+        window.location.reload();
+      }
+    }
   }
   render() {
     if (this.state.hasError) {
+      const isChunkError = this.state.error?.message?.includes('Failed to fetch dynamically imported module') || this.state.error?.toString()?.includes('Failed to fetch dynamically imported module');
+      
+      if (isChunkError) {
+        return (
+          <div style={{ padding: 40, background: '#ffffff', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui, sans-serif' }}>
+            <div style={{ width: 64, height: 64, marginBottom: 24 }}><img src="/clipad-logo-green.png" alt="Logo" style={{width: '100%', height: '100%'}}/></div>
+            <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#0f172a', marginBottom: '16px' }}>Updating Workspace...</h2>
+            <p style={{ color: '#64748b', marginBottom: '24px', textAlign: 'center', maxWidth: 400 }}>We've just released a new update. Please refresh the page to load the latest version.</p>
+            <button onClick={() => { sessionStorage.removeItem('chunk-error-reload'); window.location.reload(); }} style={{ padding: '12px 24px', background: '#10B981', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Refresh Page</button>
+          </div>
+        );
+      }
+
       return (
         <div style={{ padding: 20, color: 'red', background: '#ffebee', minHeight: '100vh' }}>
           <h2>Something went wrong in the UI.</h2>
           <pre>{this.state.error?.toString()}</pre>
           <pre>{this.state.error?.stack}</pre>
+          <button onClick={() => window.location.reload()} style={{ padding: '12px 24px', background: 'white', color: 'red', border: '1px solid red', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', marginTop: 16 }}>Reload App</button>
         </div>
       );
     }
@@ -1239,18 +1260,7 @@ function App() {
               <ErrorBoundary>
                 {isMeetDomain ? (
                   /* â”€â”€ MEET DOMAIN: completely isolated Suspense â€” NO Slate loader â”€â”€ */
-                  <React.Suspense fallback={
-                    <div className="w-screen h-screen flex flex-col items-center justify-center bg-white dark:bg-[#090E17]">
-                      <div className="w-20 h-20 relative flex items-center justify-center">
-                        <div className="absolute inset-0 rounded-full border-4 border-slate-100 dark:border-white/5" />
-                        <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-                        <svg className="w-8 h-8 text-primary animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                      </div>
-                      <p className="mt-8 text-slate-500 font-medium tracking-wide animate-pulse">Preparing your secure meeting...</p>
-                    </div>
-                  }>
+                  <React.Suspense fallback={<PageLoader label="Preparing Workspace..." />}>
                     <Routes>
                       <Route path="/" element={<MeetLandingPage />} />
                       <Route path="/login" element={<CliPadLogin />} />
