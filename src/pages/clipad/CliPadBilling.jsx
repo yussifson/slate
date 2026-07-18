@@ -175,6 +175,33 @@ export default function CliPadBilling() {
               date: new Date().toISOString(),
               created_at: new Date().toISOString()
             }).then(() => fetchHistory());
+            
+            // Send email receipt to user
+            supabase.functions.invoke('send-email', {
+              body: {
+                to: [user?.email],
+                subject: `CliPad Plan Upgrade Receipt - ${receiptNum}`,
+                html: `
+                  <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background: #f8fafc; padding: 40px; color: #0f172a;">
+                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden;">
+                      <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; text-align: center; padding: 32px;">
+                        <div style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">CliPad</div>
+                        <div style="font-size: 12px; font-weight: 500;">Payment Successful</div>
+                        <div style="font-size: 10px; margin-top: 12px; font-family: monospace;">#${receiptNum}</div>
+                      </div>
+                      <div style="padding: 32px;">
+                        <h2 style="text-align: center; font-size: 32px; font-weight: 900; margin-bottom: 24px;">GHS ${(amountInPesewas / 100).toFixed(2)}</h2>
+                        <p style="text-align: center; font-weight: bold; margin-bottom: 32px;">${planType.toUpperCase()} Plan</p>
+                        <hr style="border: 0; border-top: 1px dashed #e2e8f0; margin-bottom: 24px;" />
+                        <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
+                        <p><strong>Billed To:</strong> ${user?.email}</p>
+                        <p><strong>Reference:</strong> ${response.reference}</p>
+                      </div>
+                    </div>
+                  </div>
+                `
+              }
+            });
           }
         },
         onClose: function () {
@@ -310,8 +337,8 @@ export default function CliPadBilling() {
                       <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
                         {new Date(tx.created_at).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 font-medium text-foreground">
-                        {tx.id}
+                      <td className="px-6 py-4 font-bold text-foreground font-mono text-xs">
+                        {rDetails.receiptNumber || tx.id.split('-')[0].toUpperCase()}
                       </td>
                       <td className="px-6 py-4 capitalize text-slate-600 dark:text-slate-400">
                         {rDetails.plan || 'Unknown'}

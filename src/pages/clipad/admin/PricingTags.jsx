@@ -55,7 +55,7 @@ export default function PricingTags() {
       // Fetch all users in this company and send them a plan_upgrade notification
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id')
+        .select('id, email, role')
         .eq('company_id', companyId);
 
       if (profiles && profiles.length > 0) {
@@ -83,12 +83,44 @@ export default function PricingTags() {
             date: new Date().toISOString(),
             created_at: new Date().toISOString()
           });
+          
+          // Send email receipt to company admins
+          const adminEmails = profiles
+            .filter(p => ['company_admin', 'super_admin', 'admin'].includes(p.role) && p.email)
+            .map(p => p.email);
+            
+          if (adminEmails.length > 0) {
+            supabase.functions.invoke('send-email', {
+              body: {
+                to: adminEmails,
+                subject: \`CliPad Plan Upgraded - \${receiptNumber}\`,
+                html: \`
+                  <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background: #f8fafc; padding: 40px; color: #0f172a;">
+                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden;">
+                      <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; text-align: center; padding: 32px;">
+                        <div style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">CliPad</div>
+                        <div style="font-size: 12px; font-weight: 500;">Plan Upgraded by Admin</div>
+                        <div style="font-size: 10px; margin-top: 12px; font-family: monospace;">#\${receiptNumber}</div>
+                      </div>
+                      <div style="padding: 32px;">
+                        <p style="text-align: center; font-weight: bold; margin-bottom: 24px;">Your workspace has been upgraded to the \${resolvedPlan.toUpperCase()} Plan</p>
+                        <hr style="border: 0; border-top: 1px dashed #e2e8f0; margin-bottom: 24px;" />
+                        <p><strong>Date:</strong> \${new Date().toLocaleString()}</p>
+                        <p><strong>Status:</strong> Complimentary Upgrade / Invoiced</p>
+                        <p style="margin-top: 24px; font-size: 12px; color: #64748b; text-align: center;">You can view and download this receipt in your CliPad Billing Settings at any time.</p>
+                      </div>
+                    </div>
+                  </div>
+                \`
+              }
+            });
+          }
         }
         const notifRows = profiles.map(p => ({
           user_id: p.id,
           type: 'plan_upgrade',
-          title: `Your plan has been upgraded to ${resolvedPlan.charAt(0).toUpperCase() + resolvedPlan.slice(1)}!`,
-          message: `An admin has upgraded your CliPad workspace to the ${resolvedPlan.toUpperCase()} plan. Receipt: ${receiptNumber}`,
+          title: \`Your plan has been upgraded to \${resolvedPlan.charAt(0).toUpperCase() + resolvedPlan.slice(1)}!\`,
+          message: \`An admin has upgraded your CliPad workspace to the \${resolvedPlan.toUpperCase()} plan. Receipt: \${receiptNumber}\`,
           link: '/clipad/billing',
           is_read: false,
         }));
