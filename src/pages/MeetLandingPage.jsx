@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import SEO from '@/components/seo/SEO';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -360,10 +360,11 @@ export default function MeetLandingPage() {
         <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 blur-[120px]" />
         <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-orange-500/5 blur-[120px]" />
       </div>
-      <Helmet>
-        <title>CliPad — Enterprise Collaborative Productivity Workspace</title>
-        <meta name="description" content="CliPad is a free, secure, enterprise-grade collaborative productivity workspace. Connect your team with chat, spaces, and HD video meetings instantly. Trusted by teams worldwide." />
-      </Helmet>
+      <SEO 
+        title="CliPad - #1 Enterprise AI-Powered Organizational Memory Platform" 
+        description="CliPad is a free, secure, enterprise-grade collaborative productivity workspace. Connect your team with chat, spaces, and HD video meetings instantly. Trusted by teams worldwide." 
+        type="website"
+      />
       <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 border-b border-slate-200/50 bg-white/80 backdrop-blur-md shadow-sm">
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 flex items-center justify-center text-primary">

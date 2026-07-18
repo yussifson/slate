@@ -1,6 +1,6 @@
 import { useTranslation} from 'react-i18next';
 import { useState, useEffect} from 'react';
-import { Helmet} from 'react-helmet-async';
+import SEO from '@/components/seo/SEO';
 import { Link} from 'react-router-dom';
 import {
  Check, Server, Shield, Database, Headphones,
@@ -64,10 +64,11 @@ export default function Pricing() {
 
  return (
  <div className="overflow-x-hidden bg-white min-h-screen hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Helmet>
- <title>Pricing | CliPad Collaborative Productivity</title>
- <meta name="description" content="Transparent pricing for CliPad. All collaborative productivity features included on every plan. Technology for everyone." />
- </Helmet>
+ <SEO 
+   title="Pricing | Optavel Enterprise Software" 
+   description="Transparent pricing for Optavel products. All collaborative productivity features included. Technology for everyone." 
+   type="website"
+ />
 
  {/* ── HERO ── */}
  <section className="pt-8 pb-10 md:pt-16 md:pb-14 bg-white border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">

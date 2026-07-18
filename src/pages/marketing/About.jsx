@@ -1,7 +1,7 @@
 import { useTranslation} from "react-i18next";
-import { Link} from 'react-router-dom';
-import { Helmet} from 'react-helmet-async';
-import { Target, Shield, Users, Globe, Clock, Headphones} from 'lucide-react';
+import { Link } from 'react-router-dom';
+import SEO from '@/components/seo/SEO';
+import { Target, Users, Zap, Shield, Globe, Award, Heart, Leaf, Mail, MapPin } from 'lucide-react';
 import { Button} from '@/components/ui/button';
 
 export default function About() {
@@ -33,10 +33,11 @@ export default function About() {
 
  return (
  <div className="overflow-x-hidden bg-white min-h-screen hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Helmet>
- <title>About Us | CliPad Collaborative Productivity</title>
- <meta name="description" content="Learn more about CliPad. We are building the ultimate enterprise-grade collaborative productivity workspace for modern teams." />
- </Helmet>
+ <SEO 
+   title="About Optavel - Our Mission and Story" 
+   description="Learn more about Optavel. We are building the ultimate enterprise-grade collaborative productivity workspace for modern teams." 
+   type="website"
+ />
  {/* Hero Section */}
  <section className="relative pt-8 pb-10 md:pt-14 lg:py-16">
  <div className="absolute inset-0 bg-slate-50 pointer-events-none" />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation} from "react-i18next";
 import { Link} from 'react-router-dom';
-import { Helmet} from 'react-helmet-async';
+import SEO from '@/components/seo/SEO';
 import { Briefcase, Users, CreditCard, Mail, Shield, Clock, Check, ArrowRight, Globe, Sparkles, ChevronRight} from 'lucide-react';
 import { Button} from '@/components/ui/button';
 
@@ -166,6 +166,11 @@ export default function Features() {
 
  return (
  <div className="overflow-x-hidden bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <SEO 
+    title="Features | Optavel Unified Workspace Capabilities" 
+    description="Discover Optavel's powerful features. Automate workflows, manage clients, and integrate your entire business into one cohesive enterprise platform." 
+    type="website"
+  />
  {/* ── Hero Header ── */}
  <section className="relative pt-8 pb-10 md:pt-14 md:pb-20 bg-slate-50 border-b border-primary/40">
  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
