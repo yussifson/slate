@@ -150,23 +150,23 @@ export default function NotificationCenter() {
         )}
       </DropdownMenuTrigger>
       
-      <DropdownMenuContent align="end" className="w-80 sm:w-96 p-0 bg-card text-foreground shadow-lg border-slate-200 dark:border-border rounded-xl overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-border bg-slate-50/50 dark:bg-card/50">
-          <DropdownMenuLabel className="p-0 font-semibold text-base">Notifications</DropdownMenuLabel>
+      <DropdownMenuContent align="end" sideOffset={8} className="w-[calc(100vw-24px)] sm:w-80 max-w-[340px] p-0 bg-white/95 dark:bg-card/95 backdrop-blur-2xl text-foreground shadow-[0_8px_40px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.4)] border border-slate-200/60 dark:border-white/10 rounded-2xl overflow-hidden">
+        <div className="flex items-center justify-between px-3 py-2.5 border-b border-slate-100 dark:border-border">
+          <DropdownMenuLabel className="p-0 font-bold text-sm">Notifications</DropdownMenuLabel>
           {unreadCount > 0 && (
             <button 
               onClick={(e) => {
                 e.preventDefault();
                 markAllAsRead();
               }}
-              className="text-xs font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+              className="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
             >
               <Check className="w-3 h-3" /> Mark all read
             </button>
           )}
         </div>
         
-        <div className="max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700">
+        <div className="max-h-[55vh] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700">
           {notifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
               <Bell className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-3" />
@@ -179,7 +179,7 @@ export default function NotificationCenter() {
                 <DropdownMenuItem 
                   key={notification.id}
                   className={cn(
-                    "flex flex-col items-start p-4 cursor-pointer border-b border-slate-50 dark:border-border/50 last:border-0 rounded-none focus:bg-slate-50 dark:focus:bg-slate-800/50 transition-colors",
+                    "flex flex-col items-start px-3 py-2.5 cursor-pointer border-b border-slate-50 dark:border-border/50 last:border-0 rounded-none focus:bg-slate-50 dark:focus:bg-slate-800/50 transition-colors",
                     !notification.is_read ? "bg-primary/5 dark:bg-primary/10" : ""
                   )}
                   onClick={(e) => {
@@ -190,19 +190,19 @@ export default function NotificationCenter() {
                     // Could add navigation logic here based on notification.link or similar if it exists
                   }}
                 >
-                  <div className="flex items-start gap-3 w-full">
+                  <div className="flex items-start gap-2 w-full">
                     {!notification.is_read && (
-                      <div className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1.5" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 mt-1.5" />
                     )}
-                    <div className={cn("flex flex-col gap-1 w-full", notification.is_read && "pl-5")}>
-                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 line-clamp-1">
+                    <div className={cn("flex flex-col gap-0.5 w-full min-w-0", notification.is_read && "pl-3.5")}>
+                      <p className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 line-clamp-1">
                         {notification.title || 'Notification'}
                       </p>
-                      <p className="text-xs text-slate-500 dark:text-muted-foreground line-clamp-2">
+                      <p className="text-[11px] text-slate-500 dark:text-muted-foreground line-clamp-2 leading-relaxed">
                         {notification.message}
                       </p>
-                      <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-1">
-                        {new Date(notification.created_at).toLocaleString()}
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-0.5">
+                        {new Date(notification.created_at).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </div>
                   </div>
