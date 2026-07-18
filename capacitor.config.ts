@@ -4,6 +4,10 @@ const config: CapacitorConfig = {
   appId: 'com.slate.slate',
   appName: 'Slate',
   webDir: 'dist',
+  server: {
+    url: 'https://clipad.optavel.com',
+    cleartext: true
+  },
   plugins: {
     CapacitorUpdater: {
       version: '0.0.0',
