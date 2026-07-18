@@ -4,7 +4,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { registerSchoolUser } from '@/api/authUtils';
 import { useToast } from '@/components/ui/use-toast';
 import { Users, Mail, UserPlus, Shield, User, X, CheckCircle, RefreshCcw, UserMinus } from 'lucide-react';
-import { getSubdomainAndBase, getMainAppUrl } from '@/lib/domainUtils';
+import { getSubdomainAndBase, getMainAppUrl, getAccountsUrl } from '@/lib/domainUtils';
 
 export default function CliPadTeamSettings() {
   const { user } = useAuth();
@@ -145,8 +145,9 @@ export default function CliPadTeamSettings() {
       }
       
       // Send a proper invitation email with the temporary password
-      const centralBaseUrl = getMainAppUrl();
-      const loginUrl = `${centralBaseUrl}/login`;
+      const accountsUrl = getAccountsUrl();
+      const currentOrigin = window.location.origin;
+      const loginUrl = `${accountsUrl}/login?continue=${encodeURIComponent(currentOrigin)}`;
       
       const emailHtml = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -176,7 +177,7 @@ export default function CliPadTeamSettings() {
         await supabase.auth.signInWithOtp({
           email: inviteEmail.trim(),
           options: {
-            emailRedirectTo: `${centralBaseUrl}/reset-password`
+            emailRedirectTo: `${accountsUrl}/reset-password?continue=${encodeURIComponent(currentOrigin)}`
           }
         });
       }

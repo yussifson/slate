@@ -13,7 +13,7 @@ import confetti from 'canvas-confetti';
 import { useToast} from '@/components/ui/use-toast';
 import { useNavigate as useHookNavigate } from "react-router-dom";
 import { registerSchoolUser } from '@/api/authUtils';
-import { getSubdomainAndBase, isDesktopApp, getMainAppUrl } from '@/lib/domainUtils';
+import { getSubdomainAndBase, isDesktopApp, getMainAppUrl, getAccountsUrl } from '@/lib/domainUtils';
 import { getTerm, INDUSTRIES} from '@/config/industries';
 import { COUNTRIES_CURRENCIES } from '@/config/countries';
 import { generateOrbitBuildWorkspace } from '@/lib/orbitBuildGenerator';
@@ -373,7 +373,8 @@ export default function OnboardingWizard() {
    const { error: staffErr } = await supabase.from('staff_records').insert(staffInserts);
    if (staffErr) console.error("Failed to save staff records:", staffErr);
 
-   const centralBaseUrl = getMainAppUrl();
+   const accountsUrl = getAccountsUrl();
+   const currentOrigin = window.location.origin;
 
    for (const staff of invitedStaff) {
      try {
@@ -387,7 +388,7 @@ export default function OnboardingWizard() {
          false
        );
         if (!regError || regError.message === 'already registered in this firm') {
-          const loginUrl = `${centralBaseUrl}/login`;
+          const loginUrl = `${accountsUrl}/login?continue=${encodeURIComponent(currentOrigin)}`;
           const emailHtml = `
             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
               <h2>You've been invited!</h2>
@@ -415,7 +416,7 @@ export default function OnboardingWizard() {
             await supabase.auth.signInWithOtp({
               email: staff.email,
               options: {
-                emailRedirectTo: `${centralBaseUrl}/reset-password`
+                emailRedirectTo: `${accountsUrl}/reset-password?continue=${encodeURIComponent(currentOrigin)}`
               }
             });
           }

@@ -80,3 +80,12 @@ export function isDesktopApp() {
   
   return isElectronEnv || isTauri || isCapacitor || isFileProtocol || isMobileLocalhost;
 }
+
+export function getAccountsUrl() {
+  if (typeof window === 'undefined') return 'https://account.optavel.com';
+  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.endsWith('.localhost');
+  if (isLocalhost) {
+    return `http://account.localhost:${window.location.port || '5173'}`;
+  }
+  return 'https://account.optavel.com';
+}

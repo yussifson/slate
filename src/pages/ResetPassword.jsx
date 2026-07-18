@@ -62,9 +62,15 @@ export default function ResetPassword() {
  await base44.auth.updatePassword(password);
  setDone(true);
  // Redirect to login after 3 seconds
- setTimeout(() => {
- window.location.href = '/login';
-}, 3000);
+  setTimeout(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const continueUrl = urlParams.get('continue');
+    if (continueUrl) {
+      window.location.href = `/login?continue=${encodeURIComponent(continueUrl)}`;
+    } else {
+      window.location.href = '/login';
+    }
+  }, 3000);
 } catch (err) {
  setError(err.message || 'Failed to update password.');
 } finally {
