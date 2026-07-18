@@ -147,7 +147,7 @@ export default function CliPadTeamSettings() {
       // Send a proper invitation email with the temporary password
       const accountsUrl = getAccountsUrl();
       const currentOrigin = window.location.origin;
-      const loginUrl = `${accountsUrl}/login?continue=${encodeURIComponent(currentOrigin)}`;
+      const loginUrl = `${accountsUrl}/login?continue=${encodeURIComponent(currentOrigin)}&prompt=login`;
       
       const emailHtml = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -159,7 +159,7 @@ export default function CliPadTeamSettings() {
             <strong>${tempPassword}</strong>
           </div>
           <p>Please log in and change your password immediately in your account settings.</p>
-          <a href="${loginUrl}" style="display: inline-block; background-color: #000; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 16px;">Log In to CliPad</a>
+          <a href="${loginUrl}" style="display: inline-block; background-color: #10b981; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 16px;">Log In to CliPad</a>
         </div>
       `;
 

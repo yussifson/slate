@@ -96,7 +96,7 @@ export default function FirmStaffManager({ firm, onClose }) {
           const { getAccountsUrl } = await import('@/lib/domainUtils');
           const accountsUrl = getAccountsUrl();
           const currentOrigin = window.location.origin;
-          const loginUrl = `${accountsUrl}/login?continue=${encodeURIComponent(currentOrigin)}`;
+          const loginUrl = `${accountsUrl}/login?continue=${encodeURIComponent(currentOrigin)}&prompt=login`;
           const emailHtml = `
             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
               <h2>You've been invited!</h2>
@@ -107,7 +107,7 @@ export default function FirmStaffManager({ firm, onClose }) {
                 <strong>${tempPassword}</strong>
               </div>
               <p>Please log in and change your password immediately in your account settings.</p>
-              <a href="${loginUrl}" style="display: inline-block; background-color: #000; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 16px;">Log In</a>
+              <a href="${loginUrl}" style="display: inline-block; background-color: #10b981; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 16px;">Log In</a>
             </div>
           `;
 

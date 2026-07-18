@@ -99,21 +99,20 @@ export default function Login() {
         else if (user.role === 'super_admin' && !currentSubdomain) navigate('/admin');
         else navigate('/');
       } else {
-        if (redirectUri) {
+        if (continueUrl) {
           // Wrap in async IIFE to fetch fresh tokens for the cross-domain jump
           (async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
               const hash = `#access_token=${session.access_token}&refresh_token=${session.refresh_token}`;
-              window.location.href = `${redirectUri}${hash}`;
+              const base = continueUrl.split('#')[0];
+              window.location.href = `${base}${hash}`;
             } else {
-              window.location.href = redirectUri;
+              window.location.href = continueUrl;
             }
           })();
           return;
         }
-
-        if (continueUrl) window.location.href = continueUrl;
         else if (user.role === 'student') window.location.href = '/student-portal';
         else if (user.role === 'parent') window.location.href = '/parent-portal';
         else if (user.role === 'super_admin' && !currentSubdomain) window.location.href = '/admin';
