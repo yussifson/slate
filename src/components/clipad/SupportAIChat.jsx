@@ -39,7 +39,7 @@ export default function SupportAIChat({ onEscalate }) {
       } else if (lowerInput.includes('human') || lowerInput.includes('agent') || lowerInput.includes('help')) {
         aiResponse = "It looks like you might need to speak with a live agent for this. Click the button below to escalate your request.";
       } else {
-        aiResponse = "That's a great question! While I'm still learning, if my answers aren't quite hitting the mark, you can always escalate this chat to a human agent.";
+        aiResponse = "I can help with questions about features, pricing, and how to get started! Let me know what you need. You can also connect with a human agent anytime by clicking the button below.";
       }
 
       setMessages(prev => [...prev, { id: Date.now() + 1, text: aiResponse, sender: 'ai' }]);
@@ -74,15 +74,13 @@ export default function SupportAIChat({ onEscalate }) {
       </div>
 
       <div className="p-4 bg-white border-t border-slate-100 flex flex-col gap-3">
-        {messages.length >= 3 && (
-          <Button 
-            variant="outline" 
-            onClick={onEscalate}
-            className="w-full text-xs font-semibold gap-2 border-orange-200 text-orange-600 hover:bg-orange-50"
-          >
-            <PhoneCall className="w-3.5 h-3.5" /> Talk to a Human Agent
-          </Button>
-        )}
+        <Button 
+          variant="outline" 
+          onClick={onEscalate}
+          className="w-full text-xs font-semibold gap-2 border-orange-200 text-orange-600 hover:bg-orange-50"
+        >
+          <PhoneCall className="w-3.5 h-3.5" /> Talk to a Human Agent
+        </Button>
         <form onSubmit={handleSend} className="relative flex items-center">
           <input
             type="text"

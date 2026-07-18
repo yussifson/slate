@@ -35,6 +35,7 @@ const ClipadAdminOverview = React.lazy(() => import('@/pages/clipad/admin/Overvi
 const CompanyManagement = React.lazy(() => import('@/pages/clipad/admin/CompanyManagement'));
 const PricingTags = React.lazy(() => import('@/pages/clipad/admin/PricingTags'));
 const AuditMonitor = React.lazy(() => import('@/pages/clipad/admin/AuditMonitor'));
+const ClipadLiveSupport = React.lazy(() => import('@/pages/clipad/admin/LiveSupport'));
 const AdminAI = React.lazy(() => import('@/pages/clipad/admin/AdminAI'));
 
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -1264,6 +1265,7 @@ function App() {
                           <Route path="/admin/pricing" element={<PricingTags />} />
                           <Route path="/admin/audit" element={<AuditMonitor />} />
                           <Route path="/admin/ai" element={<AdminAI />} />
+                          <Route path="/admin/support" element={<ClipadLiveSupport />} />
                         </Route>
                         <Route element={<ClipadLayout />}>
                           <Route path="/dashboard" element={<CliPadDashboard />} />

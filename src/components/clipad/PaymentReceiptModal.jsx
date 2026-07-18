@@ -150,7 +150,7 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
             <div class="header">
               <div>
                 <!-- We inject the absolute URL for the logo so it prints correctly -->
-                <img src="${window.location.origin}/clipad-logo-full.png" alt="CliPad Logo" class="logo" onerror="this.style.display='none'" />
+                <img src="${window.location.origin}/clipad-logo-green.svg" alt="CliPad Logo" class="logo" onerror="this.style.display='none'" />
                 <div style="font-size: 12px; font-weight: 600; color: #64748b; margin-top: 8px;">Workspace Billing</div>
               </div>
               <div>
@@ -256,7 +256,7 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
               
               <div className="relative z-10">
                 <div className="mb-12">
-                  <img src="/clipad-logo-full.png" alt="CliPad" className="h-8 mb-4 object-contain" onError={(e) => e.target.style.display='none'} />
+                  <img src="/clipad-logo-green.svg" alt="CliPad" className="h-8 mb-4 object-contain" onError={(e) => e.target.style.display='none'} />
                   <div className="flex items-center gap-2 text-slate-500 font-medium text-sm">
                     <FileText className="w-4 h-4" /> Receipt
                   </div>

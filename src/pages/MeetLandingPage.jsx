@@ -828,12 +828,35 @@ export default function MeetLandingPage() {
                       <div className="flex flex-col h-full justify-center items-center text-center text-slate-500">
                         <MessageSquare className="w-12 h-12 text-slate-300 mb-4" />
                         <p>Live chat agents are currently offline.<br/>Please leave a message.</p>
-                        <form className="space-y-4 w-full mt-8" onSubmit={(e) => { e.preventDefault(); setSubmittingSupport(true); setTimeout(() => { setSubmittingSupport(false); setSupportPanel(null); setShowHumanForm(false); toast({title: 'Message Sent', description: 'We will email you shortly.'}); }, 1000); }}>
+                        <form className="space-y-4 w-full mt-8" onSubmit={async (e) => { 
+                          e.preventDefault(); 
+                          setSubmittingSupport(true); 
+                          try {
+                            await supabase.from('clipad_marketing_requests').insert({
+                              type: 'chat',
+                              message: supportForm.message
+                            });
+                            toast({title: 'Message Sent', description: 'We will email you shortly.'});
+                            setSupportPanel(null); 
+                            setShowHumanForm(false);
+                            setSupportForm({ name: '', email: '', phone: '', message: '' });
+                          } catch (err) {
+                            toast({title: 'Error', description: 'Failed to send message.', variant: 'destructive'});
+                          } finally {
+                            setSubmittingSupport(false);
+                          }
+                        }}>
                           <div className="text-left">
                             <label className="text-sm font-medium">Message</label>
-                            <textarea required className="w-full mt-1 px-4 py-2 border rounded-xl" rows={4} />
+                            <textarea 
+                              required 
+                              value={supportForm.message}
+                              onChange={(e) => setSupportForm(prev => ({...prev, message: e.target.value}))}
+                              className="w-full mt-1 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50" 
+                              rows={4} 
+                            />
                           </div>
-                          <Button type="submit" disabled={submittingSupport} className="w-full rounded-xl bg-primary">
+                          <Button type="submit" disabled={submittingSupport} className="w-full rounded-xl bg-primary hover:bg-primary/90 text-white">
                             {submittingSupport ? 'Sending...' : 'Send Message'}
                           </Button>
                         </form>
@@ -844,16 +867,45 @@ export default function MeetLandingPage() {
                   )
                 ) : (
                   <div className="p-6">
-                    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setSubmittingSupport(true); setTimeout(() => { setSubmittingSupport(false); setSupportPanel(null); toast({title: 'Request Sent', description: 'We will call you shortly.'}); }, 1000); }}>
+                    <form className="space-y-4" onSubmit={async (e) => { 
+                      e.preventDefault(); 
+                      setSubmittingSupport(true); 
+                      try {
+                        await supabase.from('clipad_marketing_requests').insert({
+                          type: 'call',
+                          name: supportForm.name,
+                          phone: supportForm.phone
+                        });
+                        toast({title: 'Request Sent', description: 'We will call you shortly.'});
+                        setSupportPanel(null); 
+                        setSupportForm({ name: '', email: '', phone: '', message: '' });
+                      } catch (err) {
+                        toast({title: 'Error', description: 'Failed to request call.', variant: 'destructive'});
+                      } finally {
+                        setSubmittingSupport(false);
+                      }
+                    }}>
                     <div>
-                      <label className="text-sm font-medium">Name</label>
-                      <input type="text" required className="w-full mt-1 px-4 py-2 border rounded-xl" />
+                      <label className="text-sm font-medium text-slate-700">Name</label>
+                      <input 
+                        type="text" 
+                        required 
+                        value={supportForm.name}
+                        onChange={(e) => setSupportForm(prev => ({...prev, name: e.target.value}))}
+                        className="w-full mt-1 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50" 
+                      />
                     </div>
                     <div>
-                      <label className="text-sm font-medium">Phone Number</label>
-                      <input type="tel" required className="w-full mt-1 px-4 py-2 border rounded-xl" />
+                      <label className="text-sm font-medium text-slate-700">Phone Number</label>
+                      <input 
+                        type="tel" 
+                        required 
+                        value={supportForm.phone}
+                        onChange={(e) => setSupportForm(prev => ({...prev, phone: e.target.value}))}
+                        className="w-full mt-1 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50" 
+                      />
                     </div>
-                    <Button type="submit" disabled={submittingSupport} className="w-full rounded-xl mt-4 bg-blue-500 hover:bg-blue-600 text-white">
+                    <Button type="submit" disabled={submittingSupport} className="w-full rounded-xl mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold">
                       {submittingSupport ? 'Submitting...' : 'Request Call'}
                     </Button>
                     </form>
