@@ -401,15 +401,7 @@ export default function MeetLandingPage() {
             <span>{dateStr}</span>
           </div>
           
-          {/* Mobile Menu Toggle */}
-          <button 
-            className="md:hidden p-2 -mr-2 text-slate-600 hover:text-slate-900 transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-
-          <div className="hidden md:flex items-center gap-2">
+          <div className="flex items-center gap-2">
             {user ? (
               <Button onClick={() => navigate('/dashboard')} className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
                 <Layers className="w-4 h-4 mr-2" /> Dashboard
@@ -423,35 +415,7 @@ export default function MeetLandingPage() {
         </div>
       </header>
 
-      {/* Mobile Menu Dropdown */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="md:hidden sticky top-[73px] z-40 bg-white border-b border-slate-200 shadow-lg"
-          >
-            <div className="flex flex-col p-4 gap-2">
-              <a onClick={() => setIsMobileMenuOpen(false)} href="#features" className="px-4 py-3 rounded-xl hover:bg-slate-50 font-medium text-slate-700">Features</a>
-              <a onClick={() => setIsMobileMenuOpen(false)} href="#pricing" className="px-4 py-3 rounded-xl hover:bg-slate-50 font-medium text-slate-700">Pricing</a>
-              <a onClick={() => setIsMobileMenuOpen(false)} href="#contact" className="px-4 py-3 rounded-xl hover:bg-slate-50 font-medium text-slate-700">Support</a>
-              
-              <div className="h-px bg-slate-100 my-2" />
-              
-              {user ? (
-                <Button onClick={() => navigate('/dashboard')} className="w-full rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm py-6">
-                  <Layers className="w-5 h-5 mr-2" /> Go to Dashboard
-                </Button>
-              ) : (
-                <Button onClick={() => navigate('/login')} className="w-full rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm py-6">
-                  Sign In
-                </Button>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
 
       <main className="relative z-10 flex-1 flex flex-col md:flex-row items-center justify-center p-6 md:p-12 gap-12 md:gap-16 max-w-7xl mx-auto w-full">
         <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-8 max-w-xl">
@@ -580,7 +544,7 @@ export default function MeetLandingPage() {
         <WithoutCliPadSection />
         <WithCliPadSection />
 
-        <section id="pricing" className="py-24 px-6 md:px-12 max-w-6xl mx-auto">
+        <section id="pricing" className="py-24 px-6 md:px-12 max-w-6xl mx-auto w-full overflow-hidden md:overflow-visible">
           <div className="text-center mb-16">
 
             <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5">Choose the perfect plan for your team.</h2>
@@ -622,9 +586,9 @@ export default function MeetLandingPage() {
           </div>
 
           {/* Compare Plans Table */}
-          <div className="mt-24">
+          <div className="mt-24 w-full overflow-hidden">
             <h3 className="text-3xl font-black text-center mb-10 tracking-tight">Compare Plans</h3>
-            <div className="overflow-x-auto border border-border rounded-3xl bg-secondary/30">
+            <div className="w-full overflow-x-auto border border-border rounded-3xl bg-secondary/30">
               <table className="w-full min-w-[700px] text-left border-collapse">
                 <thead>
                   <tr className="border-b border-border bg-slate-50/50">
