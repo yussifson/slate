@@ -237,21 +237,7 @@ const UnivApiIntegration = React.lazy(() => import("@/components/universal/UnivA
 const UnivWorkflowBuilder = React.lazy(() => import("@/components/universal/UnivWorkflowBuilder"));
 const UnivApprovalEngine = React.lazy(() => import("@/components/universal/UnivApprovalEngine"));
 
-// Basic dummy data generator for these components since they might not be hooked to real tables yet if they are purely UI templates in OrbitBuild
-const DUMMY_DATA = Array(5).fill(0).map((_, i) => ({
- id: `id-${i}`,
- data: {
- name: `Sample Record ${i + 1}`,
- status: i % 2 === 0 ? 'Active' : 'Pending',
- date: new Date().toISOString().split('T')[0]
-}
-}));
-
-const DUMMY_FIELDS = [
- { name: 'name', field_type: 'text', order_index: 0},
- { name: 'status', field_type: 'select', order_index: 1},
- { name: 'date', field_type: 'date', order_index: 2}
-];
+// No dummy data in production. Universal components fetch their own data or display empty states.
 
 import { useQueryClient} from '@tanstack/react-query';
 import { 

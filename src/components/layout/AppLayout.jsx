@@ -100,7 +100,7 @@ export default function AppLayout() {
         document.head.appendChild(link);
       }
       link.href = '/clipad-logo.svg';
-      document.title = 'CliPad - Enterprise Collaborative Productivity Workspace';
+      document.title = 'CliPad - #1 Enterprise AI-Powered Organizational Memory Platform';
       return; // Do not apply company branding on Clipad
     }
 
@@ -112,7 +112,7 @@ export default function AppLayout() {
         document.head.appendChild(link);
       }
       link.href = '/optavel-favicon.svg';
-      document.title = 'Optavel Account';
+      document.title = 'Optavel - Experience Infinite Scale With Next-Gen Enterprise Products';
       return; // Do not apply company branding on the Account main page
     }
 

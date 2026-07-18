@@ -1037,16 +1037,29 @@ export default function RecordVideo() {
         setUploadProgress(10);
         wsEndRequestedRef.current = true;
         // Flush any remaining buffered chunks before signalling END
+        let endAttempts = 0;
         const waitAndEnd = () => {
+          endAttempts++;
           if (pendingChunks.length > 0 || (wsRef.current?.bufferedAmount || 0) > 0) {
             setTimeout(waitAndEnd, 300);
             return;
           }
           if (wsRef.current?.readyState === WebSocket.OPEN) {
             wsRef.current.send(JSON.stringify({ type: 'END' }));
-          } else if (wsIsReconnectingRef.current) {
+          } else if (wsIsReconnectingRef.current && endAttempts < 30) {
             // Still reconnecting — END will be sent after reconnect (handled in onopen)
             setTimeout(waitAndEnd, 500);
+          } else {
+             // Permanent failure or timeout
+             toast({ title: 'Upload Failed', description: 'Could not reach cloud storage. Downloading your recording locally instead.', variant: 'destructive' });
+             const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+             const url = URL.createObjectURL(blob);
+             const a = document.createElement('a');
+             a.href = url;
+             a.download = `recording-fallback-${Date.now()}.webm`;
+             a.click();
+             URL.revokeObjectURL(url);
+             setPhase('review');
           }
         };
         waitAndEnd();

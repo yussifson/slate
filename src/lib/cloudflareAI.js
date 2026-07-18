@@ -1,6 +1,7 @@
 // src/lib/cloudflareAI.js
-// Routes through Vite's dev proxy (/api/ai) to avoid CORS.
-// In production, route through a Cloudflare Worker or backend function.
+// Routes through Vite's dev proxy (/api/ai) for local development if desired,
+// but defaults to secure Supabase Edge Function to prevent exposing API keys.
+import { supabase } from '@/api/supabaseClient';
 
 // Find all environment variable keys that match our pattern
 const envKeys = Object.keys(import.meta.env);
@@ -35,14 +36,6 @@ envKeys.forEach(key => {
   }
 });
 
-// Fallback if absolutely no keys are provided
-if (API_ACCOUNTS.length === 0) {
-  API_ACCOUNTS.push({
-    token: "cfut_DjZLCGykcMI0D0wtJIHxOME8NpAIwe68bLYMsyWOd091300e",
-    accountId: "bf5126510c1f8f2759cc81c4e7d795ef"
-  });
-}
-
 let currentAccountIndex = 0;
 
 const MODELS = {
@@ -54,45 +47,59 @@ const MODELS = {
  * Helper to make API requests to Cloudflare AI via local proxy with key rotation
  */
 async function runAI(model, payload, retryCount = 0) {
-  const accountConfig = API_ACCOUNTS[currentAccountIndex];
-  
-  // /api/ai is proxied by Vite for web, but Electron must hit Cloudflare directly
-  const isElectron = typeof window !== 'undefined' && window.location.protocol === 'file:';
-  const url = isElectron
-    ? `https://api.cloudflare.com/client/v4/accounts/${accountConfig.accountId}/ai/run/${model}`
-    : `/api/ai/${accountConfig.accountId}/${model}`;
+  // If we have API_ACCOUNTS configured (e.g. local dev), we can use the local Vite proxy.
+  // Otherwise, route through the Supabase Edge Function to keep keys secure.
+  const isLocalProxy = API_ACCOUNTS.length > 0 && typeof window !== 'undefined' && window.location.protocol !== 'file:';
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${accountConfig.token}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });
+  if (isLocalProxy) {
+    const accountConfig = API_ACCOUNTS[currentAccountIndex];
+    const url = `/api/ai/${accountConfig.accountId}/${model}`;
 
-  if (!response.ok) {
-    const errText = await response.text();
-    console.error(`Cloudflare AI Error (Account Index ${currentAccountIndex}):`, response.status, errText);
-    
-    // If it's an auth error (401/403) or rate limit (429) or server error, and we have more keys to try
-    if (retryCount < API_ACCOUNTS.length - 1) {
-      console.warn("Rotating to next Cloudflare AI API account...");
-      currentAccountIndex = (currentAccountIndex + 1) % API_ACCOUNTS.length;
-      return runAI(model, payload, retryCount + 1);
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${accountConfig.token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error(`Cloudflare AI Error (Account Index ${currentAccountIndex}):`, response.status, errText);
+      
+      if (retryCount < API_ACCOUNTS.length - 1) {
+        console.warn("Rotating to next Cloudflare AI API account...");
+        currentAccountIndex = (currentAccountIndex + 1) % API_ACCOUNTS.length;
+        return runAI(model, payload, retryCount + 1);
+      }
+      
+      throw new Error(`AI request failed (${response.status}): ${errText}`);
     }
-    
-    throw new Error(`AI request failed (${response.status}): ${errText}`);
+
+    const data = await response.json();
+    if (!data.success) {
+      const errMsg = data.errors?.map(e => e.message).join(', ') || 'Unknown error';
+      throw new Error(`Cloudflare AI error: ${errMsg}`);
+    }
+    return data.result;
+  } else {
+    // Route through Supabase Edge Function
+    const { data, error } = await supabase.functions.invoke('clipad-ai-proxy', {
+      body: { model, payload }
+    });
+
+    if (error) {
+      console.error("Supabase Edge Function AI Error:", error);
+      throw new Error(`Cloudflare AI Edge Function error: ${error.message}`);
+    }
+
+    if (!data || data.success === false) {
+      throw new Error(`Cloudflare AI error: ${data?.error || 'Unknown error'}`);
+    }
+
+    return data.result;
   }
-
-  const data = await response.json();
-
-  if (!data.success) {
-    const errMsg = data.errors?.map(e => e.message).join(', ') || 'Unknown error';
-    throw new Error(`Cloudflare AI error: ${errMsg}`);
-  }
-
-  return data.result;
 }
 
 /**
