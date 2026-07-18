@@ -43,6 +43,7 @@ export default function TimezoneFairnessWidget({ workspaceId }) {
       const { data: meetings } = await supabase
         .from('clipad_meeting_records')
         .select('title, created_at, ended_at, ai_summary')
+        .eq('company_id', workspaceId)
         .order('created_at', { ascending: false })
         .limit(20);
 

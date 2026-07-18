@@ -8,33 +8,28 @@ const SIZE_MAP = {
 }
 
 export function OrbitLoader({ size = 'md', className = '', label = 'Loading', color }) {
-  const { dim, stroke, r } = SIZE_MAP[size]
-  const cx = dim / 2
-  const cy = dim / 2
-  const circumference = 2 * Math.PI * r
-  const arcLength = circumference * 0.25
-  const gapLength = circumference * 0.75
+  const { dim } = SIZE_MAP[size] || SIZE_MAP['md']
+  
+  let isRootAccount = false;
+  let isClipad = false;
+  try {
+    const domainData = getSubdomainAndBase();
+    isRootAccount = domainData.isRootAccount;
+    if (domainData.subdomain === 'clipad' || window.location.hostname.startsWith('clipad')) {
+      isClipad = true;
+    }
+  } catch (e) {}
+  
+  const logoSrc = isClipad ? "/clipad-logo-green.png" : (isRootAccount ? "/optavel-favicon.svg" : "/slate-favicon.svg");
 
   return (
     <span
       role="status"
       aria-label={label}
       className={`orbit-loader orbit-loader--${size} ${className}`}
-      style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: dim, height: dim }}
     >
-      <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`} fill="none" aria-hidden="true">
-        <circle cx={cx} cy={cy} r={r} stroke={color || '#10B981'} strokeWidth={stroke} opacity={0.15} />
-        <circle
-          cx={cx} cy={cy} r={r}
-          stroke={color || '#10B981'}
-          strokeWidth={stroke}
-          strokeLinecap="round"
-          strokeDasharray={`${arcLength} ${gapLength}`}
-          strokeDashoffset={0}
-          transform={`rotate(-90 ${cx} ${cy})`}
-          className="orbit-loader__arc"
-        />
-      </svg>
+      <img src={logoSrc} alt={label} style={{ width: '100%', height: '100%', objectFit: 'contain', animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }} />
     </span>
   )
 }
@@ -111,15 +106,7 @@ export function PageLoader({ label = 'Loading...' }) {
           />
         </div>
 
-        {/* Minimalist Spinner */}
-        <div style={{
-          width: '32px', height: '32px',
-          border: '2px solid rgba(16,185,129,0.15)',
-          borderTopColor: '#10B981',
-          borderRadius: '50%',
-          animation: 'spin 1s linear infinite',
-          marginBottom: '16px'
-        }} />
+        {/* Loader image is the only thing shown */}
 
         {/* Loading text */}
         <div style={{

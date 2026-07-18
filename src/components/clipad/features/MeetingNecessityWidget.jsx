@@ -51,6 +51,7 @@ export default function MeetingNecessityWidget({ workspaceId }) {
       const { data: meetings } = await supabase
         .from('clipad_meeting_records')
         .select('id, title, ai_summary, created_at, ended_at')
+        .eq('company_id', workspaceId)
         .order('created_at', { ascending: false })
         .limit(8);
 
