@@ -353,7 +353,7 @@ export default function CliPadBilling() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <button 
-                          onClick={() => setReceiptDetails(rDetails)}
+                          onClick={() => setReceiptDetails({ companyName: rDetails.companyName || companyName, email: rDetails.email || user?.email, ...rDetails })}
                           className="text-primary hover:text-primary/80 font-semibold flex items-center justify-end gap-1 w-full"
                         >
                           View Receipt <ArrowUpRight className="w-4 h-4" />
