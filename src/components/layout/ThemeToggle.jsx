@@ -10,10 +10,44 @@ const themeOptions = [
   { value: "system", label: "SYSTEM", icon: Laptop, color: "text-[#71717a] dark:text-gray-400" },
 ];
 
-export default function ThemeToggle() {
+export default function ThemeToggle({ iconOnly = false }) {
  const { theme, changeTheme} = useTheme();
  const activeOption = themeOptions.find(o => o.value === theme) || themeOptions[0];
  const ActiveIcon = activeOption.icon;
+
+ if (iconOnly) {
+   return (
+     <DropdownMenu>
+       <DropdownMenuTrigger className="w-8 h-8 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-500 flex items-center justify-center focus:outline-none hover:scale-110 transition-transform">
+         <ActiveIcon className={cn("w-4 h-4", activeOption.color)} />
+       </DropdownMenuTrigger>
+       <DropdownMenuContent align="end" className="z-[100] w-36 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card/85 backdrop-blur-md p-1.5 animate-in fade-in zoom-in-95 duration-150 shadow-[0_2px_8px_rgba(0,0,0,0.07)]">
+         <div className="space-y-1">
+           {themeOptions.map((option) => {
+             const isSelected = option.value === theme;
+             const OptIcon = option.icon;
+             return (
+               <DropdownMenuItem
+                 key={option.value}
+                 onClick={() => changeTheme(option.value)}
+                 className={cn(
+                   "flex items-center gap-2.5 w-full px-2.5 py-2 rounded-xl text-left text-xs font-medium transition-all duration-150 cursor-pointer select-none",
+                   isSelected
+                     ? "bg-primary text-white focus:bg-primary focus:text-white"
+                     : "text-foreground/80 hover:text-foreground focus:bg-muted focus:text-foreground"
+                 )}
+               >
+                 <OptIcon className={cn("w-3.5 h-3.5 shrink-0", isSelected ? "text-white" : option.color)} />
+                 <span className="flex-1">{option.label}</span>
+                 {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+               </DropdownMenuItem>
+             );
+           })}
+         </div>
+       </DropdownMenuContent>
+     </DropdownMenu>
+   );
+ }
 
  return (
  <DropdownMenu>
