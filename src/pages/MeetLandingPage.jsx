@@ -907,7 +907,7 @@ export default function MeetLandingPage() {
       <PaymentReceiptModal isOpen={!!receiptDetails} onClose={() => setDetails(null)} transactionDetails={receiptDetails} />
       
       {/* Mobile Bottom Navigation */}
-      <ClipadMobileNav />
+      <ClipadMobileNav isMarketing={true} />
     </div>
   );
 }

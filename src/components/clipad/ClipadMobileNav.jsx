@@ -1,19 +1,25 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Layers, Video, Camera, User, MessageSquare, Bot, Sparkles, Menu, Settings, Shield, LogOut, X } from 'lucide-react';
+import { Home, Layers, Video, Camera, User, MessageSquare, Bot, Sparkles, Menu, Settings, Shield, LogOut, X, Tag, Star, Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/AuthContext';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import { AnimatePresence, motion } from 'framer-motion';
 
-export default function ClipadMobileNav() {
+export default function ClipadMobileNav({ isMarketing = false }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [isOrbitOpen, setIsOrbitOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
-  const navItems = [
+  const marketingNavItems = [
+    { label: 'Features', action: () => { window.location.href = '#features'; }, icon: Star },
+    { label: 'Pricing', action: () => { window.location.href = '#pricing'; }, icon: Tag },
+    { label: 'Support', action: () => { window.location.href = '#contact'; }, icon: Phone },
+  ];
+
+  const appNavItems = [
     { label: 'Home', path: '/dashboard', icon: Home },
     { label: 'Spaces', path: '/spaces', icon: Layers },
     { label: 'Chat', path: '/chat', icon: MessageSquare },
@@ -21,6 +27,8 @@ export default function ClipadMobileNav() {
     { label: 'Meetings', path: '/meetings', icon: Video },
     { label: 'Menu', action: () => setIsMenuOpen(true), icon: Menu },
   ];
+
+  const navItems = isMarketing ? marketingNavItems : appNavItems;
 
   // Hide nav on immersive screens
   const isImmersive = location.pathname.startsWith('/record') || 
