@@ -13,7 +13,7 @@ import ClipadLoader from '@/components/ui/ClipadLoader';
 
 
 // ─── Pre-join screen + in-meeting screen ──────────────────────────────────────
-function StandaloneMeetingInner({ url, roomName, onLeave, onToast, spaceId }) {
+function StandaloneMeetingInner({ url, roomName, userName, onLeave, onToast, spaceId }) {
   const [hasJoined, setHasJoined] = useState(false);
   const [joinConfig, setJoinConfig] = useState({ name: '', micOn: true, videoOn: true });
 
@@ -26,7 +26,8 @@ function StandaloneMeetingInner({ url, roomName, onLeave, onToast, spaceId }) {
     return (
       <PreJoinScreen 
         roomName={roomName} 
-        onJoin={handleJoin} 
+        onJoin={handleJoin}
+        defaultName={userName || 'Guest'}
       />
     );
   }
@@ -36,7 +37,7 @@ function StandaloneMeetingInner({ url, roomName, onLeave, onToast, spaceId }) {
       {/* VideoRoom creates its own DailyProvider + callObject internally — do NOT wrap in another DailyProvider */}
       <VideoRoom
         roomUrl={url}
-        userName={joinConfig.name || 'Guest'}
+        userName={joinConfig.name || userName || 'Guest'}
         initialAudio={joinConfig.micOn}
         initialVideo={joinConfig.videoOn}
         onLeave={onLeave}
@@ -254,6 +255,7 @@ export default function StandaloneMeeting() {
     <StandaloneMeetingInner
       url={meetingUrl}
       roomName={roomName}
+      userName={user ? user.full_name : 'Guest'}
       onToast={toast}
       onLeave={() => {
         const base = window.location.pathname.startsWith('/clipad') ? '/clipad' : '';

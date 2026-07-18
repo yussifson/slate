@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { VIRTUAL_BACKGROUNDS } from './VideoRoom';
 
-export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
-  const [userName, setUserName] = useState(defaultName);
+export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' }) {
   const [isMicOn, setIsMicOn] = useState(true);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [error, setError] = useState(null);
@@ -147,11 +146,6 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
   };
 
   const handleJoinClick = () => {
-    if (!userName.trim()) {
-      toast({ title: 'Name required', description: 'Please enter your name to join.', variant: 'destructive' });
-      return;
-    }
-    
     // Stop local preview tracks before passing control to Daily
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
@@ -159,7 +153,7 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
     }
 
     onJoin({
-      name: userName.trim(),
+      name: defaultName || 'Guest',
       micOn: isMicOn,
       videoOn: isVideoOn,
       backgroundConfig: selectedBg
@@ -254,22 +248,13 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = '' }) {
         </div>
 
         <div className="space-y-5">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Your Name</label>
-            <input
-              type="text"
-              placeholder="e.g. Jane Doe"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              className="w-full px-5 py-4 bg-white/50 dark:bg-[#111827]/50 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 text-base transition-all shadow-sm placeholder:text-slate-400"
-              autoFocus
-              onKeyDown={(e) => { if (e.key === 'Enter' && userName.trim()) handleJoinClick(); }}
-            />
+          <div className="bg-white/50 dark:bg-[#111827]/50 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between">
+            <span className="text-sm font-medium text-slate-500">Joining as</span>
+            <span className="font-semibold text-slate-900 dark:text-white">{defaultName || 'Guest'}</span>
           </div>
 
           <Button
             className="w-full py-6 text-lg rounded-full font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all"
-            disabled={!userName.trim()}
             onClick={handleJoinClick}
           >
             Ask to join
