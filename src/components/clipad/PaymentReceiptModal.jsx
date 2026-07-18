@@ -3,55 +3,205 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, X, Download, FileText, Printer, ShieldCheck, Building2, Star } from 'lucide-react';
 
 export default function PaymentReceiptModal({ isOpen, onClose, transactionDetails }) {
-  const receiptRef = useRef();
-
   if (!transactionDetails) return null;
 
   const receiptNumber = transactionDetails.receiptNumber || `CLIP-${transactionDetails.reference?.slice(-8).toUpperCase() || Math.random().toString(36).slice(2,10).toUpperCase()}`;
   const isAdminAssigned = transactionDetails.isAdminAssigned === true;
-  const amountDisplay = isAdminAssigned
-    ? 'Admin Assigned'
-    : `${transactionDetails.currency} ${(transactionDetails.amount / 100).toFixed(2)}`;
-
-  const planColors = {
-    pro: { bg: 'bg-blue-50', text: 'text-blue-600', badge: 'bg-blue-100 text-blue-700', border: 'border-blue-200' },
-    enterprise: { bg: 'bg-violet-50', text: 'text-violet-600', badge: 'bg-violet-100 text-violet-700', border: 'border-violet-200' },
-    free: { bg: 'bg-slate-50', text: 'text-slate-600', badge: 'bg-slate-100 text-slate-700', border: 'border-slate-200' },
-  };
-  const colors = planColors[transactionDetails.plan] || planColors.free;
+  const amountValue = isAdminAssigned ? 0 : (transactionDetails.amount / 100);
+  const formattedAmount = isAdminAssigned ? 'Admin Assigned' : `${transactionDetails.currency} ${amountValue.toFixed(2)}`;
+  const dateFormatted = new Date(transactionDetails.date || Date.now()).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+  });
 
   const handlePrint = () => {
-    const printContent = receiptRef.current.innerHTML;
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
+      <!DOCTYPE html>
       <html>
         <head>
           <title>Receipt ${receiptNumber}</title>
           <style>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-            * { box-sizing: border-box; margin: 0; padding: 0; }
-            body { font-family: 'Inter', sans-serif; background: #f8fafc; padding: 40px; color: #0f172a; }
-            .receipt { max-width: 520px; margin: 0 auto; background: white; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; }
-            .header { background: linear-gradient(135deg, #10b981, #059669); color: white; text-align: center; padding: 32px; }
-            .logo { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; }
-            .receipt-num { font-size: 12px; opacity: 0.8; font-weight: 500; }
-            .status { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 100px; padding: 6px 16px; font-size: 12px; font-weight: 700; margin-top: 12px; }
-            .body { padding: 32px; }
-            .amount { text-align: center; margin-bottom: 28px; padding-bottom: 28px; border-bottom: 2px dashed #e2e8f0; }
-            .amount-value { font-size: 40px; font-weight: 900; color: #0f172a; letter-spacing: -1px; }
-            .plan-badge { display: inline-block; padding: 4px 14px; border-radius: 100px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 8px; background: #f0fdf4; color: #16a34a; }
-            .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 14px; }
-            .label { color: #64748b; font-weight: 500; }
-            .val { font-weight: 700; color: #0f172a; font-family: monospace; }
-            .footer { margin-top: 28px; padding-top: 20px; border-top: 1px solid #f1f5f9; text-align: center; color: #94a3b8; font-size: 12px; }
-            .company-block { background: #f8fafc; border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
-            .company-name { font-weight: 800; font-size: 16px; color: #0f172a; }
-            .company-label { font-size: 11px; color: #64748b; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+            body { 
+              font-family: 'Inter', sans-serif; 
+              color: #1e293b; 
+              background: #fff; 
+              margin: 0; 
+              padding: 40px; 
+              -webkit-font-smoothing: antialiased;
+            }
+            .invoice-container { 
+              max-width: 800px; 
+              margin: 0 auto; 
+            }
+            .header {
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+              border-bottom: 2px solid #f1f5f9;
+              padding-bottom: 24px;
+              margin-bottom: 32px;
+            }
+            .brand-name {
+              font-size: 28px;
+              font-weight: 700;
+              color: #10b981;
+              margin: 0 0 4px 0;
+            }
+            .brand-sub {
+              font-size: 13px;
+              color: #64748b;
+              margin: 0;
+            }
+            .receipt-title {
+              font-size: 24px;
+              font-weight: 600;
+              color: #0f172a;
+              text-align: right;
+              margin: 0 0 8px 0;
+            }
+            .receipt-meta {
+              font-size: 13px;
+              color: #64748b;
+              text-align: right;
+              line-height: 1.6;
+            }
+            .billing-section {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 40px;
+            }
+            .billing-block h3 {
+              font-size: 11px;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+              color: #94a3b8;
+              margin: 0 0 8px 0;
+            }
+            .billing-block p {
+              margin: 0 0 4px 0;
+              font-size: 14px;
+              font-weight: 500;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-bottom: 32px;
+            }
+            th {
+              text-align: left;
+              padding: 12px;
+              background: #f8fafc;
+              color: #475569;
+              font-size: 12px;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+              border-bottom: 2px solid #e2e8f0;
+            }
+            td {
+              padding: 16px 12px;
+              border-bottom: 1px solid #e2e8f0;
+              font-size: 14px;
+              color: #0f172a;
+            }
+            .text-right { text-align: right; }
+            .summary-box {
+              float: right;
+              width: 300px;
+            }
+            .summary-row {
+              display: flex;
+              justify-content: space-between;
+              padding: 12px 0;
+              font-size: 14px;
+              color: #475569;
+            }
+            .summary-row.total {
+              border-top: 2px solid #0f172a;
+              font-size: 18px;
+              font-weight: 700;
+              color: #0f172a;
+              margin-top: 4px;
+            }
+            .footer {
+              clear: both;
+              padding-top: 64px;
+              text-align: center;
+              font-size: 12px;
+              color: #94a3b8;
+              border-top: 1px solid #f1f5f9;
+              margin-top: 64px;
+            }
           </style>
         </head>
         <body>
-          <div class="receipt">${printContent}</div>
-          <script>window.print(); window.close();<\/script>
+          <div class="invoice-container">
+            <div class="header">
+              <div>
+                <h1 class="brand-name">CliPad</h1>
+                <p class="brand-sub">by Optavel Technologies</p>
+              </div>
+              <div>
+                <h2 class="receipt-title">RECEIPT</h2>
+                <div class="receipt-meta">
+                  Receipt #: <strong>${receiptNumber}</strong><br>
+                  Date: ${dateFormatted}
+                </div>
+              </div>
+            </div>
+
+            <div class="billing-section">
+              <div class="billing-block">
+                <h3>Billed To</h3>
+                <p>${transactionDetails.companyName || 'Valued Customer'}</p>
+                <p>${transactionDetails.email}</p>
+              </div>
+              <div class="billing-block" style="text-align: right;">
+                <h3>Payment Status</h3>
+                <p style="color: #10b981; font-weight: 700;">${isAdminAssigned ? 'Complimentary' : 'Paid in Full'}</p>
+                ${!isAdminAssigned && transactionDetails.reference ? `<p style="font-size: 12px; color: #64748b;">Ref: ${transactionDetails.reference}</p>` : ''}
+              </div>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th class="text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>CliPad ${transactionDetails.plan.toUpperCase()} Plan</strong>
+                    <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Workspace Subscription Upgrade</div>
+                  </td>
+                  <td class="text-right">${formattedAmount}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="summary-box">
+              <div class="summary-row">
+                <span>Subtotal</span>
+                <span>${formattedAmount}</span>
+              </div>
+              <div class="summary-row total">
+                <span>Total Paid</span>
+                <span>${formattedAmount}</span>
+              </div>
+            </div>
+
+            <div class="footer">
+              Thank you for choosing CliPad. If you have any questions about this receipt, please contact support.
+            </div>
+          </div>
+          <script>
+            window.onload = function() {
+              window.print();
+            }
+          </script>
         </body>
       </html>
     `);
@@ -61,122 +211,130 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
             onClick={onClose}
           />
+          
           <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 24 }}
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 24 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-            className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-5 bg-slate-50 border-b border-slate-100 shrink-0">
-              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <div className="flex items-center justify-between px-8 py-5 border-b border-slate-100 bg-white shrink-0">
+              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                 <FileText className="w-5 h-5 text-emerald-500" />
-                Plan Upgrade Receipt
+                Receipt <span className="text-slate-400 font-normal">#{receiptNumber}</span>
               </h2>
-              <button onClick={onClose} className="p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-500">
+              <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Receipt Body */}
-            <div className="flex-1 overflow-y-auto" ref={receiptRef}>
-              {/* Green top banner */}
-              <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white text-center px-8 py-7">
-                <div className="text-xl font-black tracking-tight mb-1">CliPad</div>
-                <div className="text-[11px] font-medium opacity-75 mb-3">by Optavel Technologies</div>
-                <div className="inline-flex items-center gap-1.5 bg-white/20 rounded-full px-4 py-1.5 text-xs font-bold">
-                  <CheckCircle className="w-3.5 h-3.5" />
-                  {isAdminAssigned ? 'Plan Upgraded by Admin' : 'Payment Successful'}
+            <div className="flex-1 overflow-y-auto p-8 bg-slate-50/50">
+              
+              <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                {/* Top Banner inside receipt */}
+                <div className="px-8 py-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-100">
+                  <div>
+                    <h3 className="text-2xl font-black text-emerald-600 tracking-tight">CliPad</h3>
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">by Optavel</p>
+                  </div>
+                  <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg font-bold text-sm">
+                    <CheckCircle className="w-4 h-4" />
+                    {isAdminAssigned ? 'Complimentary Upgrade' : 'Payment Successful'}
+                  </div>
                 </div>
-                <div className="text-[10px] opacity-60 mt-3 font-mono">#{receiptNumber}</div>
+
+                {/* Billing Info */}
+                <div className="px-8 py-6 grid grid-cols-1 sm:grid-cols-2 gap-8 border-b border-slate-100 bg-slate-50/50">
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Billed To</div>
+                    <div className="font-bold text-slate-900 text-base">{transactionDetails.companyName || 'Valued Customer'}</div>
+                    <div className="text-slate-600 text-sm mt-1">{transactionDetails.email}</div>
+                  </div>
+                  <div className="sm:text-right">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Date & Reference</div>
+                    <div className="font-medium text-slate-900 text-sm">{dateFormatted}</div>
+                    {!isAdminAssigned && transactionDetails.reference && (
+                      <div className="text-slate-500 text-xs mt-1 font-mono">{transactionDetails.reference}</div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Line Items */}
+                <div className="px-8 py-8">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr>
+                        <th className="pb-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200">Description</th>
+                        <th className="pb-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200 text-right">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="py-6 border-b border-slate-100">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
+                              <Star className="w-5 h-5 text-indigo-500" />
+                            </div>
+                            <div>
+                              <div className="font-bold text-slate-900 text-base">CliPad {transactionDetails.plan.toUpperCase()} Plan</div>
+                              <div className="text-sm text-slate-500 mt-0.5">Workspace Subscription</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-6 border-b border-slate-100 text-right font-semibold text-slate-900 text-lg">
+                          {formattedAmount}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  {/* Totals */}
+                  <div className="mt-6 flex justify-end">
+                    <div className="w-full max-w-xs space-y-3">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-slate-500 font-medium">Subtotal</span>
+                        <span className="font-semibold text-slate-900">{formattedAmount}</span>
+                      </div>
+                      <div className="flex justify-between items-center pt-3 border-t border-slate-800 text-lg">
+                        <span className="font-bold text-slate-900">Total Paid</span>
+                        <span className="font-black text-slate-900">{formattedAmount}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
 
-              <div className="p-7 space-y-5">
-                {/* Amount / Plan */}
-                <div className={`text-center py-5 rounded-2xl ${colors.bg} border ${colors.border}`}>
-                  <div className={`text-4xl font-black tracking-tight ${isAdminAssigned ? colors.text : 'text-slate-900'}`}>
-                    {isAdminAssigned ? '—' : `${transactionDetails.currency} ${(transactionDetails.amount / 100).toFixed(2)}`}
-                  </div>
-                  <div className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${colors.badge}`}>
-                    <Star className="w-3 h-3 inline mr-1" />
-                    {transactionDetails.plan} Plan
-                  </div>
-                  {isAdminAssigned && (
-                    <div className="text-xs text-slate-500 mt-2 font-medium">Complimentary upgrade</div>
-                  )}
-                </div>
-
-                {/* Company block */}
-                {transactionDetails.companyName && (
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
-                        <Building2 className="w-4 h-4 text-indigo-600" />
-                      </div>
-                      <div>
-                        <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Company</div>
-                        <div className="font-bold text-slate-900 text-sm">{transactionDetails.companyName}</div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Details rows */}
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center text-sm py-2 border-b border-slate-100">
-                    <span className="text-slate-500 font-medium">Receipt No.</span>
-                    <span className="text-slate-900 font-bold font-mono text-xs">{receiptNumber}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm py-2 border-b border-slate-100">
-                    <span className="text-slate-500 font-medium">Date</span>
-                    <span className="text-slate-900 font-bold text-xs">{new Date(transactionDetails.date || Date.now()).toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm py-2 border-b border-slate-100">
-                    <span className="text-slate-500 font-medium">Billed To</span>
-                    <span className="text-slate-900 font-bold text-xs">{transactionDetails.email}</span>
-                  </div>
-                  {transactionDetails.reference && !isAdminAssigned && (
-                    <div className="flex justify-between items-center text-sm py-2 border-b border-slate-100">
-                      <span className="text-slate-500 font-medium">Reference ID</span>
-                      <span className="text-slate-900 font-bold font-mono text-xs">{transactionDetails.reference}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between items-center text-sm py-2">
-                    <span className="text-slate-500 font-medium">Status</span>
-                    <span className="px-2.5 py-1 bg-emerald-100 text-emerald-700 font-bold rounded-lg text-xs uppercase tracking-wider">Active</span>
-                  </div>
-                </div>
-
-                {/* Footer */}
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-center gap-2 text-slate-400 text-[11px] font-medium">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  {isAdminAssigned ? 'Upgraded by Optavel Admin · CliPad' : 'Securely processed by Paystack · CliPad'}
-                </div>
+              <div className="mt-6 text-center flex items-center justify-center gap-2 text-slate-400 text-xs font-medium">
+                <ShieldCheck className="w-4 h-4" />
+                Securely generated by CliPad Billing
               </div>
             </div>
 
             {/* Actions */}
-            <div className="p-5 bg-slate-50 border-t border-slate-100 flex gap-3 shrink-0">
+            <div className="p-6 bg-white border-t border-slate-100 flex justify-end gap-3 shrink-0">
               <button
                 onClick={handlePrint}
-                className="flex-1 py-3 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold flex items-center justify-center gap-2 transition-colors text-sm"
+                className="px-6 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold flex items-center gap-2 transition-colors"
               >
-                <Printer className="w-4 h-4" /> Print / Save PDF
+                <Printer className="w-4 h-4" /> Download PDF
               </button>
               <button
                 onClick={onClose}
-                className="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold flex items-center justify-center gap-2 transition-colors shadow-lg shadow-emerald-500/20 text-sm"
+                className="px-8 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors shadow-sm"
               >
-                Done
+                Close
               </button>
             </div>
           </motion.div>
