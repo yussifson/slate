@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { BrainCircuit, Send, Bot, User } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/api/supabaseClient';
+import { generateText } from '@/lib/cloudflareAI';
+import { BrainCircuit, Send, Bot, User, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -9,30 +12,64 @@ export default function AdminAI() {
   const [messages, setMessages] = useState([
     { role: 'ai', content: "Hello Super Admin. I'm your advanced AI assistant. You can ask me to analyze system metrics, predict which companies are likely to upgrade, or query recent audit logs." }
   ]);
-  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
 
-  const handleSend = (e) => {
+  // Fetch global metrics for the AI Context
+  const { data: globalContext } = useQuery({
+    queryKey: ['admin_ai_context'],
+    queryFn: async () => {
+      const { data: companies } = await supabase.from('companies').select('id, name, created_at, industry_type, subscription_status');
+      const { data: profiles } = await supabase.from('profiles').select('id, company_id, role, last_sign_in_at');
+      return { companies: companies || [], profiles: profiles || [] };
+    }
+  });
+
+  const handleSend = async (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isTyping) return;
 
-    setMessages([...messages, { role: 'user', content: input }]);
     const currentInput = input;
+    const newMessages = [...messages, { role: 'user', content: currentInput }];
+    setMessages(newMessages);
     setInput("");
+    setIsTyping(true);
 
-    // Simulate AI response based on queries
-    setTimeout(() => {
-      let response = "I have analyzed the database. ";
-      
-      if (currentInput.toLowerCase().includes("upgrade")) {
-        response += "Based on usage patterns (active spaces and video recording frequency), 'Acme Corp' and 'TechFlow' have a 85% probability of upgrading to Enterprise this month.";
-      } else if (currentInput.toLowerCase().includes("login") || currentInput.toLowerCase().includes("today")) {
-        response += "We had 145 unique logins today. The most active region was North America (75% of logins). No suspicious IP behavior detected.";
-      } else {
-        response += "I can generate a detailed report for you. Would you like me to export the raw data as well?";
-      }
+    try {
+      // Create summarized context
+      const contextSummary = globalContext ? {
+        total_companies: globalContext.companies.length,
+        active_companies: globalContext.companies.filter(c => c.subscription_status === 'active').length,
+        total_users: globalContext.profiles.length,
+        recent_logins: globalContext.profiles.filter(p => new Date(p.last_sign_in_at) > new Date(Date.now() - 7*24*60*60*1000)).length,
+      } : { status: "Fetching context..." };
 
-      setMessages(prev => [...prev, { role: 'ai', content: response }]);
-    }, 1000);
+      const aiPrompt = `You are the Omni-AI for a SaaS Super Admin Dashboard. 
+Context Data: ${JSON.stringify(contextSummary)}
+
+The user previously asked:
+${newMessages.map(m => `${m.role}: ${m.content}`).join('\n')}
+
+Respond professionally with clear metrics and strategic advice to the last User query. Use markdown formatting.`;
+
+      // Add placeholder for AI response
+      setMessages(prev => [...prev, { role: 'ai', content: '' }]);
+
+      await generateText([{ role: 'user', content: aiPrompt }], (streamedText) => {
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1].content = streamedText;
+          return updated;
+        });
+      });
+    } catch (err) {
+      setMessages(prev => {
+        const updated = [...prev];
+        updated[updated.length - 1].content = "Error connecting to AI Command Center. Please check Cloudflare API keys or network connection.";
+        return updated;
+      });
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   return (
@@ -83,9 +120,10 @@ export default function AdminAI() {
               onChange={e => setInput(e.target.value)}
               placeholder="Ask about companies, logins, or predictive analytics..." 
               className="flex-1 bg-background"
+              disabled={isTyping}
             />
-            <Button type="submit" size="icon">
-              <Send className="w-4 h-4" />
+            <Button type="submit" size="icon" disabled={isTyping || !input.trim()}>
+              {isTyping ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </Button>
           </form>
         </CardContent>

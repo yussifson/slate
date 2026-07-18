@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Building2, Tags, ShieldAlert, BrainCircuit, ArrowLeft, LogOut, Headset } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
@@ -12,6 +12,16 @@ export default function ClipadAdminLayout() {
     await signOut();
     navigate('/login');
   };
+
+  useEffect(() => {
+    if (profile && profile.role !== 'super_admin') {
+      navigate('/');
+    }
+  }, [profile, navigate]);
+
+  if (!profile || profile.role !== 'super_admin') {
+    return null; // Don't render layout while redirecting
+  }
 
   const basePath = window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin';
   
