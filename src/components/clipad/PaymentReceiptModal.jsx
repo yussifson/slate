@@ -1,8 +1,16 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, X, Download, FileText, Printer, ShieldCheck, Building2, Star } from 'lucide-react';
+import { CheckCircle, X, Printer, ShieldCheck, Star, Building2, Calendar, FileText } from 'lucide-react';
 
 export default function PaymentReceiptModal({ isOpen, onClose, transactionDetails }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
   if (!transactionDetails) return null;
 
   const receiptNumber = transactionDetails.receiptNumber || `CLIP-${transactionDetails.reference?.slice(-8).toUpperCase() || Math.random().toString(36).slice(2,10).toUpperCase()}`;
@@ -10,7 +18,10 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
   const amountValue = isAdminAssigned ? 0 : (transactionDetails.amount / 100);
   const formattedAmount = isAdminAssigned ? 'Admin Assigned' : `${transactionDetails.currency} ${amountValue.toFixed(2)}`;
   const dateFormatted = new Date(transactionDetails.date || Date.now()).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+  const timeFormatted = new Date(transactionDetails.date || Date.now()).toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit'
   });
 
   const handlePrint = () => {
@@ -37,39 +48,34 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
             .header {
               display: flex;
               justify-content: space-between;
-              align-items: flex-start;
+              align-items: center;
               border-bottom: 2px solid #f1f5f9;
               padding-bottom: 24px;
               margin-bottom: 32px;
             }
-            .brand-name {
-              font-size: 28px;
-              font-weight: 700;
-              color: #10b981;
-              margin: 0 0 4px 0;
-            }
-            .brand-sub {
-              font-size: 13px;
-              color: #64748b;
-              margin: 0;
+            .logo {
+              height: 40px;
+              object-fit: contain;
             }
             .receipt-title {
               font-size: 24px;
               font-weight: 600;
               color: #0f172a;
               text-align: right;
-              margin: 0 0 8px 0;
+              margin: 0 0 4px 0;
             }
             .receipt-meta {
               font-size: 13px;
               color: #64748b;
               text-align: right;
-              line-height: 1.6;
             }
             .billing-section {
               display: flex;
               justify-content: space-between;
               margin-bottom: 40px;
+              background: #f8fafc;
+              padding: 24px;
+              border-radius: 12px;
             }
             .billing-block h3 {
               font-size: 11px;
@@ -82,6 +88,7 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
               margin: 0 0 4px 0;
               font-size: 14px;
               font-weight: 500;
+              color: #0f172a;
             }
             table {
               width: 100%;
@@ -90,17 +97,16 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
             }
             th {
               text-align: left;
-              padding: 12px;
+              padding: 12px 16px;
               background: #f8fafc;
-              color: #475569;
+              color: #64748b;
               font-size: 12px;
               font-weight: 600;
               text-transform: uppercase;
               letter-spacing: 0.05em;
-              border-bottom: 2px solid #e2e8f0;
             }
             td {
-              padding: 16px 12px;
+              padding: 20px 16px;
               border-bottom: 1px solid #e2e8f0;
               font-size: 14px;
               color: #0f172a;
@@ -108,21 +114,25 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
             .text-right { text-align: right; }
             .summary-box {
               float: right;
-              width: 300px;
+              width: 320px;
+              background: #f8fafc;
+              padding: 24px;
+              border-radius: 12px;
             }
             .summary-row {
               display: flex;
               justify-content: space-between;
-              padding: 12px 0;
+              padding: 8px 0;
               font-size: 14px;
-              color: #475569;
+              color: #64748b;
             }
             .summary-row.total {
-              border-top: 2px solid #0f172a;
+              border-top: 1px solid #cbd5e1;
+              padding-top: 16px;
+              margin-top: 8px;
               font-size: 18px;
               font-weight: 700;
               color: #0f172a;
-              margin-top: 4px;
             }
             .footer {
               clear: both;
@@ -139,14 +149,14 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
           <div class="invoice-container">
             <div class="header">
               <div>
-                <h1 class="brand-name">CliPad</h1>
-                <p class="brand-sub">by Optavel Technologies</p>
+                <!-- We inject the absolute URL for the logo so it prints correctly -->
+                <img src="${window.location.origin}/logo.png" alt="Optavel Logo" class="logo" onerror="this.style.display='none'" />
+                <div style="font-size: 12px; font-weight: 600; color: #64748b; margin-top: 8px;">CliPad Workspace</div>
               </div>
               <div>
                 <h2 class="receipt-title">RECEIPT</h2>
                 <div class="receipt-meta">
-                  Receipt #: <strong>${receiptNumber}</strong><br>
-                  Date: ${dateFormatted}
+                  #${receiptNumber}
                 </div>
               </div>
             </div>
@@ -154,13 +164,13 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
             <div class="billing-section">
               <div class="billing-block">
                 <h3>Billed To</h3>
-                <p>${transactionDetails.companyName || 'Valued Customer'}</p>
+                <p><strong>${transactionDetails.companyName || 'Customer'}</strong></p>
                 <p>${transactionDetails.email}</p>
               </div>
               <div class="billing-block" style="text-align: right;">
-                <h3>Payment Status</h3>
-                <p style="color: #10b981; font-weight: 700;">${isAdminAssigned ? 'Complimentary' : 'Paid in Full'}</p>
-                ${!isAdminAssigned && transactionDetails.reference ? `<p style="font-size: 12px; color: #64748b;">Ref: ${transactionDetails.reference}</p>` : ''}
+                <h3>Date Issued</h3>
+                <p>${dateFormatted}</p>
+                <p style="color: #64748b; font-size: 12px;">${timeFormatted}</p>
               </div>
             </div>
 
@@ -175,9 +185,10 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
                 <tr>
                   <td>
                     <strong>CliPad ${transactionDetails.plan.toUpperCase()} Plan</strong>
-                    <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Workspace Subscription Upgrade</div>
+                    <div style="font-size: 13px; color: #64748b; margin-top: 4px;">Premium Workspace Subscription</div>
+                    ${transactionDetails.reference && !isAdminAssigned ? `<div style="font-size: 11px; color: #94a3b8; margin-top: 8px;">Ref: ${transactionDetails.reference}</div>` : ''}
                   </td>
-                  <td class="text-right">${formattedAmount}</td>
+                  <td class="text-right" style="font-weight: 600;">${formattedAmount}</td>
                 </tr>
               </tbody>
             </table>
@@ -187,6 +198,10 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
                 <span>Subtotal</span>
                 <span>${formattedAmount}</span>
               </div>
+              <div class="summary-row">
+                <span>Status</span>
+                <span style="color: #10b981; font-weight: 600;">${isAdminAssigned ? 'Complimentary' : 'Paid in Full'}</span>
+              </div>
               <div class="summary-row total">
                 <span>Total Paid</span>
                 <span>${formattedAmount}</span>
@@ -194,12 +209,17 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
             </div>
 
             <div class="footer">
-              Thank you for choosing CliPad. If you have any questions about this receipt, please contact support.
+              Thank you for choosing Optavel. If you have any questions, please contact support.
             </div>
           </div>
           <script>
             window.onload = function() {
-              window.print();
+              setTimeout(function() {
+                window.print();
+              }, 500);
+            }
+            window.onafterprint = function() {
+              window.close();
             }
           </script>
         </body>
@@ -208,10 +228,11 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
     printWindow.document.close();
   };
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 sm:px-12 pointer-events-auto">
+          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -220,126 +241,128 @@ export default function PaymentReceiptModal({ isOpen, onClose, transactionDetail
             onClick={onClose}
           />
           
+          {/* Modal Container - Horizontal Layout */}
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]"
+            className="relative w-full max-w-4xl bg-white rounded-[24px] shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[95vh] md:max-h-[85vh]"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between px-8 py-5 border-b border-slate-100 bg-white shrink-0">
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-emerald-500" />
-                Receipt <span className="text-slate-400 font-normal">#{receiptNumber}</span>
-              </h2>
-              <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Receipt Body */}
-            <div className="flex-1 overflow-y-auto p-8 bg-slate-50/50">
+            {/* Left Panel - Brand & Summary */}
+            <div className="md:w-2/5 bg-slate-50 border-r border-slate-100 p-8 md:p-10 flex flex-col justify-between shrink-0 relative overflow-hidden">
+              {/* Subtle background decoration */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
               
-              <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-                {/* Top Banner inside receipt */}
-                <div className="px-8 py-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-100">
-                  <div>
-                    <h3 className="text-2xl font-black text-emerald-600 tracking-tight">CliPad</h3>
-                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">by Optavel</p>
-                  </div>
-                  <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg font-bold text-sm">
-                    <CheckCircle className="w-4 h-4" />
-                    {isAdminAssigned ? 'Complimentary Upgrade' : 'Payment Successful'}
+              <div className="relative z-10">
+                <div className="mb-12">
+                  <img src="/logo.png" alt="Optavel" className="h-8 mb-4 object-contain" onError={(e) => e.target.style.display='none'} />
+                  <div className="flex items-center gap-2 text-slate-500 font-medium text-sm">
+                    <FileText className="w-4 h-4" /> CliPad Receipt
                   </div>
                 </div>
 
-                {/* Billing Info */}
-                <div className="px-8 py-6 grid grid-cols-1 sm:grid-cols-2 gap-8 border-b border-slate-100 bg-slate-50/50">
+                <div className="space-y-6">
                   <div>
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Billed To</div>
-                    <div className="font-bold text-slate-900 text-base">{transactionDetails.companyName || 'Valued Customer'}</div>
-                    <div className="text-slate-600 text-sm mt-1">{transactionDetails.email}</div>
+                    <h3 className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">Total Paid</h3>
+                    <div className="text-4xl font-black text-slate-900 tracking-tight">{formattedAmount}</div>
+                    <div className="flex items-center gap-1.5 mt-2 text-emerald-600 bg-emerald-50 w-fit px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      {isAdminAssigned ? 'Complimentary' : 'Successful'}
+                    </div>
                   </div>
-                  <div className="sm:text-right">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Date & Reference</div>
-                    <div className="font-medium text-slate-900 text-sm">{dateFormatted}</div>
-                    {!isAdminAssigned && transactionDetails.reference && (
-                      <div className="text-slate-500 text-xs mt-1 font-mono">{transactionDetails.reference}</div>
-                    )}
-                  </div>
-                </div>
 
-                {/* Line Items */}
-                <div className="px-8 py-8">
-                  <table className="w-full text-left border-collapse">
-                    <thead>
-                      <tr>
-                        <th className="pb-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200">Description</th>
-                        <th className="pb-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200 text-right">Amount</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className="py-6 border-b border-slate-100">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
-                              <Star className="w-5 h-5 text-indigo-500" />
-                            </div>
-                            <div>
-                              <div className="font-bold text-slate-900 text-base">CliPad {transactionDetails.plan.toUpperCase()} Plan</div>
-                              <div className="text-sm text-slate-500 mt-0.5">Workspace Subscription</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-6 border-b border-slate-100 text-right font-semibold text-slate-900 text-lg">
-                          {formattedAmount}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                  {/* Totals */}
-                  <div className="mt-6 flex justify-end">
-                    <div className="w-full max-w-xs space-y-3">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-slate-500 font-medium">Subtotal</span>
-                        <span className="font-semibold text-slate-900">{formattedAmount}</span>
+                  <div className="pt-6 border-t border-slate-200">
+                    <h3 className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-2">Billed To</h3>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+                        <Building2 className="w-5 h-5" />
                       </div>
-                      <div className="flex justify-between items-center pt-3 border-t border-slate-800 text-lg">
-                        <span className="font-bold text-slate-900">Total Paid</span>
-                        <span className="font-black text-slate-900">{formattedAmount}</span>
+                      <div>
+                        <div className="font-bold text-slate-900 leading-tight">{transactionDetails.companyName || 'Customer'}</div>
+                        <div className="text-slate-500 text-sm">{transactionDetails.email}</div>
                       </div>
                     </div>
                   </div>
                 </div>
-
               </div>
 
-              <div className="mt-6 text-center flex items-center justify-center gap-2 text-slate-400 text-xs font-medium">
-                <ShieldCheck className="w-4 h-4" />
-                Securely generated by CliPad Billing
+              <div className="relative z-10 mt-12 md:mt-0 flex items-center gap-2 text-slate-400 text-[11px] font-medium uppercase tracking-wider">
+                <ShieldCheck className="w-3.5 h-3.5" /> Securely Processed
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="p-6 bg-white border-t border-slate-100 flex justify-end gap-3 shrink-0">
-              <button
-                onClick={handlePrint}
-                className="px-6 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold flex items-center gap-2 transition-colors"
-              >
-                <Printer className="w-4 h-4" /> Download PDF
-              </button>
-              <button
-                onClick={onClose}
-                className="px-8 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors shadow-sm"
-              >
-                Close
-              </button>
+            {/* Right Panel - Details */}
+            <div className="md:w-3/5 p-8 md:p-10 flex flex-col h-full overflow-y-auto bg-white">
+              <div className="flex items-start justify-between mb-8">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900">Transaction Details</h2>
+                  <p className="text-sm text-slate-500 mt-1 flex items-center gap-2">
+                    <Calendar className="w-4 h-4" /> {dateFormatted} at {timeFormatted}
+                  </p>
+                </div>
+                <button onClick={onClose} className="p-2 -mr-2 -mt-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex-1 space-y-6">
+                {/* Details Grid */}
+                <div className="grid grid-cols-2 gap-6 p-5 rounded-2xl bg-slate-50 border border-slate-100">
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Receipt Number</div>
+                    <div className="font-mono text-sm font-semibold text-slate-900">{receiptNumber}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Reference ID</div>
+                    <div className="font-mono text-sm font-semibold text-slate-900 truncate pr-2">
+                      {isAdminAssigned ? 'ADMIN-UPGRADE' : transactionDetails.reference || '—'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Line Items */}
+                <div className="pt-2">
+                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">Description</h3>
+                  
+                  <div className="flex justify-between items-start py-4">
+                    <div className="flex gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
+                        <Star className="w-6 h-6 text-emerald-500" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-slate-900 text-base">CliPad {transactionDetails.plan.toUpperCase()} Plan</div>
+                        <div className="text-sm text-slate-500 mt-1">Workspace Subscription</div>
+                      </div>
+                    </div>
+                    <div className="font-bold text-slate-900 whitespace-nowrap">{formattedAmount}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions Footer */}
+              <div className="pt-8 mt-4 border-t border-slate-100 flex justify-end gap-3 shrink-0">
+                <button
+                  onClick={handlePrint}
+                  className="px-6 py-2.5 rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold flex items-center gap-2 transition-all shadow-sm"
+                >
+                  <Printer className="w-4 h-4" /> Download PDF
+                </button>
+                <button
+                  onClick={onClose}
+                  className="px-8 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold transition-all shadow-md shadow-slate-900/10"
+                >
+                  Done
+                </button>
+              </div>
             </div>
           </motion.div>
         </div>
       )}
     </AnimatePresence>
   );
+
+  // Use createPortal to mount the modal at the document body to bypass all z-index stacking contexts
+  if (!mounted) return null;
+  return createPortal(modalContent, document.body);
 }
