@@ -112,7 +112,7 @@ export default function AppLayout() {
         document.head.appendChild(link);
       }
       link.href = '/optavel-favicon.svg';
-      document.title = 'Observel Account';
+      document.title = 'Optavel Account';
       return; // Do not apply company branding on the Account main page
     }
 

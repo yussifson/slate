@@ -56,8 +56,8 @@ export default defineConfig({
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'Optalflow',
-        short_name: 'Optalflow',
+        name: 'Optavel',
+        short_name: 'Optavel',
         description: 'Multi-industry Operational OS',
         theme_color: '#ffffff',
         background_color: '#ffffff',
