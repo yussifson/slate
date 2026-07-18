@@ -120,8 +120,8 @@ export default function KnowledgeHealth() {
   const firstName = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'User';
 
   return (
-    <div className="min-h-[100dvh] bg-slate-50 dark:bg-background flex flex-col w-full page-enter">
-      <div className="flex-1 overflow-y-auto">
+    <div className="min-h-full bg-slate-50 dark:bg-background flex flex-col w-full page-enter">
+      <div className='flex-1'>
         <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-10">
           <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>

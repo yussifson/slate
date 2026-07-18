@@ -384,7 +384,7 @@ export default function SpaceDashboard() {
 
   if (!space) {
     return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background page-enter flex items-center justify-center text-foreground">
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-slate-50 dark:bg-background page-enter flex items-center justify-center text-foreground">
         <div className="text-center">
           <Layers className="w-12 h-12 text-gray-700 mx-auto mb-3" />
           <p className="text-muted-foreground">Space not found.</p>
@@ -405,7 +405,7 @@ export default function SpaceDashboard() {
 
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background page-enter text-foreground overflow-x-hidden pb-24 md:pb-8">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-slate-50 dark:bg-background page-enter text-foreground overflow-x-hidden pb-24 md:pb-8">
       {/* Nav */}
       <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-10 h-14 md:h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
         <div className="flex items-center gap-2 md:gap-3">

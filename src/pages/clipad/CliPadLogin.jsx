@@ -81,7 +81,7 @@ export default function CliPadLogin() {
         <meta name="description" content="Sign in to your enterprise-grade collaborative productivity workspace." />
         <link rel="icon" type="image/svg+xml" href="/clipad-logo.svg" />
       </Helmet>
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background flex flex-col items-center justify-center p-4 relative text-slate-900 dark:text-slate-100">
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-slate-50 dark:bg-background flex flex-col items-center justify-center p-4 relative text-slate-900 dark:text-slate-100">
         
         {/* Subtle sleek background pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(120,120,120,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(120,120,120,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />

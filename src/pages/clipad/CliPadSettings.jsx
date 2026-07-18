@@ -85,7 +85,7 @@ export default function CliPadSettings() {
   };
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-background page-enter text-foreground">
 
       <div className="max-w-6xl mx-auto px-4 md:px-10 py-6 md:py-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

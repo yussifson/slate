@@ -43,7 +43,7 @@ export default function CliPadSupport() {
 
   if (submitted) {
     return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 flex flex-col items-center justify-center p-6">
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 flex flex-col items-center justify-center p-6">
         <CheckCircle className="w-16 h-16 text-emerald-500 mb-6" />
         <h1 className="text-2xl font-black mb-2">Message Sent!</h1>
         <p className="text-slate-500 dark:text-muted-foreground text-center max-w-sm mb-8">
@@ -60,7 +60,7 @@ export default function CliPadSupport() {
   }
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 pb-16">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 pb-16">
       {/* Navbar */}
       <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-16 bg-white/70 dark:bg-background/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-border/50">
         <div className="flex items-center gap-3">

@@ -68,7 +68,7 @@ export default function EnterpriseDashboard() {
   const storagePercentage = ((metrics?.storageUsedGB || 0) / 50) * 100;
 
   return (
-    <div className="min-h-[100dvh] bg-slate-50 dark:bg-background pb-[80px] md:pb-8 flex flex-col overflow-x-hidden">
+    <div className="min-h-full bg-slate-50 dark:bg-background pb-[80px] md:pb-8 flex flex-col overflow-x-hidden">
       <div className="flex-1 p-4 md:p-6 w-full max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
