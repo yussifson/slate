@@ -13,6 +13,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import FeaturesCircle from '@/components/clipad/FeaturesCircle';
 import AdvancedFeaturesBento from '@/components/clipad/AdvancedFeaturesBento';
+import WithoutCliPadSection from '@/components/clipad/WithoutCliPadSection';
+import WithCliPadSection from '@/components/clipad/WithCliPadSection';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -522,6 +524,8 @@ export default function MeetLandingPage() {
       </section>
 
         <AdvancedFeaturesBento />
+        <WithoutCliPadSection />
+        <WithCliPadSection />
 
         <section id="pricing" className="py-24 px-6 md:px-12 max-w-6xl mx-auto">
           <div className="text-center mb-16">
