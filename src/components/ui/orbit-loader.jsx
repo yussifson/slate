@@ -13,10 +13,11 @@ export function OrbitLoader({ size = 'md', className = '', label = 'Loading', co
   let isRootAccount = false;
   let isClipad = false;
   try {
-    const domainData = getSubdomainAndBase();
-    isRootAccount = domainData.isRootAccount;
-    if (domainData.subdomain === 'clipad' || window.location.hostname.startsWith('clipad')) {
+    const host = window.location.hostname.toLowerCase();
+    if (host.includes('clipad')) {
       isClipad = true;
+    } else if (host.includes('account') || host === 'optavel.com' || host === 'www.optavel.com') {
+      isRootAccount = true;
     }
   } catch (e) {}
   
@@ -61,10 +62,11 @@ export function PageLoader({ label = 'Loading...' }) {
   let isRootAccount = false;
   let isClipad = false;
   try {
-    const domainData = getSubdomainAndBase();
-    isRootAccount = domainData.isRootAccount;
-    if (domainData.subdomain === 'clipad' || window.location.hostname.startsWith('clipad')) {
+    const host = window.location.hostname.toLowerCase();
+    if (host.includes('clipad')) {
       isClipad = true;
+    } else if (host.includes('account') || host === 'optavel.com' || host === 'www.optavel.com') {
+      isRootAccount = true;
     }
   } catch (e) {}
   
