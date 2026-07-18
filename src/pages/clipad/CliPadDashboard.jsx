@@ -35,7 +35,7 @@ import GlobalSearch from '@/components/clipad/search/GlobalSearch';
 
 function StatCard({ icon: Icon, value, label, trend, accentColor, bgColor, iconColor }) {
   return (
-    <div className={`relative overflow-hidden rounded-2xl border transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg shadow-sm flex flex-col justify-between p-5 bg-white dark:bg-card border-slate-200 dark:border-border hover:border-primary/40 dark:hover:border-primary/40`}>
+    <div className={`relative overflow-hidden rounded-2xl border transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg shadow-sm flex flex-col justify-between p-4 sm:p-5 bg-white dark:bg-card border-slate-200 dark:border-border hover:border-primary/40 dark:hover:border-primary/40`}>
       {/* Glowing top accent bar */}
       <div className={`absolute top-0 left-0 right-0 h-[3px] ${accentColor} rounded-t-2xl`} />
       {/* Large faint background icon */}
@@ -345,11 +345,11 @@ export default function CliPadDashboard() {
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mb-8 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-          <StatCard icon={Calendar} accentColor="bg-indigo-500" bgColor="bg-indigo-50 dark:bg-indigo-500/10" iconColor="text-indigo-500" value={stats.meetings} label="Meetings this week" trend={12} />
-          <StatCard icon={Camera} accentColor="bg-rose-500" bgColor="bg-rose-50 dark:bg-rose-500/10" iconColor="text-rose-500" value={stats.recordings} label="Video recordings" trend={8} />
-          <StatCard icon={Target} accentColor="bg-cyan-500" bgColor="bg-cyan-50 dark:bg-cyan-500/10" iconColor="text-cyan-500" value={stats.actionItems} label="Open action items" />
-          <StatCard icon={TrendingUp} accentColor="bg-emerald-500" bgColor="bg-emerald-50 dark:bg-emerald-500/10" iconColor="text-emerald-500" value={`${stats.completionRate}%`} label="Completion rate" trend={5} />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 mb-8 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
+          <StatCard icon={Calendar} accentColor="bg-indigo-500" bgColor="bg-indigo-50 dark:bg-indigo-500/10" iconColor="text-indigo-500" value={stats.meetings} label="Meetings" trend={12} />
+          <StatCard icon={Camera} accentColor="bg-rose-500" bgColor="bg-rose-50 dark:bg-rose-500/10" iconColor="text-rose-500" value={stats.recordings} label="Videos" trend={8} />
+          <StatCard icon={Target} accentColor="bg-cyan-500" bgColor="bg-cyan-50 dark:bg-cyan-500/10" iconColor="text-cyan-500" value={stats.actionItems} label="Action Items" />
+          <StatCard icon={TrendingUp} accentColor="bg-emerald-500" bgColor="bg-emerald-50 dark:bg-emerald-500/10" iconColor="text-emerald-500" value={`${stats.completionRate}%`} label="Completed" trend={5} />
         </div>
 
         {/* Quick Actions — native mobile grid */}
