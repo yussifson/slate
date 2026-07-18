@@ -57,7 +57,7 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
     });
     
     if (error) {
-      // Fallback if RPC doesn't exist (e.g. before migration runs)
+      // Fallback if RPC doesn't exist
       if (error.message && (
         error.message.includes('function admin_create_user does not exist') || 
         error.message.includes('function gen_salt') || 
@@ -70,36 +70,35 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
            options: { data: { role: role, company_id: companyId, full_name: fullName, force_password_reset: forcePasswordReset } }
          });
          if (fallbackError) return { error: fallbackError };
+         
+         // Insert profile using the new session if available
+         if (fallbackData && fallbackData.session && fallbackData.user) {
+           const tempClient = createClient(supabaseUrl, supabaseAnonKey, {
+             global: { headers: { Authorization: `Bearer ${fallbackData.session.access_token}` } },
+             auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'supabase.temp.token' }
+           });
+           
+           const { error: profileError } = await tempClient.from('profiles').insert([
+             {
+               id: fallbackData.user.id,
+               company_id: companyId,
+               role: role,
+               email: cleanEmail,
+               full_name: fullName
+             }
+           ]);
+           
+           if (profileError) {
+             console.error(`Error creating ${role} profile during fallback:`, profileError);
+           }
+         }
          return { user: fallbackData.user };
       }
       return { error };
     }
     
-    // If email confirmations are disabled, signUp returns a valid session.
-    // We use this newly created session to bypass RLS and insert their profile.
-    if (data && data.session && data.user) {
-      const tempClient = createClient(supabaseUrl, supabaseAnonKey, {
-        global: { headers: { Authorization: `Bearer ${data.session.access_token}` } },
-        auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'supabase.temp.token' }
-      });
-      
-      const { error: profileError } = await tempClient.from('profiles').insert([
-        {
-          id: data.user.id,
-          company_id: companyId,
-          role: role,
-          email: cleanEmail,
-          full_name: fullName
-        }
-      ]);
-      
-      if (profileError) {
-        console.error(`Error creating ${role} profile:`, profileError);
-      }
-      return { user: data.user, error: null };
-    }
-    
-    // For RPC success, the profile is created within the RPC
+    // For RPC success, the profile is assumed to be created within the RPC 
+    // or by a trigger on auth.users based on user_metadata.
     return { user: { id: newUserId }, error: null };
   } catch (err) {
     console.error(`Exception during ${role} registration:`, err);
