@@ -31,7 +31,7 @@ export default function ClipadTopNav() {
   ];
 
   return (
-    <nav className="sticky top-0 z-40 shrink-0 hidden lg:flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
+    <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-4 md:px-6 lg:px-8 h-14 md:h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
       <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
         <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center border border-slate-200 dark:border-border shadow-sm text-primary">
           <CliPadLogo size={22} />
@@ -39,18 +39,20 @@ export default function ClipadTopNav() {
         <span className="text-lg font-bold tracking-tight hidden sm:block">CliPad</span>
       </div>
       
-      <div className="flex-1 max-w-md mx-4 flex justify-center hidden md:flex">
+      {/* Search — tablet and up */}
+      <div className="hidden md:flex flex-1 max-w-xs lg:max-w-md mx-4 justify-center">
         <GlobalSearch />
       </div>
 
-      <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
+      <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+        {/* Nav links — desktop only */}
         {navItems.map(item => {
           const isActive = location.pathname.startsWith(item.path);
           return (
             <button 
               key={item.path}
               onClick={() => navigate(item.path)} 
-              className={`hidden sm:block px-3 py-2 text-sm font-medium rounded-lg transition-colors shrink-0 ${isActive ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white'}`}
+              className={`hidden lg:block px-3 py-2 text-sm font-medium rounded-lg transition-colors shrink-0 ${isActive ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white'}`}
             >
               {item.label}
             </button>
@@ -59,19 +61,18 @@ export default function ClipadTopNav() {
         {isAdmin(user) && (
             <>
               {user?.clipad_plan === 'enterprise' ? (
-                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/enterprise' : '/clipad/enterprise')} className={`hidden md:block px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname.includes('/enterprise') ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white'}`}>Enterprise</button>
+                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/enterprise' : '/clipad/enterprise')} className={`hidden lg:block px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname.includes('/enterprise') ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white'}`}>Enterprise</button>
               ) : (
-                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/analytics' : '/clipad/analytics')} className={`hidden md:block px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname.includes('/analytics') ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white'}`}>Analytics</button>
+                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/analytics' : '/clipad/analytics')} className={`hidden lg:block px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname.includes('/analytics') ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white'}`}>Analytics</button>
               )}
             </>
         )}
         
-        <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden md:block" />
+        <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden lg:block" />
         
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <ThemeToggle />
         </div>
-        
         
         <NotificationCenter />
 
