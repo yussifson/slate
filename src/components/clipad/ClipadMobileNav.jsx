@@ -101,17 +101,25 @@ export default function ClipadMobileNav() {
 
             {/* Floating Panel */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.85, y: 10 }}
+              initial={{ opacity: 0, scale: 0.88, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.85, y: 10 }}
-              transition={{ type: "spring", damping: 22, stiffness: 350 }}
-              className="lg:hidden fixed bottom-[80px] right-3 z-[60] w-[200px] bg-white/95 dark:bg-card/95 backdrop-blur-2xl rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.18)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.4)] border border-slate-200/60 dark:border-white/10 overflow-hidden"
+              exit={{ opacity: 0, scale: 0.88, y: 8 }}
+              transition={{ type: "spring", damping: 24, stiffness: 380 }}
+              className="lg:hidden fixed bottom-[80px] right-3 z-[60] w-[230px] overflow-hidden"
+              style={{
+                borderRadius: '18px',
+                background: 'rgba(255,255,255,0.88)',
+                backdropFilter: 'blur(28px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(28px) saturate(180%)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8)',
+                border: '1px solid rgba(0,0,0,0.08)',
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* User Info */}
               {user && (
-                <div className="flex items-center gap-2.5 px-3 py-3 border-b border-slate-100 dark:border-border">
-                  <div className="w-8 h-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
+                <div className="flex items-center gap-2.5 px-3.5 py-3 border-b border-black/[0.06] dark:border-white/[0.06]">
+                  <div className="w-8 h-8 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden shadow-sm">
                     {user.avatar_url || user?.user_metadata?.avatar_url ? (
                       <img src={user.avatar_url || user.user_metadata.avatar_url} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -198,7 +206,7 @@ export default function ClipadMobileNav() {
               </div>
 
               {/* Sign Out */}
-              <div className="border-t border-slate-100 dark:border-border mx-2 mb-1" />
+              <div className="border-t border-black/[0.06] dark:border-white/[0.06] mx-2 mb-1" />
               <button
                 onClick={async () => { await logout(); navigate('/login'); }}
                 className="w-full flex items-center gap-2.5 px-3 py-2.5 mb-1 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors rounded-xl mx-auto"
