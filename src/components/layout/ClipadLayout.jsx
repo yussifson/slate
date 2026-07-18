@@ -8,6 +8,7 @@ import ClipadChat from '@/pages/clipad/ClipadChat';
 import { MessageSquare, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CliPadCommandPalette from '@/components/clipad/CliPadCommandPalette';
+import PullToRefresh from '@/components/ui/PullToRefresh';
 
 import DockResizer from './DockResizer';
 
@@ -53,7 +54,7 @@ export default function ClipadLayout() {
       <div className="flex flex-col flex-1 w-0 overflow-hidden relative">
         {!isImmersive && <ClipadTopNav />}
         
-        <div className="flex-1 flex flex-col h-full overflow-y-auto relative z-30 page-enter pb-[80px] md:pb-0">
+        <PullToRefresh className="relative z-30 page-enter pb-[80px] md:pb-0">
           {location.pathname === '/chat' && isChatDocked ? (
             <div className="flex items-center justify-center h-full text-slate-500 flex-col gap-3">
               <MessageSquare className="w-8 h-8 opacity-50" />
@@ -68,7 +69,7 @@ export default function ClipadLayout() {
               <Outlet />
             </React.Suspense>
           )}
-        </div>
+        </PullToRefresh>
       </div>
 
       {/* Right Docked Portal for Orbit AI & Chat */}

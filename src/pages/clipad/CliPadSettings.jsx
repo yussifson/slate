@@ -11,6 +11,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import CliPadBilling from './CliPadBilling';
 import CliPadTeamSettings from '@/components/clipad/CliPadTeamSettings';
+import { Camera as CapCamera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 export default function CliPadSettings() {
   const { user, logout } = useAuth();
@@ -82,6 +83,26 @@ export default function CliPadSettings() {
   const handleSignOut = async () => {
     await logout();
     window.location.href = '/login';
+  };
+
+  const handleUpdateAvatar = async () => {
+    try {
+      const image = await CapCamera.getPhoto({
+        quality: 90,
+        allowEditing: true,
+        resultType: CameraResultType.Base64,
+        source: CameraSource.Prompt
+      });
+
+      if (image.base64String) {
+        toast({ title: "Photo selected", description: "Profile photo ready for upload to storage." });
+        // Typically here: const { data } = await supabase.storage.from('avatars').upload(...)
+      }
+    } catch (e) {
+      if (e.message !== 'User cancelled photos app') {
+        toast({ title: "Camera error", description: e.message, variant: 'destructive' });
+      }
+    }
   };
 
   return (
@@ -169,11 +190,16 @@ export default function CliPadSettings() {
             <div className="bg-card border border-border rounded-2xl p-4 md:p-8">
               <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2"><User className="w-5 h-5 text-primary" /> Account Profile</h2>
               <div className="flex items-center gap-6 mb-8">
-                <img
-                  src={user?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${user?.full_name || user?.email}`}
-                  className="w-20 h-20 rounded-2xl bg-secondary object-cover shadow-sm"
-                  alt="Profile"
-                />
+                <div className="relative group cursor-pointer" onClick={handleUpdateAvatar}>
+                  <img
+                    src={user?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${user?.full_name || user?.email}`}
+                    className="w-20 h-20 rounded-2xl bg-secondary object-cover shadow-sm group-hover:opacity-70 transition-opacity"
+                    alt="Profile"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 rounded-2xl">
+                    <Camera className="w-6 h-6 text-white drop-shadow-md" />
+                  </div>
+                </div>
                 <div>
                   <h3 className="text-xl font-bold text-foreground">{user?.full_name || 'User'}</h3>
                   <p className="text-muted-foreground">{user?.email}</p>

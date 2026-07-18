@@ -12,6 +12,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 export default function NotificationCenter() {
   const { user } = useAuth();
@@ -38,12 +39,30 @@ export default function NotificationCenter() {
               setNotifications(prev => [payload.new, ...prev]);
               setUnreadCount(prev => prev + 1);
               
-              // Play native-feeling notification sound
+              // Play native-feeling notification sound and trigger OS notification
               try {
+                // Trigger native OS notification
+                LocalNotifications.schedule({
+                  notifications: [
+                    {
+                      title: payload.new.title || 'New Notification',
+                      body: payload.new.message || '',
+                      id: new Date().getTime(),
+                      schedule: { at: new Date(Date.now() + 100) },
+                      sound: null, // Default OS notification sound
+                      actionTypeId: '',
+                      extra: null
+                    }
+                  ]
+                });
+                
+                // Fallback / Web Audio
                 const audio = new Audio('https://cdn.freesound.org/previews/415/415065_7811904-lq.mp3');
                 audio.volume = 0.5;
                 audio.play().catch(e => console.log('Audio playback blocked by browser:', e));
-              } catch (e) {}
+              } catch (e) {
+                console.error('Local Notification Error:', e);
+              }
 
               toast({
                 title: payload.new.title,
