@@ -17,6 +17,18 @@ export default function TimezoneFairnessWidget({ workspaceId }) {
   const loadFairnessData = async () => {
     setLoading(true);
 
+    // Verify there are actually meetings before using any fairness data
+    const { count, error: countError } = await supabase
+      .from('clipad_meeting_records')
+      .select('*', { count: 'exact', head: true })
+      .eq('company_id', workspaceId);
+
+    if (countError || count === 0) {
+      setFairnessData({ fairness_score: null, ai_analysis: null, meetings_analyzed: 0 });
+      setLoading(false);
+      return;
+    }
+
     // Try cached result first
     const { data: cached } = await supabase
       .from('clipad_timezone_fairness')

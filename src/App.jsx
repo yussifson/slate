@@ -1260,7 +1260,7 @@ function App() {
               <ErrorBoundary>
                 {isMeetDomain ? (
                   /* â”€â”€ MEET DOMAIN: completely isolated Suspense â€” NO Slate loader â”€â”€ */
-                  <React.Suspense fallback={<PageLoader label="Preparing Workspace..." />}>
+                  <React.Suspense fallback={null}>
                     <Routes>
                       <Route path="/" element={<MeetLandingPage />} />
                       <Route path="/login" element={<CliPadLogin />} />
