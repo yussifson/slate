@@ -219,7 +219,7 @@ export default function PricingTags() {
                     )}
                   </TableCell>
                   <TableCell>
-                    <span className="capitalize px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-md text-xs font-medium">
+                    <span className="capitalize px-3 py-1 bg-slate-100 dark:bg-secondary text-slate-500 dark:text-muted-foreground rounded-md text-xs font-medium">
                       {company.subscription_plan || 'N/A'}
                     </span>
                   </TableCell>
@@ -305,7 +305,7 @@ export default function PricingTags() {
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="font-bold text-lg text-primary">{tag.name}</h3>
                   <div className="flex gap-2">
-                    <button onClick={() => { setEditingTag(tag); setFormData(tag); setIsDialogOpen(true); }} className="p-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded text-slate-600 dark:text-slate-400"><Pencil className="w-3.5 h-3.5"/></button>
+                    <button onClick={() => { setEditingTag(tag); setFormData(tag); setIsDialogOpen(true); }} className="p-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-secondary dark:hover:bg-slate-700 rounded text-slate-600 dark:text-muted-foreground"><Pencil className="w-3.5 h-3.5"/></button>
                     <button onClick={() => handleDeleteTag(tag.id)} className="p-1.5 bg-red-100 hover:bg-red-200 text-red-600 rounded"><Trash2 className="w-3.5 h-3.5"/></button>
                   </div>
                 </div>
@@ -316,7 +316,7 @@ export default function PricingTags() {
               </div>
             ))}
             {pricingTags.length === 0 && (
-              <div className="col-span-3 text-center py-12 text-muted-foreground bg-slate-50 dark:bg-slate-900 rounded-lg">
+              <div className="col-span-3 text-center py-12 text-muted-foreground bg-slate-50 dark:bg-card rounded-lg">
                 No custom pricing tiers created yet.
               </div>
             )}

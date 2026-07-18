@@ -253,7 +253,7 @@ Output ONLY one of these exact strings based on the rules: Approved, Rejected, C
                         app.status === 'Approved' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10' : 
                         app.status === 'Rejected' ? 'bg-red-50 text-red-700 dark:bg-red-500/10' : 
                         app.status === 'Conditionally Approved' ? 'bg-amber-50 text-amber-700 dark:bg-amber-500/10' : 
-                        'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                        'bg-slate-100 text-slate-700 dark:bg-secondary dark:text-foreground'
                       }`}
                     >
                       <option value="Pending Review">Pending Review</option>

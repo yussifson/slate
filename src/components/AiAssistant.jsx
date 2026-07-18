@@ -869,7 +869,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  >
  {/* Mobile Drag Handle */}
  <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
- <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800" />
+ <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-secondary" />
  </div>
  
  {/* Main Content Wrapper (Needs flex row on desktop, flex col on mobile if history is open) */}
@@ -933,7 +933,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
    <p className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 leading-none">{t("orbit", "OrbitFlow AI")}</p>
    {chatMode !== 'chat' && <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 font-bold uppercase tracking-wider">{chatMode}</span>}
   </div>
-  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium">{t("your_intelligent_copilot", "Your intelligent copilot")}</p>
+  <p className="text-[11px] text-slate-500 dark:text-muted-foreground mt-1 font-medium">{t("your_intelligent_copilot", "Your intelligent copilot")}</p>
  </div>
  </div>
  <div className="flex items-center gap-1 shrink-0">
@@ -974,7 +974,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div className={`px-4 py-3 rounded-2xl text-[13px] leading-relaxed max-w-[85%] shadow-sm ${
  msg.role === 'user'
  ? 'bg-primary text-primary-foreground rounded-tr-sm'
- : 'bg-white dark:bg-[#131A2B] border border-slate-100 dark:border-white/5 rounded-tl-sm text-slate-700 dark:text-slate-300'
+ : 'bg-white dark:bg-[#131A2B] border border-slate-100 dark:border-white/5 rounded-tl-sm text-slate-700 dark:text-foreground'
  }`}>
  <FormatMessage content={msg.content} />
  
@@ -988,7 +988,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  </button>
  <button 
  onClick={() => cancelPendingAction(i)}
- className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-primary/40  tracking-[0.04em]"
+ className="bg-slate-100 dark:bg-secondary hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-foreground px-3 py-1.5 rounded-xl text-xs font-medium transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-primary/40  tracking-[0.04em]"
  >
  {t("cancel", "Cancel")}
  </button>
@@ -1056,7 +1056,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  onChange={e => setInput(e.target.value)}
  placeholder={isRecording ? 'Listening... speak now' : (chatMode === 'flow' ? 'Design a workflow...' : chatMode === 'automation' ? 'Build an automation...' : 'Ask anything or give a command...')}
  rows={1}
- className={`w-full bg-transparent border-none focus:ring-0 resize-none px-4 pt-4 pb-2 text-[13px] text-slate-800 dark:text-slate-200 outline-none leading-relaxed min-h-[56px] max-h-[200px] overflow-y-auto ${
+ className={`w-full bg-transparent border-none focus:ring-0 resize-none px-4 pt-4 pb-2 text-[13px] text-slate-800 dark:text-foreground outline-none leading-relaxed min-h-[56px] max-h-[200px] overflow-y-auto ${
  isRecording ? 'placeholder:text-red-400 placeholder:animate-pulse' : 'placeholder:text-slate-400 dark:placeholder:text-slate-500'
  }`}
  disabled={isLoading}

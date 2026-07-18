@@ -85,7 +85,7 @@ Respond professionally with clear metrics, bullet points, and strategic advice. 
                 onChange={e => setQuery(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleAskAI()}
                 placeholder="e.g. 'What is our current active user engagement rate?'"
-                className="flex-1 bg-slate-50 dark:bg-card/50 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent outline-none transition-all text-base placeholder:text-slate-400"
+                className="flex-1 bg-slate-50 dark:bg-card/50 border border-slate-200 dark:border-border rounded-2xl px-6 py-4 focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent outline-none transition-all text-base placeholder:text-slate-400"
               />
               <button 
                 onClick={handleAskAI}
@@ -97,8 +97,8 @@ Respond professionally with clear metrics, bullet points, and strategic advice. 
             </div>
 
             {response && (
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-8 p-6 bg-slate-50 dark:bg-card/50 rounded-2xl border border-slate-200 dark:border-slate-800">
-                <p className="whitespace-pre-wrap text-base leading-relaxed text-slate-700 dark:text-slate-300">{response}</p>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-8 p-6 bg-slate-50 dark:bg-card/50 rounded-2xl border border-slate-200 dark:border-border">
+                <p className="whitespace-pre-wrap text-base leading-relaxed text-slate-700 dark:text-foreground">{response}</p>
               </motion.div>
             )}
           </div>
@@ -111,7 +111,7 @@ Respond professionally with clear metrics, bullet points, and strategic advice. 
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2.5 bg-[var(--primary)]/10 rounded-xl text-[var(--primary)]"><AlertTriangle className="w-5 h-5" /></div>
-                  <h4 className="font-semibold text-slate-800 dark:text-slate-200">Churn Risk Predictor</h4>
+                  <h4 className="font-semibold text-slate-800 dark:text-foreground">Churn Risk Predictor</h4>
                 </div>
                 <p className="text-4xl font-black text-slate-900 dark:text-white mt-4 tracking-tight">2</p>
                 <p className="text-sm font-medium text-muted-foreground mt-2">Tenants showing severe drop in login frequency</p>
@@ -125,7 +125,7 @@ Respond professionally with clear metrics, bullet points, and strategic advice. 
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2.5 bg-[var(--primary)]/10 rounded-xl text-[var(--primary)]"><Activity className="w-5 h-5" /></div>
-                  <h4 className="font-semibold text-slate-800 dark:text-slate-200">Platform Health</h4>
+                  <h4 className="font-semibold text-slate-800 dark:text-foreground">Platform Health</h4>
                 </div>
                 <p className="text-4xl font-black text-[var(--primary)] mt-4 tracking-tight">Optimal</p>
                 <p className="text-sm font-medium text-muted-foreground mt-2">Server load and API limits are well within quotas</p>
@@ -143,11 +143,11 @@ Respond professionally with clear metrics, bullet points, and strategic advice. 
               Security Posture
             </h3>
             <div className="space-y-5 text-sm">
-              <div className="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-border">
                 <span className="font-medium text-muted-foreground">Admin Accounts</span>
-                <span className="font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">4</span>
+                <span className="font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-secondary px-3 py-1 rounded-full">4</span>
               </div>
-              <div className="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-border">
                 <span className="font-medium text-muted-foreground">2FA Compliance</span>
                 <span className="font-bold text-[var(--primary)] bg-[var(--primary)]/10 px-3 py-1 rounded-full">80%</span>
               </div>

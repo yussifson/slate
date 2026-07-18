@@ -43,7 +43,7 @@ const TriggerNode = ({ data }) => {
         <span className="text-xs font-semibold text-indigo-700 dark:text-indigo-400 uppercase tracking-wider tracking-[0.04em]">Database Trigger</span>
       </div>
       <div className="p-4 flex flex-col gap-2">
-        <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+        <span className="text-sm font-semibold text-slate-800 dark:text-foreground">
           {data.label || 'Select an Event'}
         </span>
       </div>
@@ -72,7 +72,7 @@ const ActionNode = ({ data }) => {
         <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider tracking-[0.04em]">Action</span>
       </div>
       <div className="p-4 flex flex-col gap-2">
-        <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+        <span className="text-sm font-semibold text-slate-800 dark:text-foreground">
           {data.label || 'Select an Action'}
         </span>
       </div>
@@ -91,7 +91,7 @@ const ConditionNode = ({ data }) => {
         <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wider tracking-[0.04em]">Condition</span>
       </div>
       <div className="p-4 flex flex-col gap-2">
-        <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+        <span className="text-sm font-semibold text-slate-800 dark:text-foreground">
           {data.label || 'If / Else'}
         </span>
       </div>
@@ -112,7 +112,7 @@ const DelayNode = ({ data }) => {
         <span className="text-xs font-semibold text-blue-700 dark:text-blue-400 uppercase tracking-wider tracking-[0.04em]">Delay</span>
       </div>
       <div className="p-4 flex flex-col gap-2">
-        <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+        <span className="text-sm font-semibold text-slate-800 dark:text-foreground">
           {data.label || 'Wait'}
         </span>
       </div>
@@ -141,7 +141,7 @@ const Sidebar = () => {
       <div>
         <h3 className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em]">Triggers</h3>
         <div 
-          className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-indigo-200 dark:border-indigo-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-indigo-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+          className="bg-white dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8 border-indigo-200 dark:border-indigo-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-indigo-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
           onDragStart={(event) => onDragStart(event, 'triggerNode')}
           draggable
         >
@@ -155,7 +155,7 @@ const Sidebar = () => {
         <h3 className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em]">Logic</h3>
         <div className="space-y-2">
           <div 
-            className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 dark:border-amber-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-amber-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+            className="bg-white dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 dark:border-amber-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-amber-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             onDragStart={(event) => onDragStart(event, 'conditionNode')}
             draggable
           >
@@ -163,7 +163,7 @@ const Sidebar = () => {
             <span className="text-sm font-medium">Condition (If/Else)</span>
           </div>
           <div 
-            className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-blue-200 dark:border-blue-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-blue-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+            className="bg-white dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8 border-blue-200 dark:border-blue-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-blue-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             onDragStart={(event) => onDragStart(event, 'delayNode')}
             draggable
           >
@@ -177,7 +177,7 @@ const Sidebar = () => {
         <h3 className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em]">Actions</h3>
         <div className="space-y-2">
           <div 
-            className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+            className="bg-white dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             onDragStart={(event) => onDragStart(event, 'actionNode', 'send_notification')}
             draggable
           >
@@ -185,7 +185,7 @@ const Sidebar = () => {
             <span className="text-sm font-medium">Send Notification</span>
           </div>
           <div 
-            className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+            className="bg-white dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             onDragStart={(event) => onDragStart(event, 'actionNode', 'create_task')}
             draggable
           >
@@ -193,7 +193,7 @@ const Sidebar = () => {
             <span className="text-sm font-medium">Create Task</span>
           </div>
           <div 
-            className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+            className="bg-white dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             onDragStart={(event) => onDragStart(event, 'actionNode', 'webhook')}
             draggable
           >
@@ -201,7 +201,7 @@ const Sidebar = () => {
             <span className="text-sm font-medium">HTTP Webhook</span>
           </div>
           <div 
-            className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-all duration-200"
+            className="bg-white dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-all duration-200"
             onDragStart={(event) => onDragStart(event, 'actionNode', 'sendgrid')}
             draggable
           >
@@ -209,7 +209,7 @@ const Sidebar = () => {
             <span className="text-sm font-medium">SendGrid Email</span>
           </div>
           <div 
-            className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-all duration-200"
+            className="bg-white dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-all duration-200"
             onDragStart={(event) => onDragStart(event, 'actionNode', 'twilio')}
             draggable
           >
@@ -261,7 +261,7 @@ const ExecutionLogs = ({ companyId, setMode }) => {
                 <span className="text-sm font-semibold">{log.automations?.name}</span>
                 <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{new Date(log.created_at).toLocaleString()}</span>
               </div>
-              <div className="text-xs font-mono bg-slate-100 dark:bg-slate-800 p-2 rounded-md mt-2 tracking-[0.04em]">
+              <div className="text-xs font-mono bg-slate-100 dark:bg-secondary p-2 rounded-md mt-2 tracking-[0.04em]">
                 {Array.isArray(log.logs) ? log.logs.join(' -> ') : 'No logs recorded.'}
               </div>
             </div>
@@ -286,7 +286,7 @@ const VariablePicker = ({ triggerTable, onSelect }) => {
         {'{ }'} Insert Variable
       </Button>
       {isOpen && (
-        <div className="absolute z-50 mt-1 w-48 rounded-lg bg-white dark:bg-slate-800 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 max-h-48 overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="absolute z-50 mt-1 w-48 rounded-lg bg-white dark:bg-secondary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 max-h-48 overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="py-1">
             {columns.map((col) => (
               <button
@@ -770,7 +770,7 @@ export default function Automations() {
                       </CardHeader>
                       <CardContent className="flex-1 flex flex-col justify-center gap-3">
                         {rule.trigger_key === 'webhook_inbound' ? (
-                          <div className="flex flex-col gap-2 w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 text-[10px]">
+                          <div className="flex flex-col gap-2 w-full bg-slate-100 dark:bg-secondary p-2 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 text-[10px]">
                             <span className="font-semibold text-[#71717a] dark:text-gray-400">Webhook URL:</span>
                             <div className="flex items-center gap-2 w-full">
                               <code className="flex-1 truncate select-all">https://wmabgiafwamxkcgxyhee.supabase.co/functions/v1/automation-webhook?rule_id={rule.id}</code>
@@ -834,7 +834,7 @@ export default function Automations() {
                     className="bg-slate-50/50 dark:bg-background"
                   >
                     <Background color="#94a3b8" gap={24} size={2} />
-                    <Controls className="bg-white dark:bg-slate-800 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] border-[0.5px] border-black/9 dark:border-white/8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+                    <Controls className="bg-white dark:bg-secondary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] border-[0.5px] border-black/9 dark:border-white/8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
                     
                     {/* Floating Info Panel */}
                     <Panel position="top-left" className="bg-white/90 dark:bg-card/90 p-3 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] border-[0.5px] border-black/9 dark:border-white/8 backdrop-blur-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -854,7 +854,7 @@ export default function Automations() {
                         exit={{ opacity: 0, x: 50 }}
                         className="absolute right-4 top-4 w-80 bg-white dark:bg-card rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 overflow-hidden z-50 flex flex-col max-h-[90%] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
                       >
-                        <div className="p-4 border-b bg-slate-50 dark:bg-slate-800 flex justify-between items-center">
+                        <div className="p-4 border-b bg-slate-50 dark:bg-secondary flex justify-between items-center">
                           <h3 className="font-semibold">
                             {selectedNode.type === 'triggerNode' ? 'Configure Trigger' : 'Configure Action'}
                           </h3>
@@ -1021,7 +1021,7 @@ export default function Automations() {
       {testRunLogs && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white dark:bg-card rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8">
-            <div className="p-4 border-b bg-slate-50 dark:bg-slate-800 flex justify-between items-center">
+            <div className="p-4 border-b bg-slate-50 dark:bg-secondary flex justify-between items-center">
               <h3 className="font-semibold text-lg flex items-center gap-2">
                 <Play className="w-5 h-5 text-emerald-500 fill-emerald-500" /> Test Run Sandbox
               </h3>
@@ -1031,13 +1031,13 @@ export default function Automations() {
             </div>
             <div className="p-6 max-h-[60vh] overflow-y-auto space-y-4 font-mono text-sm">
               {testRunLogs.map((log, idx) => (
-                <div key={idx} className="flex gap-4 border-b border-slate-100 dark:border-slate-800 pb-2">
+                <div key={idx} className="flex gap-4 border-b border-slate-100 dark:border-border pb-2">
                   <span className="text-slate-400 shrink-0">{new Date(log.time).toLocaleTimeString()}</span>
-                  <span className={log.msg.includes('ERROR') ? 'text-rose-500 font-semibold' : 'text-slate-700 dark:text-slate-300'}>{log.msg}</span>
+                  <span className={log.msg.includes('ERROR') ? 'text-rose-500 font-semibold' : 'text-slate-700 dark:text-foreground'}>{log.msg}</span>
                 </div>
               ))}
             </div>
-            <div className="p-4 border-t bg-slate-50 dark:bg-slate-800 flex justify-end">
+            <div className="p-4 border-t bg-slate-50 dark:bg-secondary flex justify-end">
               <Button onClick={() => setTestRunLogs(null)}>Close</Button>
             </div>
           </div>

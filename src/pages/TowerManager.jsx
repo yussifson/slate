@@ -95,19 +95,19 @@ export default function TowerManager() {
           <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-4 mb-4">
             Branch Manager
           </h1>
-          <p className="text-lg text-slate-600 dark:text-slate-400 font-medium">Govern and monitor all your <span className="font-bold text-primary dark:text-primary capitalize">{industry}</span> branches from a unified command center.</p>
+          <p className="text-lg text-slate-600 dark:text-muted-foreground font-medium">Govern and monitor all your <span className="font-bold text-primary dark:text-primary capitalize">{industry}</span> branches from a unified command center.</p>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center gap-3 z-10 relative mt-4 md:mt-0">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="h-12 px-6 rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-[#111827] text-slate-700 dark:text-slate-200 font-semibold gap-2 w-full sm:w-auto hover:bg-slate-50 dark:hover:bg-slate-800">
+              <Button variant="outline" className="h-12 px-6 rounded-lg border-slate-300 dark:border-border bg-white dark:bg-[#111827] text-slate-700 dark:text-foreground font-semibold gap-2 w-full sm:w-auto hover:bg-slate-50 dark:hover:bg-slate-800">
                 <Building2 className="w-4 h-4 text-primary" /> 
                 Switch Branch
                 <ChevronDown className="w-4 h-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[240px] rounded-xl shadow-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0A101D]">
+            <DropdownMenuContent align="end" className="w-[240px] rounded-xl shadow-xl border-slate-200 dark:border-border bg-white dark:bg-[#0A101D]">
               {towers.length === 0 ? (
                 <div className="p-3 text-sm text-slate-500 text-center">No branches available</div>
               ) : (
@@ -131,19 +131,19 @@ export default function TowerManager() {
                 <Plus className="w-5 h-5" /> Deploy New Branch
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-card shadow-2xl rounded-2xl overflow-hidden">
+            <DialogContent className="sm:max-w-md border border-slate-200 dark:border-border bg-white dark:bg-card shadow-2xl rounded-2xl overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-primary"></div>
               <DialogHeader className="pt-4">
                 <DialogTitle className="text-2xl font-bold dark:text-white">New {industry.charAt(0).toUpperCase() + industry.slice(1)} Branch</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleCreateTower} className="space-y-6 py-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Branch Name</label>
+                  <label className="text-sm font-semibold text-slate-700 dark:text-foreground">Branch Name</label>
                   <Input 
                     value={newTowerName}
                     onChange={(e) => setNewTowerName(e.target.value)}
                     placeholder="e.g. Downtown Store, North Campus..."
-                    className="h-12 bg-slate-50 dark:bg-background border-slate-300 dark:border-slate-700 rounded-lg focus-visible:ring-emerald-500"
+                    className="h-12 bg-slate-50 dark:bg-background border-slate-300 dark:border-border rounded-lg focus-visible:ring-emerald-500"
                     autoFocus
                   />
                 </div>
@@ -158,9 +158,9 @@ export default function TowerManager() {
 
       {/* Enterprise Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 relative z-10">
-        <div className="bg-white dark:bg-[#111827] rounded-xl p-6 shadow-sm border-[0.5px] border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#111827] rounded-xl p-6 shadow-sm border-[0.5px] border-slate-200 dark:border-border hover:shadow-md transition-shadow">
           <div className="flex items-start justify-between mb-2">
-            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Active Branches</p>
+            <p className="text-sm font-semibold text-slate-500 dark:text-muted-foreground">Active Branches</p>
             <div className="p-1.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-md">
               <Building2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             </div>
@@ -168,9 +168,9 @@ export default function TowerManager() {
           <h3 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{loading ? '-' : towers.length}</h3>
         </div>
         
-        <div className="bg-white dark:bg-[#111827] rounded-xl p-6 shadow-sm border-[0.5px] border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#111827] rounded-xl p-6 shadow-sm border-[0.5px] border-slate-200 dark:border-border hover:shadow-md transition-shadow">
           <div className="flex items-start justify-between mb-2">
-            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Global Revenue</p>
+            <p className="text-sm font-semibold text-slate-500 dark:text-muted-foreground">Global Revenue</p>
             <div className="p-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-md">
               <DollarSign className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </div>
@@ -178,9 +178,9 @@ export default function TowerManager() {
           <h3 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{aggregates ? `$${aggregates.totalRevenue.toLocaleString()}` : '-'}</h3>
         </div>
 
-        <div className="bg-white dark:bg-[#111827] rounded-xl p-6 shadow-sm border-[0.5px] border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#111827] rounded-xl p-6 shadow-sm border-[0.5px] border-slate-200 dark:border-border hover:shadow-md transition-shadow">
           <div className="flex items-start justify-between mb-2">
-            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Total Network Users</p>
+            <p className="text-sm font-semibold text-slate-500 dark:text-muted-foreground">Total Network Users</p>
             <div className="p-1.5 bg-purple-50 dark:bg-purple-900/20 rounded-md">
               <Users className="w-4 h-4 text-purple-600 dark:text-purple-400" />
             </div>
@@ -190,7 +190,7 @@ export default function TowerManager() {
       </div>
 
       {/* Branch List */}
-      <div className="relative z-10 bg-white dark:bg-[#111827] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 md:p-8">
+      <div className="relative z-10 bg-white dark:bg-[#111827] rounded-2xl border border-slate-200 dark:border-border shadow-sm p-6 md:p-8">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3">
           Your Branch Network
         </h2>
@@ -200,9 +200,9 @@ export default function TowerManager() {
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
           </div>
         ) : towers.length === 0 ? (
-          <div className="text-center p-20 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
+          <div className="text-center p-20 border-2 border-dashed border-slate-200 dark:border-border rounded-2xl">
             <Building2 className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-2">No Branches Found</h3>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-foreground mb-2">No Branches Found</h3>
             <p className="text-slate-500">Deploy your first vertical to establish your multi-tenant network.</p>
           </div>
         ) : (
@@ -214,7 +214,7 @@ export default function TowerManager() {
                 className={`group relative rounded-xl p-6 border transition-all flex flex-col justify-between cursor-pointer ${
                   user.company_id === tower.id 
                     ? 'bg-primary/5 dark:bg-primary/5 border-primary shadow-md shadow-primary/10' 
-                    : 'bg-slate-50 dark:bg-card border-slate-200 dark:border-slate-800 hover:border-primary/50 hover:shadow-md'
+                    : 'bg-slate-50 dark:bg-card border-slate-200 dark:border-border hover:border-primary/50 hover:shadow-md'
                 }`}
               >
                 <div>
@@ -227,10 +227,10 @@ export default function TowerManager() {
                     </span>
                   </div>
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1 line-clamp-1">{tower.name}</h3>
-                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">{tower.industry_type}</p>
+                  <p className="text-sm font-medium text-slate-500 dark:text-muted-foreground uppercase tracking-wider">{tower.industry_type}</p>
                 </div>
                 
-                <div className="mt-8 pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <div className="mt-8 pt-4 border-t border-slate-200 dark:border-border flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-primary dark:text-primary">
                     <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span> Online
                   </div>

@@ -149,7 +149,7 @@ export default function RetailDashboard() {
  </CardHeader>
  <CardContent>
  <div className="text-2xl font-semibold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{products.length}</div>
- <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 tracking-[0.04em]">
+ <p className="text-xs text-slate-500 dark:text-muted-foreground mt-1 tracking-[0.04em]">
  Active in inventory
  </p>
  </CardContent>
@@ -175,7 +175,7 @@ export default function RetailDashboard() {
  </CardHeader>
  <CardContent>
  <div className="text-2xl font-semibold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{activeShifts.length}</div>
- <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 tracking-[0.04em]">
+ <p className="text-xs text-slate-500 dark:text-muted-foreground mt-1 tracking-[0.04em]">
  Staff on duty
  </p>
  </CardContent>
@@ -186,43 +186,43 @@ export default function RetailDashboard() {
  <div className="space-y-4">
    <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Enterprise Modules</h2>
    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-     <Link to="/retail-hq" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+     <Link to="/retail-hq" className="p-4 rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
        <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform"><Briefcase className="w-5 h-5"/></div>
        <span className="text-sm font-semibold">Retail HQ</span>
      </Link>
-     <Link to="/barcodes" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
-       <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 flex items-center justify-center group-hover:scale-110 transition-transform"><Barcode className="w-5 h-5"/></div>
+     <Link to="/barcodes" className="p-4 rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+       <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-secondary text-slate-600 flex items-center justify-center group-hover:scale-110 transition-transform"><Barcode className="w-5 h-5"/></div>
        <span className="text-sm font-semibold">Barcodes</span>
      </Link>
-     <Link to="/wms-dashboard" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+     <Link to="/wms-dashboard" className="p-4 rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
        <div className="w-10 h-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-600 flex items-center justify-center group-hover:scale-110 transition-transform"><Truck className="w-5 h-5"/></div>
        <span className="text-sm font-semibold">WMS</span>
      </Link>
-     <Link to="/store-builder" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+     <Link to="/store-builder" className="p-4 rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
        <div className="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform"><Globe className="w-5 h-5"/></div>
        <span className="text-sm font-semibold">Store Builder</span>
      </Link>
-     <Link to="/b2b-portal" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+     <Link to="/b2b-portal" className="p-4 rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
        <div className="w-10 h-10 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-600 flex items-center justify-center group-hover:scale-110 transition-transform"><Store className="w-5 h-5"/></div>
        <span className="text-sm font-semibold">B2B Portal</span>
      </Link>
-     <Link to="/marketplaces" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+     <Link to="/marketplaces" className="p-4 rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
        <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform"><ShoppingCart className="w-5 h-5"/></div>
        <span className="text-sm font-semibold">Marketplaces</span>
      </Link>
-     <Link to="/checkout" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+     <Link to="/checkout" className="p-4 rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
        <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform"><DollarSign className="w-5 h-5"/></div>
        <span className="text-sm font-semibold">Unified Checkout</span>
      </Link>
-     <Link to="/wms-picking" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+     <Link to="/wms-picking" className="p-4 rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
        <div className="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-600 flex items-center justify-center group-hover:scale-110 transition-transform"><Package className="w-5 h-5"/></div>
        <span className="text-sm font-semibold">WMS Picking</span>
      </Link>
-     <Link to="/demand-forecast" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+     <Link to="/demand-forecast" className="p-4 rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
        <div className="w-10 h-10 rounded-lg bg-rose-50 dark:bg-rose-900/20 text-rose-600 flex items-center justify-center group-hover:scale-110 transition-transform"><BarChart2 className="w-5 h-5"/></div>
        <span className="text-sm font-semibold">AI Forecasting</span>
      </Link>
-     <Link to="/rmas" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+     <Link to="/rmas" className="p-4 rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-card hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
        <div className="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 flex items-center justify-center group-hover:scale-110 transition-transform"><AlertCircle className="w-5 h-5"/></div>
        <span className="text-sm font-semibold">Returns (RMA)</span>
      </Link>
@@ -268,10 +268,10 @@ export default function RetailDashboard() {
  <p className="text-sm text-[#71717a] dark:text-gray-400 text-center py-4">No low stock items</p>
  ) : (
  lowStockProducts.slice(0, 5).map(p => (
- <div key={p.id} className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
+ <div key={p.id} className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-secondary/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
  <div>
  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{p.name}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">SKU: {p.sku || 'N/A'}</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground tracking-[0.04em]">SKU: {p.sku || 'N/A'}</p>
  </div>
  <Badge variant="destructive" className="bg-red-100 text-red-700 hover:bg-red-200">
  {p.stock || 0} left
@@ -297,10 +297,10 @@ export default function RetailDashboard() {
  <p className="text-sm text-[#71717a] dark:text-gray-400 text-center py-4">No recent orders</p>
  ) : (
  orders.slice().sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 5).map(o => (
- <div key={o.id} className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
+ <div key={o.id} className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-secondary/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
  <div>
  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{o.order_id || 'ORD'}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">
+ <p className="text-xs text-slate-500 dark:text-muted-foreground tracking-[0.04em]">
  {new Date(o.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
  </p>
  </div>

@@ -41,9 +41,9 @@ export default function EnterprisePortfolioSwitcher() {
   }
 
   return (
-    <div className="px-4 py-2 mb-2 border-b border-slate-100 dark:border-slate-800">
+    <div className="px-4 py-2 mb-2 border-b border-slate-100 dark:border-border">
       <DropdownMenu>
-        <DropdownMenuTrigger className="w-full flex items-center justify-between bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 p-2 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors focus:outline-none">
+        <DropdownMenuTrigger className="w-full flex items-center justify-between bg-slate-50 hover:bg-slate-100 dark:bg-secondary/50 dark:hover:bg-slate-800 p-2 rounded-xl border border-slate-200 dark:border-border transition-colors focus:outline-none">
           <div className="flex items-center gap-2 overflow-hidden">
             <div className="p-1.5 bg-emerald-100 dark:bg-emerald-900/50 rounded-lg text-emerald-600 dark:text-emerald-400 shrink-0">
               <Building2 size={16} />

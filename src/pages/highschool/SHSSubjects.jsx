@@ -91,7 +91,7 @@ export default function SHSSubjects() {
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
  <Card className="rounded-2xl border-none bg-white dark:bg-card/40 dark:bg-card/60 dark:bg-card/60 backdrop-blur-xl ring-1 ring-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
  <Book className="w-6 h-6" />
  </div>
  <div>
@@ -131,14 +131,14 @@ export default function SHSSubjects() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Subjects Register</CardTitle>
  </div>
  
  <div className="relative w-full sm:w-64">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-muted-foreground" />
  <Input 
  placeholder="Search subject or code..." 
  className="pl-9 h-9 bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -150,14 +150,14 @@ export default function SHSSubjects() {
  </CardHeader>
  <CardContent className="p-0">
  {loading ? (
- <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading subjects...</div>
+ <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading subjects...</div>
  ) : filteredSubjects.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary mx-auto flex items-center justify-center mb-4">
  <Book className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No subjects defined</h3>
- <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Create a new subject to populate the curriculum.</p>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No subjects defined</h3>
+ <p className="text-sm text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">Create a new subject to populate the curriculum.</p>
  </div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
@@ -166,10 +166,10 @@ export default function SHSSubjects() {
  <div className="flex items-start justify-between mb-2">
  <div>
  <h4 className="font-semibold text-slate-800 dark:text-slate-100 group-hover:text-primary dark:text-primary/70 transition-colors">{subject.title}</h4>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">{subject.case_number}</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">{subject.case_number}</p>
  </div>
  <Badge variant="outline" className={
- subject.data?.type === 'Core' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20' :
+ subject.data?.type === 'Core' ? 'bg-slate-50 dark:bg-secondary/50 text-primary/90 border-primary/20' :
  'bg-amber-50 text-amber-700 border-amber-200'
 }>
  {subject.data?.type}
@@ -177,8 +177,8 @@ export default function SHSSubjects() {
  </div>
  
  <div className="mt-4 pt-4 border-t border-primary/40 flex justify-between items-center text-sm">
- <span className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Dept: <strong className="text-slate-700 dark:text-slate-300 dark:text-slate-200">{subject.data?.department || 'General'}</strong></span>
- <span className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Credits: <strong className="text-primary dark:text-primary/70">{subject.data?.credits || 3}</strong></span>
+ <span className="text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">Dept: <strong className="text-slate-700 dark:text-foreground dark:text-foreground">{subject.data?.department || 'General'}</strong></span>
+ <span className="text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">Credits: <strong className="text-primary dark:text-primary/70">{subject.data?.credits || 3}</strong></span>
  </div>
  </div>
  ))}
@@ -198,10 +198,10 @@ export default function SHSSubjects() {
  </DialogHeader>
  </div>
  
- <ScrollArea className="max-h-[60vh] p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
+ <ScrollArea className="max-h-[60vh] p-6 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary">
  <div className="space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Subject Name</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Subject Name</label>
  <Input 
  placeholder="e.g. Integrated Science"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -212,7 +212,7 @@ export default function SHSSubjects() {
  
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Subject Code</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Subject Code</label>
  <Input 
  placeholder="e.g. ISC101"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -221,7 +221,7 @@ export default function SHSSubjects() {
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Type</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Type</label>
  <select 
  className="w-full h-10 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newSubject.type}
@@ -234,7 +234,7 @@ export default function SHSSubjects() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Department</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Department</label>
  <Input 
  placeholder="e.g. Science, Mathematics, Languages"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -244,7 +244,7 @@ export default function SHSSubjects() {
  </div>
  
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Credits / Weighting</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Credits / Weighting</label>
  <Input 
  type="number"
  min="1"
@@ -259,7 +259,7 @@ export default function SHSSubjects() {
  </ScrollArea>
  
  <div className="p-4 bg-white dark:bg-card/40 dark:bg-card border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-foreground">
  Cancel
  </Button>
  <Button 

@@ -113,9 +113,9 @@ export default function FeaturesCircle() {
                     setRotation(r => r - (diff * 60));
                     setActiveIndex(i);
                   }}
-                  className={`w-full h-full rounded-2xl flex items-center justify-center transition-all duration-500 shadow-xl border border-white/20 backdrop-blur-sm ${isActive ? `bg-gradient-to-br ${p.color} ${p.glow} scale-125 z-20` : 'bg-white/90 dark:bg-slate-800/90 border-slate-200/50 dark:border-slate-700/50 opacity-70 hover:opacity-100 hover:scale-110 z-10'}`}
+                  className={`w-full h-full rounded-2xl flex items-center justify-center transition-all duration-500 shadow-xl border border-white/20 backdrop-blur-sm ${isActive ? `bg-gradient-to-br ${p.color} ${p.glow} scale-125 z-20` : 'bg-white/90 dark:bg-secondary/90 border-slate-200/50 dark:border-border/50 opacity-70 hover:opacity-100 hover:scale-110 z-10'}`}
                 >
-                  <Icon className={`w-6 h-6 drop-shadow-sm ${isActive ? 'text-white' : 'text-slate-600 dark:text-slate-300'}`} />
+                  <Icon className={`w-6 h-6 drop-shadow-sm ${isActive ? 'text-white' : 'text-slate-600 dark:text-foreground'}`} />
                 </button>
               </motion.div>
             );
@@ -132,7 +132,7 @@ export default function FeaturesCircle() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className={`relative p-8 rounded-3xl ${pillars[activeIndex].bg} border border-white/60 dark:border-slate-700/50 shadow-2xl shadow-slate-200/50 dark:shadow-none backdrop-blur-xl`}
+            className={`relative p-8 rounded-3xl ${pillars[activeIndex].bg} border border-white/60 dark:border-border/50 shadow-2xl shadow-slate-200/50 dark:shadow-none backdrop-blur-xl`}
           >
             <div className={`absolute -inset-1 opacity-20 blur-xl z-0 bg-gradient-to-br ${pillars[activeIndex].color} rounded-3xl pointer-events-none transition-colors duration-500`} />
             
@@ -141,7 +141,7 @@ export default function FeaturesCircle() {
                 {React.createElement(pillars[activeIndex].icon, { className: "w-7 h-7 text-white drop-shadow-md" })}
               </div>
               <h3 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4 drop-shadow-sm">{pillars[activeIndex].title}</h3>
-              <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-lg font-medium">{pillars[activeIndex].desc}</p>
+              <p className="text-slate-600 dark:text-foreground leading-relaxed text-lg font-medium">{pillars[activeIndex].desc}</p>
             </div>
           </motion.div>
         </AnimatePresence>

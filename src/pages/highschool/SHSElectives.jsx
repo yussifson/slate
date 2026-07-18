@@ -114,14 +114,14 @@ export default function SHSElectives() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Elective Packages</CardTitle>
  </div>
  
  <div className="relative w-full sm:w-64">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-muted-foreground" />
  <Input 
  placeholder="Search groups..." 
  className="pl-9 h-9 bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -133,14 +133,14 @@ export default function SHSElectives() {
  </CardHeader>
  <CardContent className="p-0">
  {loading ? (
- <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading elective groups...</div>
+ <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading elective groups...</div>
  ) : filteredElectives.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary mx-auto flex items-center justify-center mb-4">
  <FolderTree className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No groups defined</h3>
- <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Create subject packages that students can select.</p>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No groups defined</h3>
+ <p className="text-sm text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">Create subject packages that students can select.</p>
  </div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
@@ -148,7 +148,7 @@ export default function SHSElectives() {
  <div key={group.id} className="group p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card hover:border-primary dark:border-primary/30 -purple-500/5 transition-all duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-start justify-between mb-4">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center text-primary dark:text-primary/70">
  <ListPlus className="w-5 h-5" />
  </div>
  <div>
@@ -159,10 +159,10 @@ export default function SHSElectives() {
  </div>
  
  <div className="space-y-2 mt-4 text-sm">
- <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider tracking-[0.04em]">Included Subjects ({group.data?.subjects?.length || 0})</p>
+ <p className="text-xs font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wider tracking-[0.04em]">Included Subjects ({group.data?.subjects?.length || 0})</p>
  <div className="flex flex-wrap gap-2">
  {group.data?.subjects?.map((sub, i) => (
- <Badge key={i} variant="secondary" className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 dark:text-slate-200 border-none font-medium">
+ <Badge key={i} variant="secondary" className="bg-slate-100 dark:bg-secondary hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-foreground dark:text-foreground border-none font-medium">
  {sub.name}
  </Badge>
  ))}
@@ -187,10 +187,10 @@ export default function SHSElectives() {
  </DialogHeader>
  </div>
  
- <ScrollArea className="max-h-[60vh] p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
+ <ScrollArea className="max-h-[60vh] p-6 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary">
  <div className="space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Group Name</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Group Name</label>
  <Input 
  placeholder="e.g. Science Package A"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -200,7 +200,7 @@ export default function SHSElectives() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Target Programme</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Target Programme</label>
  <select 
  className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newElective.programmeId}
@@ -214,7 +214,7 @@ export default function SHSElectives() {
  </div>
 
  <div className="space-y-3 pt-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Select Subjects</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Select Subjects</label>
  {subjects.length === 0 ? (
  <p className="text-sm text-amber-600 bg-amber-50 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-amber-200">
  No elective subjects found. Create them in the Subjects menu first.
@@ -229,8 +229,8 @@ export default function SHSElectives() {
  onClick={() => handleToggleSubject(sub.id)}
  className={`p-3 rounded-xl text-sm font-medium text-left transition-all border ${
  isSelected 
- ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70' 
- : 'bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 text-slate-600 dark:text-slate-300 hover:border-primary/20 dark:border-primary/40'
+ ? 'bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70' 
+ : 'bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 text-slate-600 dark:text-foreground hover:border-primary/20 dark:border-primary/40'
 }`}
  >
  <div className="flex items-center justify-between">
@@ -247,7 +247,7 @@ export default function SHSElectives() {
  </ScrollArea>
  
  <div className="p-4 bg-white dark:bg-card/40 dark:bg-card border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-foreground">
  Cancel
  </Button>
  <Button 

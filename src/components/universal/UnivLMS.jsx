@@ -139,7 +139,7 @@ export default function UnivLMS() {
  className="hover:bg-muted/30 transition-colors group cursor-pointer"
  >
  <td className="p-4">
- <div className="p-2 bg-muted dark:bg-slate-800 rounded-xl w-fit">
+ <div className="p-2 bg-muted dark:bg-secondary rounded-xl w-fit">
  {getIcon(l.content_type)}
  </div>
  </td>

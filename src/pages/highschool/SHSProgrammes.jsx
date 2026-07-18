@@ -88,44 +88,44 @@ export default function SHSProgrammes() {
 
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
  {loading ? (
- <div className="col-span-full p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading programmes...</div>
+ <div className="col-span-full p-12 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading programmes...</div>
  ) : filteredProgrammes.length === 0 ? (
  <div className="col-span-full p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary mx-auto flex items-center justify-center mb-4">
  <GraduationCap className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No programmes defined</h3>
- <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Create academic programmes to structure your school's offerings.</p>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No programmes defined</h3>
+ <p className="text-sm text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">Create academic programmes to structure your school's offerings.</p>
  </div>
  ) : (
  filteredProgrammes.map(prog => (
  <Card key={prog.id} className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 hover:ring-primary/30 dark:hover:ring-primary/30 transition-all group overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6">
  <div className="flex justify-between items-start mb-4">
- <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 group-hover:scale-110 transition-transform">
+ <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary flex items-center justify-center text-primary dark:text-primary/70 group-hover:scale-110 transition-transform">
  <Book className="w-6 h-6" />
  </div>
- <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20">
+ <Badge variant="outline" className="bg-slate-50 dark:bg-secondary/50 text-primary/90 border-primary/20">
  {prog.status}
  </Badge>
  </div>
  
  <h3 className="text-xl font-black text-slate-800 dark:text-slate-100 mb-1 line-clamp-1">{prog.title}</h3>
- <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mb-4">{prog.case_number}</p>
+ <p className="text-sm font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground mb-4">{prog.case_number}</p>
  
  <div className="space-y-3 mt-6">
  <div className="flex items-center gap-3 text-sm">
- <Building2 className="w-4 h-4 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
- <span className="text-slate-600 dark:text-slate-300 font-medium truncate">{prog.data?.department || 'General Department'}</span>
+ <Building2 className="w-4 h-4 text-slate-400 dark:text-slate-500 dark:text-muted-foreground" />
+ <span className="text-slate-600 dark:text-foreground font-medium truncate">{prog.data?.department || 'General Department'}</span>
  </div>
  </div>
  
- <p className="mt-4 text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed tracking-[0.04em]">
+ <p className="mt-4 text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground line-clamp-2 leading-relaxed tracking-[0.04em]">
  {prog.data?.description || 'No description provided.'}
  </p>
  
  <div className="mt-6 pt-4 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-2">
- <Button variant="ghost" size="sm" className="text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 font-semibold w-full">
+ <Button variant="ghost" size="sm" className="text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-secondary/50 dark:bg-secondary font-semibold w-full">
  View Details
  </Button>
  </div>
@@ -146,9 +146,9 @@ export default function SHSProgrammes() {
  </DialogHeader>
  </div>
  
- <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
+ <div className="p-6 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Programme Name</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Programme Name</label>
  <Input 
  placeholder="e.g. General Science"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -159,7 +159,7 @@ export default function SHSProgrammes() {
  
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Code</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Code</label>
  <Input 
  placeholder="e.g. SCI"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -168,7 +168,7 @@ export default function SHSProgrammes() {
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Department</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Department</label>
  <Input 
  placeholder="e.g. Sciences"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -179,7 +179,7 @@ export default function SHSProgrammes() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Description</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Description</label>
  <textarea 
  className="w-full h-24 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  placeholder="Brief description of this programme..."
@@ -190,7 +190,7 @@ export default function SHSProgrammes() {
  </div>
  
  <div className="p-4 bg-white dark:bg-card/40 dark:bg-card border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-foreground">
  Cancel
  </Button>
  <Button 

@@ -9,7 +9,7 @@ const Input = React.forwardRef(({ className, type, ...props}, ref) => {
  
  let platformClasses = "";
  if (platform === 'ios') {
-   platformClasses = "rounded-2xl shadow-sm bg-white dark:bg-slate-900";
+   platformClasses = "rounded-2xl shadow-sm bg-white dark:bg-card";
  } else if (platform === 'android') {
    platformClasses = "rounded-xl border-b-2 border-transparent focus-visible:border-b-primary shadow-none bg-muted/30";
  }

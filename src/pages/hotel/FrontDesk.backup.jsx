@@ -28,12 +28,12 @@ const getRoomStatus = (roomNumber, reservations, today) => {
 };
 
 const statusColors = {
- Available: 'bg-slate-50 dark:bg-slate-800/50 border-primary/30 text-primary/80 hover:bg-slate-100',
+ Available: 'bg-slate-50 dark:bg-secondary/50 border-primary/30 text-primary/80 hover:bg-slate-100',
  Occupied: 'bg-red-50 border-red-300 text-red-800 hover:bg-red-100',
- Arriving: 'bg-slate-50 dark:bg-slate-800/50 border-primary/30 text-primary/80 hover:bg-slate-100',
- Reserved: 'bg-slate-50 dark:bg-slate-800/50 border-primary/30 text-primary/80 hover:bg-slate-100',
+ Arriving: 'bg-slate-50 dark:bg-secondary/50 border-primary/30 text-primary/80 hover:bg-slate-100',
+ Reserved: 'bg-slate-50 dark:bg-secondary/50 border-primary/30 text-primary/80 hover:bg-slate-100',
  Cleaning: 'bg-yellow-50 border-yellow-300 text-yellow-800 hover:bg-yellow-100',
- Maintenance:'bg-slate-100 border-primary/40 text-slate-700 dark:text-slate-300 hover:bg-slate-200'};
+ Maintenance:'bg-slate-100 border-primary/40 text-slate-700 dark:text-foreground hover:bg-slate-200'};
 
 const statusIcons = {
  Available: <CheckCircle2 className="w-4 h-4 text-primary" />,
@@ -41,7 +41,7 @@ const statusIcons = {
  Arriving: <LogIn className="w-4 h-4 text-primary" />,
  Reserved: <Calendar className="w-4 h-4 text-primary" />,
  Cleaning: <Brush className="w-4 h-4 text-yellow-500" />,
- Maintenance: <Settings className="w-4 h-4 text-slate-500 dark:text-slate-400" />};
+ Maintenance: <Settings className="w-4 h-4 text-slate-500 dark:text-muted-foreground" />};
 
 export default function FrontDesk() {
  const { t} = useTranslation();
@@ -379,7 +379,7 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
  {(todayArrivals.length > 0 || todayDepartures.length > 0) && (
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  {todayArrivals.length > 0 && (
- <div className="bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl p-4">
+ <div className="bg-slate-50 dark:bg-secondary/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl p-4">
  <h3 className="font-semibold text-primary/80 flex items-center gap-2 mb-3">
  <LogIn className="w-4 h-4" /> {t("today_s_arrivals", "Today's Arrivals (")}{todayArrivals.length})
  </h3>
@@ -627,13 +627,13 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
     </div>
     
     {churnInsights ? (
-      <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6 border border-primary/20 prose prose-sm dark:prose-invert max-w-none">
+      <div className="bg-slate-50 dark:bg-secondary/50 rounded-xl p-6 border border-primary/20 prose prose-sm dark:prose-invert max-w-none">
         <ReactMarkdown>{churnInsights}</ReactMarkdown>
       </div>
     ) : (
-      <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-8 border border-primary/20 flex flex-col items-center justify-center text-center">
+      <div className="bg-slate-50 dark:bg-secondary/50 rounded-xl p-8 border border-primary/20 flex flex-col items-center justify-center text-center">
         <AlertTriangle className="w-10 h-10 text-slate-400 mb-3" />
-        <p className="text-sm font-medium text-slate-600 dark:text-slate-300">No churn analysis generated yet.</p>
+        <p className="text-sm font-medium text-slate-600 dark:text-foreground">No churn analysis generated yet.</p>
         <p className="text-xs text-slate-500 mt-1 max-w-md">Run the AI analysis to identify repeat guests who haven't booked in over 6 months and generate tailored retention strategies.</p>
       </div>
     )}

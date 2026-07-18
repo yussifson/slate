@@ -118,7 +118,7 @@ export default function HRPromotionsPanel({ companyId, staff, currency, isAdmin,
         ) : (
           <div className="space-y-4">
             {promotions.map(promo => (
-              <div key={promo.id} className="p-5 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-border/50 flex flex-col md:flex-row justify-between gap-6 hover:border-green-500/30 transition-colors">
+              <div key={promo.id} className="p-5 bg-slate-50 dark:bg-secondary/30 rounded-xl border border-border/50 flex flex-col md:flex-row justify-between gap-6 hover:border-green-500/30 transition-colors">
                 <div className="flex gap-4">
                   <div className="w-12 h-12 rounded-xl bg-white dark:bg-card flex items-center justify-center font-bold text-lg text-foreground shadow-sm border border-border/50 shrink-0">
                     {promo.full_name?.charAt(0) || '?'}

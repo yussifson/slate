@@ -143,7 +143,7 @@ export default function HRAnalytics({ companyId, staff = [], currency = "USD" })
           </div>
           
           <div className="p-8 space-y-6 bg-slate-50 dark:bg-card">
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-border/50">
+            <div className="bg-white dark:bg-secondary p-6 rounded-xl shadow-sm border border-border/50">
               <h4 className="font-bold text-emerald-700 dark:text-emerald-400 mb-3 uppercase tracking-wider text-sm flex items-center gap-2">
                 <Users className="w-4 h-4" /> Headcount & Retention
               </h4>
@@ -153,7 +153,7 @@ export default function HRAnalytics({ companyId, staff = [], currency = "USD" })
               </p>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-border/50">
+            <div className="bg-white dark:bg-secondary p-6 rounded-xl shadow-sm border border-border/50">
               <h4 className="font-bold text-amber-600 dark:text-amber-500 mb-3 uppercase tracking-wider text-sm flex items-center gap-2">
                 <DollarSign className="w-4 h-4" /> Compensation & Cost
               </h4>

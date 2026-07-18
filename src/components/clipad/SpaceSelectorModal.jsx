@@ -78,7 +78,7 @@ export default function SpaceSelectorModal({ open, onOpenChange, onConfirm, titl
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search spaces..."
-              className="w-full pl-9 pr-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40"
+              className="w-full pl-9 pr-4 py-2.5 text-sm bg-slate-50 dark:bg-card border border-slate-200 dark:border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40"
             />
           </div>
         )}
@@ -92,7 +92,7 @@ export default function SpaceSelectorModal({ open, onOpenChange, onConfirm, titl
           ) : filtered.length === 0 ? (
             <div className="py-10 text-center">
               <Layers className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+              <p className="text-sm font-medium text-slate-500 dark:text-muted-foreground">
                 {search ? 'No spaces match your search.' : 'No spaces found. You can continue without one.'}
               </p>
             </div>
@@ -101,9 +101,9 @@ export default function SpaceSelectorModal({ open, onOpenChange, onConfirm, titl
               {/* No space option */}
               <button
                 onClick={() => setSelectedSpaceId(null)}
-                className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl border text-left transition-all ${selectedSpaceId === null ? 'bg-primary/5 border-primary/30 text-primary font-bold' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:border-primary/30'}`}
+                className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl border text-left transition-all ${selectedSpaceId === null ? 'bg-primary/5 border-primary/30 text-primary font-bold' : 'bg-white dark:bg-card border-slate-200 dark:border-border text-slate-500 dark:text-muted-foreground hover:border-primary/30'}`}
               >
-                <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-secondary flex items-center justify-center shrink-0">
                   <Layers className="w-4 h-4 opacity-40" />
                 </div>
                 <span className="text-sm">No Space (Public)</span>
@@ -113,7 +113,7 @@ export default function SpaceSelectorModal({ open, onOpenChange, onConfirm, titl
                 <button
                   key={s.id}
                   onClick={() => setSelectedSpaceId(s.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl border text-left transition-all ${selectedSpaceId === s.id ? 'bg-primary/5 border-primary/30 text-primary font-bold' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-primary/30'}`}
+                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl border text-left transition-all ${selectedSpaceId === s.id ? 'bg-primary/5 border-primary/30 text-primary font-bold' : 'bg-white dark:bg-card border-slate-200 dark:border-border text-slate-700 dark:text-foreground hover:border-primary/30'}`}
                 >
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-white text-xs font-black ${selectedSpaceId === s.id ? 'bg-primary' : 'bg-slate-200 dark:bg-slate-700'}`}>
                     {s.name?.charAt(0).toUpperCase()}
@@ -123,7 +123,7 @@ export default function SpaceSelectorModal({ open, onOpenChange, onConfirm, titl
                     {s.type && <p className="text-[10px] uppercase text-slate-400 font-mono tracking-widest">{s.type}</p>}
                   </div>
                   {s.is_private && (
-                    <span className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 px-2 py-0.5 rounded-full font-medium shrink-0">Private</span>
+                    <span className="text-[10px] bg-slate-100 dark:bg-secondary text-slate-500 px-2 py-0.5 rounded-full font-medium shrink-0">Private</span>
                   )}
                 </button>
               ))}

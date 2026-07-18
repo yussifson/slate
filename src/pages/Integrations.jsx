@@ -481,7 +481,7 @@ export default function Integrations() {
  subtitle="Connect Slate with the tools your team already uses." 
  />
  <div className="flex items-center gap-3">
- <Badge variant="outline" className="h-8 gap-2.5 bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20">
+ <Badge variant="outline" className="h-8 gap-2.5 bg-slate-50 dark:bg-secondary/50 text-primary/90 border-primary/20">
  <ShieldCheck className="w-3.5 h-3.5" /> {t("secure_oauth_2_0", "Secure OAuth 2.0")}
  </Badge>
  </div>
@@ -497,7 +497,7 @@ export default function Integrations() {
  className={`px-5 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all ${
  activeCategory === cat 
  ? 'bg-primary text-white -emerald-600/20' 
- : 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:bg-slate-100 dark:hover:bg-slate-700'
+ : 'bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 text-slate-600 dark:text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:bg-slate-100 dark:hover:bg-slate-700'
 }`}
  >
  {cat}
@@ -511,7 +511,7 @@ export default function Integrations() {
  placeholder="Search apps or features..." 
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="pl-10 h-11 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 border-primary/40 dark:border-primary/40 text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-white dark:bg-card/40 dark:bg-card/40 dark:focus:bg-slate-800 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-10 h-11 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 border-primary/40 dark:border-primary/40 text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-white dark:bg-card/40 dark:bg-card/40 dark:focus:bg-slate-800 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  </div>
@@ -557,20 +557,20 @@ export default function Integrations() {
  />
  </div>
  {isConnected && (
- <Badge className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 border-primary/20 dark:border-primary/20 font-extrabold gap-2.5 px-3 py-1.5 rounded-full ">
+ <Badge className="bg-slate-50 dark:bg-secondary/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 border-primary/20 dark:border-primary/20 font-extrabold gap-2.5 px-3 py-1.5 rounded-full ">
  <CheckCircle2 className="w-4 h-4" /> {t("connected", "Connected")}
  </Badge>
  )}
  {!isConnected && app.popular && (
- <Badge variant="outline" className="text-xs font-semibold text-primary dark:text-primary/70 border-primary/20 dark:border-primary/20 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 px-3 py-1 rounded-full tracking-[0.04em]">
+ <Badge variant="outline" className="text-xs font-semibold text-primary dark:text-primary/70 border-primary/20 dark:border-primary/20 bg-slate-50 dark:bg-secondary/50 dark:bg-slate-100 px-3 py-1 rounded-full tracking-[0.04em]">
  {t("popular", "Popular")}
  </Badge>
  )}
  </div>
  
  <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white mb-1.5">{app.name}</h3>
- <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3.5 tracking-[0.04em]">{app.category}</p>
- <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{appDescription}</p>
+ <p className="text-[11px] font-semibold text-slate-500 dark:text-muted-foreground uppercase tracking-widest mb-3.5 tracking-[0.04em]">{app.category}</p>
+ <p className="text-sm text-slate-600 dark:text-muted-foreground leading-relaxed">{appDescription}</p>
  </div>
  <div className="px-6 py-5 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50/80 dark:bg-card/50 flex items-center justify-between">
  <a 
@@ -589,7 +589,7 @@ export default function Integrations() {
  variant="secondary" 
  disabled={isLoading}
  onClick={() => handleTestSync(app)}
- className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-semibold transition-colors "
+ className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-semibold transition-colors "
  >
  {isLoading ? <OrbitLoader size="sm" /> : "Test Sync"}
  </Button>
@@ -599,7 +599,7 @@ export default function Integrations() {
  variant="secondary" 
  disabled={isLoading}
  onClick={() => handleTestFeature(app)}
- className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-semibold transition-colors "
+ className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-semibold transition-colors "
  >
  {isLoading ? <OrbitLoader size="sm" /> : "Test Feature"}
  </Button>
@@ -608,7 +608,7 @@ export default function Integrations() {
  variant="outline" 
  disabled={isLoading}
  onClick={() => handleDisconnect(app)}
- className="h-10 px-4 rounded-xl border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card/40 dark:bg-transparent text-slate-700 dark:text-slate-300 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10/10 hover:border-red-200 dark:hover:border-red-500/20 transition-colors font-semibold  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="h-10 px-4 rounded-xl border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card/40 dark:bg-transparent text-slate-700 dark:text-foreground dark:text-foreground hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10/10 hover:border-red-200 dark:hover:border-red-500/20 transition-colors font-semibold  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  {isLoading ? <OrbitLoader size="sm" /> : "Disconnect"}
  </Button>
@@ -636,11 +636,11 @@ export default function Integrations() {
  )}
  {!initialLoading && filteredApps.length === 0 && (
  <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white dark:bg-card/40 dark:bg-card/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-dashed hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
+ <div className="w-20 h-20 bg-slate-50 dark:bg-secondary/50 rounded-full flex items-center justify-center mb-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
  <Search className="w-8 h-8 text-slate-400" />
  </div>
  <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100 dark:text-slate-100 mb-2">{t("no_apps_found", "No apps found")}</h3>
- <p className="text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">{t(
+ <p className="text-slate-500 dark:text-muted-foreground max-w-md leading-relaxed">{t(
  "we_couldn_t_find_any_integrati",
  "We couldn't find any integrations matching your search criteria. Try a different term or clear your filters."
  )}</p>
@@ -654,7 +654,7 @@ export default function Integrations() {
  </DialogTitle>
  </DialogHeader>
  <div className="space-y-4 py-4 text-slate-950 dark:text-white">
- <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400">
+ <p className="text-sm text-slate-500 dark:text-muted-foreground dark:text-muted-foreground">
  Configure your production credentials to securely integrate {modalApp?.name} into your active workflow.
  </p>
 
@@ -773,7 +773,7 @@ export default function Integrations() {
 
  {modalApp?.provider === 'mailchimp' && (
  <>
- <p className="text-xs text-slate-500 dark:text-slate-400 italic mb-2 tracking-[0.04em]">Instructions: In Mailchimp, go to Profile &gt; Extras &gt; API keys to create a new key.</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground italic mb-2 tracking-[0.04em]">Instructions: In Mailchimp, go to Profile &gt; Extras &gt; API keys to create a new key.</p>
  <div className="space-y-1.5">
  <Label>Mailchimp API Key</Label>
  <Input 
@@ -796,7 +796,7 @@ export default function Integrations() {
 
  {modalApp?.provider === 'shipstation' && (
  <>
- <p className="text-xs text-slate-500 dark:text-slate-400 italic mb-2 tracking-[0.04em]">Instructions: In ShipStation, go to Settings &gt; Account &gt; API Settings to generate your Key and Secret.</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground italic mb-2 tracking-[0.04em]">Instructions: In ShipStation, go to Settings &gt; Account &gt; API Settings to generate your Key and Secret.</p>
  <div className="space-y-1.5">
  <Label>ShipStation API Key</Label>
  <Input 

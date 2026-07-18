@@ -142,7 +142,7 @@ export default function SHSBusAssignments() {
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
  <Card className="rounded-2xl border-none bg-white dark:bg-card/40 dark:bg-card/60 dark:bg-card/60 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
  <Users className="w-6 h-6" />
  </div>
  <div>
@@ -154,14 +154,14 @@ export default function SHSBusAssignments() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Student Roster</CardTitle>
  </div>
  
  <div className="relative w-full sm:w-64">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-muted-foreground" />
  <Input 
  placeholder="Search student or route..." 
  className="pl-9 h-9 bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -173,19 +173,19 @@ export default function SHSBusAssignments() {
  </CardHeader>
  <CardContent className="p-0">
  {loading ? (
- <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading assignments...</div>
+ <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading assignments...</div>
  ) : filteredAssignments.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary mx-auto flex items-center justify-center mb-4">
  <Map className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No students assigned to buses</h3>
- <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Create assignments to generate transport fee invoices.</p>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No students assigned to buses</h3>
+ <p className="text-sm text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">Create assignments to generate transport fee invoices.</p>
  </div>
  ) : (
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left">
- <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
+ <thead className="bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/80 text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
  <tr>
  <th className="px-6 py-4 rounded-tl-xl">Student</th>
  <th className="px-6 py-4">Route Name</th>
@@ -197,25 +197,25 @@ export default function SHSBusAssignments() {
  </thead>
  <tbody className="divide-y divide-slate-100">
  {filteredAssignments.map((asn) => (
- <tr key={asn.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+ <tr key={asn.id} className="hover:bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 transition-colors">
  <td className="px-6 py-4">
  <p className="font-semibold text-slate-800 dark:text-slate-100">{asn.data?.studentName}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">{asn.data?.studentIndex}</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">{asn.data?.studentIndex}</p>
  </td>
  <td className="px-6 py-4">
- <div className="flex items-center gap-2.5 font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">
+ <div className="flex items-center gap-2.5 font-semibold text-slate-700 dark:text-foreground dark:text-foreground">
  <BusFront className="w-4 h-4 text-primary dark:text-primary/70" /> {asn.data?.routeName}
  </div>
  </td>
- <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
+ <td className="px-6 py-4 text-slate-600 dark:text-foreground">
  {asn.data?.pickupPoint || 'N/A'}
  </td>
- <td className="px-6 py-4 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">
+ <td className="px-6 py-4 text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">
  {asn.data?.term} - {asn.data?.academicYear}
  </td>
  <td className="px-6 py-4">
  <Badge variant="outline" className={
- asn.status === 'Active' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20' : 'bg-rose-50 text-rose-700 border-rose-200'
+ asn.status === 'Active' ? 'bg-slate-50 dark:bg-secondary/50 text-primary/90 border-primary/20' : 'bg-rose-50 text-rose-700 border-rose-200'
 }>
  {asn.status}
  </Badge>
@@ -250,11 +250,11 @@ export default function SHSBusAssignments() {
  </DialogHeader>
  </div>
  
- <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
+ <div className="p-6 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Select Student (Day Students Only)</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Select Student (Day Students Only)</label>
  <select 
- className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-foreground dark:text-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newAssignment.studentId}
  onChange={e => setNewAssignment({...newAssignment, studentId: e.target.value})}
  >
@@ -268,7 +268,7 @@ export default function SHSBusAssignments() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Select Route</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Select Route</label>
  <select 
  className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newAssignment.routeId}
@@ -286,7 +286,7 @@ export default function SHSBusAssignments() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Specific Pickup Point</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Specific Pickup Point</label>
  <select 
  className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newAssignment.pickupPoint}
@@ -302,7 +302,7 @@ export default function SHSBusAssignments() {
 
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Term</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Term</label>
  <select 
  className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newAssignment.term}
@@ -314,7 +314,7 @@ export default function SHSBusAssignments() {
  </select>
  </div>
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Academic Year</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Academic Year</label>
  <Input 
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl h-11 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newAssignment.academicYear}
@@ -323,13 +323,13 @@ export default function SHSBusAssignments() {
  </div>
  </div>
 
- <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 text-primary/70 dark:text-primary/10 text-xs tracking-[0.04em]">
+ <div className="p-4 rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 text-primary/70 dark:text-primary/10 text-xs tracking-[0.04em]">
  <p>A transport fee invoice will be automatically generated and linked to this student upon saving.</p>
  </div>
  </div>
  
  <div className="p-4 bg-white dark:bg-card/40 dark:bg-card border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-foreground">
  Cancel
  </Button>
  <Button 

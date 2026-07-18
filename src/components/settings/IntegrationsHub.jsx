@@ -163,7 +163,7 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  placeholder="e.g. smithandassociates.com"
  />
  {company?.custom_email_verified && (
- <span className="absolute right-3 top-1/2 -translate-y-1/2 text-primary flex items-center gap-2 text-xs font-semibold bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/40 px-2 py-0.5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 tracking-[0.04em]">
+ <span className="absolute right-3 top-1/2 -translate-y-1/2 text-primary flex items-center gap-2 text-xs font-semibold bg-slate-50 dark:bg-secondary/50 dark:bg-primary/40 px-2 py-0.5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 tracking-[0.04em]">
  <CheckCircle className="w-3.5 h-3.5" /> {t("verified", "Verified")}
  </span>
  )}

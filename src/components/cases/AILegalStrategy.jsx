@@ -66,7 +66,7 @@ Respond ONLY with a valid JSON object containing exactly these fields:
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1"><Clock className="w-3 h-3"/> Predicted Timeline</p>
-              <div className="text-sm text-foreground bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg border border-primary/10">
+              <div className="text-sm text-foreground bg-slate-50 dark:bg-secondary/50 p-4 rounded-lg border border-primary/10">
                 {strategy.predictedTimeline}
               </div>
             </div>

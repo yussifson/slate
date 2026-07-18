@@ -136,7 +136,7 @@ export default function Policies() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 shadow-sm">
-          <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary">
+          <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center text-primary">
             <FileText className="w-6 h-6" />
           </div>
           <div>
@@ -145,7 +145,7 @@ export default function Policies() {
           </div>
         </div>
         <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 shadow-sm">
-          <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary">
+          <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center text-primary">
             <CheckCircle className="w-6 h-6" />
           </div>
           <div>

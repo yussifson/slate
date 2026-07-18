@@ -104,7 +104,7 @@ export default function RoomsNew() {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-[hsl(var(--hotel-primary))] to-[hsl(var(--hotel-secondary))] bg-clip-text text-transparent tracking-tight mb-2">
               Room Inventory
             </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-400">Configure and manage all guest rooms</p>
+            <p className="text-sm text-slate-600 dark:text-muted-foreground">Configure and manage all guest rooms</p>
           </div>
           <Button onClick={() => setShowModal(true)} className="bg-[hsl(var(--hotel-primary))] hover:bg-[hsl(var(--hotel-primary)_/_0.9)] text-white gap-2">
             <Plus className="w-4 h-4" />
@@ -173,12 +173,12 @@ export default function RoomsNew() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: idx * 0.05 }}
-            className="bg-white dark:bg-card rounded-xl border border-slate-200 dark:border-slate-800 p-5 hover:shadow-md transition-all group"
+            className="bg-white dark:bg-card rounded-xl border border-slate-200 dark:border-border p-5 hover:shadow-md transition-all group"
           >
             <div className="flex justify-between items-start mb-3">
               <div>
                 <h3 className="text-2xl font-bold text-[hsl(var(--hotel-primary))]">#{room.roomNumber}</h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{room.type} • {room.floor}</p>
+                <p className="text-xs text-slate-600 dark:text-muted-foreground mt-1">{room.type} • {room.floor}</p>
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -195,12 +195,12 @@ export default function RoomsNew() {
 
             <div className="space-y-2 mb-4">
               <div className="flex justify-between items-center text-sm">
-                <span className="text-slate-600 dark:text-slate-400">Rate</span>
+                <span className="text-slate-600 dark:text-muted-foreground">Rate</span>
                 <span className="font-bold text-[hsl(var(--hotel-primary))]">${room.rate}/night</span>
               </div>
               <div className="flex gap-2 flex-wrap">
                 {room.amenities?.slice(0, 3).map((amenity, i) => (
-                  <span key={i} className="text-xs px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-700 dark:text-slate-300">
+                  <span key={i} className="text-xs px-2 py-1 bg-slate-100 dark:bg-secondary rounded-full text-slate-700 dark:text-foreground">
                     {amenity}
                   </span>
                 ))}
@@ -218,7 +218,7 @@ export default function RoomsNew() {
           animate={{ opacity: 1 }}
         >
           <motion.div
-            className="bg-white dark:bg-card rounded-2xl w-full max-w-md p-6 border border-slate-200 dark:border-slate-800"
+            className="bg-white dark:bg-card rounded-2xl w-full max-w-md p-6 border border-slate-200 dark:border-border"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
           >

@@ -20,7 +20,7 @@ const statusColors = {
   'pending': 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-400',
   'accepted': 'bg-primary/10 text-primary/40 dark:bg-primary/30/40 dark:text-primary/80',
   'rejected': 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400',
-  'expired': 'bg-slate-100 text-slate-800 dark:bg-slate-800/40 dark:text-slate-400',
+  'expired': 'bg-slate-100 text-slate-800 dark:bg-secondary/40 dark:text-muted-foreground',
 };
 
 export default function Offers() {

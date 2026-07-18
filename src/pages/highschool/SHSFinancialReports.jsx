@@ -78,32 +78,32 @@ export default function SHSFinancialReports() {
  Revenue collection summaries and outstanding balances.
  </p>
  </div>
- <Button className="h-9 gap-2 rounded-xl bg-white dark:bg-card/40 dark:bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button className="h-9 gap-2 rounded-xl bg-white dark:bg-card/40 dark:bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 text-slate-700 dark:text-foreground dark:text-foreground hover:bg-slate-50 dark:bg-secondary/50 dark:bg-secondary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <FileSpreadsheet className="w-4 h-4 text-primary" /> Export CSV
  </Button>
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 p-6">
  <div className="flex flex-col sm:flex-row gap-6 items-end">
  <div className="space-y-2 flex-1 max-w-xs">
- <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]">
+ <label className="text-xs font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]">
  <CalendarIcon className="w-4 h-4 text-primary dark:text-primary/70" /> Start Date
  </label>
  <Input 
  type="date"
- className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-foreground dark:text-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={startDate}
  onChange={(e) => setStartDate(e.target.value)}
  />
  </div>
  <div className="space-y-2 flex-1 max-w-xs">
- <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]">
+ <label className="text-xs font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]">
  <CalendarIcon className="w-4 h-4 text-primary dark:text-primary/70" /> End Date
  </label>
  <Input 
  type="date"
- className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-foreground dark:text-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={endDate}
  onChange={(e) => setEndDate(e.target.value)}
  />
@@ -116,12 +116,12 @@ export default function SHSFinancialReports() {
  
  <CardContent className="p-8">
  {loading ? (
- <div className="py-20 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Compiling financial data...</div>
+ <div className="py-20 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Compiling financial data...</div>
  ) : (
  <div className="space-y-8">
  
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <div className="p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col justify-center text-left">
+ <div className="p-6 rounded-3xl bg-slate-50 dark:bg-secondary/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col justify-center text-left">
  <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary mb-4">
  <TrendingUp className="w-6 h-6" />
  </div>
@@ -130,13 +130,13 @@ export default function SHSFinancialReports() {
  <p className="text-xs text-primary/80 mt-2 font-medium tracking-[0.04em]">Within selected date range</p>
  </div>
  
- <div className="p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex flex-col justify-center text-left">
- <div className="w-12 h-12 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 mb-4">
+ <div className="p-6 rounded-3xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex flex-col justify-center text-left">
+ <div className="w-12 h-12 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-foreground mb-4">
  <DollarSign className="w-6 h-6" />
  </div>
- <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Total Billed</p>
+ <p className="text-sm font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wider mb-1 tracking-[0.04em]">Total Billed</p>
  <p className="text-4xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">${totalBilled.toFixed(2)}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mt-2 font-medium tracking-[0.04em]">All generated invoices</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground mt-2 font-medium tracking-[0.04em]">All generated invoices</p>
  </div>
 
  <div className="p-6 rounded-3xl bg-rose-50 border-[0.5px] border-black/9 dark:border-white/8 border-rose-100 flex flex-col justify-center text-left">
@@ -149,20 +149,20 @@ export default function SHSFinancialReports() {
  </div>
  </div>
 
- <div className="h-px bg-slate-100 dark:bg-slate-800 w-full my-4"></div>
+ <div className="h-px bg-slate-100 dark:bg-secondary w-full my-4"></div>
  
  <div>
  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Collection by Payment Method</h3>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {Object.keys(methodStats).length === 0 ? (
- <div className="col-span-4 p-8 text-center text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
+ <div className="col-span-4 p-8 text-center text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground bg-slate-50 dark:bg-secondary/50 dark:bg-secondary rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
  No payments found in this period.
  </div>
  ) : (
  Object.entries(methodStats).map(([method, amount]) => (
  <div key={method} className="p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card hover:border-primary dark:border-primary/30 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{method}</p>
- <p className="text-2xl font-black text-slate-700 dark:text-slate-300 dark:text-slate-200 tracking-[-0.02em]">${amount.toFixed(2)}</p>
+ <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wider mb-1 tracking-[0.04em]">{method}</p>
+ <p className="text-2xl font-black text-slate-700 dark:text-foreground dark:text-foreground tracking-[-0.02em]">${amount.toFixed(2)}</p>
  </div>
  ))
  )}

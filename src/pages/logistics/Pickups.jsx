@@ -225,7 +225,7 @@ export default function Pickups() {
 
           <div className="overflow-x-auto min-h-[400px]">
             <table className="w-full text-sm text-left">
-              <thead className="text-xs text-slate-500 uppercase bg-slate-50/50 dark:bg-slate-800/50 border-b border-black/9 dark:border-white/8">
+              <thead className="text-xs text-slate-500 uppercase bg-slate-50/50 dark:bg-secondary/50 border-b border-black/9 dark:border-white/8">
                 <tr>
                   <th className="px-6 py-4 font-medium">Client / Contact</th>
                   <th className="px-6 py-4 font-medium">Address</th>
@@ -241,7 +241,7 @@ export default function Pickups() {
                   <tr>
                     <td colSpan={7} className="px-6 py-12 text-center text-slate-500">
                       <Package className="w-12 h-12 mx-auto text-slate-300 mb-3" />
-                      <p className="text-lg font-medium text-slate-700 dark:text-slate-300">No pickups found</p>
+                      <p className="text-lg font-medium text-slate-700 dark:text-foreground">No pickups found</p>
                       <p className="text-sm">Schedule a new pickup to get started.</p>
                     </td>
                   </tr>
@@ -259,17 +259,17 @@ export default function Pickups() {
                           </div>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-slate-600 dark:text-slate-400 max-w-[200px] truncate">
+                      <td className="px-6 py-4 text-slate-600 dark:text-muted-foreground max-w-[200px] truncate">
                         <div className="flex items-start gap-2" title={pickup.pickup_address}>
                           <MapPin className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                           <span className="truncate">{pickup.pickup_address}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
+                      <td className="px-6 py-4 text-slate-600 dark:text-muted-foreground">
                         <div className="font-medium">{pickup.pickup_date}</div>
                         <div className="text-xs">{pickup.pickup_time || 'Any time'}</div>
                       </td>
-                      <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
+                      <td className="px-6 py-4 text-slate-600 dark:text-muted-foreground">
                         <div>{pickup.package_details || 'N/A'}</div>
                         {pickup.weight_lbs > 0 && <div className="text-xs font-medium">{pickup.weight_lbs} lbs</div>}
                       </td>

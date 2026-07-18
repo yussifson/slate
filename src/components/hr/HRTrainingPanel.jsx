@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 const CATEGORIES = ["Compliance", "Technical", "Leadership", "Safety", "Onboarding", "Product", "Soft Skills"];
 
 const STATUS_STYLES = {
-  not_started: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700",
+  not_started: "bg-slate-100 text-slate-700 dark:bg-secondary dark:text-foreground border-slate-200 dark:border-border",
   in_progress: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 border-blue-200 dark:border-blue-800",
   completed:   "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
   expired:     "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 border-red-200 dark:border-red-800",
@@ -174,7 +174,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
         <TabsContent value="courses" className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
           {courses.length === 0 ? (
             <div className="h-64 flex flex-col items-center justify-center text-center">
-              <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-4 border border-border/50 shadow-sm">
+              <div className="w-16 h-16 bg-slate-100 dark:bg-secondary rounded-2xl flex items-center justify-center mb-4 border border-border/50 shadow-sm">
                 <BookOpen className="w-8 h-8 text-muted-foreground/50" />
               </div>
               <h3 className="text-lg font-bold text-foreground">No Courses Yet</h3>
@@ -184,8 +184,8 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {courses.map(course => (
-                <div key={course.id} className="group bg-slate-50 dark:bg-slate-800/30 border border-border/50 rounded-2xl overflow-hidden hover:shadow-xl hover:border-green-500/30 hover:-translate-y-1 transition-all flex flex-col">
-                  <div className="h-32 bg-slate-100 dark:bg-slate-800 p-5 flex flex-col justify-between relative overflow-hidden border-b border-border/50 shrink-0">
+                <div key={course.id} className="group bg-slate-50 dark:bg-secondary/30 border border-border/50 rounded-2xl overflow-hidden hover:shadow-xl hover:border-green-500/30 hover:-translate-y-1 transition-all flex flex-col">
+                  <div className="h-32 bg-slate-100 dark:bg-secondary p-5 flex flex-col justify-between relative overflow-hidden border-b border-border/50 shrink-0">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-500/10 to-transparent rounded-bl-full pointer-events-none" />
                     <div className="flex justify-between items-start relative z-10">
                       <span className="text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider bg-white dark:bg-background text-green-700 dark:text-green-400 shadow-sm border border-border/50">
@@ -222,7 +222,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
           ) : (
             <div className="space-y-4">
               {records.map(r => (
-                <div key={r.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-border/50 gap-4 hover:shadow-md hover:border-green-500/30 transition-all group">
+                <div key={r.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-slate-50 dark:bg-secondary/30 rounded-xl border border-border/50 gap-4 hover:shadow-md hover:border-green-500/30 transition-all group">
                   <div className="flex gap-4 items-center">
                     <div className="w-10 h-10 rounded-xl bg-white dark:bg-card flex items-center justify-center font-bold text-sm text-foreground shadow-sm border border-border/50 shrink-0">
                       {r.full_name?.charAt(0) || '?'}
@@ -252,7 +252,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
         </TabsContent>
 
         <TabsContent value="analytics" className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
-          <div className="bg-slate-50 dark:bg-slate-800/30 border border-border/50 rounded-2xl p-6 shadow-inner">
+          <div className="bg-slate-50 dark:bg-secondary/30 border border-border/50 rounded-2xl p-6 shadow-inner">
             <h3 className="font-bold text-foreground text-lg mb-6 flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-green-600" /> Completion Leaderboard
             </h3>
@@ -271,7 +271,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
                         <span className="font-bold text-foreground text-sm">{s.name}</span>
                         <span className="text-xs font-bold text-muted-foreground">{s.completed} of {s.total} completed</span>
                       </div>
-                      <div className="h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden border border-border/50">
+                      <div className="h-2.5 bg-slate-100 dark:bg-secondary rounded-full overflow-hidden border border-border/50">
                         <div className="h-full bg-gradient-to-r from-green-500 to-emerald-400 rounded-full" style={{ width: `${s.pct}%` }} />
                       </div>
                     </div>

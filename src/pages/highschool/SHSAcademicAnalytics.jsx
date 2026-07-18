@@ -88,7 +88,7 @@ export default function SHSAcademicAnalytics() {
 
  {loading ? (
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading academic analytics...</CardContent>
+ <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading academic analytics...</CardContent>
  </Card>
  ) : (
  <>
@@ -115,11 +115,11 @@ export default function SHSAcademicAnalytics() {
  <TrendingUp className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider tracking-[0.04em]">Pass Rate (&gt;50%)</p>
+ <p className="text-sm font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wider tracking-[0.04em]">Pass Rate (&gt;50%)</p>
  </div>
  </div>
  <h3 className="text-4xl font-black text-primary tracking-[-0.02em]">{passRate.toFixed(1)}%</h3>
- <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full mt-4 overflow-hidden">
+ <div className="w-full bg-slate-100 dark:bg-secondary h-2 rounded-full mt-4 overflow-hidden">
  <div 
  className="h-full bg-primary" 
  style={{ width: `${passRate}%`}}
@@ -135,50 +135,50 @@ export default function SHSAcademicAnalytics() {
  <Award className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider tracking-[0.04em]">Top Programme</p>
+ <p className="text-sm font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wider tracking-[0.04em]">Top Programme</p>
  </div>
  </div>
  <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 leading-tight tracking-[-0.02em]">General Science</h3>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mt-2 font-medium tracking-[0.04em]">Avg Score: 78.4%</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground mt-2 font-medium tracking-[0.04em]">Avg Score: 78.4%</p>
  </CardContent>
  </Card>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6">
  <div className="flex items-center gap-4 mb-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center text-primary dark:text-primary/70">
  <Activity className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider tracking-[0.04em]">Records Analyzed</p>
+ <p className="text-sm font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wider tracking-[0.04em]">Records Analyzed</p>
  </div>
  </div>
  <h3 className="text-4xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">{totalReports}</h3>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mt-2 font-medium tracking-[0.04em]">Report cards in database</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground mt-2 font-medium tracking-[0.04em]">Report cards in database</p>
  </CardContent>
  </Card>
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 p-6">
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <BarChart className="w-5 h-5 text-primary dark:text-primary/70" /> Form Averages
  </CardTitle>
  </CardHeader>
  <CardContent className="p-16 flex items-center justify-center min-h-[300px]">
  <div className="text-center space-y-4">
- <div className="w-20 h-20 rounded-3xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
+ <div className="w-20 h-20 rounded-3xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary mx-auto flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <BarChart className="w-10 h-10 text-slate-300" />
  </div>
- <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-medium">Interactive charts require a Charting Provider.</p>
+ <p className="text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground font-medium">Interactive charts require a Charting Provider.</p>
  
  {totalReports === 0 ? (
  <div className="flex gap-8 justify-center items-end h-32 mt-8 opacity-60">
  {[1, 2, 3].map(f => (
  <div key={f} className="flex flex-col items-center gap-2">
  <div className={`w-16 bg-primary dark:bg-primary rounded-t-lg h-[${60 + f * 5}%] -emerald-500/50`}></div>
- <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 tracking-[0.04em]">Form {f}</span>
+ <span className="text-xs font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground tracking-[0.04em]">Form {f}</span>
  </div>
  ))}
  </div>
@@ -189,7 +189,7 @@ export default function SHSAcademicAnalytics() {
  return (
  <div key={form} className="flex flex-col items-center gap-2">
  <div className="w-16 bg-primary dark:bg-primary rounded-t-lg -emerald-500/50 transition-all" style={{ height: `${Math.max(10, avg)}%`}}></div>
- <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300 tracking-[0.04em]">{form} <br/><span className="text-primary text-[10px]">{avg.toFixed(1)}%</span></span>
+ <span className="text-xs font-semibold text-slate-700 dark:text-foreground dark:text-foreground tracking-[0.04em]">{form} <br/><span className="text-primary text-[10px]">{avg.toFixed(1)}%</span></span>
  </div>
  );
 })}
@@ -201,7 +201,7 @@ export default function SHSAcademicAnalytics() {
  </Card>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 p-6">
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <LineChart className="w-5 h-5 text-primary dark:text-primary/70" /> Core Subject Trends
  </CardTitle>
@@ -211,10 +211,10 @@ export default function SHSAcademicAnalytics() {
  {defaultTopSubjects.map((subj, idx) => (
  <div key={idx}>
  <div className="flex justify-between items-center mb-2">
- <span className="font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">{subj.name}</span>
+ <span className="font-semibold text-slate-700 dark:text-foreground dark:text-foreground">{subj.name}</span>
  <span className="font-semibold text-primary dark:text-primary/70">{subj.avg.toFixed(1)}%</span>
  </div>
- <div className="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+ <div className="w-full bg-slate-100 dark:bg-secondary h-2.5 rounded-full overflow-hidden">
  <div className="h-full bg-primary dark:bg-primary transition-all duration-500" style={{ width: `${Math.min(100, subj.avg)}%`}}></div>
  </div>
  </div>

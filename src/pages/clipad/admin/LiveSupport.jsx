@@ -88,15 +88,15 @@ export default function LiveSupport() {
           <p className="text-muted-foreground mt-1">Monitor active chats and requested calls from the marketing page.</p>
         </div>
         
-        <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl w-full sm:w-auto overflow-x-auto shrink-0">
+        <div className="flex bg-slate-100 dark:bg-secondary p-1 rounded-xl w-full sm:w-auto overflow-x-auto shrink-0">
           {['pending', 'contacted', 'resolved'].map(f => (
             <button
               key={f}
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap flex-1 sm:flex-none ${
                 filter === f 
-                  ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm' 
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                  ? 'bg-white dark:bg-card text-slate-900 dark:text-white shadow-sm' 
+                  : 'text-slate-500 dark:text-muted-foreground hover:text-slate-700 dark:hover:text-slate-200'
               }`}
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -142,7 +142,7 @@ export default function LiveSupport() {
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="text-muted-foreground w-16">Email:</span>
-                            <span className="font-medium text-slate-700 dark:text-slate-300">{chat.profiles?.email || 'N/A'}</span>
+                            <span className="font-medium text-slate-700 dark:text-foreground">{chat.profiles?.email || 'N/A'}</span>
                           </div>
                         </div>
                       </div>
@@ -156,7 +156,7 @@ export default function LiveSupport() {
                       </button>
                       <button 
                         onClick={() => resolveSupportChat(chat.id)}
-                        className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-semibold transition-colors"
+                        className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-secondary border border-slate-200 dark:border-border hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-foreground rounded-xl text-sm font-semibold transition-colors"
                       >
                         <CheckCircle2 className="w-4 h-4" /> Mark Resolved
                       </button>
@@ -172,8 +172,8 @@ export default function LiveSupport() {
         {loading ? (
           <div className="p-12 text-center text-slate-500 font-medium">Loading requests...</div>
         ) : filteredRequests.length === 0 ? (
-          <div className="p-16 flex flex-col items-center justify-center text-center bg-white dark:bg-slate-900 border-[0.5px] border-slate-200 dark:border-slate-800 rounded-2xl">
-            <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-4">
+          <div className="p-16 flex flex-col items-center justify-center text-center bg-white dark:bg-card border-[0.5px] border-slate-200 dark:border-border rounded-2xl">
+            <div className="w-16 h-16 bg-slate-50 dark:bg-secondary rounded-2xl flex items-center justify-center mb-4">
               <MessageSquare className="w-8 h-8 text-slate-400" />
             </div>
             <h3 className="text-lg font-semibold mb-1">No requests found</h3>
@@ -181,7 +181,7 @@ export default function LiveSupport() {
           </div>
         ) : (
           filteredRequests.map(req => (
-            <div key={req.id} className="bg-white dark:bg-slate-900 border-[0.5px] border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div key={req.id} className="bg-white dark:bg-card border-[0.5px] border-slate-200 dark:border-border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex flex-col md:flex-row gap-6 md:items-start justify-between">
                 
                 <div className="flex gap-4 items-start">
@@ -214,21 +214,21 @@ export default function LiveSupport() {
                         </div>
                       </div>
                     ) : (
-                      <div className="mt-3 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl text-sm italic text-slate-700 dark:text-slate-300 border border-slate-100 dark:border-slate-800 relative">
-                        <div className="absolute top-0 left-4 -mt-2 w-3 h-3 bg-slate-50 dark:bg-slate-800 border-t border-l border-slate-100 dark:border-slate-800 rotate-45" />
+                      <div className="mt-3 bg-slate-50 dark:bg-secondary/50 p-4 rounded-xl text-sm italic text-slate-700 dark:text-foreground border border-slate-100 dark:border-border relative">
+                        <div className="absolute top-0 left-4 -mt-2 w-3 h-3 bg-slate-50 dark:bg-secondary border-t border-l border-slate-100 dark:border-border rotate-45" />
                         "{req.message}"
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div className="flex md:flex-col gap-2 shrink-0 border-t md:border-t-0 md:border-l border-slate-100 dark:border-slate-800 pt-4 md:pt-0 md:pl-6">
+                <div className="flex md:flex-col gap-2 shrink-0 border-t md:border-t-0 md:border-l border-slate-100 dark:border-border pt-4 md:pt-0 md:pl-6">
                   {req.status === 'pending' && (
                     <>
                       <button onClick={() => updateStatus(req.id, 'contacted')} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition-colors">
                         <Mail className="w-4 h-4" /> Mark Contacted
                       </button>
-                      <button onClick={() => updateStatus(req.id, 'resolved')} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-xl text-sm font-semibold transition-colors">
+                      <button onClick={() => updateStatus(req.id, 'resolved')} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 dark:bg-secondary hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-slate-700 dark:text-foreground hover:text-emerald-600 dark:hover:text-emerald-400 rounded-xl text-sm font-semibold transition-colors">
                         <CheckCircle2 className="w-4 h-4" /> Resolve
                       </button>
                     </>

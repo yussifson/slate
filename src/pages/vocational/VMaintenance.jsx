@@ -131,7 +131,7 @@ export default function VMaintenance() {
  <Card className="bg-white dark:bg-card/40/60 dark:bg-card/60 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex flex-col justify-center">
  <div className="flex items-center gap-4">
- <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400">
+ <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-secondary flex items-center justify-center text-slate-600 dark:text-muted-foreground">
  <Hammer className="w-6 h-6" />
  </div>
  <div>
@@ -170,7 +170,7 @@ export default function VMaintenance() {
  <Card className="bg-white dark:bg-card/40/60 dark:bg-card/60 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex flex-col justify-center">
  <div className="flex items-center gap-4">
- <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
  <CheckCircle2 className="w-6 h-6" />
  </div>
  <div>
@@ -197,13 +197,13 @@ export default function VMaintenance() {
  {filtered.map(item => (
  <div key={item.id} className="flex items-center justify-between p-5 hover:bg-slate-50/50 dark:bg-transparent dark:hover:bg-slate-800/50 transition-colors group">
  <div className="flex items-center gap-5">
- <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-semibold shrink-0">
+ <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-semibold shrink-0">
  <Wrench className="w-6 h-6" />
  </div>
  <div>
  <h4 className="text-base font-semibold text-slate-900 dark:text-slate-100 dark:text-white group-hover:text-primary transition-colors">{item.title}</h4>
  <div className="flex items-center gap-3 text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">
- <span className="font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300">Eq: {item.data?.equipment_name || 'Unspecified'}</span>
+ <span className="font-medium text-slate-700 dark:text-foreground dark:text-foreground">Eq: {item.data?.equipment_name || 'Unspecified'}</span>
  <span>•</span>
  <span>Tech: {item.data?.technician || 'Pending Assignment'}</span>
  <span>•</span>
@@ -213,7 +213,7 @@ export default function VMaintenance() {
  </div>
  <div className="flex items-center gap-6">
  {item.data?.cost && (
- <div className="hidden md:flex items-center text-sm font-semibold text-slate-600 dark:text-slate-300">
+ <div className="hidden md:flex items-center text-sm font-semibold text-slate-600 dark:text-foreground">
  <DollarSign className="w-4 h-4 text-primary mr-1" />
  {item.data.cost}
  </div>
@@ -223,12 +223,12 @@ export default function VMaintenance() {
  item.status === 'In Progress' ? 'bg-orange-100 text-orange-700 hover:bg-primary/20 dark:bg-primary/20 dark:text-primary/70' :
  item.status === 'Scheduled' ? 'bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-500/20 dark:text-amber-400' :
  item.status === 'Overdue' ? 'bg-rose-100 text-rose-700 hover:bg-rose-200 dark:bg-rose-500/20 dark:text-rose-400' :
- 'bg-slate-100 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400'
+ 'bg-slate-100 text-slate-700 dark:text-foreground hover:bg-slate-200 dark:bg-secondary dark:text-muted-foreground'
 } variant="secondary">
  {item.status}
  </Badge>
  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
- <Button variant="ghost" size="icon" onClick={() => openModal(item)} className="h-8 w-8 text-primary hover:bg-slate-50 dark:bg-slate-800/50 dark:hover:bg-primary/20">
+ <Button variant="ghost" size="icon" onClick={() => openModal(item)} className="h-8 w-8 text-primary hover:bg-slate-50 dark:bg-secondary/50 dark:hover:bg-primary/20">
  <Edit className="w-4 h-4" />
  </Button>
  <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="h-8 w-8 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20">
@@ -251,34 +251,34 @@ export default function VMaintenance() {
  </DialogHeader>
  <div className="grid gap-4 py-4">
  <div className="space-y-2">
- <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Task Title</label>
- <Input className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Annual Calibration" />
+ <label className="text-sm font-semibold text-slate-700 dark:text-foreground dark:text-foreground">Task Title</label>
+ <Input className="rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-none" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Annual Calibration" />
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Equipment Name</label>
- <Input className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.equipment_name} onChange={e => setFormData({...formData, equipment_name: e.target.value})} placeholder="e.g. Lathe Machine" />
+ <label className="text-sm font-semibold text-slate-700 dark:text-foreground dark:text-foreground">Equipment Name</label>
+ <Input className="rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-none" value={formData.equipment_name} onChange={e => setFormData({...formData, equipment_name: e.target.value})} placeholder="e.g. Lathe Machine" />
  </div>
  <div className="space-y-2">
- <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Technician</label>
- <Input className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.technician} onChange={e => setFormData({...formData, technician: e.target.value})} placeholder="e.g. Mike R." />
- </div>
- </div>
- <div className="grid grid-cols-2 gap-4">
- <div className="space-y-2">
- <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Scheduled Date</label>
- <Input type="date" className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.scheduled_date} onChange={e => setFormData({...formData, scheduled_date: e.target.value})} />
- </div>
- <div className="space-y-2">
- <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Cost (optional)</label>
- <Input className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.cost} onChange={e => setFormData({...formData, cost: e.target.value})} placeholder="e.g. 150.00" />
+ <label className="text-sm font-semibold text-slate-700 dark:text-foreground dark:text-foreground">Technician</label>
+ <Input className="rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-none" value={formData.technician} onChange={e => setFormData({...formData, technician: e.target.value})} placeholder="e.g. Mike R." />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Status</label>
+ <label className="text-sm font-semibold text-slate-700 dark:text-foreground dark:text-foreground">Scheduled Date</label>
+ <Input type="date" className="rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-none" value={formData.scheduled_date} onChange={e => setFormData({...formData, scheduled_date: e.target.value})} />
+ </div>
+ <div className="space-y-2">
+ <label className="text-sm font-semibold text-slate-700 dark:text-foreground dark:text-foreground">Cost (optional)</label>
+ <Input className="rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-none" value={formData.cost} onChange={e => setFormData({...formData, cost: e.target.value})} placeholder="e.g. 150.00" />
+ </div>
+ </div>
+ <div className="grid grid-cols-2 gap-4">
+ <div className="space-y-2">
+ <label className="text-sm font-semibold text-slate-700 dark:text-foreground dark:text-foreground">Status</label>
  <select 
- className="flex h-10 w-full items-center justify-between rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 py-2 text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+ className="flex h-10 w-full items-center justify-between rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary px-3 py-2 text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
  value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})}
  >
  <option value="Scheduled">Scheduled</option>
@@ -289,9 +289,9 @@ export default function VMaintenance() {
  </div>
  </div>
  <div className="space-y-2">
- <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Notes / Details</label>
+ <label className="text-sm font-semibold text-slate-700 dark:text-foreground dark:text-foreground">Notes / Details</label>
  <textarea 
- className="flex w-full rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 py-2 text-sm border-none min-h-[80px] focus:outline-none"
+ className="flex w-full rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary px-3 py-2 text-sm border-none min-h-[80px] focus:outline-none"
  value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} placeholder="Additional details..."
  />
  </div>

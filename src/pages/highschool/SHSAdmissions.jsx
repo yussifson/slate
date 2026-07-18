@@ -96,7 +96,7 @@ export default function SHSAdmissions() {
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
  <Card className="rounded-2xl border-none bg-white dark:bg-card/40 dark:bg-card/60 dark:bg-card/60 backdrop-blur-xl ring-1 ring-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
  <Users className="w-6 h-6" />
  </div>
  <div>
@@ -150,14 +150,14 @@ export default function SHSAdmissions() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Applications List</CardTitle>
  </div>
  
  <div className="relative w-full sm:w-64">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-muted-foreground" />
  <Input 
  placeholder="Search name or ID..." 
  className="pl-9 h-9 bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -169,19 +169,19 @@ export default function SHSAdmissions() {
  </CardHeader>
  <CardContent className="p-0">
  {loading ? (
- <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading applicants...</div>
+ <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading applicants...</div>
  ) : filteredApplicants.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary mx-auto flex items-center justify-center mb-4">
  <Users className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No applications found</h3>
- <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Register a new applicant to get started.</p>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No applications found</h3>
+ <p className="text-sm text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">Register a new applicant to get started.</p>
  </div>
  ) : (
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left">
- <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
+ <thead className="bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/80 text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
  <tr>
  <th className="px-6 py-4 rounded-tl-xl">Applicant Name</th>
  <th className="px-6 py-4">App ID</th>
@@ -194,35 +194,35 @@ export default function SHSAdmissions() {
  </thead>
  <tbody className="divide-y divide-slate-100">
  {filteredApplicants.map((applicant) => (
- <tr key={applicant.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+ <tr key={applicant.id} className="hover:bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 transition-colors">
  <td className="px-6 py-4 font-semibold text-slate-800 dark:text-slate-100">
  {applicant.title}
  </td>
- <td className="px-6 py-4 text-slate-600 dark:text-slate-300 font-medium">
+ <td className="px-6 py-4 text-slate-600 dark:text-foreground font-medium">
  {applicant.case_number}
  </td>
  <td className="px-6 py-4">
- <Badge variant="outline" className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 text-slate-700 dark:text-slate-300 dark:text-slate-200 font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Badge variant="outline" className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 text-slate-700 dark:text-foreground dark:text-foreground font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {applicant.data?.beceAggregate}
  </Badge>
  </td>
- <td className="px-6 py-4 text-slate-700 dark:text-slate-300 dark:text-slate-200">
+ <td className="px-6 py-4 text-slate-700 dark:text-foreground dark:text-foreground">
  {applicant.data?.programChoice1}
  </td>
- <td className="px-6 py-4 text-slate-600 dark:text-slate-300 truncate max-w-[150px]">
+ <td className="px-6 py-4 text-slate-600 dark:text-foreground truncate max-w-[150px]">
  {applicant.data?.jhsAttended}
  </td>
  <td className="px-6 py-4">
  <Badge variant="outline" className={
  applicant.status === 'Pending' ? 'bg-amber-50 text-amber-700 border-amber-200' :
- applicant.status === 'Admitted' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20' :
+ applicant.status === 'Admitted' ? 'bg-slate-50 dark:bg-secondary/50 text-primary/90 border-primary/20' :
  'bg-rose-50 text-rose-700 border-rose-200'
 }>
  {applicant.status}
  </Badge>
  </td>
  <td className="px-6 py-4 text-right">
- <Button variant="ghost" size="sm" className="text-primary dark:text-primary/70 hover:text-primary/70 dark:text-primary/10 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 rounded-xl">
+ <Button variant="ghost" size="sm" className="text-primary dark:text-primary/70 hover:text-primary/70 dark:text-primary/10 hover:bg-slate-50 dark:bg-secondary/50 dark:bg-secondary rounded-xl">
  Review
  </Button>
  </td>
@@ -246,17 +246,17 @@ export default function SHSAdmissions() {
  </DialogHeader>
  </div>
  
- <ScrollArea className="max-h-[65vh] p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
+ <ScrollArea className="max-h-[65vh] p-6 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary">
  <div className="space-y-6 school-page-enter font-dmsans">
  
  <div className="space-y-4">
  <h4 className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2 border-b border-primary/40 dark:border-primary/40 pb-2">
- <span className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70 flex items-center justify-center text-xs tracking-[0.04em]">1</span>
+ <span className="w-6 h-6 rounded-full bg-slate-100 dark:bg-secondary text-primary dark:text-primary/70 flex items-center justify-center text-xs tracking-[0.04em]">1</span>
  Personal Details
  </h4>
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">First Name</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">First Name</label>
  <Input 
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newApplicant.firstName}
@@ -264,7 +264,7 @@ export default function SHSAdmissions() {
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Last Name</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Last Name</label>
  <Input 
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newApplicant.lastName}
@@ -272,7 +272,7 @@ export default function SHSAdmissions() {
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Date of Birth</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Date of Birth</label>
  <Input 
  type="date"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -281,7 +281,7 @@ export default function SHSAdmissions() {
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Gender</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Gender</label>
  <select 
  className="w-full h-10 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newApplicant.gender}
@@ -296,11 +296,11 @@ export default function SHSAdmissions() {
 
  <div className="space-y-4">
  <h4 className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2 border-b border-primary/40 dark:border-primary/40 pb-2">
- <span className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70 flex items-center justify-center text-xs tracking-[0.04em]">2</span>
+ <span className="w-6 h-6 rounded-full bg-slate-100 dark:bg-secondary text-primary dark:text-primary/70 flex items-center justify-center text-xs tracking-[0.04em]">2</span>
  Academic & Programme
  </h4>
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">JHS Attended</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">JHS Attended</label>
  <Input 
  placeholder="e.g. Ridge Religion School"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -310,7 +310,7 @@ export default function SHSAdmissions() {
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">BECE Aggregate</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">BECE Aggregate</label>
  <Input 
  type="number"
  placeholder="e.g. 06"
@@ -320,7 +320,7 @@ export default function SHSAdmissions() {
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Status</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Status</label>
  <select 
  className="w-full h-10 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newApplicant.status}
@@ -335,7 +335,7 @@ export default function SHSAdmissions() {
  
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">1st Choice</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">1st Choice</label>
  <select 
  className="w-full h-10 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newApplicant.programChoice1}
@@ -350,7 +350,7 @@ export default function SHSAdmissions() {
  </select>
  </div>
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">2nd Choice</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">2nd Choice</label>
  <select 
  className="w-full h-10 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newApplicant.programChoice2}
@@ -371,7 +371,7 @@ export default function SHSAdmissions() {
  </ScrollArea>
  
  <div className="p-4 bg-white dark:bg-card/40 dark:bg-card border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-foreground">
  Cancel
  </Button>
  <Button 

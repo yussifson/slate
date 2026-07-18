@@ -97,24 +97,24 @@ export default function SHSStreams() {
 
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
  {loading ? (
- <div className="col-span-full p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading streams...</div>
+ <div className="col-span-full p-12 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading streams...</div>
  ) : filteredStreams.length === 0 ? (
  <div className="col-span-full p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary mx-auto flex items-center justify-center mb-4">
  <GitMerge className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No streams defined</h3>
- <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Create streams to organize classes within programmes.</p>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No streams defined</h3>
+ <p className="text-sm text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">Create streams to organize classes within programmes.</p>
  </div>
  ) : (
  filteredStreams.map(strm => (
  <Card key={strm.id} className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 hover:ring-primary/30 dark:hover:ring-primary/30 transition-all group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6">
  <div className="flex justify-between items-start mb-4">
- <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary flex items-center justify-center text-primary dark:text-primary/70">
  <Layers className="w-5 h-5" />
  </div>
- <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20">
+ <Badge variant="outline" className="bg-slate-50 dark:bg-secondary/50 text-primary/90 border-primary/20">
  {strm.status}
  </Badge>
  </div>
@@ -122,12 +122,12 @@ export default function SHSStreams() {
  <h3 className="text-xl font-black text-slate-800 dark:text-slate-100 mb-1">{strm.title}</h3>
  <p className="text-xs font-semibold text-primary dark:text-primary/70 uppercase tracking-wider mb-4 tracking-[0.04em]">{strm.data?.programmeName}</p>
  
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 line-clamp-2 min-h-[32px] tracking-[0.04em]">
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground line-clamp-2 min-h-[32px] tracking-[0.04em]">
  {strm.data?.description || 'No description provided.'}
  </p>
  
  <div className="mt-5 pt-4 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-2">
- <Button variant="ghost" size="sm" className="text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 font-semibold w-full">
+ <Button variant="ghost" size="sm" className="text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-secondary/50 dark:bg-secondary font-semibold w-full">
  View Classes
  </Button>
  </div>
@@ -148,9 +148,9 @@ export default function SHSStreams() {
  </DialogHeader>
  </div>
  
- <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
+ <div className="p-6 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Stream Name</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Stream Name</label>
  <Input 
  placeholder="e.g. Science A"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -160,7 +160,7 @@ export default function SHSStreams() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Parent Programme</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Parent Programme</label>
  <select 
  className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newStream.programmeId}
@@ -174,7 +174,7 @@ export default function SHSStreams() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Description</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Description</label>
  <textarea 
  className="w-full h-24 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  placeholder="Brief description..."
@@ -185,7 +185,7 @@ export default function SHSStreams() {
  </div>
  
  <div className="p-4 bg-white dark:bg-card/40 dark:bg-card border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-foreground">
  Cancel
  </Button>
  <Button 

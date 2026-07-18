@@ -83,7 +83,7 @@ export default function PhoneSupportPanel({ isOpen, onClose }) {
       `}>
         
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-card/50">
+        <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-border bg-slate-50/50 dark:bg-card/50">
            <div className="flex items-center gap-3">
              <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                 <Phone className="w-5 h-5" />
@@ -92,7 +92,7 @@ export default function PhoneSupportPanel({ isOpen, onClose }) {
                <h3 className="font-semibold text-slate-900 dark:text-white text-sm">
                  Request a Callback
                </h3>
-               <p className="text-xs text-slate-500 dark:text-slate-400">
+               <p className="text-xs text-slate-500 dark:text-muted-foreground">
                  A Super Admin will call you back
                </p>
              </div>
@@ -110,14 +110,14 @@ export default function PhoneSupportPanel({ isOpen, onClose }) {
                  <CheckCircle2 className="w-8 h-8" />
                </div>
                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Request Sent!</h3>
-               <p className="text-slate-500 dark:text-slate-400 max-w-[250px]">
+               <p className="text-slate-500 dark:text-muted-foreground max-w-[250px]">
                  Our Super Admins have received your request and will call you shortly.
                </p>
              </div>
            ) : (
              <form onSubmit={handleSubmit} className="space-y-6">
                <div>
-                 <p className="text-sm text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+                 <p className="text-sm text-slate-600 dark:text-muted-foreground mb-6 leading-relaxed">
                    Provide your phone number and a brief description of the issue. Our technical support team will review it and get in touch with you.
                  </p>
                </div>
@@ -129,7 +129,7 @@ export default function PhoneSupportPanel({ isOpen, onClose }) {
                )}
 
                <div className="space-y-2">
-                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                 <label className="text-sm font-medium text-slate-700 dark:text-foreground">
                    Phone Number <span className="text-red-500">*</span>
                  </label>
                  <div className="relative">
@@ -137,7 +137,7 @@ export default function PhoneSupportPanel({ isOpen, onClose }) {
                    <input
                      type="tel"
                      placeholder="+1 (555) 000-0000"
-                     className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-card/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none"
+                     className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-card/50 border border-slate-200 dark:border-border rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none"
                      value={formData.phone_number}
                      onChange={(e) => setFormData({...formData, phone_number: e.target.value})}
                    />
@@ -145,26 +145,26 @@ export default function PhoneSupportPanel({ isOpen, onClose }) {
                </div>
 
                <div className="space-y-2">
-                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                 <label className="text-sm font-medium text-slate-700 dark:text-foreground">
                    What is the issue about? <span className="text-red-500">*</span>
                  </label>
                  <textarea
                    rows={4}
                    placeholder="Briefly describe the problem you are facing..."
-                   className="w-full p-4 bg-slate-50 dark:bg-card/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none resize-none"
+                   className="w-full p-4 bg-slate-50 dark:bg-card/50 border border-slate-200 dark:border-border rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none resize-none"
                    value={formData.reason}
                    onChange={(e) => setFormData({...formData, reason: e.target.value})}
                  />
                </div>
 
                <div className="space-y-2">
-                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                 <label className="text-sm font-medium text-slate-700 dark:text-foreground">
                    Preferred Callback Time
                  </label>
                  <div className="relative">
                    <Clock className="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                    <select
-                     className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-card/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none appearance-none"
+                     className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-card/50 border border-slate-200 dark:border-border rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none appearance-none"
                      value={formData.preferred_time}
                      onChange={(e) => setFormData({...formData, preferred_time: e.target.value})}
                    >

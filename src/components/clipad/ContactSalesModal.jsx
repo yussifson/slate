@@ -52,14 +52,14 @@ export default function ContactSalesModal({ isOpen, onClose }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-3xl">
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white dark:bg-background border-slate-200 dark:border-border rounded-3xl">
         {success ? (
           <div className="p-10 text-center flex flex-col items-center justify-center space-y-4">
             <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mb-2">
               <CheckCircle className="w-8 h-8" />
             </div>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Message Sent!</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-sm max-w-[250px]">
+            <p className="text-slate-500 dark:text-muted-foreground text-sm max-w-[250px]">
               Our sales team will get back to you shortly to discuss a custom plan.
             </p>
           </div>
@@ -68,7 +68,7 @@ export default function ContactSalesModal({ isOpen, onClose }) {
             <div className="px-8 pt-8 pb-4">
               <DialogHeader>
                 <DialogTitle className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Contact Sales</DialogTitle>
-                <DialogDescription className="text-slate-500 dark:text-slate-400">
+                <DialogDescription className="text-slate-500 dark:text-muted-foreground">
                   Fill out the form below and we'll be in touch to build a custom enterprise plan for your team.
                 </DialogDescription>
               </DialogHeader>
@@ -81,7 +81,7 @@ export default function ContactSalesModal({ isOpen, onClose }) {
                   required
                   value={form.name}
                   onChange={e => setForm({...form, name: e.target.value})}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-primary transition-all"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-card border border-slate-200 dark:border-border text-sm focus:outline-none focus:border-primary transition-all"
                   placeholder="Jane Doe"
                 />
               </div>
@@ -92,7 +92,7 @@ export default function ContactSalesModal({ isOpen, onClose }) {
                   type="email"
                   value={form.email}
                   onChange={e => setForm({...form, email: e.target.value})}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-primary transition-all"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-card border border-slate-200 dark:border-border text-sm focus:outline-none focus:border-primary transition-all"
                   placeholder="jane@company.com"
                 />
               </div>
@@ -102,7 +102,7 @@ export default function ContactSalesModal({ isOpen, onClose }) {
                   required
                   value={form.company}
                   onChange={e => setForm({...form, company: e.target.value})}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-primary transition-all"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-card border border-slate-200 dark:border-border text-sm focus:outline-none focus:border-primary transition-all"
                   placeholder="Acme Corp"
                 />
               </div>
@@ -113,7 +113,7 @@ export default function ContactSalesModal({ isOpen, onClose }) {
                   value={form.message}
                   onChange={e => setForm({...form, message: e.target.value})}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-primary transition-all resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-card border border-slate-200 dark:border-border text-sm focus:outline-none focus:border-primary transition-all resize-none"
                   placeholder="Tell us about your team's needs..."
                 />
               </div>

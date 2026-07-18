@@ -302,7 +302,7 @@ export default function UnivVendorManagement({
  <Star key={star} className={cn("w-4 h-4", star <= rating ? "fill-amber-500 text-amber-500" : "fill-muted text-muted")} />
  ))}
  </div>
- <span className={cn("px-2 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-lg border", vendor.status === 'Active' ? "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-400 dark:border-emerald-800" : "bg-slate-100 text-slate-700 border-primary/40 dark:bg-slate-800 dark:text-slate-400 dark:border-primary/40")}>
+ <span className={cn("px-2 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-lg border", vendor.status === 'Active' ? "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-400 dark:border-emerald-800" : "bg-slate-100 text-slate-700 border-primary/40 dark:bg-secondary dark:text-muted-foreground dark:border-primary/40")}>
  {vendor.status}
  </span>
  </div>

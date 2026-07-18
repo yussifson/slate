@@ -12,7 +12,7 @@ import BentoGrid from '@/components/shared/BentoGrid';
 import DashboardSectionHeader from '@/components/shared/DashboardSectionHeader';
 
 const statusBadgeColors = {
-  'Pending': 'bg-slate-100 dark:bg-slate-800/30 text-slate-700 dark:text-slate-400',
+  'Pending': 'bg-slate-100 dark:bg-secondary/30 text-slate-700 dark:text-muted-foreground',
   'In Transit': 'bg-blue-100 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400',
   'Out for Delivery': 'bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400',
   'Delivered': 'bg-emerald-100 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400',
@@ -67,7 +67,7 @@ export default function ShipmentsTrackingNew() {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-[hsl(var(--logistics-primary))] to-[hsl(var(--logistics-secondary))] bg-clip-text text-transparent tracking-tight mb-2">
               Shipment Tracking
             </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-400">Monitor all packages and deliveries in real-time</p>
+            <p className="text-sm text-slate-600 dark:text-muted-foreground">Monitor all packages and deliveries in real-time</p>
           </div>
           <Button className="bg-[hsl(var(--logistics-primary))] hover:bg-[hsl(var(--logistics-primary)_/_0.9)] text-white gap-2">
             <Plus className="w-4 h-4" />
@@ -140,18 +140,18 @@ export default function ShipmentsTrackingNew() {
         initial={{ opacity: 0, y: 20 }} 
         animate={{ opacity: 1, y: 0 }} 
         transition={{ delay: 0.3 }}
-        className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm"
+        className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-border overflow-hidden shadow-sm"
       >
         <DashboardSectionHeader 
           title="Shipments" 
           subtitle={`${filteredShipments.length} results`}
-          containerClassName="p-6 border-b border-slate-200 dark:border-slate-800"
+          containerClassName="p-6 border-b border-slate-200 dark:border-border"
         />
         
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
-              <tr className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+            <thead className="bg-slate-50 dark:bg-secondary/50 border-b border-slate-200 dark:border-border">
+              <tr className="text-xs font-semibold text-slate-600 dark:text-muted-foreground uppercase tracking-wider">
                 <th className="px-6 py-4 text-left">Tracking ID</th>
                 <th className="px-6 py-4 text-left">Destination</th>
                 <th className="px-6 py-4 text-left">Driver</th>
@@ -171,7 +171,7 @@ export default function ShipmentsTrackingNew() {
                   className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                 >
                   <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">{shipment.trackingId}</td>
-                  <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{shipment.destination}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 dark:text-muted-foreground">{shipment.destination}</td>
                   <td className="px-6 py-4 text-sm">{shipment.driver || 'Unassigned'}</td>
                   <td className="px-6 py-4">
                     <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ${statusBadgeColors[shipment.status] || statusBadgeColors['Pending']}`}>

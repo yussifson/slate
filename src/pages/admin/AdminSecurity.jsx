@@ -103,7 +103,7 @@ export default function AdminSecurity() {
         <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex flex-col justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{t("system_health", "System Health")}</p>
+              <p className="text-sm font-semibold text-slate-500 dark:text-muted-foreground uppercase tracking-wider mb-1 tracking-[0.04em]">{t("system_health", "System Health")}</p>
               <h3 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{t("secure_online", "Secure & Online")}</h3>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10/10 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 dark:border-emerald-500/20">
@@ -111,12 +111,12 @@ export default function AdminSecurity() {
             </div>
           </div>
           <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+            <span className="text-sm text-slate-500 dark:text-muted-foreground font-medium">
               {realAuditLogs.filter(l => l.action === 'SYSTEM_ALERT' && l.severity === 'high').length} active threats detected
             </span>
             <button 
               onClick={() => toast({ title: 'Maintenance Mode', description: 'Maintenance mode is currently disabled in this environment.' })}
-              className="text-[10px] font-semibold uppercase bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-1 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors tracking-[0.04em]"
+              className="text-[10px] font-semibold uppercase bg-slate-100 dark:bg-secondary text-slate-500 dark:text-muted-foreground px-2 py-1 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors tracking-[0.04em]"
             >
               Enable Maintenance Mode
             </button>
@@ -126,14 +126,14 @@ export default function AdminSecurity() {
         <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex flex-col justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{t("failed_auth", "Failed Auth")}</p>
+              <p className="text-sm font-semibold text-slate-500 dark:text-muted-foreground uppercase tracking-wider mb-1 tracking-[0.04em]">{t("failed_auth", "Failed Auth")}</p>
               <h3 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{realAuditLogs.filter(l => (l.action === 'LOGIN_FAILED' || l.action === 'AUTH_FAILURE') && new Date(l.created_at) > new Date(Date.now() - 24*60*60*1000)).length}</h3>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-amber-100 dark:border-amber-500/20">
               <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
             </div>
           </div>
-          <div className="mt-4 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 font-medium">
+          <div className="mt-4 flex items-center gap-2 text-sm text-slate-500 dark:text-muted-foreground font-medium">
             {t("suspicious_attempts_in_last_24", "Suspicious attempts in last 24h")}
           </div>
         </div>
@@ -141,14 +141,14 @@ export default function AdminSecurity() {
         <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex flex-col justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{t("active_impersonations", "Active Impersonations")}</p>
+              <p className="text-sm font-semibold text-slate-500 dark:text-muted-foreground uppercase tracking-wider mb-1 tracking-[0.04em]">{t("active_impersonations", "Active Impersonations")}</p>
               <h3 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{realAuditLogs.filter(l => l.action === 'IMPERSONATION_START' && new Date(l.created_at) > new Date(Date.now() - 24*60*60*1000)).length}</h3>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10/10 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-blue-100 dark:border-blue-500/20">
               <Eye className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
           </div>
-          <div className="mt-4 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 font-medium">
+          <div className="mt-4 flex items-center gap-2 text-sm text-slate-500 dark:text-muted-foreground font-medium">
             {t("admins_currently_viewing_tenan", "Admins currently viewing tenants")}
           </div>
         </div>
@@ -209,13 +209,13 @@ export default function AdminSecurity() {
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
                 {activeSessions.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="px-6 py-8 text-center text-slate-500 dark:text-slate-400">No active sessions found in the last 2 hours.</td>
+                    <td colSpan={4} className="px-6 py-8 text-center text-slate-500 dark:text-muted-foreground">No active sessions found in the last 2 hours.</td>
                   </tr>
                 ) : activeSessions.map((session, idx) => (
                   <tr key={idx} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
                     <td className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-100">{session.email}</td>
-                    <td className="px-6 py-4 text-slate-600 dark:text-slate-400 capitalize">{session.role ? session.role.replace('_', ' ') : 'User'}</td>
-                    <td className="px-6 py-4 text-xs font-medium text-slate-500 dark:text-slate-400 tracking-[0.04em]">{new Date(session.last_sign_in_at).toLocaleString()}</td>
+                    <td className="px-6 py-4 text-slate-600 dark:text-muted-foreground capitalize">{session.role ? session.role.replace('_', ' ') : 'User'}</td>
+                    <td className="px-6 py-4 text-xs font-medium text-slate-500 dark:text-muted-foreground tracking-[0.04em]">{new Date(session.last_sign_in_at).toLocaleString()}</td>
                     <td className="px-6 py-4 text-right">
                       <button 
                         onClick={() => handleForceLogout(session.user_id, session.email)}
@@ -255,9 +255,9 @@ export default function AdminSecurity() {
                 {auditLogs.map((log, idx) => (
                   <tr key={idx} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
                     <td className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-100">{log.type}</td>
-                    <td className="px-6 py-4 text-slate-600 dark:text-slate-400">{log.user}</td>
-                    <td className="px-6 py-4 text-slate-600 dark:text-slate-400">{log.target}</td>
-                    <td className="px-6 py-4 text-xs font-medium text-slate-500 dark:text-slate-400 tracking-[0.04em]">{log.time}</td>
+                    <td className="px-6 py-4 text-slate-600 dark:text-muted-foreground">{log.user}</td>
+                    <td className="px-6 py-4 text-slate-600 dark:text-muted-foreground">{log.target}</td>
+                    <td className="px-6 py-4 text-xs font-medium text-slate-500 dark:text-muted-foreground tracking-[0.04em]">{log.time}</td>
                     <td className="px-6 py-4 text-right">
                       <Badge className={`text-[10px] font-semibold uppercase py-0.5 px-2 border-none ${
                         log.status === 'Success' ? 'bg-emerald-50 dark:bg-emerald-500/10/10 text-emerald-600 dark:text-emerald-400' :

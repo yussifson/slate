@@ -431,7 +431,7 @@ export default function Chat({ isDockedMode = false }) {
  <Users className="w-6 h-6 text-primary dark:text-primary/70" />
  </div>
  ) : (
- <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">
+ <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-secondary flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-border">
   <img src={avatarUrl} alt={roomName} className="w-full h-full object-cover"/>
 </div>
  )}
@@ -485,7 +485,7 @@ export default function Chat({ isDockedMode = false }) {
  )}
  </div>
  ) : (
- <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">
+ <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-secondary flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-border">
   <img src={avatarUrl} alt={roomName} className="w-full h-full object-cover"/>
 </div>
  )}
@@ -674,7 +674,7 @@ export default function Chat({ isDockedMode = false }) {
  <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="p-0.5 bg-white/70 hover:bg-white dark:bg-black/40 dark:hover:bg-black/80 rounded-full text-slate-500 dark:text-slate-300 backdrop-blur-sm shadow-sm transition-all" title="Message Options">
+        <button className="p-0.5 bg-white/70 hover:bg-white dark:bg-black/40 dark:hover:bg-black/80 rounded-full text-slate-500 dark:text-foreground backdrop-blur-sm shadow-sm transition-all" title="Message Options">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
       </DropdownMenuTrigger>
@@ -745,7 +745,7 @@ export default function Chat({ isDockedMode = false }) {
  </Button>
  </PopoverTrigger>
  <PopoverContent side="top" align="start" className="w-48 p-2 mb-2 rounded-2xl flex flex-col gap-2 ">
- <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 dark:bg-slate-800/50 hover:text-primary" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
+ <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 dark:bg-secondary/50 hover:text-primary" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><FileText className="w-4 h-4"/></div>
  Document
  </Button>
@@ -753,7 +753,7 @@ export default function Chat({ isDockedMode = false }) {
  <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600"><ImageIcon className="w-4 h-4"/></div>
  Photos & Videos
  </Button>
- <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 dark:bg-slate-800/50 hover:text-primary" onClick={() => fileInputRef.current?.click()}>
+ <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 dark:bg-secondary/50 hover:text-primary" onClick={() => fileInputRef.current?.click()}>
  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><File className="w-4 h-4"/></div>
  File
  </Button>

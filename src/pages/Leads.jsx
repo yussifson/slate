@@ -193,7 +193,7 @@ export default function Leads() {
         }
       />
       {/* Intake Form Link Banner */}
-      <div className="bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
+      <div className="bg-slate-50 dark:bg-secondary/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
         <div>
           <p className="text-sm font-medium text-primary/70">{t("your_public_intake_form_is_liv", "Your public intake form is live")}</p>
           <p className="text-xs text-primary/90 mt-0.5 break-all tracking-[0.04em]">{intakeFormUrl}</p>

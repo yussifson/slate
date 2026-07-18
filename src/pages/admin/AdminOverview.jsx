@@ -103,27 +103,27 @@ export default function AdminOverview() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm p-6 rounded-2xl flex items-center justify-between border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">{t("active_users_today", "Active Users Today")}</p>
+            <p className="text-sm text-slate-500 dark:text-muted-foreground mb-1">{t("active_users_today", "Active Users Today")}</p>
             <div className="flex items-center space-x-3">
               <p className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{loadingTelemetry ? '-' : telemetry?.active_today || 0}</p>
               <span className="text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10/20 dark:text-emerald-400 px-2 py-1 rounded-full tracking-[0.04em]">LIVE</span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium tracking-[0.04em]">Logged in past 24h</p>
+            <p className="text-xs text-slate-500 dark:text-muted-foreground mt-2 font-medium tracking-[0.04em]">Logged in past 24h</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 dark:bg-slate-800 dark:text-emerald-400 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 dark:border-slate-700">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 dark:bg-secondary dark:text-emerald-400 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 dark:border-border">
             <Activity className="w-6 h-6" />
           </div>
         </div>
 
         <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm p-6 rounded-2xl flex items-center justify-between border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">{t("monthly_active_users", "Monthly Active Users")}</p>
+            <p className="text-sm text-slate-500 dark:text-muted-foreground mb-1">{t("monthly_active_users", "Monthly Active Users")}</p>
             <div className="flex items-center space-x-3">
                <p className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{loadingTelemetry ? '-' : telemetry?.active_month || 0}</p>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium tracking-[0.04em]">Logged in past 30 days</p>
+            <p className="text-xs text-slate-500 dark:text-muted-foreground mt-2 font-medium tracking-[0.04em]">Logged in past 30 days</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 dark:bg-slate-800 dark:text-blue-400 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-blue-100 dark:border-slate-700">
+          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 dark:bg-secondary dark:text-blue-400 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-blue-100 dark:border-border">
             <Clock className="w-6 h-6" />
           </div>
         </div>
@@ -166,7 +166,7 @@ export default function AdminOverview() {
             <p className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-[-0.02em]">${mrr}</p>
             <p className="text-xs text-primary mt-2 font-semibold tracking-[0.04em]">{t("active_subscriptions", "Active Subscriptions")}</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 text-primary flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-secondary/50 text-primary flex items-center justify-center">
             <DollarSign className="w-6 h-6" />
           </div>
         </div>
@@ -175,9 +175,9 @@ export default function AdminOverview() {
           <div>
             <p className="text-sm text-[#71717a] dark:text-gray-400 mb-1">{t("total_firms", "Total Firms")}</p>
             <p className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{companies.length}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium tracking-[0.04em]">{activeFirmsCount} {t("active", "Active /")} {companies.filter(c => c.subscription_status === 'trial').length} {t("trials", "Trials")}</p>
+            <p className="text-xs text-slate-500 dark:text-muted-foreground mt-2 font-medium tracking-[0.04em]">{activeFirmsCount} {t("active", "Active /")} {companies.filter(c => c.subscription_status === 'trial').length} {t("trials", "Trials")}</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 text-primary flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-secondary/50 text-primary flex items-center justify-center">
             <Building2 className="w-6 h-6" />
           </div>
         </div>
@@ -186,9 +186,9 @@ export default function AdminOverview() {
           <div>
             <p className="text-sm text-[#71717a] dark:text-gray-400 mb-1">{t("total_users", "Total Users")}</p>
             <p className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{totalUsersCount}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium tracking-[0.04em]">{t("across_all_firms", "Across all firms")}</p>
+            <p className="text-xs text-slate-500 dark:text-muted-foreground mt-2 font-medium tracking-[0.04em]">{t("across_all_firms", "Across all firms")}</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 text-primary flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-secondary/50 text-primary flex items-center justify-center">
             <Users className="w-6 h-6" />
           </div>
         </div>
@@ -197,9 +197,9 @@ export default function AdminOverview() {
           <div>
             <p className="text-sm text-[#71717a] dark:text-gray-400 mb-1">{t("total_records", "Platform Records")}</p>
             <p className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{totalRecordsCount}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium tracking-[0.04em]">{t("platform_wide_data", "Platform-wide data")}</p>
+            <p className="text-xs text-slate-500 dark:text-muted-foreground mt-2 font-medium tracking-[0.04em]">{t("platform_wide_data", "Platform-wide data")}</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 dark:bg-slate-800 dark:text-amber-400 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 dark:bg-secondary dark:text-amber-400 flex items-center justify-center">
             <Database className="w-6 h-6" />
           </div>
         </div>

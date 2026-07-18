@@ -103,7 +103,7 @@ export default function SHSBuses() {
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
  <Card className="rounded-2xl border-none bg-white dark:bg-card/40 dark:bg-card/60 dark:bg-card/60 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
  <Bus className="w-6 h-6" />
  </div>
  <div>
@@ -115,14 +115,14 @@ export default function SHSBuses() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Vehicle Roster</CardTitle>
  </div>
  
  <div className="relative w-full sm:w-64">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-muted-foreground" />
  <Input 
  placeholder="Search registration or driver..." 
  className="pl-9 h-9 bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -134,19 +134,19 @@ export default function SHSBuses() {
  </CardHeader>
  <CardContent className="p-0">
  {loading ? (
- <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading fleet...</div>
+ <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading fleet...</div>
  ) : filteredBuses.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary mx-auto flex items-center justify-center mb-4">
  <Bus className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No vehicles registered</h3>
- <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Add a bus to start managing your fleet.</p>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No vehicles registered</h3>
+ <p className="text-sm text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">Add a bus to start managing your fleet.</p>
  </div>
  ) : (
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left">
- <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
+ <thead className="bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/80 text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
  <tr>
  <th className="px-6 py-4 rounded-tl-xl">Registration</th>
  <th className="px-6 py-4">Capacity</th>
@@ -157,22 +157,22 @@ export default function SHSBuses() {
  </thead>
  <tbody className="divide-y divide-slate-100">
  {filteredBuses.map((bus) => (
- <tr key={bus.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+ <tr key={bus.id} className="hover:bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 transition-colors">
  <td className="px-6 py-4">
- <span className="font-semibold text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 text-sm tracking-widest">{bus.data?.registrationNumber}</span>
+ <span className="font-semibold text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-secondary px-3 py-1 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 text-sm tracking-widest">{bus.data?.registrationNumber}</span>
  </td>
  <td className="px-6 py-4">
- <div className="flex items-center gap-2.5 font-medium text-slate-700 dark:text-slate-300 dark:text-slate-200">
- <Users className="w-4 h-4 text-slate-400 dark:text-slate-500 dark:text-slate-400" /> {bus.data?.capacity} Seats
+ <div className="flex items-center gap-2.5 font-medium text-slate-700 dark:text-foreground dark:text-foreground">
+ <Users className="w-4 h-4 text-slate-400 dark:text-slate-500 dark:text-muted-foreground" /> {bus.data?.capacity} Seats
  </div>
  </td>
  <td className="px-6 py-4">
  <p className="font-semibold text-slate-800 dark:text-slate-100">{bus.data?.driverName}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">{bus.data?.driverPhone}</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">{bus.data?.driverPhone}</p>
  </td>
  <td className="px-6 py-4">
  <Badge variant="outline" className={
- bus.status === 'Active' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20' : 'bg-amber-50 text-amber-700 border-amber-200'
+ bus.status === 'Active' ? 'bg-slate-50 dark:bg-secondary/50 text-primary/90 border-primary/20' : 'bg-amber-50 text-amber-700 border-amber-200'
 }>
  {bus.status === 'Maintenance' && <Settings className="w-3 h-3 mr-1 inline" />}
  {bus.status}
@@ -208,10 +208,10 @@ export default function SHSBuses() {
  </DialogHeader>
  </div>
  
- <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
+ <div className="p-6 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary space-y-4">
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Registration Number</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Registration Number</label>
  <Input 
  placeholder="e.g. GR-234-21"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl uppercase tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -220,7 +220,7 @@ export default function SHSBuses() {
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Capacity (Seats)</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Capacity (Seats)</label>
  <Input 
  type="number"
  placeholder="e.g. 60"
@@ -232,7 +232,7 @@ export default function SHSBuses() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Driver Name</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Driver Name</label>
  <Input 
  placeholder="e.g. John Mensah"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -242,7 +242,7 @@ export default function SHSBuses() {
  </div>
  
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Driver Phone</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Driver Phone</label>
  <Input 
  placeholder="e.g. 0541234567"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -253,7 +253,7 @@ export default function SHSBuses() {
  </div>
  
  <div className="p-4 bg-white dark:bg-card/40 dark:bg-card border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-foreground">
  Cancel
  </Button>
  <Button 

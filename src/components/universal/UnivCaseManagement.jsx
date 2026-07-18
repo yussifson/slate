@@ -189,7 +189,7 @@ export default function UnivCaseManagement() {
             <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">Closed</p>
             <h3 className="text-2xl font-semibold text-foreground mt-1 tracking-[-0.02em]">{cases.filter(c => c.status === 'Closed').length}</h3>
           </div>
-          <div className="p-3 bg-muted dark:bg-slate-800 text-[#71717a] dark:text-gray-400 rounded-xl"><CheckCircle2 className="w-5 h-5" /></div>
+          <div className="p-3 bg-muted dark:bg-secondary text-[#71717a] dark:text-gray-400 rounded-xl"><CheckCircle2 className="w-5 h-5" /></div>
         </div>
       </div>
 

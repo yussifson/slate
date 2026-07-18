@@ -207,7 +207,7 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
                 </div>
                 
                 <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2 tracking-tight">Meeting Scheduled!</h2>
-                <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-sm">
+                <p className="text-slate-500 dark:text-muted-foreground mb-8 max-w-sm">
                   Your meeting has been set and calendar invitations have been sent to all participants.
                 </p>
 
@@ -220,11 +220,11 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
                   <div className="grid grid-cols-2 gap-4 sm:gap-6">
                     <div className="truncate">
                       <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Date</p>
-                      <p className="text-sm sm:text-base text-slate-800 dark:text-slate-200 truncate">{scheduledMeeting.date}</p>
+                      <p className="text-sm sm:text-base text-slate-800 dark:text-foreground truncate">{scheduledMeeting.date}</p>
                     </div>
                     <div className="truncate">
                       <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Time</p>
-                      <p className="text-sm sm:text-base text-slate-800 dark:text-slate-200 truncate">{scheduledMeeting.time}</p>
+                      <p className="text-sm sm:text-base text-slate-800 dark:text-foreground truncate">{scheduledMeeting.time}</p>
                     </div>
                   </div>
 

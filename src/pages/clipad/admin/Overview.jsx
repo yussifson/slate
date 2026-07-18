@@ -131,7 +131,7 @@ export default function Overview() {
           <CardContent className="flex-1 overflow-y-auto max-h-[380px] space-y-1">
             {recentActivities.length > 0 ? (
               recentActivities.map((log) => {
-                const meta = ACTION_ICONS[log.action] || { icon: Activity, color: 'text-slate-500', bg: 'bg-slate-100 dark:bg-slate-800' };
+                const meta = ACTION_ICONS[log.action] || { icon: Activity, color: 'text-slate-500', bg: 'bg-slate-100 dark:bg-secondary' };
                 const Icon = meta.icon;
                 return (
                   <div key={log.id} className="flex items-start gap-3 py-2.5 border-b border-border last:border-0">
@@ -191,7 +191,7 @@ export default function Overview() {
                       'px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider shrink-0 ml-3',
                       clipadPlan.toLowerCase().includes('enterprise') ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400' :
                       clipadPlan.toLowerCase().includes('pro') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
-                      'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                      'bg-slate-100 text-slate-600 dark:bg-secondary dark:text-muted-foreground'
                     )}>
                       {clipadPlan}
                     </span>

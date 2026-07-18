@@ -97,7 +97,7 @@ export default function MemoryTimeline({ topic, workspaceId }) {
           date: new Date(b.detected_at || b.created_at || Date.now()),
           icon: AlertTriangle,
           color: b.status === 'resolved' ? 'text-slate-400' : 'text-amber-500',
-          bg: b.status === 'resolved' ? 'bg-slate-50 dark:bg-slate-800' : 'bg-amber-50 dark:bg-amber-500/10',
+          bg: b.status === 'resolved' ? 'bg-slate-50 dark:bg-secondary' : 'bg-amber-50 dark:bg-amber-500/10',
           description: b.status === 'resolved' && b.resolved_at
             ? `Resolved on ${new Date(b.resolved_at).toLocaleDateString()}.`
             : 'Currently open and blocking progress.',
@@ -153,7 +153,7 @@ export default function MemoryTimeline({ topic, workspaceId }) {
 
   if (loading) {
     return (
-      <div className="p-8 flex flex-col items-center justify-center text-center bg-slate-50 dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800">
+      <div className="p-8 flex flex-col items-center justify-center text-center bg-slate-50 dark:bg-card rounded-3xl border border-slate-200 dark:border-border">
         <Network className="w-8 h-8 text-indigo-400 animate-pulse mb-4" />
         <p className="text-sm font-medium text-slate-500">Tracing memory graph for "{topic}"...</p>
       </div>
@@ -162,7 +162,7 @@ export default function MemoryTimeline({ topic, workspaceId }) {
 
   if (timeline.length === 0) {
     return (
-      <div className="p-8 flex flex-col items-center justify-center text-center bg-slate-50 dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800">
+      <div className="p-8 flex flex-col items-center justify-center text-center bg-slate-50 dark:bg-card rounded-3xl border border-slate-200 dark:border-border">
         <Brain className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-4" />
         <p className="text-sm font-medium text-slate-500">No recorded history found for "{topic}".</p>
         <p className="text-xs text-slate-400 mt-1">As your team records meetings, decisions, and videos mentioning this topic, they will appear here.</p>
@@ -171,7 +171,7 @@ export default function MemoryTimeline({ topic, workspaceId }) {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+    <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-3xl p-6 shadow-sm">
       <div className="flex items-center gap-3 mb-4">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shadow-md">
           <Brain className="w-5 h-5" />
@@ -184,7 +184,7 @@ export default function MemoryTimeline({ topic, workspaceId }) {
 
       {/* AI Narrative */}
       {aiNarrative && (
-        <div className="mb-6 p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/30 rounded-xl text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+        <div className="mb-6 p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/30 rounded-xl text-sm text-slate-700 dark:text-foreground leading-relaxed">
           <span className="text-xs font-bold text-indigo-500 uppercase tracking-wider block mb-1">AI Analysis</span>
           {aiNarrative}
         </div>
@@ -194,11 +194,11 @@ export default function MemoryTimeline({ topic, workspaceId }) {
         <div className="space-y-8">
           {timeline.map((node) => (
             <div key={node.id} className="relative">
-              <div className="absolute -left-[33px] top-1 w-6 h-6 rounded-full bg-white dark:bg-slate-900 border-4 border-white dark:border-slate-900 flex items-center justify-center z-10 shadow-sm">
+              <div className="absolute -left-[33px] top-1 w-6 h-6 rounded-full bg-white dark:bg-card border-4 border-white dark:border-slate-900 flex items-center justify-center z-10 shadow-sm">
                 <div className={`w-3 h-3 rounded-full ${node.bg}`}></div>
               </div>
               
-              <div className="bg-slate-50 dark:bg-slate-800/30 rounded-2xl p-4 border border-slate-100 dark:border-slate-700/50 hover:shadow-md transition-shadow">
+              <div className="bg-slate-50 dark:bg-secondary/30 rounded-2xl p-4 border border-slate-100 dark:border-border/50 hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-3 mb-2">
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${node.bg} ${node.color}`}>
@@ -210,7 +210,7 @@ export default function MemoryTimeline({ topic, workspaceId }) {
                     </div>
                   </div>
                 </div>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-2 ml-11">
+                <p className="text-sm text-slate-600 dark:text-muted-foreground mt-2 ml-11">
                   {node.description}
                 </p>
                 {node.sourceRoute && (

@@ -176,7 +176,7 @@ export default function Transactions() {
       <div className="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar">
         {transactions.length === 0 ? (
           <div className="text-center py-12 text-gray-400 dark:text-gray-500 flex flex-col items-center justify-center h-full opacity-70">
-            <div className="bg-gray-50 dark:bg-slate-800/50 p-4 rounded-full mb-3 shadow-inner">
+            <div className="bg-gray-50 dark:bg-secondary/50 p-4 rounded-full mb-3 shadow-inner">
               <AlertCircle className="w-6 h-6 text-gray-400 dark:text-gray-500" />
             </div>
             <p className="text-sm font-medium">No transactions</p>
@@ -247,7 +247,7 @@ export default function Transactions() {
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
+            <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-border rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
@@ -258,7 +258,7 @@ export default function Transactions() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
+            <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-border rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
@@ -269,7 +269,7 @@ export default function Transactions() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
+            <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-border rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>

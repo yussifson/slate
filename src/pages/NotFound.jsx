@@ -7,7 +7,7 @@ import { Button} from '@/components/ui/button';
 export default function NotFound() {
  const { t} = useTranslation();
  return (
- <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800/50 p-6 font-sans">
+ <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-50 dark:bg-secondary/50 p-6 font-sans">
  <div className="max-w-md w-full bg-white dark:bg-card/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-3xl p-10 text-center -slate-200/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="w-24 h-24 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-8 ">
  <FileQuestion className="w-12 h-12" strokeWidth={1.5} />
@@ -15,10 +15,10 @@ export default function NotFound() {
  <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight mb-4 tracking-[-0.02em]">
  {t("404", "404")}
  </h1>
- <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-4">
+ <h2 className="text-xl font-semibold text-slate-700 dark:text-foreground mb-4">
  {t("page_not_found", "Page Not Found")}
  </h2>
- <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed mb-10">
+ <p className="text-slate-500 dark:text-muted-foreground font-medium leading-relaxed mb-10">
  {t(
  "the_page_or_workspace_you_are_",
  "The page or workspace you are looking for doesn't exist, has been moved, or you don't have access to it."

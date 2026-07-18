@@ -197,7 +197,7 @@ export default function CRMLeads() {
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4">
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
@@ -209,7 +209,7 @@ export default function CRMLeads() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
@@ -221,7 +221,7 @@ export default function CRMLeads() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
@@ -233,7 +233,7 @@ export default function CRMLeads() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
@@ -270,7 +270,7 @@ export default function CRMLeads() {
       {view === 'grid' && (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
           {filteredLeads.map(lead => (
-            <Card key={lead.id} className="relative group bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 overflow-hidden flex flex-col">
+            <Card key={lead.id} className="relative group bg-white dark:bg-card border border-slate-200/60 dark:border-border rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 overflow-hidden flex flex-col">
               <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
               <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
@@ -284,7 +284,7 @@ export default function CRMLeads() {
                   <Trash2 className="w-3.5 h-3.5" />
                 </Button>
               </div>
-              <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+              <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
                 <div className="flex items-start justify-between pr-20">
                   <div className="flex-1">
                     <CardTitle className="text-base">{lead.first_name} {lead.last_name}</CardTitle>
@@ -336,7 +336,7 @@ export default function CRMLeads() {
       {view === 'list' && (
         <div className="flex flex-col gap-3">
           {filteredLeads.map(lead => (
-            <div key={lead.id} className="group relative flex items-center gap-4 bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800 rounded-2xl p-4 hover:shadow-md hover:border-primary/30 transition-all duration-200">
+            <div key={lead.id} className="group relative flex items-center gap-4 bg-white dark:bg-card border border-slate-200/60 dark:border-border rounded-2xl p-4 hover:shadow-md hover:border-primary/30 transition-all duration-200">
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-foreground">{lead.first_name} {lead.last_name}</p>
                 <p className="text-sm text-muted-foreground truncate">{lead.email}</p>

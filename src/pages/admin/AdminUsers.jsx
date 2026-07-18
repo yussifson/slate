@@ -232,20 +232,20 @@ export default function AdminUsers() {
                     </div>
                     <div className="min-w-0">
                       <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-base truncate pr-20">{user.full_name || 'Anonymous'}</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate tracking-[0.04em]">{user.email}</p>
+                      <p className="text-xs text-slate-500 dark:text-muted-foreground mt-0.5 truncate tracking-[0.04em]">{user.email}</p>
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <div className="flex items-center text-xs text-slate-600 dark:text-slate-400 tracking-[0.04em]">
+                    <div className="flex items-center text-xs text-slate-600 dark:text-muted-foreground tracking-[0.04em]">
                       <Building2 className="w-4 h-4 mr-2 opacity-50 shrink-0" />
                       <span className="font-medium truncate">{user.companies?.name || <span className="text-slate-400 italic text-[10px]">{t("orphaned", "Orphaned")}</span>}</span>
                     </div>
-                    <div className="flex items-center text-xs text-slate-600 dark:text-slate-400 tracking-[0.04em]">
+                    <div className="flex items-center text-xs text-slate-600 dark:text-muted-foreground tracking-[0.04em]">
                       <Calendar className="w-4 h-4 mr-2 opacity-50 shrink-0" />
                       <span>Joined {user.created_date ? new Date(user.created_date).toLocaleDateString() : 'Unknown'}</span>
                     </div>
-                    <div className="flex items-center text-xs text-slate-600 dark:text-slate-400 tracking-[0.04em]">
+                    <div className="flex items-center text-xs text-slate-600 dark:text-muted-foreground tracking-[0.04em]">
                       <Clock className="w-4 h-4 mr-2 opacity-50 shrink-0" />
                       <span className={user.last_sign_in_at ? 'text-emerald-600 font-semibold' : 'italic text-slate-400'}>
                         {user.last_sign_in_at 
@@ -255,7 +255,7 @@ export default function AdminUsers() {
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-slate-100 dark:border-slate-800/50">
+                  <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-slate-100 dark:border-border/50">
                     <Button 
                       variant="outline" 
                       size="sm"

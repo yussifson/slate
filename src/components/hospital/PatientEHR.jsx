@@ -190,7 +190,7 @@ export default function PatientEHR({ patientId, companyId }) {
                {prescriptions.filter(p => p.status === 'Active').length > 0 ? (
                  <div className="space-y-2">
                     {prescriptions.filter(p => p.status === 'Active').slice(0, 3).map(p => (
-                       <div key={p.id} className="flex justify-between text-sm items-center p-2 rounded-lg border-[0.5px] border-black/5 dark:border-white/5 bg-slate-50 dark:bg-slate-800/50">
+                       <div key={p.id} className="flex justify-between text-sm items-center p-2 rounded-lg border-[0.5px] border-black/5 dark:border-white/5 bg-slate-50 dark:bg-secondary/50">
                          <span className="font-medium">{p.medication_name}</span>
                          <span className="text-[#71717a]">{p.dosage}</span>
                        </div>

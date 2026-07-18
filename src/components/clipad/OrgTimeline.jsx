@@ -21,7 +21,7 @@ const EVENT_COLORS = {
   task_completed: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400',
   video_uploaded: 'bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400',
   blocker_raised: 'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400',
-  default: 'bg-slate-100 text-slate-600 dark:bg-slate-500/20 dark:text-slate-400'
+  default: 'bg-slate-100 text-slate-600 dark:bg-slate-500/20 dark:text-muted-foreground'
 };
 
 export default function OrgTimeline({ workspaceId, spaceId }) {
@@ -87,7 +87,7 @@ export default function OrgTimeline({ workspaceId, spaceId }) {
             <Activity className="w-6 h-6 text-primary" />
             Organizational Timeline
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 dark:text-muted-foreground mt-1">
             Chronological record of all team events and activities.
           </p>
         </div>
@@ -100,7 +100,7 @@ export default function OrgTimeline({ workspaceId, spaceId }) {
               className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-colors ${
                 filter === f 
                   ? 'bg-primary text-primary-foreground shadow-sm' 
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                  : 'bg-slate-100 dark:bg-secondary text-slate-600 dark:text-muted-foreground hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               {f.replace('_', ' ')}
@@ -114,10 +114,10 @@ export default function OrgTimeline({ workspaceId, spaceId }) {
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : events.length === 0 ? (
-        <div className="text-center py-16 px-4 bg-slate-50 dark:bg-slate-800/30 rounded-3xl border border-slate-200 dark:border-slate-700/50">
+        <div className="text-center py-16 px-4 bg-slate-50 dark:bg-secondary/30 rounded-3xl border border-slate-200 dark:border-border/50">
           <Clock className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No Events Found</h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+          <p className="text-sm text-slate-500 dark:text-muted-foreground max-w-sm mx-auto">
             {filter === 'all' 
               ? "Your organizational timeline is empty. Record meetings, make decisions, or complete tasks to see activity here."
               : `No events of type "${filter.replace('_', ' ')}" found.`}
@@ -132,13 +132,13 @@ export default function OrgTimeline({ workspaceId, spaceId }) {
               
               return (
                 <div key={event.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-950 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 absolute left-0 md:left-1/2 -translate-x-1/2 md:translate-x-0 z-10 bg-white dark:bg-slate-900">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-950 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 absolute left-0 md:left-1/2 -translate-x-1/2 md:translate-x-0 z-10 bg-white dark:bg-card">
                     <div className={`w-full h-full rounded-full flex items-center justify-center ${colorClass}`}>
                       <Icon className="w-4 h-4" />
                     </div>
                   </div>
                   
-                  <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] ml-auto md:ml-0 p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-primary/30 transition-all cursor-pointer" onClick={() => handleNavigate(event)}>
+                  <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] ml-auto md:ml-0 p-5 rounded-2xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm hover:shadow-md hover:border-primary/30 transition-all cursor-pointer" onClick={() => handleNavigate(event)}>
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-3">
                       <div>
                         <span className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-2 ${colorClass}`}>
@@ -155,13 +155,13 @@ export default function OrgTimeline({ workspaceId, spaceId }) {
                     </div>
                     
                     {event.description && (
-                      <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mt-2">
+                      <p className="text-sm text-slate-600 dark:text-muted-foreground line-clamp-2 mt-2">
                         {event.description}
                       </p>
                     )}
                     
                     {event.source_id && (
-                      <div className="mt-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3">
+                      <div className="mt-4 flex items-center justify-between border-t border-slate-100 dark:border-border pt-3">
                         <span className="text-xs font-medium text-slate-500 hover:text-primary transition-colors flex items-center gap-1">
                           View Source <ChevronRight className="w-3 h-3" />
                         </span>

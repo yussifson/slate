@@ -165,7 +165,7 @@ export default function HRAnalytics() {
                 <div className={`p-3 rounded-xl ${metric.color}`}>
                   {metric.icon}
                 </div>
-                <span className={`text-[10px] font-bold px-2 py-1 rounded-md tracking-wider uppercase bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400`}>
+                <span className={`text-[10px] font-bold px-2 py-1 rounded-md tracking-wider uppercase bg-slate-100 text-slate-600 dark:bg-secondary dark:text-muted-foreground`}>
                   {metric.trend}
                 </span>
               </div>
@@ -195,7 +195,7 @@ export default function HRAnalytics() {
                 <div className="text-center py-12 text-muted-foreground">No flight risks identified.</div>
               ) : (
                 data.flightRisks.map((employee) => (
-                  <div key={employee.id} className="p-5 rounded-xl border border-border/50 hover:border-primary/30 hover:shadow-md transition-all group bg-slate-50 dark:bg-slate-800/30">
+                  <div key={employee.id} className="p-5 rounded-xl border border-border/50 hover:border-primary/30 hover:shadow-md transition-all group bg-slate-50 dark:bg-secondary/30">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex items-start gap-4">
                         <div className="relative shrink-0">

@@ -9,7 +9,7 @@ export default function GroupInfoDialog({ open, onOpenChange, activeRoom, partic
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[85vh] flex flex-col overflow-hidden bg-background">
         <DialogHeader className="p-6 pb-2 shrink-0 flex flex-col items-center text-center">
-          <div className="w-24 h-24 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden mb-4 shadow-sm border border-slate-200 dark:border-slate-800">
+          <div className="w-24 h-24 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden mb-4 shadow-sm border border-slate-200 dark:border-border">
             {activeRoom.avatar_url ? (
               <img src={activeRoom.avatar_url} alt={activeRoom.name} className="w-full h-full object-cover" />
             ) : (
@@ -30,7 +30,7 @@ export default function GroupInfoDialog({ open, onOpenChange, activeRoom, partic
                 const profile = participantProfiles[p.user_id];
                 return (
                   <div key={p.user_id} className="flex items-center gap-3 p-2 rounded-xl bg-secondary/30">
-                    <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-secondary overflow-hidden shrink-0">
                       {profile?.avatar_url ? (
                         <img src={profile.avatar_url} className="w-full h-full object-cover" alt={profile.full_name} />
                       ) : (

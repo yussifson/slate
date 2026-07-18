@@ -32,7 +32,7 @@ const STATUS_META = {
 const PRIORITY_META = {
  High: { color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'},
  Medium: { color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'},
- Low: { color: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'},
+ Low: { color: 'bg-slate-100 text-slate-600 dark:bg-secondary dark:text-muted-foreground'},
 };
 
 const RECORD_TYPE_COLORS = {
@@ -44,7 +44,7 @@ const RECORD_TYPE_COLORS = {
 };
 
 const RECORD_TYPE_COLOR = (type) =>
- RECORD_TYPE_COLORS[type] || 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400';
+ RECORD_TYPE_COLORS[type] || 'bg-slate-100 text-slate-600 dark:bg-secondary dark:text-muted-foreground';
 
 const TABS = [
  { id: 'inbox', label: 'My Inbox', Icon: InboxIcon},

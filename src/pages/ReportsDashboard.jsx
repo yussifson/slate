@@ -49,17 +49,17 @@ import { cn } from "@/lib/utils";
 // Use professional enterprise colors instead of potentially playful brand colors
 const CHART_COLORS = ["#1e3a8a", "#2563eb", "#3b82f6", "#60a5fa", "#0f172a", "#334155"];
 const THEME_BLUE = "text-primary/90 dark:text-primary/70";
-const BG_BLUE_LIGHT = "bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20";
+const BG_BLUE_LIGHT = "bg-slate-50 dark:bg-secondary/50 dark:bg-primary/20";
 
 function ReportMetricCard({ title, value, sub, icon: Icon, trend, className }) {
  return (
- <div className={cn("bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden", className)}>
+ <div className={cn("bg-white dark:bg-card border border-slate-200/60 dark:border-border/60 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden", className)}>
    <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
      <Icon className="w-24 h-24 text-primary" />
    </div>
    <div className="flex items-start justify-between gap-3 relative z-10">
    <div className="min-w-0 flex-1">
-   <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{title}</p>
+   <p className="text-[11px] font-bold text-slate-500 dark:text-muted-foreground uppercase tracking-widest">{title}</p>
    <p className="text-3xl font-extrabold text-slate-900 dark:text-white mt-3 tracking-tight">{value}</p>
    <div className="flex items-center gap-2 mt-3 flex-wrap">
    {trend !== undefined && (
@@ -72,7 +72,7 @@ function ReportMetricCard({ title, value, sub, icon: Icon, trend, className }) {
    {trend}% vs prior period
    </span>
    )}
-   {sub && <span className="text-xs font-medium text-slate-500 dark:text-slate-400 tracking-wide">{sub}</span>}
+   {sub && <span className="text-xs font-medium text-slate-500 dark:text-muted-foreground tracking-wide">{sub}</span>}
    </div>
    </div>
    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 shadow-inner">
@@ -91,7 +91,7 @@ function ReportSection({ title, description, icon: Icon, children, className = "
  {Icon && <Icon className={`w-5 h-5 ${THEME_BLUE} shrink-0`} />}
  <div>
  <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 dark:text-white">{title}</h2>
- {description && <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{description}</p>}
+ {description && <p className="text-sm text-slate-500 dark:text-muted-foreground mt-0.5">{description}</p>}
  </div>
  </div>
  </div>
@@ -349,7 +349,7 @@ export default function ReportsDashboard() {
  <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
  {t("enterprise_analytics", "Enterprise Analytics")}
  </h1>
- <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 mt-3 max-w-2xl leading-relaxed">
+ <p className="text-sm md:text-base text-slate-500 dark:text-muted-foreground mt-3 max-w-2xl leading-relaxed">
  {t(
  "comprehensive_performance_report",
  "Comprehensive performance report with revenue, operations, and workforce metrics for executive review."
@@ -365,10 +365,10 @@ export default function ReportsDashboard() {
       <Sparkles className={`w-4 h-4 transition-transform group-hover:scale-110 ${isGeneratingInsights ? 'animate-spin' : ''}`} />
       {isGeneratingInsights ? 'Analyzing...' : 'AI Insights'}
     </button>
-    <div className="flex items-center gap-3 bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-full px-4 py-2 shadow-sm hover:shadow-md transition-shadow duration-300">
+    <div className="flex items-center gap-3 bg-white dark:bg-card border border-slate-200 dark:border-border rounded-full px-4 py-2 shadow-sm hover:shadow-md transition-shadow duration-300">
     <Clock className="w-4 h-4 text-primary shrink-0" />
     <Select value={period} onValueChange={setPeriod}>
-    <SelectTrigger className="w-36 h-auto p-0 border-0 focus:ring-0 font-medium text-slate-700 dark:text-slate-200 bg-transparent">
+    <SelectTrigger className="w-36 h-auto p-0 border-0 focus:ring-0 font-medium text-slate-700 dark:text-foreground bg-transparent">
     <SelectValue />
     </SelectTrigger>
     <SelectContent>
@@ -409,28 +409,28 @@ export default function ReportsDashboard() {
  icon={DollarSign}
  trend={revenueTrend}
  sub={t("from_paid_invoices", "From paid invoices")}
- className="bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-shadow rounded-2xl"
+ className="bg-white dark:bg-card border border-slate-200/60 dark:border-border/60 shadow-sm hover:shadow-md transition-shadow rounded-2xl"
  />
  <ReportMetricCard
  title={t("revenue_period", "Revenue (selected period)")}
  value={formatCurrency(totalRevenue, currency)}
  icon={TrendingUp}
  sub={`${months} ${t("months", "months")}`}
- className="bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-shadow rounded-2xl"
+ className="bg-white dark:bg-card border border-slate-200/60 dark:border-border/60 shadow-sm hover:shadow-md transition-shadow rounded-2xl"
  />
  <ReportMetricCard
  title={isRetail ? t("active_customers", "Active customers") : isSchool ? t("active_students", "Active students") : t("active_clients", "Active clients")}
  value={isRetail ? retailCustomers.length : clients.filter((c) => c.status === "active").length}
  icon={Users}
  sub={`${isRetail ? retailCustomers.length : clients.length} ${t("total_records", "total records")}`}
- className="bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-shadow rounded-2xl"
+ className="bg-white dark:bg-card border border-slate-200/60 dark:border-border/60 shadow-sm hover:shadow-md transition-shadow rounded-2xl"
  />
  <ReportMetricCard
  title={t("collection_rate", "Collection rate")}
  value={`${collectionRate}%`}
  icon={Percent}
  sub={`${overdueCount} ${t("overdue", "overdue")}`}
- className="bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-shadow rounded-2xl"
+ className="bg-white dark:bg-card border border-slate-200/60 dark:border-border/60 shadow-sm hover:shadow-md transition-shadow rounded-2xl"
  />
  </div>
 
@@ -643,19 +643,19 @@ export default function ReportsDashboard() {
  icon={FileText}
  >
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mt-4">
- <div className="p-4 md:p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-card">
+ <div className="p-4 md:p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-card">
  <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("total_invoices", "Total invoices")}</p>
  <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">{invoices.length}</p>
  </div>
- <div className="p-4 md:p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-card">
+ <div className="p-4 md:p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-card">
  <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("paid_invoices", "Paid invoices")}</p>
  <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">{paidCount}</p>
  </div>
- <div className="p-4 md:p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-card">
+ <div className="p-4 md:p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-card">
  <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("team_members", "Team members")}</p>
  <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">{staff.length}</p>
  </div>
- <div className="p-4 md:p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-card">
+ <div className="p-4 md:p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-card">
  <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("avg_monthly_revenue", "Avg monthly revenue")}</p>
  <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">
  {formatCurrency(months ? Math.round(totalRevenue / months) : 0, currency)}

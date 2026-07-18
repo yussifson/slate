@@ -106,8 +106,8 @@ export default function MarketData() {
 
       {/* Aggregate KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <DollarSign className="w-4 h-4" />
               Avg Price
@@ -119,8 +119,8 @@ export default function MarketData() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Calendar className="w-4 h-4" />
               Days on Market
@@ -132,8 +132,8 @@ export default function MarketData() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Home className="w-4 h-4" />
               Active Listings
@@ -145,8 +145,8 @@ export default function MarketData() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
               Sold Listings
@@ -201,18 +201,18 @@ export default function MarketData() {
       {/* Market Data Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {filteredData.length === 0 ? (
-          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
             <BarChart3 className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
             <p className="text-muted-foreground">No market data found matching your criteria</p>
           </Card>
         ) : (
           filteredData.map(market => (
-            <Card key={market.id} className="relative group bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+            <Card key={market.id} className="relative group bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
                                 <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
                 <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
-<CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+<CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <CardTitle className="text-sm font-semibold flex items-center gap-2">
@@ -231,22 +231,22 @@ export default function MarketData() {
               </CardHeader>
               <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-secondary/50 rounded-lg border border-slate-100 dark:border-border">
                     <p className="text-xs font-medium text-muted-foreground">Average Price</p>
                     <p className="font-bold text-primary">${(market.average_price / 1000000).toFixed(2)}M</p>
                   </div>
-                  <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-secondary/50 rounded-lg border border-slate-100 dark:border-border">
                     <p className="text-xs font-medium text-muted-foreground">Median Price</p>
                     <p className="font-bold text-primary">${(market.median_price / 1000000).toFixed(2)}M</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-secondary/50 rounded-lg border border-slate-100 dark:border-border">
                     <p className="text-xs font-medium text-muted-foreground">Price/SqFt</p>
                     <p className="font-bold text-green-600">${market.price_per_sqft?.toFixed(0)}</p>
                   </div>
-                  <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-secondary/50 rounded-lg border border-slate-100 dark:border-border">
                     <p className="text-xs font-medium text-muted-foreground">Days on Market</p>
                     <p className="font-bold text-orange-600">{market.days_on_market_average?.toFixed(0)} days</p>
                   </div>
@@ -282,8 +282,8 @@ export default function MarketData() {
 
       {/* Table View for Detailed Analysis */}
       {filteredData.length > 0 && (
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
             <CardTitle>Detailed Market Comparison</CardTitle>
           </CardHeader>
           <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">

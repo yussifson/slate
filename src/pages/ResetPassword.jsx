@@ -79,23 +79,23 @@ export default function ResetPassword() {
 };
 
  return (
- <div className="flex h-screen items-center justify-center bg-slate-50 dark:bg-slate-800/50 px-4">
+ <div className="flex h-screen items-center justify-center bg-slate-50 dark:bg-secondary/50 px-4">
  <div className="w-full max-w-md">
  <div className="bg-white dark:bg-card/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 p-10 space-y-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex flex-col items-center gap-3 text-center">
  <div className="flex flex-col items-center mb-2">
  <Logo className="w-12 h-12" />
- <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>
+ <span className="text-[10px] text-slate-500 dark:text-muted-foreground font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>
  </div>
  <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 tracking-tight tracking-[-0.02em]">{t("set_new_password", "Set new password")}</h1>
- <p className="text-sm text-slate-500 dark:text-slate-400">
+ <p className="text-sm text-slate-500 dark:text-muted-foreground">
  {done ? 'Password updated! Redirecting to login...' : 'Choose a strong password for your account.'}
  </p>
  </div>
 
  {done ? (
  <div className="flex flex-col items-center gap-4 py-4">
- <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center">
+ <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-secondary/50 flex items-center justify-center">
  <CheckCircle2 className="w-8 h-8 text-primary" />
  </div>
  <p className="text-sm text-slate-600 text-center">
@@ -118,7 +118,7 @@ export default function ResetPassword() {
  )}
 
  <div>
- <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 tracking-[0.04em]">
+ <label className="block text-[11px] font-semibold text-slate-500 dark:text-muted-foreground uppercase tracking-widest mb-2 tracking-[0.04em]">
  {t("new_password", "New Password")}
  </label>
  <div className="relative">
@@ -141,7 +141,7 @@ export default function ResetPassword() {
  </div>
 
  <div>
- <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 tracking-[0.04em]">
+ <label className="block text-[11px] font-semibold text-slate-500 dark:text-muted-foreground uppercase tracking-widest mb-2 tracking-[0.04em]">
  {t("confirm_password", "Confirm Password")}
  </label>
  <Input

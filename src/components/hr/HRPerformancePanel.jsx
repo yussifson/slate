@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 
 const REVIEW_TYPES = ["Self", "Manager Review", "Peer Review", "360 Review"];
 const STATUS_STYLES = {
-  draft: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
+  draft: "bg-slate-100 text-slate-700 dark:bg-secondary dark:text-foreground",
   submitted: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400",
   approved: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
 };
@@ -124,7 +124,7 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {reviews.map(r => (
-                <div key={r.id} className="bg-slate-50 dark:bg-slate-800/30 border border-border/50 rounded-2xl p-5 hover:border-emerald-500/30 transition-all hover:-translate-y-1">
+                <div key={r.id} className="bg-slate-50 dark:bg-secondary/30 border border-border/50 rounded-2xl p-5 hover:border-emerald-500/30 transition-all hover:-translate-y-1">
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400 font-bold flex items-center justify-center">
@@ -164,7 +164,7 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
           ) : (
             <div className="space-y-4">
               {myReviews.map(r => (
-                <div key={r.id} className="p-4 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-border/50 flex flex-col md:flex-row justify-between gap-4 group hover:border-emerald-500/30">
+                <div key={r.id} className="p-4 bg-slate-50 dark:bg-secondary/30 rounded-xl border border-border/50 flex flex-col md:flex-row justify-between gap-4 group hover:border-emerald-500/30">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase ${STATUS_STYLES[r.status]}`}>{r.status}</span>

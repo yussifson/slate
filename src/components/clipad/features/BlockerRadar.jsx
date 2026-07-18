@@ -156,10 +156,10 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
   if (!hasFullIntelligence) {
     if (isWorkspaceView) return null;
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center border border-slate-200 dark:border-slate-700/50 rounded-xl bg-slate-50 dark:bg-slate-800/20">
+      <div className="flex flex-col items-center justify-center p-12 text-center border border-slate-200 dark:border-border/50 rounded-xl bg-slate-50 dark:bg-secondary/20">
         <ShieldAlert className="w-12 h-12 text-indigo-400 mb-4" />
-        <h3 className="text-xl font-medium text-slate-700 dark:text-slate-200 mb-2">Blocker Radar Locked</h3>
-        <p className="text-slate-500 dark:text-slate-400 max-w-md">
+        <h3 className="text-xl font-medium text-slate-700 dark:text-foreground mb-2">Blocker Radar Locked</h3>
+        <p className="text-slate-500 dark:text-muted-foreground max-w-md">
           Upgrade to Pro or Enterprise to access Blocker Radar and instantly identify team bottlenecks.
         </p>
       </div>
@@ -171,7 +171,7 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
   // Dashboard widget (compact) mode
   if (isWorkspaceView) {
     return (
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 h-full flex flex-col">
+      <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-slate-200 dark:border-border p-5 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Network className="w-4 h-4 text-indigo-500" />
@@ -190,13 +190,13 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
         ) : openBlockers.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center py-4">
             <CheckCircle className="w-8 h-8 text-emerald-400 mb-2" />
-            <p className="text-xs text-slate-500 dark:text-slate-400">No open blockers. Team is unblocked!</p>
+            <p className="text-xs text-slate-500 dark:text-muted-foreground">No open blockers. Team is unblocked!</p>
           </div>
         ) : (
           <div className="space-y-2 flex-1">
             {openBlockers.slice(0, 3).map(b => (
               <div key={b.id} className="p-2.5 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-800/30 rounded-lg">
-                <p className="text-xs text-slate-700 dark:text-slate-300 line-clamp-2">{b.description}</p>
+                <p className="text-xs text-slate-700 dark:text-foreground line-clamp-2">{b.description}</p>
                 <p className="text-[10px] text-slate-400 mt-1">
                   {b.blocked_person?.full_name || 'Someone'} is blocked
                 </p>
@@ -216,7 +216,7 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
           <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
             <Network className="w-6 h-6 text-indigo-400" /> Blocker Radar
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Live graph of who is blocked on whom.</p>
+          <p className="text-sm text-slate-500 dark:text-muted-foreground mt-1">Live graph of who is blocked on whom.</p>
         </div>
         <div className="flex items-center gap-2">
           {hasFullIntelligence && (
@@ -239,12 +239,12 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
       </div>
 
       {showAdd && (
-        <form onSubmit={handleAddBlocker} className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex gap-3">
+        <form onSubmit={handleAddBlocker} className="bg-slate-50 dark:bg-secondary/50 border border-slate-200 dark:border-border rounded-xl p-4 flex gap-3">
           <input
             value={newBlocker}
             onChange={e => setNewBlocker(e.target.value)}
             placeholder="Describe what's blocking you..."
-            className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+            className="flex-1 bg-white dark:bg-card border border-slate-200 dark:border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
             required
           />
           <button type="submit" disabled={adding} className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 disabled:opacity-50">
@@ -258,10 +258,10 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
           <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
         </div>
       ) : blockers.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-10 shadow-sm flex flex-col items-center text-center">
+        <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-xl p-10 shadow-sm flex flex-col items-center text-center">
           <CheckCircle className="w-10 h-10 text-emerald-400 mb-3" />
           <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">All Clear!</h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400">No blockers detected. Team is moving freely.</p>
+          <p className="text-sm text-slate-500 dark:text-muted-foreground">No blockers detected. Team is moving freely.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -273,12 +273,12 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
             return (
               <div
                 key={blocker.id}
-                className={`p-4 rounded-xl border transition-colors ${isOpen ? 'border-amber-500/30 bg-amber-500/5' : 'border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/20 opacity-70'}`}
+                className={`p-4 rounded-xl border transition-colors ${isOpen ? 'border-amber-500/30 bg-amber-500/5' : 'border-slate-200 dark:border-border/50 bg-slate-50 dark:bg-secondary/20 opacity-70'}`}
               >
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-4 flex-1">
                     <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 rounded-full border-2 border-rose-500 bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm font-bold text-slate-600 dark:text-slate-300 overflow-hidden">
+                      <div className="w-10 h-10 rounded-full border-2 border-rose-500 bg-slate-100 dark:bg-secondary flex items-center justify-center text-sm font-bold text-slate-600 dark:text-foreground overflow-hidden">
                         {blocker.blocked_person?.avatar_url
                           ? <img src={blocker.blocked_person.avatar_url} alt="" className="w-full h-full object-cover" />
                           : (blocker.blocked_person?.full_name?.[0] || '?')}
@@ -290,17 +290,17 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
 
                     <div className="flex-1 flex flex-col items-center justify-center px-2">
                       <div className="w-full h-px bg-gradient-to-r from-rose-500 via-amber-500 to-indigo-500 relative">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-900 px-2 text-xs font-medium text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 rounded-full whitespace-nowrap">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-card px-2 text-xs font-medium text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 rounded-full whitespace-nowrap">
                           is blocked by
                         </div>
                       </div>
-                      <span className="text-sm text-slate-600 dark:text-slate-300 mt-3 text-center w-full truncate px-4">
+                      <span className="text-sm text-slate-600 dark:text-foreground mt-3 text-center w-full truncate px-4">
                         {blocker.description}
                       </span>
                     </div>
 
                     <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 rounded-full border-2 border-indigo-500 bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm font-bold text-slate-600 dark:text-slate-300 overflow-hidden">
+                      <div className="w-10 h-10 rounded-full border-2 border-indigo-500 bg-slate-100 dark:bg-secondary flex items-center justify-center text-sm font-bold text-slate-600 dark:text-foreground overflow-hidden">
                         {blocker.blocking_person?.avatar_url
                           ? <img src={blocker.blocking_person.avatar_url} alt="" className="w-full h-full object-cover" />
                           : (blocker.blocking_person?.full_name?.[0] || '?')}

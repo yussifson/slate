@@ -231,7 +231,7 @@ export default function PurchaseOrders() {
  switch (status) {
  case 'received': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-primary/90 tracking-[0.04em]">Received</span>;
  case 'sent': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-700 tracking-[0.04em]">Sent</span>;
- default: return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:text-slate-300 dark:text-slate-300 tracking-[0.04em]">Draft</span>;
+ default: return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:text-foreground dark:text-foreground tracking-[0.04em]">Draft</span>;
 }
 };
 
@@ -306,8 +306,8 @@ export default function PurchaseOrders() {
  {filteredPOs.map((po) => (
  <tr key={po.id} className="hover:bg-muted/30 transition-colors dark:hover:bg-muted/10">
  <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100 dark:text-slate-100">{po.po_number}</td>
- <td className="px-6 py-4 text-slate-700 dark:text-slate-300 dark:text-slate-300">{suppliers.find(s => s.id === po.supplier)?.name || 'Unknown'}</td>
- <td className="px-6 py-4 text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400">
+ <td className="px-6 py-4 text-slate-700 dark:text-foreground dark:text-foreground">{suppliers.find(s => s.id === po.supplier)?.name || 'Unknown'}</td>
+ <td className="px-6 py-4 text-slate-500 dark:text-muted-foreground dark:text-[#71717a] dark:text-gray-400">
  {po.date ? format(new Date(po.date), 'MMM d, yyyy') : '-'}
  </td>
  <td className="px-6 py-4 font-medium">${Number(po.total || 0).toFixed(2)}</td>
@@ -337,7 +337,7 @@ export default function PurchaseOrders() {
  ))}
  {filteredPOs.length === 0 && (
  <tr>
- <td colSpan="6" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400 bg-slate-50/30">
+ <td colSpan="6" className="px-6 py-12 text-center text-slate-500 dark:text-muted-foreground dark:text-[#71717a] dark:text-gray-400 bg-slate-50/30">
  <ShoppingCart className="w-10 h-10 mx-auto mb-3 text-slate-300" />
  <p>{t("no_pos", "No purchase orders found.")}</p>
  </td>
@@ -391,12 +391,12 @@ export default function PurchaseOrders() {
  <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 dark:text-slate-100 mb-3 uppercase tracking-wider tracking-[0.04em]">{t("order_items", "Order Items")}</h3>
  <div className="border-[0.5px] border-black/9 dark:border-white/8 rounded-xl overflow-hidden">
  <table className="w-full text-sm">
- <thead className="bg-slate-50 dark:bg-slate-800/50 border-b">
+ <thead className="bg-slate-50 dark:bg-secondary/50 border-b">
  <tr>
- <th className="px-4 py-2 text-left font-medium text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400">Item</th>
- <th className="px-4 py-2 text-right font-medium text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400">Qty</th>
- <th className="px-4 py-2 text-right font-medium text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400">Cost</th>
- <th className="px-4 py-2 text-right font-medium text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400">Subtotal</th>
+ <th className="px-4 py-2 text-left font-medium text-slate-500 dark:text-muted-foreground dark:text-[#71717a] dark:text-gray-400">Item</th>
+ <th className="px-4 py-2 text-right font-medium text-slate-500 dark:text-muted-foreground dark:text-[#71717a] dark:text-gray-400">Qty</th>
+ <th className="px-4 py-2 text-right font-medium text-slate-500 dark:text-muted-foreground dark:text-[#71717a] dark:text-gray-400">Cost</th>
+ <th className="px-4 py-2 text-right font-medium text-slate-500 dark:text-muted-foreground dark:text-[#71717a] dark:text-gray-400">Subtotal</th>
  </tr>
  </thead>
  <tbody className="divide-y">
@@ -404,7 +404,7 @@ export default function PurchaseOrders() {
  <tr key={i}>
  <td className="px-4 py-3">
  <div className="font-medium">{item.name}</div>
- <div className="text-xs text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{item.sku}</div>
+ <div className="text-xs text-slate-500 dark:text-muted-foreground dark:text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{item.sku}</div>
  </td>
  <td className="px-4 py-3 text-right">{item.quantity}</td>
  <td className="px-4 py-3 text-right">${Number(item.unitCost).toFixed(2)}</td>
@@ -412,7 +412,7 @@ export default function PurchaseOrders() {
  </tr>
  ))}
  </tbody>
- <tfoot className="bg-slate-50 dark:bg-slate-800/50 border-t font-semibold">
+ <tfoot className="bg-slate-50 dark:bg-secondary/50 border-t font-semibold">
  <tr>
  <td colSpan="3" className="px-4 py-3 text-right">Total</td>
  <td className="px-4 py-3 text-right">${Number(selectedPO?.total || 0).toFixed(2)}</td>
@@ -425,7 +425,7 @@ export default function PurchaseOrders() {
  {selectedPO?.notes && (
  <div>
  <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 dark:text-slate-100 mb-2 uppercase tracking-wider tracking-[0.04em]">{t("notes", "Notes")}</h3>
- <p className="text-sm text-slate-600 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border">{selectedPO.notes}</p>
+ <p className="text-sm text-slate-600 bg-slate-50 dark:bg-secondary/50 p-3 rounded-xl border">{selectedPO.notes}</p>
  </div>
  )}
  
@@ -491,7 +491,7 @@ export default function PurchaseOrders() {
  <h4 className="font-semibold text-sm">{t("add_items", "Add Items")}</h4>
  <div className="flex gap-2 items-end">
  <div className="flex-1">
- <label className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400 mb-1 block tracking-[0.04em]">Product</label>
+ <label className="text-xs font-medium text-slate-500 dark:text-muted-foreground dark:text-[#71717a] dark:text-gray-400 mb-1 block tracking-[0.04em]">Product</label>
  <Select value={selectedProduct} onValueChange={setSelectedProduct}>
  <SelectTrigger className="bg-white dark:bg-card/40 dark:bg-card/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <SelectValue placeholder="Select product..." />
@@ -504,11 +504,11 @@ export default function PurchaseOrders() {
  </Select>
  </div>
  <div className="w-24">
- <label className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400 mb-1 block tracking-[0.04em]">Qty</label>
+ <label className="text-xs font-medium text-slate-500 dark:text-muted-foreground dark:text-[#71717a] dark:text-gray-400 mb-1 block tracking-[0.04em]">Qty</label>
  <Input type="number" min="1" value={orderQuantity} onChange={e => setOrderQuantity(e.target.value)} className="bg-white dark:bg-card/40 dark:bg-card/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  <div className="w-32">
- <label className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400 mb-1 block tracking-[0.04em]">Unit Cost ($)</label>
+ <label className="text-xs font-medium text-slate-500 dark:text-muted-foreground dark:text-[#71717a] dark:text-gray-400 mb-1 block tracking-[0.04em]">Unit Cost ($)</label>
  <Input type="number" min="0" step="0.01" value={orderCost} onChange={e => setOrderCost(e.target.value)} className="bg-white dark:bg-card/40 dark:bg-card/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  <Button type="button" onClick={handleAddItem} variant="secondary">Add</Button>
@@ -517,7 +517,7 @@ export default function PurchaseOrders() {
  {newPO.items.length > 0 && (
  <div className="mt-4 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl bg-white dark:bg-card/40 dark:bg-card/40 overflow-x-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm">
- <thead className="bg-slate-50 dark:bg-slate-800/50 border-b">
+ <thead className="bg-slate-50 dark:bg-secondary/50 border-b">
  <tr>
  <th className="px-3 py-2 text-left">Item</th>
  <th className="px-3 py-2 text-right">Qty</th>

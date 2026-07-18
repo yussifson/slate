@@ -112,7 +112,7 @@ export default function VideoDownloadModal({ open, onOpenChange, videoUrl, video
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-sm p-0 overflow-y-auto max-h-[90vh] bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl">
+      <DialogContent className="sm:max-w-sm p-0 overflow-y-auto max-h-[90vh] bg-white dark:bg-background border-slate-200 dark:border-border rounded-2xl shadow-2xl">
         <div className="p-6">
           <DialogHeader className="mb-6">
             <DialogTitle className="flex flex-col items-center gap-3 text-center">
@@ -156,19 +156,19 @@ export default function VideoDownloadModal({ open, onOpenChange, videoUrl, video
                         className={`w-full flex items-center p-3.5 rounded-xl border-2 text-left transition-all group ${
                           selectedQuality === q.id 
                             ? 'border-primary bg-primary/5 shadow-sm' 
-                            : 'border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900/50'
+                            : 'border-slate-100 dark:border-border hover:border-slate-200 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900/50'
                         }`}
                       >
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 transition-colors ${selectedQuality === q.id ? 'bg-primary/10 text-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300'}`}>
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 transition-colors ${selectedQuality === q.id ? 'bg-primary/10 text-primary' : 'bg-slate-100 dark:bg-secondary text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300'}`}>
                           <Icon className="w-5 h-5" />
                         </div>
                         <div className="flex-1">
-                          <div className={`font-bold text-sm ${selectedQuality === q.id ? 'text-primary' : 'text-slate-700 dark:text-slate-300'}`}>
+                          <div className={`font-bold text-sm ${selectedQuality === q.id ? 'text-primary' : 'text-slate-700 dark:text-foreground'}`}>
                             {q.label}
                           </div>
                           <div className="text-xs text-slate-500 mt-0.5">{q.desc}</div>
                         </div>
-                        <div className={`text-[10px] font-bold font-mono px-2 py-1 rounded-md uppercase tracking-wider ${selectedQuality === q.id ? 'bg-primary/10 text-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+                        <div className={`text-[10px] font-bold font-mono px-2 py-1 rounded-md uppercase tracking-wider ${selectedQuality === q.id ? 'bg-primary/10 text-primary' : 'bg-slate-100 dark:bg-secondary text-slate-400'}`}>
                           {q.ext}
                         </div>
                       </button>
@@ -198,7 +198,7 @@ export default function VideoDownloadModal({ open, onOpenChange, videoUrl, video
                       <div className="text-3xl font-black text-primary mt-2">{progress}%</div>
                     )}
                   </div>
-                  <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <div className="w-full h-1.5 bg-slate-100 dark:bg-secondary rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-primary transition-all duration-300 ease-out"
                       style={{ width: `${progress}%` }}

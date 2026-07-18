@@ -435,14 +435,14 @@ export default function Orders() {
  <h4 className="font-semibold text-sm">Order Items</h4>
  <div className="flex gap-2 items-end">
  <div className="flex-1">
- <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block tracking-[0.04em]">Product</label>
+ <label className="text-xs font-medium text-slate-500 dark:text-muted-foreground mb-1 block tracking-[0.04em]">Product</label>
  <select value={selectedProduct} onChange={e => setSelectedProduct(e.target.value)} className="flex h-10 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
  <option value="">Select product...</option>
  {products.map(p => <option key={p.id} value={p.id}>{p.name} (${p.price.toFixed(2)})</option>)}
  </select>
  </div>
  <div className="w-24">
- <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block tracking-[0.04em]">Qty</label>
+ <label className="text-xs font-medium text-slate-500 dark:text-muted-foreground mb-1 block tracking-[0.04em]">Qty</label>
  <Input type="number" min="1" value={productQty} onChange={e => setProductQty(e.target.value)} className="bg-white dark:bg-card/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  <Button type="button" onClick={handleAddItem} variant="secondary">Add</Button>
@@ -451,7 +451,7 @@ export default function Orders() {
  {formData.items.length > 0 && (
  <div className="mt-4 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl bg-white dark:bg-card/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm">
- <thead className="bg-slate-50 dark:bg-slate-800/50 border-b">
+ <thead className="bg-slate-50 dark:bg-secondary/50 border-b">
  <tr>
  <th className="px-3 py-2 text-left">Item</th>
  <th className="px-3 py-2 text-right">Price</th>

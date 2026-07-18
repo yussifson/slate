@@ -235,7 +235,7 @@ export default function UnivMessaging() {
  className={`p-3 rounded-xl flex items-center gap-3 cursor-pointer transition-colors ${activeContact?.id === c.id ? 'bg-primary/10' : 'hover:bg-muted'}`}
  >
  <div className="relative">
- <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center font-semibold text-[#71717a] dark:text-gray-400 dark:text-slate-300">
+ <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center font-semibold text-[#71717a] dark:text-gray-400 dark:text-foreground">
  {(c.email || 'U').charAt(0).toUpperCase()}
  </div>
  </div>

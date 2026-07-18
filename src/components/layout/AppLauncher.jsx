@@ -63,7 +63,7 @@ export default function AppLauncher() {
       
       <PopoverContent 
         align="end" 
-        className="w-[320px] p-4 shadow-2xl border-slate-200 dark:border-slate-800 rounded-2xl z-[150] bg-card/95 backdrop-blur-xl"
+        className="w-[320px] p-4 shadow-2xl border-slate-200 dark:border-border rounded-2xl z-[150] bg-card/95 backdrop-blur-xl"
         sideOffset={8}
       >
         <div className="flex items-center justify-between mb-4 px-1">

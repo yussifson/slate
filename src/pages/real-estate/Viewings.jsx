@@ -93,7 +93,7 @@ export default function Viewings() {
     const days = [];
     
     for (let i = 0; i < firstDay; i++) {
-      days.push(<div key={`empty-${i}`} className="p-2.5 bg-slate-50/50 dark:bg-card/20 border-r border-b border-slate-200 dark:border-slate-800"></div>);
+      days.push(<div key={`empty-${i}`} className="p-2.5 bg-slate-50/50 dark:bg-card/20 border-r border-b border-slate-200 dark:border-border"></div>);
     }
     
     for (let day = 1; day <= daysInMonth; day++) {
@@ -104,15 +104,15 @@ export default function Viewings() {
       });
       
       days.push(
-        <div key={day} className="min-h-[100px] p-2.5 border-r border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-300 ease-in-out cursor-pointer bg-white dark:bg-card/50 group">
-          <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 group-hover:text-primary dark:group-hover:text-primary/80 transition-colors">{day}</div>
+        <div key={day} className="min-h-[100px] p-2.5 border-r border-b border-slate-200 dark:border-border hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-300 ease-in-out cursor-pointer bg-white dark:bg-card/50 group">
+          <div className="text-sm font-semibold text-slate-700 dark:text-foreground mb-1.5 group-hover:text-primary dark:group-hover:text-primary/80 transition-colors">{day}</div>
           <div className="space-y-1.5">
             {dayViewings.slice(0, 2).map(v => (
               <div key={v.id} className={`text-xs px-2 py-1 rounded-md font-medium shadow-sm border border-white/20 dark:border-white/5 ${statusColors[v.status]?.badge} truncate transition-all`}>
                 {v.client_name}
               </div>
             ))}
-            {dayViewings.length > 2 && <div className="text-xs font-medium text-slate-500 dark:text-slate-400">+{dayViewings.length - 2} more</div>}
+            {dayViewings.length > 2 && <div className="text-xs font-medium text-slate-500 dark:text-muted-foreground">+{dayViewings.length - 2} more</div>}
           </div>
         </div>
       );
@@ -135,7 +135,7 @@ export default function Viewings() {
               </div>
               Property Viewings
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">Schedule and track property showings seamlessly</p>
+            <p className="text-slate-500 dark:text-muted-foreground mt-2 font-medium">Schedule and track property showings seamlessly</p>
           </div>
           <div className="flex items-center gap-4">
             <ViewToggle view={view} onViewChange={setView} allowedViews={['calendar', 'list']} />
@@ -149,18 +149,18 @@ export default function Viewings() {
         {view === 'calendar' ? (
           <div className="grid grid-cols-3 gap-6 mb-8">
             <div className="col-span-2">
-              <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
-                <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+              <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-border rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
+                <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2.5 text-lg font-bold tracking-wide">
                       <Calendar className="w-5 h-5 text-primary dark:text-primary/80" />
                       {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                     </CardTitle>
                     <div className="flex gap-1 bg-slate-100 dark:bg-card/50 rounded-lg p-1 border border-slate-200 dark:border-slate-600/30">
-                      <Button variant="ghost" size="sm" onClick={handlePrevMonth} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 h-8 w-8 p-0 rounded-md transition-colors shadow-sm">
+                      <Button variant="ghost" size="sm" onClick={handlePrevMonth} className="text-slate-600 dark:text-foreground hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 h-8 w-8 p-0 rounded-md transition-colors shadow-sm">
                         <ChevronLeft className="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={handleNextMonth} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 h-8 w-8 p-0 rounded-md transition-colors shadow-sm">
+                      <Button variant="ghost" size="sm" onClick={handleNextMonth} className="text-slate-600 dark:text-foreground hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 h-8 w-8 p-0 rounded-md transition-colors shadow-sm">
                         <ChevronRight className="w-4 h-4" />
                       </Button>
                     </div>
@@ -169,7 +169,7 @@ export default function Viewings() {
                 <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                   <div className="grid grid-cols-7 gap-0">
                     {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                      <div key={day} className="py-3 px-2 text-center text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-card border-r border-b border-slate-200 dark:border-slate-800">
+                      <div key={day} className="py-3 px-2 text-center text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-muted-foreground bg-slate-50 dark:bg-card border-r border-b border-slate-200 dark:border-border">
                         {day}
                       </div>
                     ))}
@@ -181,8 +181,8 @@ export default function Viewings() {
 
             {/* Upcoming Viewings Sidebar */}
             <div>
-              <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
-                <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+              <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-border rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
+                <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
                   <CardTitle className="flex items-center gap-2.5 text-lg font-bold text-slate-900 dark:text-white tracking-wide">
                     <div className="p-1.5 bg-primary/10 dark:bg-primary/30/30 rounded-lg border border-primary/20 dark:border-primary/40/50 shadow-sm">
                       <Eye className="w-4 h-4 text-primary dark:text-primary/80" />
@@ -193,7 +193,7 @@ export default function Viewings() {
                 <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                   <div className="overflow-y-auto flex-1 custom-scrollbar scrollbar-green">
                     {upcomingViewings.length === 0 ? (
-                      <div className="p-8 text-center text-slate-500 dark:text-slate-400 flex flex-col items-center justify-center h-full min-h-[200px]">
+                      <div className="p-8 text-center text-slate-500 dark:text-muted-foreground flex flex-col items-center justify-center h-full min-h-[200px]">
                         <div className="flex flex-col mb-4">
                           <AlertCircle className="w-8 h-8 text-slate-400 dark:text-slate-500" />
                         </div>
@@ -202,12 +202,12 @@ export default function Viewings() {
                       </div>
                     ) : (
                       upcomingViewings.map(viewing => (
-                        <div key={viewing.id} className="p-5 border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-300 group relative">
+                        <div key={viewing.id} className="p-5 border-b border-slate-100 dark:border-border/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-300 group relative">
                           <div className="flex items-start justify-between mb-3">
                             <p className="font-bold text-slate-900 dark:text-white text-sm group-hover:text-primary dark:group-hover:text-primary/80 transition-colors">{viewing.client_name}</p>
                             <Badge className={`${statusColors[viewing.status]?.badge} border-0 shadow-sm px-2.5 py-0.5`}>{viewing.status}</Badge>
                           </div>
-                          <div className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 font-medium">
+                          <div className="space-y-2.5 text-xs text-slate-600 dark:text-foreground font-medium">
                             <div className="flex items-start gap-2.5">
                               <MapPin className="w-3.5 h-3.5 mt-0.5 text-slate-400 shrink-0" /> 
                               <span className="leading-snug">{viewing.property_address}</span>
@@ -327,53 +327,53 @@ export default function Viewings() {
               }
             }} className="space-y-4 mt-6">
               <div>
-                <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Property ID</label>
-                <input type="text" placeholder="Property ID" value={formData.propertyId} onChange={(e) => setFormData({...formData, propertyId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Property ID</label>
+                <input type="text" placeholder="Property ID" value={formData.propertyId} onChange={(e) => setFormData({...formData, propertyId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Property Address *</label>
-                <input type="text" placeholder="Property Address" value={formData.propertyAddress} onChange={(e) => setFormData({...formData, propertyAddress: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" required />
+                <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Property Address *</label>
+                <input type="text" placeholder="Property Address" value={formData.propertyAddress} onChange={(e) => setFormData({...formData, propertyAddress: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" required />
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Client ID</label>
-                <input type="text" placeholder="Client ID" value={formData.clientId} onChange={(e) => setFormData({...formData, clientId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Client ID</label>
+                <input type="text" placeholder="Client ID" value={formData.clientId} onChange={(e) => setFormData({...formData, clientId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Client Name *</label>
-                <input type="text" placeholder="Client Name" value={formData.clientName} onChange={(e) => setFormData({...formData, clientName: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" required />
+                <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Client Name *</label>
+                <input type="text" placeholder="Client Name" value={formData.clientName} onChange={(e) => setFormData({...formData, clientName: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" required />
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Agent ID</label>
-                <input type="text" placeholder="Agent ID" value={formData.agentId} onChange={(e) => setFormData({...formData, agentId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Agent ID</label>
+                <input type="text" placeholder="Agent ID" value={formData.agentId} onChange={(e) => setFormData({...formData, agentId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Agent Name</label>
-                <input type="text" placeholder="Agent Name" value={formData.agentName} onChange={(e) => setFormData({...formData, agentName: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Agent Name</label>
+                <input type="text" placeholder="Agent Name" value={formData.agentName} onChange={(e) => setFormData({...formData, agentName: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Viewing Date *</label>
-                  <input type="date" value={formData.viewingDate} onChange={(e) => setFormData({...formData, viewingDate: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" required />
+                  <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Viewing Date *</label>
+                  <input type="date" value={formData.viewingDate} onChange={(e) => setFormData({...formData, viewingDate: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" required />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Time</label>
+                  <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Time</label>
                   <div className="relative">
-                    <input type="time" value={formData.viewingTime} onChange={(e) => setFormData({...formData, viewingTime: e.target.value})} className="w-full pl-3 pr-10 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-0 [&::-webkit-calendar-picker-indicator]:w-10 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer z-10" />
+                    <input type="time" value={formData.viewingTime} onChange={(e) => setFormData({...formData, viewingTime: e.target.value})} className="w-full pl-3 pr-10 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-0 [&::-webkit-calendar-picker-indicator]:w-10 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer z-10" />
                     <Clock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none z-0" />
                   </div>
                 </div>
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Status</label>
-                <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none">
+                <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Status</label>
+                <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none">
                   <option value="scheduled">Scheduled</option>
                   <option value="completed">Completed</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 block">Notes</label>
-                <textarea placeholder="Additional notes" value={formData.notes} onChange={(e) => setFormData({...formData, notes: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" rows="3"></textarea>
+                <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Notes</label>
+                <textarea placeholder="Additional notes" value={formData.notes} onChange={(e) => setFormData({...formData, notes: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" rows="3"></textarea>
               </div>
               <Button type="submit" className="w-full bg-primary hover:bg-primary/90 dark:bg-primary dark:hover:bg-primary text-white rounded-lg shadow-lg shadow-primary/20 py-2.5 transition-all">Schedule Viewing</Button>
             </form>

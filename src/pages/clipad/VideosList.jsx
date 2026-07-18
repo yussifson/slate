@@ -107,23 +107,23 @@ export default function VideosList() {
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#f0f2f5] dark:bg-background text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
       {/* Sleek top nav */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/50 dark:bg-[#111b21]/50 backdrop-blur-3xl border-b border-black/5 dark:border-white/5 shrink-0">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/50 dark:bg-background/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5 shrink-0">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
-          <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm text-primary">
+          <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center border border-slate-200 dark:border-border shadow-sm text-primary">
             <CliPadLogo size={22} />
           </div>
           <span className="text-lg font-bold tracking-tight hidden sm:block">CliPad</span>
         </div>
         <div className="flex items-center gap-1.5 md:gap-3">
-          <button onClick={() => navigate('/spaces')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Spaces</button>
+          <button onClick={() => navigate('/spaces')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Spaces</button>
           <button onClick={() => navigate('/videos')} className="hidden md:block px-3 py-2 text-sm font-medium text-primary bg-primary/10 rounded-lg transition-colors">Recordings</button>
-          <button onClick={() => navigate('/meetings')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Meetings</button>
-          <button onClick={() => navigate('/chat')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Chat</button>
+          <button onClick={() => navigate('/meetings')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Meetings</button>
+          <button onClick={() => navigate('/chat')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Chat</button>
           {isAdmin(user) && (
             user?.clipad_plan === 'enterprise' ? (
-              <button onClick={() => navigate('/clipad/enterprise')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Enterprise</button>
+              <button onClick={() => navigate('/clipad/enterprise')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Enterprise</button>
             ) : (
-              <button onClick={() => navigate('/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Analytics</button>
+              <button onClick={() => navigate('/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Analytics</button>
             )
           )}
           
@@ -142,15 +142,15 @@ export default function VideosList() {
                 )}
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl shadow-xl border-slate-200 dark:border-slate-800">
-              <div className="px-3 py-3 mb-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+            <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl shadow-xl border-slate-200 dark:border-border">
+              <div className="px-3 py-3 mb-2 bg-slate-50 dark:bg-secondary/50 rounded-xl">
                 <p className="font-semibold text-sm truncate">{user?.full_name || user?.user_metadata?.full_name || 'User'}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user?.email}</p>
+                <p className="text-xs text-slate-500 dark:text-muted-foreground truncate">{user?.email}</p>
               </div>
               <DropdownMenuItem onClick={() => navigate('/settings')} className="rounded-xl py-2.5 px-3 cursor-pointer">
                 <Settings className="w-4 h-4 mr-2" /> Settings
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="my-1 bg-slate-100 dark:bg-slate-800" />
+              <DropdownMenuSeparator className="my-1 bg-slate-100 dark:bg-secondary" />
               <DropdownMenuItem onClick={() => window.location.href = 'https://account.optavel.com'} className="rounded-xl py-2.5 px-3 cursor-pointer text-slate-500">
                 <UserCircle className="w-4 h-4 mr-2" /> Go to Optavel Account
               </DropdownMenuItem>
@@ -163,7 +163,7 @@ export default function VideosList() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-2 flex items-center gap-3"><Video className="w-7 h-7 text-primary" /> My Recordings</h1>
-            <p className="text-slate-500 dark:text-slate-400">All your asynchronous video recordings.</p>
+            <p className="text-slate-500 dark:text-muted-foreground">All your asynchronous video recordings.</p>
           </div>
           <button
             onClick={() => navigate('/record')}
@@ -188,12 +188,12 @@ export default function VideosList() {
 
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1,2,3,4,5,6].map(i => <div key={i} className="aspect-video rounded-2xl bg-white dark:bg-slate-900 animate-pulse border border-slate-200 dark:border-slate-800" />)}
+            {[1,2,3,4,5,6].map(i => <div key={i} className="aspect-video rounded-2xl bg-white dark:bg-card animate-pulse border border-slate-200 dark:border-border" />)}
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-24 border border-dashed border-black/10 dark:border-white/10 rounded-3xl bg-transparent">
             <Video className="w-16 h-16 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-slate-500 dark:text-slate-400 mb-2">No recordings found</h3>
+            <h3 className="text-xl font-bold text-slate-500 dark:text-muted-foreground mb-2">No recordings found</h3>
             <p className="text-slate-400 dark:text-slate-500 text-sm">Click the Record Video button to create your first async video.</p>
           </div>
         ) : (
@@ -204,7 +204,7 @@ export default function VideosList() {
                 onClick={() => navigate(`/watch/${v.id}`)}
                 className="group cursor-pointer rounded-2xl overflow-hidden bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] flex flex-col"
               >
-                <div className="aspect-video bg-slate-100 dark:bg-slate-800 relative flex items-center justify-center overflow-hidden">
+                <div className="aspect-video bg-slate-100 dark:bg-secondary relative flex items-center justify-center overflow-hidden">
                   {v.thumbnail_url ? (
                     <img src={v.thumbnail_url} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={v.title} />
                   ) : (
@@ -225,10 +225,10 @@ export default function VideosList() {
                 <div className="p-4 flex-1 flex flex-col justify-between">
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate mb-1 group-hover:text-primary transition-colors">{v.title || 'Untitled Video'}</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{new Date(v.created_at).toLocaleDateString()} at {new Date(v.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                    <p className="text-xs text-slate-500 dark:text-muted-foreground mb-2">{new Date(v.created_at).toLocaleDateString()} at {new Date(v.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
                   </div>
                   <div className="flex items-center justify-between mt-2 gap-2">
-                    {v.space && <span className="inline-block px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] uppercase font-bold truncate max-w-[120px]">{v.space.name}</span>}
+                    {v.space && <span className="inline-block px-2 py-1 rounded bg-slate-100 dark:bg-secondary text-slate-500 dark:text-muted-foreground text-[10px] uppercase font-bold truncate max-w-[120px]">{v.space.name}</span>}
                     {v.space && (
                       <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold shrink-0 ${
                         v.space.is_private

@@ -105,11 +105,11 @@ Do NOT wrap in markdown blocks.`
               const linkUrl = alert.source_id?.startsWith('M-') ? `/clipad/meetings/${idStr}` : '#';
 
               return (
-                <div key={alert.id} className="bg-white dark:bg-slate-900 border border-amber-100 dark:border-amber-900/50 rounded-md p-3 flex items-center justify-between">
+                <div key={alert.id} className="bg-white dark:bg-card border border-amber-100 dark:border-amber-900/50 rounded-md p-3 flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-slate-900 dark:text-white">Topic: {alert.topic_name}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                      Being discussed in <strong className="text-slate-700 dark:text-slate-300">{alert.space_name || 'Another Space'}</strong>
+                    <p className="text-xs text-slate-500 dark:text-muted-foreground mt-0.5">
+                      Being discussed in <strong className="text-slate-700 dark:text-foreground">{alert.space_name || 'Another Space'}</strong>
                     </p>
                     {alert.reason && <p className="text-[10px] text-slate-400 mt-1 italic">"{alert.reason}"</p>}
                   </div>

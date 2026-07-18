@@ -32,11 +32,11 @@ export default function SHSDashboard() {
 
  const stats = [
  { title: "Total Students", value: students.length, icon: Users, color: "text-primary", bg: "bg-slate-100"},
- { title: "Staff Overview", value: "142", icon: UserPlus, color: "text-primary dark:text-primary/70", bg: "bg-slate-100 dark:bg-slate-800"},
- { title: "Attendance Rate", value: "94%", icon: ClipboardCheck, color: "text-primary dark:text-primary/70", bg: "bg-slate-100 dark:bg-slate-800"},
+ { title: "Staff Overview", value: "142", icon: UserPlus, color: "text-primary dark:text-primary/70", bg: "bg-slate-100 dark:bg-secondary"},
+ { title: "Attendance Rate", value: "94%", icon: ClipboardCheck, color: "text-primary dark:text-primary/70", bg: "bg-slate-100 dark:bg-secondary"},
  { title: "Pending Applications", value: pendingApps, icon: ClipboardCheck, color: "text-amber-600", bg: "bg-amber-100"},
  { title: "Outstanding Fees", value: `$${uncollectedFees.toLocaleString()}`, icon: Banknote, color: "text-red-600", bg: "bg-red-100"},
- { title: "Grades Recorded", value: grades.length, icon: GraduationCap, color: "text-primary dark:text-primary/70", bg: "bg-slate-100 dark:bg-slate-800"},
+ { title: "Grades Recorded", value: grades.length, icon: GraduationCap, color: "text-primary dark:text-primary/70", bg: "bg-slate-100 dark:bg-secondary"},
  ];
 
  // Dynamically calculate from grades if available, else use default
@@ -63,7 +63,7 @@ export default function SHSDashboard() {
  <Card key={i} className="border-primary/40 dark:border-primary/40 transition-">
  <CardContent className="p-5 flex items-center justify-between">
  <div>
- <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wide tracking-[0.04em]">{stat.title}</p>
+ <p className="text-xs font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wide tracking-[0.04em]">{stat.title}</p>
  <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100 mt-1 tracking-[-0.02em]">{stat.value}</h3>
  </div>
  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${stat.bg}`}>
@@ -105,12 +105,12 @@ export default function SHSDashboard() {
  </h3>
  <div className="space-y-4">
  <div className="flex gap-3">
- <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+ <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-secondary flex items-center justify-center shrink-0">
  <CheckCircle2 className="w-4 h-4 text-primary dark:text-primary/70" />
  </div>
  <div>
  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Term 3 Results Published</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">2 hours ago</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">2 hours ago</p>
  </div>
  </div>
  <div className="flex gap-3">
@@ -119,7 +119,7 @@ export default function SHSDashboard() {
  </div>
  <div>
  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">5 New CSSPS Placements</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">5 hours ago</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">5 hours ago</p>
  </div>
  </div>
  <div className="flex gap-3">
@@ -128,7 +128,7 @@ export default function SHSDashboard() {
  </div>
  <div>
  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">PTA Dues Deadline Reminder</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Yesterday</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">Yesterday</p>
  </div>
  </div>
  </div>

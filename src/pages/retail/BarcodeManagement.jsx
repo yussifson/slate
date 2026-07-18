@@ -133,7 +133,7 @@ export default function BarcodeManagement() {
 
               <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2">
                 {filteredProducts.map(product => (
-                  <div key={product.id} className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-colors">
+                  <div key={product.id} className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-border hover:border-primary/50 transition-colors">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
                         <Package className="w-5 h-5" />

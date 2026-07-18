@@ -16,15 +16,15 @@ import { generateText } from '@/lib/cloudflareAI';
 import { Bot, Sparkles } from 'lucide-react';
 
 const typeColors = {
-  Consultation: 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20',
-  'Follow-up': 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20',
+  Consultation: 'bg-slate-50 dark:bg-secondary/50 text-primary/90 border-primary/20',
+  'Follow-up': 'bg-slate-50 dark:bg-secondary/50 text-primary/90 border-primary/20',
   Emergency: 'bg-red-50 text-red-700 border-red-200'
 };
 
 const statusColors = {
-  Scheduled: 'text-primary bg-slate-50 dark:bg-slate-800/50 border-primary/20',
+  Scheduled: 'text-primary bg-slate-50 dark:bg-secondary/50 border-primary/20',
   'In Progress': 'text-amber-600 bg-amber-50 border-amber-200 animate-pulse',
-  Completed: 'text-primary bg-slate-50 dark:bg-slate-800/50 border-primary/20'
+  Completed: 'text-primary bg-slate-50 dark:bg-secondary/50 border-primary/20'
 };
 
 export default function Appointments() {

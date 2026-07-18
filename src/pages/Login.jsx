@@ -163,12 +163,18 @@ export default function Login() {
         }
        }
 
-       // Clean up accidentally duplicated URLs
+       // Clean up accidentally duplicated URLs and ensure protocol
        const cleanLogo = (url) => {
          if (!url) return url;
-         const httpPos = url.indexOf('http', 4);
-         if (httpPos > 0) return url.substring(0, httpPos);
-         return url;
+         const lastHttp = url.lastIndexOf('http');
+         let finalUrl = url;
+         if (lastHttp > 0) {
+           finalUrl = url.substring(lastHttp);
+         }
+         if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/')) {
+           finalUrl = 'https://' + finalUrl;
+         }
+         return finalUrl;
        };
 
        // Company exists → always show login. Only show "Not Found" if company is truly missing.
@@ -208,12 +214,18 @@ export default function Login() {
          const cached = localStorage.getItem('slate_cached_user');
          if (cached) {
            const parsed = JSON.parse(cached);
-           const cleanLogo = (url) => {
-             if (!url) return url;
-             const httpPos = url.indexOf('http', 4);
-             if (httpPos > 0) return url.substring(0, httpPos);
-             return url;
-           };
+            const cleanLogo = (url) => {
+              if (!url) return url;
+              const lastHttp = url.lastIndexOf('http');
+              let finalUrl = url;
+              if (lastHttp > 0) {
+                finalUrl = url.substring(lastHttp);
+              }
+              if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/')) {
+                finalUrl = 'https://' + finalUrl;
+              }
+              return finalUrl;
+            };
            if (parsed.company_name || parsed.company_logo_url) {
               setBranding({
                 name: parsed.company_name || 'Your Workslate',
@@ -532,12 +544,12 @@ export default function Login() {
 
  return (
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-50/50 dark:bg-card p-4 font-sans backdrop-blur-sm">
-    <div className="w-full max-w-md bg-white dark:bg-slate-800 rounded-3xl p-8 text-center border-[0.5px] border-black/9 dark:border-white/8 border-slate-100 dark:border-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="w-full max-w-md bg-white dark:bg-secondary rounded-3xl p-8 text-center border-[0.5px] border-black/9 dark:border-white/8 border-slate-100 dark:border-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-500/10/10 mb-6">
         <AlertCircle className="h-8 w-8 text-red-500 dark:text-red-400" />
       </div>
       <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white mb-2 tracking-[-0.02em]">{t("workslate_not_found", "Workslate Not Found")}</h2>
-      <p className="mb-8 text-sm font-medium text-slate-500 dark:text-slate-400 leading-relaxed">
+      <p className="mb-8 text-sm font-medium text-slate-500 dark:text-muted-foreground leading-relaxed">
         {t("we_couldn_t_find_an_organizati", "We couldn't find an organization matching the web address")} <span className="font-semibold text-slate-900 dark:text-white">"{currentSubdomain}"</span>.
       </p>
       <button onClick={() => isDesktopApp() ? navigate('/login') : (window.location.href = mainUrl)} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3.5 px-6 rounded-xl transition-all">
@@ -582,7 +594,7 @@ export default function Login() {
       <button 
         onClick={handleGoogleOAuth}
         type="button"
-        className="flex items-center justify-center gap-2 h-full w-full text-slate-700 dark:text-slate-200 font-medium text-base transition-colors"
+        className="flex items-center justify-center gap-2 h-full w-full text-slate-700 dark:text-foreground font-medium text-base transition-colors"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>

@@ -96,8 +96,8 @@ const getVideoColor = (id) => {
 
 function VideoCard({ video, onClick }) {
   return (
-    <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400/50 transition-all hover:-translate-y-0.5 shadow-sm hover:shadow-md">
-      <div className="aspect-video bg-slate-100 dark:bg-slate-800 relative flex items-center justify-center overflow-hidden">
+    <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-white dark:bg-card border border-slate-200 dark:border-border hover:border-indigo-400/50 transition-all hover:-translate-y-0.5 shadow-sm hover:shadow-md">
+      <div className="aspect-video bg-slate-100 dark:bg-secondary relative flex items-center justify-center overflow-hidden">
         {video.thumbnail_url ? (
           <img src={video.thumbnail_url} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={video.title} />
         ) : (
@@ -120,9 +120,9 @@ function VideoCard({ video, onClick }) {
           </div>
         )}
       </div>
-      <div className="p-4 bg-white dark:bg-slate-900">
+      <div className="p-4 bg-white dark:bg-card">
         <p className="text-sm font-semibold text-slate-900 dark:text-white line-clamp-1">{video.title || 'Untitled'}</p>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{new Date(video.created_at).toLocaleDateString()}</p>
+        <p className="text-xs text-slate-500 dark:text-muted-foreground mt-1">{new Date(video.created_at).toLocaleDateString()}</p>
       </div>
     </div>
   );
@@ -407,9 +407,9 @@ export default function SpaceDashboard() {
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#f0f2f5] dark:bg-background page-enter text-foreground overflow-x-hidden pb-24 md:pb-8">
       {/* Nav */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-white/50 dark:bg-[#111b21]/50 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-white/50 dark:bg-background/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate('/spaces')} className="flex items-center justify-center w-10 h-10 rounded-full bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5"><ArrowLeft className="w-5 h-5 text-slate-500" /></button>
+          <button onClick={() => navigate('/spaces')} className="flex items-center justify-center w-10 h-10 rounded-full bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md text-slate-700 dark:text-foreground transition-all hover:-translate-y-0.5"><ArrowLeft className="w-5 h-5 text-slate-500" /></button>
           <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-sm`}>
             {React.createElement(getSpaceIcon(space.name), { className: "w-4 h-4" })}
           </div>
@@ -582,9 +582,9 @@ export default function SpaceDashboard() {
                   <button onClick={() => setActiveTab('videos')} className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1">View all <ArrowRight className="w-4 h-4" /></button>
                 </div>
                 {videos.length === 0
-                  ? <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-2xl border border-dashed border-black/10 dark:border-white/10 text-center bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm min-h-[220px]">
+                  ? <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-2xl border border-dashed border-black/10 dark:border-white/10 text-center bg-slate-50/50 dark:bg-card/50 backdrop-blur-sm min-h-[220px]">
                       <Camera className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-3" />
-                      <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">No videos yet.</p>
+                      <p className="text-slate-500 dark:text-muted-foreground text-sm font-medium">No videos yet.</p>
                       <button className="mt-4 text-primary font-bold hover:text-primary/80 transition-colors text-sm" onClick={() => navigate('/record')}>Record one →</button>
                     </div>
                   : <div className="grid grid-cols-2 gap-4">{videos.slice(0,4).map(v => <VideoCard key={v.id} video={v} onClick={() => navigate(`/watch/${v.id}`)} />)}</div>
@@ -602,11 +602,11 @@ export default function SpaceDashboard() {
                   </div>
                   <button onClick={() => setActiveTab('meetings')} className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1">View all <ArrowRight className="w-4 h-4" /></button>
                 </div>
-                <div className="flex-1 bg-slate-50 dark:bg-slate-900/50 border border-black/5 dark:border-white/5 rounded-2xl divide-y divide-black/5 dark:divide-white/5 overflow-hidden">
+                <div className="flex-1 bg-slate-50 dark:bg-card/50 border border-black/5 dark:border-white/5 rounded-2xl divide-y divide-black/5 dark:divide-white/5 overflow-hidden">
                   {meetings.length === 0
                     ? <div className="flex-1 flex flex-col items-center justify-center h-full min-h-[220px] text-center p-8">
                         <Calendar className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-3" />
-                        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">No meetings yet.</p>
+                        <p className="text-slate-500 dark:text-muted-foreground text-sm font-medium">No meetings yet.</p>
                       </div>
                     : meetings.slice(0,5).map(m => (
                         <div key={m.id} onClick={() => navigate(`/meetings/${m.id}`)} className="px-5 py-4 hover:bg-white dark:hover:bg-[#202c33] cursor-pointer transition-colors group">
@@ -614,8 +614,8 @@ export default function SpaceDashboard() {
                             <p className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{m.title || 'Team Meeting'}</p>
                             {m.ai_summary && <Sparkles className="w-4 h-4 text-primary shrink-0 opacity-70 group-hover:opacity-100" />}
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">{new Date(m.created_at).toLocaleString()}</p>
-                          {m.ai_summary && <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 line-clamp-2 border-l-2 border-primary/30 pl-3 italic">{m.ai_summary}</p>}
+                          <p className="text-xs text-slate-500 dark:text-muted-foreground mt-1 font-medium">{new Date(m.created_at).toLocaleString()}</p>
+                          {m.ai_summary && <p className="text-xs text-slate-600 dark:text-muted-foreground mt-2 line-clamp-2 border-l-2 border-primary/30 pl-3 italic">{m.ai_summary}</p>}
                         </div>
                       ))
                   }
@@ -762,7 +762,7 @@ export default function SpaceDashboard() {
               <input 
                 type="text" 
                 placeholder="Enter a topic (e.g. 'pricing strategy')..." 
-                className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm" 
+                className="flex-1 bg-white dark:bg-card border border-slate-200 dark:border-border rounded-xl px-4 py-2 text-sm" 
                 value={memoryInput}
                 onChange={(e) => setMemoryInput(e.target.value)}
                 onKeyDown={(e) => {
@@ -781,7 +781,7 @@ export default function SpaceDashboard() {
                 <MemoryTimeline workspaceId={space.company_id} topic={memoryTopic} />
               </div>
             ) : (
-              <div className="p-8 flex flex-col items-center justify-center text-center bg-slate-50 dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800">
+              <div className="p-8 flex flex-col items-center justify-center text-center bg-slate-50 dark:bg-card rounded-3xl border border-slate-200 dark:border-border">
                 <Brain className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-4" />
                 <p className="text-sm font-medium text-slate-500">Enter a topic above to trace its history.</p>
               </div>
@@ -792,28 +792,28 @@ export default function SpaceDashboard() {
       </div>
       {showEdit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+          <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-3xl p-8 max-w-md w-full shadow-2xl">
             <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Edit Space</h2>
             <form onSubmit={handleEditSpace} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Space Name *</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-muted-foreground mb-2 uppercase tracking-wider">Space Name *</label>
                 <input
                   value={editName}
                   onChange={e => setEditName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-background border border-slate-200 dark:border-border text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all"
                   required
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Description</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-muted-foreground mb-2 uppercase tracking-wider">Description</label>
                 <textarea
                   value={editDesc}
                   onChange={e => setEditDesc(e.target.value)}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-background border border-slate-200 dark:border-border text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all resize-none"
                 />
               </div>
-              <div onClick={() => setEditIsPrivate(!editIsPrivate)} className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+              <div onClick={() => setEditIsPrivate(!editIsPrivate)} className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-border bg-slate-50/50 dark:bg-card/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                 <div className={`w-10 h-6 rounded-full transition-colors relative ${editIsPrivate ? 'bg-primary' : 'bg-slate-300 dark:bg-slate-700'}`}>
                   <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${editIsPrivate ? 'left-5' : 'left-1'}`} />
                 </div>
@@ -825,7 +825,7 @@ export default function SpaceDashboard() {
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowEdit(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all border border-slate-200 dark:border-slate-700 shadow-sm">Cancel</button>
+                <button type="button" onClick={() => setShowEdit(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-secondary hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-foreground font-semibold text-sm transition-all border border-slate-200 dark:border-border shadow-sm">Cancel</button>
                 <button type="submit" disabled={savingEdit} className="flex-1 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-all shadow-md disabled:opacity-60">
                   {savingEdit ? 'Saving...' : 'Save Changes'}
                 </button>
@@ -838,7 +838,7 @@ export default function SpaceDashboard() {
       {/* Manage Members Modal */}
       {showMembers && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-lg w-full shadow-2xl flex flex-col max-h-[80vh]">
+          <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-3xl p-6 max-w-lg w-full shadow-2xl flex flex-col max-h-[80vh]">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><Users className="w-5 h-5 text-primary" /> Manage Members</h2>
               <button onClick={() => setShowMembers(false)} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"><X className="w-5 h-5" /></button>
@@ -851,7 +851,7 @@ export default function SpaceDashboard() {
                 placeholder="Search users by name or email..."
                 value={searchMember}
                 onChange={e => setSearchMember(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-primary/50 transition-colors"
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-background border border-slate-200 dark:border-border text-sm focus:outline-none focus:border-primary/50 transition-colors"
               />
             </div>
 
@@ -861,7 +861,7 @@ export default function SpaceDashboard() {
                 .map(p => {
                   const isMem = spaceMembers.some(m => m.user_id === p.id);
                   return (
-                    <div key={p.id} className="flex items-center justify-between p-3 rounded-xl border border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                    <div key={p.id} className="flex items-center justify-between p-3 rounded-xl border border-slate-100 dark:border-border/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                       <div className="flex items-center gap-3">
                         <img src={p.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${p.full_name}`} alt={p.full_name} className="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-700 object-cover" />
                         <div>
@@ -872,7 +872,7 @@ export default function SpaceDashboard() {
                       {p.isPending ? (
                         <button 
                           disabled
-                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500 border border-slate-200 dark:border-slate-700 cursor-not-allowed"
+                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-400 dark:bg-secondary dark:text-slate-500 border border-slate-200 dark:border-border cursor-not-allowed"
                           title="User must complete signup before they can be added to spaces."
                         >
                           Pending Signup
@@ -893,7 +893,7 @@ export default function SpaceDashboard() {
               )}
             </div>
             
-            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-border flex justify-end">
               <button onClick={() => setShowMembers(false)} className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition-colors shadow-sm">Done</button>
             </div>
           </div>

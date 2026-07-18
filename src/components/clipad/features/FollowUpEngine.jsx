@@ -149,8 +149,8 @@ export default function FollowUpEngine({ spaceId, workspaceId }) {
   if (nudges.length === 0) return null;
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
-      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
+    <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl overflow-hidden shadow-sm">
+      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-border bg-slate-50/50 dark:bg-secondary/20">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-500/20 flex items-center justify-center text-orange-600 dark:text-orange-400">
             <Target className="w-4 h-4" />
@@ -164,7 +164,7 @@ export default function FollowUpEngine({ spaceId, workspaceId }) {
       
       <div className="p-4 space-y-3 max-h-[500px] overflow-y-auto">
         {nudges.map((nudge) => (
-          <div key={nudge.id} className={`p-4 rounded-xl border bg-slate-50 dark:bg-slate-800/30 transition-all ${sentIds.has(nudge.id) ? 'border-emerald-200 dark:border-emerald-800/50 opacity-60' : 'border-slate-100 dark:border-slate-800'}`}>
+          <div key={nudge.id} className={`p-4 rounded-xl border bg-slate-50 dark:bg-secondary/30 transition-all ${sentIds.has(nudge.id) ? 'border-emerald-200 dark:border-emerald-800/50 opacity-60' : 'border-slate-100 dark:border-border'}`}>
             <div className="flex items-start justify-between gap-4 mb-3">
               <div className="flex items-center gap-2">
                 {nudge.type === 'overdue' ? (
@@ -178,13 +178,13 @@ export default function FollowUpEngine({ spaceId, workspaceId }) {
             
             <p className="text-xs text-slate-500 mb-3">{nudge.description}</p>
             
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 relative">
-              <div className="absolute -top-2 left-3 bg-white dark:bg-slate-900 px-1">
+            <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-lg p-3 relative">
+              <div className="absolute -top-2 left-3 bg-white dark:bg-card px-1">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-primary flex items-center gap-1">
                   <MessageCircle className="w-3 h-3" /> AI Draft
                 </span>
               </div>
-              <p className="text-sm text-slate-700 dark:text-slate-300 italic mt-1">"{nudge.draftMessage}"</p>
+              <p className="text-sm text-slate-700 dark:text-foreground italic mt-1">"{nudge.draftMessage}"</p>
             </div>
             
             <div className="mt-3 flex justify-end">

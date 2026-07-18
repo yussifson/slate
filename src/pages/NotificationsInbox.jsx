@@ -303,7 +303,7 @@ export default function NotificationsInbox() {
                         </div>
                       </div>
                       
-                      <p className={cn("text-sm max-w-4xl", isRead ? "text-[#71717a] dark:text-gray-400" : "text-slate-700 dark:text-slate-300 font-medium")}>
+                      <p className={cn("text-sm max-w-4xl", isRead ? "text-[#71717a] dark:text-gray-400" : "text-slate-700 dark:text-foreground font-medium")}>
                         {notification.message}
                       </p>
                       

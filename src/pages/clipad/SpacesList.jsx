@@ -136,25 +136,25 @@ export default function SpacesList() {
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
       {/* Sleek top nav */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shrink-0">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-card/80 backdrop-blur-xl border-b border-slate-200 dark:border-border shrink-0">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
-          <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm text-primary">
+          <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center border border-slate-200 dark:border-border shadow-sm text-primary">
             <CliPadLogo size={22} />
           </div>
           <span className="text-lg font-bold tracking-tight hidden sm:block">CliPad</span>
         </div>
         <div className="flex items-center gap-1.5 md:gap-3">
           <button onClick={() => navigate('/spaces')} className="hidden md:block px-3 py-2 text-sm font-medium text-primary bg-primary/10 rounded-lg transition-colors">Spaces</button>
-          <button onClick={() => navigate('/videos')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Recordings</button>
-          <button onClick={() => navigate('/meetings')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Meetings</button>
-          <button onClick={() => navigate('/chat')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Chat</button>
+          <button onClick={() => navigate('/videos')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Recordings</button>
+          <button onClick={() => navigate('/meetings')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Meetings</button>
+          <button onClick={() => navigate('/chat')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Chat</button>
           {isAdminUser && (
             user?.clipad_plan === 'enterprise' ? (
-              <button onClick={() => navigate('/clipad/enterprise')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Enterprise</button>
+              <button onClick={() => navigate('/clipad/enterprise')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Enterprise</button>
             ) : (
-              <button onClick={() => navigate('/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">Analytics</button>
+              <button onClick={() => navigate('/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Analytics</button>
             )
           )}
           
@@ -173,15 +173,15 @@ export default function SpacesList() {
                 )}
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl shadow-xl border-slate-200 dark:border-slate-800">
-              <div className="px-3 py-3 mb-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+            <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl shadow-xl border-slate-200 dark:border-border">
+              <div className="px-3 py-3 mb-2 bg-slate-50 dark:bg-secondary/50 rounded-xl">
                 <p className="font-semibold text-sm truncate">{user?.full_name || user?.user_metadata?.full_name || 'User'}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user?.email}</p>
+                <p className="text-xs text-slate-500 dark:text-muted-foreground truncate">{user?.email}</p>
               </div>
               <DropdownMenuItem onClick={() => navigate('/settings')} className="rounded-xl py-2.5 px-3 cursor-pointer">
                 <Settings className="w-4 h-4 mr-2" /> Settings
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="my-1 bg-slate-100 dark:bg-slate-800" />
+              <DropdownMenuSeparator className="my-1 bg-slate-100 dark:bg-secondary" />
               <DropdownMenuItem onClick={() => window.location.href = 'https://account.optavel.com'} className="rounded-xl py-2.5 px-3 cursor-pointer text-slate-500">
                 <UserCircle className="w-4 h-4 mr-2" /> Go to Optavel Account
               </DropdownMenuItem>
@@ -194,7 +194,7 @@ export default function SpacesList() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
           <div>
             <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-2">Team Spaces</h1>
-            <p className="text-slate-500 dark:text-slate-400">Persistent rooms for projects, teams, or recurring syncs.</p>
+            <p className="text-slate-500 dark:text-muted-foreground">Persistent rooms for projects, teams, or recurring syncs.</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="relative w-full md:w-64">
@@ -226,7 +226,7 @@ export default function SpacesList() {
         ) : filtered.length === 0 ? (
           <div className="text-center py-24">
             <Layers className="w-16 h-16 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-slate-500 dark:text-slate-400 mb-2">No spaces yet</h3>
+            <h3 className="text-xl font-bold text-slate-500 dark:text-muted-foreground mb-2">No spaces yet</h3>
             <p className="text-slate-400 dark:text-slate-500 mb-6 text-sm">Create a space for your first team or project.</p>
             <button onClick={() => setShowCreate(true)} className="px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm shadow-md transition-all">
               Create your first space
@@ -245,19 +245,19 @@ export default function SpacesList() {
                   <div
                     key={space.id}
                     onClick={() => navigate(`/spaces/${space.id}`)}
-                    className={`group p-5 rounded-2xl bg-white dark:bg-slate-900 border hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md relative overflow-hidden ${
+                    className={`group p-5 rounded-2xl bg-white dark:bg-card border hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md relative overflow-hidden ${
                       isRestricted
-                        ? 'border-slate-200 dark:border-slate-800 opacity-80 hover:opacity-95'
-                        : 'border-slate-200 dark:border-slate-800'
+                        ? 'border-slate-200 dark:border-border opacity-80 hover:opacity-95'
+                        : 'border-slate-200 dark:border-border'
                     }`}
                   >
                     {/* Locked overlay for restricted private spaces */}
                     {isRestricted && (
                       <div className="absolute inset-0 z-10 bg-gradient-to-br from-slate-50/80 to-slate-100/60 dark:from-slate-950/80 dark:to-slate-900/60 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2 rounded-2xl">
-                        <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-sm">
+                        <div className="w-10 h-10 rounded-full bg-white dark:bg-secondary border border-slate-200 dark:border-border flex items-center justify-center shadow-sm">
                           <Lock className="w-5 h-5 text-slate-400 dark:text-slate-500" />
                         </div>
-                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Private — Request Access</span>
+                        <span className="text-xs font-semibold text-slate-500 dark:text-muted-foreground">Private — Request Access</span>
                       </div>
                     )}
 
@@ -267,7 +267,7 @@ export default function SpacesList() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-slate-900 dark:text-white text-base truncate">{space.name}</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">{space.description || 'Team space'}</p>
+                        <p className="text-xs text-slate-500 dark:text-muted-foreground mt-0.5 line-clamp-1">{space.description || 'Team space'}</p>
                       </div>
                       {!isRestricted && <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors shrink-0" />}
                     </div>
@@ -284,12 +284,12 @@ export default function SpacesList() {
                     <div className="flex items-center justify-between">
                       <div className="flex -space-x-2">
                         {[1,2,3].map(i => (
-                          <div key={i} className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-white dark:border-slate-900 flex items-center justify-center text-slate-500 dark:text-slate-400">
+                          <div key={i} className="w-6 h-6 rounded-full bg-slate-100 dark:bg-secondary border-2 border-white dark:border-slate-900 flex items-center justify-center text-slate-500 dark:text-muted-foreground">
                             <Users className="w-3 h-3" />
                           </div>
                         ))}
                       </div>
-                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">{new Date(space.created_at || Date.now()).toLocaleDateString()}</span>
+                      <span className="text-[11px] font-medium text-slate-500 dark:text-muted-foreground">{new Date(space.created_at || Date.now()).toLocaleDateString()}</span>
                     </div>
                   </div>
                 );
@@ -301,32 +301,32 @@ export default function SpacesList() {
       {/* Create Space Modal */}
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+          <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-3xl p-8 max-w-md w-full shadow-2xl">
             <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-1">Create a Space</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">A persistent room for your team, project, or recurring meetings.</p>
+            <p className="text-sm text-slate-500 dark:text-muted-foreground mb-6">A persistent room for your team, project, or recurring meetings.</p>
             <form onSubmit={createSpace} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Space Name *</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-muted-foreground mb-2 uppercase tracking-wider">Space Name *</label>
                 <input
                   value={newName}
                   onChange={e => setNewName(e.target.value)}
                   placeholder="e.g. Product Team, Q3 Campaign..."
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-background border border-slate-200 dark:border-border text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 transition-all"
                   required
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Description</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-muted-foreground mb-2 uppercase tracking-wider">Description</label>
                 <textarea
                   value={newDesc}
                   onChange={e => setNewDesc(e.target.value)}
                   placeholder="What is this space for?"
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 transition-all resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-background border border-slate-200 dark:border-border text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 transition-all resize-none"
                 />
               </div>
               
-              <div onClick={() => setIsPrivate(!isPrivate)} className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+              <div onClick={() => setIsPrivate(!isPrivate)} className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-border bg-slate-50/50 dark:bg-card/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                 <div className={`w-10 h-6 rounded-full transition-colors relative ${isPrivate ? 'bg-primary' : 'bg-slate-300 dark:bg-slate-700'}`}>
                   <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${isPrivate ? 'left-5' : 'left-1'}`} />
                 </div>
@@ -339,7 +339,7 @@ export default function SpacesList() {
               </div>
 
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowCreate(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all border border-slate-200 dark:border-slate-700 shadow-sm">Cancel</button>
+                <button type="button" onClick={() => setShowCreate(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-secondary hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-foreground font-semibold text-sm transition-all border border-slate-200 dark:border-border shadow-sm">Cancel</button>
                 <button type="submit" disabled={creating} className="flex-1 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-all shadow-md disabled:opacity-60">
                   {creating ? 'Creating...' : 'Create Space'}
                 </button>

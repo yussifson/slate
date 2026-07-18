@@ -208,7 +208,7 @@ ${orgContext?.contextText || 'No workspace data loaded yet. Ask the user to refr
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-[80px] md:bottom-6 right-6 w-[420px] max-w-[calc(100vw-2rem)] h-[600px] max-h-[calc(100vh-6rem)] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl flex flex-col z-50 overflow-hidden shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-300">
+    <div className="fixed bottom-[80px] md:bottom-6 right-6 w-[420px] max-w-[calc(100vw-2rem)] h-[600px] max-h-[calc(100vh-6rem)] bg-white dark:bg-card border border-slate-200 dark:border-border rounded-3xl flex flex-col z-50 overflow-hidden shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-300">
       {/* Header */}
       <div className="bg-gradient-to-r from-indigo-600 to-violet-600 p-4 flex justify-between items-center text-white shrink-0">
         <div className="flex items-center gap-3">
@@ -256,7 +256,7 @@ ${orgContext?.contextText || 'No workspace data loaded yet. Ask the user to refr
               <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                 msg.role === 'user'
                   ? 'bg-indigo-600 text-white rounded-tr-sm'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-tl-sm'
+                  : 'bg-slate-100 dark:bg-secondary text-slate-900 dark:text-white rounded-tl-sm'
               }`}>
                 {renderMessageText(msg.text)}
               </div>
@@ -300,7 +300,7 @@ ${orgContext?.contextText || 'No workspace data loaded yet. Ask the user to refr
 
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-slate-100 dark:bg-slate-800 px-4 py-3 rounded-2xl rounded-tl-sm flex items-center gap-2">
+            <div className="bg-slate-100 dark:bg-secondary px-4 py-3 rounded-2xl rounded-tl-sm flex items-center gap-2">
               <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-500" />
               <span className="text-sm text-muted-foreground">Orbit is thinking...</span>
             </div>
@@ -318,7 +318,7 @@ ${orgContext?.contextText || 'No workspace data loaded yet. Ask the user to refr
               <button
                 key={q}
                 onClick={() => handleSend(q)}
-                className="text-[11px] px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                className="text-[11px] px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-secondary text-slate-600 dark:text-foreground hover:bg-primary/10 hover:text-primary transition-colors font-medium"
               >
                 {q}
               </button>
@@ -328,8 +328,8 @@ ${orgContext?.contextText || 'No workspace data loaded yet. Ask the user to refr
       )}
 
       {/* Input */}
-      <div className="border-t border-slate-200 dark:border-slate-800 p-3 shrink-0 bg-white dark:bg-slate-900">
-        <div className="flex items-end gap-2 bg-slate-100 dark:bg-slate-800 rounded-2xl px-4 py-2.5">
+      <div className="border-t border-slate-200 dark:border-border p-3 shrink-0 bg-white dark:bg-card">
+        <div className="flex items-end gap-2 bg-slate-100 dark:bg-secondary rounded-2xl px-4 py-2.5">
           <textarea
             ref={inputRef}
             value={input}

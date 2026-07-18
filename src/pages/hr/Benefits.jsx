@@ -147,7 +147,7 @@ export default function Benefits() {
                         <Icon className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${benefit.status === 'Active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'}`}>
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${benefit.status === 'Active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' : 'bg-slate-100 text-slate-700 dark:bg-secondary dark:text-foreground'}`}>
                           {benefit.status}
                         </span>
                         <DropdownMenu>
@@ -172,11 +172,11 @@ export default function Benefits() {
                     <p className="text-sm font-medium text-muted-foreground mb-4">{benefit.provider}</p>
 
                     <div className="mt-auto space-y-2">
-                      <div className="flex justify-between items-center p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-sm">
+                      <div className="flex justify-between items-center p-2.5 bg-slate-50 dark:bg-secondary rounded-xl text-sm">
                         <span className="text-muted-foreground font-medium">Employer Covers</span>
                         <span className="font-bold text-foreground">${benefit.employer_contribution?.toLocaleString()}</span>
                       </div>
-                      <div className="flex justify-between items-center p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-sm">
+                      <div className="flex justify-between items-center p-2.5 bg-slate-50 dark:bg-secondary rounded-xl text-sm">
                         <span className="text-muted-foreground font-medium">Employee Pays</span>
                         <span className="font-bold text-foreground">${benefit.employee_deduction?.toLocaleString()}</span>
                       </div>

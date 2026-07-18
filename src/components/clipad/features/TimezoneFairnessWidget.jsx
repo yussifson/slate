@@ -138,7 +138,7 @@ Distribution: Early morning (00-06 UTC): ${earlyMorning}, Business hours (08-18 
 
   if (loading || analyzing) {
     return (
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-slate-200 dark:border-border p-5">
         <div className="flex items-center gap-2 mb-4">
           <Globe className="w-5 h-5 text-teal-500" />
           <h2 className="text-lg font-bold text-slate-900 dark:text-white">Timezone Fairness</h2>
@@ -159,14 +159,14 @@ Distribution: Early morning (00-06 UTC): ${earlyMorning}, Business hours (08-18 
   const barColor = score >= 75 ? 'bg-emerald-500' : score >= 50 ? 'bg-amber-500' : 'bg-red-500';
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+    <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-slate-200 dark:border-border p-5">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Globe className="w-5 h-5 text-teal-500" />
             Timezone Fairness
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Analyzing out-of-hours meeting burden.</p>
+          <p className="text-sm text-slate-500 dark:text-muted-foreground mt-1">Analyzing out-of-hours meeting burden.</p>
         </div>
         <div className="flex items-center gap-2">
           {score !== null && (
@@ -189,7 +189,7 @@ Distribution: Early morning (00-06 UTC): ${earlyMorning}, Business hours (08-18 
             <span className={`text-xs font-semibold ${scoreColor}`}>{label}</span>
             <span className="text-xs text-slate-400">{fairnessData?.meetings_analyzed || 0} meetings analyzed</span>
           </div>
-          <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+          <div className="h-2 bg-slate-100 dark:bg-secondary rounded-full overflow-hidden">
             <div className={`h-full rounded-full transition-all ${barColor}`} style={{ width: `${score}%` }} />
           </div>
         </div>
@@ -197,7 +197,7 @@ Distribution: Early morning (00-06 UTC): ${earlyMorning}, Business hours (08-18 
 
       {fairnessData?.ai_analysis ? (
         <div className="space-y-2">
-          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{fairnessData.ai_analysis}</p>
+          <p className="text-sm text-slate-600 dark:text-foreground leading-relaxed">{fairnessData.ai_analysis}</p>
           {fairnessData.recommendation && (
             <div className="flex items-start gap-2 mt-3 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-100 dark:border-teal-800">
               <CheckCircle className="w-4 h-4 text-teal-500 shrink-0 mt-0.5" />

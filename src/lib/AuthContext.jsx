@@ -488,9 +488,15 @@ export const AuthProvider = ({ children }) => {
 
       const cleanLogo = (url) => {
         if (!url) return url;
-        const httpPos = url.indexOf('http', 4);
-        if (httpPos > 0) return url.substring(0, httpPos);
-        return url;
+        const lastHttp = url.lastIndexOf('http');
+        let finalUrl = url;
+        if (lastHttp > 0) {
+          finalUrl = url.substring(lastHttp);
+        }
+        if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/')) {
+          finalUrl = 'https://' + finalUrl;
+        }
+        return finalUrl;
       };
 
       let baseRole = profile?.role || sessionUser.user_metadata?.role;

@@ -86,7 +86,7 @@ export default function SHSAttendanceAnalytics() {
 
  {loading ? (
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading attendance analytics...</CardContent>
+ <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading attendance analytics...</CardContent>
  </Card>
  ) : (
  <>
@@ -117,7 +117,7 @@ export default function SHSAttendanceAnalytics() {
  </div>
  </div>
  <h3 className="text-4xl font-black text-rose-700 tracking-[-0.02em]">{absentRate.toFixed(1)}%</h3>
- <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full mt-4 overflow-hidden">
+ <div className="w-full bg-slate-100 dark:bg-secondary h-2 rounded-full mt-4 overflow-hidden">
  <div className="h-full bg-rose-500" style={{ width: `${Math.min(100, absentRate)}%`}}></div>
  </div>
  </CardContent>
@@ -134,7 +134,7 @@ export default function SHSAttendanceAnalytics() {
  </div>
  </div>
  <h3 className="text-4xl font-black text-amber-700 tracking-[-0.02em]">{lateRate.toFixed(1)}%</h3>
- <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full mt-4 overflow-hidden">
+ <div className="w-full bg-slate-100 dark:bg-secondary h-2 rounded-full mt-4 overflow-hidden">
  <div className="h-full bg-amber-500" style={{ width: `${Math.min(100, lateRate)}%`}}></div>
  </div>
  </CardContent>
@@ -143,32 +143,32 @@ export default function SHSAttendanceAnalytics() {
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6">
  <div className="flex items-center gap-4 mb-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">
  <AlertTriangle className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider tracking-[0.04em]">Records Analyzed</p>
+ <p className="text-sm font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wider tracking-[0.04em]">Records Analyzed</p>
  </div>
  </div>
  <h3 className="text-4xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">{totalRecordsAnalyzed.toLocaleString()}</h3>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mt-2 font-medium tracking-[0.04em]">Individual student roll calls</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground mt-2 font-medium tracking-[0.04em]">Individual student roll calls</p>
  </CardContent>
  </Card>
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 p-6">
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <LineChart className="w-5 h-5 text-primary dark:text-primary/70" /> Attendance Over Time
  </CardTitle>
  </CardHeader>
  <CardContent className="p-16 flex items-center justify-center min-h-[300px]">
  <div className="text-center space-y-4">
- <div className="w-20 h-20 rounded-3xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
+ <div className="w-20 h-20 rounded-3xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary mx-auto flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <TrendingUp className="w-10 h-10 text-primary dark:text-primary/70" />
  </div>
- <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-medium">Connect a charting library to view interactive time-series.</p>
+ <p className="text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground font-medium">Connect a charting library to view interactive time-series.</p>
  
  {/* Fallback mock chart line for aesthetic when no real time-series provider is hooked up */}
  <div className="w-full max-w-sm mx-auto h-24 border-b border-l border-primary/40 dark:border-primary/40 mt-8 relative">
@@ -187,7 +187,7 @@ export default function SHSAttendanceAnalytics() {
  </Card>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 p-6">
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <BarChart className="w-5 h-5 text-primary dark:text-primary/70" /> Highest Truancy by Form
  </CardTitle>
@@ -197,10 +197,10 @@ export default function SHSAttendanceAnalytics() {
  {defaultTruancy.map((f, idx) => (
  <div key={idx}>
  <div className="flex justify-between items-center mb-2">
- <span className="font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">{f.form}</span>
+ <span className="font-semibold text-slate-700 dark:text-foreground dark:text-foreground">{f.form}</span>
  <span className={`font-semibold ${f.rate > 5 ? 'text-rose-600' : f.rate > 2 ? 'text-rose-400' : 'text-primary'}`}>{f.rate.toFixed(1)}% Absent</span>
  </div>
- <div className="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+ <div className="w-full bg-slate-100 dark:bg-secondary h-2.5 rounded-full overflow-hidden">
  <div className={`h-full ${f.rate > 5 ? 'bg-rose-500' : f.rate > 2 ? 'bg-rose-400' : 'bg-primary'} transition-all duration-500`} style={{ width: `${Math.min(100, f.rate)}%`}}></div>
  </div>
  </div>

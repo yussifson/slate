@@ -82,12 +82,12 @@ export default function SHSParentAttendance() {
 
  const getStatusColor = (status) => {
  switch(status) {
- case 'Present': return 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20';
+ case 'Present': return 'bg-slate-50 dark:bg-secondary/50 text-primary/90 border-primary/20';
  case 'Absent': return 'bg-rose-50 text-rose-700 border-rose-200';
  case 'Late': return 'bg-amber-50 text-amber-700 border-amber-200';
  case 'Excused': return 'bg-orange-50 text-orange-700 border-primary/20';
- case 'Exeat': return 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary/80 dark:text-primary/20 border-primary/20 dark:border-primary/40';
- default: return 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200 border-primary/40 dark:border-primary/40';
+ case 'Exeat': return 'bg-slate-50 dark:bg-secondary/50 dark:bg-secondary text-primary/80 dark:text-primary/20 border-primary/20 dark:border-primary/40';
+ default: return 'bg-slate-50 dark:bg-secondary/50 dark:bg-secondary text-slate-700 dark:text-foreground dark:text-foreground border-primary/40 dark:border-primary/40';
 }
 };
 
@@ -107,23 +107,23 @@ export default function SHSParentAttendance() {
 
  {loading ? (
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading attendance data...</CardContent>
+ <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading attendance data...</CardContent>
  </Card>
  ) : wards.length === 0 ? (
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-20 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary mx-auto flex items-center justify-center mb-4">
  <User className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Wards Linked</h3>
- <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Contact the school administration to link your child's account.</p>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No Wards Linked</h3>
+ <p className="text-sm text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">Contact the school administration to link your child's account.</p>
  </CardContent>
  </Card>
  ) : (
  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
  
  <div className="lg:col-span-1 space-y-4">
- <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider pl-2 tracking-[0.04em]">Select Child</h3>
+ <h3 className="text-sm font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wider pl-2 tracking-[0.04em]">Select Child</h3>
  {wards.map(ward => (
  <button
  key={ward.id}
@@ -131,17 +131,17 @@ export default function SHSParentAttendance() {
  className={`w-full p-4 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 text-left transition-all duration-300 flex items-center gap-4 ${
  selectedWardId === ward.id 
  ? 'bg-primary dark:bg-primary border-primary dark:border-primary text-white -emerald-500/20 scale-100' 
- : 'bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:border-primary dark:border-primary/40 scale-95'
+ : 'bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 text-slate-700 dark:text-foreground dark:text-foreground hover:border-primary dark:border-primary/40 scale-95'
 }`}
  >
  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-semibold text-lg shrink-0 ${
- selectedWardId === ward.id ? 'bg-white dark:bg-card/40 dark:bg-card/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
+ selectedWardId === ward.id ? 'bg-white dark:bg-card/40 dark:bg-card/20 text-white' : 'bg-slate-100 dark:bg-secondary text-primary dark:text-primary/70'
 }`}>
  {ward.title.charAt(0)}
  </div>
  <div>
  <h4 className="font-semibold">{ward.title}</h4>
- <p className={`text-xs ${selectedWardId === ward.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400'}`}>
+ <p className={`text-xs ${selectedWardId === ward.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground'}`}>
  {ward.data?.classRoom || 'Form 1'}
  </p>
  </div>
@@ -151,21 +151,21 @@ export default function SHSParentAttendance() {
 
  <div className="lg:col-span-3 space-y-6">
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50">
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <CalendarIcon className="w-5 h-5 text-primary dark:text-primary/70" /> Recent Attendance Log
  </CardTitle>
  </CardHeader>
  <CardContent className="p-0">
  {wardRecords.length === 0 ? (
- <div className="p-16 text-center text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">
+ <div className="p-16 text-center text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">
  <CalendarIcon className="w-12 h-12 text-slate-200 mx-auto mb-3" />
  No attendance records found for this student.
  </div>
  ) : (
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left">
- <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
+ <thead className="bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/80 text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
  <tr>
  <th className="px-6 py-4 rounded-tl-xl">Date</th>
  <th className="px-6 py-4">Register Type</th>
@@ -174,11 +174,11 @@ export default function SHSParentAttendance() {
  </thead>
  <tbody className="divide-y divide-slate-100">
  {wardRecords.map((record, i) => (
- <tr key={i} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
- <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">
+ <tr key={i} className="hover:bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 transition-colors">
+ <td className="px-6 py-4 font-semibold text-slate-700 dark:text-foreground dark:text-foreground">
  {new Date(record.date).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'})}
  </td>
- <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
+ <td className="px-6 py-4 text-slate-600 dark:text-foreground">
  {record.type}
  </td>
  <td className="px-6 py-4 text-right">

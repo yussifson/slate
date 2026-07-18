@@ -108,7 +108,7 @@ export default function CommitmentTracker({ spaceId }) {
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-slate-200 dark:border-border p-5">
         <div className="flex items-center gap-2 mb-4">
           <CheckCircle2 className="w-5 h-5 text-indigo-500" />
           <h2 className="text-lg font-bold text-slate-900 dark:text-white">AI Commitment Tracker</h2>
@@ -121,7 +121,7 @@ export default function CommitmentTracker({ spaceId }) {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+    <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-slate-200 dark:border-border p-5">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <CheckCircle2 className="w-5 h-5 text-indigo-500" />
@@ -139,7 +139,7 @@ export default function CommitmentTracker({ spaceId }) {
 
       <div className="space-y-3">
         {commitments.length === 0 ? (
-          <p className="text-sm text-slate-500 dark:text-slate-400 italic">
+          <p className="text-sm text-slate-500 dark:text-muted-foreground italic">
             No informal commitments detected yet. Commitments are auto-extracted from meeting transcripts.
           </p>
         ) : (
@@ -151,7 +151,7 @@ export default function CommitmentTracker({ spaceId }) {
                   ? 'bg-emerald-50/50 border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-900/30'
                   : c.status === 'missed'
                   ? 'bg-red-50/50 border-red-100 dark:bg-red-900/10 dark:border-red-900/30'
-                  : 'bg-slate-50 border-slate-100 dark:bg-slate-800/50 dark:border-slate-700/50'
+                  : 'bg-slate-50 border-slate-100 dark:bg-secondary/50 dark:border-border/50'
               }`}
             >
               <div className="flex items-start justify-between">
@@ -201,7 +201,7 @@ export default function CommitmentTracker({ spaceId }) {
                 </div>
               </div>
 
-              <p className="text-sm text-slate-700 dark:text-slate-300 mt-2 pl-8 relative">
+              <p className="text-sm text-slate-700 dark:text-foreground mt-2 pl-8 relative">
                 <span className="absolute left-3.5 top-0 bottom-0 w-px bg-slate-200 dark:bg-slate-700" />
                 "{c.commitment_text}"
               </p>

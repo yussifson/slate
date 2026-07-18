@@ -104,7 +104,7 @@ export default function AdminBilling() {
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2 text-sm">
-              <span className="text-slate-500 dark:text-slate-400 font-medium">{t("all_time_collected_revenue", "All-time collected revenue")}</span>
+              <span className="text-slate-500 dark:text-muted-foreground font-medium">{t("all_time_collected_revenue", "All-time collected revenue")}</span>
             </div>
           </CardContent>
         </Card>
@@ -121,7 +121,7 @@ export default function AdminBilling() {
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2 text-sm">
-              <span className="text-slate-500 dark:text-slate-400 font-medium">{t("awaiting_payment_clearing", "Awaiting payment clearing")}</span>
+              <span className="text-slate-500 dark:text-muted-foreground font-medium">{t("awaiting_payment_clearing", "Awaiting payment clearing")}</span>
             </div>
           </CardContent>
         </Card>
@@ -138,7 +138,7 @@ export default function AdminBilling() {
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2 text-sm">
-              <span className="text-slate-500 dark:text-slate-400 font-medium">{t("action_required_on_accounts", "Action required on accounts")}</span>
+              <span className="text-slate-500 dark:text-muted-foreground font-medium">{t("action_required_on_accounts", "Action required on accounts")}</span>
             </div>
           </CardContent>
         </Card>
@@ -186,7 +186,7 @@ export default function AdminBilling() {
                 <OrbitLoader size="md" />
               </div>
             ) : filteredInvoices.length === 0 ? (
-              <div className="text-center py-12 text-slate-500 dark:text-slate-400 font-medium bg-card md:bg-transparent rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 md:border-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+              <div className="text-center py-12 text-slate-500 dark:text-muted-foreground font-medium bg-card md:bg-transparent rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 md:border-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                 {t("no_invoices_found", "No invoices found.")}
               </div>
             ) : (
@@ -194,7 +194,7 @@ export default function AdminBilling() {
                 {/* Desktop Table View */}
                 <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-sm text-left">
-                    <thead className="bg-slate-50/50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider border-b border-primary/20 tracking-[0.04em]">
+                    <thead className="bg-slate-50/50 dark:bg-secondary/50 text-slate-500 dark:text-muted-foreground font-semibold uppercase text-[10px] tracking-wider border-b border-primary/20 tracking-[0.04em]">
                       <tr>
                         <th className="px-6 py-4">{t("firm_company", "Firm / Company")}</th>
                         <th className="px-6 py-4">{t("amount", "Amount")}</th>
@@ -208,7 +208,7 @@ export default function AdminBilling() {
                         <tr key={inv.id} className="hover:bg-slate-50/50 dark:bg-transparent transition-colors">
                           <td className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-100">{getCompanyName(inv.company_id)}</td>
                           <td className="px-6 py-4 font-semibold">{formatCurrency(inv.total_amount || inv.amount || 0, 'USD')}</td>
-                          <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{inv.created_at ? format(new Date(inv.created_at), 'MMM dd, yyyy') : 'N/A'}</td>
+                          <td className="px-6 py-4 text-slate-500 dark:text-muted-foreground">{inv.created_at ? format(new Date(inv.created_at), 'MMM dd, yyyy') : 'N/A'}</td>
                           <td className="px-6 py-4">
                             <Badge className={`uppercase text-[10px] font-semibold ${inv.status === 'paid' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : inv.status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400'} border-none`}>
                               {inv.status || 'unknown'}
@@ -250,14 +250,14 @@ export default function AdminBilling() {
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="font-semibold text-slate-900 dark:text-slate-100">{getCompanyName(inv.company_id)}</p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 tracking-[0.04em]">{inv.created_at ? format(new Date(inv.created_at), 'MMM dd, yyyy') : 'N/A'}</p>
+                          <p className="text-xs text-slate-500 dark:text-muted-foreground mt-1 tracking-[0.04em]">{inv.created_at ? format(new Date(inv.created_at), 'MMM dd, yyyy') : 'N/A'}</p>
                         </div>
                         <Badge className={`uppercase text-[10px] font-semibold ${inv.status === 'paid' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : inv.status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400'} border-none`}>
                           {inv.status || 'unknown'}
                         </Badge>
                       </div>
                       
-                      <div className="flex justify-between items-end mt-2 pt-4 border-t border-slate-100 dark:border-slate-800/50">
+                      <div className="flex justify-between items-end mt-2 pt-4 border-t border-slate-100 dark:border-border/50">
                         <div>
                           <p className="text-[10px] uppercase font-semibold text-slate-400 mb-0.5 tracking-[0.04em]">Amount</p>
                           <p className="font-extrabold text-lg text-slate-900 dark:text-slate-100">{formatCurrency(inv.total_amount || inv.amount || 0, 'USD')}</p>

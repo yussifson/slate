@@ -255,7 +255,7 @@ export default function Marketplace() {
  className={`px-5 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all ${
  activeCategory === cat
  ? 'bg-primary text-white -emerald-600/20'
- : 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:bg-slate-100 dark:hover:bg-slate-700'
+ : 'bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 text-slate-600 dark:text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:bg-slate-100 dark:hover:bg-slate-700'
 }`}
  >
  {cat}
@@ -268,7 +268,7 @@ export default function Marketplace() {
  placeholder="Search slates..."
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="pl-10 h-11 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 border-primary/40 dark:border-primary/40 text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-white dark:bg-card/40 dark:bg-card/40 dark:focus:bg-slate-800 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-10 h-11 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 border-primary/40 dark:border-primary/40 text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-white dark:bg-card/40 dark:bg-card/40 dark:focus:bg-slate-800 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  </div>
@@ -280,11 +280,11 @@ export default function Marketplace() {
  </div>
  ) : filteredModules.length === 0 ? (
  <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white dark:bg-card/40 dark:bg-card/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-dashed hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
+ <div className="w-20 h-20 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 rounded-full flex items-center justify-center mb-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <Blocks className="w-8 h-8 text-slate-400" />
  </div>
  <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white mb-2">No slates found</h3>
- <p className="text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">
+ <p className="text-slate-500 dark:text-muted-foreground max-w-md leading-relaxed">
  {searchQuery
  ? "No slates match your search. Try a different term."
  : "No public slates available yet. Check back soon or publish your own!"}
@@ -326,7 +326,7 @@ export default function Marketplace() {
  </div>
 
  <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white mb-1.5">{mod.name}</h3>
- <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-3.5 tracking-[0.04em]">
+ <p className="text-[11px] font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground uppercase tracking-widest mb-3.5 tracking-[0.04em]">
  Community Template
  </p>
  <p className="text-sm text-slate-500 mb-6 line-clamp-2 min-h-[40px] leading-relaxed">
@@ -402,7 +402,7 @@ export default function Marketplace() {
  <DialogHeader>
  <DialogTitle className="text-2xl font-semibold text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white text-center tracking-[-0.02em]">Installation Successful!</DialogTitle>
  </DialogHeader>
- <div className="text-slate-500 dark:text-slate-400 dark:text-slate-400 mt-2 text-[15px] leading-relaxed">
+ <div className="text-slate-500 dark:text-muted-foreground dark:text-muted-foreground mt-2 text-[15px] leading-relaxed">
  <strong>{installSuccessModal?.name}</strong> has been successfully installed and added to your Slate sidebar. You can now start using it immediately.
  </div>
  <div className="mt-8 w-full">

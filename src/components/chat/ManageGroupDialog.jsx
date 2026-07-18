@@ -266,7 +266,7 @@ export default function ManageGroupMembersDialog({ open, onOpenChange, activeRoo
                 return (
                   <div key={p.user_id} className="flex items-center justify-between p-3 rounded-xl bg-secondary/50 border border-border/50">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-secondary overflow-hidden shrink-0">
                         {profile?.avatar_url ? (
                           <img src={profile.avatar_url} className="w-full h-full object-cover" alt={profile.full_name} />
                         ) : (

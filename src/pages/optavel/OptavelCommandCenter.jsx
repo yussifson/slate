@@ -131,7 +131,7 @@ export default function OptavelCommandCenter() {
         {/* Top Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Active Tasks Card */}
-          <div className="bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+          <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className="flex items-start justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
                 <CheckCircle2 className="w-6 h-6" />
@@ -142,12 +142,12 @@ export default function OptavelCommandCenter() {
               </div>
             </div>
             <h3 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-1">{activeTasks}</h3>
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Active Tasks</p>
+            <p className="text-sm font-semibold text-slate-700 dark:text-foreground">Active Tasks</p>
             <p className="text-xs text-slate-500 mt-1">across all projects</p>
           </div>
           
           {/* Total Employees Card */}
-          <div className="bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+          <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className="flex items-start justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-purple-600 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
                 <UsersIcon className="w-6 h-6" />
@@ -158,12 +158,12 @@ export default function OptavelCommandCenter() {
               </div>
             </div>
             <h3 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-1">{totalEmployees}</h3>
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Total Employees</p>
+            <p className="text-sm font-semibold text-slate-700 dark:text-foreground">Total Employees</p>
             <p className="text-xs text-slate-500 mt-1">active staff members</p>
           </div>
 
           {/* Open Tickets Card */}
-          <div className="bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+          <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className="flex items-start justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-rose-500 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
                 <AlertCircle className="w-6 h-6" />
@@ -174,12 +174,12 @@ export default function OptavelCommandCenter() {
               </div>
             </div>
             <h3 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-1">{openTickets}</h3>
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Open Support Tickets</p>
+            <p className="text-sm font-semibold text-slate-700 dark:text-foreground">Open Support Tickets</p>
             <p className="text-xs text-slate-500 mt-1">requiring attention</p>
           </div>
 
           {/* Active Deals Card */}
-          <div className="bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+          <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className="flex items-start justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
                 <TrendingUp className="w-6 h-6" />
@@ -190,7 +190,7 @@ export default function OptavelCommandCenter() {
               </div>
             </div>
             <h3 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-1">{activeDeals}</h3>
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Active Deals</p>
+            <p className="text-sm font-semibold text-slate-700 dark:text-foreground">Active Deals</p>
             <p className="text-xs text-slate-500 mt-1">in sales pipeline</p>
           </div>
         </div>
@@ -202,7 +202,7 @@ export default function OptavelCommandCenter() {
             const Icon = mod.icon;
             return (
               <Link key={mod.id} to={mod.path}
-                className="group bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-slate-300 dark:hover:border-slate-700 flex flex-col min-h-[220px]">
+                className="group bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-slate-300 dark:hover:border-slate-700 flex flex-col min-h-[220px]">
                 
                 <div className="flex-1">
                   <div className={`w-14 h-14 rounded-2xl ${mod.bg} flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
@@ -210,10 +210,10 @@ export default function OptavelCommandCenter() {
                   </div>
                   
                   <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{mod.title}</h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{mod.description}</p>
+                  <p className="text-sm text-slate-500 dark:text-muted-foreground leading-relaxed">{mod.description}</p>
                 </div>
 
-                <div className="mt-6 flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+                <div className="mt-6 flex items-center justify-between pt-4 border-t border-slate-100 dark:border-border">
                   <span className={`text-xs font-bold ${mod.color}`}>Access Module</span>
                   <div className={`w-6 h-6 rounded-full ${mod.bg} flex items-center justify-center transition-all duration-300 group-hover:translate-x-1`}>
                     <ArrowRight className={`w-3 h-3 ${mod.color}`} />

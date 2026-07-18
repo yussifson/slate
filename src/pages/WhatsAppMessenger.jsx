@@ -168,7 +168,7 @@ export default function WhatsAppMessenger() {
           )}
 
           {selectedCase && (
-            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl px-3 py-2 flex items-center gap-2">
+            <div className="bg-slate-50 dark:bg-secondary/50 rounded-xl px-3 py-2 flex items-center gap-2">
               <Briefcase className="w-3.5 h-3.5 text-primary" />
               <span className="text-xs font-medium text-primary tracking-[0.04em]">{selectedCase.title}</span>
               <Badge variant="outline" className="text-[9px] ml-auto">{selectedCase.status}</Badge>
@@ -190,7 +190,7 @@ export default function WhatsAppMessenger() {
                   <button
                     key={template.label}
                     onClick={() => handleTemplate(template)}
-                    className="text-[10px] px-2 py-1 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary hover:bg-slate-50 dark:bg-slate-800/50 transition-colors"
+                    className="text-[10px] px-2 py-1 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary hover:bg-slate-50 dark:bg-secondary/50 transition-colors"
                   >
                     {template.label}
                   </button>
@@ -257,7 +257,7 @@ export default function WhatsAppMessenger() {
                   href={`https://wa.me/${formatPhone(c.phone).replace("+", "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-2.5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 transition-colors group"
+                  className="flex items-center gap-2 p-2.5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/70 hover:bg-slate-50 dark:bg-secondary/50 transition-colors group"
                 >
                   <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
                     <span className="text-[10px] font-semibold text-primary/90">{c.name?.[0]?.toUpperCase()}</span>

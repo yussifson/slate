@@ -175,10 +175,10 @@ export default function TimeTracker() {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-4 rounded-2xl shadow-xl border-slate-200 dark:border-slate-800" align="end">
+      <PopoverContent className="w-80 p-4 rounded-2xl shadow-xl border-slate-200 dark:border-border" align="end">
         
         {/* Custom Tabs */}
-        <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl mb-4">
+        <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-secondary rounded-xl mb-4">
             <button 
                 onClick={() => setActiveTab('timer')}
                 className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${activeTab === 'timer' ? 'bg-white dark:bg-slate-700 shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
@@ -196,7 +196,7 @@ export default function TimeTracker() {
         {activeTab === 'timer' && (
             <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <h4 className="font-semibold text-sm flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <h4 className="font-semibold text-sm flex items-center gap-2 text-slate-700 dark:text-foreground">
                 <Clock className="w-4 h-4 text-primary" /> Track Time
                 </h4>
                 <div className="text-2xl font-mono font-semibold tracking-tight text-primary">
@@ -225,7 +225,7 @@ export default function TimeTracker() {
                 </Select>
             </div>
 
-            <div className="flex items-center gap-2 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex items-center gap-2 pt-4 border-t border-slate-100 dark:border-border">
                 <Button 
                 onClick={toggleTimer} 
                 className={`flex-1 gap-2 rounded-xl font-semibold ${isRunning ? 'bg-amber-500 hover:bg-amber-600' : 'bg-primary'}`}
@@ -251,7 +251,7 @@ export default function TimeTracker() {
         {activeTab === 'reminder' && (
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <h4 className="font-semibold text-sm flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                    <h4 className="font-semibold text-sm flex items-center gap-2 text-slate-700 dark:text-foreground">
                     <Clock className="w-4 h-4 text-amber-500" /> Set Reminder
                     </h4>
                 </div>
@@ -287,7 +287,7 @@ export default function TimeTracker() {
                             </div>
                         </div>
 
-                        <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <div className="pt-4 border-t border-slate-100 dark:border-border">
                             <Button 
                                 onClick={setReminder} 
                                 className="w-full gap-2 rounded-xl font-semibold bg-amber-500 hover:bg-amber-600 text-white"

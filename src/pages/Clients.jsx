@@ -228,12 +228,12 @@ const handleInviteClient = async (client) => {
  </div>
  ) : filtered.length === 0 ? (
  <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 p-12 text-center max-w-sm mx-auto my-8 space-y-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center mx-auto text-primary">
+ <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-secondary/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center mx-auto text-primary">
  <Users className="w-5 h-5" />
  </div>
  <div className="space-y-1">
  <p className="font-semibold text-sm text-slate-900 dark:text-slate-100">{t("no_registered", "No Registered")} {clientsTerm}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto leading-relaxed tracking-[0.04em]">
+ <p className="text-xs text-slate-500 dark:text-muted-foreground max-w-xs mx-auto leading-relaxed tracking-[0.04em]">
  {t(
  "start_building_your_firm_s_add",
  "Start building your firm's address book, tracking intake forms, and sharing retainers by adding your first"

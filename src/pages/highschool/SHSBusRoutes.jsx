@@ -91,14 +91,14 @@ export default function SHSBusRoutes() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Defined Routes</CardTitle>
  </div>
  
  <div className="relative w-full sm:w-64">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-muted-foreground" />
  <Input 
  placeholder="Search route or zone..." 
  className="pl-9 h-9 bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -110,47 +110,47 @@ export default function SHSBusRoutes() {
  </CardHeader>
  <CardContent className="p-0">
  {loading ? (
- <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading routes...</div>
+ <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading routes...</div>
  ) : filteredRoutes.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary mx-auto flex items-center justify-center mb-4">
  <Navigation className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No routes defined</h3>
- <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Add transport routes to map out the school network.</p>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No routes defined</h3>
+ <p className="text-sm text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">Add transport routes to map out the school network.</p>
  </div>
  ) : (
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50">
  {filteredRoutes.map((route) => (
  <Card key={route.id} className="rounded-2xl border-none bg-white dark:bg-card/40 dark:bg-card hover:ring-1 hover:ring-primary/30 dark:hover:ring-primary/30 transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6">
  <div className="flex justify-between items-start mb-4">
  <div>
  <h4 className="font-semibold text-lg text-slate-800 dark:text-slate-100">{route.title}</h4>
- <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-none mt-1">
+ <Badge variant="secondary" className="bg-slate-100 dark:bg-secondary text-slate-600 dark:text-foreground border-none mt-1">
  Zone: {route.data?.zone}
  </Badge>
  </div>
  <div className="text-right">
- <span className="font-black text-primary bg-slate-50 dark:bg-slate-800/50 px-2 py-1 rounded-md text-sm block">
+ <span className="font-black text-primary bg-slate-50 dark:bg-secondary/50 px-2 py-1 rounded-md text-sm block">
  ${parseFloat(route.data?.feeAmount || 0).toFixed(2)}
  </span>
- <span className="text-[10px] text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase font-semibold mt-1 block tracking-[0.04em]">Per Term</span>
+ <span className="text-[10px] text-slate-400 dark:text-slate-500 dark:text-muted-foreground uppercase font-semibold mt-1 block tracking-[0.04em]">Per Term</span>
  </div>
  </div>
  
  <div className="space-y-2">
- <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2.5 mb-2 tracking-[0.04em]">
+ <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wider flex items-center gap-2.5 mb-2 tracking-[0.04em]">
  <MapPin className="w-3.5 h-3.5" /> Pickup Points
  </p>
  <div className="flex flex-wrap gap-2">
  {(route.data?.pickupPointsList || []).map((point, idx) => (
- <span key={idx} className="text-xs font-medium bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 text-slate-600 dark:text-slate-300 px-2.5 py-1 rounded-lg tracking-[0.04em]">
+ <span key={idx} className="text-xs font-medium bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 text-slate-600 dark:text-foreground px-2.5 py-1 rounded-lg tracking-[0.04em]">
  {point}
  </span>
  ))}
  {(!route.data?.pickupPointsList || route.data?.pickupPointsList.length === 0) && (
- <span className="text-xs text-slate-400 dark:text-slate-500 dark:text-slate-400 italic tracking-[0.04em]">No points defined</span>
+ <span className="text-xs text-slate-400 dark:text-slate-500 dark:text-muted-foreground italic tracking-[0.04em]">No points defined</span>
  )}
  </div>
  </div>
@@ -173,9 +173,9 @@ export default function SHSBusRoutes() {
  </DialogHeader>
  </div>
  
- <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
+ <div className="p-6 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Route Name</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Route Name</label>
  <Input 
  placeholder="e.g. Osu / Labadi Axis"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -186,7 +186,7 @@ export default function SHSBusRoutes() {
  
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Zone / Region</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Zone / Region</label>
  <Input 
  placeholder="e.g. Zone A"
  className="bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -195,7 +195,7 @@ export default function SHSBusRoutes() {
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Termly Fee ($)</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Termly Fee ($)</label>
  <Input 
  type="number"
  min="0" step="0.01"
@@ -208,7 +208,7 @@ export default function SHSBusRoutes() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Pickup Points (Comma separated)</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Pickup Points (Comma separated)</label>
  <textarea 
  placeholder="e.g. Danquah Circle, Labadi Beach, Trade Fair"
  className="w-full h-24 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -219,7 +219,7 @@ export default function SHSBusRoutes() {
  </div>
  
  <div className="p-4 bg-white dark:bg-card/40 dark:bg-card border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-foreground">
  Cancel
  </Button>
  <Button 

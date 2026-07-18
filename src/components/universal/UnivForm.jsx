@@ -160,7 +160,7 @@ export default function UnivForm({
  ))}
 
  <div className="pt-4 flex justify-end gap-3 border-t border-primary/40 mt-8">
- <button type="button" className="px-5 py-2.5 rounded-xl text-sm font-medium text-foreground bg-muted hover:bg-muted/60 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors">
+ <button type="button" className="px-5 py-2.5 rounded-xl text-sm font-medium text-foreground bg-muted hover:bg-muted/60 dark:bg-secondary dark:text-foreground dark:hover:bg-slate-700 transition-colors">
  Cancel
  </button>
  <button 

@@ -238,8 +238,8 @@ const [transactionFormData, setTransactionFormData] = useState({
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Wallet className="w-4 h-4" />
               Total Balance
@@ -251,8 +251,8 @@ const [transactionFormData, setTransactionFormData] = useState({
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <ArrowDownLeft className="w-4 h-4" />
               Total Deposits
@@ -264,8 +264,8 @@ const [transactionFormData, setTransactionFormData] = useState({
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <ArrowUpRight className="w-4 h-4" />
               Total Withdrawals
@@ -277,8 +277,8 @@ const [transactionFormData, setTransactionFormData] = useState({
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <TrendingUp className="w-4 h-4" />
               Transactions
@@ -315,12 +315,12 @@ const [transactionFormData, setTransactionFormData] = useState({
       {activeTab === 'overview' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {accounts.length === 0 ? (
-            <Card className="col-span-full md:col-span-2 lg:col-span-3 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border border-slate-200/60 dark:border-slate-800/60 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center p-12 text-center group">
+            <Card className="col-span-full md:col-span-2 lg:col-span-3 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border border-slate-200/60 dark:border-border/60 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center p-12 text-center group">
               <div className="w-20 h-20 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Wallet className="w-10 h-10 text-primary" />
               </div>
               <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2 tracking-tight">No Trust Accounts Yet</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mb-8 leading-relaxed">
+              <p className="text-sm text-slate-500 dark:text-muted-foreground max-w-md mb-8 leading-relaxed">
                 Start managing your trust accounts, escrow funds, and ledger transactions in one secure place.
               </p>
               <Button onClick={() => setShowAccountForm(true)} className="gap-2 rounded-full px-6 py-5 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-shadow">
@@ -329,13 +329,13 @@ const [transactionFormData, setTransactionFormData] = useState({
             </Card>
           ) : (
             accounts.map(account => (
-              <Card key={account.id} className="relative group bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+              <Card key={account.id} className="relative group bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
                                 <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
                 <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
 <div className="h-1.5 w-full bg-gradient-to-r from-primary to-primary" />
-                <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+                <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
                   <div className="flex items-start justify-between">
                     <div>
                       <CardTitle className="text-lg font-bold flex items-center gap-2">
@@ -367,7 +367,7 @@ const [transactionFormData, setTransactionFormData] = useState({
                     {account.account_number && (
                       <div className="space-y-1">
                         <p className="text-muted-foreground text-xs uppercase tracking-wider font-medium">Account #</p>
-                        <p className="font-mono text-sm font-medium bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded w-fit">
+                        <p className="font-mono text-sm font-medium bg-slate-100 dark:bg-secondary px-2 py-0.5 rounded w-fit">
                           ****{account.account_number.slice(-4)}
                         </p>
                       </div>
@@ -423,7 +423,7 @@ const [transactionFormData, setTransactionFormData] = useState({
           </div>
 
           {/* Transactions Table */}
-          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="border-b border-border bg-muted/50">

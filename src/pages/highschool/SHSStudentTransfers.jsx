@@ -133,7 +133,7 @@ export default function SHSStudentTransfers() {
  {loading ? (
  <div className="p-8 text-center text-primary/30 text-sm">Loading directory...</div>
  ) : filteredStudents.length === 0 ? (
- <div className="p-8 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400 text-sm">No active students match search.</div>
+ <div className="p-8 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground text-sm">No active students match search.</div>
  ) : (
  <div className="p-2 space-y-1">
  {filteredStudents.map(student => (
@@ -143,17 +143,17 @@ export default function SHSStudentTransfers() {
  className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
  selectedStudent?.id === student.id 
  ? 'bg-primary dark:bg-primary text-white -emerald-500/20' 
- : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
+ : 'hover:bg-slate-50 dark:bg-secondary/50 dark:bg-secondary text-slate-700 dark:text-foreground dark:text-foreground'
 }`}
  >
  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold shrink-0 ${
- selectedStudent?.id === student.id ? 'bg-white dark:bg-card/40 dark:bg-card/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
+ selectedStudent?.id === student.id ? 'bg-white dark:bg-card/40 dark:bg-card/20' : 'bg-slate-100 dark:bg-secondary text-primary dark:text-primary/70'
 }`}>
  {student.title?.charAt(0)}
  </div>
  <div className="overflow-hidden flex-1">
  <p className="font-semibold truncate">{student.title}</p>
- <p className={`text-xs truncate ${selectedStudent?.id === student.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400'}`}>
+ <p className={`text-xs truncate ${selectedStudent?.id === student.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground'}`}>
  {student.case_number} • {student.data?.program}
  </p>
  </div>
@@ -175,11 +175,11 @@ export default function SHSStudentTransfers() {
  
  {selectedStudent ? (
  <>
- <div className="p-6 bg-slate-500 dark:bg-slate-800/50 border-b border-primary/40 dark:border-primary/40">
+ <div className="p-6 bg-slate-500 dark:bg-secondary/50 border-b border-primary/40 dark:border-primary/40">
  <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">Transfer Request for {selectedStudent.title}</h2>
  <div className="flex items-center gap-2 mt-2">
  <Badge variant="outline" className="border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70 bg-white dark:bg-card/40 dark:bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{selectedStudent.case_number}</Badge>
- <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Current: {selectedStudent.data?.program} ({selectedStudent.data?.grade})</span>
+ <span className="text-xs font-medium text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">Current: {selectedStudent.data?.program} ({selectedStudent.data?.grade})</span>
  </div>
  </div>
  
@@ -192,8 +192,8 @@ export default function SHSStudentTransfers() {
  onClick={() => setTransferType('External')}
  className={`p-4 rounded-2xl border-2 text-left transition-all ${
  transferType === 'External' 
- ? 'border-primary dark:border-primary bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary dark:text-primary/70' 
- : 'border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card hover:border-primary/20 dark:border-primary/40 text-slate-600 dark:text-slate-300'
+ ? 'border-primary dark:border-primary bg-slate-50 dark:bg-secondary/50 dark:bg-secondary text-primary dark:text-primary/70' 
+ : 'border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card hover:border-primary/20 dark:border-primary/40 text-slate-600 dark:text-foreground'
 }`}
  >
  <Building className="w-6 h-6 mb-2" />
@@ -205,8 +205,8 @@ export default function SHSStudentTransfers() {
  onClick={() => setTransferType('Internal')}
  className={`p-4 rounded-2xl border-2 text-left transition-all ${
  transferType === 'Internal' 
- ? 'border-primary dark:border-primary bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary dark:text-primary/70' 
- : 'border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card hover:border-primary/20 dark:border-primary/40 text-slate-600 dark:text-slate-300'
+ ? 'border-primary dark:border-primary bg-slate-50 dark:bg-secondary/50 dark:bg-secondary text-primary dark:text-primary/70' 
+ : 'border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card hover:border-primary/20 dark:border-primary/40 text-slate-600 dark:text-foreground'
 }`}
  >
  <ArrowRightLeft className="w-6 h-6 mb-2" />
@@ -223,10 +223,10 @@ export default function SHSStudentTransfers() {
  {transferType === 'External' ? (
  <div className="space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Destination School</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Destination School</label>
  <Input 
  placeholder="e.g. Achimota School"
- className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
+ className="bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
  value={transferData.destination}
  onChange={(e) => setTransferData({...transferData, destination: e.target.value})}
  />
@@ -235,9 +235,9 @@ export default function SHSStudentTransfers() {
  ) : (
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">New Programme</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">New Programme</label>
  <select 
- className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={transferData.newProgram}
  onChange={(e) => setTransferData({...transferData, newProgram: e.target.value})}
  >
@@ -249,10 +249,10 @@ export default function SHSStudentTransfers() {
  </select>
  </div>
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">New House</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">New House</label>
  <Input 
  placeholder="e.g. Gyamfi House"
- className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
+ className="bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
  value={transferData.newHouse}
  onChange={(e) => setTransferData({...transferData, newHouse: e.target.value})}
  />
@@ -262,19 +262,19 @@ export default function SHSStudentTransfers() {
  
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Effective Date</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Effective Date</label>
  <Input 
  type="date"
- className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
+ className="bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
  value={transferData.date}
  onChange={(e) => setTransferData({...transferData, date: e.target.value})}
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Reason for Transfer</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Reason for Transfer</label>
  <Input 
  placeholder="e.g. Relocation, Academic preference"
- className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
+ className="bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
  value={transferData.reason}
  onChange={(e) => setTransferData({...transferData, reason: e.target.value})}
  />
@@ -295,12 +295,12 @@ export default function SHSStudentTransfers() {
  </ScrollArea>
  </>
  ) : (
- <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
- <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6">
+ <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50">
+ <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-secondary flex items-center justify-center mb-6">
  <ArrowRightLeft className="w-10 h-10 text-primary/30" />
  </div>
- <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Student Selected</h3>
- <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 max-w-sm mt-2">
+ <h3 className="text-xl font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No Student Selected</h3>
+ <p className="text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground max-w-sm mt-2">
  Select an active student from the left panel to initiate an internal programme change or external school transfer.
  </p>
  </div>

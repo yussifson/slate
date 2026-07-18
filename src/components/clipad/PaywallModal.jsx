@@ -66,12 +66,12 @@ export const PaywallModal = ({ isOpen, onClose, featureName = "This feature", li
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden bg-white border shadow-2xl rounded-2xl dark:bg-slate-900 border-slate-200 dark:border-slate-800"
+          className="relative w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden bg-white border shadow-2xl rounded-2xl dark:bg-card border-slate-200 dark:border-border"
         >
           {/* Header Graphic */}
           <div className="relative shrink-0 h-24 overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600">
             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
-            <div className="absolute flex items-center justify-center w-16 h-16 transform -translate-x-1/2 bg-white rounded-full shadow-lg left-1/2 -bottom-8 dark:bg-slate-900">
+            <div className="absolute flex items-center justify-center w-16 h-16 transform -translate-x-1/2 bg-white rounded-full shadow-lg left-1/2 -bottom-8 dark:bg-card">
               <Sparkles className="w-8 h-8 text-indigo-500" />
             </div>
           </div>
@@ -89,7 +89,7 @@ export const PaywallModal = ({ isOpen, onClose, featureName = "This feature", li
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
               Upgrade to Clipad Pro
             </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
+            <p className="text-sm text-slate-600 dark:text-muted-foreground mb-6">
               {limitDescription} Upgrade to unlock unlimited access.
             </p>
 
@@ -99,11 +99,11 @@ export const PaywallModal = ({ isOpen, onClose, featureName = "This feature", li
                 { icon: Shield, text: "Create unlimited spaces & groups" },
                 { icon: Zap, text: "Advanced AI summaries & transcriptions" },
               ].map((benefit, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-secondary/50">
                   <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
                     <benefit.icon className="w-4 h-4" />
                   </div>
-                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <span className="text-sm font-medium text-slate-700 dark:text-foreground">
                     {benefit.text}
                   </span>
                 </div>

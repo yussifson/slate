@@ -214,7 +214,7 @@ export default function UnivCalendar({
  return (
  <div key={i} className={`border-r border-b border-primary/40 p-2 ${d.inactive ? 'bg-muted/10' : 'bg-card hover:bg-muted/5'} transition-colors relative min-h-[100px]`}>
  {d.day && (
- <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold ${d.isToday ? 'bg-primary text-white ' : 'text-foreground dark:text-slate-300'}`}>
+ <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold ${d.isToday ? 'bg-primary text-white ' : 'text-foreground dark:text-foreground'}`}>
  {d.day}
  </span>
  )}

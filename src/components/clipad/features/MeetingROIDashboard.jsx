@@ -73,14 +73,14 @@ export default function MeetingROIDashboard({ workspaceId, spaceId }) {
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex items-center justify-center min-h-[200px]">
+      <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl p-6 shadow-sm flex items-center justify-center min-h-[200px]">
         <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm relative overflow-hidden group">
+    <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl p-6 shadow-sm relative overflow-hidden group">
       {/* Subtle background glow */}
       <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-colors"></div>
       
@@ -91,7 +91,7 @@ export default function MeetingROIDashboard({ workspaceId, spaceId }) {
               <TrendingDown className="w-5 h-5 text-emerald-500" />
               Meeting ROI & Savings
             </h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-sm text-slate-500 dark:text-muted-foreground mt-1">
               Estimated savings by replacing low-ROI meetings with async video.
             </p>
           </div>
@@ -101,16 +101,16 @@ export default function MeetingROIDashboard({ workspaceId, spaceId }) {
         </div>
 
         {metrics.meetingsAnalyzed === 0 ? (
-          <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6 text-center border border-slate-100 dark:border-slate-700/50">
+          <div className="bg-slate-50 dark:bg-secondary/50 rounded-xl p-6 text-center border border-slate-100 dark:border-border/50">
             <AlertCircle className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-            <p className="text-sm font-medium text-slate-600 dark:text-slate-300">No meeting data analyzed yet.</p>
+            <p className="text-sm font-medium text-slate-600 dark:text-foreground">No meeting data analyzed yet.</p>
             <p className="text-xs text-slate-500 mt-1">Run your first meeting to start calculating ROI.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Metric 1: Low ROI Meetings */}
-            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-100 dark:border-slate-800">
-              <div className="flex items-center gap-2 mb-2 text-slate-600 dark:text-slate-400">
+            <div className="bg-slate-50 dark:bg-secondary/50 rounded-xl p-4 border border-slate-100 dark:border-border">
+              <div className="flex items-center gap-2 mb-2 text-slate-600 dark:text-muted-foreground">
                 <AlertCircle className="w-4 h-4" />
                 <span className="text-xs font-semibold uppercase tracking-wider">Preventable</span>
               </div>

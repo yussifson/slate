@@ -157,7 +157,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
         <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white flex items-center gap-2 mb-3 tracking-tight">
           Enterprise Knowledge Graph
         </h2>
-        <p className="text-sm md:text-base text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">
+        <p className="text-sm md:text-base text-slate-600 dark:text-foreground mb-8 leading-relaxed">
           Unlock your organization's collective intelligence. Query the entire historical context of decisions, past blockers, and team signals to instantly find answers.
         </p>
 
@@ -167,7 +167,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="e.g., 'Why did we decide to use this approach?' or 'What blockers did we resolve last month?'"
-            className="w-full bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl pl-5 pr-14 py-4 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-sm md:text-base transition-all"
+            className="w-full bg-white dark:bg-card/80 border border-slate-200 dark:border-border text-slate-900 dark:text-white rounded-xl pl-5 pr-14 py-4 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-sm md:text-base transition-all"
           />
           <button 
             type="submit"
@@ -186,22 +186,22 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
         )}
 
         {response && (
-          <div className="mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 md:p-6 flex gap-4 animate-in fade-in slide-in-from-bottom-2 shadow-sm">
+          <div className="mt-6 bg-white dark:bg-card border border-slate-200 dark:border-border rounded-xl p-5 md:p-6 flex gap-4 animate-in fade-in slide-in-from-bottom-2 shadow-sm">
             <div className="mt-0.5 shrink-0">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                 <Bot className="w-4 h-4" />
               </div>
             </div>
             <div>
-              <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed whitespace-pre-wrap">{response}</p>
+              <p className="text-sm text-slate-700 dark:text-foreground leading-relaxed whitespace-pre-wrap">{response}</p>
               {citations.length > 0 && (
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-2">
+                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-border flex flex-wrap gap-2">
                   {citations.map((cite, i) => {
                     const type = cite.charAt(0);
                     const id = cite.substring(2);
                     let route = '#';
                     let label = cite;
-                    let colorClass = "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400";
+                    let colorClass = "bg-slate-100 text-slate-600 dark:bg-secondary dark:text-muted-foreground";
                     if (type === 'M') { route = `/clipad/meetings/${id}`; label = 'Meeting Record'; colorClass = "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400"; }
                     if (type === 'V') { route = `/clipad/videos/${id}`; label = 'Video Record'; colorClass = "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400"; }
                     if (type === 'D') { label = 'Decision'; colorClass = "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"; }

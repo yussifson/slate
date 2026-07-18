@@ -124,7 +124,7 @@ export default function SHSReturns() {
  <BookDown className="w-5 h-5 text-amber-500" /> Awaiting Return
  </CardTitle>
  <div className="relative w-full sm:w-48">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-muted-foreground" />
  <Input 
  placeholder="Search to return..." 
  className="pl-9 h-8 bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl text-xs tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -136,19 +136,19 @@ export default function SHSReturns() {
  </CardHeader>
  <CardContent className="p-0">
  {loading ? (
- <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading records...</div>
+ <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading records...</div>
  ) : filteredActive.length === 0 ? (
  <div className="p-12 text-center">
- <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No active checkouts found</h3>
+ <h3 className="text-sm font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No active checkouts found</h3>
  </div>
  ) : (
  <div className="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
  {filteredActive.map((record) => (
- <div key={record.id} className="p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+ <div key={record.id} className="p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 transition-colors">
  <div>
  <p className="font-semibold text-slate-800 dark:text-slate-100 text-sm mb-1">{record.data?.bookTitle}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Borrowed by: <span className="font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">{record.data?.studentName}</span></p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Due: {record.data?.dueDate}</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">Borrowed by: <span className="font-semibold text-slate-700 dark:text-foreground dark:text-foreground">{record.data?.studentName}</span></p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">Due: {record.data?.dueDate}</p>
  </div>
  <Button 
  size="sm"
@@ -173,10 +173,10 @@ export default function SHSReturns() {
  </CardHeader>
  <CardContent className="p-0">
  {loading ? (
- <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading history...</div>
+ <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading history...</div>
  ) : returnedBorrowings.length === 0 ? (
  <div className="p-12 text-center">
- <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No return history</h3>
+ <h3 className="text-sm font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No return history</h3>
  </div>
  ) : (
  <div className="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
@@ -184,11 +184,11 @@ export default function SHSReturns() {
  <div key={record.id} className="p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <p className="font-semibold text-slate-800 dark:text-slate-100 text-sm mb-1">{record.data?.bookTitle}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Returned by: <span className="font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">{record.data?.studentName}</span></p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">On: {record.data?.returnDate}</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">Returned by: <span className="font-semibold text-slate-700 dark:text-foreground dark:text-foreground">{record.data?.studentName}</span></p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">On: {record.data?.returnDate}</p>
  </div>
  <Badge variant="outline" className={`
- ${record.data?.returnCondition === 'Good' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20' : ''}
+ ${record.data?.returnCondition === 'Good' ? 'bg-slate-50 dark:bg-secondary/50 text-primary/90 border-primary/20' : ''}
  ${record.data?.returnCondition === 'Damaged' ? 'bg-amber-50 text-amber-700 border-amber-200' : ''}
  ${record.data?.returnCondition === 'Lost' ? 'bg-rose-50 text-rose-700 border-rose-200' : ''}
  `}>
@@ -214,9 +214,9 @@ export default function SHSReturns() {
  </DialogHeader>
  </div>
  
- <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
+ <div className="p-6 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Book Condition on Return</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Book Condition on Return</label>
  <select 
  className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-card/40 dark:bg-card px-3 focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={returnCondition}
@@ -237,7 +237,7 @@ export default function SHSReturns() {
  </div>
  
  <div className="p-4 bg-white dark:bg-card/40 dark:bg-card border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsReturnModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsReturnModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-foreground">
  Cancel
  </Button>
  <Button 

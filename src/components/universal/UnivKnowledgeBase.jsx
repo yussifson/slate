@@ -14,7 +14,7 @@ import {
 
 // Status badges mapping
 const STATUS_COLORS = {
- Draft: 'bg-slate-100 text-slate-600 border-primary/40 dark:bg-slate-800 dark:text-slate-400 dark:border-primary/40',
+ Draft: 'bg-slate-100 text-slate-600 border-primary/40 dark:bg-secondary dark:text-muted-foreground dark:border-primary/40',
  Published: 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800',
  Archived: 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800'
 };

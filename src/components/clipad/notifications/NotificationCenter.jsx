@@ -113,7 +113,7 @@ export default function NotificationCenter() {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger className="relative p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20">
-        <Bell className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+        <Bell className="w-5 h-5 text-slate-700 dark:text-foreground" />
         {unreadCount > 0 && (
           <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-slate-900">
             {unreadCount > 99 ? '99+' : unreadCount}
@@ -121,8 +121,8 @@ export default function NotificationCenter() {
         )}
       </DropdownMenuTrigger>
       
-      <DropdownMenuContent align="end" className="w-80 sm:w-96 p-0 bg-card text-foreground shadow-lg border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+      <DropdownMenuContent align="end" className="w-80 sm:w-96 p-0 bg-card text-foreground shadow-lg border-slate-200 dark:border-border rounded-xl overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-border bg-slate-50/50 dark:bg-card/50">
           <DropdownMenuLabel className="p-0 font-semibold text-base">Notifications</DropdownMenuLabel>
           {unreadCount > 0 && (
             <button 
@@ -141,7 +141,7 @@ export default function NotificationCenter() {
           {notifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
               <Bell className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-3" />
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">No notifications yet</p>
+              <p className="text-sm font-medium text-slate-500 dark:text-muted-foreground">No notifications yet</p>
               <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">We'll let you know when something happens</p>
             </div>
           ) : (
@@ -150,7 +150,7 @@ export default function NotificationCenter() {
                 <DropdownMenuItem 
                   key={notification.id}
                   className={cn(
-                    "flex flex-col items-start p-4 cursor-pointer border-b border-slate-50 dark:border-slate-800/50 last:border-0 rounded-none focus:bg-slate-50 dark:focus:bg-slate-800/50 transition-colors",
+                    "flex flex-col items-start p-4 cursor-pointer border-b border-slate-50 dark:border-border/50 last:border-0 rounded-none focus:bg-slate-50 dark:focus:bg-slate-800/50 transition-colors",
                     !notification.is_read ? "bg-primary/5 dark:bg-primary/10" : ""
                   )}
                   onClick={(e) => {
@@ -169,7 +169,7 @@ export default function NotificationCenter() {
                       <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 line-clamp-1">
                         {notification.title || 'Notification'}
                       </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
+                      <p className="text-xs text-slate-500 dark:text-muted-foreground line-clamp-2">
                         {notification.message}
                       </p>
                       <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-1">

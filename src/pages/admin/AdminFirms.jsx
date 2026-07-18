@@ -277,11 +277,11 @@ export default function AdminFirms() {
                           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 leading-tight">{c.name}</h3>
                           <p className="font-mono text-[11px] text-primary mt-1">{c.subdomain}{t("slate_optavel_com", ".slate.optavel.com")}</p>
                         </div>
-                        <span className={`md:hidden inline-flex py-1 px-2.5 rounded-full text-[10px] font-semibold uppercase ${c.status === 'active' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40' : 'bg-red-50 text-red-700 border-[0.5px] border-black/9 dark:border-white/8 border-red-100'}`}>
+                        <span className={`md:hidden inline-flex py-1 px-2.5 rounded-full text-[10px] font-semibold uppercase ${c.status === 'active' ? 'bg-slate-50 dark:bg-secondary/50 text-primary/90 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40' : 'bg-red-50 text-red-700 border-[0.5px] border-black/9 dark:border-white/8 border-red-100'}`}>
                           {c.status}
                         </span>
                       </div>
-                      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">
+                      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-muted-foreground tracking-[0.04em]">
                         <span className="flex items-center gap-2"><Users className="w-3.5 h-3.5" /> {activeUsers} / {c.max_users || '∞'} Users</span>
                         <span className="flex items-center gap-2"><Layers className="w-3.5 h-3.5" /> {activeCases} / {c.max_cases || '∞'} Cases</span>
                         <span>{c.email}</span>
@@ -296,7 +296,7 @@ export default function AdminFirms() {
                         )}
                       </div>
                       <div className="mt-3 flex gap-2 items-center">
-                        <Badge className="text-[10px] font-semibold uppercase py-0.5 px-2 bg-slate-100 text-slate-700 dark:text-slate-300 border-none tracking-[0.04em]">{c.subscription_plan}</Badge>
+                        <Badge className="text-[10px] font-semibold uppercase py-0.5 px-2 bg-slate-100 text-slate-700 dark:text-foreground border-none tracking-[0.04em]">{c.subscription_plan}</Badge>
                         <span className="text-[10px] font-semibold text-slate-400 capitalize">({c.subscription_status})</span>
                         
                         {/* Industry Switcher */}
@@ -339,20 +339,20 @@ export default function AdminFirms() {
                     </div>
                     
                     <div className="hidden md:flex flex-col items-center justify-center px-4">
-                      <span className={`inline-flex py-1 px-2.5 rounded-full text-[10px] font-semibold uppercase ${c.status === 'active' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40' : 'bg-red-50 text-red-700 border-[0.5px] border-black/9 dark:border-white/8 border-red-100'}`}>
+                      <span className={`inline-flex py-1 px-2.5 rounded-full text-[10px] font-semibold uppercase ${c.status === 'active' ? 'bg-slate-50 dark:bg-secondary/50 text-primary/90 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40' : 'bg-red-50 text-red-700 border-[0.5px] border-black/9 dark:border-white/8 border-red-100'}`}>
                         {c.status}
                       </span>
                       <span className="text-[10px] text-slate-400 mt-2">{new Date(c.created_date || c.created_at).toLocaleDateString()}</span>
                     </div>
 
-                    <div className="flex flex-wrap md:flex-nowrap items-center gap-2 pt-3 md:pt-0 border-t border-slate-100 dark:border-slate-800/50 md:border-none mt-2 md:mt-0">
+                    <div className="flex flex-wrap md:flex-nowrap items-center gap-2 pt-3 md:pt-0 border-t border-slate-100 dark:border-border/50 md:border-none mt-2 md:mt-0">
                       <Button variant="outline" size="sm" onClick={() => setFeaturesCompany(c)} className="flex-1 md:flex-none h-9 text-xs gap-2.5 px-3 rounded-xl border-primary/20 text-violet-700 bg-violet-50 hover:bg-violet-100 tracking-[0.04em]">
                         <Layers className="w-3.5 h-3.5" /> Workspaces
                       </Button>
                       <Button variant="outline" size="sm" onClick={() => setStaffCompany(c)} className="flex-1 md:flex-none h-9 text-xs gap-2.5 px-3 rounded-xl border-primary/20 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 tracking-[0.04em]">
                         <Users className="w-3.5 h-3.5" /> Team
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleImpersonate(c)} className="flex-1 md:flex-none h-9 text-xs gap-2.5 px-3 rounded-xl border-primary/20 text-primary/90 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 hover:text-primary/80 tracking-[0.04em]">
+                      <Button variant="outline" size="sm" onClick={() => handleImpersonate(c)} className="flex-1 md:flex-none h-9 text-xs gap-2.5 px-3 rounded-xl border-primary/20 text-primary/90 bg-slate-50 dark:bg-secondary/50 hover:bg-slate-100 hover:text-primary/80 tracking-[0.04em]">
                         <UserCheck className="w-3.5 h-3.5" /> {t("impersonate", "Impersonate")}
                       </Button>
                       <Button variant="outline" size="sm" onClick={() => handleOpenEditDialog(c)} className="flex-1 md:flex-none h-9 text-xs gap-2.5 px-3 rounded-xl border-primary/20 text-amber-700 bg-amber-50 hover:bg-amber-100 tracking-[0.04em]">
@@ -384,20 +384,20 @@ export default function AdminFirms() {
               {t("message_firm_admin", "Message Firm Admin:")} {selectedCompany?.name}
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4 text-sm text-slate-700 dark:text-slate-300">
+          <div className="space-y-4 py-4 text-sm text-slate-700 dark:text-foreground">
             <div className="space-y-1.5">
-              <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block tracking-[0.04em]">{t("message_content", "Message Content")}</label>
+              <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-muted-foreground block tracking-[0.04em]">{t("message_content", "Message Content")}</label>
               <textarea 
                 value={messageContent} 
                 onChange={(e) => setMessageContent(e.target.value)}
                 rows={4}
                 placeholder="Type your message to the firm administrator here..."
-                className="w-full p-3 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm resize-none"
+                className="w-full p-3 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-secondary/50 text-sm resize-none"
               />
             </div>
           </div>
           <DialogFooter className="flex gap-2 pt-2">
-            <Button variant="outline" onClick={() => setMessageDialogOpen(false)} className="flex-1 rounded-xl text-slate-700 dark:text-slate-300 border-primary/40 h-11">
+            <Button variant="outline" onClick={() => setMessageDialogOpen(false)} className="flex-1 rounded-xl text-slate-700 dark:text-foreground border-primary/40 h-11">
               {t("cancel", "Cancel")}
             </Button>
             <Button onClick={handleSendMessage} disabled={sendingMessage} className="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl h-11">
@@ -418,13 +418,13 @@ export default function AdminFirms() {
             </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4 py-4 text-sm text-slate-700 dark:text-slate-300">
+          <div className="space-y-4 py-4 text-sm text-slate-700 dark:text-foreground">
             <div className="space-y-1.5">
-              <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block tracking-[0.04em]">{t("subscription_tier", "Subscription Tier")}</label>
+              <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-muted-foreground block tracking-[0.04em]">{t("subscription_tier", "Subscription Tier")}</label>
               <select 
                 value={subPlan} 
                 onChange={(e) => setSubPlan(e.target.value)}
-                className="w-full p-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm"
+                className="w-full p-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-secondary/50 text-sm"
               >
                 <option value="starter">{t("starter_plan_29_mo", "Starter Plan ($29/mo)")}</option>
                 <option value="professional">{t("professional_plan_79_mo", "Professional Plan ($79/mo)")}</option>
@@ -433,11 +433,11 @@ export default function AdminFirms() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block tracking-[0.04em]">{t("subscription_status", "Subscription Status")}</label>
+              <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-muted-foreground block tracking-[0.04em]">{t("subscription_status", "Subscription Status")}</label>
               <select 
                 value={subStatus} 
                 onChange={(e) => setSubStatus(e.target.value)}
-                className="w-full p-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm"
+                className="w-full p-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-secondary/50 text-sm"
               >
                 <option value="trial">{t("trialing", "Trialing")}</option>
                 <option value="active">{t("active_paid", "Active (Paid)")}</option>
@@ -448,7 +448,7 @@ export default function AdminFirms() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block tracking-[0.04em]">{t("max_active_users", "Max Active Users")}</label>
+                <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-muted-foreground block tracking-[0.04em]">{t("max_active_users", "Max Active Users")}</label>
                 <Input 
                   type="number"
                   value={maxUsers}
@@ -457,7 +457,7 @@ export default function AdminFirms() {
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block tracking-[0.04em]">{t("max_active_cases", "Max Active Cases")}</label>
+                <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-muted-foreground block tracking-[0.04em]">{t("max_active_cases", "Max Active Cases")}</label>
                 <Input 
                   type="number"
                   value={maxCases}
@@ -469,7 +469,7 @@ export default function AdminFirms() {
           </div>
 
           <DialogFooter className="flex gap-2 pt-2">
-            <Button variant="outline" onClick={() => setEditDialogOpen(false)} className="flex-1 rounded-xl text-slate-700 dark:text-slate-300 border-primary/40 h-11">
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)} className="flex-1 rounded-xl text-slate-700 dark:text-foreground border-primary/40 h-11">
               {t("cancel", "Cancel")}
             </Button>
             <Button onClick={handleSaveQuotas} disabled={updatingQuota} className="flex-1 bg-primary hover:bg-primary/95 text-white font-semibold rounded-xl h-11">

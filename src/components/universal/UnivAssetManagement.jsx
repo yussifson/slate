@@ -16,7 +16,7 @@ import {
 const ASSET_STATUS = {
  'Active': 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-400 dark:border-emerald-800',
  'In Maintenance': 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:border-amber-800',
- 'Retired': 'bg-slate-100 text-slate-700 border-primary/40 dark:bg-slate-800 dark:text-slate-400 dark:border-primary/40',
+ 'Retired': 'bg-slate-100 text-slate-700 border-primary/40 dark:bg-secondary dark:text-muted-foreground dark:border-primary/40',
  'Lost': 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/40 dark:text-red-400 dark:border-red-800'
 };
 

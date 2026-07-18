@@ -213,7 +213,7 @@ export function BillingSettings({ company, activeIndustry}) {
  {currentPlan} {t("model", "Model")}
  <span className={`text-[10px] font-extrabold uppercase py-0.5 px-2.5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 tracking-wider ${
  currentStatus === 'active' 
- ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border-primary/40' 
+ ? 'bg-slate-50 dark:bg-secondary/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border-primary/40' 
  : 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-200/50 animate-pulse'
 }`}>
  {currentStatus}
@@ -317,7 +317,7 @@ export function BillingSettings({ company, activeIndustry}) {
  <td className="px-5 py-3.5 font-extrabold text-foreground">${inv.amount}</td>
  <td className="px-5 py-3.5 font-mono text-xs text-[#71717a] dark:text-gray-400/80 tracking-[0.04em]">{inv.paystack_ref}</td>
  <td className="px-5 py-3.5">
- <span className="inline-flex py-0.5 px-2.5 rounded-full text-[10px] font-semibold bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 uppercase select-none tracking-[0.04em]">
+ <span className="inline-flex py-0.5 px-2.5 rounded-full text-[10px] font-semibold bg-slate-50 dark:bg-secondary/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 uppercase select-none tracking-[0.04em]">
  {inv.status}
  </span>
  </td>

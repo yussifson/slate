@@ -159,7 +159,7 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
       `}>
         
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-card/50">
+        <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-border bg-slate-50/50 dark:bg-card/50">
            <div className="flex items-center gap-3">
              <div className="relative">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${status === 'admin_joined' ? 'bg-indigo-100 text-indigo-600' : 'bg-primary/10 text-primary'}`}>
@@ -171,7 +171,7 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
                <h3 className="font-semibold text-slate-900 dark:text-white text-sm">
                  {status === 'admin_joined' ? 'Optavel Support (Live)' : 'Optavel AI Assistant'}
                </h3>
-               <p className="text-xs text-slate-500 dark:text-slate-400">
+               <p className="text-xs text-slate-500 dark:text-muted-foreground">
                  {status === 'admin_joined' ? 'Connected to Admin' : status === 'escalated' ? 'Connecting to Admin...' : 'Typically replies instantly'}
                </p>
              </div>
@@ -185,7 +185,7 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
         <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/30 dark:bg-card/10">
            
            <div className="text-center py-4">
-             <p className="text-xs text-slate-400 font-medium bg-slate-100 dark:bg-slate-800 inline-block px-3 py-1 rounded-full">Today</p>
+             <p className="text-xs text-slate-400 font-medium bg-slate-100 dark:bg-secondary inline-block px-3 py-1 rounded-full">Today</p>
            </div>
            
            {messages.map(msg => (
@@ -214,7 +214,7 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
                           ? 'bg-primary text-white rounded-tr-sm' 
                           : msg.sender === 'admin'
                             ? 'bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 text-slate-800 dark:text-indigo-100 rounded-tl-sm'
-                            : 'bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-tl-sm'
+                            : 'bg-white dark:bg-secondary border border-slate-100 dark:border-border text-slate-800 dark:text-foreground rounded-tl-sm'
                       }`}>
                         {msg.text}
                       </div>
@@ -233,7 +233,7 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
                    <div className="w-8 h-8 rounded-full bg-primary/10 text-primary shrink-0 flex items-center justify-center mt-1">
                       <Bot className="w-4 h-4" />
                    </div>
-                   <div className="p-4 rounded-2xl rounded-tl-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm flex gap-1 items-center h-[42px]">
+                   <div className="p-4 rounded-2xl rounded-tl-sm bg-white dark:bg-secondary border border-slate-100 dark:border-border shadow-sm flex gap-1 items-center h-[42px]">
                       <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
                       <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                       <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
@@ -245,8 +245,8 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
         </div>
 
         {/* Input */}
-        <div className="p-4 bg-white dark:bg-card border-t border-slate-100 dark:border-slate-800">
-           <div className="relative flex items-end gap-2 bg-slate-50 dark:bg-card rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary transition-all p-1">
+        <div className="p-4 bg-white dark:bg-card border-t border-slate-100 dark:border-border">
+           <div className="relative flex items-end gap-2 bg-slate-50 dark:bg-card rounded-2xl border border-slate-200 dark:border-border focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary transition-all p-1">
              <textarea 
                value={input}
                onChange={(e) => setInput(e.target.value)}

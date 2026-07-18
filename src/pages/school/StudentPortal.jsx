@@ -379,7 +379,7 @@ export default function StudentPortal() {
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Submit Assignment</h2>
             <p className="text-sm text-slate-500">{submitModal.assignment?.title}</p>
             <div>
-              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Your Answer / Essay</label>
+              <label className="text-sm font-medium text-slate-700 dark:text-foreground">Your Answer / Essay</label>
               <Textarea 
                 value={submitModal.content} 
                 onChange={e => setSubmitModal({...submitModal, content: e.target.value})} 

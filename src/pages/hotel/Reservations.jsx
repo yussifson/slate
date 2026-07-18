@@ -20,7 +20,7 @@ import { MessageSquare} from "lucide-react";
  const statusColors = {
  'Checked-in': 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 border-[0.5px] border-green-200/50 dark:border-green-900/50 text-xs font-semibold uppercase tracking-[0.04em]',
  'Confirmed': 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/20 text-blue-700 dark:text-blue-400 border-[0.5px] border-blue-200/50 dark:border-blue-900/50 text-xs font-semibold uppercase tracking-[0.04em]',
- 'Checked-out': 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/30 text-slate-700 dark:text-slate-400 border-[0.5px] border-slate-200/50 dark:border-slate-700/50 text-xs font-semibold uppercase tracking-[0.04em]',
+ 'Checked-out': 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-slate-100 dark:bg-secondary/30 text-slate-700 dark:text-muted-foreground border-[0.5px] border-slate-200/50 dark:border-border/50 text-xs font-semibold uppercase tracking-[0.04em]',
  'Cancelled': 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-[0.5px] border-red-200/50 dark:border-red-900/50 text-xs font-semibold uppercase tracking-[0.04em]'
 };
 

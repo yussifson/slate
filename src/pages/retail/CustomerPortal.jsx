@@ -135,7 +135,7 @@ export default function CustomerPortal() {
  "looking_for_something_specific",
  "Looking for something specific? Check local availability."
  )}</p>
- <Button variant="outline" className="w-full text-primary/90 border-primary/20 hover:bg-slate-50 dark:bg-slate-800/50 dark:hover:bg-primary/60">{t("store_locator", "Store Locator")}</Button>
+ <Button variant="outline" className="w-full text-primary/90 border-primary/20 hover:bg-slate-50 dark:bg-secondary/50 dark:hover:bg-primary/60">{t("store_locator", "Store Locator")}</Button>
  </div>
  </div>
  </div>

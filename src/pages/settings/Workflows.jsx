@@ -105,7 +105,7 @@ export default function Workflows() {
  </div>
  </div>
  {/* Action Setup */}
- <div className="p-4 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/30">
+ <div className="p-4 bg-slate-50 dark:bg-secondary/50 dark:bg-primary/20 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/30">
  <h4 className="text-xs font-semibold uppercase text-primary dark:text-primary/70 mb-3 tracking-[0.04em]">{t("3_then_do_this", "3. Then do this...")}</h4>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
  <div>

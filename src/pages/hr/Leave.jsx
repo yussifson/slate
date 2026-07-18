@@ -241,7 +241,7 @@ export default function Leave() {
                 </div>
 
                 {/* Date range */}
-                <div className="mt-4 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center gap-3">
+                <div className="mt-4 p-3 bg-slate-50 dark:bg-secondary rounded-xl flex items-center gap-3">
                   <CalendarDays className="w-4 h-4 text-muted-foreground shrink-0" />
                   <div>
                     <p className="text-sm font-semibold text-foreground">{req.startDate} → {req.endDate}</p>
@@ -253,7 +253,7 @@ export default function Leave() {
                 {req.reason && (
                   <div className="mt-3">
                     <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Reason</p>
-                    <p className="text-sm text-foreground bg-slate-50 dark:bg-slate-800 p-2.5 rounded-lg leading-relaxed line-clamp-2">"{req.reason}"</p>
+                    <p className="text-sm text-foreground bg-slate-50 dark:bg-secondary p-2.5 rounded-lg leading-relaxed line-clamp-2">"{req.reason}"</p>
                   </div>
                 )}
               </div>
@@ -362,7 +362,7 @@ export default function Leave() {
   const initials = req.employeeName?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl">
+      <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-secondary rounded-2xl">
         <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${leaveStyle.bg} flex items-center justify-center text-white font-bold text-lg shadow-md`}>{initials}</div>
         <div>
           <h3 className="text-lg font-bold text-foreground">{req.employeeName}</h3>

@@ -22,7 +22,7 @@ export default function OnlineAnalytics() {
  <Card className="border-0 rounded-xl">
  <CardContent className="p-6">
  <div className="flex items-center space-x-4">
- <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-xl">
+ <div className="p-3 bg-slate-50 dark:bg-secondary/50 text-primary rounded-xl">
  <Eye className="h-6 w-6" />
  </div>
  <div>
@@ -39,7 +39,7 @@ export default function OnlineAnalytics() {
  <Card className="border-0 rounded-xl">
  <CardContent className="p-6">
  <div className="flex items-center space-x-4">
- <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-xl">
+ <div className="p-3 bg-slate-50 dark:bg-secondary/50 text-primary rounded-xl">
  <BarChart className="h-6 w-6" />
  </div>
  <div>
@@ -56,7 +56,7 @@ export default function OnlineAnalytics() {
  <Card className="border-0 rounded-xl">
  <CardContent className="p-6">
  <div className="flex items-center space-x-4">
- <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-xl">
+ <div className="p-3 bg-slate-50 dark:bg-secondary/50 text-primary rounded-xl">
  <Activity className="h-6 w-6" />
  </div>
  <div>
@@ -73,7 +73,7 @@ export default function OnlineAnalytics() {
  <Card className="border-0 rounded-xl">
  <CardContent className="p-6">
  <div className="flex items-center space-x-4">
- <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-xl">
+ <div className="p-3 bg-slate-50 dark:bg-secondary/50 text-primary rounded-xl">
  <TrendingUp className="h-6 w-6" />
  </div>
  <div>

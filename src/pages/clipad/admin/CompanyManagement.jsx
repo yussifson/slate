@@ -111,7 +111,7 @@ export default function CompanyManagement() {
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span className="capitalize px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-md text-xs font-medium">
+                  <span className="capitalize px-2 py-1 bg-slate-100 dark:bg-secondary text-slate-600 dark:text-foreground rounded-md text-xs font-medium">
                     {company.subscription_plan || 'N/A'}
                   </span>
                 </TableCell>

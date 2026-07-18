@@ -64,7 +64,7 @@ export default function EmployeePortal() {
     approved: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400',
     pending: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
     rejected: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400',
-  }[s] || 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400');
+  }[s] || 'bg-slate-100 text-slate-600 dark:bg-secondary dark:text-muted-foreground');
 
   return (
     <div className="p-6 space-y-8">

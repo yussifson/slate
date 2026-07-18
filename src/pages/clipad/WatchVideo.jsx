@@ -386,13 +386,13 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
 
       <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-[#f0f2f5] dark:bg-background text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
         {/* Nav */}
-        <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-14 bg-white/50 dark:bg-[#111b21]/50 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5">
+        <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-14 bg-white/50 dark:bg-background/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-foreground transition-all hover:-translate-y-0.5">
             <ArrowLeft className="w-4 h-4 text-slate-500" /> Back
           </button>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium"><Eye className="w-3.5 h-3.5" /> {views} views</span>
-            <button onClick={copyShareLink} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all border ${copied ? 'text-emerald-600 dark:text-emerald-400 border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/10' : 'text-slate-700 dark:text-slate-300 border-black/5 dark:border-white/5 bg-white/95 dark:bg-[#202c33]/95 hover:bg-black/5 dark:hover:bg-white/10'}`}>
+            <span className="text-xs text-slate-500 dark:text-muted-foreground flex items-center gap-1 font-medium"><Eye className="w-3.5 h-3.5" /> {views} views</span>
+            <button onClick={copyShareLink} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all border ${copied ? 'text-emerald-600 dark:text-emerald-400 border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/10' : 'text-slate-700 dark:text-foreground border-black/5 dark:border-white/5 bg-white/95 dark:bg-[#202c33]/95 hover:bg-black/5 dark:hover:bg-white/10'}`}>
               {copied ? <><Check className="w-3.5 h-3.5" /> Copied!</> : <><Share2 className="w-3.5 h-3.5" /> Share</>}
             </button>
           </div>
@@ -547,9 +547,9 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
                   className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 object-cover"
                   alt="Creator"
                 />
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{video.creator?.full_name || 'Unknown'}</span>
+                <span className="text-sm font-semibold text-slate-700 dark:text-foreground">{video.creator?.full_name || 'Unknown'}</span>
                 <span className="text-slate-400 dark:text-slate-500">·</span>
-                <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{new Date(video.created_at).toLocaleDateString()}</span>
+                <span className="text-sm font-medium text-slate-500 dark:text-muted-foreground">{new Date(video.created_at).toLocaleDateString()}</span>
               </div>
             </div>
 
@@ -571,15 +571,15 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
                   <div className="space-y-6">
                     {summaryData.summary && (
                       <div>
-                        <h4 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Key Summary</h4>
-                        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{summaryData.summary}</p>
+                        <h4 className="text-xs font-semibold text-slate-500 dark:text-muted-foreground uppercase tracking-wider mb-2">Key Summary</h4>
+                        <p className="text-sm text-slate-700 dark:text-foreground leading-relaxed">{summaryData.summary}</p>
                       </div>
                     )}
                     
                     {summaryData.decisions?.length > 0 && (
                       <div>
-                        <h4 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Decisions Made</h4>
-                        <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+                        <h4 className="text-xs font-semibold text-slate-500 dark:text-muted-foreground uppercase tracking-wider mb-2">Decisions Made</h4>
+                        <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700 dark:text-foreground">
                           {summaryData.decisions.map((d, i) => <li key={i}>{d}</li>)}
                         </ul>
                       </div>
@@ -587,14 +587,14 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
 
                     {summaryData.actionItems?.length > 0 && (
                       <div>
-                        <h4 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Action Items</h4>
+                        <h4 className="text-xs font-semibold text-slate-500 dark:text-muted-foreground uppercase tracking-wider mb-2">Action Items</h4>
                         <div className="space-y-2">
                           {summaryData.actionItems.map((a, i) => (
                             <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
-                              <div className="w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-700 shrink-0" />
+                              <div className="w-5 h-5 rounded-full border-2 border-slate-300 dark:border-border shrink-0" />
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm text-slate-900 dark:text-white font-medium">{a.task}</p>
-                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Assignee: {a.assignee} {a.deadline && `• Due: ${a.deadline}`}</p>
+                                <p className="text-xs text-slate-500 dark:text-muted-foreground mt-0.5">Assignee: {a.assignee} {a.deadline && `• Due: ${a.deadline}`}</p>
                               </div>
                             </div>
                           ))}
@@ -616,7 +616,7 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
                 <button
                   key={val}
                   onClick={() => setActiveCommentFilter(val)}
-                  className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${activeCommentFilter === val ? 'bg-black/5 dark:bg-white/10 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}
+                  className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${activeCommentFilter === val ? 'bg-black/5 dark:bg-white/10 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-muted-foreground hover:text-slate-700 dark:hover:text-slate-200'}`}
                 >
                   {label}
                 </button>
@@ -672,7 +672,7 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
                 comments.length === 0 ? (
                   <div className="py-12 text-center bg-transparent rounded-2xl border border-dashed border-black/10 dark:border-white/10">
                     <MessageSquare className="w-10 h-10 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
-                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400 px-4">No comments yet. Pause the video and type to leave a timestamped comment.</p>
+                    <p className="text-sm font-medium text-slate-500 dark:text-muted-foreground px-4">No comments yet. Pause the video and type to leave a timestamped comment.</p>
                   </div>
                 ) : (
                   comments.map(c => {
@@ -682,7 +682,7 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
                     <div key={c.id} className="flex gap-3 p-4 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all group">
                       {isAnon ? (
                         <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
-                          <span className="text-xs font-bold text-slate-500 dark:text-slate-400">?</span>
+                          <span className="text-xs font-bold text-slate-500 dark:text-muted-foreground">?</span>
                         </div>
                       ) : (
                         <img
@@ -703,7 +703,7 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
                             @{formatTime(c.timestamp_seconds)}
                           </button>
                         </div>
-                        <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">{cleanContent}</p>
+                        <p className="text-sm text-slate-600 dark:text-foreground leading-snug">{cleanContent}</p>
                       </div>
                     </div>
                   )})
@@ -720,7 +720,7 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
             <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Edit Video</h2>
             <form onSubmit={handleEditVideo} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Video Title *</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-muted-foreground mb-2 uppercase tracking-wider">Video Title *</label>
                 <input
                   value={editTitle}
                   onChange={e => setEditTitle(e.target.value)}
@@ -729,7 +729,7 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Description</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-muted-foreground mb-2 uppercase tracking-wider">Description</label>
                 <textarea
                   value={editDesc}
                   onChange={e => setEditDesc(e.target.value)}
@@ -738,7 +738,7 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
                 />
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowEdit(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all border border-slate-200 dark:border-slate-700 shadow-sm">Cancel</button>
+                <button type="button" onClick={() => setShowEdit(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-secondary hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-foreground font-semibold text-sm transition-all border border-slate-200 dark:border-border shadow-sm">Cancel</button>
                 <button type="submit" disabled={savingEdit} className="flex-1 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-all shadow-md disabled:opacity-60">
                   {savingEdit ? 'Saving...' : 'Save Changes'}
                 </button>

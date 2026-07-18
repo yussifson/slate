@@ -264,7 +264,7 @@ export default function Warehouses() {
  <div className="flex flex-wrap gap-2.5">
  {cats.map(cat => {
  return (
- <span key={cat} className="inline-flex items-center gap-2 text-[10px] bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 px-2 py-0.5 rounded-full font-medium border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/80">
+ <span key={cat} className="inline-flex items-center gap-2 text-[10px] bg-slate-50 dark:bg-secondary/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 px-2 py-0.5 rounded-full font-medium border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/80">
  <Tag className="w-2.5 h-2.5" /> {cat}
  </span>
  );

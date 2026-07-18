@@ -82,7 +82,7 @@ export default function OnlineStoreBuilder() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-1 space-y-6 bg-white dark:bg-card p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="lg:col-span-1 space-y-6 bg-white dark:bg-card p-6 rounded-xl border border-slate-200 dark:border-border">
           <div>
             <h3 className="font-semibold text-lg flex items-center gap-2 mb-4"><Globe className="w-5 h-5"/> Domain & Status</h3>
             <div className="space-y-4">
@@ -97,7 +97,7 @@ export default function OnlineStoreBuilder() {
             </div>
           </div>
 
-          <hr className="border-slate-200 dark:border-slate-800" />
+          <hr className="border-slate-200 dark:border-border" />
 
           <div>
             <h3 className="font-semibold text-lg flex items-center gap-2 mb-4"><Paintbrush className="w-5 h-5"/> Theme Settings</h3>
@@ -129,12 +129,12 @@ export default function OnlineStoreBuilder() {
         </div>
 
         <div className="lg:col-span-2">
-          <div className="bg-slate-100 dark:bg-background p-4 rounded-xl h-full min-h-[600px] border border-slate-200 dark:border-slate-800 relative flex flex-col">
+          <div className="bg-slate-100 dark:bg-background p-4 rounded-xl h-full min-h-[600px] border border-slate-200 dark:border-border relative flex flex-col">
             <div className="absolute top-4 right-4 flex gap-2">
               <Button variant="outline" size="icon" className="bg-white"><Smartphone className="w-4 h-4"/></Button>
               <Button variant="outline" size="icon" className="bg-white"><Layout className="w-4 h-4"/></Button>
             </div>
-            <div className="flex-1 bg-white dark:bg-card rounded-lg shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col mt-12">
+            <div className="flex-1 bg-white dark:bg-card rounded-lg shadow-sm border border-slate-200 dark:border-border overflow-hidden flex flex-col mt-12">
               {/* Preview Header */}
               <header className="p-4 border-b border-slate-100 flex justify-between items-center" style={{ fontFamily: theme.fontFamily }}>
                 <div className="font-bold text-xl" style={{ color: theme.primaryColor }}>{user?.company_id ? 'YOUR BRAND' : 'STORE'}</div>

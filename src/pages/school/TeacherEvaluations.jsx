@@ -66,11 +66,11 @@ export default function TeacherEvaluations() {
  {teachers.map((teacher, i) => {
  const done = hasEvaluated(teacher);
  return (
- <div key={i} className={`p-6 rounded-3xl border ${done ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-card/50 border-primary/40 dark:border-primary/40 dark:border-primary/40' : 'bg-white dark:bg-card/40 dark:bg-background border-primary/40 dark:border-primary/40 '} flex flex-col md:flex-row items-center justify-between gap-4 transition-all`}>
+ <div key={i} className={`p-6 rounded-3xl border ${done ? 'bg-slate-50 dark:bg-secondary/50 dark:bg-card/50 border-primary/40 dark:border-primary/40 dark:border-primary/40' : 'bg-white dark:bg-card/40 dark:bg-background border-primary/40 dark:border-primary/40 '} flex flex-col md:flex-row items-center justify-between gap-4 transition-all`}>
  <div className="font-semibold text-lg text-slate-900 dark:text-slate-100 dark:text-white">{teacher}</div>
  
  {done ? (
- <div className="flex items-center gap-2 text-primary dark:text-primary/70 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 dark:bg-primary/20 px-4 py-2 rounded-full font-semibold text-sm">
+ <div className="flex items-center gap-2 text-primary dark:text-primary/70 bg-slate-50 dark:bg-secondary/50 dark:bg-primary/20 dark:bg-primary/20 px-4 py-2 rounded-full font-semibold text-sm">
  <CheckCircle className="w-4 h-4" /> Completed
  </div>
  ) : (

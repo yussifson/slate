@@ -148,8 +148,8 @@ class ErrorBoundary extends React.Component {
       
       if (isChunkError) {
         return (
-          <div className="min-h-screen bg-slate-50 dark:bg-[#090E17] flex flex-col items-center justify-center p-6 font-sans">
-            <div className="bg-white dark:bg-[#15161C] p-8 md:p-12 rounded-[24px] border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col items-center text-center max-w-md w-full relative overflow-hidden">
+          <div className="min-h-screen bg-slate-50 dark:bg-background flex flex-col items-center justify-center p-6 font-sans">
+            <div className="bg-white dark:bg-card p-8 md:p-12 rounded-[24px] border border-slate-200 dark:border-border shadow-md flex flex-col items-center text-center max-w-md w-full relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
               
               <div className="w-20 h-20 relative flex items-center justify-center mb-6">
@@ -167,13 +167,13 @@ class ErrorBoundary extends React.Component {
               </div>
 
               <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-3">Updating Workspace</h2>
-              <p className="text-slate-500 dark:text-slate-400 mb-8 text-sm font-medium leading-relaxed">
+              <p className="text-slate-500 dark:text-muted-foreground mb-8 text-sm font-medium leading-relaxed">
                 We've just released a new update to improve your experience. Please refresh the page to load the latest version.
               </p>
               
               <button 
                 onClick={() => { sessionStorage.removeItem('chunk-error-reload'); window.location.reload(); }} 
-                className="w-full py-4 px-6 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                className="w-full py-4 px-6 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0"
               >
                 Refresh Page
               </button>
@@ -1191,14 +1191,14 @@ function ProtectedRoute() {
   if (user?.company_status === 'suspended') {
     return (
       <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-50/50 dark:bg-background p-4 font-sans backdrop-blur-sm">
-        <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-3xl p-8 text-center border-[0.5px] border-black/9 dark:border-white/8 border-slate-100 dark:border-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="max-w-md w-full bg-white dark:bg-secondary rounded-3xl p-8 text-center border-[0.5px] border-black/9 dark:border-white/8 border-slate-100 dark:border-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="w-16 h-16 bg-red-50 dark:bg-red-500/10/10 text-red-500 dark:text-red-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight tracking-[-0.02em]">Workspace Suspended</h1>
-          <p className="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed font-medium">
+          <p className="text-slate-500 dark:text-muted-foreground mb-8 leading-relaxed font-medium">
             Your workspace access has been temporarily suspended by an administrator. Please contact support to resolve this issue.
           </p>
           <button onClick={() => supabase.auth.signOut().then(() => window.location.href='/login')} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3.5 px-6 rounded-xl transition-all">

@@ -43,10 +43,10 @@ export default function CliPadSupport() {
 
   if (submitted) {
     return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col items-center justify-center p-6">
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 flex flex-col items-center justify-center p-6">
         <CheckCircle className="w-16 h-16 text-emerald-500 mb-6" />
         <h1 className="text-2xl font-black mb-2">Message Sent!</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-center max-w-sm mb-8">
+        <p className="text-slate-500 dark:text-muted-foreground text-center max-w-sm mb-8">
           Thank you for reaching out. Our support team will review your request and get back to you shortly.
         </p>
         <button 
@@ -60,16 +60,16 @@ export default function CliPadSupport() {
   }
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-16">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 pb-16">
       {/* Navbar */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-16 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-16 bg-white/70 dark:bg-background/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-border/50">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center text-primary">
+          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-secondary border border-slate-200 dark:border-border shadow-sm flex items-center justify-center text-primary">
             <CliPadLogo size={20} />
           </div>
           <span className="text-lg font-bold tracking-tight">Support</span>
         </div>
-        <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5">
+        <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-foreground transition-all hover:-translate-y-0.5">
           <ArrowLeft className="w-4 h-4 text-slate-500" /> Dashboard
         </button>
       </nav>
@@ -78,32 +78,32 @@ export default function CliPadSupport() {
       <div className="max-w-2xl mx-auto px-6 mt-12">
         <div className="text-center mb-10">
           <h1 className="text-3xl font-black mb-3">How can we help?</h1>
-          <p className="text-slate-500 dark:text-slate-400">Send us a message and our team will assist you as soon as possible.</p>
+          <p className="text-slate-500 dark:text-muted-foreground">Send us a message and our team will assist you as soon as possible.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-card rounded-3xl p-8 border border-slate-200 dark:border-border shadow-sm">
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Subject</label>
+              <label className="block text-sm font-bold text-slate-700 dark:text-foreground mb-2">Subject</label>
               <input 
                 type="text" 
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder="e.g. Issue with video recording"
                 required
-                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:outline-none focus:border-primary/50 text-slate-900 dark:text-white"
+                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-background border border-slate-200 dark:border-border focus:outline-none focus:border-primary/50 text-slate-900 dark:text-white"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Message</label>
+              <label className="block text-sm font-bold text-slate-700 dark:text-foreground mb-2">Message</label>
               <textarea 
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Describe your issue or question in detail..."
                 required
                 rows={6}
-                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:outline-none focus:border-primary/50 text-slate-900 dark:text-white resize-none"
+                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-background border border-slate-200 dark:border-border focus:outline-none focus:border-primary/50 text-slate-900 dark:text-white resize-none"
               />
             </div>
 

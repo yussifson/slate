@@ -10,7 +10,7 @@ import PageHeader from "@/components/shared/PageHeader";
 import { TASK_STATUS_COLORS, PRIORITY_COLORS, formatCurrency } from "@/lib/constants";
 import { format, isAfter, isBefore, addDays, startOfMonth, endOfMonth } from "date-fns";
 
-function StatCard({ icon: IconComp, label, value, sub, color = "bg-slate-50 dark:bg-slate-800/50 text-primary" }) {
+function StatCard({ icon: IconComp, label, value, sub, color = "bg-slate-50 dark:bg-secondary/50 text-primary" }) {
   return (
     <div className="bg-card rounded-2xl border-0 p-5 flex items-center gap-5 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300">
       <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${color}`}>
@@ -142,7 +142,7 @@ export default function LawDashboard() {
             {hoursProgress.toFixed(0)}%
           </div>
         </div>
-        <Progress value={hoursProgress} className="h-4 rounded-full bg-slate-100 dark:bg-slate-800 [&>div]:bg-emerald-500" />
+        <Progress value={hoursProgress} className="h-4 rounded-full bg-slate-100 dark:bg-secondary [&>div]:bg-emerald-500" />
         <div className="flex justify-between mt-3 text-sm font-medium text-muted-foreground">
           <span>{totalHours.toFixed(1)}{t("h_logged", "h logged")}</span>
           <span>{(TARGET_HOURS - totalHours).toFixed(1)}{t("h_remaining", "h remaining")}</span>

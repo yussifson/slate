@@ -58,7 +58,7 @@ export default function SHSFinancialAnalytics() {
 
  {loading ? (
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading analytics dashboard...</CardContent>
+ <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading analytics dashboard...</CardContent>
  </Card>
  ) : (
  <>
@@ -66,17 +66,17 @@ export default function SHSFinancialAnalytics() {
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6">
  <div className="flex items-center gap-4 mb-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center text-primary dark:text-primary/70">
  <Activity className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider tracking-[0.04em]">Collection Rate</p>
+ <p className="text-sm font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wider tracking-[0.04em]">Collection Rate</p>
  </div>
  </div>
  <h3 className={`text-4xl font-black ${collectionRate >= 80 ? 'text-primary' : collectionRate >= 50 ? 'text-amber-500' : 'text-rose-500'}`}>
  {collectionRate}%
  </h3>
- <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full mt-4 overflow-hidden">
+ <div className="w-full bg-slate-100 dark:bg-secondary h-2 rounded-full mt-4 overflow-hidden">
  <div 
  className={`h-full ${collectionRate >= 80 ? 'bg-primary' : collectionRate >= 50 ? 'bg-amber-500' : 'bg-rose-500'}`} 
  style={{ width: `${collectionRate}%`}}
@@ -102,11 +102,11 @@ export default function SHSFinancialAnalytics() {
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6">
  <div className="flex items-center gap-4 mb-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">
  <DollarSign className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider tracking-[0.04em]">Total Billed</p>
+ <p className="text-sm font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wider tracking-[0.04em]">Total Billed</p>
  </div>
  </div>
  <h3 className="text-4xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">${totalBilled.toFixed(2)}</h3>
@@ -129,17 +129,17 @@ export default function SHSFinancialAnalytics() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 p-6">
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <BarChart className="w-5 h-5 text-primary dark:text-primary/70" /> Cash Flow Visualization
  </CardTitle>
  </CardHeader>
  <CardContent className="p-16 flex items-center justify-center min-h-[300px]">
  <div className="text-center space-y-4">
- <div className="w-20 h-20 rounded-3xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
+ <div className="w-20 h-20 rounded-3xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary mx-auto flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <BarChart className="w-10 h-10 text-slate-300" />
  </div>
- <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-medium">Interactive charts are enabled when connecting to a Charting provider.</p>
+ <p className="text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground font-medium">Interactive charts are enabled when connecting to a Charting provider.</p>
  <div className="flex gap-4 justify-center items-end h-32 mt-8 opacity-40">
  <div className="w-12 bg-primary/20 dark:bg-slate-700 rounded-t-lg h-1/4"></div>
  <div className="w-12 bg-primary dark:bg-primary rounded-t-lg h-3/4 -emerald-500/50"></div>

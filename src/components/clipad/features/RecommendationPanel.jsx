@@ -104,11 +104,11 @@ Do NOT invent facts. Only use data from the knowledge base provided.`,
   if (recommendations.length === 0 && !loading) return null;
 
   return (
-    <div className={`fixed bottom-6 right-6 z-50 w-80 bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-500/30 rounded-2xl shadow-2xl transition-all duration-300 ${minimized ? 'translate-y-[calc(100%-60px)]' : 'translate-y-0'}`}>
+    <div className={`fixed bottom-6 right-6 z-50 w-80 bg-white dark:bg-card border border-indigo-200 dark:border-indigo-500/30 rounded-2xl shadow-2xl transition-all duration-300 ${minimized ? 'translate-y-[calc(100%-60px)]' : 'translate-y-0'}`}>
       
       {/* Header */}
       <div 
-        className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between cursor-pointer bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 rounded-t-2xl"
+        className="px-4 py-3 border-b border-slate-100 dark:border-border flex items-center justify-between cursor-pointer bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 rounded-t-2xl"
         onClick={() => setMinimized(!minimized)}
       >
         <div className="flex items-center gap-2">
@@ -136,7 +136,7 @@ Do NOT invent facts. Only use data from the knowledge base provided.`,
             </div>
           ) : (
             recommendations.map(rec => (
-              <div key={rec.id} className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500/50 transition-colors group">
+              <div key={rec.id} className="bg-slate-50 dark:bg-secondary/50 rounded-xl p-3 border border-slate-100 dark:border-border hover:border-indigo-300 dark:hover:border-indigo-500/50 transition-colors group">
                 <div className="flex items-start gap-3 mb-2">
                   <div className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
                     <rec.icon className="w-4 h-4" />
@@ -147,7 +147,7 @@ Do NOT invent facts. Only use data from the knowledge base provided.`,
                   </div>
                 </div>
                 
-                <div className="mt-3 bg-white dark:bg-slate-900 rounded-lg p-2.5 border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300 italic">
+                <div className="mt-3 bg-white dark:bg-card rounded-lg p-2.5 border border-slate-200 dark:border-border text-xs text-slate-600 dark:text-foreground italic">
                   {rec.snippet}
                 </div>
                 

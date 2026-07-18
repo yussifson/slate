@@ -741,7 +741,7 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
  )}>
  {/* Compose Header */}
  <div
- className="h-12 flex items-center justify-between px-4 bg-muted/60 dark:bg-slate-800 border-b border-primary/40 cursor-pointer shrink-0"
+ className="h-12 flex items-center justify-between px-4 bg-muted/60 dark:bg-secondary border-b border-primary/40 cursor-pointer shrink-0"
  onClick={onToggleMinimize}
  >
  <span className="text-sm font-semibold text-foreground">New Message</span>

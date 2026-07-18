@@ -96,7 +96,7 @@ export default function Intranet() {
   const getPriorityColor = (priority) => {
     switch (priority?.toLowerCase()) {
       case 'high': return 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 border-rose-200 dark:border-rose-800';
-      case 'low': return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700';
+      case 'low': return 'bg-slate-100 text-slate-700 dark:bg-secondary dark:text-foreground border-slate-200 dark:border-border';
       default: return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800';
     }
   };
@@ -169,7 +169,7 @@ export default function Intranet() {
           {isLoading ? (
             <div className="space-y-4">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-32 bg-slate-100 dark:bg-slate-800/50 rounded-2xl animate-pulse border border-border/50"></div>
+                <div key={i} className="h-32 bg-slate-100 dark:bg-secondary/50 rounded-2xl animate-pulse border border-border/50"></div>
               ))}
             </div>
           ) : announcements.length === 0 ? (
@@ -187,7 +187,7 @@ export default function Intranet() {
                 <div key={ann.id || i} className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden hover:border-green-500/30">
                   <div className="flex items-start justify-between mb-4 relative z-10">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 border border-border/50 flex items-center justify-center font-bold text-foreground shadow-sm">
+                      <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-secondary border border-border/50 flex items-center justify-center font-bold text-foreground shadow-sm">
                         {avatarInitials(ann.author_name || 'System')}
                       </div>
                       <div>
@@ -223,10 +223,10 @@ export default function Intranet() {
               <div className="space-y-4">
                 {[1, 2, 3].map(i => (
                   <div key={i} className="flex gap-3 items-center">
-                    <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800/50 rounded-full animate-pulse"></div>
+                    <div className="w-10 h-10 bg-slate-100 dark:bg-secondary/50 rounded-full animate-pulse"></div>
                     <div className="space-y-2 flex-1">
-                      <div className="h-3 bg-slate-100 dark:bg-slate-800/50 rounded animate-pulse w-1/2"></div>
-                      <div className="h-2 bg-slate-100 dark:bg-slate-800/50 rounded animate-pulse w-1/3"></div>
+                      <div className="h-3 bg-slate-100 dark:bg-secondary/50 rounded animate-pulse w-1/2"></div>
+                      <div className="h-2 bg-slate-100 dark:bg-secondary/50 rounded animate-pulse w-1/3"></div>
                     </div>
                   </div>
                 ))}
@@ -240,7 +240,7 @@ export default function Intranet() {
               <div className="space-y-4">
                 {employees.map(emp => (
                   <div key={emp.id} className="flex items-center gap-4 group">
-                    <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-border/50 flex items-center justify-center font-bold text-foreground shadow-sm group-hover:scale-105 transition-transform">
+                    <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-secondary border border-border/50 flex items-center justify-center font-bold text-foreground shadow-sm group-hover:scale-105 transition-transform">
                       {avatarInitials(emp.name)}
                     </div>
                     <div>

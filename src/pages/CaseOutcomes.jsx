@@ -82,10 +82,10 @@ Provide a predictive JSON response (raw JSON only, no markdown):
       />
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: "Total Closed", value: outcomes.filter(o => o.outcome !== "ongoing").length, color: "bg-slate-50 dark:bg-slate-800/50 text-primary" },
-          { label: "Won", value: outcomes.filter(o => o.outcome === "won").length, color: "bg-slate-50 dark:bg-slate-800/50 text-primary" },
+          { label: "Total Closed", value: outcomes.filter(o => o.outcome !== "ongoing").length, color: "bg-slate-50 dark:bg-secondary/50 text-primary" },
+          { label: "Won", value: outcomes.filter(o => o.outcome === "won").length, color: "bg-slate-50 dark:bg-secondary/50 text-primary" },
           { label: "Win Rate", value: `${winRate}%`, color: "bg-slate-100 text-primary" },
-          { label: "Settlement Rate", value: `${settleRate}%`, color: "bg-slate-50 dark:bg-slate-800/50 text-primary" },
+          { label: "Settlement Rate", value: `${settleRate}%`, color: "bg-slate-50 dark:bg-secondary/50 text-primary" },
         ].map(s => {
           return (
             <div key={s.label} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">

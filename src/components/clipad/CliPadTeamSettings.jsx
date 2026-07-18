@@ -337,7 +337,7 @@ export default function CliPadTeamSettings() {
                           <Shield className="w-3.5 h-3.5" /> Admin
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-500/10 text-slate-500 dark:text-slate-400 text-xs font-semibold">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-500/10 text-slate-500 dark:text-muted-foreground text-xs font-semibold">
                           <User className="w-3.5 h-3.5" /> User
                         </span>
                       )

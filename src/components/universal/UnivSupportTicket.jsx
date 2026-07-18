@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 const PRIORITY_COLORS = {
- 'Low': 'bg-slate-100 text-slate-700 border-primary/40 dark:bg-slate-800 dark:text-slate-400 dark:border-primary/40',
+ 'Low': 'bg-slate-100 text-slate-700 border-primary/40 dark:bg-secondary dark:text-muted-foreground dark:border-primary/40',
  'Medium': 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:border-blue-800',
  'High': 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:border-amber-800',
  'Urgent': 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/40 dark:text-red-400 dark:border-red-800'
@@ -23,8 +23,8 @@ const STATUS_COLORS = {
  'Open': 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-400 dark:border-emerald-800',
  'In Progress': 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:border-blue-800',
  'Waiting on Customer': 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:border-amber-800',
- 'Resolved': 'bg-slate-100 text-slate-700 border-primary/40 dark:bg-slate-800 dark:text-slate-400 dark:border-primary/40',
- 'Closed': 'bg-slate-100 text-slate-700 border-primary/40 dark:bg-slate-800 dark:text-slate-400 dark:border-primary/40'
+ 'Resolved': 'bg-slate-100 text-slate-700 border-primary/40 dark:bg-secondary dark:text-muted-foreground dark:border-primary/40',
+ 'Closed': 'bg-slate-100 text-slate-700 border-primary/40 dark:bg-secondary dark:text-muted-foreground dark:border-primary/40'
 };
 
 export default function UnivSupportTicket({

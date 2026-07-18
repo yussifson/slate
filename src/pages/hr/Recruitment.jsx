@@ -13,7 +13,7 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 
 const STAGE_STYLES = {
-  'Applied':   { bg: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300', dot: 'bg-slate-400' },
+  'Applied':   { bg: 'bg-slate-100 dark:bg-secondary text-slate-700 dark:text-foreground', dot: 'bg-slate-400' },
   'Screening': { bg: 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400', dot: 'bg-blue-500' },
   'Interview': { bg: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400', dot: 'bg-amber-500' },
   'Offer':     { bg: 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400', dot: 'bg-purple-500' },
@@ -253,7 +253,7 @@ export default function Recruitment() {
                     </div>
 
                     {/* Department & Date */}
-                    <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-3 flex justify-between items-center text-xs">
+                    <div className="bg-slate-50 dark:bg-secondary rounded-xl p-3 flex justify-between items-center text-xs">
                       <span className="font-medium text-foreground">{cand.department || 'Unassigned'}</span>
                       <span className="text-muted-foreground">{new Date(cand.created_at || Date.now()).toLocaleDateString()}</span>
                     </div>
@@ -352,7 +352,7 @@ export default function Recruitment() {
                 const initials = cand.name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
                 return (
                   <div className="space-y-4">
-                    <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl">
+                    <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-secondary rounded-2xl">
                       <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md">{initials}</div>
                       <div>
                         <h3 className="text-lg font-bold text-foreground">{cand.name}</h3>

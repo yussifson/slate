@@ -142,15 +142,15 @@ export default function NotificationsDropdown() {
   return (
     <Popover onOpenChange={(open) => { if (open) markAllAsRead(); }}>
       <PopoverTrigger asChild>
-        <button className="relative w-9 h-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+        <button className="relative w-9 h-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
           <Bell className="w-5 h-5" />
           {unreadCount > 0 && (
             <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-500 rounded-full animate-pulse border-2 border-white dark:border-slate-900 shadow-sm" />
           )}
         </button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-80 p-0 shadow-2xl rounded-2xl border-slate-200 dark:border-slate-800 z-[100]">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-800/50">
+      <PopoverContent align="end" className="w-80 p-0 shadow-2xl rounded-2xl border-slate-200 dark:border-border z-[100]">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-border/50">
           <h3 className="font-semibold text-sm">Notifications</h3>
           {unreadCount > 0 && (
             <span className="text-xs text-primary font-medium">{unreadCount} unread</span>
@@ -160,7 +160,7 @@ export default function NotificationsDropdown() {
           {notifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-40 text-center px-4">
               <Bell className="w-8 h-8 text-slate-300 dark:text-slate-700 mb-2" />
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">All caught up!</p>
+              <p className="text-sm font-medium text-slate-500 dark:text-muted-foreground">All caught up!</p>
               <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">No new notifications.</p>
             </div>
           ) : (
@@ -174,7 +174,7 @@ export default function NotificationsDropdown() {
                   <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${!notification.is_read ? 'bg-primary' : 'bg-transparent'}`} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-tight mb-1">{notification.title}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">{notification.message}</p>
+                    <p className="text-xs text-slate-500 dark:text-muted-foreground line-clamp-2">{notification.message}</p>
                     
                     {notification.type === 'group_join_request' && (
                       <div className="flex items-center gap-2 mt-3">

@@ -103,7 +103,7 @@ export default function FrontDeskNew() {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-[hsl(var(--hotel-primary))] to-[hsl(var(--hotel-secondary))] bg-clip-text text-transparent tracking-tight mb-2">
               {t("front_desk", "Front Desk")}
             </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-sm text-slate-600 dark:text-muted-foreground">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
@@ -157,7 +157,7 @@ export default function FrontDeskNew() {
       {/* Room Grid & Chart */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Occupancy Forecast Chart */}
-        <div className="lg:col-span-2 bg-white dark:bg-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+        <div className="lg:col-span-2 bg-white dark:bg-card rounded-2xl p-6 border border-slate-200 dark:border-border shadow-sm hover:shadow-md transition-shadow">
           <DashboardSectionHeader title="Occupancy Forecast" subtitle="7-day prediction" />
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={forecastData}>
@@ -183,19 +183,19 @@ export default function FrontDeskNew() {
         </div>
 
         {/* Quick Stats */}
-        <div className="bg-white dark:bg-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+        <div className="bg-white dark:bg-card rounded-2xl p-6 border border-slate-200 dark:border-border shadow-sm space-y-4">
           <DashboardSectionHeader title="Quick Stats" />
           <div className="space-y-3">
-            <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
-              <span className="text-sm text-slate-600 dark:text-slate-400">Available Rooms</span>
+            <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-secondary rounded-lg">
+              <span className="text-sm text-slate-600 dark:text-muted-foreground">Available Rooms</span>
               <span className="font-bold text-lg text-[hsl(var(--hotel-primary))]">{dynamicRooms.length - checkedIn.length}</span>
             </div>
-            <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
-              <span className="text-sm text-slate-600 dark:text-slate-400">Pending Check-ins</span>
+            <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-secondary rounded-lg">
+              <span className="text-sm text-slate-600 dark:text-muted-foreground">Pending Check-ins</span>
               <span className="font-bold text-lg text-orange-600">{todayArrivals.length}</span>
             </div>
-            <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
-              <span className="text-sm text-slate-600 dark:text-slate-400">Avg. Room Rate</span>
+            <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-secondary rounded-lg">
+              <span className="text-sm text-slate-600 dark:text-muted-foreground">Avg. Room Rate</span>
               <span className="font-bold text-lg">$185</span>
             </div>
           </div>
@@ -237,14 +237,14 @@ export default function FrontDeskNew() {
           animate={{ opacity: 1 }}
         >
           <motion.div
-            className="bg-white dark:bg-card rounded-2xl w-full max-w-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-2xl"
+            className="bg-white dark:bg-card rounded-2xl w-full max-w-2xl p-8 border border-slate-200 dark:border-border shadow-2xl"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
           >
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h2 className="text-2xl font-bold text-[hsl(var(--hotel-primary))]">Room {selectedRoom}</h2>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                <p className="text-sm text-slate-600 dark:text-muted-foreground mt-1">
                   Status: <span className="font-semibold capitalize">{selectedRoomInfo.status}</span>
                 </p>
               </div>
@@ -255,13 +255,13 @@ export default function FrontDeskNew() {
 
             {selectedRoomInfo.reservation ? (
               <div className="space-y-4">
-                <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg">
+                <div className="bg-slate-50 dark:bg-secondary p-4 rounded-lg">
                   <h3 className="font-semibold mb-3">Guest Information</h3>
                   <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div><span className="text-slate-600 dark:text-slate-400">Name:</span> {selectedRoomInfo.reservation.guestName}</div>
-                    <div><span className="text-slate-600 dark:text-slate-400">Email:</span> {selectedRoomInfo.reservation.guestEmail}</div>
-                    <div><span className="text-slate-600 dark:text-slate-400">Check-in:</span> {selectedRoomInfo.reservation.checkIn}</div>
-                    <div><span className="text-slate-600 dark:text-slate-400">Check-out:</span> {selectedRoomInfo.reservation.checkOut}</div>
+                    <div><span className="text-slate-600 dark:text-muted-foreground">Name:</span> {selectedRoomInfo.reservation.guestName}</div>
+                    <div><span className="text-slate-600 dark:text-muted-foreground">Email:</span> {selectedRoomInfo.reservation.guestEmail}</div>
+                    <div><span className="text-slate-600 dark:text-muted-foreground">Check-in:</span> {selectedRoomInfo.reservation.checkIn}</div>
+                    <div><span className="text-slate-600 dark:text-muted-foreground">Check-out:</span> {selectedRoomInfo.reservation.checkOut}</div>
                   </div>
                 </div>
                 <div className="flex gap-3">
@@ -276,7 +276,7 @@ export default function FrontDeskNew() {
                 </div>
               </div>
             ) : (
-              <p className="text-slate-600 dark:text-slate-400">This room is currently available for check-in.</p>
+              <p className="text-slate-600 dark:text-muted-foreground">This room is currently available for check-in.</p>
             )}
           </motion.div>
         </motion.div>

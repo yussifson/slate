@@ -191,7 +191,7 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
                   <div key={stage} className="bg-card rounded-xl p-4 border border-border min-h-[500px]">
                     <h3 className="font-semibold text-foreground flex items-center justify-between mb-4">
                       <span className="flex items-center gap-2">{stage}</span>
-                      <span className="bg-slate-200 dark:bg-slate-800 text-[#71717a] dark:text-gray-400 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{stageRooms.length}</span>
+                      <span className="bg-slate-200 dark:bg-secondary text-[#71717a] dark:text-gray-400 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{stageRooms.length}</span>
                     </h3>
                     <div className="space-y-3">
                       {stageRooms.map(room => (

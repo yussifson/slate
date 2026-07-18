@@ -193,9 +193,15 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
  const cleanLogo = (url) => {
    if (!url) return url;
-   const httpPos = url.indexOf('http', 4);
-   if (httpPos > 0) return url.substring(0, httpPos);
-   return url;
+   const lastHttp = url.lastIndexOf('http');
+   let finalUrl = url;
+   if (lastHttp > 0) {
+     finalUrl = url.substring(lastHttp);
+   }
+   if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/')) {
+     finalUrl = 'https://' + finalUrl;
+   }
+   return finalUrl;
  };
 
  const activeCompanyLogoDark = cleanLogo(companyData?.logo_url || impersonatedCompany?.logo_url || user?.company_logo_url);

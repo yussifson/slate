@@ -35,7 +35,7 @@ import ClipadTopNav from '@/components/clipad/ClipadTopNav';
 
 function StatCard({ icon: Icon, value, label, trend, accentColor, bgColor, iconColor }) {
   return (
-    <div className={`relative overflow-hidden rounded-2xl border transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg shadow-sm flex flex-col justify-between p-5 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-primary/40 dark:hover:border-primary/40`}>
+    <div className={`relative overflow-hidden rounded-2xl border transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg shadow-sm flex flex-col justify-between p-5 bg-white dark:bg-card border-slate-200 dark:border-border hover:border-primary/40 dark:hover:border-primary/40`}>
       {/* Glowing top accent bar */}
       <div className={`absolute top-0 left-0 right-0 h-[3px] ${accentColor} rounded-t-2xl`} />
       {/* Large faint background icon */}
@@ -63,7 +63,7 @@ function SpaceCard({ space, onClick }) {
   return (
     <div
       onClick={onClick}
-      className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md"
+      className="group p-5 rounded-2xl bg-white dark:bg-card border border-slate-200 dark:border-border hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md"
     >
       <div className="flex items-start gap-3 mb-4">
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-sm bg-gradient-to-br ${color}`}>
@@ -71,7 +71,7 @@ function SpaceCard({ space, onClick }) {
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-slate-900 dark:text-white text-base truncate">{space.name}</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">{space.description || 'Team space'}</p>
+          <p className="text-xs text-slate-500 dark:text-muted-foreground mt-0.5 line-clamp-1">{space.description || 'Team space'}</p>
         </div>
         <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors shrink-0" />
       </div>
@@ -88,12 +88,12 @@ function SpaceCard({ space, onClick }) {
       <div className="flex items-center justify-between">
         <div className="flex -space-x-2">
           {[1,2,3].map(i => (
-            <div key={i} className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-white dark:border-slate-900 flex items-center justify-center text-slate-500 dark:text-slate-400">
+            <div key={i} className="w-6 h-6 rounded-full bg-slate-100 dark:bg-secondary border-2 border-white dark:border-slate-900 flex items-center justify-center text-slate-500 dark:text-muted-foreground">
               <Users className="w-3 h-3" />
             </div>
           ))}
         </div>
-        <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">{new Date(space.created_at || Date.now()).toLocaleDateString()}</span>
+        <span className="text-[11px] font-medium text-slate-500 dark:text-muted-foreground">{new Date(space.created_at || Date.now()).toLocaleDateString()}</span>
       </div>
     </div>
   );
@@ -130,8 +130,8 @@ function formatDuration(seconds, videoId) {
 
 function VideoCard({ video, onClick }) {
   return (
-    <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md flex flex-col">
-      <div className="aspect-video bg-slate-100 dark:bg-slate-800 relative flex items-center justify-center overflow-hidden">
+    <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-white dark:bg-card border border-slate-200 dark:border-border hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md flex flex-col">
+      <div className="aspect-video bg-slate-100 dark:bg-secondary relative flex items-center justify-center overflow-hidden">
         {video.thumbnail_url ? (
           <img src={video.thumbnail_url} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={video.title} />
         ) : (
@@ -163,7 +163,7 @@ function VideoCard({ video, onClick }) {
       </div>
       <div className="p-4 flex-1 flex flex-col justify-between">
         <p className="text-sm font-semibold text-slate-900 dark:text-white line-clamp-1 mb-1">{video.title || 'Untitled Recording'}</p>
-        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{new Date(video.created_at).toLocaleDateString()}</p>
+        <p className="text-xs text-slate-500 dark:text-muted-foreground font-medium">{new Date(video.created_at).toLocaleDateString()}</p>
       </div>
     </div>
   );
@@ -182,7 +182,7 @@ function ActionItemRow({ item }) {
       </button>
       <div className="flex-1 min-w-0">
         <p className={`text-sm font-medium leading-snug transition-colors ${done ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-900 dark:text-white'}`}>{item.title}</p>
-        {item.due_date && <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5"><Clock className="w-3 h-3" /> Due {new Date(item.due_date).toLocaleDateString()}</p>}
+        {item.due_date && <p className="text-xs font-medium text-slate-500 dark:text-muted-foreground mt-1 flex items-center gap-1.5"><Clock className="w-3 h-3" /> Due {new Date(item.due_date).toLocaleDateString()}</p>}
       </div>
     </div>
   );
@@ -342,7 +342,7 @@ export default function CliPadDashboard() {
         {/* Greeting */}
         <div className="mb-8 md:mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <h1 className="text-3xl md:text-5xl font-black mb-2 tracking-tight">{greeting()}, {firstName} <span className="inline-block animate-bounce origin-bottom-right delay-500">👋</span></h1>
-          <p className="text-lg text-slate-500 dark:text-slate-400 font-medium">Here's what's happening across your spaces.</p>
+          <p className="text-lg text-slate-500 dark:text-muted-foreground font-medium">Here's what's happening across your spaces.</p>
         </div>
 
         {/* Stats Row */}
@@ -366,7 +366,7 @@ export default function CliPadDashboard() {
 
           <button
             onClick={() => navigate('/record')}
-            className="flex-none sm:w-auto w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm bg-white dark:bg-[#202c33] border border-black/5 dark:border-white/5 hover:border-primary/50 text-slate-700 dark:text-slate-200 font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
+            className="flex-none sm:w-auto w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm bg-white dark:bg-[#202c33] border border-black/5 dark:border-white/5 hover:border-primary/50 text-slate-700 dark:text-foreground font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
           >
             <Camera className="w-4 h-4 text-rose-500 group-hover:scale-110 transition-transform" />
             Record Video
@@ -374,7 +374,7 @@ export default function CliPadDashboard() {
 
           <button
             onClick={() => navigate('/spaces')}
-            className="flex-none sm:w-auto w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm bg-white dark:bg-[#202c33] border border-black/5 dark:border-white/5 hover:border-primary/50 text-slate-700 dark:text-slate-200 font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
+            className="flex-none sm:w-auto w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm bg-white dark:bg-[#202c33] border border-black/5 dark:border-white/5 hover:border-primary/50 text-slate-700 dark:text-foreground font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
           >
             <Layers className="w-4 h-4 text-indigo-500 group-hover:scale-110 transition-transform" />
             Team Spaces
@@ -394,7 +394,7 @@ export default function CliPadDashboard() {
                   <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><Layers className="w-5 h-5 text-primary" /> Team Spaces</h2>
                   <button 
                     onClick={() => window.dispatchEvent(new CustomEvent('open-global-search'))}
-                    className="p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 transition-colors"
+                    className="p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-secondary dark:hover:bg-slate-700 text-slate-500 transition-colors"
                     title="Smart Global Search (Ctrl+K)"
                   >
                     <Search className="w-4 h-4" />
@@ -405,7 +405,7 @@ export default function CliPadDashboard() {
               {spaces.length === 0 ? (
                 <div className="p-10 rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-white/50 dark:bg-white/5 backdrop-blur-sm text-center">
                   <Layers className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400">No spaces yet.</p>
+                  <p className="text-sm font-medium text-slate-500 dark:text-muted-foreground">No spaces yet.</p>
                   <button onClick={() => navigate('/spaces')} className="mt-4 text-sm font-semibold text-primary hover:text-primary/80 transition-colors">Create your first space →</button>
                 </div>
               ) : (
@@ -420,14 +420,14 @@ export default function CliPadDashboard() {
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><Camera className="w-5 h-5 text-primary" /> Recent Recordings</h2>
                 <div className="flex items-center gap-4">
-                  <button onClick={() => navigate('/videos')} className="text-sm font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">View all</button>
+                  <button onClick={() => navigate('/videos')} className="text-sm font-semibold text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white transition-colors">View all</button>
                   <button onClick={() => navigate('/record')} className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors">Record new <ArrowRight className="w-4 h-4" /></button>
                 </div>
               </div>
               {videos.length === 0 ? (
                 <div className="p-10 rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-white/50 dark:bg-white/5 backdrop-blur-sm text-center">
                   <Camera className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400">No recordings yet.</p>
+                  <p className="text-sm font-medium text-slate-500 dark:text-muted-foreground">No recordings yet.</p>
                   <button onClick={() => navigate('/record')} className="mt-4 text-sm font-semibold text-primary hover:text-primary/80 transition-colors">Record your first async video →</button>
                 </div>
               ) : (
@@ -445,13 +445,13 @@ export default function CliPadDashboard() {
             <div className="bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 rounded-[20px] overflow-hidden shadow-sm">
               <div className="flex items-center justify-between px-6 py-5 border-b border-black/5 dark:border-white/5">
                 <h2 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2"><CheckCircle className="w-5 h-5 text-emerald-500" /> My Action Items</h2>
-                <span className="text-xs font-semibold px-2.5 py-1 bg-slate-100 dark:bg-black/20 text-slate-600 dark:text-slate-300 rounded-full">{actionItems.length} open</span>
+                <span className="text-xs font-semibold px-2.5 py-1 bg-slate-100 dark:bg-black/20 text-slate-600 dark:text-foreground rounded-full">{actionItems.length} open</span>
               </div>
               <div className="p-4 max-h-[320px] overflow-y-auto scrollbar-primary">
                 {actionItems.length === 0 ? (
                   <div className="py-10 text-center">
                     <Star className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400">No open action items. Nice work!</p>
+                    <p className="text-sm font-medium text-slate-500 dark:text-muted-foreground">No open action items. Nice work!</p>
                   </div>
                 ) : (
                   actionItems.map(item => <ActionItemRow key={item.id} item={item} />)
@@ -467,7 +467,7 @@ export default function CliPadDashboard() {
                 </div>
                 <span className="text-sm font-bold text-primary uppercase tracking-widest">AI Insight</span>
               </div>
-              <p className="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed">
+              <p className="text-sm font-medium text-slate-700 dark:text-foreground leading-relaxed">
                 {stats.meetings > 0
                   ? `Your team had ${stats.meetings} meetings recently. ${stats.actionItems} action items were generated and your completion rate is tracking at ${stats.completionRate}%.`
                   : 'Start a meeting to unlock AI-powered insights about your team\'s collaboration patterns and action item completion.'}
@@ -491,7 +491,7 @@ export default function CliPadDashboard() {
                     <p className="text-xs font-semibold text-rose-500 uppercase tracking-widest">Admin View</p>
                   </div>
                 </div>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-3">View organizational intelligence metrics, silo risks, and AI health diagnosis.</p>
+                <p className="text-sm text-slate-500 dark:text-muted-foreground mt-3">View organizational intelligence metrics, silo risks, and AI health diagnosis.</p>
               </div>
             )}
 
@@ -506,7 +506,7 @@ export default function CliPadDashboard() {
                 {meetings.length === 0 ? (
                   <div className="py-10 text-center">
                     <Calendar className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400">No meetings yet.</p>
+                    <p className="text-sm font-medium text-slate-500 dark:text-muted-foreground">No meetings yet.</p>
                   </div>
                 ) : (
                   meetings.slice(0, 4).map(m => (
@@ -527,8 +527,8 @@ export default function CliPadDashboard() {
                         </div>
                         {m.ai_summary && <Sparkles className="w-4 h-4 text-primary shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />}
                       </div>
-                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{new Date(m.created_at).toLocaleString()}</p>
-                      {m.ai_summary && <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-2 line-clamp-1 border-l-2 border-primary/30 pl-2">{m.ai_summary}</p>}
+                      <p className="text-xs font-medium text-slate-500 dark:text-muted-foreground">{new Date(m.created_at).toLocaleString()}</p>
+                      {m.ai_summary && <p className="text-xs font-medium text-slate-500 dark:text-muted-foreground mt-2 line-clamp-1 border-l-2 border-primary/30 pl-2">{m.ai_summary}</p>}
                     </div>
                   ))
                 )}
@@ -558,7 +558,7 @@ export default function CliPadDashboard() {
               ) : (
                 <div className="bg-white/50 dark:bg-[#202c33]/50 backdrop-blur-xl rounded-[20px] p-6 border border-black/5 dark:border-white/5 flex flex-col items-center justify-center text-center shadow-sm">
                   <Target className="w-8 h-8 text-indigo-500 mb-3 opacity-50" />
-                  <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Advanced AI Required</p>
+                  <p className="text-sm font-medium text-slate-700 dark:text-foreground">Advanced AI Required</p>
                   <p className="text-xs text-slate-500 mt-1">Upgrade to track organizational blockers.</p>
                 </div>
               )}

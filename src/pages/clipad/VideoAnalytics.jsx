@@ -16,20 +16,20 @@ import ClipadLoader from '@/components/ui/ClipadLoader';
 
 function StatCard({ icon: Icon, color, value, label, trend }) {
   return (
-    <div className="group relative p-6 rounded-3xl bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-1 overflow-hidden">
+    <div className="group relative p-6 rounded-3xl bg-white/60 dark:bg-card/60 backdrop-blur-xl border border-slate-200 dark:border-border hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-1 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       <div className="relative z-10 flex items-start justify-between mb-6">
         <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner ${color || 'bg-primary/10 text-primary'}`}>
           <Icon className="w-6 h-6" />
         </div>
         {trend !== undefined && trend !== null && (
-          <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${trend > 0 ? 'text-emerald-600 bg-emerald-50 border-emerald-100 dark:text-emerald-400 dark:bg-emerald-500/10 dark:border-emerald-500/20' : trend < 0 ? 'text-red-600 bg-red-50 border-red-100 dark:text-red-400 dark:bg-red-500/10 dark:border-red-500/20' : 'text-slate-500 bg-slate-100 border-slate-200 dark:bg-slate-800 dark:border-slate-700'}`}>
+          <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${trend > 0 ? 'text-emerald-600 bg-emerald-50 border-emerald-100 dark:text-emerald-400 dark:bg-emerald-500/10 dark:border-emerald-500/20' : trend < 0 ? 'text-red-600 bg-red-50 border-red-100 dark:text-red-400 dark:bg-red-500/10 dark:border-red-500/20' : 'text-slate-500 bg-slate-100 border-slate-200 dark:bg-secondary dark:border-border'}`}>
             {trend > 0 ? '+' : ''}{trend}%
           </span>
         )}
       </div>
       <div className="relative z-10 text-4xl font-black text-slate-900 dark:text-white mb-1 tracking-tight">{value || 0}</div>
-      <div className="relative z-10 text-sm font-medium text-slate-500 dark:text-slate-400">{label}</div>
+      <div className="relative z-10 text-sm font-medium text-slate-500 dark:text-muted-foreground">{label}</div>
     </div>
   );
 }
@@ -204,15 +204,15 @@ export default function VideoAnalytics() {
 
   if (!user) {
     return (
-      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative text-slate-900 dark:text-slate-100">
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background flex flex-col items-center justify-center p-4 relative text-slate-900 dark:text-slate-100">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(120,120,120,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(120,120,120,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
-        <div className="relative z-10 w-full max-w-[420px] text-center space-y-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-10 shadow-sm">
+        <div className="relative z-10 w-full max-w-[420px] text-center space-y-6 bg-white dark:bg-card border border-slate-200 dark:border-border rounded-3xl p-10 shadow-sm">
           <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center mx-auto text-indigo-500">
             <BarChart3 className="w-8 h-8" />
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight mb-2">Video Analytics</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm">Please sign in to view your video engagement analytics and metrics.</p>
+            <p className="text-slate-500 dark:text-muted-foreground text-sm">Please sign in to view your video engagement analytics and metrics.</p>
           </div>
           <button
             onClick={() => {
@@ -240,7 +240,7 @@ export default function VideoAnalytics() {
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
       {/* Sleek top nav */}
       {/* Sleek top nav */}
       <ClipadTopNav />
@@ -264,7 +264,7 @@ export default function VideoAnalytics() {
             {hasFeature(plan, 'hasAdvancedAnalytics') ? (
               <>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 mt-8">
-              <div className="lg:col-span-2 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div className="lg:col-span-2 p-6 rounded-3xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm">
                 <h3 className="text-lg font-bold mb-6">Views Over Time</h3>
                 <div className="h-[250px] w-full flex items-end gap-2">
                   <ResponsiveContainer width="100%" height="100%">
@@ -308,15 +308,15 @@ export default function VideoAnalytics() {
             </div>
 
             {/* Top Videos List */}
-            <div className="p-8 rounded-3xl bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-slate-800/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] mb-8 relative overflow-hidden">
+            <div className="p-8 rounded-3xl bg-white/40 dark:bg-card/40 backdrop-blur-xl border border-white/40 dark:border-border/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] mb-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
               
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 relative z-10 gap-4">
                 <h3 className="text-xl font-bold flex items-center gap-2"><Video className="w-5 h-5 text-primary" /> Video Performance</h3>
-                <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl w-full sm:w-auto shadow-inner">
-                  <button onClick={() => setVideoFilter('top')} className={`flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all ${videoFilter === 'top' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}>Top 5</button>
-                  <button onClick={() => setVideoFilter('latest')} className={`flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all ${videoFilter === 'latest' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}>Latest</button>
-                  <button onClick={() => setVideoFilter('all')} className={`flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all ${videoFilter === 'all' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}>All Videos</button>
+                <div className="flex bg-slate-100 dark:bg-secondary p-1 rounded-xl w-full sm:w-auto shadow-inner">
+                  <button onClick={() => setVideoFilter('top')} className={`flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all ${videoFilter === 'top' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-muted-foreground dark:hover:text-slate-200'}`}>Top 5</button>
+                  <button onClick={() => setVideoFilter('latest')} className={`flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all ${videoFilter === 'latest' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-muted-foreground dark:hover:text-slate-200'}`}>Latest</button>
+                  <button onClick={() => setVideoFilter('all')} className={`flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all ${videoFilter === 'all' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-muted-foreground dark:hover:text-slate-200'}`}>All Videos</button>
                 </div>
               </div>
               
@@ -333,13 +333,13 @@ export default function VideoAnalytics() {
                 return displayVideos.length > 0 ? (
                   <div className="space-y-4 relative z-10">
                     {displayVideos.map((v, i) => (
-                      <div key={v.id} className="flex items-center gap-4 p-5 rounded-2xl bg-white/60 dark:bg-slate-900/60 hover:bg-white dark:hover:bg-slate-800/80 backdrop-blur-md transition-all duration-300 border border-white/50 dark:border-slate-700/50 hover:border-primary/30 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-1 group" onClick={() => setSelectedVideo(v)}>
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 transition-colors ${i === 0 && videoFilter === 'top' ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400' : i === 1 && videoFilter === 'top' ? 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' : i === 2 && videoFilter === 'top' ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'}`}>
+                      <div key={v.id} className="flex items-center gap-4 p-5 rounded-2xl bg-white/60 dark:bg-card/60 hover:bg-white dark:hover:bg-slate-800/80 backdrop-blur-md transition-all duration-300 border border-white/50 dark:border-border/50 hover:border-primary/30 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-1 group" onClick={() => setSelectedVideo(v)}>
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 transition-colors ${i === 0 && videoFilter === 'top' ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400' : i === 1 && videoFilter === 'top' ? 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-foreground' : i === 2 && videoFilter === 'top' ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400' : 'bg-slate-100 text-slate-500 dark:bg-secondary dark:text-muted-foreground'}`}>
                           {videoFilter === 'top' ? `#${i + 1}` : <Video className="w-4 h-4" />}
                         </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-slate-900 dark:text-white truncate text-base group-hover:text-primary transition-colors">{v.title}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{new Date(v.created_at).toLocaleDateString()}</p>
+                        <p className="text-xs text-slate-500 dark:text-muted-foreground mt-1">{new Date(v.created_at).toLocaleDateString()}</p>
                       </div>
                       <div className="flex gap-4 sm:gap-8 shrink-0 text-right">
                         <div className="flex flex-col items-center sm:items-end justify-center">
@@ -364,10 +364,10 @@ export default function VideoAnalytics() {
                 </div>
               ) : (
                 <div className="py-16 text-center relative z-10">
-                  <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-slate-100 dark:bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
                     <Video className="w-8 h-8 text-slate-300 dark:text-slate-600" />
                   </div>
-                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400">No video engagement data available yet.</p>
+                  <p className="text-sm font-medium text-slate-500 dark:text-muted-foreground">No video engagement data available yet.</p>
                 </div>
               );
               })()}
@@ -391,7 +391,7 @@ export default function VideoAnalytics() {
               )}
             </>
             ) : (
-              <div className="mt-8 relative overflow-hidden rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 text-center shadow-sm">
+              <div className="mt-8 relative overflow-hidden rounded-3xl bg-slate-50 dark:bg-card border border-slate-200 dark:border-border p-10 text-center shadow-sm">
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-slate-950/90 pointer-events-none" />
                 <BarChart3 className="w-12 h-12 text-slate-400 mx-auto mb-4 relative z-10" />
                 <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 relative z-10 mb-2">Advanced Analytics Locked</h3>
@@ -412,13 +412,13 @@ export default function VideoAnalytics() {
         {/* Viewer Modal */}
         {selectedVideo && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[80vh]">
-              <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
+            <div className="bg-white dark:bg-card rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 dark:border-border overflow-hidden flex flex-col max-h-[80vh]">
+              <div className="p-6 border-b border-slate-100 dark:border-border flex items-center justify-between shrink-0">
                 <div>
                   <h3 className="font-bold text-lg text-slate-900 dark:text-white line-clamp-1">{selectedVideo.title}</h3>
                   <p className="text-sm font-medium text-slate-500 flex items-center gap-1 mt-1"><Eye className="w-3.5 h-3.5" /> {viewersData.length} Unique Viewers</p>
                 </div>
-                <button onClick={() => setSelectedVideo(null)} className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0">
+                <button onClick={() => setSelectedVideo(null)} className="w-8 h-8 rounded-full bg-slate-100 dark:bg-secondary flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -453,16 +453,16 @@ export default function VideoAnalytics() {
                   </div>
                 ) : (
                   <div className="h-full flex flex-col items-center justify-center py-10 text-center px-6">
-                    <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-3">
+                    <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-secondary flex items-center justify-center mx-auto mb-3">
                       <Users className="w-5 h-5 text-slate-400" />
                     </div>
-                    <p className="text-sm font-bold text-slate-700 dark:text-slate-300">No viewers yet</p>
+                    <p className="text-sm font-bold text-slate-700 dark:text-foreground">No viewers yet</p>
                     <p className="text-xs text-slate-500 mt-1">When users watch this video, they will appear here.</p>
                   </div>
                 )}
               </div>
 
-              <div className="p-4 border-t border-slate-100 dark:border-slate-800 shrink-0 bg-slate-50 dark:bg-slate-900/50">
+              <div className="p-4 border-t border-slate-100 dark:border-border shrink-0 bg-slate-50 dark:bg-card/50">
                 <button 
                   onClick={() => navigate(`/watch/${selectedVideo.id}`)}
                   className="w-full py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"

@@ -76,8 +76,8 @@ export default function Loyalty() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div className="bg-card rounded-xl p-6 border border-slate-200 dark:border-slate-800 flex items-center gap-4 hover:shadow-md transition-shadow">
-          <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500">
+        <div className="bg-card rounded-xl p-6 border border-slate-200 dark:border-border flex items-center gap-4 hover:shadow-md transition-shadow">
+          <div className="p-3 bg-slate-100 dark:bg-secondary rounded-full text-slate-500">
             <Star className="w-6 h-6" />
           </div>
           <div>

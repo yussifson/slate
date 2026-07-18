@@ -12,7 +12,7 @@ import { ArrowUpRight, ArrowDownRight, CheckCircle2, AlertCircle } from "lucide-
 
 function StatCard({ icon: IconComp, label, value, sub, colorClass, iconColorClass, trend, trendColor = "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30" }) {
   return (
-    <div className="bg-white dark:bg-card border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group h-full">
+    <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group h-full">
       <div className="flex items-start justify-between mb-4">
         <div className={`w-12 h-12 rounded-xl ${colorClass} flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform`}>
           <IconComp className="w-6 h-6" />
@@ -25,7 +25,7 @@ function StatCard({ icon: IconComp, label, value, sub, colorClass, iconColorClas
         )}
       </div>
       <h3 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-1">{value}</h3>
-      <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">{label}</p>
+      <p className="text-sm font-semibold text-slate-700 dark:text-foreground">{label}</p>
       {sub && <p className="text-xs text-slate-500 mt-1">{sub}</p>}
     </div>
   );

@@ -602,7 +602,7 @@ return (
            setShowFirmAlert(false);
          }}
          placeholder="Describe your dream workspace in plain english..."
-         className="w-full min-h-[64px] bg-white dark:bg-card rounded-3xl py-5 pl-6 pr-16 text-slate-900 dark:text-white placeholder-slate-400 font-medium text-lg border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-primary/20 outline-none resize-none"
+         className="w-full min-h-[64px] bg-white dark:bg-card rounded-3xl py-5 pl-6 pr-16 text-slate-900 dark:text-white placeholder-slate-400 font-medium text-lg border border-slate-200 dark:border-border focus:ring-2 focus:ring-primary/20 outline-none resize-none"
          rows={1}
        />
        <button
@@ -620,7 +620,7 @@ return (
            key={txt} 
            type="button" 
            onClick={() => setAiPrompt(txt)} 
-           className="px-4 py-2 rounded-2xl bg-white dark:bg-slate-800 border-[0.5px] border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm"
+           className="px-4 py-2 rounded-2xl bg-white dark:bg-secondary border-[0.5px] border-slate-200 dark:border-border text-sm font-medium text-slate-600 dark:text-foreground hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm"
          >
            {txt}
          </button>

@@ -130,26 +130,26 @@ System activity levels indicate normal operational flow. Data is being recorded 
   const renderReport = (text) => {
     return text.split('\n').map((line, i) => {
       if (line.startsWith('## ')) return <h2 key={i} className="text-lg font-bold text-slate-900 dark:text-white mt-4 mb-2">{line.replace('## ', '')}</h2>;
-      if (line.startsWith('### ')) return <h3 key={i} className="text-sm font-bold text-slate-700 dark:text-slate-300 mt-4 mb-1.5 uppercase tracking-wide">{line.replace('### ', '')}</h3>;
-      if (line.startsWith('**') && line.endsWith('**')) return <p key={i} className="font-semibold text-slate-800 dark:text-slate-200 text-sm my-1">{line.replace(/\*\*/g, '')}</p>;
+      if (line.startsWith('### ')) return <h3 key={i} className="text-sm font-bold text-slate-700 dark:text-foreground mt-4 mb-1.5 uppercase tracking-wide">{line.replace('### ', '')}</h3>;
+      if (line.startsWith('**') && line.endsWith('**')) return <p key={i} className="font-semibold text-slate-800 dark:text-foreground text-sm my-1">{line.replace(/\*\*/g, '')}</p>;
       if (line.startsWith('- ')) {
         const html = line.replace('- ', '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        return <li key={i} className="text-sm text-slate-600 dark:text-slate-400 ml-4 my-0.5 list-disc" dangerouslySetInnerHTML={{ __html: html }} />;
+        return <li key={i} className="text-sm text-slate-600 dark:text-muted-foreground ml-4 my-0.5 list-disc" dangerouslySetInnerHTML={{ __html: html }} />;
       }
       if (/^\d+\./.test(line)) {
         const html = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        return <li key={i} className="text-sm text-slate-600 dark:text-slate-400 ml-4 my-0.5 list-decimal" dangerouslySetInnerHTML={{ __html: html }} />;
+        return <li key={i} className="text-sm text-slate-600 dark:text-muted-foreground ml-4 my-0.5 list-decimal" dangerouslySetInnerHTML={{ __html: html }} />;
       }
       if (!line.trim()) return <div key={i} className="h-2" />;
       const html = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      return <p key={i} className="text-sm text-slate-600 dark:text-slate-400 my-1 leading-relaxed" dangerouslySetInnerHTML={{ __html: html }} />;
+      return <p key={i} className="text-sm text-slate-600 dark:text-muted-foreground my-1 leading-relaxed" dangerouslySetInnerHTML={{ __html: html }} />;
     });
   };
 
   return (
     <div className="bg-card dark:bg-background/40 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 shadow-xl shadow-slate-200/20 dark:shadow-none overflow-hidden" style={{ minHeight: '520px' }}>
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900/20">
+      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-border bg-gradient-to-r from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900/20">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-md shadow-purple-500/20">
             <FileText className="w-5 h-5 text-white" />
@@ -167,9 +167,9 @@ System activity levels indicate normal operational flow. Data is being recorded 
 
       {/* Stats bar — only when report exists */}
       {reportMeta && !isGenerating && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border-b border-slate-200 dark:border-slate-800">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border-b border-slate-200 dark:border-border">
           {reportMeta.stats.map(({ label, value, icon: Icon, color }) => (
-            <div key={label} className="flex items-center gap-3 px-5 py-4 border-r border-slate-200 dark:border-slate-800 last:border-r-0">
+            <div key={label} className="flex items-center gap-3 px-5 py-4 border-r border-slate-200 dark:border-border last:border-r-0">
               <div className={`w-8 h-8 rounded-lg ${color} flex items-center justify-center`}>
                 <Icon className="w-4 h-4" />
               </div>
@@ -190,7 +190,7 @@ System activity levels indicate normal operational flow. Data is being recorded 
               <Sparkles className="w-10 h-10 text-purple-500 animate-pulse" />
             </div>
             <div className="text-center space-y-1">
-              <p className="font-semibold text-slate-700 dark:text-slate-300">Analyzing cross-module data…</p>
+              <p className="font-semibold text-slate-700 dark:text-foreground">Analyzing cross-module data…</p>
               <p className="text-sm text-slate-400">Compiling your executive summary</p>
             </div>
             <div className="flex gap-1.5 mt-2">
@@ -201,7 +201,7 @@ System activity levels indicate normal operational flow. Data is being recorded 
           </div>
         ) : report ? (
           <div>
-            <div className="flex items-center gap-2 mb-5 pb-4 border-b border-slate-200 dark:border-slate-800">
+            <div className="flex items-center gap-2 mb-5 pb-4 border-b border-slate-200 dark:border-border">
               <Calendar className="w-4 h-4 text-slate-400" />
               <span className="text-xs text-slate-500">Generated: {reportMeta?.generated} · Period: {reportMeta?.period}</span>
               <span className="ml-auto flex items-center gap-1 text-xs text-emerald-600 font-medium">
@@ -217,7 +217,7 @@ System activity levels indicate normal operational flow. Data is being recorded 
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-16 text-slate-400 space-y-3">
-            <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-secondary flex items-center justify-center">
               <FileText className="w-8 h-8 opacity-40" />
             </div>
             <p className="font-medium text-slate-500">No report generated yet</p>

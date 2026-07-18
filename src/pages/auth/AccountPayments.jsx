@@ -121,7 +121,7 @@ export default function AccountPayments() {
         <h1 className="text-3xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 tracking-tight mb-4 pb-1">
           Payments &amp; Subscriptions
         </h1>
-        <p className="text-slate-600 dark:text-slate-400 text-[1.1rem] max-w-xl mx-auto leading-relaxed">
+        <p className="text-slate-600 dark:text-muted-foreground text-[1.1rem] max-w-xl mx-auto leading-relaxed">
           Manage your payment methods and subscriptions across the Optavel ecosystem.
         </p>
       </div>

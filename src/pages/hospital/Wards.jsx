@@ -12,7 +12,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const bedColors = {
   Occupied: 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100/50',
-  Available: 'bg-slate-50 dark:bg-slate-800/50 border-primary/20 text-primary/90 hover:bg-slate-500',
+  Available: 'bg-slate-50 dark:bg-secondary/50 border-primary/20 text-primary/90 hover:bg-slate-500',
   Maintenance: 'bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100/50'
 };
 

@@ -287,12 +287,12 @@ const [formData, setFormData] = useState({
       {/* Renewals Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {filteredRenewals.map(renewal => (
-          <Card key={renewal.id} className="relative group bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card key={renewal.id} className="relative group bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
                                 <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
                 <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
-<CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+<CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <CardTitle className="text-sm font-semibold flex items-center gap-2">
@@ -307,7 +307,7 @@ const [formData, setFormData] = useState({
               </div>
             </CardHeader>
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-              <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-secondary/50 rounded-lg border border-slate-100 dark:border-border">
                 <p className="text-xs font-medium text-muted-foreground">New Rent Amount</p>
                 <p className="text-sm font-bold text-primary dark:text-primary/80">${(renewal.new_rent_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
                 {renewal.rent_increase_percentage && (
@@ -338,7 +338,7 @@ const [formData, setFormData] = useState({
               </div>
 
               {renewal.tenant_response && (
-                <div className="flex flex-col gap-1 p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
+                <div className="flex flex-col gap-1 p-2.5 bg-slate-50 dark:bg-secondary/50 rounded-lg border border-slate-100 dark:border-border">
                   <p className="text-muted-foreground mb-1">Tenant Response</p>
                   <p className="text-sm">{renewal.tenant_response}</p>
                 </div>
@@ -358,7 +358,7 @@ const [formData, setFormData] = useState({
       </div>
 
       {filteredRenewals.length === 0 && (
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
           <RefreshCw className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
           <p className="text-muted-foreground">No lease renewals found. Create your first renewal!</p>
         </Card>

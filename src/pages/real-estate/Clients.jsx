@@ -208,7 +208,7 @@ export default function Clients() {
       </div>
       
       <div className="mt-auto pt-4 border-t border-border/50 flex items-center justify-between relative z-10">
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${typeColors[client.type] || 'bg-slate-100 text-slate-800 dark:bg-card/30 dark:text-slate-400'}`}>
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${typeColors[client.type] || 'bg-slate-100 text-slate-800 dark:bg-card/30 dark:text-muted-foreground'}`}>
           {client.type.toUpperCase()}
         </span>
         {client.budget > 0 && (
@@ -302,7 +302,7 @@ export default function Clients() {
                         </div>
                       </td>
                       <td className="p-4">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${typeColors[client.type] || 'bg-slate-100 text-slate-800 dark:bg-card/30 dark:text-slate-400'}`}>
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${typeColors[client.type] || 'bg-slate-100 text-slate-800 dark:bg-card/30 dark:text-muted-foreground'}`}>
                           {client.type.toUpperCase()}
                         </span>
                       </td>

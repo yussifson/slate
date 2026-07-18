@@ -206,8 +206,8 @@ export default function RentPayments() {
 
         <div className="grid grid-cols-3 gap-6 mb-8">
           {/* Upcoming Payments */}
-          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-            <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+            <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><Calendar className="w-5 h-5" /></div>
                 Upcoming
@@ -216,7 +216,7 @@ export default function RentPayments() {
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="max-h-96 overflow-y-auto">
                 {upcomingPayments.length === 0 ? (
-                  <div className="p-8 text-center text-slate-500 dark:text-slate-400">
+                  <div className="p-8 text-center text-slate-500 dark:text-muted-foreground">
                     <Clock className="w-10 h-10 mx-auto mb-3 opacity-30" />
                     <p className="text-sm font-medium">No upcoming payments</p>
                   </div>
@@ -227,9 +227,9 @@ export default function RentPayments() {
                         <p className="font-bold text-slate-900 dark:text-slate-100 text-sm group-hover:text-primary dark:group-hover:text-primary/80 transition-colors">{payment.tenant_name}</p>
                         <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400 text-xs border-0 shadow-sm">Due Soon</Badge>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 truncate">{payment.property_address || 'Property'}</p>
+                      <p className="text-xs text-slate-500 dark:text-muted-foreground mb-2 truncate">{payment.property_address || 'Property'}</p>
                       <div className="flex justify-between items-end">
-                        <p className="text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{new Date(payment.due_date).toLocaleDateString()}</p>
+                        <p className="text-xs font-medium text-slate-600 dark:text-foreground bg-slate-100 dark:bg-secondary px-2 py-0.5 rounded">{new Date(payment.due_date).toLocaleDateString()}</p>
                         <span className="text-sm font-extrabold text-primary dark:text-primary/80">${payment.amount?.toLocaleString()}</span>
                       </div>
                     </div>
@@ -240,8 +240,8 @@ export default function RentPayments() {
           </Card>
 
           {/* Overdue Alerts */}
-          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-            <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+            <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><AlertTriangle className="w-5 h-5" /></div>
                 Overdue
@@ -250,7 +250,7 @@ export default function RentPayments() {
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="max-h-96 overflow-y-auto">
                 {overDuePayments.length === 0 ? (
-                  <div className="p-8 text-center text-slate-500 dark:text-slate-400">
+                  <div className="p-8 text-center text-slate-500 dark:text-muted-foreground">
                     <CheckCircle className="w-10 h-10 mx-auto mb-3 opacity-50 text-primary" />
                     <p className="text-sm font-medium">No overdue payments</p>
                   </div>
@@ -261,7 +261,7 @@ export default function RentPayments() {
                         <p className="font-bold text-slate-900 dark:text-slate-100 text-sm group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">{payment.tenant_name}</p>
                         <Badge className="bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400 text-xs border-0 shadow-sm">OVERDUE</Badge>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 truncate">{payment.property_address || 'Property'}</p>
+                      <p className="text-xs text-slate-500 dark:text-muted-foreground mb-2 truncate">{payment.property_address || 'Property'}</p>
                       <div className="flex justify-between items-end">
                         <p className="text-xs font-medium text-red-600/70 dark:text-red-400/70 bg-red-100/50 dark:bg-red-900/30 px-2 py-0.5 rounded">{new Date(payment.due_date).toLocaleDateString()}</p>
                         <span className="text-sm font-extrabold text-red-600 dark:text-red-400">${payment.amount?.toLocaleString()}</span>
@@ -274,8 +274,8 @@ export default function RentPayments() {
           </Card>
 
           {/* Recent Payments */}
-          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-            <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+            <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><CheckCircle className="w-5 h-5" /></div>
                 Recent
@@ -284,7 +284,7 @@ export default function RentPayments() {
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="max-h-96 overflow-y-auto">
                 {payments.filter(p => p.status === 'paid').slice(0, 5).length === 0 ? (
-                  <div className="p-8 text-center text-slate-500 dark:text-slate-400">
+                  <div className="p-8 text-center text-slate-500 dark:text-muted-foreground">
                     <CreditCard className="w-10 h-10 mx-auto mb-3 opacity-30" />
                     <p className="text-sm font-medium">No recent payments</p>
                   </div>
@@ -295,7 +295,7 @@ export default function RentPayments() {
                         <p className="font-bold text-slate-900 dark:text-slate-100 text-sm group-hover:text-primary dark:group-hover:text-primary/80 transition-colors">{payment.tenant_name}</p>
                         <Badge className="bg-primary/10 text-primary/40 dark:bg-primary/30/40 dark:text-primary/80 text-xs border-0 shadow-sm">Paid</Badge>
                       </div>
-                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2 truncate bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded w-fit capitalize">{payment.payment_method?.replace('_', ' ') || 'Bank Transfer'}</p>
+                      <p className="text-xs font-medium text-slate-500 dark:text-muted-foreground mb-2 truncate bg-slate-100 dark:bg-secondary px-2 py-0.5 rounded w-fit capitalize">{payment.payment_method?.replace('_', ' ') || 'Bank Transfer'}</p>
                       <div className="flex items-center justify-between mt-3">
                         <span className="text-sm font-extrabold text-primary dark:text-primary/80">${payment.amount?.toLocaleString()}</span>
                         <span className="text-xs font-medium text-slate-400 dark:text-slate-500">{new Date(payment.payment_date).toLocaleDateString()}</span>
@@ -309,8 +309,8 @@ export default function RentPayments() {
         </div>
 
         {/* All Payments Table */}
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
             <CardTitle className="flex items-center gap-2">
               <CreditCard className="w-5 h-5" />
               All Payments

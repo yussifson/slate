@@ -159,7 +159,7 @@ export function LanguageSwitcher({ currentLanguage, onChange, className }) {
       <Select value={lang} onValueChange={handleLanguageChange}>
         <SelectTrigger className={className || "h-11 bg-muted/40 hover:bg-muted/60 transition-colors"}>
           <div className="flex items-center gap-2">
-            <Globe className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+            <Globe className="w-4 h-4 text-slate-500 dark:text-muted-foreground" />
             <span className="truncate"><SelectValue /></span>
           </div>
         </SelectTrigger>

@@ -246,7 +246,7 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  )}
  </div>
  ) : (
- <div className="border border-slate-200 dark:border-slate-800 rounded-xl p-6 bg-slate-50 dark:bg-card/50 relative overflow-hidden group">
+ <div className="border border-slate-200 dark:border-border rounded-xl p-6 bg-slate-50 dark:bg-card/50 relative overflow-hidden group">
  <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
  <div className="flex items-center justify-between">
  <div>
@@ -254,9 +254,9 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  {company.custom_domain}
  <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-200 dark:border-emerald-500/30">Active</span>
  </h4>
- <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Your custom domain is configured and routing traffic.</p>
+ <p className="text-sm font-medium text-slate-500 dark:text-muted-foreground">Your custom domain is configured and routing traffic.</p>
  </div>
- <button onClick={() => { setForm({ ...form, custom_domain: '' }); onSave({ ...form, custom_domain: '' }); }} className="text-red-500 hover:text-red-700 font-bold text-sm px-5 py-2.5 bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/30 border border-slate-200 dark:border-slate-700 rounded-lg transition-colors">
+ <button onClick={() => { setForm({ ...form, custom_domain: '' }); onSave({ ...form, custom_domain: '' }); }} className="text-red-500 hover:text-red-700 font-bold text-sm px-5 py-2.5 bg-white dark:bg-secondary hover:bg-red-50 dark:hover:bg-red-950/30 border border-slate-200 dark:border-border rounded-lg transition-colors">
  Remove
  </button>
  </div>

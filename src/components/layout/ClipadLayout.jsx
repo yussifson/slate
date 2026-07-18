@@ -41,7 +41,7 @@ export default function ClipadLayout() {
   }, []);
 
   return (
-    <div className="flex flex-col h-[100dvh] w-full overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
+    <div className="flex flex-col h-[100dvh] w-full overflow-hidden bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
       <div className="flex flex-1 overflow-hidden relative">
         
         {/* Main Content Area */}
@@ -60,7 +60,7 @@ export default function ClipadLayout() {
         <div 
           id="right-docked-panel-portal" 
           className={cn(
-            "hidden md:flex shrink-0 h-full relative bg-white dark:bg-[#090E17]",
+            "hidden md:flex shrink-0 h-full relative bg-white dark:bg-background",
             isChatDocked ? "border-l border-black/5 dark:border-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.12)]" : "w-0 overflow-hidden border-none"
           )}
           style={{ width: isChatDocked ? dockWidth : 0 }}

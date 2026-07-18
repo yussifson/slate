@@ -125,7 +125,7 @@ export default function SHSEnrollment() {
  {loading ? (
  <div className="p-8 text-center text-primary/30 text-sm">Loading admitted students...</div>
  ) : filteredApplicants.length === 0 ? (
- <div className="p-8 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400 text-sm">No students currently awaiting enrollment.</div>
+ <div className="p-8 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground text-sm">No students currently awaiting enrollment.</div>
  ) : (
  <div className="p-2 space-y-1">
  {filteredApplicants.map(app => (
@@ -135,17 +135,17 @@ export default function SHSEnrollment() {
  className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
  selectedApplicant?.id === app.id 
  ? 'bg-primary dark:bg-primary text-white -emerald-500/20' 
- : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
+ : 'hover:bg-slate-50 dark:bg-secondary/50 dark:bg-secondary text-slate-700 dark:text-foreground dark:text-foreground'
 }`}
  >
  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold shrink-0 ${
- selectedApplicant?.id === app.id ? 'bg-white dark:bg-card/40 dark:bg-card/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
+ selectedApplicant?.id === app.id ? 'bg-white dark:bg-card/40 dark:bg-card/20' : 'bg-slate-100 dark:bg-secondary text-primary dark:text-primary/70'
 }`}>
  <UserCheck className="w-5 h-5" />
  </div>
  <div className="overflow-hidden flex-1">
  <p className="font-semibold truncate">{app.title}</p>
- <p className={`text-xs truncate ${selectedApplicant?.id === app.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400'}`}>
+ <p className={`text-xs truncate ${selectedApplicant?.id === app.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground'}`}>
  {app.case_number}
  </p>
  </div>
@@ -173,7 +173,7 @@ export default function SHSEnrollment() {
  <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">{selectedApplicant.title}</h2>
  <div className="flex items-center gap-3 mt-2">
  <Badge variant="outline" className="border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70 bg-white dark:bg-card/40 dark:bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{selectedApplicant.case_number}</Badge>
- <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Admitted to: {selectedApplicant.data?.programChoice1}</span>
+ <span className="text-xs font-medium text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">Admitted to: {selectedApplicant.data?.programChoice1}</span>
  </div>
  </div>
  <Badge className="bg-slate-100 text-primary/90 px-3 py-1 gap-2 text-sm border-none ">
@@ -194,20 +194,20 @@ export default function SHSEnrollment() {
  </label>
  <Input 
  placeholder="e.g. 0010123456"
- className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-12 text-lg font-medium"
+ className="bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-12 text-lg font-medium"
  value={enrollmentData.indexNumber}
  onChange={(e) => setEnrollmentData({...enrollmentData, indexNumber: e.target.value})}
  />
- <p className="text-xs text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Leave blank to auto-generate a temporary ID.</p>
+ <p className="text-xs text-slate-400 dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">Leave blank to auto-generate a temporary ID.</p>
  </div>
 
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]">
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]">
  <Building className="w-4 h-4" /> Boarding House
  </label>
  <select 
- className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={enrollmentData.house}
  onChange={(e) => setEnrollmentData({...enrollmentData, house: e.target.value})}
  >
@@ -220,12 +220,12 @@ export default function SHSEnrollment() {
  </div>
  
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]">
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]">
  <BookOpen className="w-4 h-4" /> Form / Class
  </label>
  <Input 
  placeholder="e.g. 1 Sci A"
- className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
+ className="bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
  value={enrollmentData.classRoom}
  onChange={(e) => setEnrollmentData({...enrollmentData, classRoom: e.target.value})}
  />
@@ -233,10 +233,10 @@ export default function SHSEnrollment() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Date of Enrollment</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Date of Enrollment</label>
  <Input 
  type="date"
- className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
+ className="bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
  value={enrollmentData.enrollmentDate}
  onChange={(e) => setEnrollmentData({...enrollmentData, enrollmentDate: e.target.value})}
  />
@@ -259,12 +259,12 @@ export default function SHSEnrollment() {
  </ScrollArea>
  </>
  ) : (
- <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
- <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6">
+ <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50">
+ <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-secondary flex items-center justify-center mb-6">
  <GraduationCap className="w-10 h-10 text-primary/30" />
  </div>
- <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Applicant Selected</h3>
- <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 max-w-sm mt-2">
+ <h3 className="text-xl font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No Applicant Selected</h3>
+ <p className="text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground max-w-sm mt-2">
  Select an admitted applicant from the left panel to assign their house, class, and officially enroll them into the system.
  </p>
  </div>

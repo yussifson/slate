@@ -165,7 +165,7 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
       {/* Back Button */}
       <button 
         onClick={() => navigate(-1)} 
-        className="absolute top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-sm shadow-sm hover:shadow-md transition-all hover:-translate-x-1"
+        className="absolute top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 rounded-xl bg-white/80 dark:bg-card/80 backdrop-blur-md border border-slate-200 dark:border-border text-slate-700 dark:text-foreground font-semibold text-sm shadow-sm hover:shadow-md transition-all hover:-translate-x-1"
       >
         <ChevronLeft className="w-4 h-4" /> Back
       </button>
@@ -244,11 +244,11 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
       <div className="relative z-10 flex-1 flex flex-col items-start justify-center w-full max-w-md bg-transparent p-6 md:p-10 space-y-8">
         <div>
           <h1 className="text-[2rem] font-medium text-slate-900 dark:text-white tracking-tight leading-tight">Ready to join?</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1 text-base">{roomName || 'Secure Meeting'}</p>
+          <p className="text-slate-500 dark:text-muted-foreground mt-1 text-base">{roomName || 'Secure Meeting'}</p>
         </div>
 
         <div className="space-y-5">
-          <div className="bg-white/50 dark:bg-[#111827]/50 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between">
+          <div className="bg-white/50 dark:bg-[#111827]/50 backdrop-blur-sm border border-slate-200 dark:border-border rounded-2xl px-5 py-4 flex items-center justify-between">
             <span className="text-sm font-medium text-slate-500">Joining as</span>
             <span className="font-semibold text-slate-900 dark:text-white">{defaultName || 'Guest'}</span>
           </div>

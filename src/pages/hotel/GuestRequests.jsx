@@ -225,7 +225,7 @@ Reply with EXACTLY ONE of these tags: URGENT (if safety, severe complaint, VIP, 
    return (
    <div key={req.id} className="p-4 sm:p-6 hover:bg-muted/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
    <div className="flex gap-4 items-start">
-   <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/70`}>
+   <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-slate-50 dark:bg-secondary/50 dark:bg-primary/20 text-primary dark:text-primary/70`}>
    {requestIcons[req.type] || <Bell className="w-5 h-5" />}
    </div>
    <div>
@@ -278,7 +278,7 @@ Reply with EXACTLY ONE of these tags: URGENT (if safety, severe complaint, VIP, 
          <div key={item.id} className="p-4 sm:p-6 hover:bg-muted/40 transition-colors flex flex-col gap-2">
            <div className="flex items-center justify-between">
              <span className="font-semibold text-card-foreground">{item.guest_name || 'Anonymous'}</span>
-             <span className="text-sm font-medium px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+             <span className="text-sm font-medium px-2 py-0.5 rounded-full bg-slate-100 dark:bg-secondary text-slate-700 dark:text-foreground">
                {item.rating}/5 Rating
              </span>
            </div>

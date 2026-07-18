@@ -70,7 +70,7 @@ export default function EnterpriseDashboard() {
   const storagePercentage = ((metrics?.storageUsedGB || 0) / 50) * 100;
 
   return (
-    <div className="min-h-[100dvh] bg-slate-50 dark:bg-slate-950 pb-[80px] md:pb-8 flex flex-col">
+    <div className="min-h-[100dvh] bg-slate-50 dark:bg-background pb-[80px] md:pb-8 flex flex-col">
       <ClipadTopNav />
       <div className="flex-1 p-6 w-full max-w-7xl mx-auto">
         {/* Header */}
@@ -81,7 +81,7 @@ export default function EnterpriseDashboard() {
               <Shield className="w-8 h-8 text-indigo-600 dark:text-indigo-400" /> 
               Enterprise Command Center
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 mt-1">Cross-tenant visibility and administrative oversight for your entire organization.</p>
+            <p className="text-slate-500 dark:text-muted-foreground mt-1">Cross-tenant visibility and administrative oversight for your entire organization.</p>
           </div>
           <div className="flex items-center gap-3 px-4 py-2 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 rounded-xl">
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -120,7 +120,7 @@ export default function EnterpriseDashboard() {
           </div>
 
           {/* Org Intelligence Health */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+          <div className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-border p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-6">
               <Activity className="w-5 h-5 text-rose-500" />
               <h2 className="text-lg font-bold text-slate-900 dark:text-white">Organizational Intelligence</h2>
@@ -145,7 +145,7 @@ export default function EnterpriseDashboard() {
           </div>
 
           {/* Asset List (Detailed Engagement Tracking) */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm overflow-hidden flex flex-col">
+          <div className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-border p-6 shadow-sm overflow-hidden flex flex-col">
             <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
               <Eye className="w-5 h-5 text-indigo-500" />
               Detailed Media Analytics
@@ -157,7 +157,7 @@ export default function EnterpriseDashboard() {
                 <button 
                   key={asset.id} 
                   onClick={() => handleAssetClick(asset)}
-                  className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center justify-between group"
+                  className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-border hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center justify-between group"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center shrink-0">
@@ -168,7 +168,7 @@ export default function EnterpriseDashboard() {
                         {asset.title || 'Untitled Asset'}
                       </p>
                       <p className="text-xs text-slate-500 flex items-center gap-2 mt-1">
-                        <span className="capitalize text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">{asset.type}</span>
+                        <span className="capitalize text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-foreground">{asset.type}</span>
                         Created by {asset.host_name} • {new Date(asset.created_at).toLocaleDateString()}
                       </p>
                     </div>
@@ -187,7 +187,7 @@ export default function EnterpriseDashboard() {
         {/* Right Column - Usage & Audit Stream */}
         <div className="space-y-6">
           {/* Usage Trends */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+          <div className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-border p-6 shadow-sm">
             <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-6">30-Day Adoption Trends</h2>
             <div className="h-[250px] w-full">
               {trends.length > 0 ? (
@@ -224,8 +224,8 @@ export default function EnterpriseDashboard() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col overflow-hidden h-[450px]">
-            <div className="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+          <div className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-border shadow-sm flex flex-col overflow-hidden h-[450px]">
+            <div className="p-5 border-b border-slate-200 dark:border-border bg-slate-50 dark:bg-card">
               <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <Shield className="w-5 h-5 text-indigo-500" />
                 Security & Audit Log
@@ -243,13 +243,13 @@ export default function EnterpriseDashboard() {
                       <div className="flex items-center justify-between gap-2">
                         <p className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                           {log.title}
-                          {log.type === 'security' && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">Security</span>}
+                          {log.type === 'security' && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide bg-slate-100 text-slate-500 dark:bg-secondary dark:text-muted-foreground">Security</span>}
                         </p>
                         <span className="text-[10px] font-medium text-slate-400 whitespace-nowrap">
                           {new Date(log.created_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 mt-2 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg border border-slate-100 dark:border-slate-800 w-fit">
+                      <div className="flex items-center gap-2 mt-2 bg-slate-50 dark:bg-secondary/50 p-2 rounded-lg border border-slate-100 dark:border-border w-fit">
                         <div className="w-5 h-5 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
                           {log.profiles?.avatar_url ? (
                             <img src={log.profiles.avatar_url} className="w-full h-full object-cover" />
@@ -257,7 +257,7 @@ export default function EnterpriseDashboard() {
                             <span className="text-[9px] font-bold text-slate-500">{(log.profiles?.full_name || 'S').charAt(0)}</span>
                           )}
                         </div>
-                        <span className="text-[11px] font-medium text-slate-600 dark:text-slate-300">{log.profiles?.full_name || 'System User'}</span>
+                        <span className="text-[11px] font-medium text-slate-600 dark:text-foreground">{log.profiles?.full_name || 'System User'}</span>
                       </div>
                     </div>
                   </div>
@@ -276,9 +276,9 @@ export default function EnterpriseDashboard() {
       {/* Asset Engagement Modal */}
       {selectedAsset && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800">
+          <div className="bg-white dark:bg-card rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-slate-200 dark:border-border">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+            <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-border bg-slate-50 dark:bg-card/50">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center">
                   <Video className="w-6 h-6 text-indigo-500" />
@@ -290,9 +290,9 @@ export default function EnterpriseDashboard() {
               </div>
               <button 
                 onClick={() => setSelectedAsset(null)}
-                className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
+                className="w-10 h-10 rounded-full bg-slate-200 dark:bg-secondary flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
               >
-                <X className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                <X className="w-5 h-5 text-slate-600 dark:text-foreground" />
               </button>
             </div>
 
@@ -313,7 +313,7 @@ export default function EnterpriseDashboard() {
                         <CheckCircle className="w-4 h-4 text-emerald-500" />
                         Watched ({engagement.viewers.length})
                       </h3>
-                      <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 max-h-[300px] overflow-y-auto">
+                      <div className="bg-slate-50 dark:bg-card/50 rounded-xl border border-slate-200 dark:border-border max-h-[300px] overflow-y-auto">
                         {engagement.viewers.length === 0 ? (
                           <p className="p-4 text-sm text-slate-500 text-center">Nobody has watched this yet.</p>
                         ) : (
@@ -340,14 +340,14 @@ export default function EnterpriseDashboard() {
                         <AlertCircle className="w-4 h-4 text-rose-500" />
                         Did Not Watch ({engagement.nonViewers.length})
                       </h3>
-                      <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 max-h-[300px] overflow-y-auto">
+                      <div className="bg-slate-50 dark:bg-card/50 rounded-xl border border-slate-200 dark:border-border max-h-[300px] overflow-y-auto">
                         {engagement.nonViewers.length === 0 ? (
                           <p className="p-4 text-sm text-slate-500 text-center">Everyone in the company has watched!</p>
                         ) : (
                           <div className="divide-y divide-slate-200 dark:divide-slate-800">
                             {engagement.nonViewers.map(u => (
                               <div key={u.id} className="p-3 flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
-                                <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0">
+                                <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-secondary flex items-center justify-center overflow-hidden shrink-0">
                                   {u.avatar_url ? <img src={u.avatar_url} className="w-full h-full object-cover" /> : <span className="text-xs font-bold text-slate-500">{(u.full_name || u.email || 'U').charAt(0).toUpperCase()}</span>}
                                 </div>
                                 <div className="min-w-0 flex-1">
@@ -367,7 +367,7 @@ export default function EnterpriseDashboard() {
                       <MessageSquare className="w-4 h-4 text-indigo-500" />
                       Engagement Comments ({engagement.comments.length})
                     </h3>
-                    <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 h-[650px] overflow-y-auto">
+                    <div className="bg-slate-50 dark:bg-card/50 rounded-xl border border-slate-200 dark:border-border h-[650px] overflow-y-auto">
                       {engagement.comments.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-slate-400 p-6">
                           <MessageSquare className="w-8 h-8 mb-3 opacity-20" />
@@ -384,7 +384,7 @@ export default function EnterpriseDashboard() {
                                 <p className="text-xs font-semibold text-slate-900 dark:text-white">{c.author?.full_name || c.author?.email || 'Unknown User'}</p>
                                 <span className="text-[10px] text-slate-500 ml-auto">{new Date(c.created_at).toLocaleString()}</span>
                               </div>
-                              <p className="text-sm text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                              <p className="text-sm text-slate-700 dark:text-foreground bg-white dark:bg-card p-3 rounded-xl border border-slate-200 dark:border-border">
                                 {c.content || c.text}
                               </p>
                             </div>
@@ -406,17 +406,17 @@ export default function EnterpriseDashboard() {
 
 function MetricCard({ icon, title, value, subtext, progress, progressColor }) {
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+    <div className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-border p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
       {progress !== undefined && (
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-100 dark:bg-slate-800">
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-100 dark:bg-secondary">
           <div className={`h-full ${progressColor} transition-all`} style={{ width: `${Math.min(progress, 100)}%` }} />
         </div>
       )}
       <div className="flex items-center gap-3 mb-3">
-        <div className="p-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
+        <div className="p-2 bg-slate-50 dark:bg-secondary rounded-lg">
           {icon}
         </div>
-        <h3 className="text-sm font-bold text-slate-600 dark:text-slate-300">{title}</h3>
+        <h3 className="text-sm font-bold text-slate-600 dark:text-foreground">{title}</h3>
       </div>
       <p className="text-3xl font-black text-slate-900 dark:text-white mb-1">{value}</p>
       <p className="text-xs font-semibold text-slate-500">{subtext}</p>

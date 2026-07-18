@@ -234,7 +234,7 @@ export default function CliPadBilling() {
             {usedStorageGB.toFixed(2)} GB / {PLAN_LIMITS[currentPlan]?.maxStorageGB === Infinity ? 'Unlimited' : `${PLAN_LIMITS[currentPlan]?.maxStorageGB} GB`} Used
           </span>
         </div>
-        <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3 mb-1 overflow-hidden">
+        <div className="w-full bg-slate-100 dark:bg-secondary rounded-full h-3 mb-1 overflow-hidden">
           <div 
             className={`h-3 rounded-full transition-all duration-500 ${PLAN_LIMITS[currentPlan]?.maxStorageGB !== Infinity && (usedStorageGB / PLAN_LIMITS[currentPlan]?.maxStorageGB) > 0.9 ? 'bg-red-500' : 'bg-primary'}`}
             style={{ width: `${PLAN_LIMITS[currentPlan]?.maxStorageGB === Infinity ? (usedStorageGB > 0 ? 5 : 0) : Math.min(100, (usedStorageGB / PLAN_LIMITS[currentPlan]?.maxStorageGB) * 100)}%` }}
@@ -317,7 +317,7 @@ export default function CliPadBilling() {
         ) : (
           <div className="bg-card border border-border rounded-2xl overflow-hidden">
             <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="bg-slate-50 dark:bg-slate-900 border-b border-border">
+              <thead className="bg-slate-50 dark:bg-card border-b border-border">
                 <tr>
                   <th className="px-6 py-4 font-semibold text-slate-500">Date</th>
                   <th className="px-6 py-4 font-semibold text-slate-500">Receipt #</th>
@@ -334,13 +334,13 @@ export default function CliPadBilling() {
                   
                   return (
                     <tr key={tx.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                      <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
+                      <td className="px-6 py-4 text-slate-600 dark:text-muted-foreground">
                         {new Date(tx.created_at).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 font-bold text-foreground font-mono text-xs">
                         {rDetails.receiptNumber || tx.id.split('-')[0].toUpperCase()}
                       </td>
-                      <td className="px-6 py-4 capitalize text-slate-600 dark:text-slate-400">
+                      <td className="px-6 py-4 capitalize text-slate-600 dark:text-muted-foreground">
                         {rDetails.plan || 'Unknown'}
                       </td>
                       <td className="px-6 py-4 font-medium text-foreground">

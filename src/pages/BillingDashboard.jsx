@@ -231,8 +231,8 @@ function CompanyBilling({ companyId }) {
         subtitle="Invoices and expenses"
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard icon={DollarSign} label="Collected" value={formatCurrency(totalCollected, currency)} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
-        <MetricCard icon={Clock} label="Pending" value={formatCurrency(totalPending, currency)} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
+        <MetricCard icon={DollarSign} label="Collected" value={formatCurrency(totalCollected, currency)} color="bg-slate-50 dark:bg-secondary/50 text-primary" />
+        <MetricCard icon={Clock} label="Pending" value={formatCurrency(totalPending, currency)} color="bg-slate-50 dark:bg-secondary/50 text-primary" />
         <MetricCard icon={AlertCircle} label="Overdue" value={overdueCount} color="bg-red-50 text-red-600" />
         <MetricCard icon={Receipt} label="Unbilled Time/Expenses" value={`${unbilledTime.length} / ${unbilledExpenses.length}`} color="bg-amber-50 text-amber-600" />
       </div>
@@ -601,10 +601,10 @@ function SuperAdminBilling() {
         }
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard icon={DollarSign} label="Total Collected" value={`$${totalRevenue.toLocaleString()}`} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
-        <MetricCard icon={Clock} label="Pending" value={`$${totalPending.toLocaleString()}`} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
+        <MetricCard icon={DollarSign} label="Total Collected" value={`$${totalRevenue.toLocaleString()}`} color="bg-slate-50 dark:bg-secondary/50 text-primary" />
+        <MetricCard icon={Clock} label="Pending" value={`$${totalPending.toLocaleString()}`} color="bg-slate-50 dark:bg-secondary/50 text-primary" />
         <MetricCard icon={AlertCircle} label="Overdue Invoices" value={overdueCount} color="bg-red-50 text-red-600" />
-        <MetricCard icon={CreditCard} label="Total Invoices" value={invoices.length} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
+        <MetricCard icon={CreditCard} label="Total Invoices" value={invoices.length} color="bg-slate-50 dark:bg-secondary/50 text-primary" />
       </div>
       <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="p-4 border-b border-primary/40 flex items-center justify-between gap-3 flex-wrap">

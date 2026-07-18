@@ -320,7 +320,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  
  {/* Mobile Drag Handle */}
  <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
- <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800" />
+ <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-secondary" />
  </div>
  
  <div className="flex h-full w-full">
@@ -334,12 +334,12 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
   className="shrink-0 border-r border-slate-200/60 dark:border-white/[0.08] bg-slate-50/50 dark:bg-[#0A0F1C]/50 flex flex-col overflow-hidden backdrop-blur-xl"
   >
   <div className="px-4 py-3 border-b border-slate-200/60 dark:border-white/[0.08] flex items-center justify-between whitespace-nowrap bg-white/40 dark:bg-[#131A2B]/40">
-  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Workslates</span>
+  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-muted-foreground">Workslates</span>
   <div className="flex items-center gap-1.5">
-  <button onClick={startNewSession} className="p-1.5 hover:bg-white dark:hover:bg-white/10 rounded-md text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all shadow-sm" title="New slate">
+  <button onClick={startNewSession} className="p-1.5 hover:bg-white dark:hover:bg-white/10 rounded-md text-slate-500 dark:text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400 transition-all shadow-sm" title="New slate">
   <MessageSquarePlus className="w-3.5 h-3.5" />
   </button>
-  <button onClick={() => setShowHistory(false)} className="p-1.5 hover:bg-white dark:hover:bg-white/10 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm" title="Close history">
+  <button onClick={() => setShowHistory(false)} className="p-1.5 hover:bg-white dark:hover:bg-white/10 rounded-md text-slate-500 dark:text-muted-foreground hover:text-slate-900 dark:hover:text-white transition-all shadow-sm" title="Close history">
   <X className="w-3.5 h-3.5" />
   </button>
   </div>
@@ -353,7 +353,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
   "group relative flex items-start gap-2.5 p-2.5 rounded-xl cursor-pointer text-left transition-all whitespace-nowrap border border-transparent",
   s.id === activeSession?.id
   ? 'bg-white dark:bg-[#1A233A] border-emerald-500/20 dark:border-emerald-500/30 text-slate-900 dark:text-white shadow-[0_2px_10px_rgba(0,0,0,0.04)] dark:shadow-none'
-  : 'hover:bg-white/60 dark:hover:bg-[#131A2B]/80 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:border-slate-200/60 dark:hover:border-white/5'
+  : 'hover:bg-white/60 dark:hover:bg-[#131A2B]/80 text-slate-500 dark:text-muted-foreground hover:text-slate-800 dark:hover:text-slate-200 hover:border-slate-200/60 dark:hover:border-white/5'
   )}
   >
   <MessageSquare className={clsx("w-3.5 h-3.5 mt-0.5 shrink-0 transition-colors", s.id === activeSession?.id ? "text-emerald-500" : "text-slate-400 group-hover:text-slate-500")} />
@@ -390,7 +390,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
     <p className="text-sm font-bold tracking-tight text-slate-900 dark:text-white leading-none">Orbit Build</p>
     <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 font-extrabold uppercase tracking-widest ring-1 ring-emerald-500/20 dark:ring-emerald-500/30">Builder</span>
    </div>
-   <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium tracking-wide">Enterprise AI Architect</p>
+   <p className="text-[11px] text-slate-500 dark:text-muted-foreground mt-1 font-medium tracking-wide">Enterprise AI Architect</p>
   </div>
   </div>
   <div className="flex items-center gap-1.5 shrink-0">
@@ -400,13 +400,13 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
     "p-2 rounded-xl transition-all duration-200", 
     showHistory 
       ? 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-600 ring-1 ring-emerald-500/20' 
-      : 'bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
+      : 'bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-muted-foreground hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
   )}
   title="Workslates History"
   >
   <Clock className="w-4 h-4" />
   </button>
-  <button onClick={onClose} className="p-2 rounded-xl bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-all shrink-0">
+  <button onClick={onClose} className="p-2 rounded-xl bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-muted-foreground hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-all shrink-0">
   <X className="w-4 h-4" />
   </button>
   </div>
@@ -431,7 +431,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
   "max-w-[85%] text-[13px] leading-relaxed shadow-sm transition-all duration-200 relative",
   m.role === 'user'
   ? 'rounded-2xl rounded-tr-sm px-4 py-3 bg-primary text-primary-foreground shadow-md shadow-primary/20'
-  : 'rounded-2xl rounded-tl-sm px-4.5 py-3.5 bg-white dark:bg-[#131A2B] border border-slate-200/60 dark:border-white/5 text-slate-700 dark:text-slate-300 prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-slate-50 dark:prose-pre:bg-[#0A0F1C] prose-pre:border prose-pre:border-slate-200 dark:prose-pre:border-white/5 prose-pre:rounded-xl prose-code:text-emerald-600 dark:prose-code:text-emerald-400 prose-code:before:content-none prose-code:after:content-none prose-headings:font-semibold hover:shadow-md'
+  : 'rounded-2xl rounded-tl-sm px-4.5 py-3.5 bg-white dark:bg-[#131A2B] border border-slate-200/60 dark:border-white/5 text-slate-700 dark:text-foreground prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-slate-50 dark:prose-pre:bg-[#0A0F1C] prose-pre:border prose-pre:border-slate-200 dark:prose-pre:border-white/5 prose-pre:rounded-xl prose-code:text-emerald-600 dark:prose-code:text-emerald-400 prose-code:before:content-none prose-code:after:content-none prose-headings:font-semibold hover:shadow-md'
   )}>
   <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
   </div>

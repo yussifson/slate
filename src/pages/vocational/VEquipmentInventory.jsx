@@ -125,7 +125,7 @@ export default function VEquipmentInventory() {
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  <Card className="bg-white dark:bg-card/40/60 dark:bg-card/60 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex items-center gap-4">
- <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
  <Settings className="w-7 h-7" />
  </div>
  <div>
@@ -136,7 +136,7 @@ export default function VEquipmentInventory() {
  </Card>
  <Card className="bg-white dark:bg-card/40/60 dark:bg-card/60 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex items-center gap-4">
- <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
  <Package className="w-7 h-7" />
  </div>
  <div>
@@ -173,13 +173,13 @@ export default function VEquipmentInventory() {
  {filtered.map(item => (
  <div key={item.id} className="flex items-center justify-between p-5 hover:bg-slate-50/50 dark:bg-transparent dark:hover:bg-slate-800/50 transition-colors group">
  <div className="flex items-center gap-5">
- <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-semibold shrink-0">
+ <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-semibold shrink-0">
  <Settings className="w-6 h-6" />
  </div>
  <div>
  <h4 className="text-base font-semibold text-slate-900 dark:text-slate-100 dark:text-white group-hover:text-primary transition-colors">{item.title}</h4>
  <div className="flex items-center gap-3 text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">
- <span className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-lg">SN: {item.data?.serial || 'N/A'}</span>
+ <span className="bg-slate-100 dark:bg-secondary px-2 py-0.5 rounded-lg">SN: {item.data?.serial || 'N/A'}</span>
  <span>•</span>
  <span>{item.data?.category || 'Uncategorized'}</span>
  </div>
@@ -189,12 +189,12 @@ export default function VEquipmentInventory() {
  <Badge className={
  item.status === 'Available' ? 'bg-slate-100 text-primary/90 hover:bg-primary/20 dark:bg-primary/20 dark:text-primary/70' :
  item.status === 'Maintenance' ? 'bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-500/20 dark:text-amber-400' :
- 'bg-slate-100 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400'
+ 'bg-slate-100 text-slate-700 dark:text-foreground hover:bg-slate-200 dark:bg-secondary dark:text-muted-foreground'
 } variant="secondary">
  {item.status}
  </Badge>
  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
- <Button variant="ghost" size="icon" onClick={() => openModal(item)} className="h-8 w-8 text-primary hover:bg-slate-50 dark:bg-slate-800/50 dark:hover:bg-primary/20">
+ <Button variant="ghost" size="icon" onClick={() => openModal(item)} className="h-8 w-8 text-primary hover:bg-slate-50 dark:bg-secondary/50 dark:hover:bg-primary/20">
  <Edit className="w-4 h-4" />
  </Button>
  <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="h-8 w-8 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20">
@@ -217,18 +217,18 @@ export default function VEquipmentInventory() {
  </DialogHeader>
  <div className="grid gap-4 py-4">
  <div className="space-y-2">
- <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Name / Model</label>
- <Input className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Bosch Hammer Drill" />
+ <label className="text-sm font-semibold text-slate-700 dark:text-foreground dark:text-foreground">Name / Model</label>
+ <Input className="rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-none" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Bosch Hammer Drill" />
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Serial Number</label>
- <Input className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.serial} onChange={e => setFormData({...formData, serial: e.target.value})} placeholder="SN-12345" />
+ <label className="text-sm font-semibold text-slate-700 dark:text-foreground dark:text-foreground">Serial Number</label>
+ <Input className="rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-none" value={formData.serial} onChange={e => setFormData({...formData, serial: e.target.value})} placeholder="SN-12345" />
  </div>
  <div className="space-y-2">
- <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Status</label>
+ <label className="text-sm font-semibold text-slate-700 dark:text-foreground dark:text-foreground">Status</label>
  <select 
- className="flex h-10 w-full items-center justify-between rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 py-2 text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+ className="flex h-10 w-full items-center justify-between rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary px-3 py-2 text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
  value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})}
  >
  <option value="Available">Available</option>
@@ -240,13 +240,13 @@ export default function VEquipmentInventory() {
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Category</label>
- <Input className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} placeholder="Power Tools" />
+ <label className="text-sm font-semibold text-slate-700 dark:text-foreground dark:text-foreground">Category</label>
+ <Input className="rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-none" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} placeholder="Power Tools" />
  </div>
  <div className="space-y-2">
- <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Condition</label>
+ <label className="text-sm font-semibold text-slate-700 dark:text-foreground dark:text-foreground">Condition</label>
  <select 
- className="flex h-10 w-full items-center justify-between rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 py-2 text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+ className="flex h-10 w-full items-center justify-between rounded-xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary px-3 py-2 text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
  value={formData.condition} onChange={e => setFormData({...formData, condition: e.target.value})}
  >
  <option value="New">New</option>

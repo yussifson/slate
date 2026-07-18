@@ -164,7 +164,7 @@ export default function UnivGradebook() {
  </td>
  <td className="p-4">
  <div className="flex items-center gap-2">
- <div className="w-16 h-2 bg-muted dark:bg-slate-800 rounded-full overflow-hidden">
+ <div className="w-16 h-2 bg-muted dark:bg-secondary rounded-full overflow-hidden">
  <div className="h-full bg-primary rounded-full" style={{ width: `${(g.score / g.max_score) * 100}%`}}></div>
  </div>
  <span className="font-semibold text-foreground text-xs tracking-[0.04em]">{g.score}/{g.max_score}</span>

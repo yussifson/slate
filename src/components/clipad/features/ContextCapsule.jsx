@@ -101,7 +101,7 @@ export default function ContextCapsule({ spaceId, hasFullIntelligence }) {
   if (!hasFullIntelligence) {
     return (
       <button
-        className="w-full py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/30 flex items-center justify-center gap-2 text-slate-400 cursor-not-allowed opacity-70"
+        className="w-full py-3 px-4 rounded-xl border border-slate-200 dark:border-border/50 bg-slate-50 dark:bg-secondary/30 flex items-center justify-center gap-2 text-slate-400 cursor-not-allowed opacity-70"
         title="Upgrade to Pro or Enterprise to access AI Context Capsules"
         disabled
       >
@@ -112,12 +112,12 @@ export default function ContextCapsule({ spaceId, hasFullIntelligence }) {
   }
 
   return (
-    <div className="bg-slate-50 dark:bg-slate-800/20 border border-slate-200 dark:border-slate-700/50 rounded-xl p-5">
+    <div className="bg-slate-50 dark:bg-secondary/20 border border-slate-200 dark:border-border/50 rounded-xl p-5">
       {!capsule ? (
         <div className="text-center">
           <Brain className="w-10 h-10 text-indigo-400 mx-auto mb-3" />
-          <h3 className="text-lg font-medium text-slate-900 dark:text-slate-200 mb-2">Need to get up to speed?</h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+          <h3 className="text-lg font-medium text-slate-900 dark:text-foreground mb-2">Need to get up to speed?</h3>
+          <p className="text-sm text-slate-500 dark:text-muted-foreground mb-4">
             Generate an AI Context Capsule to instantly summarize active decisions, open blockers, and pending tasks in this space.
           </p>
           <button
@@ -131,7 +131,7 @@ export default function ContextCapsule({ spaceId, hasFullIntelligence }) {
         </div>
       ) : (
         <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2">
-          <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-700/50 pb-3">
+          <div className="flex justify-between items-center border-b border-slate-200 dark:border-border/50 pb-3">
             <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-indigo-500" /> Context Capsule
             </h3>
@@ -150,13 +150,13 @@ export default function ContextCapsule({ spaceId, hasFullIntelligence }) {
                 <Brain className="w-4 h-4 text-indigo-500" />
                 <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">AI Summary</span>
               </div>
-              <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{capsule.aiNarrative}</p>
+              <p className="text-sm text-slate-700 dark:text-foreground leading-relaxed">{capsule.aiNarrative}</p>
             </div>
           )}
 
           {/* Active Decisions */}
           <div>
-            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-slate-700 dark:text-foreground mb-2 flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-emerald-500" /> Active Decisions
             </h4>
             {capsule.decisions.length === 0 ? (
@@ -164,7 +164,7 @@ export default function ContextCapsule({ spaceId, hasFullIntelligence }) {
             ) : (
               <ul className="space-y-1.5">
                 {capsule.decisions.map(d => (
-                  <li key={d.id} className="text-sm text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900/40 p-2 rounded-lg border border-slate-100 dark:border-slate-700/30">
+                  <li key={d.id} className="text-sm text-slate-700 dark:text-foreground bg-white dark:bg-card/40 p-2 rounded-lg border border-slate-100 dark:border-border/30">
                     {d.decision_text}
                   </li>
                 ))}
@@ -174,7 +174,7 @@ export default function ContextCapsule({ spaceId, hasFullIntelligence }) {
 
           {/* Open Blockers */}
           <div>
-            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-slate-700 dark:text-foreground mb-2 flex items-center gap-2">
               <ShieldAlert className="w-4 h-4 text-amber-500" /> Open Blockers
             </h4>
             {capsule.blockers.length === 0 ? (
@@ -192,7 +192,7 @@ export default function ContextCapsule({ spaceId, hasFullIntelligence }) {
 
           {/* Open Tasks */}
           <div>
-            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-slate-700 dark:text-foreground mb-2 flex items-center gap-2">
               <FileText className="w-4 h-4 text-blue-500" /> Open Action Items
             </h4>
             {capsule.tasks.length === 0 ? (
@@ -200,7 +200,7 @@ export default function ContextCapsule({ spaceId, hasFullIntelligence }) {
             ) : (
               <ul className="space-y-1.5">
                 {capsule.tasks.map(t => (
-                  <li key={t.id} className="text-sm text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900/40 p-2 rounded-lg border border-slate-100 dark:border-slate-700/30">
+                  <li key={t.id} className="text-sm text-slate-700 dark:text-foreground bg-white dark:bg-card/40 p-2 rounded-lg border border-slate-100 dark:border-border/30">
                     {t.title}
                   </li>
                 ))}

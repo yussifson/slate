@@ -492,7 +492,7 @@ export default function Tasks() {
                 </p>
               </div>
               <div className="z-10 mt-auto">
-                <p className={`text-sm font-semibold tracking-wide uppercase ${bg.includes('emerald-500') ? 'text-emerald-50' : 'text-slate-500 dark:text-slate-400'}`}>
+                <p className={`text-sm font-semibold tracking-wide uppercase ${bg.includes('emerald-500') ? 'text-emerald-50' : 'text-slate-500 dark:text-muted-foreground'}`}>
                   {label} Tasks
                 </p>
               </div>
@@ -531,7 +531,7 @@ export default function Tasks() {
         {isLoading ? (
           <div className="col-span-full py-12 text-center text-slate-500">Loading tasks...</div>
         ) : filtered.length === 0 ? (
-          <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+          <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-slate-300 dark:border-border">
             <ListChecks className="w-12 h-12 mx-auto text-slate-400 mb-3" />
             <h3 className="text-lg font-medium">No tasks yet</h3>
             <p className="text-slate-500 text-sm">Create your first task to get started.</p>
@@ -559,8 +559,8 @@ export default function Tasks() {
               },
               cancelled: { 
                 bg: "bg-slate-50 dark:bg-card/50", 
-                border: "border-slate-200 dark:border-slate-800", 
-                accent: "bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-400",
+                border: "border-slate-200 dark:border-border", 
+                accent: "bg-slate-200 text-slate-700 dark:bg-secondary dark:text-muted-foreground",
                 indicator: "bg-slate-400"
               },
             }[row.status] || { bg: "bg-card", border: "border-border", accent: "bg-muted text-muted-foreground", indicator: "bg-slate-300" };
@@ -579,7 +579,7 @@ export default function Tasks() {
                         {row.title}
                       </h3>
                       {row.case_title && (
-                        <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5 flex items-center gap-1">
+                        <p className="text-xs font-medium text-slate-500 dark:text-muted-foreground mt-1.5 flex items-center gap-1">
                           <AlertCircle className="w-3 h-3" /> {row.case_title}
                         </p>
                       )}
@@ -617,11 +617,11 @@ export default function Tasks() {
                 {/* Bottom Section */}
                 <div className="pt-4 mt-auto border-t border-black/5 dark:border-white/5">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400">
+                    <div className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-muted-foreground">
                       <Calendar className="w-3.5 h-3.5" />
                       {row.due_date ? format(new Date(row.due_date), "MMM d, yyyy") : "No due date"}
                     </div>
-                    <div className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400">
+                    <div className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-muted-foreground">
                       <Users className="w-3.5 h-3.5" />
                       <span className="truncate max-w-[100px]">
                         {row.assignees?.length > 0 ? row.assignees.map(a => a.full_name).join(", ") : "Unassigned"}

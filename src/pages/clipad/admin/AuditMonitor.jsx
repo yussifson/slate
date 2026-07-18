@@ -168,7 +168,7 @@ export default function AuditMonitor() {
       {/* Stats bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: 'Total Events', value: filteredLogs.length, color: 'text-slate-700 dark:text-slate-200' },
+          { label: 'Total Events', value: filteredLogs.length, color: 'text-slate-700 dark:text-foreground' },
           { label: 'Logins', value: filteredLogs.filter(l => l.action === 'login').length, color: 'text-blue-500' },
           { label: 'Plan Upgrades', value: filteredLogs.filter(l => l.action === 'plan_upgrade').length, color: 'text-emerald-500' },
           { label: 'Errors', value: filteredLogs.filter(l => l.action === 'error').length, color: 'text-red-500' },
@@ -184,7 +184,7 @@ export default function AuditMonitor() {
       <div className="border border-border rounded-xl bg-card overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-slate-50 dark:bg-slate-900/50">
+            <TableRow className="bg-slate-50 dark:bg-card/50">
               <TableHead className="w-36"><Clock className="w-3.5 h-3.5 inline mr-1" />Timestamp</TableHead>
               <TableHead><User className="w-3.5 h-3.5 inline mr-1" />User</TableHead>
               <TableHead><Building2 className="w-3.5 h-3.5 inline mr-1" />Company</TableHead>
@@ -204,7 +204,7 @@ export default function AuditMonitor() {
               filteredLogs.map((log) => (
                 <TableRow key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                   <TableCell className="text-xs text-slate-500 whitespace-nowrap align-top pt-4">
-                    <div className="font-medium text-slate-700 dark:text-slate-300">
+                    <div className="font-medium text-slate-700 dark:text-foreground">
                       {format(new Date(log.created_at), 'MMM d, yyyy')}
                     </div>
                     <div className="text-slate-400 text-[11px]">
@@ -215,7 +215,7 @@ export default function AuditMonitor() {
                     </div>
                   </TableCell>
                   <TableCell className="align-top pt-4">
-                    <div className="font-semibold text-sm text-slate-800 dark:text-slate-200">
+                    <div className="font-semibold text-sm text-slate-800 dark:text-foreground">
                       {log.user_name || 'Unknown User'}
                     </div>
                     <div className="text-xs text-muted-foreground font-mono mt-0.5">
@@ -232,12 +232,12 @@ export default function AuditMonitor() {
                     <ActionBadge action={log.action} />
                   </TableCell>
                   <TableCell className="align-top pt-4 max-w-[200px]">
-                    <div className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
+                    <div className="text-xs text-slate-600 dark:text-muted-foreground line-clamp-2">
                       {log.details || '—'}
                     </div>
                   </TableCell>
                   <TableCell className="align-top pt-4">
-                    <div className="text-xs font-mono text-slate-600 dark:text-slate-400">
+                    <div className="text-xs font-mono text-slate-600 dark:text-muted-foreground">
                       {log.ip_address || <span className="text-slate-300 dark:text-slate-600">—</span>}
                     </div>
                     {log.location && (

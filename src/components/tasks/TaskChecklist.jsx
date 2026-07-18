@@ -69,7 +69,7 @@ export default function TaskChecklist({ taskId }) {
             </div>
 
             {/* Progress bar */}
-            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 mb-4 overflow-hidden">
+            <div className="w-full bg-slate-100 dark:bg-secondary rounded-full h-1.5 mb-4 overflow-hidden">
                 <div 
                     className="bg-primary h-1.5 rounded-full transition-all duration-300" 
                     style={{ width: `${progress}%` }}
@@ -84,7 +84,7 @@ export default function TaskChecklist({ taskId }) {
                             onCheckedChange={(checked) => toggleMutation.mutate({ id: item.id, is_completed: checked })}
                             className="mt-0.5"
                         />
-                        <span className={`flex-1 text-sm ${(item.is_completed === 'true' || item.is_completed === true) ? 'line-through text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
+                        <span className={`flex-1 text-sm ${(item.is_completed === 'true' || item.is_completed === true) ? 'line-through text-slate-400' : 'text-slate-700 dark:text-foreground'}`}>
                             {item.title}
                         </span>
                         <Button 
@@ -99,7 +99,7 @@ export default function TaskChecklist({ taskId }) {
                 ))}
             </div>
 
-            <form onSubmit={handleAdd} className="flex items-center gap-2 mt-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <form onSubmit={handleAdd} className="flex items-center gap-2 mt-4 pt-2 border-t border-slate-100 dark:border-border">
                 <Input 
                     value={newItem}
                     onChange={(e) => setNewItem(e.target.value)}

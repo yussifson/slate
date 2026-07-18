@@ -90,7 +90,7 @@ export default function SHSApplicantReview() {
  {loading ? (
  <div className="p-8 text-center text-primary/30 text-sm">Loading applications...</div>
  ) : filteredApplicants.length === 0 ? (
- <div className="p-8 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400 text-sm">No pending applications found.</div>
+ <div className="p-8 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground text-sm">No pending applications found.</div>
  ) : (
  <div className="p-2 space-y-1">
  {filteredApplicants.map(app => (
@@ -100,17 +100,17 @@ export default function SHSApplicantReview() {
  className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
  selectedApplicant?.id === app.id 
  ? 'bg-primary dark:bg-primary text-white -emerald-500/20' 
- : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
+ : 'hover:bg-slate-50 dark:bg-secondary/50 dark:bg-secondary text-slate-700 dark:text-foreground dark:text-foreground'
 }`}
  >
  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold shrink-0 ${
- selectedApplicant?.id === app.id ? 'bg-white dark:bg-card/40 dark:bg-card/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
+ selectedApplicant?.id === app.id ? 'bg-white dark:bg-card/40 dark:bg-card/20' : 'bg-slate-100 dark:bg-secondary text-primary dark:text-primary/70'
 }`}>
  {app.data?.beceAggregate || '?'}
  </div>
  <div className="overflow-hidden">
  <p className="font-semibold truncate">{app.title}</p>
- <p className={`text-xs truncate ${selectedApplicant?.id === app.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400'}`}>
+ <p className={`text-xs truncate ${selectedApplicant?.id === app.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground'}`}>
  {app.case_number} • {app.data?.programChoice1}
  </p>
  </div>
@@ -132,12 +132,12 @@ export default function SHSApplicantReview() {
  <div>
  <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">{selectedApplicant.title}</h2>
  <div className="flex items-center gap-3 mt-2 text-sm font-medium">
- <Badge variant="outline" className="border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">{selectedApplicant.case_number}</Badge>
- <span className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Applied: {new Date(selectedApplicant.created_date).toLocaleDateString()}</span>
+ <Badge variant="outline" className="border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary">{selectedApplicant.case_number}</Badge>
+ <span className="text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">Applied: {new Date(selectedApplicant.created_date).toLocaleDateString()}</span>
  </div>
  </div>
  <div className="text-right">
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1 tracking-[0.04em]">BECE Aggregate</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground font-semibold uppercase tracking-wider mb-1 tracking-[0.04em]">BECE Aggregate</p>
  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-100 text-amber-700 text-2xl font-black  tracking-[-0.02em]">
  {selectedApplicant.data?.beceAggregate || 'N/A'}
  </div>
@@ -150,17 +150,17 @@ export default function SHSApplicantReview() {
  <h3 className="font-semibold text-primary dark:text-primary/70 flex items-center gap-2">
  <FileText className="w-4 h-4" /> Applicant Details
  </h3>
- <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 space-y-4">
+ <div className="p-5 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 space-y-4">
  <div>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Gender</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">Gender</p>
  <p className="font-medium text-slate-800 dark:text-slate-100">{selectedApplicant.data?.gender || 'N/A'}</p>
  </div>
  <div>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Date of Birth</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">Date of Birth</p>
  <p className="font-medium text-slate-800 dark:text-slate-100">{selectedApplicant.data?.dob || 'N/A'}</p>
  </div>
  <div>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">JHS Attended</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">JHS Attended</p>
  <p className="font-medium text-slate-800 dark:text-slate-100">{selectedApplicant.data?.jhsAttended || 'N/A'}</p>
  </div>
  </div>
@@ -176,15 +176,15 @@ export default function SHSApplicantReview() {
  <p className="font-semibold text-primary/70 text-lg">{selectedApplicant.data?.programChoice1 || 'None'}</p>
  </div>
  <div className="pt-3 border-t border-primary/40">
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider tracking-[0.04em]">2nd Choice</p>
- <p className="font-medium text-slate-700 dark:text-slate-300 dark:text-slate-200">{selectedApplicant.data?.programChoice2 || 'None'}</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground font-semibold uppercase tracking-wider tracking-[0.04em]">2nd Choice</p>
+ <p className="font-medium text-slate-700 dark:text-foreground dark:text-foreground">{selectedApplicant.data?.programChoice2 || 'None'}</p>
  </div>
  </div>
  </div>
  </div>
 
  {/* Decision Zone */}
- <div className="mt-8 p-6 rounded-2xl border-2 border-dashed border-primary/20 dark:border-primary/40 bg-primary/30 dark:bg-slate-800/30">
+ <div className="mt-8 p-6 rounded-2xl border-2 border-dashed border-primary/20 dark:border-primary/40 bg-primary/30 dark:bg-secondary/30">
  <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-center mb-6">Make Admission Decision</h3>
  <div className="flex flex-col sm:flex-row gap-4 justify-center">
  <Button 
@@ -200,7 +200,7 @@ export default function SHSApplicantReview() {
  <CheckCircle2 className="w-5 h-5 mr-2" /> Admit to 1st Choice
  </Button>
  </div>
- <p className="text-center text-xs text-slate-400 dark:text-slate-500 dark:text-slate-400 mt-4 tracking-[0.04em]">
+ <p className="text-center text-xs text-slate-400 dark:text-slate-500 dark:text-muted-foreground mt-4 tracking-[0.04em]">
  Once a decision is made, the applicant will be removed from this pending queue.
  </p>
  </div>
@@ -209,11 +209,11 @@ export default function SHSApplicantReview() {
  </ScrollArea>
  ) : (
  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
- <div className="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center mb-6">
+ <div className="w-20 h-20 rounded-full bg-slate-50 dark:bg-secondary/50 dark:bg-secondary flex items-center justify-center mb-6">
  <FileText className="w-10 h-10 text-primary/30" />
  </div>
- <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Applicant Selected</h3>
- <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 max-w-sm mt-2">
+ <h3 className="text-xl font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No Applicant Selected</h3>
+ <p className="text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground max-w-sm mt-2">
  Select a pending applicant from the queue to review their BECE aggregate and programme choices.
  </p>
  </div>

@@ -9,7 +9,7 @@ export default function AccountTutorials() {
     <div className="min-h-screen bg-slate-50 dark:bg-card flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md animate-in fade-in zoom-in-95 duration-500">
         
-        <div className="bg-white dark:bg-card p-8 md:p-10 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-black/20 border border-slate-100 dark:border-slate-800 text-center relative overflow-hidden">
+        <div className="bg-white dark:bg-card p-8 md:p-10 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-black/20 border border-slate-100 dark:border-border text-center relative overflow-hidden">
           
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-pink-500/5 dark:from-orange-500/10 dark:to-pink-500/10 pointer-events-none" />
@@ -23,7 +23,7 @@ export default function AccountTutorials() {
               Tutorials & Guides
             </h1>
             
-            <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+            <p className="text-slate-600 dark:text-muted-foreground mb-8 leading-relaxed">
               We're currently producing high-quality video tutorials and step-by-step guides for all Optavel ecosystem products. They will be available here soon.
             </p>
             
@@ -33,7 +33,7 @@ export default function AccountTutorials() {
             
             <button 
               onClick={() => navigate(-1)}
-              className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors font-medium"
+              className="inline-flex items-center gap-2 text-slate-600 dark:text-foreground hover:text-slate-900 dark:hover:text-white transition-colors font-medium"
             >
               <ArrowLeft className="w-4 h-4" /> Go Back
             </button>

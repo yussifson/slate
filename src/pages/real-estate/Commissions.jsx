@@ -98,7 +98,7 @@ const [stats, setStats] = useState({
 
         {/* Key Metrics */}
         <div className="grid grid-cols-3 gap-6 mb-8">
-          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-center justify-between">
                 <div>
@@ -113,7 +113,7 @@ const [stats, setStats] = useState({
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-center justify-between">
                 <div>
@@ -128,7 +128,7 @@ const [stats, setStats] = useState({
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-center justify-between">
                 <div>
@@ -179,8 +179,8 @@ const [stats, setStats] = useState({
         </div>
 
         {/* Commissions List */}
-        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5" />

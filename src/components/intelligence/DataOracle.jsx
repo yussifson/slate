@@ -91,7 +91,7 @@ export default function DataOracle() {
   return (
     <div className="flex flex-col bg-card dark:bg-background/40 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 overflow-hidden shadow-xl shadow-slate-200/20 dark:shadow-none" style={{ minHeight: '560px', maxHeight: '72vh' }}>
       {/* Header */}
-      <div className="flex items-center gap-4 px-6 py-5 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900/20 shrink-0">
+      <div className="flex items-center gap-4 px-6 py-5 border-b border-slate-200 dark:border-border bg-gradient-to-r from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900/20 shrink-0">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md shadow-blue-500/20">
           <Database className="w-5 h-5 text-white" />
         </div>
@@ -112,7 +112,7 @@ export default function DataOracle() {
             <div className={`w-8 h-8 flex-shrink-0 rounded-lg flex items-center justify-center shadow-sm ${msg.role === 'user' ? 'bg-primary' : 'bg-blue-600'}`}>
               {msg.role === 'user' ? <User className="w-4 h-4 text-white" /> : <Bot className="w-4 h-4 text-white" />}
             </div>
-            <div className={`px-4 py-3 rounded-xl max-w-[78%] text-sm ${msg.role === 'user' ? 'bg-primary text-white rounded-tr-none' : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-tl-none shadow-sm'}`}>
+            <div className={`px-4 py-3 rounded-xl max-w-[78%] text-sm ${msg.role === 'user' ? 'bg-primary text-white rounded-tr-none' : 'bg-white dark:bg-secondary border border-slate-200 dark:border-border text-slate-800 dark:text-foreground rounded-tl-none shadow-sm'}`}>
               <div className="space-y-0.5">{renderContent(msg.content)}</div>
             </div>
           </div>
@@ -122,7 +122,7 @@ export default function DataOracle() {
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-sm">
               <Sparkles className="w-4 h-4 text-white animate-pulse" />
             </div>
-            <div className="px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-tl-none shadow-sm flex items-center gap-2 text-sm text-slate-500">
+            <div className="px-4 py-3 rounded-xl bg-white dark:bg-secondary border border-slate-200 dark:border-border rounded-tl-none shadow-sm flex items-center gap-2 text-sm text-slate-500">
               <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
               <span>Querying database...</span>
             </div>
@@ -138,7 +138,7 @@ export default function DataOracle() {
             <button
               key={label}
               onClick={() => handleQuery(q)}
-              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-400 hover:text-blue-600 transition-colors shadow-sm"
+              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-white dark:bg-secondary border border-slate-200 dark:border-border text-slate-600 dark:text-foreground hover:border-blue-400 hover:text-blue-600 transition-colors shadow-sm"
             >
               <Icon className="w-3 h-3" /> {label}
             </button>
@@ -147,13 +147,13 @@ export default function DataOracle() {
       )}
 
       {/* Input */}
-      <div className="px-5 py-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-background shrink-0">
+      <div className="px-5 py-4 border-t border-slate-200 dark:border-border bg-white dark:bg-background shrink-0">
         <form onSubmit={(e) => { e.preventDefault(); handleQuery(); }} className="flex gap-2">
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Ask anything about your data…"
-            className="flex-1 text-sm bg-slate-50 dark:bg-card border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 disabled:opacity-60"
+            className="flex-1 text-sm bg-slate-50 dark:bg-card border border-slate-200 dark:border-border rounded-xl px-4 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 disabled:opacity-60"
             disabled={isProcessing}
           />
           <button

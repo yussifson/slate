@@ -117,7 +117,7 @@ export default function SHSCourses() {
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
  <Card className="rounded-2xl border-none bg-white dark:bg-card/40 dark:bg-card/60 dark:bg-card/60 backdrop-blur-xl ring-1 ring-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
  <Layers className="w-6 h-6" />
  </div>
  <div>
@@ -157,14 +157,14 @@ export default function SHSCourses() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-card/40 dark:bg-card/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Course Offerings</CardTitle>
  </div>
  
  <div className="relative w-full sm:w-64">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-muted-foreground" />
  <Input 
  placeholder="Search course, class, or teacher..." 
  className="pl-9 h-9 bg-white dark:bg-card/40 dark:bg-card border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
@@ -176,19 +176,19 @@ export default function SHSCourses() {
  </CardHeader>
  <CardContent className="p-0">
  {loading ? (
- <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading courses...</div>
+ <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-muted-foreground">Loading courses...</div>
  ) : filteredCourses.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary mx-auto flex items-center justify-center mb-4">
  <Layers className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No courses defined</h3>
- <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Map a subject to a class to create a course offering.</p>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-foreground dark:text-foreground">No courses defined</h3>
+ <p className="text-sm text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground">Map a subject to a class to create a course offering.</p>
  </div>
  ) : (
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left">
- <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
+ <thead className="bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/80 text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
  <tr>
  <th className="px-6 py-4 rounded-tl-xl">Course Name</th>
  <th className="px-6 py-4">Class</th>
@@ -200,20 +200,20 @@ export default function SHSCourses() {
  </thead>
  <tbody className="divide-y divide-slate-100">
  {filteredCourses.map((course) => (
- <tr key={course.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors group">
+ <tr key={course.id} className="hover:bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/50 dark:bg-secondary/50 transition-colors group">
  <td className="px-6 py-4 font-semibold text-slate-800 dark:text-slate-100">
  {course.title}
- <div className="text-[10px] font-normal text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5 tracking-[0.04em]">{course.case_number}</div>
+ <div className="text-[10px] font-normal text-slate-400 dark:text-slate-500 dark:text-muted-foreground uppercase tracking-wider mt-0.5 tracking-[0.04em]">{course.case_number}</div>
  </td>
  <td className="px-6 py-4 font-semibold text-primary dark:text-primary/70">
  {course.data?.className}
  </td>
- <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
+ <td className="px-6 py-4 text-slate-600 dark:text-foreground">
  {course.data?.subjectName}
  </td>
  <td className="px-6 py-4">
  <Badge variant="outline" className={
- course.data?.type === 'Core' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20' :
+ course.data?.type === 'Core' ? 'bg-slate-50 dark:bg-secondary/50 text-primary/90 border-primary/20' :
  'bg-amber-50 text-amber-700 border-amber-200'
 }>
  {course.data?.type || 'Core'}
@@ -221,16 +221,16 @@ export default function SHSCourses() {
  </td>
  <td className="px-6 py-4">
  <div className="flex items-center gap-2">
- <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">
+ <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-semibold text-slate-500 dark:text-muted-foreground dark:text-muted-foreground dark:text-slate-500 dark:text-muted-foreground tracking-[0.04em]">
  {(course.data?.teacherName || 'U').charAt(0)}
  </div>
- <span className={course.data?.teacherName === 'Unassigned' ? 'text-slate-400 dark:text-slate-500 dark:text-slate-400 italic' : 'text-slate-700 dark:text-slate-300 dark:text-slate-200 font-medium'}>
+ <span className={course.data?.teacherName === 'Unassigned' ? 'text-slate-400 dark:text-slate-500 dark:text-muted-foreground italic' : 'text-slate-700 dark:text-foreground dark:text-foreground font-medium'}>
  {course.data?.teacherName}
  </span>
  </div>
  </td>
  <td className="px-6 py-4 text-right">
- <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
+ <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-secondary/50 dark:bg-secondary">
  Edit
  </Button>
  </td>
@@ -254,11 +254,11 @@ export default function SHSCourses() {
  </DialogHeader>
  </div>
  
- <ScrollArea className="max-h-[60vh] p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
+ <ScrollArea className="max-h-[60vh] p-6 bg-slate-50 dark:bg-secondary/50 dark:bg-secondary">
  <div className="space-y-4">
  
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]">
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]">
  <BookOpen className="w-4 h-4 text-primary dark:text-primary/70" /> Subject
  </label>
  <select 
@@ -274,7 +274,7 @@ export default function SHSCourses() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]">
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]">
  <Users className="w-4 h-4 text-primary" /> Target Class
  </label>
  <select 
@@ -290,7 +290,7 @@ export default function SHSCourses() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]">
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]">
  <GraduationCap className="w-4 h-4 text-amber-600" /> Course Teacher
  </label>
  <select 
@@ -306,9 +306,9 @@ export default function SHSCourses() {
  </div>
  
  <div className="space-y-2">
- <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Academic Year</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-foreground uppercase tracking-wider tracking-[0.04em]">Academic Year</label>
  <Input 
- className="bg-slate-100 dark:bg-slate-800 border-primary/40 dark:border-primary/40 rounded-xl h-11"
+ className="bg-slate-100 dark:bg-secondary border-primary/40 dark:border-primary/40 rounded-xl h-11"
  value={newCourse.academicYear}
  readOnly
  />
@@ -318,7 +318,7 @@ export default function SHSCourses() {
  </ScrollArea>
  
  <div className="p-4 bg-white dark:bg-card/40 dark:bg-card border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-foreground">
  Cancel
  </Button>
  <Button 

@@ -88,12 +88,12 @@ export default function CliPadSettings() {
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
       <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-background page-enter/80 backdrop-blur-xl border-b border-border">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
-          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center text-primary">
+          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-secondary border border-slate-200 dark:border-border shadow-sm flex items-center justify-center text-primary">
             <CliPadLogo size={20} />
           </div>
           <span className="text-lg font-bold tracking-tight">Settings</span>
         </div>
-        <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all hover:-translate-y-0.5"><ArrowLeft className="w-4 h-4 text-slate-500" /> Dashboard</button>
+        <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-foreground transition-all hover:-translate-y-0.5"><ArrowLeft className="w-4 h-4 text-slate-500" /> Dashboard</button>
       </nav>
 
       <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
@@ -118,53 +118,53 @@ export default function CliPadSettings() {
             {isAdmin(user) && activeTab === 'team' && (
         <>
         {/* Enterprise Features */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 mb-8 shadow-sm">
+        <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-3xl p-6 sm:p-10 mb-8 shadow-sm">
           <div className="flex items-center gap-4 mb-8">
             <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500 shadow-sm shrink-0">
               <Shield className="w-6 h-6" />
             </div>
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">Enterprise Features</h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Advanced capabilities for scaling organizations.</p>
+              <p className="text-sm text-slate-500 dark:text-muted-foreground mt-1">Advanced capabilities for scaling organizations.</p>
             </div>
           </div>
           
           <div className="space-y-6">
-            <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between flex-wrap gap-4">
+            <div className="p-5 rounded-2xl border border-slate-200 dark:border-border bg-slate-50 dark:bg-secondary/50 flex items-center justify-between flex-wrap gap-4">
               <div>
                 <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">Branded Meeting Rooms {hasFeature(plan, 'hasBrandedRooms') && <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-emerald-500/10 text-emerald-600">Active</span>}</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Customize your clipboard meeting rooms with company logos and colors.</p>
+                <p className="text-sm text-slate-500 dark:text-muted-foreground mt-1">Customize your clipboard meeting rooms with company logos and colors.</p>
               </div>
               {!hasFeature(plan, 'hasBrandedRooms') && <button onClick={() => setActiveTab('billing')} className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors">Upgrade</button>}
-              {hasFeature(plan, 'hasBrandedRooms') && <button onClick={() => toast({title: "Branding", description: "Company branding is automatically applied from your company profile settings."})} className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">Configure</button>}
+              {hasFeature(plan, 'hasBrandedRooms') && <button onClick={() => toast({title: "Branding", description: "Company branding is automatically applied from your company profile settings."})} className="px-4 py-2 rounded-xl bg-white dark:bg-secondary border border-slate-200 dark:border-border text-slate-700 dark:text-foreground text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">Configure</button>}
             </div>
 
-            <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between flex-wrap gap-4">
+            <div className="p-5 rounded-2xl border border-slate-200 dark:border-border bg-slate-50 dark:bg-secondary/50 flex items-center justify-between flex-wrap gap-4">
               <div>
                 <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2"><Headphones className="w-4 h-4"/> SLA & Dedicated Support {hasFeature(plan, 'hasSLA') && <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-emerald-500/10 text-emerald-600">Active</span>}</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">24/7 priority support and guaranteed uptime SLA.</p>
+                <p className="text-sm text-slate-500 dark:text-muted-foreground mt-1">24/7 priority support and guaranteed uptime SLA.</p>
               </div>
               {!hasFeature(plan, 'hasSLA') && <button onClick={() => setActiveTab('billing')} className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors">Upgrade</button>}
-              {hasFeature(plan, 'hasSLA') && <button onClick={() => { window.location.href = "mailto:support@optavel.com"; toast({title: "Support", description: "Opening your email client to contact our enterprise support team."})}} className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">Contact Support</button>}
+              {hasFeature(plan, 'hasSLA') && <button onClick={() => { window.location.href = "mailto:support@optavel.com"; toast({title: "Support", description: "Opening your email client to contact our enterprise support team."})}} className="px-4 py-2 rounded-xl bg-white dark:bg-secondary border border-slate-200 dark:border-border text-slate-700 dark:text-foreground text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">Contact Support</button>}
             </div>
 
-                        <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between flex-wrap gap-4">
+                        <div className="p-5 rounded-2xl border border-slate-200 dark:border-border bg-slate-50 dark:bg-secondary/50 flex items-center justify-between flex-wrap gap-4">
               <div>
                 <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2"><Lock className="w-4 h-4"/> SSO & Compliance Recording {hasFeature(plan, 'hasComplianceRecording') && <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-emerald-500/10 text-emerald-600">Active</span>}</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Single Sign-On enforcement and mandatory compliance recordings.</p>
+                <p className="text-sm text-slate-500 dark:text-muted-foreground mt-1">Single Sign-On enforcement and mandatory compliance recordings.</p>
               </div>
               {!hasFeature(plan, 'hasComplianceRecording') && <button onClick={() => setActiveTab('billing')} className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors">Upgrade</button>}
-              {hasFeature(plan, 'hasComplianceRecording') && <button onClick={() => toast({title: "SSO Config", description: "SSO settings have been verified and applied to your company workspace."})} className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">Configure</button>}
+              {hasFeature(plan, 'hasComplianceRecording') && <button onClick={() => toast({title: "SSO Config", description: "SSO settings have been verified and applied to your company workspace."})} className="px-4 py-2 rounded-xl bg-white dark:bg-secondary border border-slate-200 dark:border-border text-slate-700 dark:text-foreground text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">Configure</button>}
             </div>
 
 
-            <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between flex-wrap gap-4">
+            <div className="p-5 rounded-2xl border border-slate-200 dark:border-border bg-slate-50 dark:bg-secondary/50 flex items-center justify-between flex-wrap gap-4">
               <div>
                 <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2"><Puzzle className="w-4 h-4"/> Custom Integrations <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-amber-500/10 text-amber-600">Coming Soon</span></h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Connect CliPad directly into your proprietary internal systems.</p>
+                <p className="text-sm text-slate-500 dark:text-muted-foreground mt-1">Connect CliPad directly into your proprietary internal systems.</p>
               </div>
               {!hasFeature(plan, 'hasCustomIntegrations') && <button onClick={() => setActiveTab('billing')} className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors">Upgrade</button>}
-              {hasFeature(plan, 'hasCustomIntegrations') && <button className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-bold disabled:opacity-50" disabled>Configure</button>}
+              {hasFeature(plan, 'hasCustomIntegrations') && <button className="px-4 py-2 rounded-xl bg-white dark:bg-secondary border border-slate-200 dark:border-border text-slate-700 dark:text-foreground text-sm font-bold disabled:opacity-50" disabled>Configure</button>}
             </div>
           </div>
         </div>

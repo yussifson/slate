@@ -171,12 +171,12 @@ export default function GuestPortal() {
       {chatLog.map((msg, i) => (
         <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
           {msg.role === 'ai' && <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0"><Bot className="w-3 h-3 text-primary"/></div>}
-          <div className={`p-2 rounded-lg text-sm max-w-[80%] ${msg.role === 'user' ? 'bg-primary text-white' : 'bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8'}`}>
+          <div className={`p-2 rounded-lg text-sm max-w-[80%] ${msg.role === 'user' ? 'bg-primary text-white' : 'bg-white dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8'}`}>
             {msg.text}
           </div>
         </div>
       ))}
-      {isChatting && <div className="flex gap-2"><div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0"><Bot className="w-3 h-3 text-primary"/></div><div className="p-2 rounded-lg text-sm bg-white dark:bg-slate-800 border-[0.5px] animate-pulse">...</div></div>}
+      {isChatting && <div className="flex gap-2"><div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0"><Bot className="w-3 h-3 text-primary"/></div><div className="p-2 rounded-lg text-sm bg-white dark:bg-secondary border-[0.5px] animate-pulse">...</div></div>}
     </div>
     <div className="flex gap-2">
       <Input value={chatMsg} onChange={e => setChatMsg(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSendChat()} placeholder="Ask for towels, late checkout..." className="flex-1" />

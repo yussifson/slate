@@ -374,10 +374,10 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
 
       {/* Sidebar (Right) */}
       {sidebarOpen && (
-      <div className="flex flex-col h-[500px] bg-slate-100/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 animate-in slide-in-from-right-8 duration-300">
+      <div className="flex flex-col h-[500px] bg-slate-100/50 dark:bg-card/50 rounded-2xl border border-slate-200 dark:border-border p-4 animate-in slide-in-from-right-8 duration-300">
         
         {/* Tabs */}
-        <div className="flex items-center gap-2 mb-4 bg-slate-200/50 dark:bg-slate-800/50 p-1 rounded-xl">
+        <div className="flex items-center gap-2 mb-4 bg-slate-200/50 dark:bg-secondary/50 p-1 rounded-xl">
           <button 
             onClick={() => setActiveTab('comments')}
             className={`flex-1 py-1.5 text-sm font-bold rounded-lg transition-all ${activeTab === 'comments' ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
@@ -404,7 +404,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
                 </div>
               ) : (
                 comments.map(c => (
-                  <div key={c.id} className="bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                  <div key={c.id} className="bg-white dark:bg-secondary p-3 rounded-xl shadow-sm border border-slate-200 dark:border-border">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs font-bold text-slate-900 dark:text-white">
                         {c.author?.full_name || 'User'}
@@ -416,7 +416,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
                         @{formatTime(c.timestamp_seconds)}
                       </button>
                     </div>
-                    <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">{c.content}</p>
+                    <p className="text-sm text-slate-600 dark:text-foreground leading-snug">{c.content}</p>
                   </div>
                 ))
               )}
@@ -429,7 +429,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
                     value={commentText}
                     onChange={e => setCommentText(e.target.value)}
                     placeholder={`Comment at ${formatTime(currentTime)}...`}
-                    className="w-full pl-4 pr-24 py-3 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-primary/50 shadow-sm transition-all"
+                    className="w-full pl-4 pr-24 py-3 rounded-xl bg-white dark:bg-background border border-slate-200 dark:border-border text-sm focus:outline-none focus:border-primary/50 shadow-sm transition-all"
                   />
                   <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                     <DictationButton onResult={txt => setCommentText(prev => (prev + ' ' + txt).trim())} isRecording={isRecording} setIsRecording={setIsRecording} />
@@ -454,12 +454,12 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
                 transcripts.map((t, idx) => (
                   <div key={t.id || idx} className="group">
                     <div className="flex justify-between items-baseline mb-0.5">
-                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{t.speaker || 'Speaker'}</span>
+                      <span className="text-xs font-bold text-slate-700 dark:text-foreground">{t.speaker || 'Speaker'}</span>
                       <button onClick={() => seekTo(t.start_time)} className="text-[10px] text-slate-400 group-hover:text-primary transition-colors font-mono">
                         {formatTime(t.start_time)}
                       </button>
                     </div>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{t.text}</p>
+                    <p className="text-sm text-slate-600 dark:text-muted-foreground leading-relaxed">{t.text}</p>
                   </div>
                 ))
               )}
@@ -467,7 +467,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
             {transcripts.length > 0 && (
               <button 
                 onClick={handleExportTranscript}
-                className="w-full flex justify-center items-center gap-2 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-bold text-slate-700 dark:text-slate-300 transition-colors shadow-sm"
+                className="w-full flex justify-center items-center gap-2 py-2.5 rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-secondary hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-bold text-slate-700 dark:text-foreground transition-colors shadow-sm"
               >
                 <Download className="w-4 h-4" /> Export Transcript
               </button>

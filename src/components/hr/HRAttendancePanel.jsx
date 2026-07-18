@@ -238,7 +238,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
         <TabsContent value="today" className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {boardData.map(s => (
-              <div key={s.id} className="bg-slate-50 dark:bg-slate-800/30 border border-border/50 rounded-2xl p-5 flex flex-col hover:border-emerald-500/30 hover:-translate-y-1 transition-all group relative overflow-hidden">
+              <div key={s.id} className="bg-slate-50 dark:bg-secondary/30 border border-border/50 rounded-2xl p-5 flex flex-col hover:border-emerald-500/30 hover:-translate-y-1 transition-all group relative overflow-hidden">
                 <div className="flex justify-between items-start mb-4 relative z-10">
                   <div className="flex gap-3">
                     <div className="w-10 h-10 rounded-xl bg-white dark:bg-card flex items-center justify-center font-bold text-foreground shadow-sm border border-border/50 shrink-0">
@@ -283,7 +283,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
         </TabsContent>
 
         <TabsContent value="history" className="bg-card border border-border/50 rounded-2xl p-0 shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-border/50 flex flex-wrap gap-4 bg-slate-50/50 dark:bg-slate-800/30">
+          <div className="p-4 border-b border-border/50 flex flex-wrap gap-4 bg-slate-50/50 dark:bg-secondary/30">
             <Select value={historyFilter.status} onValueChange={v => setHistoryFilter({...historyFilter, status: v})}>
               <SelectTrigger className="w-[180px] bg-white dark:bg-card rounded-xl border-border/50 font-semibold"><SelectValue placeholder="All Status" /></SelectTrigger>
               <SelectContent className="rounded-xl">
@@ -313,7 +313,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
             ) : (
               <div className="bg-white dark:bg-card rounded-xl border border-border/50 overflow-hidden shadow-sm">
                 <table className="w-full text-left text-sm">
-                  <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-border/50">
+                  <thead className="bg-slate-50 dark:bg-secondary/50 border-b border-border/50">
                     <tr>
                       <th className="p-4 font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Date</th>
                       <th className="p-4 font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Staff</th>
@@ -331,7 +331,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
                           <td className="p-4 font-semibold text-foreground">{r.date}</td>
                           <td className="p-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-xs">
+                              <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-secondary flex items-center justify-center font-bold text-xs">
                                 {avatarInitials(sname)}
                               </div>
                               <span className="font-bold text-foreground">{sname}</span>

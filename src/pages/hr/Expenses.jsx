@@ -168,7 +168,7 @@ export default function Expenses() {
                   {/* Card Header */}
                   <div className="p-5 border-b border-border/50">
                     <div className="flex justify-between items-start mb-3">
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 dark:bg-secondary dark:text-foreground">
                         {expense.category}
                       </span>
                       <DropdownMenu>
@@ -193,7 +193,7 @@ export default function Expenses() {
                   </div>
 
                   {/* Body & Actions */}
-                  <div className="p-5 flex-1 flex flex-col gap-4 bg-slate-50/50 dark:bg-slate-800/20">
+                  <div className="p-5 flex-1 flex flex-col gap-4 bg-slate-50/50 dark:bg-secondary/20">
                     <div className="flex justify-between items-center bg-white dark:bg-card p-3 rounded-xl border border-border/50 shadow-sm">
                       <span className="text-sm font-semibold text-muted-foreground">Amount</span>
                       <span className="text-lg font-bold text-foreground">{expense.currency} {parseFloat(expense.amount).toLocaleString()}</span>

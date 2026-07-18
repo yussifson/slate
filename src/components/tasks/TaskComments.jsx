@@ -55,7 +55,7 @@ export default function TaskComments({ taskId }) {
                 ) : (
                     sortedComments.map((c) => (
                         <div key={c.id} className="flex gap-3">
-                            <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-secondary flex items-center justify-center shrink-0">
                                 <UserCircle className="w-5 h-5 text-slate-400" />
                             </div>
                             <div className="flex-1">
@@ -67,7 +67,7 @@ export default function TaskComments({ taskId }) {
                                         {c.created_at ? formatDistanceToNow(new Date(c.created_at), { addSuffix: true }) : ''}
                                     </span>
                                 </div>
-                                <div className="mt-1 text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg rounded-tl-none">
+                                <div className="mt-1 text-sm text-slate-700 dark:text-foreground bg-slate-50 dark:bg-secondary/50 p-3 rounded-lg rounded-tl-none">
                                     {c.comment_text}
                                 </div>
                             </div>

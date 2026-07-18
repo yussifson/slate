@@ -130,11 +130,11 @@ export default function GlobalSearch() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="hidden md:flex items-center gap-2 px-3 lg:px-4 h-9 bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 rounded-xl transition-all border border-slate-200 dark:border-slate-700/50 w-48 lg:w-64"
+        className="hidden md:flex items-center gap-2 px-3 lg:px-4 h-9 bg-slate-100 dark:bg-secondary/50 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 rounded-xl transition-all border border-slate-200 dark:border-border/50 w-48 lg:w-64"
       >
         <Search className="w-4 h-4 shrink-0" />
         <span className="text-sm flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis">Search or ask anything...</span>
-        <span className="text-xs font-mono bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded text-slate-400 shrink-0">⌘K</span>
+        <span className="text-xs font-mono bg-white dark:bg-card px-1.5 py-0.5 rounded text-slate-400 shrink-0">⌘K</span>
       </button>
 
       <button onClick={() => setIsOpen(true)} className="md:hidden p-2 text-slate-500">
@@ -142,9 +142,9 @@ export default function GlobalSearch() {
       </button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-3xl p-0 overflow-hidden bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-2xl rounded-3xl gap-0">
+        <DialogContent className="sm:max-w-3xl p-0 overflow-hidden bg-white/80 dark:bg-background/80 backdrop-blur-2xl border border-slate-200/50 dark:border-border/50 shadow-2xl rounded-3xl gap-0">
           {/* Premium Search Input */}
-          <form onSubmit={handleSearch} className="flex items-center px-6 py-5 border-b border-slate-200/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/50">
+          <form onSubmit={handleSearch} className="flex items-center px-6 py-5 border-b border-slate-200/50 dark:border-border/50 bg-slate-50/50 dark:bg-card/50">
             <Search className="w-6 h-6 text-emerald-500 mr-4 shrink-0" />
             <input
               ref={inputRef}
@@ -171,12 +171,12 @@ export default function GlobalSearch() {
                   <h3 className="text-base font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">OrbitFlow AI</h3>
                 </div>
                 {isSynthesizing ? (
-                  <div className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-3 py-2">
+                  <div className="text-sm font-medium text-slate-500 dark:text-muted-foreground flex items-center gap-3 py-2">
                     <Loader2 className="w-4 h-4 animate-spin text-emerald-500" /> OrbitFlow is thinking and searching the workspace...
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    <p className="text-[15px] text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{aiAnswer}</p>
+                    <p className="text-[15px] text-slate-800 dark:text-foreground leading-relaxed font-medium">{aiAnswer}</p>
                     {aiSources.length > 0 && (
                       <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-emerald-500/10 mt-3">
                         <span className="text-[10px] font-bold uppercase text-emerald-600/70 dark:text-emerald-400/70 tracking-widest">Sources:</span>
@@ -204,7 +204,7 @@ export default function GlobalSearch() {
 
             {/* No Results (Only if no AI answer is available and no results) */}
             {results.length === 0 && query && !isSearching && !isSynthesizing && !aiAnswer && (
-              <div className="text-center py-12 text-slate-500 dark:text-slate-400">
+              <div className="text-center py-12 text-slate-500 dark:text-muted-foreground">
                 <Search className="w-12 h-12 mx-auto mb-4 opacity-20" />
                 <p className="text-lg font-medium">No direct matches found</p>
                 <p className="text-sm opacity-70 mt-1">Try rewording your query or asking OrbitFlow a broader question.</p>
@@ -213,9 +213,9 @@ export default function GlobalSearch() {
 
             {/* Empty State */}
             {!query && results.length === 0 && (
-              <div className="text-center py-12 text-slate-500 dark:text-slate-400">
+              <div className="text-center py-12 text-slate-500 dark:text-muted-foreground">
                 <Sparkles className="w-12 h-12 mx-auto mb-4 opacity-20 text-emerald-500" />
-                <p className="text-lg font-semibold text-slate-700 dark:text-slate-300">How can I help you today?</p>
+                <p className="text-lg font-semibold text-slate-700 dark:text-foreground">How can I help you today?</p>
                 <p className="text-sm mt-2 opacity-70 max-w-sm mx-auto">Search for specific documents, action items, or ask questions about recent team decisions.</p>
               </div>
             )}

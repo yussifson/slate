@@ -120,7 +120,7 @@ export default function AdminChatDialog({ open, onOpenChange, targetUser }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl h-[80vh] flex flex-col rounded-2xl border-[0.5px] border-primary/20 bg-white dark:bg-[#15161C] p-0 font-sans overflow-hidden">
+      <DialogContent className="max-w-2xl h-[80vh] flex flex-col rounded-2xl border-[0.5px] border-primary/20 bg-white dark:bg-card p-0 font-sans overflow-hidden">
         <DialogDescription className="sr-only">Support Chat with {targetUser?.full_name || targetUser?.email}</DialogDescription>
         
         <DialogHeader className="p-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/30 flex-shrink-0">
@@ -155,13 +155,13 @@ export default function AdminChatDialog({ open, onOpenChange, targetUser }) {
                 msg.sender === 'system' ? 'justify-center' : 'justify-start'
               }`}>
                 {msg.sender === 'system' ? (
-                  <div className="text-xs text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">
+                  <div className="text-xs text-slate-400 bg-slate-100 dark:bg-secondary px-3 py-1 rounded-full">
                     {msg.text}
                   </div>
                 ) : (
                   <div className={`flex gap-3 max-w-[85%] ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                      msg.sender === 'user' ? 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300' :
+                      msg.sender === 'user' ? 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-foreground' :
                       msg.sender === 'ai' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600' :
                       'bg-purple-100 dark:bg-purple-900/30 text-purple-600'
                     }`}>
@@ -173,8 +173,8 @@ export default function AdminChatDialog({ open, onOpenChange, targetUser }) {
                       msg.sender === 'user' 
                         ? 'bg-primary text-white rounded-tr-none' 
                         : msg.sender === 'ai'
-                          ? 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-tl-none shadow-sm'
-                          : 'bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800/50 text-slate-800 dark:text-slate-200 rounded-tl-none'
+                          ? 'bg-white dark:bg-secondary text-slate-700 dark:text-foreground border border-slate-200 dark:border-border rounded-tl-none shadow-sm'
+                          : 'bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800/50 text-slate-800 dark:text-foreground rounded-tl-none'
                     }`}>
                       {msg.sender === 'admin' && (
                         <p className="text-[10px] uppercase font-bold text-purple-600 dark:text-purple-400 mb-1">
@@ -195,7 +195,7 @@ export default function AdminChatDialog({ open, onOpenChange, targetUser }) {
         </div>
 
         {chatSession && (
-          <div className="p-4 bg-white dark:bg-card border-t border-slate-100 dark:border-slate-800 shrink-0">
+          <div className="p-4 bg-white dark:bg-card border-t border-slate-100 dark:border-border shrink-0">
             <div className="relative flex items-center max-w-4xl mx-auto">
               <Input
                 type="text"

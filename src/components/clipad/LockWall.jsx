@@ -75,7 +75,7 @@ export default function LockWall({ type = 'manual', unlockAt = null, title = 'th
             <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
               {isNotFound ? 'Content Not Found' : isPrivate ? 'Private Space' : isScheduled ? 'Scheduled Release' : 'Content Locked'}
             </h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed max-w-sm mx-auto">
+            <p className="text-slate-600 dark:text-muted-foreground text-sm leading-relaxed max-w-sm mx-auto">
               {isNotFound
                 ? `This content may not exist, or it belongs to another organization. You must be logged in with an authorized account from the same company to view this.`
                 : isPrivate

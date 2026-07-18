@@ -121,27 +121,27 @@ export default function SaveMeetingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-background flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 md:p-12">
+    <div className="min-h-screen bg-slate-50 dark:bg-background p-6 md:p-12">
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Save Meeting Record</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-2">
+          <p className="text-slate-500 dark:text-muted-foreground mt-2">
             Your meeting has ended. Review the details and set access controls before publishing.
           </p>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-8 space-y-8">
+        <div className="bg-white dark:bg-card rounded-2xl shadow-sm border border-slate-200 dark:border-border p-8 space-y-8">
           
           {/* Title */}
           <div>
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Meeting Title</label>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-foreground mb-2">Meeting Title</label>
             <Input 
               value={title}
               onChange={e => setTitle(e.target.value)}
@@ -153,12 +153,12 @@ export default function SaveMeetingPage() {
           {/* Lock Settings */}
           <div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider shrink-0">Access Control</label>
+              <label className="text-sm font-semibold text-slate-700 dark:text-foreground uppercase tracking-wider shrink-0">Access Control</label>
               <div className="relative inline-block min-w-[220px]">
                 <select
                   value={lockType}
                   onChange={e => setLockType(e.target.value)}
-                  className="w-full pl-10 pr-8 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60 transition-all cursor-pointer font-semibold shadow-sm"
+                  className="w-full pl-10 pr-8 py-2.5 rounded-xl bg-white dark:bg-card border border-slate-200 dark:border-border text-slate-900 dark:text-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60 transition-all cursor-pointer font-semibold shadow-sm"
                 >
                   <option value="none">Public (Space Members)</option>
                   <option value="manual">Locked (Only Me)</option>
@@ -179,17 +179,17 @@ export default function SaveMeetingPage() {
               <div className="mt-4 p-5 bg-amber-50 dark:bg-amber-950/10 rounded-xl border border-amber-100 dark:border-amber-900/30 flex gap-4 animate-in fade-in slide-in-from-top-2">
                 <div className="flex-1">
                   <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1.5">Unlock Date</label>
-                  <Input type="date" value={unlockDate} onChange={e => setUnlockDate(e.target.value)} className="bg-white dark:bg-slate-900" min={new Date().toISOString().split('T')[0]} />
+                  <Input type="date" value={unlockDate} onChange={e => setUnlockDate(e.target.value)} className="bg-white dark:bg-card" min={new Date().toISOString().split('T')[0]} />
                 </div>
                 <div className="flex-1">
                   <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1.5">Unlock Time</label>
-                  <Input type="time" value={unlockTime} onChange={e => setUnlockTime(e.target.value)} className="bg-white dark:bg-slate-900" />
+                  <Input type="time" value={unlockTime} onChange={e => setUnlockTime(e.target.value)} className="bg-white dark:bg-card" />
                 </div>
               </div>
             )}
           </div>
 
-          <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+          <div className="pt-6 border-t border-slate-100 dark:border-border flex justify-between items-center">
              <div className="text-sm text-slate-500 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-indigo-500" /> AI is processing the transcript in the background
              </div>

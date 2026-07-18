@@ -22,9 +22,9 @@ export default function CliPadHeader() {
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'User';
 
   return (
-    <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+    <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-card/80 backdrop-blur-xl border-b border-slate-200 dark:border-border">
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm text-primary">
+        <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center border border-slate-200 dark:border-border shadow-sm text-primary">
           <CliPadLogo size={22} />
         </div>
         <span className="text-lg font-bold tracking-tight">CliPad</span>
@@ -42,7 +42,7 @@ export default function CliPadHeader() {
         
         <button 
           onClick={() => navigate('/settings')}
-          className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 text-slate-700 dark:text-slate-300 hidden md:block"
+          className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 text-slate-700 dark:text-foreground hidden md:block"
           title="Settings"
         >
           <Settings className="w-5 h-5" />

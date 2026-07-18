@@ -315,7 +315,7 @@ export default function Properties() {
                         <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
                           property.status === 'active' ? 'bg-primary/10 text-primary/40 dark:bg-primary/30/30 dark:text-primary/80' :
                           property.status === 'pending' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' :
-                          'bg-slate-100 text-slate-800 dark:bg-card/30 dark:text-slate-400'
+                          'bg-slate-100 text-slate-800 dark:bg-card/30 dark:text-muted-foreground'
                         }`}>
                           {property.status.toUpperCase()}
                         </span>

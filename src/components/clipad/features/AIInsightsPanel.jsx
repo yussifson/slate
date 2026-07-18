@@ -89,14 +89,14 @@ export default function AIInsightsPanel({ spaceId, workspaceId }) {
         {insights.map((insight) => {
           const Icon = insight.icon;
           return (
-            <div key={insight.id} className="bg-white dark:bg-slate-900 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-slate-800">
+            <div key={insight.id} className="bg-white dark:bg-card rounded-xl p-4 shadow-sm border border-slate-100 dark:border-border">
               <div className="flex gap-4">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${insight.bg} ${insight.color}`}>
                   <Icon className="w-5 h-5" />
                 </div>
                 <div>
                   <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">{insight.title}</h4>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-3">
+                  <p className="text-sm text-slate-600 dark:text-muted-foreground leading-relaxed mb-3">
                     {insight.description}
                   </p>
                   <button className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1 transition-colors">

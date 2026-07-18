@@ -310,7 +310,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  <MoreHorizontal className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
  </Button>
  </PopoverTrigger>
- <PopoverContent align="end" className="w-[300px] p-3 shadow-xl border-slate-200 dark:border-slate-800 rounded-2xl z-[150]">
+ <PopoverContent align="end" className="w-[300px] p-3 shadow-xl border-slate-200 dark:border-border rounded-2xl z-[150]">
  <div className="mb-2 px-1">
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Quick Actions</p>
  </div>

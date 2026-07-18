@@ -121,7 +121,7 @@ export default function Onboarding() {
               <Sparkles className="w-8 h-8 text-indigo-500" />
               Onboarding Experience
             </h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">Orchestrate seamless transitions for your new team members.</p>
+            <p className="text-sm text-slate-500 dark:text-muted-foreground mt-2 font-medium">Orchestrate seamless transitions for your new team members.</p>
           </div>
           <Button 
             onClick={() => setIsAdding(!isAdding)} 
@@ -137,7 +137,7 @@ export default function Onboarding() {
 
         {/* Add Task Form (Glassmorphic) */}
         {isAdding && (
-          <form onSubmit={handleAddTask} className="relative overflow-hidden rounded-3xl bg-white/60 dark:bg-card/60 backdrop-blur-xl border border-white/50 dark:border-slate-800/50 p-8 shadow-2xl shadow-indigo-100/50 dark:shadow-black/50 animate-in fade-in slide-in-from-top-4 duration-500">
+          <form onSubmit={handleAddTask} className="relative overflow-hidden rounded-3xl bg-white/60 dark:bg-card/60 backdrop-blur-xl border border-white/50 dark:border-border/50 p-8 shadow-2xl shadow-indigo-100/50 dark:shadow-black/50 animate-in fade-in slide-in-from-top-4 duration-500">
             <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-indigo-500/10 blur-3xl rounded-full pointer-events-none"></div>
             <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 bg-purple-500/10 blur-3xl rounded-full pointer-events-none"></div>
             
@@ -148,9 +148,9 @@ export default function Onboarding() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Employee</label>
+                <label className="text-xs font-bold text-slate-500 dark:text-muted-foreground uppercase tracking-wider">Employee</label>
                 <select 
-                  className="w-full h-12 rounded-xl border-0 bg-white/80 dark:bg-slate-800/80 shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 px-4 text-sm transition-all"
+                  className="w-full h-12 rounded-xl border-0 bg-white/80 dark:bg-secondary/80 shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 px-4 text-sm transition-all"
                   value={newEmployeeId} onChange={e => setNewEmployeeId(e.target.value)} required>
                   <option value="">Select Employee...</option>
                   {employees.map(e => (
@@ -160,21 +160,21 @@ export default function Onboarding() {
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Task Name</label>
+                <label className="text-xs font-bold text-slate-500 dark:text-muted-foreground uppercase tracking-wider">Task Name</label>
                 <Input 
-                  className="h-12 rounded-xl border-0 bg-white/80 dark:bg-slate-800/80 shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 px-4 transition-all"
+                  className="h-12 rounded-xl border-0 bg-white/80 dark:bg-secondary/80 shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 px-4 transition-all"
                   placeholder="e.g. IT Provisioning" value={newTaskName} onChange={e => setNewTaskName(e.target.value)} required />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Department</label>
+                <label className="text-xs font-bold text-slate-500 dark:text-muted-foreground uppercase tracking-wider">Department</label>
                 <Input 
-                  className="h-12 rounded-xl border-0 bg-white/80 dark:bg-slate-800/80 shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 px-4 transition-all"
+                  className="h-12 rounded-xl border-0 bg-white/80 dark:bg-secondary/80 shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 px-4 transition-all"
                   placeholder="e.g. IT, HR" value={newDepartment} onChange={e => setNewDepartment(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Due Date</label>
+                <label className="text-xs font-bold text-slate-500 dark:text-muted-foreground uppercase tracking-wider">Due Date</label>
                 <Input 
-                  className="h-12 rounded-xl border-0 bg-white/80 dark:bg-slate-800/80 shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 px-4 transition-all"
+                  className="h-12 rounded-xl border-0 bg-white/80 dark:bg-secondary/80 shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 px-4 transition-all"
                   type="date" value={newDueDate} onChange={e => setNewDueDate(e.target.value)} />
               </div>
             </div>
@@ -197,19 +197,19 @@ export default function Onboarding() {
               {Object.values(employeeProgress).map(ep => {
                 const perc = Math.round((ep.completed / ep.total) * 100);
                 return (
-                  <div key={ep.employeeId} className="group relative bg-white/70 dark:bg-card/70 backdrop-blur-md rounded-2xl p-6 border border-white/50 dark:border-slate-800 shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-none hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
+                  <div key={ep.employeeId} className="group relative bg-white/70 dark:bg-card/70 backdrop-blur-md rounded-2xl p-6 border border-white/50 dark:border-border shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-none hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
                     <div className="flex items-start justify-between mb-4">
                       <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-lg shadow-inner">
                         {getEmployeeName(ep.employeeId).charAt(0).toUpperCase()}
                       </div>
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-secondary text-slate-600 dark:text-foreground">
                         {perc}%
                       </span>
                     </div>
-                    <h4 className="font-bold text-slate-800 dark:text-slate-200 truncate mb-1">{getEmployeeName(ep.employeeId)}</h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mb-4">{ep.completed} of {ep.total} tasks complete</p>
+                    <h4 className="font-bold text-slate-800 dark:text-foreground truncate mb-1">{getEmployeeName(ep.employeeId)}</h4>
+                    <p className="text-xs text-slate-500 dark:text-muted-foreground font-medium mb-4">{ep.completed} of {ep.total} tasks complete</p>
                     
-                    <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3 overflow-hidden shadow-inner">
+                    <div className="w-full bg-slate-100 dark:bg-secondary rounded-full h-3 overflow-hidden shadow-inner">
                       <div 
                         className="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full transition-all duration-1000 ease-out relative" 
                         style={{ width: `${perc}%` }}
@@ -239,7 +239,7 @@ export default function Onboarding() {
                 placeholder="Search tasks or people..." 
                 value={search} 
                 onChange={e => setSearch(e.target.value)} 
-                className="pl-11 h-12 w-full rounded-full bg-white/70 dark:bg-card/70 backdrop-blur-md border border-white/50 dark:border-slate-800 shadow-sm focus:bg-white dark:focus:bg-slate-900 transition-all text-sm" 
+                className="pl-11 h-12 w-full rounded-full bg-white/70 dark:bg-card/70 backdrop-blur-md border border-white/50 dark:border-border shadow-sm focus:bg-white dark:focus:bg-slate-900 transition-all text-sm" 
               />
             </div>
           </div>
@@ -250,15 +250,15 @@ export default function Onboarding() {
               <p className="mt-4 font-medium text-slate-500">Syncing tasks...</p>
             </div>
           ) : filteredTasks.length === 0 ? (
-            <div className="bg-white/50 dark:bg-card/50 backdrop-blur-md rounded-3xl p-12 text-center border border-dashed border-slate-300 dark:border-slate-700">
+            <div className="bg-white/50 dark:bg-card/50 backdrop-blur-md rounded-3xl p-12 text-center border border-dashed border-slate-300 dark:border-border">
               <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-4 opacity-50" />
-              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300">No tasks found</h3>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-foreground">No tasks found</h3>
               <p className="text-slate-500 mt-2">Try adjusting your search or assign a new task.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredTasks.map(task => (
-                <div key={task.id} className="group bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-3xl p-6 border border-white/60 dark:border-slate-800 shadow-[0_4px_20px_rgb(0,0,0,0.04)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col h-full relative overflow-hidden">
+                <div key={task.id} className="group bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-3xl p-6 border border-white/60 dark:border-border shadow-[0_4px_20px_rgb(0,0,0,0.04)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col h-full relative overflow-hidden">
                   
                   {/* Decorative corner blur */}
                   <div className="absolute -right-10 -top-10 w-32 h-32 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
@@ -274,7 +274,7 @@ export default function Onboarding() {
                        <Clock className="w-3.5 h-3.5 mr-1.5" />}
                       {task.status}
                     </span>
-                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-secondary flex items-center justify-center text-slate-400">
                       <ListTodo className="w-4 h-4" />
                     </div>
                   </div>
@@ -284,7 +284,7 @@ export default function Onboarding() {
                   </h4>
 
                   <div className="space-y-3 mb-6 flex-1 relative z-10">
-                    <div className="flex items-center text-sm text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg">
+                    <div className="flex items-center text-sm text-slate-600 dark:text-foreground bg-slate-50 dark:bg-secondary/50 p-2 rounded-lg">
                       <div className="w-7 h-7 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mr-3 text-xs font-bold">
                         {getEmployeeName(task.employee_id).charAt(0).toUpperCase()}
                       </div>
@@ -293,13 +293,13 @@ export default function Onboarding() {
                     
                     <div className="grid grid-cols-2 gap-2">
                       {task.department && (
-                        <div className="flex items-center text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg">
+                        <div className="flex items-center text-xs text-slate-500 dark:text-muted-foreground bg-slate-50 dark:bg-secondary/50 p-2 rounded-lg">
                           <Building2 className="w-3.5 h-3.5 mr-2 text-slate-400" />
                           <span className="truncate">{task.department}</span>
                         </div>
                       )}
                       {task.due_date && (
-                        <div className="flex items-center text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg">
+                        <div className="flex items-center text-xs text-slate-500 dark:text-muted-foreground bg-slate-50 dark:bg-secondary/50 p-2 rounded-lg">
                           <CalIcon className="w-3.5 h-3.5 mr-2 text-slate-400" />
                           <span className="truncate">{task.due_date}</span>
                         </div>
@@ -308,11 +308,11 @@ export default function Onboarding() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex gap-2 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 relative z-10">
+                  <div className="flex gap-2 mt-auto pt-4 border-t border-slate-100 dark:border-border relative z-10">
                     {task.status !== 'In Progress' && task.status !== 'Completed' && (
                       <Button 
                         onClick={() => handleStatusChange(task.id, 'In Progress')}
-                        className="flex-1 bg-white dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-700 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900/50 shadow-sm transition-all rounded-xl"
+                        className="flex-1 bg-white dark:bg-secondary hover:bg-indigo-50 dark:hover:bg-slate-700 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900/50 shadow-sm transition-all rounded-xl"
                       >
                         Start Task
                       </Button>

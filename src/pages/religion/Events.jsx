@@ -144,7 +144,7 @@ export default function Events() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filtered.map(event => (
             <div key={event.id} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex gap-5 group">
-              <div className="flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 min-w-[100px] shrink-0 border-[0.5px] border-black/9">
+              <div className="flex flex-col items-center justify-center bg-slate-50 dark:bg-secondary/50 rounded-xl p-4 min-w-[100px] shrink-0 border-[0.5px] border-black/9">
                 <span className="text-xs font-semibold uppercase tracking-widest">{event.date?.split(' ')[0] || 'Upcoming'}</span>
                 <span className="text-2xl font-black">{event.date?.split(' ')[1] || 'Soon'}</span>
               </div>

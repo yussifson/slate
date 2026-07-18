@@ -64,7 +64,7 @@ export default function OnlineMarketplace() {
  </div>
  </div>
  <div className="flex items-center space-x-4">
- <Button variant="ghost" onClick={() => navigate('/login')} className="text-primary hover:bg-slate-50 dark:bg-slate-800/50 font-semibold">Log In</Button>
+ <Button variant="ghost" onClick={() => navigate('/login')} className="text-primary hover:bg-slate-50 dark:bg-secondary/50 font-semibold">Log In</Button>
  <Button onClick={() => navigate('/signup')} className="bg-primary hover:bg-primary/90 text-white font-semibold">Join for Free</Button>
  </div>
  </div>
@@ -79,7 +79,7 @@ export default function OnlineMarketplace() {
  <p className="text-xl text-gray-600">Start, switch, or advance your career with more than 5,000 courses, Professional Certificates, and degrees from world-class universities and companies.</p>
  <div className="flex space-x-4 pt-4">
  <Button onClick={() => navigate('/signup')} className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg rounded-lg">Join for Free</Button>
- <Button variant="outline" className="text-primary border-primary hover:bg-slate-50 dark:bg-slate-800/50 px-8 py-6 text-lg rounded-lg">Try Coursera for Business</Button>
+ <Button variant="outline" className="text-primary border-primary hover:bg-slate-50 dark:bg-secondary/50 px-8 py-6 text-lg rounded-lg">Try Coursera for Business</Button>
  </div>
  </div>
  <div className="md:w-1/2">
@@ -142,21 +142,21 @@ export default function OnlineMarketplace() {
  <h2 className="text-3xl font-semibold text-gray-900 mb-12 tracking-[-0.02em]">World-class learning for anyone, anywhere</h2>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
  <div className="p-6 bg-white dark:bg-card/40 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
+ <div className="w-16 h-16 bg-slate-50 dark:bg-secondary/50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
  <BookOpen className="h-8 w-8" />
  </div>
  <h3 className="text-xl font-semibold mb-3">Learn anything</h3>
  <p className="text-gray-600">Explore any interest or trending topic, take prerequisites, and advance your skills.</p>
  </div>
  <div className="p-6 bg-white dark:bg-card/40 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
+ <div className="w-16 h-16 bg-slate-50 dark:bg-secondary/50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
  <Star className="h-8 w-8" />
  </div>
  <h3 className="text-xl font-semibold mb-3">Save money</h3>
  <p className="text-gray-600">Spend less money on your learning if you plan to take multiple courses this year.</p>
  </div>
  <div className="p-6 bg-white dark:bg-card/40 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
+ <div className="w-16 h-16 bg-slate-50 dark:bg-secondary/50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
  <Clock className="h-8 w-8" />
  </div>
  <h3 className="text-xl font-semibold mb-3">Flexible learning</h3>

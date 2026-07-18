@@ -115,7 +115,7 @@ export default function UnivLibraryBook() {
 };
 
  return (
- <div className="p-6 max-w-7xl mx-auto text-foreground dark:text-slate-200 ${view !== 'Default' ? 'hide-default' : ''}">
+ <div className="p-6 max-w-7xl mx-auto text-foreground dark:text-foreground ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
  <div className="flex items-center gap-3">
  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl">
@@ -135,7 +135,7 @@ export default function UnivLibraryBook() {
  placeholder="Search..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="pl-10 pr-4 py-2 bg-card dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-10 pr-4 py-2 bg-card dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  <div className="flex items-center gap-2">
@@ -149,7 +149,7 @@ export default function UnivLibraryBook() {
 
  <button 
  onClick={fetchData}
- className="p-2 bg-card dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl hover:bg-background dark:hover:bg-slate-700 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="p-2 bg-card dark:bg-secondary border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl hover:bg-background dark:hover:bg-slate-700 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
  </button>
@@ -171,11 +171,11 @@ export default function UnivLibraryBook() {
  </div>
  </div>
 
- <div className="bg-card dark:bg-slate-800 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card dark:bg-secondary rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="overflow-x-auto">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-background dark:bg-slate-800/50 border-b border-primary/40 dark:border-primary/40">
+ <tr className="bg-background dark:bg-secondary/50 border-b border-primary/40 dark:border-primary/40">
  <th className="p-4 font-medium text-[#71717a] dark:text-gray-400 dark:text-[#71717a] dark:text-gray-400">Title</th>
  <th className="p-4 font-medium text-[#71717a] dark:text-gray-400 dark:text-[#71717a] dark:text-gray-400">Author</th>
  <th className="p-4 font-medium text-[#71717a] dark:text-gray-400 dark:text-[#71717a] dark:text-gray-400">ISBN</th>
@@ -249,7 +249,7 @@ export default function UnivLibraryBook() {
  initial={{ scale: 0.95, opacity: 0}}
  animate={{ scale: 1, opacity: 1}}
  exit={{ scale: 0.95, opacity: 0}}
- className="bg-card dark:bg-slate-800 rounded-2xl w-full max-w-md overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card dark:bg-secondary rounded-2xl w-full max-w-md overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex items-center justify-between p-6 border-b border-primary/40 dark:border-primary/40">
  <h2 className="text-xl font-semibold">
@@ -265,7 +265,7 @@ export default function UnivLibraryBook() {
  
  <form onSubmit={handleSubmit} className="p-6 space-y-4">
  <div>
- <label className="block text-sm font-medium text-foreground dark:text-slate-300 mb-1">Title</label>
+ <label className="block text-sm font-medium text-foreground dark:text-foreground mb-1">Title</label>
  <input 
  type="text"
  name="title"
@@ -276,7 +276,7 @@ export default function UnivLibraryBook() {
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-foreground dark:text-slate-300 mb-1">Author</label>
+ <label className="block text-sm font-medium text-foreground dark:text-foreground mb-1">Author</label>
  <input 
  type="text"
  name="author"
@@ -287,7 +287,7 @@ export default function UnivLibraryBook() {
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-foreground dark:text-slate-300 mb-1">ISBN</label>
+ <label className="block text-sm font-medium text-foreground dark:text-foreground mb-1">ISBN</label>
  <input 
  type="text"
  name="isbn"
@@ -298,7 +298,7 @@ export default function UnivLibraryBook() {
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-foreground dark:text-slate-300 mb-1">Status (Available/Checked Out)</label>
+ <label className="block text-sm font-medium text-foreground dark:text-foreground mb-1">Status (Available/Checked Out)</label>
  <input 
  type="text"
  name="status"
@@ -314,7 +314,7 @@ export default function UnivLibraryBook() {
  <button 
  type="button"
  onClick={() => setIsModalOpen(false)}
- className="flex-1 px-4 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 text-[#71717a] dark:text-gray-400 dark:text-slate-300 rounded-xl hover:bg-background dark:hover:bg-slate-700 transition-colors"
+ className="flex-1 px-4 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 text-[#71717a] dark:text-gray-400 dark:text-foreground rounded-xl hover:bg-background dark:hover:bg-slate-700 transition-colors"
  >
  Cancel
  </button>

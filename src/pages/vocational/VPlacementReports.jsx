@@ -68,7 +68,7 @@ export default function VPlacementReports() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-amber-500" />
  <Input 
  placeholder="Search trainees or employers..." 
- className="pl-9 h-10 bg-slate-50 dark:bg-slate-800/50 dark:bg-card border-amber-100 dark:border-primary/40 rounded-xl focus-visible:ring-amber-600"
+ className="pl-9 h-10 bg-slate-50 dark:bg-secondary/50 dark:bg-card border-amber-100 dark:border-primary/40 rounded-xl focus-visible:ring-amber-600"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -88,7 +88,7 @@ export default function VPlacementReports() {
  className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
  selectedReport?.id === report.id 
  ? 'bg-amber-600 text-white -amber-500/20' 
- : 'hover:bg-amber-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
+ : 'hover:bg-amber-50 dark:hover:bg-slate-800 text-slate-700 dark:text-foreground dark:text-foreground'
 }`}
  >
  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
@@ -98,7 +98,7 @@ export default function VPlacementReports() {
  </div>
  <div className="overflow-hidden">
  <p className="font-semibold truncate text-sm">{report.title}</p>
- <p className={`text-xs truncate ${selectedReport?.id === report.id ? 'text-amber-200' : 'text-slate-500 dark:text-slate-400'}`}>
+ <p className={`text-xs truncate ${selectedReport?.id === report.id ? 'text-amber-200' : 'text-slate-500 dark:text-muted-foreground'}`}>
  {report.data?.position || 'Unknown Position'}
  </p>
  </div>
@@ -115,7 +115,7 @@ export default function VPlacementReports() {
  <div className="h-32 bg-gradient-to-r from-amber-500 to-orange-500 relative shrink-0">
  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
  <div className="absolute top-4 right-4">
- <Badge className="bg-white dark:bg-card/40 text-amber-600 hover:bg-slate-50 dark:bg-slate-800/50 border-none font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Badge className="bg-white dark:bg-card/40 text-amber-600 hover:bg-slate-50 dark:bg-secondary/50 border-none font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  Placed
  </Badge>
  </div>
@@ -125,13 +125,13 @@ export default function VPlacementReports() {
  <div className="px-8 pb-8">
  <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
  <div className="w-24 h-24 rounded-3xl bg-white dark:bg-card/40 dark:bg-card p-1 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-full h-full rounded-2xl bg-amber-50 dark:bg-slate-800 flex items-center justify-center text-amber-600">
+ <div className="w-full h-full rounded-2xl bg-amber-50 dark:bg-secondary flex items-center justify-center text-amber-600">
  <Award className="w-10 h-10" />
  </div>
  </div>
  <div className="flex-1 mt-4 sm:mt-12">
  <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">{selectedReport.title}</h2>
- <div className="flex items-center gap-4 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
+ <div className="flex items-center gap-4 mt-2 text-sm text-slate-600 dark:text-foreground font-medium">
  <span className="flex items-center gap-2.5"><Building className="w-4 h-4 text-amber-500" /> {selectedReport.data?.employer || 'Unknown Employer'}</span>
  <span className="flex items-center gap-2.5"><Calendar className="w-4 h-4 text-amber-500" /> {selectedReport.data?.placementDate || 'Date Not Set'}</span>
  </div>
@@ -140,7 +140,7 @@ export default function VPlacementReports() {
 
  <div className="mt-8">
  <Tabs defaultValue="overview" className="w-full">
- <TabsList className="bg-amber-50/50 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border-[0.5px] border-black/9 dark:border-white/8 border-amber-100 dark:border-primary/40">
+ <TabsList className="bg-amber-50/50 dark:bg-secondary/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border-[0.5px] border-black/9 dark:border-white/8 border-amber-100 dark:border-primary/40">
  <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-white dark:bg-card/40 data-[state=active]:text-amber-600 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Placement Details</TabsTrigger>
  <TabsTrigger value="employer-feedback" className="rounded-xl data-[state=active]:bg-white dark:bg-card/40 data-[state=active]:text-amber-600 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Employer Feedback</TabsTrigger>
  <TabsTrigger value="trainee-feedback" className="rounded-xl data-[state=active]:bg-white dark:bg-card/40 data-[state=active]:text-amber-600 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Trainee Feedback</TabsTrigger>
@@ -153,16 +153,16 @@ export default function VPlacementReports() {
  <h3 className="text-sm font-semibold text-amber-600 uppercase tracking-wider tracking-[0.04em]">Job Information</h3>
  <div className="space-y-4">
  <div>
- <p className="text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">Position Title</p>
- <p className="font-medium text-slate-800 dark:text-slate-200">{selectedReport.data?.position || 'N/A'}</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground tracking-[0.04em]">Position Title</p>
+ <p className="font-medium text-slate-800 dark:text-foreground">{selectedReport.data?.position || 'N/A'}</p>
  </div>
  <div>
- <p className="text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">Department</p>
- <p className="font-medium text-slate-800 dark:text-slate-200">{selectedReport.data?.department || 'General'}</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground tracking-[0.04em]">Department</p>
+ <p className="font-medium text-slate-800 dark:text-foreground">{selectedReport.data?.department || 'General'}</p>
  </div>
  <div>
- <p className="text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">Contract Type</p>
- <p className="font-medium text-slate-800 dark:text-slate-200">{selectedReport.data?.contractType || 'Full-time'}</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground tracking-[0.04em]">Contract Type</p>
+ <p className="font-medium text-slate-800 dark:text-foreground">{selectedReport.data?.contractType || 'Full-time'}</p>
  </div>
  </div>
  </div>
@@ -175,26 +175,26 @@ export default function VPlacementReports() {
  <DollarSign className="w-6 h-6" />
  </div>
  <div>
- <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-[0.04em]">Starting Salary</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground font-medium tracking-[0.04em]">Starting Salary</p>
  <p className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">{selectedReport.data?.startingSalary || 'Not Disclosed'}</p>
  </div>
  </div>
- <p className="text-xs text-slate-500 dark:text-slate-400 ml-16 tracking-[0.04em]">{selectedReport.data?.benefits || 'Standard benefits apply'}</p>
+ <p className="text-xs text-slate-500 dark:text-muted-foreground ml-16 tracking-[0.04em]">{selectedReport.data?.benefits || 'Standard benefits apply'}</p>
  </div>
  </div>
  </div>
  </TabsContent>
  
  <TabsContent value="employer-feedback" className="outline-none">
- <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
+ <div className="p-6 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <h3 className="text-sm font-semibold text-amber-600 uppercase tracking-wider mb-4 flex items-center gap-2 tracking-[0.04em]"><MessageSquare className="w-4 h-4"/> Supervisor Evaluation</h3>
  <div className="space-y-4">
  <div className="bg-white dark:bg-card/40 dark:bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-center mb-2">
- <p className="font-semibold text-slate-800 dark:text-slate-200">Overall Performance</p>
+ <p className="font-semibold text-slate-800 dark:text-foreground">Overall Performance</p>
  <Badge className="bg-slate-100 text-primary/90 hover:bg-primary/20 border-none">{selectedReport.data?.employerRating || 'Excellent'}</Badge>
  </div>
- <p className="text-sm text-slate-600 dark:text-slate-400">
+ <p className="text-sm text-slate-600 dark:text-muted-foreground">
  {selectedReport.data?.employerComments || 'The trainee has adapted well to the workplace environment and demonstrates strong foundational skills.'}
  </p>
  </div>
@@ -203,15 +203,15 @@ export default function VPlacementReports() {
  </TabsContent>
 
  <TabsContent value="trainee-feedback" className="outline-none">
- <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
+ <div className="p-6 rounded-2xl bg-slate-50 dark:bg-secondary/50 dark:bg-secondary/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <h3 className="text-sm font-semibold text-amber-600 uppercase tracking-wider mb-4 flex items-center gap-2 tracking-[0.04em]"><MessageSquare className="w-4 h-4"/> Graduate Experience</h3>
  <div className="space-y-4">
  <div className="bg-white dark:bg-card/40 dark:bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-center mb-2">
- <p className="font-semibold text-slate-800 dark:text-slate-200">Training Relevance</p>
+ <p className="font-semibold text-slate-800 dark:text-foreground">Training Relevance</p>
  <Badge className="bg-orange-100 text-orange-700 hover:bg-primary/20 border-none">{selectedReport.data?.trainingRelevanceRating || 'Highly Relevant'}</Badge>
  </div>
- <p className="text-sm text-slate-600 dark:text-slate-400">
+ <p className="text-sm text-slate-600 dark:text-muted-foreground">
  {selectedReport.data?.traineeComments || 'The skills learned during the vocational program were directly applicable to my daily tasks here.'}
  </p>
  </div>
@@ -229,8 +229,8 @@ export default function VPlacementReports() {
  <div className="w-20 h-20 rounded-full bg-amber-50 flex items-center justify-center mb-6">
  <Award className="w-10 h-10 text-amber-300" />
  </div>
- <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-300">No Report Selected</h3>
- <p className="text-slate-500 dark:text-slate-400 max-w-sm mt-2">
+ <h3 className="text-xl font-semibold text-slate-700 dark:text-foreground">No Report Selected</h3>
+ <p className="text-slate-500 dark:text-muted-foreground max-w-sm mt-2">
  Select a placement report to view compensation details and post-placement feedback.
  </p>
  </div>

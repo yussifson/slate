@@ -105,7 +105,7 @@ export default function IntelligenceUI({ embedded, customPrompt }) {
         Connected to Portfolio Data. {customPrompt && 'Executing specialized role instructions...'}
       </p>
       <div className="mt-6 flex flex-col gap-2 w-full max-w-sm">
-        <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+        <div className="h-2 bg-slate-100 dark:bg-secondary rounded-full overflow-hidden">
           <div className="h-full bg-indigo-500 w-2/3 animate-pulse"></div>
         </div>
         <div className="flex justify-between text-xs text-slate-400 font-mono">

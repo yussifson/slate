@@ -184,7 +184,7 @@ export default function SSOGateway() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-[#090E17] p-4 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-background p-4 relative overflow-hidden">
       
       {/* Sleek Icon Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
@@ -210,15 +210,15 @@ export default function SSOGateway() {
         </div>
       </div>
 
-      <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden relative z-10">
+      <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-2xl shadow-sm border border-slate-200 dark:border-border overflow-hidden relative z-10">
         
         {/* Header */}
-        <div className="p-8 pb-6 text-center border-b border-slate-100 dark:border-slate-800">
+        <div className="p-8 pb-6 text-center border-b border-slate-100 dark:border-border">
           <div className="mx-auto mb-6 flex justify-center">
              <Logo className="w-12 h-12" />
           </div>
           <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white mb-2">Choose an account</h1>
-          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+          <p className="text-sm font-medium text-slate-500 dark:text-muted-foreground">
             to continue to <span className="font-bold text-primary dark:text-primary-foreground">{targetHost}</span>
           </p>
         </div>
@@ -239,7 +239,7 @@ export default function SSOGateway() {
               onClick={() => handleAccountSelect(account)}
               className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl cursor-pointer transition-colors group relative"
             >
-              <div className="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden shrink-0 flex items-center justify-center text-lg font-semibold text-slate-600 dark:text-slate-300">
+              <div className="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden shrink-0 flex items-center justify-center text-lg font-semibold text-slate-600 dark:text-foreground">
                 {account.avatar_url ? (
                   <img src={account.avatar_url} alt={account.email} className="w-full h-full object-cover" />
                 ) : (
@@ -250,7 +250,7 @@ export default function SSOGateway() {
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white truncate">
                   {account.full_name || account.email.split('@')[0]}
                 </h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 truncate">
+                <p className="text-sm text-slate-500 dark:text-muted-foreground truncate">
                   {account.email}
                 </p>
               </div>
@@ -274,7 +274,7 @@ export default function SSOGateway() {
           {/* Add Account Button */}
           <div 
             onClick={handleAddAccount}
-            className="flex items-center gap-4 p-4 mx-2 mb-2 hover:bg-primary/5 dark:hover:bg-primary/10 rounded-2xl cursor-pointer transition-colors text-slate-700 dark:text-slate-300 group"
+            className="flex items-center gap-4 p-4 mx-2 mb-2 hover:bg-primary/5 dark:hover:bg-primary/10 rounded-2xl cursor-pointer transition-colors text-slate-700 dark:text-foreground group"
           >
             <div className="w-12 h-12 rounded-full border-2 border-dashed border-primary/30 dark:border-primary/50 flex items-center justify-center shrink-0 group-hover:border-primary/60 transition-colors">
               <Plus className="w-5 h-5 text-primary" />
@@ -286,7 +286,7 @@ export default function SSOGateway() {
         </div>
         
         {/* Footer */}
-        <div className="p-5 bg-slate-50 dark:bg-[#0B1120] border-t border-slate-100 dark:border-slate-800 text-center">
+        <div className="p-5 bg-slate-50 dark:bg-[#0B1120] border-t border-slate-100 dark:border-border text-center">
            <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
              Secure authentication by Optavel ID
            </p>

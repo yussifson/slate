@@ -179,7 +179,7 @@ export default function DiscoverGroupsDialog({ open, onOpenChange, onGroupJoined
                   const reqStatus = requestsStatus[group.id];
                   
                   return (
-                    <div key={group.id} className="flex items-center space-x-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+                    <div key={group.id} className="flex items-center space-x-3 p-3 bg-slate-50 dark:bg-secondary/50 rounded-xl border border-slate-100 dark:border-border">
                       <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", isPrivate ? "bg-amber-100 text-amber-600" : "bg-emerald-100 text-emerald-600")}>
                          {isPrivate ? <Lock className="w-5 h-5"/> : <Globe className="w-5 h-5"/>}
                       </div>

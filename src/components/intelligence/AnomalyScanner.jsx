@@ -134,9 +134,9 @@ export default function AnomalyScanner() {
   }, [companyId]);
 
   return (
-    <div className="bg-white dark:bg-background rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden" style={{ minHeight: '480px' }}>
+    <div className="bg-white dark:bg-background rounded-xl border border-slate-200 dark:border-border shadow-sm overflow-hidden" style={{ minHeight: '480px' }}>
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-card/60">
+      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-border bg-slate-50 dark:bg-card/60">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center shadow-sm">
             <Activity className="w-5 h-5 text-white" />
@@ -146,7 +146,7 @@ export default function AnomalyScanner() {
             <p className="text-xs text-slate-500">Real-time proactive threat detection</p>
           </div>
         </div>
-        <Button onClick={scanData} disabled={isScanning} variant="outline" className="gap-2 text-sm border-slate-200 dark:border-slate-700">
+        <Button onClick={scanData} disabled={isScanning} variant="outline" className="gap-2 text-sm border-slate-200 dark:border-border">
           {isScanning ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
           {isScanning ? 'Scanning...' : 'Rescan Now'}
         </Button>
@@ -154,12 +154,12 @@ export default function AnomalyScanner() {
 
       {/* Scan Stats */}
       {scanStats && !isScanning && (
-        <div className="grid grid-cols-3 gap-0 border-b border-slate-200 dark:border-slate-800 text-center">
-          <div className="py-4 px-2 border-r border-slate-200 dark:border-slate-800">
+        <div className="grid grid-cols-3 gap-0 border-b border-slate-200 dark:border-border text-center">
+          <div className="py-4 px-2 border-r border-slate-200 dark:border-border">
             <p className="text-2xl font-bold text-slate-900 dark:text-white">{scanStats.tablesScanned}</p>
             <p className="text-xs text-slate-500 mt-0.5">Tables Scanned</p>
           </div>
-          <div className="py-4 px-2 border-r border-slate-200 dark:border-slate-800">
+          <div className="py-4 px-2 border-r border-slate-200 dark:border-border">
             <p className="text-2xl font-bold text-slate-900 dark:text-white">{scanStats.recordsReviewed.toLocaleString()}</p>
             <p className="text-xs text-slate-500 mt-0.5">Records Reviewed</p>
           </div>
@@ -182,7 +182,7 @@ export default function AnomalyScanner() {
               </div>
             </div>
             <div className="text-center space-y-1">
-              <p className="font-semibold text-slate-700 dark:text-slate-300 text-sm animate-pulse">{scanStep}</p>
+              <p className="font-semibold text-slate-700 dark:text-foreground text-sm animate-pulse">{scanStep}</p>
               <div className="flex gap-1.5 justify-center mt-2">
                 {[0,1,2].map(i => (
                   <span key={i} className="w-1.5 h-1.5 rounded-full bg-red-400 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
@@ -214,7 +214,7 @@ export default function AnomalyScanner() {
               )}
             </div>
             
-            <div className="flex justify-end mt-4 border-t pt-4 border-slate-100 dark:border-slate-800">
+            <div className="flex justify-end mt-4 border-t pt-4 border-slate-100 dark:border-border">
               <Button onClick={exportPDF} variant="outline" className="gap-2 text-sm" size="sm">
                 <Download className="w-4 h-4" /> Export PDF
               </Button>

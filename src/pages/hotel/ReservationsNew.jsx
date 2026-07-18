@@ -22,7 +22,7 @@ import DashboardSectionHeader from '@/components/shared/DashboardSectionHeader';
 const statusColors = {
   'Checked-in': 'inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-800/50 text-xs font-semibold',
   'Confirmed': 'inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 border border-blue-200/50 dark:border-blue-800/50 text-xs font-semibold',
-  'Checked-out': 'inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/30 text-slate-700 dark:text-slate-400 border border-slate-200/50 dark:border-slate-700/50 text-xs font-semibold',
+  'Checked-out': 'inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-secondary/30 text-slate-700 dark:text-muted-foreground border border-slate-200/50 dark:border-border/50 text-xs font-semibold',
   'Cancelled': 'inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-red-100 dark:bg-red-950/30 text-red-700 dark:text-red-400 border border-red-200/50 dark:border-red-800/50 text-xs font-semibold'
 };
 
@@ -81,7 +81,7 @@ export default function ReservationsNew() {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-[hsl(var(--hotel-primary))] to-[hsl(var(--hotel-secondary))] bg-clip-text text-transparent tracking-tight mb-2">
               Reservations
             </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-400">Manage all bookings and group blocks</p>
+            <p className="text-sm text-slate-600 dark:text-muted-foreground">Manage all bookings and group blocks</p>
           </div>
           <Button className="bg-[hsl(var(--hotel-primary))] hover:bg-[hsl(var(--hotel-primary)_/_0.9)] text-white gap-2">
             <Plus className="w-4 h-4" />
@@ -134,7 +134,7 @@ export default function ReservationsNew() {
             placeholder="Search by guest name or reservation ID..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 py-2.5 border-slate-200 dark:border-slate-700"
+            className="pl-10 py-2.5 border-slate-200 dark:border-border"
           />
         </div>
       </motion.div>
@@ -144,18 +144,18 @@ export default function ReservationsNew() {
         initial={{ opacity: 0, y: 20 }} 
         animate={{ opacity: 1, y: 0 }} 
         transition={{ delay: 0.3 }}
-        className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm"
+        className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-border overflow-hidden shadow-sm"
       >
         <DashboardSectionHeader 
           title="Booking List" 
           subtitle={`${filteredReservations.length} reservations`}
-          containerClassName="p-6 border-b border-slate-200 dark:border-slate-800"
+          containerClassName="p-6 border-b border-slate-200 dark:border-border"
         />
         
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
-              <tr className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+            <thead className="bg-slate-50 dark:bg-secondary/50 border-b border-slate-200 dark:border-border">
+              <tr className="text-xs font-semibold text-slate-600 dark:text-muted-foreground uppercase tracking-wider">
                 <th className="px-6 py-4 text-left">Guest Name</th>
                 <th className="px-6 py-4 text-left">Reservation ID</th>
                 <th className="px-6 py-4 text-left">Check-in</th>
@@ -175,7 +175,7 @@ export default function ReservationsNew() {
                   className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                 >
                   <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">{res.guestName}</td>
-                  <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{res.reservationId}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 dark:text-muted-foreground">{res.reservationId}</td>
                   <td className="px-6 py-4 text-sm">{res.checkIn}</td>
                   <td className="px-6 py-4 text-sm">{res.checkOut}</td>
                   <td className="px-6 py-4">{<span className={statusColors[res.status]}>{res.status}</span>}</td>

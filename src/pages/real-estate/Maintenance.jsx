@@ -98,7 +98,7 @@ export default function Maintenance() {
   const MaintenanceCard = ({ request, priority }) => (
     <div
       onClick={() => setSelectedRequest(request)}
-      className={`relative overflow-hidden p-6 rounded-3xl border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-card cursor-pointer transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group flex flex-col`}
+      className={`relative overflow-hidden p-6 rounded-3xl border border-slate-200/60 dark:border-border bg-white dark:bg-card cursor-pointer transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group flex flex-col`}
     >
       <div className={`absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent pointer-events-none transition-colors duration-500 z-0 ${priorityMatrix[request.priority].color.replace('text-', 'border-r-').replace('600', '100')} group-hover:${priorityMatrix[request.priority].color.replace('text-', 'border-r-').replace('600', '200')}`} />
       <div className={`absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-current to-transparent opacity-5 rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 group-hover:opacity-10 ${priorityMatrix[request.priority].color}`} />
@@ -155,7 +155,7 @@ export default function Maintenance() {
 
         {/* Key Metrics */}
         <div className="grid grid-cols-4 gap-4 mb-8">
-          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
@@ -168,7 +168,7 @@ export default function Maintenance() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
@@ -181,7 +181,7 @@ export default function Maintenance() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
@@ -194,7 +194,7 @@ export default function Maintenance() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <Card className="bg-white dark:bg-background border border-slate-200 dark:border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
             <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
@@ -246,7 +246,7 @@ export default function Maintenance() {
             const requestsInPriority = filteredRequests.filter(r => r.priority === priority);
             return (
               <Card key={priority} className={`border-2 ${config.border} ${config.bg}`}>
-                <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+                <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
                   <CardTitle className="flex items-center gap-2 text-sm">
                     <span className={`w-3 h-3 rounded-full ${config.color}`}></span>
                     {config.label}

@@ -566,7 +566,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
                 onClick={() => daily?.setUserData(JSON.stringify({ avatarUrl: url, avatarColor: null }))}
                 title="Choose Avatar"
               >
-                <img src={url} alt="Avatar" className="w-full h-full object-cover bg-slate-100 dark:bg-slate-800" />
+                <img src={url} alt="Avatar" className="w-full h-full object-cover bg-slate-100 dark:bg-secondary" />
               </button>
             ))}
           </div>
@@ -984,7 +984,7 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
 
   if (!daily || !roomUrl) {
    return (
-    <div className="flex flex-col h-full bg-white dark:bg-[#090E17] rounded-xl items-center justify-center gap-4">
+    <div className="flex flex-col h-full bg-white dark:bg-background rounded-xl items-center justify-center gap-4">
      <div className="w-16 h-16 relative flex items-center justify-center">
       <div className="absolute inset-0 rounded-full border-4 border-slate-100 dark:border-white/5" />
       <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />

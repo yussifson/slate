@@ -237,7 +237,7 @@ export default function UnivWarehouse() {
  <span className="text-xs font-medium text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Capacity Used</span>
  <span className={`text-xs font-semibold ${isHighUtil ? 'text-red-500' : 'text-emerald-500'}`}>{utilPercent}%</span>
  </div>
- <div className="h-2 w-full bg-muted dark:bg-slate-800 rounded-full overflow-hidden">
+ <div className="h-2 w-full bg-muted dark:bg-secondary rounded-full overflow-hidden">
  <div className={`h-full rounded-full ${isHighUtil ? 'bg-red-500/10' : 'bg-emerald-500/10'}`} style={{ width: `${utilPercent}%`}}></div>
  </div>
  <div className="text-[10px] text-[#71717a] dark:text-gray-400 mt-1 text-right">
