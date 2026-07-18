@@ -112,10 +112,6 @@ const features = [
 export default function AdvancedFeaturesBento() {
   return (
     <div className="w-full bg-slate-50 py-32 relative overflow-hidden">
-      {/* Background ambient glow */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-emerald-500/5 to-teal-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-violet-500/5 to-fuchsia-500/5 rounded-full blur-[100px] pointer-events-none translate-y-1/3 -translate-x-1/3" />
-
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
@@ -161,10 +157,9 @@ export default function AdvancedFeaturesBento() {
                     <Icon className="w-6 h-6 text-slate-700 relative z-10" />
                   </div>
                   
-                  {/* By wrapping text in a div that can grow, we push it to the top, allowing space below for visuals if needed */}
-                  <div className="mt-auto">
+                  <div className="flex-1 relative z-10">
                     <h4 className="text-xl md:text-2xl font-bold text-slate-900 mb-3">{feature.title}</h4>
-                    <p className="text-slate-500 text-sm md:text-base leading-relaxed md:max-w-[85%]">
+                    <p className="text-slate-500 text-sm md:text-base leading-relaxed md:max-w-[85%] relative z-10">
                       {feature.description}
                     </p>
                   </div>
