@@ -1179,7 +1179,7 @@ function ProtectedRoute() {
   
   // Show spinner while auth is loading OR while auth hasn't been checked yet
   if (isLoadingAuth || !authChecked) {
-    return <PageLoader label={authStep || "Loading Workspace..."} />;
+    return <PageLoader label="" />;
   }
   
   if (!isAuthenticated) {
@@ -1326,7 +1326,7 @@ function App() {
                   </React.Suspense>
                 ) : isAccountDomain ? (
                   /* ── ACCOUNT DOMAIN: Global Identity Portal ── */
-                  <React.Suspense fallback={<PageLoader label="Loading Account..." />}>
+                  <React.Suspense fallback={<PageLoader label="" />}>
                     <Routes>
                       <Route path="/login" element={<AccountLogin />} />
                       <Route path="/signup" element={<AccountSignUp />} />
@@ -1352,7 +1352,7 @@ function App() {
                   </React.Suspense>
                 ) : (
                   /* ── ALL OTHER DOMAINS: workspace / marketing / app routes ── */
-                  <React.Suspense fallback={<PageLoader label="Loading Module..." />}>
+                  <React.Suspense fallback={<PageLoader label="" />}>
                     {isBaseDomain ? (
                       /* Storefront Routes for the Base Domain */
                       <Routes>

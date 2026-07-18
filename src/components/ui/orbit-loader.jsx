@@ -110,14 +110,7 @@ export function PageLoader({ label = 'Loading...' }) {
 
         {/* Loader image is the only thing shown */}
 
-        {/* Loading text */}
-        <div style={{
-          fontSize: '12px', fontWeight: '500',
-          color: '#71717a',
-          letterSpacing: '0.04em',
-        }}>
-          {label}
-        </div>
+        {/* Loading text removed as per request to keep it clean */}
       </div>
 
       {/* Inline keyframes */}
