@@ -121,15 +121,6 @@ export default function KnowledgeHealth() {
 
   return (
     <div className="min-h-[100dvh] bg-slate-50 dark:bg-background flex flex-col w-full page-enter">
-              <DropdownMenuItem onClick={async () => { await logout(); navigate('/login'); }} className="cursor-pointer text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400">
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Sign Out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </nav>
-
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-6xl mx-auto px-6 py-10">
           <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
