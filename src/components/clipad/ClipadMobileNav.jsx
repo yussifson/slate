@@ -65,7 +65,7 @@ export default function ClipadMobileNav() {
                 <button
                   key={item.label}
                   onClick={item.action}
-                  className="relative flex flex-col items-center justify-center w-full h-full min-w-[50px] sm:min-w-[56px] py-1 active:scale-95 transition-transform duration-100 ease-out shrink-0"
+                  className="relative flex flex-col items-center justify-center flex-1 h-full min-w-0 py-1 active:scale-95 transition-transform duration-100 ease-out"
                 >
                   {content}
                 </button>
@@ -76,7 +76,7 @@ export default function ClipadMobileNav() {
               <Link
                 key={item.path}
                 to={item.path}
-                className="relative flex flex-col items-center justify-center w-full h-full min-w-[50px] sm:min-w-[56px] py-1 active:scale-95 transition-transform duration-100 ease-out shrink-0"
+                className="relative flex flex-col items-center justify-center flex-1 h-full min-w-0 py-1 active:scale-95 transition-transform duration-100 ease-out"
               >
                 {content}
               </Link>
@@ -139,6 +139,18 @@ export default function ClipadMobileNav() {
                   <div className="w-9 h-9 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center"><Settings className="w-5 h-5" /></div>
                   <span className="font-medium text-slate-700 dark:text-slate-300">Settings</span>
                 </button>
+
+                {user?.clipad_plan !== 'enterprise' ? (
+                  <button onClick={() => { setIsMenuOpen(false); navigate(window.location.hostname.includes('clipad') ? '/analytics' : '/clipad/analytics'); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-900/20 text-left transition-colors">
+                    <div className="w-9 h-9 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center"><Bot className="w-5 h-5" /></div>
+                    <span className="font-medium text-purple-600 dark:text-purple-400">Analytics</span>
+                  </button>
+                ) : (
+                  <button onClick={() => { setIsMenuOpen(false); navigate(window.location.hostname.includes('clipad') ? '/enterprise' : '/clipad/enterprise'); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-left transition-colors">
+                    <div className="w-9 h-9 rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 flex items-center justify-center"><Layers className="w-5 h-5" /></div>
+                    <span className="font-medium text-indigo-600 dark:text-indigo-400">Enterprise Dashboard</span>
+                  </button>
+                )}
 
                 {user?.role === 'super_admin' && (
                   <button onClick={() => { setIsMenuOpen(false); navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin'); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-900/20 text-left transition-colors">

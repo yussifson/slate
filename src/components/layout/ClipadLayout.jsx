@@ -60,7 +60,13 @@ export default function ClipadLayout() {
               <p>Chat is currently docked to the right sidebar.</p>
             </div>
           ) : (
-            <Outlet />
+            <React.Suspense fallback={
+              <div className="flex items-center justify-center h-full w-full">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            }>
+              <Outlet />
+            </React.Suspense>
           )}
         </div>
       </div>
@@ -84,6 +90,16 @@ export default function ClipadLayout() {
         injectedContext={injectedContext} 
         onContextConsumed={() => setInjectedContext(null)} 
       />
+
+      {/* Mobile OrbitFlow FAB */}
+      {!isAIOpen && !isImmersive && (
+        <button 
+          onClick={() => window.dispatchEvent(new CustomEvent("toggle-clipad-orbit"))}
+          className="md:hidden fixed bottom-[80px] right-4 z-50 w-12 h-12 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full shadow-lg flex items-center justify-center transition-transform active:scale-95"
+        >
+          <Sparkles className="w-5 h-5" />
+        </button>
+      )}
 
       <CliPadCommandPalette />
       <ClipadMobileNav />
