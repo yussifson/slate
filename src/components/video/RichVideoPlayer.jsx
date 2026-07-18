@@ -270,8 +270,8 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
         }
       `}</style>
       {/* Player (Left/Full) */}
-      <div className={sidebarOpen ? "lg:col-span-2" : "w-full"}>
-        <div ref={playerRef} className="relative rounded-2xl overflow-hidden bg-black aspect-video group shadow-xl border border-white/10">
+      <div className={`${sidebarOpen ? "lg:col-span-2" : "w-full"} -mx-4 sm:mx-0`}>
+        <div ref={playerRef} className="relative sm:rounded-2xl overflow-hidden bg-black aspect-video group shadow-xl border sm:border-white/10 border-transparent sm:border-solid">
           <video
             ref={videoRef}
             src={blobUrl || videoUrl}

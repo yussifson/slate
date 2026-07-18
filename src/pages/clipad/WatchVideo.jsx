@@ -412,7 +412,7 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
           {/* Left: Video Player */}
           <div className="lg:col-span-2 space-y-4">
             {/* Player */}
-            <div ref={playerRef} className="relative rounded-2xl overflow-hidden bg-black aspect-video group">
+            <div ref={playerRef} className="relative sm:rounded-2xl overflow-hidden bg-black aspect-video group -mx-4 sm:mx-0">
               <video
                 ref={videoRef}
                 src={video.video_url}

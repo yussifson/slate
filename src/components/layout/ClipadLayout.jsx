@@ -42,10 +42,8 @@ export default function ClipadLayout() {
     };
   }, []);
 
-  // Hide nav on immersive screens
-  const isImmersive = location.pathname.startsWith('/record') || 
-                      location.pathname.startsWith('/watch') || 
-                      /^\/meetings\/[^\/]+$/.test(location.pathname);
+  // Never hide nav
+  const isImmersive = false;
 
   return (
     <div className="flex flex-row h-[100dvh] w-full overflow-hidden bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">

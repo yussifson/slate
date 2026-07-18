@@ -30,12 +30,8 @@ export default function ClipadMobileNav({ isMarketing = false }) {
 
   const navItems = isMarketing ? marketingNavItems : appNavItems;
 
-  // Hide nav on immersive screens
-  const isImmersive = location.pathname.startsWith('/record') || 
-                      location.pathname.startsWith('/watch') || 
-                      /^\/meetings\/[^\/]+$/.test(location.pathname);
+  // Nav is always visible now
 
-  if (isImmersive) return null;
 
   return (
     <>
