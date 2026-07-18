@@ -301,6 +301,7 @@ export default function MeetingRecord() {
       }
     } catch (err) {
       console.error(err);
+      toast({ title: 'AI Generation Failed', description: 'Could not generate summary. Please try again later.', variant: 'destructive' });
     } finally {
       setGeneratingAI(false);
     }

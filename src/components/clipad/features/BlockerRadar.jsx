@@ -107,16 +107,21 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
       const { data: meetings } = await meetQuery;
       let totalAdded = 0;
 
-      for (const meeting of (meetings || [])) {
+      const detectionPromises = (meetings || []).map(async (meeting) => {
         const text = [meeting.ai_summary, meeting.transcript].filter(Boolean).join('\n');
-        if (!text) continue;
+        if (!text) return { found: [], meeting };
 
         const found = await detectBlockers(text, {
           team_space_id: spaceId || null,
           workspace_id: workspaceId || null,
           source_meeting_id: meeting.id,
         });
+        return { found, meeting };
+      });
 
+      const detectionResults = await Promise.all(detectionPromises);
+
+      for (const { found, meeting } of detectionResults) {
         for (const b of found) {
           // Avoid duplicate descriptions
           const existing = blockers.find(existing => existing.description.toLowerCase() === b.description.toLowerCase());

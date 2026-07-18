@@ -124,32 +124,42 @@ ${orgContext?.contextText || 'No workspace data loaded yet. Ask the user to refr
           if (executedAction.action === 'create_task') {
              console.log("[Orbit Agent] Executing create_task", executedAction);
              try {
-               await supabase.from('clipad_tasks').insert({
+               const { error } = await supabase.from('clipad_tasks').insert({
                  title: executedAction.title || 'Orbit Automated Task',
                  status: 'todo',
                  space_id: spaceId || null,
                  assignee_id: user?.id || null,
                  is_complete: false
                });
+               if (error) throw error;
+               executedAction.status = 'success';
              } catch (err) {
                console.error("Failed to insert task:", err);
+               executedAction.status = 'error';
+               executedAction.error = err.message;
              }
           } else if (executedAction.action === 'send_message') {
              console.log("[Orbit Agent] Executing send_message", executedAction);
              try {
                 // If it fails due to RLS, it means the channel_id needs to be correct. We default to general channel if available.
-                await supabase.from('chat_messages').insert({
+                const { error } = await supabase.from('chat_messages').insert({
                   channel_id: 'general', // We could try to extract from executedAction.recipient if it was an ID
                   user_id: user?.id,
                   content: executedAction.message || '',
                   created_at: new Date().toISOString()
                 });
+                if (error) throw error;
+                executedAction.status = 'success';
              } catch (err) {
                console.error("Failed to send message:", err);
+               executedAction.status = 'error';
+               executedAction.error = err.message;
              }
           }
         } catch(e) {
           console.error("Failed to parse action JSON", e);
+          cleanText = text.replace(/ACTION:.*$/s, '').trim();
+          executedAction = { action: 'error', error: 'I attempted to perform an action but encountered an internal formatting error.' };
         }
       }
 

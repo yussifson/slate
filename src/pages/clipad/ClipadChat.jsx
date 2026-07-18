@@ -185,6 +185,7 @@ export default function ClipadChat({ isDockedMode = false }) {
       }).join('\n');
       const prompt = `Summarize the following chat conversation into a brief, easy-to-read recap (3-4 bullet points max) of decisions made and outstanding items:\n\n${textBlock}`;
       const summary = await generateText([{ role: 'user', content: prompt }]);
+      if (typeof summary !== 'string') throw new Error('AI format error');
       setChatSummary(summary);
     } catch (error) {
       toast({ title: 'Error', description: 'Failed to generate summary.', variant: 'destructive' });
@@ -312,6 +313,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  ];
  
  const response = await generateText(messages);
+ if (typeof response !== 'string') throw new Error('AI format error');
  setInputValue(response || originalInput);
 } catch (error) {
  console.error("AI Assist failed:", error);
