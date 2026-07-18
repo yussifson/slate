@@ -352,31 +352,42 @@ export default function CliPadDashboard() {
           <StatCard icon={TrendingUp} accentColor="bg-emerald-500" bgColor="bg-emerald-50 dark:bg-emerald-500/10" iconColor="text-emerald-500" value={`${stats.completionRate}%`} label="Completion rate" trend={5} />
         </div>
 
-        {/* Quick Actions */}
-        <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-8 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+        {/* Quick Actions — native mobile grid */}
+        <div className="grid grid-cols-3 gap-3 mb-8 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+          {/* New Meeting */}
           <button
             onClick={startInstantMeeting}
             disabled={isCreatingMeeting}
-            className="flex-none sm:w-auto w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-[0_8px_20px_rgba(25,184,110,0.3)] dark:shadow-[0_8px_20px_rgba(25,184,110,0.15)] transition-all hover:-translate-y-0.5 active:translate-y-0"
+            className="flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-2xl bg-primary/10 dark:bg-primary/15 active:scale-95 transition-all duration-150 group"
           >
-            {isCreatingMeeting ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Video className="w-4 h-4" />}
-            New Meeting
+            <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-[0_4px_14px_rgba(25,184,110,0.4)] group-active:shadow-none transition-shadow">
+              {isCreatingMeeting
+                ? <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                : <Video className="w-5 h-5 text-white" />}
+            </div>
+            <span className="text-[12px] font-semibold text-primary leading-tight text-center">New Meeting</span>
           </button>
 
+          {/* Record Video */}
           <button
             onClick={() => navigate('/record')}
-            className="flex-none sm:w-auto w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm bg-white dark:bg-[#202c33] border border-black/5 dark:border-white/5 hover:border-primary/50 text-slate-700 dark:text-foreground font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
+            className="flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-2xl bg-rose-50 dark:bg-rose-500/10 active:scale-95 transition-all duration-150 group"
           >
-            <Camera className="w-4 h-4 text-rose-500 group-hover:scale-110 transition-transform" />
-            Record Video
+            <div className="w-12 h-12 rounded-2xl bg-rose-500 flex items-center justify-center shadow-[0_4px_14px_rgba(244,63,94,0.35)] group-active:shadow-none transition-shadow">
+              <Camera className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-[12px] font-semibold text-rose-500 leading-tight text-center">Record Video</span>
           </button>
 
+          {/* Team Spaces */}
           <button
             onClick={() => navigate('/spaces')}
-            className="flex-none sm:w-auto w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm bg-white dark:bg-[#202c33] border border-black/5 dark:border-white/5 hover:border-primary/50 text-slate-700 dark:text-foreground font-semibold shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 group"
+            className="flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 active:scale-95 transition-all duration-150 group"
           >
-            <Layers className="w-4 h-4 text-indigo-500 group-hover:scale-110 transition-transform" />
-            Team Spaces
+            <div className="w-12 h-12 rounded-2xl bg-indigo-500 flex items-center justify-center shadow-[0_4px_14px_rgba(99,102,241,0.35)] group-active:shadow-none transition-shadow">
+              <Layers className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-[12px] font-semibold text-indigo-500 leading-tight text-center">Team Spaces</span>
           </button>
         </div>
 
