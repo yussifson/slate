@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.slate.slate',
-  appName: 'Slate',
+  appName: 'CliPad',
   webDir: 'dist',
   server: {
     url: 'https://clipad.optavel.com',
