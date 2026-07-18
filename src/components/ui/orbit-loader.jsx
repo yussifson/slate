@@ -20,7 +20,7 @@ export function OrbitLoader({ size = 'md', className = '', label = 'Loading', co
     }
   } catch (e) {}
   
-  const logoSrc = isClipad ? "/clipad-logo-green.png" : (isRootAccount ? "/optavel-favicon.svg" : "/slate-favicon.svg");
+  const logoSrc = isClipad ? "/clipad-logo-green.svg" : (isRootAccount ? "/optavel-favicon.svg" : "/slate-favicon.svg");
 
   return (
     <span
@@ -68,7 +68,7 @@ export function PageLoader({ label = 'Loading...' }) {
     }
   } catch (e) {}
   
-  const logoSrc = isClipad ? "/clipad-logo-green.png" : (isRootAccount ? "/optavel-favicon.svg" : "/slate-favicon.svg");
+  const logoSrc = isClipad ? "/clipad-logo-green.svg" : (isRootAccount ? "/optavel-favicon.svg" : "/slate-favicon.svg");
   const logoAlt = isClipad ? "CliPad Logo" : (isRootAccount ? "Optavel Logo" : "Slate Logo");
 
   return (
