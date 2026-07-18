@@ -86,15 +86,6 @@ export default function CliPadSettings() {
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-background page-enter/80 backdrop-blur-xl border-b border-border">
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
-          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-secondary border border-slate-200 dark:border-border shadow-sm flex items-center justify-center text-primary">
-            <CliPadLogo size={20} />
-          </div>
-          <span className="text-lg font-bold tracking-tight">Settings</span>
-        </div>
-        <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-foreground transition-all hover:-translate-y-0.5"><ArrowLeft className="w-4 h-4 text-slate-500" /> Dashboard</button>
-      </nav>
 
       <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

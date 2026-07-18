@@ -334,59 +334,7 @@ export default function ClipadChat({ isDockedMode = false }) {
 
  return (
    <div style={{ fontFamily: "'Inter', sans-serif" }} className="flex flex-col h-[100dvh] bg-[#f0f2f5] dark:bg-[#111b21] overflow-hidden page-enter">
-     {!isDockedMode && (
-     <nav className="shrink-0 flex items-center justify-between px-4 md:px-8 h-16 bg-white/90 dark:bg-card/90 backdrop-blur-xl border-b border-slate-200 dark:border-border z-40 relative shadow-sm">
-       <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
-         <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center border border-slate-200 dark:border-border shadow-sm text-primary">
-           <CliPadLogo size={22} />
-         </div>
-         <span className="text-lg font-bold tracking-tight hidden sm:block">CliPad</span>
-       </div>
-       <div className="flex items-center gap-1.5 md:gap-3">
-         <button onClick={() => navigate('/spaces')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Spaces</button>
-         <button onClick={() => navigate('/videos')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Recordings</button>
-         <button onClick={() => navigate('/meetings')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Meetings</button>
-         <button onClick={() => navigate('/chat')} className="hidden md:block px-3 py-2 text-sm font-medium text-primary bg-primary/10 rounded-lg transition-colors">Chat</button>
-          {isAdmin(user) && (
-             user?.clipad_plan === 'enterprise' ? (
-               <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/enterprise' : '/clipad/enterprise')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Enterprise</button>
-             ) : (
-               <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/analytics' : '/clipad/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Analytics</button>
-             )
-          )}
-         
-         <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden md:block" />
-         
-         <ThemeToggle />
-         <NotificationCenter />
 
-         <DropdownMenu>
-           <DropdownMenuTrigger asChild>
-             <button className="w-9 h-9 rounded-xl bg-primary hover:bg-primary/90 flex items-center justify-center font-bold text-sm text-primary-foreground shadow-sm transition-all hover:scale-105 active:scale-95 ml-1 overflow-hidden border border-primary/20">
-               {user?.avatar_url || user?.user_metadata?.avatar_url ? (
-                 <img src={user.avatar_url || user.user_metadata.avatar_url} alt={firstName} className="w-full h-full object-cover" />
-               ) : (
-                 firstName[0]?.toUpperCase()
-               )}
-             </button>
-           </DropdownMenuTrigger>
-           <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl shadow-xl border-slate-200 dark:border-border">
-             <div className="px-3 py-3 mb-2 bg-slate-50 dark:bg-secondary/50 rounded-xl">
-               <p className="font-semibold text-sm truncate">{user?.full_name || user?.user_metadata?.full_name || 'User'}</p>
-               <p className="text-xs text-slate-500 dark:text-muted-foreground truncate">{user?.email}</p>
-             </div>
-             <DropdownMenuItem onClick={() => navigate('/settings')} className="rounded-xl py-2.5 px-3 cursor-pointer">
-               <Settings className="w-4 h-4 mr-2" /> Settings
-             </DropdownMenuItem>
-             <DropdownMenuSeparator className="my-1 bg-slate-100 dark:bg-secondary" />
-             <DropdownMenuItem onClick={() => window.location.href = 'https://account.optavel.com'} className="rounded-xl py-2.5 px-3 cursor-pointer text-slate-500">
-               <UserCircle className="w-4 h-4 mr-2" /> Go to Optavel Account
-             </DropdownMenuItem>
-           </DropdownMenuContent>
-         </DropdownMenu>
-       </div>
-     </nav>
-     )}
 
      {/* Main layout below nav */}
      <div className="flex-1 flex overflow-hidden relative">

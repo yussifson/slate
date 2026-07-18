@@ -121,62 +121,6 @@ export default function KnowledgeHealth() {
 
   return (
     <div className="min-h-[100dvh] bg-slate-50 dark:bg-background flex flex-col w-full page-enter">
-      {/* Sleek top nav */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-card/80 backdrop-blur-xl border-b border-slate-200 dark:border-border">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center border border-slate-200 dark:border-border shadow-sm text-primary">
-            <CliPadLogo size={22} />
-          </div>
-          <span className="text-lg font-bold tracking-tight">CliPad</span>
-        </div>
-        <div className="flex items-center gap-1.5 md:gap-3">
-          <button onClick={() => navigate('/spaces')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Spaces</button>
-          <button onClick={() => navigate('/videos')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Recordings</button>
-          <button onClick={() => navigate('/meetings')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Meetings</button>
-          <button onClick={() => navigate('/chat')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Chat</button>
-              {user?.clipad_plan === 'enterprise' ? (
-                <button onClick={() => navigate('/clipad/enterprise')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Enterprise</button>
-              ) : (
-                <button onClick={() => navigate('/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Analytics</button>
-              )}
-          
-          <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden md:block" />
-          
-          <ThemeToggle />
-          
-          <button onClick={() => window.dispatchEvent(new CustomEvent("toggle-clipad-orbit"))} className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all flex items-center gap-1.5 ml-2">
-            <Sparkles className="w-3.5 h-3.5" /> OrbitFlow
-          </button>
-          
-          <NotificationCenter />
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="w-9 h-9 rounded-xl bg-primary hover:bg-primary/90 flex items-center justify-center font-bold text-sm text-primary-foreground shadow-sm transition-all hover:scale-105 active:scale-95 ml-1 overflow-hidden border border-primary/20">
-                {user?.avatar_url || user?.user_metadata?.avatar_url ? (
-                  <img src={user.avatar_url || user.user_metadata.avatar_url} alt={firstName} className="w-full h-full object-cover" />
-                ) : (
-                  firstName[0]?.toUpperCase()
-                )}
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 font-sans">
-              <DropdownMenuLabel className="font-semibold">{user?.email}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
-              </DropdownMenuItem>
-              {user?.role === 'super_admin' && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin')} className="cursor-pointer bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400">
-                    <Shield className="mr-2 h-4 w-4" />
-                    <span className="font-semibold">Super Admin Dashboard</span>
-                  </DropdownMenuItem>
-                </>
-              )}
-              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={async () => { await logout(); navigate('/login'); }} className="cursor-pointer text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400">
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Sign Out</span>

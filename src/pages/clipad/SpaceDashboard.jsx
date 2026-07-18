@@ -407,24 +407,24 @@ export default function SpaceDashboard() {
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background page-enter text-foreground overflow-x-hidden pb-24 md:pb-8">
       {/* Nav */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 md:px-10 h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
-        <div className="flex items-center gap-3">
-          <button onClick={() => navigate('/spaces')} className="flex items-center justify-center w-10 h-10 rounded-full bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md text-slate-700 dark:text-foreground transition-all hover:-translate-y-0.5"><ArrowLeft className="w-5 h-5 text-slate-500" /></button>
-          <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-sm`}>
-            {React.createElement(getSpaceIcon(space.name), { className: "w-4 h-4" })}
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-10 h-14 md:h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
+        <div className="flex items-center gap-2 md:gap-3">
+          <button onClick={() => navigate('/spaces')} className="flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md text-slate-700 dark:text-foreground transition-all hover:-translate-y-0.5 active:scale-95"><ArrowLeft className="w-5 h-5 md:w-5 md:h-5 text-slate-500" /></button>
+          <div className={`w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-sm`}>
+            {React.createElement(getSpaceIcon(space.name), { className: "w-4 h-4 md:w-4 md:h-4" })}
           </div>
-          <span className="font-semibold text-foreground">{space.name}</span>
+          <span className="font-semibold text-base md:text-lg text-foreground line-clamp-1">{space.name}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <button onClick={() => navigate('/chat')} className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2">
+          <button onClick={() => navigate('/chat')} className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all flex items-center gap-2 active:scale-95">
             <MessageSquare className="w-4 h-4" /> Chat
           </button>
-          <button onClick={() => navigate('/record')} className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all flex items-center gap-2">
+          <button onClick={() => navigate('/record')} className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all flex items-center gap-2 active:scale-95">
             <Camera className="w-4 h-4" /> Record
           </button>
           <button
             onClick={handleJoinMeeting}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all ${isLive ? 'bg-rose-500 hover:bg-rose-400 text-white shadow-lg shadow-rose-500/25 animate-pulse' : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25'}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all active:scale-95 ${isLive ? 'bg-rose-500 hover:bg-rose-400 text-white shadow-lg shadow-rose-500/25 animate-pulse' : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25'}`}
           >
             {isLive ? <Activity className="w-4 h-4" /> : <Video className="w-4 h-4" />}
             {isLive ? 'Join Live' : 'Start Meeting'}
@@ -433,68 +433,88 @@ export default function SpaceDashboard() {
       </nav>
 
       {/* Space header */}
-      <div className="relative overflow-hidden">
-        <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-10`} />
-        <div className="relative px-6 md:px-10 py-8">
-          <div className="flex items-start gap-4">
-            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-xl shrink-0`}>
-              {React.createElement(getSpaceIcon(space.name), { className: "w-7 h-7" })}
+      <div className="relative overflow-hidden bg-white dark:bg-card border-b border-black/5 dark:border-white/5 md:border-none md:bg-transparent">
+        <div className={`hidden md:block absolute inset-0 bg-gradient-to-br ${color} opacity-10`} />
+        <div className="relative px-4 md:px-10 py-6 md:py-8">
+          <div className="flex items-start gap-3 md:gap-4">
+            <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-lg md:shadow-xl shrink-0`}>
+              {React.createElement(getSpaceIcon(space.name), { className: "w-6 h-6 md:w-7 md:h-7" })}
             </div>
-            <div>
-              <h1 className="text-2xl font-black text-foreground flex items-center gap-3">
-                {space.name}
-                {space.is_private && <Lock className="w-5 h-5 text-slate-400" />}
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl md:text-2xl font-black text-foreground flex items-center gap-2 md:gap-3 leading-tight">
+                <span className="truncate">{space.name}</span>
+                {space.is_private && <Lock className="w-4 h-4 md:w-5 md:h-5 text-slate-400 shrink-0" />}
                 {canEdit && (
-                  <div className="flex items-center gap-2 ml-2 opacity-50 hover:opacity-100 transition-opacity">
-                    <button onClick={() => setShowEdit(true)} className="p-1.5 hover:bg-white/20 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors" title="Edit Space">
+                  <div className="flex items-center gap-1 md:gap-2 ml-auto md:ml-2 opacity-80 md:opacity-50 hover:opacity-100 transition-opacity">
+                    <button onClick={() => setShowEdit(true)} className="p-1.5 md:p-2 bg-slate-100 dark:bg-secondary md:bg-transparent hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg md:rounded-xl text-slate-600 dark:text-slate-300 md:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors active:scale-95" title="Edit Space">
                       <Edit3 className="w-4 h-4" />
                     </button>
-                    <button onClick={handleDeleteSpace} className="p-1.5 hover:bg-rose-500/20 rounded-lg text-slate-500 hover:text-rose-500 transition-colors" title="Delete Space">
+                    <button onClick={handleDeleteSpace} className="p-1.5 md:p-2 bg-rose-50 dark:bg-rose-500/10 md:bg-transparent hover:bg-rose-100 dark:hover:bg-rose-500/20 rounded-lg md:rounded-xl text-rose-500 md:text-slate-500 md:hover:text-rose-500 transition-colors active:scale-95" title="Delete Space">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 )}
               </h1>
-              <p className="text-muted-foreground mt-1">{space.description || 'A shared space for meetings, videos, and collaboration.'}</p>
-              <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {meetings.length} meetings</span>
-                <span className="flex items-center gap-1"><Camera className="w-3.5 h-3.5" /> {videos.length} videos</span>
-                <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> {openTasks.length} open tasks</span>
+              <p className="text-sm md:text-base text-muted-foreground mt-1 md:mt-1.5 leading-snug line-clamp-2 md:line-clamp-none">{space.description || 'A shared space for meetings, videos, and collaboration.'}</p>
+              
+              {/* Native Pill Stats */}
+              <div className="flex flex-wrap items-center gap-2 mt-3 md:mt-4 text-xs font-medium">
+                <span className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-slate-600 dark:text-slate-300"><Calendar className="w-3.5 h-3.5 text-indigo-500" /> {meetings.length} meetings</span>
+                <span className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-slate-600 dark:text-slate-300"><Camera className="w-3.5 h-3.5 text-emerald-500" /> {videos.length} videos</span>
+                <span className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-slate-600 dark:text-slate-300"><CheckCircle className="w-3.5 h-3.5 text-amber-500" /> {openTasks.length} tasks</span>
                 {space.is_private && canEdit && (
-                  <button onClick={() => setShowMembers(true)} className="flex items-center gap-1 ml-2 text-primary hover:text-primary/80 font-semibold transition-colors">
+                  <button onClick={() => setShowMembers(true)} className="flex items-center gap-1.5 bg-primary/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-primary hover:bg-primary/20 transition-colors active:scale-95">
                     <Users className="w-3.5 h-3.5" /> Manage Members
                   </button>
                 )}
               </div>
             </div>
           </div>
+          
+          {/* Mobile Quick Actions Row */}
+          <div className="md:hidden flex items-center gap-2 mt-5">
+            <button onClick={() => navigate('/chat')} className="flex-1 flex flex-col items-center justify-center gap-1.5 py-2.5 bg-secondary rounded-2xl hover:bg-secondary/80 transition-colors active:scale-95">
+              <MessageSquare className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+              <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">Chat</span>
+            </button>
+            <button onClick={() => navigate('/record')} className="flex-1 flex flex-col items-center justify-center gap-1.5 py-2.5 bg-secondary rounded-2xl hover:bg-secondary/80 transition-colors active:scale-95">
+              <Camera className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+              <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">Record</span>
+            </button>
+            <button onClick={handleJoinMeeting} className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-2.5 rounded-2xl transition-colors active:scale-95 ${isLive ? 'bg-rose-500 text-white animate-pulse' : 'bg-primary text-primary-foreground'}`}>
+              {isLive ? <Activity className="w-5 h-5" /> : <Video className="w-5 h-5" />}
+              <span className="text-[11px] font-bold">{isLive ? 'Live' : 'Meeting'}</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Tab bar */}
-      <div className="px-6 md:px-10 border-b border-black/5 dark:border-white/5 overflow-x-auto no-scrollbar scrollbar-hide">
-        <div className="flex gap-1 -mb-px min-w-max">
-          {TABS.filter(t => {
-            if (t.id === 'automations') return user?.role === 'super_admin';
-            if (['memory', 'decisions'].includes(t.id)) return isAdmin(user);
-            return true;
-          }).map(tab => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => handleTabChange(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === tab.id ? 'border-indigo-500 text-primary' : 'border-transparent text-muted-foreground hover:text-gray-300 hover:border-white/20'}`}
-              >
-                <Icon className="w-4 h-4" />{tab.label}
-              </button>
-            );
-          })}
+      {/* Tab bar (Native Segmented Style) */}
+      <div className="border-b border-black/5 dark:border-white/5 bg-white/50 dark:bg-card/50 backdrop-blur-md sticky top-[56px] md:top-16 z-30">
+        <div className="overflow-x-auto no-scrollbar scrollbar-hide py-2 px-4 md:px-10">
+          <div className="flex gap-1.5 min-w-max">
+            {TABS.filter(t => {
+              if (t.id === 'automations') return user?.role === 'super_admin';
+              if (['memory', 'decisions'].includes(t.id)) return isAdmin(user);
+              return true;
+            }).map(tab => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabChange(tab.id)}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 md:py-2 text-sm font-semibold transition-all rounded-full active:scale-95 ${activeTab === tab.id ? 'bg-slate-800 dark:bg-white text-white dark:text-black shadow-md' : 'bg-slate-100 dark:bg-secondary/70 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-secondary'}`}
+                >
+                  <Icon className="w-3.5 h-3.5" />{tab.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
       {/* Tab content */}
-      <div className="max-w-7xl mx-auto px-6 md:px-10 py-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-10 py-6 md:py-8">
 
         {/* OVERVIEW (BENTO GRID REDESIGN) */}
         {activeTab === 'overview' && (
@@ -511,7 +531,7 @@ export default function SpaceDashboard() {
             )}
 
             {/* Premium Bento Grid Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
               
               {/* Context Capsule */}
               <div className="lg:col-span-1 xl:col-span-2 flex flex-col h-full relative group">
@@ -569,7 +589,7 @@ export default function SpaceDashboard() {
 
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 pt-4 md:pt-6">
               {/* Recent Videos */}
               <div className="flex flex-col h-full rounded-3xl bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 shadow-sm overflow-hidden p-6 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-6">
@@ -587,7 +607,7 @@ export default function SpaceDashboard() {
                       <p className="text-slate-500 dark:text-muted-foreground text-sm font-medium">No videos yet.</p>
                       <button className="mt-4 text-primary font-bold hover:text-primary/80 transition-colors text-sm" onClick={() => navigate('/record')}>Record one →</button>
                     </div>
-                  : <div className="grid grid-cols-2 gap-4">{videos.slice(0,4).map(v => <VideoCard key={v.id} video={v} onClick={() => navigate(`/watch/${v.id}`)} />)}</div>
+                  : <div className="grid grid-cols-2 gap-3 md:gap-4">{videos.slice(0,4).map(v => <VideoCard key={v.id} video={v} onClick={() => navigate(`/watch/${v.id}`)} />)}</div>
                 }
               </div>
 
@@ -641,7 +661,7 @@ export default function SpaceDashboard() {
                 <button onClick={() => navigate('/record')} className="px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-all">Record Async Video</button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                 {videos.map(v => <VideoCard key={v.id} video={v} onClick={() => navigate(`/watch/${v.id}`)} />)}
               </div>
             )}
@@ -701,7 +721,7 @@ export default function SpaceDashboard() {
 
         {/* CHAT */}
         {activeTab === 'chat' && (
-          <div className="h-[calc(100vh-140px)] -mt-6 -mx-8 sm:-mx-12">
+          <div className="h-[calc(100vh-140px)] -mt-6 md:-mt-8 -mx-4 md:-mx-10">
              <SpaceChat spaceId={spaceId} />
           </div>
         )}
@@ -722,14 +742,14 @@ export default function SpaceDashboard() {
 
         {/* DOCS */}
         {activeTab === 'docs' && (
-          <div className="h-[calc(100vh-140px)] -mt-6 -mx-8 sm:-mx-12">
+          <div className="h-[calc(100vh-140px)] -mt-6 md:-mt-8 -mx-4 md:-mx-10">
             <SpaceDocs spaceId={spaceId} />
           </div>
         )}
 
         {/* CANVAS */}
         {activeTab === 'canvas' && (
-          <div className="h-[calc(100vh-140px)] -mt-6 -mx-8 sm:-mx-12 border border-border rounded-xl overflow-hidden shadow-sm relative bg-[#0D1117]">
+          <div className="h-[calc(100vh-140px)] -mt-6 md:-mt-8 -mx-4 md:-mx-10 border-y md:border md:rounded-xl border-border overflow-hidden shadow-sm relative bg-[#0D1117]">
             <CanvasWhiteboard onClose={() => setActiveTab('overview')} />
           </div>
         )}
