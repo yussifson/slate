@@ -10,6 +10,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="manifest" href="/manifest.json" />
+    <script>
+      (function() {
+        try {
+          if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.backgroundColor = '#0B0F14';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.backgroundColor = '#ffffff';
+          }
+        } catch (e) {}
+      })();
+    </script>
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <style>
       html, body {
@@ -33,6 +46,8 @@
         z-index: 999999;
         color: #0f172a;
       }
+      html.dark .app-preloader { background: #0B0F14; color: #ffffff; }
+      html.dark .app-preloader-text { color: #94a3b8; }
       .app-preloader-logo {
         width: 64px;
         height: 64px;

@@ -33,7 +33,7 @@ export default function EnterpriseDashboard() {
   useEffect(() => {
     if (!user) return;
     const isSuperAdmin = ['super_admin', 'admin', 'optavelos'].includes(user.role);
-    const plan = user.clipad_plan || user.subscription_plan;
+    const plan = (user.clipad_plan || user.subscription_plan || '').toLowerCase();
     if (!isSuperAdmin && plan !== 'enterprise' && plan !== 'off_cloud') {
       window.location.href = '/clipad';
     }

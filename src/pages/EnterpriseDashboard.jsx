@@ -51,7 +51,7 @@ export default function EnterpriseDashboard() {
   useEffect(() => {
     if (!user) return;
     const isSuperAdmin = ['super_admin', 'admin', 'optavelos'].includes(user.role);
-    const plan = user.subscription_plan;
+    const plan = (user.subscription_plan || '').toLowerCase();
     if (!isSuperAdmin && plan !== 'enterprise' && plan !== 'off_cloud') {
       toast.error('This dashboard is only available on the Enterprise plan.');
       navigate('/');
