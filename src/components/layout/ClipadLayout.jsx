@@ -5,7 +5,7 @@ import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import ClipadTopNav from '@/components/clipad/ClipadTopNav';
 import { useChatDock } from '@/hooks/useChatDock';
 import ClipadChat from '@/pages/clipad/ClipadChat';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CliPadCommandPalette from '@/components/clipad/CliPadCommandPalette';
 

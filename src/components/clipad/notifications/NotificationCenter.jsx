@@ -34,13 +34,23 @@ export default function NotificationCenter() {
             filter: `user_id=eq.${user.id}`
           }, 
           (payload) => {
-            fetchNotifications();
             if (payload.eventType === 'INSERT') {
+              setNotifications(prev => [payload.new, ...prev]);
+              setUnreadCount(prev => prev + 1);
+              
+              // Play native-feeling notification sound
+              try {
+                const audio = new Audio('https://cdn.freesound.org/previews/415/415065_7811904-lq.mp3');
+                audio.volume = 0.5;
+                audio.play().catch(e => console.log('Audio playback blocked by browser:', e));
+              } catch (e) {}
+
               toast({
                 title: payload.new.title,
                 description: payload.new.message,
-                duration: 5000,
               });
+            } else if (payload.eventType === 'UPDATE') {
+              setNotifications(prev => prev.map(n => n.id === payload.new.id ? payload.new : n));
             }
           }
         )

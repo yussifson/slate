@@ -47,5 +47,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera to let you record videos and join meetings.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need access to your microphone to capture audio during recordings and meetings.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>We need bluetooth access to connect your wireless headsets.</string>
 </dict>
 </plist>
