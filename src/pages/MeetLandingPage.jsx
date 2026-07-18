@@ -824,48 +824,7 @@ export default function MeetLandingPage() {
               </div>
               <div className="flex-1 overflow-y-auto overflow-x-hidden relative">
                 {supportPanel === 'chat' ? (
-                  showHumanForm ? (
-                    <div className="p-6">
-                      <div className="flex flex-col h-full justify-center items-center text-center text-slate-500">
-                        <MessageSquare className="w-12 h-12 text-slate-300 mb-4" />
-                        <p>Live chat agents are currently offline.<br/>Please leave a message.</p>
-                        <form className="space-y-4 w-full mt-8" onSubmit={async (e) => { 
-                          e.preventDefault(); 
-                          setSubmittingSupport(true); 
-                          try {
-                            await supabase.from('clipad_marketing_requests').insert({
-                              type: 'chat',
-                              message: supportForm.message
-                            });
-                            toast({title: 'Message Sent', description: 'We will email you shortly.'});
-                            setSupportPanel(null); 
-                            setShowHumanForm(false);
-                            setSupportForm({ name: '', email: '', phone: '', message: '' });
-                          } catch (err) {
-                            toast({title: 'Error', description: 'Failed to send message.', variant: 'destructive'});
-                          } finally {
-                            setSubmittingSupport(false);
-                          }
-                        }}>
-                          <div className="text-left">
-                            <label className="text-sm font-medium">Message</label>
-                            <textarea 
-                              required 
-                              value={supportForm.message}
-                              onChange={(e) => setSupportForm(prev => ({...prev, message: e.target.value}))}
-                              className="w-full mt-1 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50" 
-                              rows={4} 
-                            />
-                          </div>
-                          <Button type="submit" disabled={submittingSupport} className="w-full rounded-xl bg-primary hover:bg-primary/90 text-white">
-                            {submittingSupport ? 'Sending...' : 'Send Message'}
-                          </Button>
-                        </form>
-                      </div>
-                    </div>
-                  ) : (
-                    <SupportAIChat onEscalate={() => setShowHumanForm(true)} />
-                  )
+                  <SupportAIChat />
                 ) : (
                   <div className="p-6">
                     <form className="space-y-4" onSubmit={async (e) => { 
