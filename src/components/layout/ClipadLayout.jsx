@@ -47,11 +47,12 @@ export default function ClipadLayout() {
                       /^\/meetings\/[^\/]+$/.test(location.pathname);
 
   return (
-    <div className="flex flex-col h-[100dvh] w-full overflow-hidden bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
-      {!isImmersive && <ClipadTopNav />}
-      <div className="flex flex-1 overflow-hidden relative">
+    <div className="flex flex-row h-[100dvh] w-full overflow-hidden bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
+      
+      {/* Main Content Column */}
+      <div className="flex flex-col flex-1 w-0 overflow-hidden relative">
+        {!isImmersive && <ClipadTopNav />}
         
-        {/* Main Content Area */}
         <div className="flex-1 flex flex-col h-full overflow-y-auto relative z-30 page-enter pb-[80px] md:pb-0">
           {location.pathname === '/chat' && isChatDocked ? (
             <div className="flex items-center justify-center h-full text-slate-500 flex-col gap-3">
@@ -62,27 +63,27 @@ export default function ClipadLayout() {
             <Outlet />
           )}
         </div>
-
-        {/* Right Docked Portal for Orbit AI & Chat */}
-        <div 
-          id="right-docked-panel-portal" 
-          className={cn(
-            "hidden md:flex shrink-0 h-full relative bg-white dark:bg-background",
-            isChatDocked ? "border-l border-black/5 dark:border-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.12)]" : "w-0 overflow-hidden border-none"
-          )}
-          style={{ width: isChatDocked ? dockWidth : 0 }}
-        >
-          {isChatDocked && <DockResizer />}
-          {isChatDocked && <ClipadChat isDockedMode={true} />}
-        </div>
-
-        <GlobalAIAssistant 
-          isOpen={isAIOpen} 
-          onClose={() => setIsAIOpen(false)} 
-          injectedContext={injectedContext} 
-          onContextConsumed={() => setInjectedContext(null)} 
-        />
       </div>
+
+      {/* Right Docked Portal for Orbit AI & Chat */}
+      <div 
+        id="right-docked-panel-portal" 
+        className={cn(
+          "hidden md:flex shrink-0 h-full relative bg-white dark:bg-background z-40",
+          isChatDocked ? "border-l border-black/5 dark:border-white/5 shadow-[-8px_0_30px_rgba(0,0,0,0.05)]" : "w-0 overflow-hidden border-none"
+        )}
+        style={{ width: isChatDocked ? dockWidth : 0 }}
+      >
+        {isChatDocked && <DockResizer />}
+        {isChatDocked && <ClipadChat isDockedMode={true} />}
+      </div>
+
+      <GlobalAIAssistant 
+        isOpen={isAIOpen} 
+        onClose={() => setIsAIOpen(false)} 
+        injectedContext={injectedContext} 
+        onContextConsumed={() => setInjectedContext(null)} 
+      />
 
       <CliPadCommandPalette />
       <ClipadMobileNav />

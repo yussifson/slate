@@ -24,9 +24,9 @@ export default function NotificationCenter() {
     if (user) {
       fetchNotifications();
       
-      // Optionally setup realtime subscription
+      // Setup realtime subscription with a unique channel name to prevent StrictMode reuse errors
       const channel = supabase
-        .channel('public:clipad_notifications')
+        .channel(`public:clipad_notifications_${user.id}_${Date.now()}`)
         .on('postgres_changes', { 
             event: '*', 
             schema: 'public', 

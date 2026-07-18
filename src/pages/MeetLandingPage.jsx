@@ -7,7 +7,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Zap, Target, Star, Brain, Camera, Rocket, MessageSquare, PhoneCall, ArrowRight, ShieldCheck, CheckCircle, Video, TrendingUp, Calendar, X, Keyboard, Sparkles, Copy, Link as LinkIcon, Users, Layers, ChevronRight, ChevronLeft, Monitor, Globe, Plus, Clock } from 'lucide-react';
+import { Menu, Zap, Target, Star, Brain, Camera, Rocket, MessageSquare, PhoneCall, ArrowRight, ShieldCheck, CheckCircle, Video, TrendingUp, Calendar, X, Keyboard, Sparkles, Copy, Link as LinkIcon, Users, Layers, ChevronRight, ChevronLeft, Monitor, Globe, Plus, Clock } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
@@ -21,6 +21,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import ContactSalesModal from '@/components/clipad/ContactSalesModal';
 import PaymentReceiptModal from '@/components/clipad/PaymentReceiptModal';
 import SupportAIChat from '@/components/clipad/SupportAIChat';
+import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 
 
 const pillars = [
@@ -189,6 +190,7 @@ function useLiveClock() {
 export default function MeetLandingPage() {
   const [meetingCode, setMeetingCode] = useState('');
   const [isCreating, setIsCreating] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [laterLink, setLaterLink] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -207,6 +209,13 @@ export default function MeetLandingPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const now = useLiveClock();
+
+  // Redirect to dashboard if already logged in (simulating native app behavior)
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -359,7 +368,7 @@ export default function MeetLandingPage() {
   const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
 
   return (
-    <div className={`light min-h-screen bg-white text-slate-900 flex flex-col font-sans relative transition-all duration-500 ease-in-out ${supportPanel ? 'lg:pr-[400px]' : ''}`}>
+    <div className={`light min-h-screen bg-white text-slate-900 flex flex-col font-sans relative transition-all duration-500 ease-in-out overflow-x-hidden ${supportPanel ? 'lg:pr-[400px]' : ''}`}>
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 blur-[120px]" />
         <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-orange-500/5 blur-[120px]" />
@@ -376,11 +385,14 @@ export default function MeetLandingPage() {
           </div>
           <span className="text-xl font-bold tracking-tight text-slate-900">CliPad</span>
         </div>
+        
+        {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-1 text-sm text-muted-foreground">
           <a href="#features" className="px-4 py-2 rounded-lg hover:text-foreground hover:bg-secondary transition-colors">Features</a>
           <a href="#pricing" className="px-4 py-2 rounded-lg hover:text-foreground hover:bg-secondary transition-colors">Pricing</a>
           <a href="#contact" className="px-4 py-2 rounded-lg hover:text-foreground hover:bg-secondary transition-colors">Support</a>
         </div>
+        
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-2 text-sm font-semibold tabular-nums bg-slate-100/80 px-3 py-1.5 rounded-xl border border-slate-200/60 shadow-inner text-slate-700">
             <Clock className="w-4 h-4 text-primary" />
@@ -388,17 +400,58 @@ export default function MeetLandingPage() {
             <span className="text-slate-300 mx-0.5">|</span>
             <span>{dateStr}</span>
           </div>
-          {user ? (
-            <Button onClick={() => navigate('/dashboard')} className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
-              <Layers className="w-4 h-4 mr-2" /> Dashboard
-            </Button>
-          ) : (
-            <Button onClick={() => navigate('/login')} variant="outline" className="rounded-xl border-border bg-background hover:bg-secondary text-foreground">
-              Sign In
-            </Button>
-          )}
+          
+          {/* Mobile Menu Toggle */}
+          <button 
+            className="md:hidden p-2 -mr-2 text-slate-600 hover:text-slate-900 transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+
+          <div className="hidden md:flex items-center gap-2">
+            {user ? (
+              <Button onClick={() => navigate('/dashboard')} className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
+                <Layers className="w-4 h-4 mr-2" /> Dashboard
+              </Button>
+            ) : (
+              <Button onClick={() => navigate('/login')} variant="outline" className="rounded-xl border-border bg-background hover:bg-secondary text-foreground">
+                Sign In
+              </Button>
+            )}
+          </div>
         </div>
       </header>
+
+      {/* Mobile Menu Dropdown */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="md:hidden sticky top-[73px] z-40 bg-white border-b border-slate-200 shadow-lg"
+          >
+            <div className="flex flex-col p-4 gap-2">
+              <a onClick={() => setIsMobileMenuOpen(false)} href="#features" className="px-4 py-3 rounded-xl hover:bg-slate-50 font-medium text-slate-700">Features</a>
+              <a onClick={() => setIsMobileMenuOpen(false)} href="#pricing" className="px-4 py-3 rounded-xl hover:bg-slate-50 font-medium text-slate-700">Pricing</a>
+              <a onClick={() => setIsMobileMenuOpen(false)} href="#contact" className="px-4 py-3 rounded-xl hover:bg-slate-50 font-medium text-slate-700">Support</a>
+              
+              <div className="h-px bg-slate-100 my-2" />
+              
+              {user ? (
+                <Button onClick={() => navigate('/dashboard')} className="w-full rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm py-6">
+                  <Layers className="w-5 h-5 mr-2" /> Go to Dashboard
+                </Button>
+              ) : (
+                <Button onClick={() => navigate('/login')} className="w-full rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm py-6">
+                  Sign In
+                </Button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <main className="relative z-10 flex-1 flex flex-col md:flex-row items-center justify-center p-6 md:p-12 gap-12 md:gap-16 max-w-7xl mx-auto w-full">
         <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-8 max-w-xl">
@@ -536,7 +589,7 @@ export default function MeetLandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {tiers.map((tier) => (
-              <div key={tier.name} className={`relative p-8 rounded-3xl border transition-all ${tier.highlight ? 'bg-gradient-to-b from-primary/20 to-primary/10 border-primary/40 shadow-2xl shadow-primary/10' : 'bg-secondary/50 border-border hover:border-border'}`}>
+              <div key={tier.name} className={`relative p-6 md:p-8 rounded-3xl border transition-all ${tier.highlight ? 'bg-gradient-to-b from-primary/20 to-primary/10 border-primary/40 shadow-2xl shadow-primary/10' : 'bg-secondary/50 border-border hover:border-border'}`}>
                 {tier.badge && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-primary to-primary rounded-full text-xs font-bold text-white shadow-lg">
                     {tier.badge}
@@ -572,7 +625,7 @@ export default function MeetLandingPage() {
           <div className="mt-24">
             <h3 className="text-3xl font-black text-center mb-10 tracking-tight">Compare Plans</h3>
             <div className="overflow-x-auto border border-border rounded-3xl bg-secondary/30">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full min-w-[700px] text-left border-collapse">
                 <thead>
                   <tr className="border-b border-border bg-slate-50/50">
                     <th className="p-5 font-bold text-foreground w-[40%] rounded-tl-3xl">Features</th>
@@ -852,10 +905,12 @@ export default function MeetLandingPage() {
 
       <ContactSalesModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
       <PaymentReceiptModal isOpen={!!receiptDetails} onClose={() => setDetails(null)} transactionDetails={receiptDetails} />
+      
+      {/* Mobile Bottom Navigation */}
+      <ClipadMobileNav />
     </div>
   );
 }
-
 
 // Fix icon reference
 function MonitorIcon(props) { return <Monitor {...props} />; }
