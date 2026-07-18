@@ -240,7 +240,7 @@ export default function CaseMessaging({ caseData, user}) {
  <div className="mx-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl bg-popover mb-0 overflow-hidden max-h-36 overflow-y-auto">
  <div className="p-2 border-b border-primary/40">
  <input
- autoFocus
+ 
  className="w-full text-xs outline-none bg-transparent placeholder:text-[#71717a] dark:text-gray-400 tracking-[0.04em]"
  placeholder="Search colleagues..."
  value={tagSearch}

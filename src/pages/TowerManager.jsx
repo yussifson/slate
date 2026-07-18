@@ -144,7 +144,7 @@ export default function TowerManager() {
                     onChange={(e) => setNewTowerName(e.target.value)}
                     placeholder="e.g. Downtown Store, North Campus..."
                     className="h-12 bg-slate-50 dark:bg-background border-slate-300 dark:border-border rounded-lg focus-visible:ring-emerald-500"
-                    autoFocus
+                    
                   />
                 </div>
                 <Button type="submit" disabled={isCreating || !newTowerName.trim()} className="w-full h-12 rounded-lg bg-primary hover:bg-primary/90 text-white font-bold shadow-md shadow-primary/20">

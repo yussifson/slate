@@ -38,7 +38,7 @@ export default function SpotlightSearch() {
  };
 }, []);
 
- // Autofocus & reset on open/close
+ //  & reset on open/close
  useEffect(() => {
  if (isOpen) {
  setTimeout(() => inputRef.current?.focus(), 100);

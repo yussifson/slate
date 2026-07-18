@@ -607,7 +607,7 @@ export default function UnivDataGrid({
  <div className="flex-1">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Record Name</label>
  <input
- autoFocus
+ 
  type="text"
  value={newRecordName}
  onChange={e => setNewRecordName(e.target.value)}
@@ -667,7 +667,7 @@ export default function UnivDataGrid({
  {showSaveView ? (
  <div className="flex items-center gap-2.5 ml-1">
  <input
- autoFocus
+ 
  value={viewNameInput}
  onChange={e => setViewNameInput(e.target.value)}
  onKeyDown={e => { if (e.key === 'Enter') handleSaveView(); if (e.key === 'Escape') setShowSaveView(false);}}

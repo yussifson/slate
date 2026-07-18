@@ -222,7 +222,7 @@ export default function SpaceChat({ spaceId }) {
                 onChange={e => setNewChannelName(e.target.value)}
                 placeholder="e.g. marketing-ideas"
                 className="w-full bg-transparent text-sm text-foreground focus:outline-none mb-3 font-medium placeholder:text-muted-foreground/50"
-                autoFocus
+                
                 onKeyDown={e => {
                   if (e.key === 'Enter' && newChannelName.trim()) {
                     createChannel(newChannelName.trim());

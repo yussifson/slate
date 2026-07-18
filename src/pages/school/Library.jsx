@@ -266,7 +266,7 @@ export default function Library() {
           <div className="space-y-6 py-4">
             <div>
               <label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide tracking-[0.04em]">Borrower Name (Student/Staff)</label>
-              <Input value={borrowerName} onChange={e => setBorrowerName(e.target.value)} className="mt-2 h-14 text-lg border-emerald-200 focus-visible:ring-emerald-500 rounded-xl bg-[#F0F4FF] dark:bg-blue-900/20/50" placeholder="e.g. Jane Doe" autoFocus />
+              <Input value={borrowerName} onChange={e => setBorrowerName(e.target.value)} className="mt-2 h-14 text-lg border-emerald-200 focus-visible:ring-emerald-500 rounded-xl bg-[#F0F4FF] dark:bg-blue-900/20/50" placeholder="e.g. Jane Doe"  />
             </div>
           </div>
           <div className="flex justify-end gap-4 mt-4">

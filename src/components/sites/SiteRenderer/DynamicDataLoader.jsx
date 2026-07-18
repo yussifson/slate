@@ -1,12 +1,12 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 
 /**
- * useDynamicData — Custom hook that fetches live data from Slate modules.
+ * useDynamicData � Custom hook that fetches live data from Slate modules.
  *
- * @param {string} siteId      – UUID of the site
- * @param {string} companyId   – UUID of the company
- * @param {string} sectionType – One of: 'booking', 'products', 'menu', 'jobs'
+ * @param {string} siteId      � UUID of the site
+ * @param {string} companyId   � UUID of the company
+ * @param {string} sectionType � One of: 'booking', 'products', 'menu', 'jobs'
  *
  * @returns {{ data: any[], loading: boolean, error: string|null }}
  */
@@ -28,7 +28,7 @@ export function useDynamicData(siteId, companyId, sectionType) {
 
         switch (sectionType) {
 
-          /* ── BOOKINGS ───────────────────────────────────────────────── */
+          /* -- BOOKINGS ------------------------------------------------- */
           case 'booking':
           case 'bookings': {
             const { data: rows, error: err } = await supabase
@@ -43,7 +43,7 @@ export function useDynamicData(siteId, companyId, sectionType) {
             break;
           }
 
-          /* ── PRODUCTS ───────────────────────────────────────────────── */
+          /* -- PRODUCTS ------------------------------------------------- */
           case 'products':
           case 'product': {
             // Try univ_inventory first, fall back to retail_inventory
@@ -72,7 +72,7 @@ export function useDynamicData(siteId, companyId, sectionType) {
             break;
           }
 
-          /* ── MENU ───────────────────────────────────────────────────── */
+          /* -- MENU ----------------------------------------------------- */
           case 'menu':
           case 'menu_items': {
             let rows = null;
@@ -100,7 +100,7 @@ export function useDynamicData(siteId, companyId, sectionType) {
             break;
           }
 
-          /* ── JOBS ───────────────────────────────────────────────────── */
+          /* -- JOBS ----------------------------------------------------- */
           case 'jobs':
           case 'careers': {
             // Try a dedicated jobs table first, fall back to hr employees for open roles
@@ -126,7 +126,7 @@ export function useDynamicData(siteId, companyId, sectionType) {
                 .limit(50));
 
               if (fetchErr) {
-                // Still failing — return empty array (not all companies have jobs data)
+                // Still failing � return empty array (not all companies have jobs data)
                 result = [];
                 break;
               }
@@ -136,7 +136,7 @@ export function useDynamicData(siteId, companyId, sectionType) {
             break;
           }
 
-          /* ── UNKNOWN ────────────────────────────────────────────────── */
+          /* -- UNKNOWN -------------------------------------------------- */
           default:
             result = [];
         }

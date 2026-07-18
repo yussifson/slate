@@ -1,12 +1,12 @@
-ï»¿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 /**
- * SiteNav â€” Public-facing navigation bar for a Slate Site.
+ * SiteNav — Public-facing navigation bar for a Slate Site.
  *
  * Props:
- *   site        â€“ full site record (logo_url, site_name, theme, â€¦)
- *   pages       â€“ array of published page records ({ slug, title, page_order, â€¦ })
- *   currentSlug â€“ slug of the currently active page
+ *   site        – full site record (logo_url, site_name, theme, …)
+ *   pages       – array of published page records ({ slug, title, page_order, … })
+ *   currentSlug – slug of the currently active page
  */
 export default function SiteNav({ site = {}, pages = [], currentSlug = '' }) {
   const [menuOpen, setMenuOpen]   = useState(false);

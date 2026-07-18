@@ -313,7 +313,7 @@ export default function FeeManagement() {
                   value={enrollName}
                   onChange={e => setEnrollName(e.target.value)}
                   placeholder="e.g. Kwame Mensah"
-                  autoFocus
+                  
                 />
               </div>
             </div>

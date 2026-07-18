@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 
 const TWITTER_ICON = (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -30,10 +30,10 @@ const SOCIAL_ICONS = {
 };
 
 /**
- * SiteFooter — Public-facing footer for a Slate Site.
+ * SiteFooter � Public-facing footer for a Slate Site.
  *
  * Props:
- *   site – full site record
+ *   site � full site record
  */
 export default function SiteFooter({ site = {} }) {
   const theme       = site.theme || {};
@@ -160,7 +160,7 @@ export default function SiteFooter({ site = {} }) {
                     onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; }}
                     onMouseLeave={e => { e.currentTarget.style.color = footerText; }}
                   >
-                    ✉ {site.contact_email}
+                    ? {site.contact_email}
                   </a>
                 )}
                 {site.contact_phone && (
@@ -170,12 +170,12 @@ export default function SiteFooter({ site = {} }) {
                     onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; }}
                     onMouseLeave={e => { e.currentTarget.style.color = footerText; }}
                   >
-                    ☎ {site.contact_phone}
+                    ? {site.contact_phone}
                   </a>
                 )}
                 {site.address && (
                   <span style={{ fontSize: '14px', color: footerText, lineHeight: '1.5' }}>
-                    📍 {site.address}
+                    ?? {site.address}
                   </span>
                 )}
               </div>
@@ -194,7 +194,7 @@ export default function SiteFooter({ site = {} }) {
           gap:            '12px',
         }}>
           <p style={{ margin: 0, fontSize: '13px', color: `${footerText}bb` }}>
-            © {year} {site.site_name || site.company_name || ''}. All rights reserved.
+            � {year} {site.site_name || site.company_name || ''}. All rights reserved.
           </p>
 
           {/* Powered by Slate badge */}

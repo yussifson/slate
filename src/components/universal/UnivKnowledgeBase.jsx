@@ -262,7 +262,7 @@ export default function UnivKnowledgeBase({
  {isAddingCategory && (
  <div className="px-2 mb-2 flex items-center gap-2">
  <input 
- autoFocus
+ 
  type="text"
  value={newCategoryName}
  onChange={e => setNewCategoryName(e.target.value)}

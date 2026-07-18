@@ -213,7 +213,7 @@ export default function UnivKanban({ title = "Kanban Board", companyId, pageName
  <div className="flex-shrink-0 w-56 rounded-2xl border-2 border-dashed border-primary/40 flex flex-col items-center justify-center min-h-[150px] hover:border-primary/40 transition-colors bg-card/30 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {addingCol ? (
  <form onSubmit={addColumn} className="p-4 w-full flex flex-col gap-2">
- <input autoFocus type="text" value={newColName} onChange={e => setNewColName(e.target.value)} placeholder="Column name..." className="w-full h-9 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input  type="text" value={newColName} onChange={e => setNewColName(e.target.value)} placeholder="Column name..." className="w-full h-9 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  <div className="flex gap-2"><button type="submit" className="flex-1 h-8 bg-primary text-white rounded-xl text-xs font-semibold tracking-[0.04em]">Add</button><button type="button" onClick={() => setAddingCol(false)} className="flex-1 h-8 bg-muted rounded-xl text-xs font-semibold tracking-[0.04em]">Cancel</button></div>
  </form>
  ) : (

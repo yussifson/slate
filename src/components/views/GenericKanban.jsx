@@ -278,7 +278,7 @@ export default function GenericKanban({
               onChange={e => setStageName(e.target.value)} 
               placeholder="Stage Name (e.g., Quality Control)" 
               className="rounded-xl"
-              autoFocus
+              
               onKeyDown={e => e.key === 'Enter' && handleSaveStage()}
             />
           </div>

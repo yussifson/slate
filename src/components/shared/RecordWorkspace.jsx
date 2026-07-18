@@ -113,7 +113,7 @@ function OverviewPanel({ record, onSave}) {
  </p>
  {editing[key] ? (
  <input
- autoFocus
+ 
  className="w-full text-sm bg-muted/60 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-3 py-1.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
  value={String(values[key] ?? "")}
  onChange={(e) => handleChange(key, e.target.value)}

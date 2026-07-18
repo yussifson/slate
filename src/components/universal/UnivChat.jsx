@@ -189,7 +189,7 @@ export default function UnivChat({
  {isCreatingChannel && (
  <div className="px-2 mb-2">
  <input
- autoFocus
+ 
  type="text"
  placeholder="channel-name..."
  value={newChannelName}

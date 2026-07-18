@@ -174,7 +174,7 @@ export default function UnivCalendar({
  <div className="flex-1">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Event Title</label>
  <input 
- autoFocus
+ 
  type="text" 
  value={newEventTitle} 
  onChange={e => setNewEventTitle(e.target.value)} 

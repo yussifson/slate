@@ -1,11 +1,11 @@
-﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/api/supabaseClient';
 import SiteNav from './SiteNav';
 import SiteFooter from './SiteFooter';
 import SitePageRenderer from './SitePageRenderer';
 
-/* ─── helpers ──────────────────────────────────────────────────────────── */
+/* --- helpers ------------------------------------------------------------ */
 
 function getSlugFromPath(pathname) {
   const parts = pathname.replace(/^\/+|\/+$/g, '').split('/').filter(Boolean);
@@ -45,7 +45,7 @@ function applyTheme(theme = {}) {
   root.style.setProperty('--site-radius',     theme.borderRadius    || '8px');
 }
 
-/* ─── Shimmer skeleton ──────────────────────────────────────────────────── */
+/* --- Shimmer skeleton ---------------------------------------------------- */
 
 function SkeletonPulse({ width = '100%', height = '20px', borderRadius = '6px', style = {} }) {
   return (
@@ -143,7 +143,7 @@ function LoadingSkeleton() {
   );
 }
 
-/* ─── 404 page ──────────────────────────────────────────────────────────── */
+/* --- 404 page ------------------------------------------------------------ */
 
 function Page404({ site }) {
   const theme      = site?.theme || {};
@@ -197,14 +197,14 @@ function Page404({ site }) {
           onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; }}
           onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
         >
-          ← Go Home
+          ? Go Home
         </a>
       </div>
     </div>
   );
 }
 
-/* ─── Coming Soon / Not Found site page ────────────────────────────────── */
+/* --- Coming Soon / Not Found site page ---------------------------------- */
 
 function ComingSoon({ companyId }) {
   const label = companyId
@@ -235,7 +235,7 @@ function ComingSoon({ companyId }) {
           margin:       '0 auto 32px',
           fontSize:     '40px',
         }}>
-          🚀
+          ??
         </div>
 
         <h1 style={{
@@ -268,9 +268,9 @@ function ComingSoon({ companyId }) {
           border:         '1px solid rgba(255,255,255,0.2)',
           backdropFilter: 'blur(8px)',
         }}>
-          <span style={{ fontSize: '20px' }}>✨</span>
+          <span style={{ fontSize: '20px' }}>?</span>
           <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: '15px', fontWeight: '500' }}>
-            Stay tuned — something exciting is on its way
+            Stay tuned � something exciting is on its way
           </span>
         </div>
 
@@ -286,13 +286,13 @@ function ComingSoon({ companyId }) {
   );
 }
 
-/* ─── Main Renderer ─────────────────────────────────────────────────────── */
+/* --- Main Renderer ------------------------------------------------------- */
 
 /**
- * SlateSiteRenderer — Root public renderer.
+ * SlateSiteRenderer � Root public renderer.
  *
  * Props:
- *   companyId – UUID of the company whose site to render
+ *   companyId � UUID of the company whose site to render
  */
 export default function SlateSiteRenderer({ companyId }) {
   const [site, setSite]         = useState(null);
@@ -412,7 +412,7 @@ export default function SlateSiteRenderer({ companyId }) {
     return () => document.removeEventListener('click', onClick);
   }, []);
 
-  /* ── Render states ── */
+  /* -- Render states -- */
 
   if (loading) return <LoadingSkeleton />;
 

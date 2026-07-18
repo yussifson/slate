@@ -132,7 +132,7 @@ export default function UnivGlobalSearch({
  onKeyDown={e => e.key === 'Enter' && saveRecentSearch(query)}
  placeholder="Type to search..."
  className="w-full h-16 pl-14 pr-16 bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl text-lg font-medium text-foreground placeholder:text-[#71717a] dark:text-gray-400/50 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all "
- autoFocus
+ 
  />
  <div className="absolute inset-y-0 right-0 flex items-center pr-4">
  {isFetching ? (

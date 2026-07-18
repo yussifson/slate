@@ -97,7 +97,7 @@ function SalaryEditDialog({ staff, currency, onClose, onSubmit }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label>{t("monthly_salary", "Monthly Salary (")}{currency})</Label>
-            <Input type="number" min="0" step="0.01" value={salary} onChange={e => setSalary(e.target.value)} autoFocus />
+            <Input type="number" min="0" step="0.01" value={salary} onChange={e => setSalary(e.target.value)}  />
           </div>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>

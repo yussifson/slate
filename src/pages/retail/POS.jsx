@@ -534,7 +534,7 @@ ${receipt.amountTendered ? `<div class="row"><span>Tendered</span><span>$${recei
                 <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em] mb-1 block">Amount Tendered</label>
                 <Input type="number" step="0.01" min={total} placeholder={`Minimum $${total.toFixed(2)}`}
                   value={amountTendered} onChange={e => setAmountTendered(e.target.value)}
-                  className="h-14 text-2xl font-bold text-center" autoFocus />
+                  className="h-14 text-2xl font-bold text-center"  />
               </div>
 
               {amountTendered && parseFloat(amountTendered) >= total && (

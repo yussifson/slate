@@ -461,7 +461,7 @@ export default function Prescriptions() {
             <div className="p-5 space-y-4">
               <div>
                 <label className="text-xs font-semibold text-[#71717a] uppercase">Medication Name</label>
-                <Input value={newMedName} onChange={e => setNewMedName(e.target.value)} className="mt-1" placeholder="e.g. Paracetamol 500mg" autoFocus />
+                <Input value={newMedName} onChange={e => setNewMedName(e.target.value)} className="mt-1" placeholder="e.g. Paracetamol 500mg"  />
               </div>
             </div>
             <div className="p-5 bg-muted/30 flex gap-3 border-t border-border/50">

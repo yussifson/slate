@@ -377,7 +377,7 @@ export default function UnivCRM() {
  <div className="flex-shrink-0 w-[320px] max-w-[85vw] h-[150px] rounded-2xl flex flex-col snap-center border-2 border-dashed border-primary/40 hover:border-primary/40 transition-colors bg-card/30 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {isAddingStage ? (
  <form onSubmit={handleAddStage} className="p-4 flex flex-col gap-3 h-full justify-center">
- <input autoFocus type="text" value={newStageName} onChange={e=>setNewStageName(e.target.value)} placeholder="Stage Name..." className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm " />
+ <input  type="text" value={newStageName} onChange={e=>setNewStageName(e.target.value)} placeholder="Stage Name..." className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm " />
  <div className="flex gap-2">
  <button type="submit" className="flex-1 h-9 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 -primary/20">Save</button>
  <button type="button" onClick={()=>setIsAddingStage(false)} className="flex-1 h-9 bg-muted text-foreground rounded-xl text-sm font-medium hover:bg-muted/80 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">Cancel</button>
@@ -484,7 +484,7 @@ export default function UnivCRM() {
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-6">
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">First Name *</label>
- <input required autoFocus type="text" value={formData.first_name} onChange={e => setFormData({...formData, first_name: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="John" />
+ <input required  type="text" value={formData.first_name} onChange={e => setFormData({...formData, first_name: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="John" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">Last Name</label>

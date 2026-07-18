@@ -29,7 +29,7 @@ export default function AddOptionInline({ onAdd, placeholder = "New option..." }
   return (
     <div className="flex items-center gap-2 px-2 py-1">
       <Input
-        autoFocus
+        
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleConfirm(); } if (e.key === "Escape") setAdding(false); }}

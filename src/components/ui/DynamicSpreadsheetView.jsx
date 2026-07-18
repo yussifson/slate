@@ -434,7 +434,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  onChange={(e) => setEditValue(e.target.value)}
  onKeyDown={handleKeyDown}
  onBlur={saveCell}
- autoFocus
+ 
  className="w-full bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/30 rounded-md px-2 py-1 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-primary/70 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>

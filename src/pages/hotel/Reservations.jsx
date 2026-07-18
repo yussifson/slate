@@ -827,7 +827,7 @@ Format your response exactly as valid JSON ONLY:
               type="email" 
               placeholder="guest@example.com"
               className="mt-1"
-              autoFocus
+              
             />
           </div>
         </div>

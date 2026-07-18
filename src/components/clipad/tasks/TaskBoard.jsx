@@ -203,7 +203,7 @@ export default function TaskBoard({ spaceId }) {
                 {addingToStage === stage.id && (
                   <form onSubmit={(e) => handleAddTask(e, stage.id)} className="bg-background p-3 rounded-xl border border-primary/40 shadow-sm animate-in fade-in slide-in-from-top-2">
                     <input
-                      autoFocus
+                      
                       type="text"
                       value={newTaskTitle}
                       onChange={e => setNewTaskTitle(e.target.value)}
@@ -283,7 +283,7 @@ export default function TaskBoard({ spaceId }) {
             ) : (
               <form onSubmit={addStage} className="bg-card/60 backdrop-blur rounded-2xl border border-primary/50 shadow-sm p-3 animate-in fade-in slide-in-from-left-2">
                 <input
-                  autoFocus
+                  
                   type="text"
                   value={newStageName}
                   onChange={e => setNewStageName(e.target.value)}

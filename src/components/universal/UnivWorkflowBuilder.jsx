@@ -615,7 +615,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  <Workflow className="w-5 h-5 text-primary" />
  {editingName ? (
  <input
- autoFocus
+ 
  type="text"
  value={workflowName}
  onChange={(e) => setWorkflowName(e.target.value)}
