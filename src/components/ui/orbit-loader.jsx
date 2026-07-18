@@ -9,7 +9,18 @@ const SIZE_MAP = {
 
 export function OrbitLoader({ size = 'md', className = '', label = 'Loading', color }) {
   const { dim } = SIZE_MAP[size] || SIZE_MAP['md']
-  const logoSrc = "/clipad-logo-green.png";
+  
+  let isRootAccount = false;
+  let isClipad = false;
+  try {
+    const domainData = getSubdomainAndBase();
+    isRootAccount = domainData.isRootAccount;
+    if (domainData.subdomain === 'clipad' || window.location.hostname.startsWith('clipad')) {
+      isClipad = true;
+    }
+  } catch (e) {}
+  
+  const logoSrc = isClipad ? "/clipad-logo-green.png" : (isRootAccount ? "/optavel-favicon.svg" : "/slate-favicon.svg");
 
   return (
     <span
@@ -47,8 +58,18 @@ export function LoadingOverlay({ visible, size = 'md', label = 'Loading', blur =
 }
 
 export function PageLoader({ label = 'Loading...' }) {
-  const logoSrc = "/clipad-logo-green.png";
-  const logoAlt = "CliPad Logo";
+  let isRootAccount = false;
+  let isClipad = false;
+  try {
+    const domainData = getSubdomainAndBase();
+    isRootAccount = domainData.isRootAccount;
+    if (domainData.subdomain === 'clipad' || window.location.hostname.startsWith('clipad')) {
+      isClipad = true;
+    }
+  } catch (e) {}
+  
+  const logoSrc = isClipad ? "/clipad-logo-green.png" : (isRootAccount ? "/optavel-favicon.svg" : "/slate-favicon.svg");
+  const logoAlt = isClipad ? "CliPad Logo" : (isRootAccount ? "Optavel Logo" : "Slate Logo");
 
   return (
     <div
