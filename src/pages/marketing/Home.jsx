@@ -22,6 +22,7 @@ import {
  CreditCard,
  Sparkles} from 'lucide-react';
 import { Button} from '@/components/ui/button';
+import { getSubdomainAndBase } from '@/lib/domainUtils';
 
 /* ------------------------------------------------------------------ */
 /* Fade-in-up observer hook */
@@ -487,6 +488,8 @@ const suites = [
 /* ------------------------------------------------------------------ */
 export default function Home() {
  const { t} = useTranslation();
+ const { baseDomain } = getSubdomainAndBase();
+ const isSlate = baseDomain && baseDomain.includes('slate');
  
  const [aiPrompt, setAiPrompt] = useState("");
  const [showFirmAlert, setShowFirmAlert] = useState(false);
@@ -536,8 +539,8 @@ export default function Home() {
 return (
  <div className="overflow-x-hidden">
   <SEO 
-    title="Optavel - Experience Infinite Scale With Next-Gen Enterprise Products"
-    description="Optavel provides next-generation enterprise software including Slate unified workspaces and CliPad organizational memory platform."
+    title={isSlate ? "Slate - The Unified Workspace That Turns Hours Into Clear Profit" : "Optavel - Experience Infinite Scale With Next-Gen Enterprise Products"}
+    description={isSlate ? "Built for teams that take operations seriously. Manage cases, automate client communication, log billable hours, process payments, and track HR — all in one place." : "Optavel provides next-generation enterprise software including Slate unified workspaces and CliPad organizational memory platform."}
     type="website"
   />
 

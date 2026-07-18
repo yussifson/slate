@@ -160,14 +160,20 @@ export default function MarketingLayout({ children}) {
  <div className="h-14 flex items-center justify-between">
  {/* Logo */}
  <Link to="/" className="flex items-center gap-2.5 group shrink-0">
- <Logo className="w-10 h-10 md:w-11 md:h-11 transition-transform group-hover:scale-105" />
+ {baseDomain && baseDomain.includes('slate') ? (
+   <img src="/slate-logo.svg" alt="Slate Logo" className="w-10 h-10 md:w-11 md:h-11 transition-transform group-hover:scale-105" />
+ ) : (
+   <Logo className="w-10 h-10 md:w-11 md:h-11 transition-transform group-hover:scale-105" />
+ )}
  <div className="flex flex-col">
  <span className="font-extrabold text-base md:text-lg tracking-tight text-foreground leading-none">
- {t("slate", "Slate")}
+ {baseDomain && baseDomain.includes('slate') ? t("slate", "Slate") : t("optavel", "Optavel")}
  </span>
- <span className="text-[9px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase leading-none mt-0.5 tracking-[0.04em]">
- {t("by_optavel", "by Optavel")}
- </span>
+ {baseDomain && baseDomain.includes('slate') && (
+   <span className="text-[9px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase leading-none mt-0.5 tracking-[0.04em]">
+   {t("by_optavel", "by Optavel")}
+   </span>
+ )}
  </div>
  </Link>
 
