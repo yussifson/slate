@@ -57,13 +57,6 @@ const customFetch = async (url, options) => {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    // Bypass Web Locks to prevent deadlocks in React Strict Mode
-    lock: async (name, acquireTimeout, fn) => {
-      return await fn();
-    },
-    // Start with autoRefreshToken disabled if we are offline at load time.
-    // This stops the endless _recoverAndRefresh retry storm when loading offline.
-    autoRefreshToken: typeof navigator !== 'undefined' ? navigator.onLine : true,
     detectSessionInUrl: true,
     persistSession: true
   },
