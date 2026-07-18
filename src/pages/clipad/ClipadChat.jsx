@@ -347,13 +347,13 @@ export default function ClipadChat({ isDockedMode = false }) {
          <button onClick={() => navigate('/videos')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Recordings</button>
          <button onClick={() => navigate('/meetings')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Meetings</button>
          <button onClick={() => navigate('/chat')} className="hidden md:block px-3 py-2 text-sm font-medium text-primary bg-primary/10 rounded-lg transition-colors">Chat</button>
-         {isAdmin(user) && (
-            user?.clipad_plan === 'enterprise' ? (
-              <button onClick={() => navigate('/clipad/enterprise')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Enterprise</button>
-            ) : (
-              <button onClick={() => navigate('/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Analytics</button>
-            )
-         )}
+          {isAdmin(user) && (
+             user?.clipad_plan === 'enterprise' ? (
+               <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/enterprise' : '/clipad/enterprise')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Enterprise</button>
+             ) : (
+               <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/analytics' : '/clipad/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Analytics</button>
+             )
+          )}
          
          <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden md:block" />
          
@@ -578,7 +578,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  ) : (
     /* When docked, show a super compact or hidden sidebar */
     <div className={cn(
-      "flex flex-col bg-white/50 dark:bg-black/20 backdrop-blur-3xl border-r border-black/5 dark:border-white/5 transition-all duration-300 z-20 shrink-0",
+      "flex flex-col bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-r border-black/5 dark:border-white/5 transition-all duration-300 z-20 shrink-0",
       activeRoomId ? "hidden" : "w-full"
     )}>
       <div className="p-4 border-b border-black/5 dark:border-white/5 flex items-center justify-between shrink-0">

@@ -23,7 +23,7 @@ export default function ClipadTopNav() {
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
   return (
-    <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-4 md:px-8 h-16 bg-white/50 dark:bg-background/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5 overflow-x-auto no-scrollbar w-full">
+    <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5 overflow-x-auto no-scrollbar w-full">
       <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
         <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center border border-slate-200 dark:border-border shadow-sm text-primary">
           <CliPadLogo size={22} />
@@ -43,9 +43,9 @@ export default function ClipadTopNav() {
         {isAdmin(user) && (
             <>
               {user?.clipad_plan === 'enterprise' ? (
-                <button onClick={() => navigate('/enterprise')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Enterprise</button>
+                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/enterprise' : '/clipad/enterprise')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Enterprise</button>
               ) : (
-                <button onClick={() => navigate('/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Analytics</button>
+                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/analytics' : '/clipad/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Analytics</button>
               )}
             </>
         )}
