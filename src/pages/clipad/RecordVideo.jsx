@@ -90,7 +90,7 @@ export default function RecordVideo() {
   const [recoveredChunks, setRecoveredChunks] = useState(null);
 
   useEffect(() => {
-    if (id && user && (user.clipad_plan === 'pro' || user.clipad_plan === 'enterprise')) {
+    if (id && user) {
       getRecordingState(id).then(state => {
         if (state && state.chunks && state.chunks.length > 0) {
           if (Date.now() - state.timestamp > 86400000) {
@@ -251,6 +251,41 @@ export default function RecordVideo() {
     window.addEventListener('offline', handleOffline);
     return () => window.removeEventListener('offline', handleOffline);
   }, [toast]);
+
+  // Two-Way Sync for PiP Window UI
+  useEffect(() => {
+    if (!pipWindow) return;
+    try {
+      const doc = pipWindow.document;
+      
+      const pauseBtn = doc.getElementById('pip-pause-btn');
+      if (pauseBtn) {
+        const pauseIcon = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+        const playIcon = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
+        if (isPaused) {
+          pauseBtn.innerHTML = playIcon;
+          pauseBtn.style.backgroundColor = 'rgba(16, 185, 129, 0.15)';
+          pauseBtn.style.color = '#10b981';
+        } else {
+          pauseBtn.innerHTML = pauseIcon;
+          pauseBtn.style.backgroundColor = '#e2e8f0';
+          pauseBtn.style.color = '#0f172a';
+        }
+      }
+
+      const micBtn = doc.getElementById('pip-mic-btn');
+      if (micBtn) {
+        if (!micEnabled) {
+          micBtn.style.backgroundColor = 'rgba(239, 68, 68, 0.15)';
+          micBtn.style.color = '#ef4444';
+          micBtn.style.boxShadow = 'none';
+        } else {
+          micBtn.style.backgroundColor = '#e2e8f0';
+          micBtn.style.color = '#0f172a';
+        }
+      }
+    } catch (err) {}
+  }, [isPaused, micEnabled, pipWindow]);
   const [activeVideoId, setActiveVideoId] = useState(null);
   const [selectedSpace, setSelectedSpace] = useState('');
   const [spaces, setSpaces] = useState([]);
@@ -331,7 +366,10 @@ export default function RecordVideo() {
     if (recognitionRef.current) recognitionRef.current.stop();
     if (audioContextRef.current) audioContextRef.current.close().catch(()=>{});
     Object.values(streamsRef.current).forEach(s => s?.getTracks().forEach(t => t.stop()));
-    if (pipWindow) pipWindow.close();
+    if (pipWindow) {
+      try { pipWindow.close(); } catch(e) {}
+      setPipWindow(null);
+    }
   };
 
   const togglePause = () => {
@@ -652,13 +690,14 @@ export default function RecordVideo() {
       toast({ title: 'Missing Title', description: 'Please enter a video title before recording.', variant: 'destructive' });
       return;
     }
-    const success = await prepareStreamsAndPip(pipPromise);
+    const success = await prepareStreamsAndPip();
     if (success) {
+      if (pipPromise) startPip(pipPromise);
       setCountdown(5);
     }
   };
 
-  const prepareStreamsAndPip = async (pipPromise) => {
+  const prepareStreamsAndPip = async () => {
     try {
       // Initialize AudioContext immediately during the click event to avoid being suspended
       const audioCtx = new AudioContext();
@@ -864,7 +903,8 @@ export default function RecordVideo() {
       return true;
     } catch (err) {
       console.error(err);
-      toast({ title: 'Stream Error', description: err.message || 'Could not acquire media.', variant: 'destructive' });
+      toast({ title: 'Stream Error', description: 'Could not access camera or screen. ' + err.message, variant: 'destructive' });
+      stopEverything();
       return false;
     }
   };

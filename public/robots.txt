@@ -1,8 +1,16 @@
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /settings
-Disallow: /cases
-Disallow: /clients
+Allow: /login
+Allow: /signup
+Allow: /features
+Allow: /pricing
+Allow: /about
 
-Sitemap: https://optalflow.com/sitemap.xml
+# Disallow authenticated app routes from being crawled
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /app/*
+Disallow: /settings
+Disallow: /api/*
+
+Sitemap: https://optavel.com/sitemap.xml
