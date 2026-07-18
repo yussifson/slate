@@ -511,14 +511,14 @@ export default function SpaceDashboard() {
             )}
 
             {/* Premium Bento Grid Layout */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-max">
+            <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               
-              {/* Context Capsule (Large span) */}
-              <div className="md:col-span-2 lg:col-span-2 xl:col-span-2 flex flex-col h-full relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                <div className="relative h-full flex flex-col rounded-2xl bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 shadow-sm overflow-hidden z-10 hover:shadow-md transition-shadow">
+              {/* Context Capsule */}
+              <div className="lg:col-span-1 xl:col-span-2 flex flex-col h-full relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-3xl blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                <div className="relative h-full flex flex-col rounded-3xl bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 shadow-sm overflow-hidden z-10 hover:shadow-md transition-shadow">
                   <div className={`h-1.5 w-full bg-gradient-to-r ${color}`}></div>
-                  <div className="p-1 flex-1">
+                  <div className="p-2 flex-1">
                     <ContextCapsule 
                       spaceId={spaceId} 
                       hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
@@ -527,34 +527,43 @@ export default function SpaceDashboard() {
                 </div>
               </div>
 
-              {/* Blocker Radar (Vertical span) */}
-              <div className="md:col-span-1 lg:col-span-1 xl:col-span-1 flex flex-col h-full rounded-2xl bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 shadow-sm overflow-hidden z-10 hover:shadow-md transition-shadow">
-                <div className="p-1 flex-1">
-                  <BlockerRadar 
-                    workspaceId={space.company_id} 
-                    spaceId={spaceId} 
-                    isWorkspaceView={true}
-                    hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
-                  />
+              {/* Blocker Radar */}
+              <div className="lg:col-span-1 xl:col-span-1 flex flex-col h-full relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-rose-500/10 to-orange-500/10 rounded-3xl blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                <div className="relative h-full flex flex-col rounded-3xl bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 shadow-sm overflow-hidden z-10 hover:shadow-md transition-shadow">
+                  <div className="p-2 flex-1">
+                    <BlockerRadar 
+                      workspaceId={space.company_id} 
+                      spaceId={spaceId} 
+                      isWorkspaceView={true}
+                      hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Commitment Tracker */}
-              <div className="md:col-span-1 lg:col-span-3 xl:col-span-1 flex flex-col h-full rounded-2xl bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 shadow-sm overflow-hidden z-10 hover:shadow-md transition-shadow">
-                <div className="p-1 flex-1">
-                  <CommitmentTracker spaceId={spaceId} />
+              <div className="lg:col-span-1 xl:col-span-1 flex flex-col h-full relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-3xl blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                <div className="relative h-full flex flex-col rounded-3xl bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 shadow-sm overflow-hidden z-10 hover:shadow-md transition-shadow">
+                  <div className="p-2 flex-1">
+                    <CommitmentTracker spaceId={spaceId} />
+                  </div>
                 </div>
               </div>
 
-              {/* Decision Ledger (Full width bottom span) */}
-              <div className="md:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col rounded-2xl bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 shadow-sm overflow-hidden z-10 hover:shadow-md transition-shadow">
-                <div className="p-1">
-                  <DecisionLedger 
-                    workspaceId={space.company_id} 
-                    spaceId={spaceId} 
-                    hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
-                    teamColor={color}
-                  />
+              {/* Decision Ledger */}
+              <div className="lg:col-span-3 xl:col-span-4 flex flex-col relative group mt-2">
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 rounded-3xl blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                <div className="relative flex flex-col rounded-3xl bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 shadow-sm overflow-hidden z-10 hover:shadow-md transition-shadow">
+                  <div className="p-2">
+                    <DecisionLedger 
+                      workspaceId={space.company_id} 
+                      spaceId={spaceId} 
+                      hasFullIntelligence={user?.clipad_plan === 'pro' || user?.clipad_plan === 'enterprise'} 
+                      teamColor={color}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -562,34 +571,51 @@ export default function SpaceDashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-6">
               {/* Recent Videos */}
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2"><Camera className="w-4 h-4 text-primary" /> Recent Videos</h2>
-                  <button onClick={() => setActiveTab('videos')} className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors">View all →</button>
+              <div className="flex flex-col h-full rounded-3xl bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 shadow-sm overflow-hidden p-6 hover:shadow-md transition-shadow">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Camera className="w-5 h-5" />
+                    </div>
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">Recent Videos</h2>
+                  </div>
+                  <button onClick={() => setActiveTab('videos')} className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1">View all <ArrowRight className="w-4 h-4" /></button>
                 </div>
                 {videos.length === 0
-                  ? <div className="p-8 rounded-2xl border border-dashed border-black/10 dark:border-white/10 text-center text-slate-500 dark:text-slate-400 text-sm bg-transparent backdrop-blur-sm">No videos yet. <button className="text-primary font-medium hover:text-primary/80 transition-colors" onClick={() => navigate('/record')}>Record one →</button></div>
-                  : <div className="grid grid-cols-2 gap-3">{videos.slice(0,4).map(v => <VideoCard key={v.id} video={v} onClick={() => navigate(`/watch/${v.id}`)} />)}</div>
+                  ? <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-2xl border border-dashed border-black/10 dark:border-white/10 text-center bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm min-h-[220px]">
+                      <Camera className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-3" />
+                      <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">No videos yet.</p>
+                      <button className="mt-4 text-primary font-bold hover:text-primary/80 transition-colors text-sm" onClick={() => navigate('/record')}>Record one →</button>
+                    </div>
+                  : <div className="grid grid-cols-2 gap-4">{videos.slice(0,4).map(v => <VideoCard key={v.id} video={v} onClick={() => navigate(`/watch/${v.id}`)} />)}</div>
                 }
               </div>
 
               {/* Recent Meetings */}
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2"><Calendar className="w-4 h-4 text-primary" /> Recent Meetings</h2>
-                  <button onClick={() => setActiveTab('meetings')} className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors">View all →</button>
+              <div className="flex flex-col h-full rounded-3xl bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 shadow-sm overflow-hidden p-6 hover:shadow-md transition-shadow">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Calendar className="w-5 h-5" />
+                    </div>
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">Recent Meetings</h2>
+                  </div>
+                  <button onClick={() => setActiveTab('meetings')} className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1">View all <ArrowRight className="w-4 h-4" /></button>
                 </div>
-                <div className="bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 rounded-[20px] divide-y divide-black/5 dark:divide-white/5 overflow-hidden shadow-sm">
+                <div className="flex-1 bg-slate-50 dark:bg-slate-900/50 border border-black/5 dark:border-white/5 rounded-2xl divide-y divide-black/5 dark:divide-white/5 overflow-hidden">
                   {meetings.length === 0
-                    ? <div className="p-8 text-center text-slate-500 dark:text-slate-400 text-sm bg-transparent">No meetings yet.</div>
+                    ? <div className="flex-1 flex flex-col items-center justify-center h-full min-h-[220px] text-center p-8">
+                        <Calendar className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-3" />
+                        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">No meetings yet.</p>
+                      </div>
                     : meetings.slice(0,5).map(m => (
-                        <div key={m.id} onClick={() => navigate(`/meetings/${m.id}`)} className="px-5 py-4 hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer transition-colors group">
+                        <div key={m.id} onClick={() => navigate(`/meetings/${m.id}`)} className="px-5 py-4 hover:bg-white dark:hover:bg-[#202c33] cursor-pointer transition-colors group">
                           <div className="flex items-center justify-between">
-                            <p className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{m.title || 'Team Meeting'}</p>
-                            {m.ai_summary && <Sparkles className="w-3.5 h-3.5 text-primary shrink-0 opacity-70 group-hover:opacity-100" />}
+                            <p className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{m.title || 'Team Meeting'}</p>
+                            {m.ai_summary && <Sparkles className="w-4 h-4 text-primary shrink-0 opacity-70 group-hover:opacity-100" />}
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{new Date(m.created_at).toLocaleString()}</p>
-                          {m.ai_summary && <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 line-clamp-2 border-l-2 border-primary/30 pl-2">{m.ai_summary}</p>}
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">{new Date(m.created_at).toLocaleString()}</p>
+                          {m.ai_summary && <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 line-clamp-2 border-l-2 border-primary/30 pl-3 italic">{m.ai_summary}</p>}
                         </div>
                       ))
                   }
