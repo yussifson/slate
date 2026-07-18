@@ -144,6 +144,28 @@ export default function CliPadTeamSettings() {
         throw error;
       }
       
+      // Explicitly insert into staff_records so their name immediately appears in the UI
+      const { error: staffErr } = await supabase.from('staff_records').insert({
+        company_id: user.company_id,
+        user_email: inviteEmail.trim().toLowerCase(),
+        full_name: inviteName.trim(),
+        role: inviteRole,
+        department: 'General',
+        date_joined: new Date().toISOString()
+      });
+      
+      if (staffErr) {
+        console.error("Failed to insert into staff_records:", staffErr);
+      }
+      
+      // Explicitly update the profile to heal any missing data from DB triggers
+      if (newUser && newUser.id) {
+        await supabase.from('profiles').update({
+          full_name: inviteName.trim(),
+          email: inviteEmail.trim().toLowerCase()
+        }).eq('id', newUser.id);
+      }
+      
       // Send a proper invitation email with the temporary password
       const accountsUrl = getAccountsUrl();
       const currentOrigin = window.location.origin;
