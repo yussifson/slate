@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Loader2 } from 'lucide-react';
+import { queryClientInstance } from '@/lib/query-client';
 
 export default function PullToRefresh({ onRefresh, children, className = "" }) {
   const [startY, setStartY] = useState(0);
@@ -40,7 +41,15 @@ export default function PullToRefresh({ onRefresh, children, className = "" }) {
         if (onRefresh) {
           await onRefresh();
         } else {
-          window.location.reload();
+          // Invalidate all React Query caches to seamlessly fetch new data
+          if (queryClientInstance) {
+            await queryClientInstance.invalidateQueries();
+          }
+          // Also trigger a global event in case other listeners need to sync
+          window.dispatchEvent(new CustomEvent('app:refresh'));
+          
+          // Wait briefly to show the spinner spinning, giving satisfying feedback
+          await new Promise(resolve => setTimeout(resolve, 800));
         }
       } finally {
         setIsRefreshing(false);
