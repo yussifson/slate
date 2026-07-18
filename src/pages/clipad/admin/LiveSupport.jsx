@@ -1,28 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { formatDistanceToNow } from 'date-fns';
-import { MessageSquare, PhoneCall, CheckCircle2, Clock, Mail, ChevronDown } from 'lucide-react';
+import { MessageSquare, PhoneCall, CheckCircle2, Clock, Mail, ChevronDown, Headset } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import AdminChatDialog from '@/components/admin/AdminChatDialog';
 
 export default function LiveSupport() {
   const [requests, setRequests] = useState([]);
+  const [supportChats, setSupportChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('pending');
+  const [activeChatUser, setActiveChatUser] = useState(null);
   const { toast } = useToast();
 
   const fetchRequests = async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data: marketingData, error: mError } = await supabase
       .from('clipad_marketing_requests')
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error(error);
-      toast({ title: 'Error loading requests', description: error.message, variant: 'destructive' });
+    if (mError) {
+      console.error(mError);
     } else {
-      setRequests(data || []);
+      setRequests(marketingData || []);
     }
+
+    const { data: chatsData, error: cError } = await supabase
+      .from('support_chats')
+      .select('*, profiles:user_id(full_name, email)')
+      .in('status', ['escalated', 'admin_joined'])
+      .order('updated_at', { ascending: false });
+    
+    if (cError) {
+      console.warn("Could not load support chats", cError);
+    } else {
+      setSupportChats(chatsData || []);
+    }
+
     setLoading(false);
   };
 
@@ -32,6 +47,9 @@ export default function LiveSupport() {
     // Subscribe to new incoming requests in real-time
     const channel = supabase.channel('clipad_marketing_requests_changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'clipad_marketing_requests' }, () => {
+        fetchRequests();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'support_chats' }, () => {
         fetchRequests();
       })
       .subscribe();
@@ -53,6 +71,11 @@ export default function LiveSupport() {
       toast({ title: 'Status updated', description: `Request marked as ${newStatus}` });
       setRequests(prev => prev.map(r => r.id === id ? { ...r, status: newStatus } : r));
     }
+  };
+
+  const resolveSupportChat = async (id) => {
+    await supabase.from('support_chats').update({ status: 'resolved' }).eq('id', id);
+    fetchRequests();
   };
 
   const filteredRequests = requests.filter(r => r.status === filter);
@@ -88,6 +111,64 @@ export default function LiveSupport() {
       </div>
 
       <div className="grid gap-4">
+        {supportChats.length > 0 && filter === 'pending' && (
+          <div className="mb-8">
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+              <Headset className="w-5 h-5" /> Active Live Support Escalations
+            </h2>
+            <div className="grid gap-4">
+              {supportChats.map(chat => (
+                <div key={chat.id} className="bg-indigo-50/50 dark:bg-indigo-900/10 border-[0.5px] border-indigo-200 dark:border-indigo-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex flex-col md:flex-row gap-6 md:items-start justify-between">
+                    <div className="flex gap-4 items-start">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
+                        <MessageSquare className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-semibold text-lg text-slate-900 dark:text-white">
+                            User Escalation
+                          </h3>
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider ${
+                            chat.status === 'admin_joined' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700 animate-pulse'
+                          }`}>
+                            {chat.status.replace('_', ' ')}
+                          </span>
+                        </div>
+                        <div className="space-y-1 text-sm mt-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-muted-foreground w-16">User:</span>
+                            <span className="font-medium">{chat.profiles?.full_name || 'Anonymous User'}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-muted-foreground w-16">Email:</span>
+                            <span className="font-medium text-slate-700 dark:text-slate-300">{chat.profiles?.email || 'N/A'}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex md:flex-col gap-2 shrink-0 border-t md:border-t-0 md:border-l border-indigo-100 dark:border-indigo-800/50 pt-4 md:pt-0 md:pl-6">
+                      <button 
+                        onClick={() => setActiveChatUser({ id: chat.user_id, full_name: chat.profiles?.full_name, email: chat.profiles?.email })}
+                        className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold transition-all shadow-md shadow-indigo-200 dark:shadow-none hover:-translate-y-0.5"
+                      >
+                        <Headset className="w-4 h-4" /> Join Chat
+                      </button>
+                      <button 
+                        onClick={() => resolveSupportChat(chat.id)}
+                        className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-semibold transition-colors"
+                      >
+                        <CheckCircle2 className="w-4 h-4" /> Mark Resolved
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <h2 className="text-xl font-bold mb-2">Marketing Lead Requests</h2>
         {loading ? (
           <div className="p-12 text-center text-slate-500 font-medium">Loading requests...</div>
         ) : filteredRequests.length === 0 ? (
@@ -113,7 +194,7 @@ export default function LiveSupport() {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-semibold text-lg">
-                        {req.type === 'call' ? 'Requested Call' : 'Live Chat Escalation'}
+                        {req.type === 'call' ? 'Requested Call' : 'Lead Contact'}
                       </h3>
                       <span className="text-xs text-muted-foreground flex items-center gap-1">
                         <Clock className="w-3 h-3" />
@@ -169,6 +250,12 @@ export default function LiveSupport() {
           ))
         )}
       </div>
+
+      <AdminChatDialog 
+        open={!!activeChatUser} 
+        onOpenChange={(isOpen) => !isOpen && setActiveChatUser(null)}
+        targetUser={activeChatUser}
+      />
     </div>
   );
 }

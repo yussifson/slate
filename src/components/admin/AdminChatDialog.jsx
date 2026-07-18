@@ -49,6 +49,21 @@ export default function AdminChatDialog({ open, onOpenChange, targetUser }) {
         if (msgs) {
           setMessages(msgs);
         }
+
+        // Setup real-time subscription for this chat session
+        const messageChannel = supabase.channel(`admin:support_chat_messages:chat_id=eq.${session.id}`)
+          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_chat_messages', filter: `chat_id=eq.${session.id}` }, payload => {
+            const newMsg = payload.new;
+            setMessages(prev => {
+              // Prevent duplicates if we already optimistic-inserted our own message
+              if (prev.some(m => m.id === newMsg.id)) return prev;
+              return [...prev, newMsg];
+            });
+          })
+          .subscribe();
+
+        // Save channel to clean up on unmount or session change
+        window.adminSupportChatChannel = messageChannel;
       } else {
         setChatSession(null);
         setMessages([]);
@@ -59,6 +74,14 @@ export default function AdminChatDialog({ open, onOpenChange, targetUser }) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (window.adminSupportChatChannel) {
+        supabase.removeChannel(window.adminSupportChatChannel);
+      }
+    };
+  }, []);
 
   const handleSendReply = async () => {
     if (!replyText.trim() || !chatSession) return;

@@ -77,32 +77,14 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
       
       const lowerInput = newMsg.text.toLowerCase();
       let replyText = '';
-      let escalate = false;
       
-      if (lowerInput.includes('human') || lowerInput.includes('agent') || lowerInput.includes('admin')) {
+      if (lowerInput.includes('human') || lowerInput.includes('agent') || lowerInput.includes('admin') || lowerInput.includes('support')) {
         setStatus('escalated');
         replyText = 'I am transferring you to a human Support Admin. Please hold on...';
-        escalate = true;
         
         if (chatId) {
-           supabase.from('support_chats').update({ status: 'escalated' }).eq('id', chatId).catch(console.error);
+           await supabase.from('support_chats').update({ status: 'escalated' }).eq('id', chatId).catch(console.error);
         }
-        
-        // Mock Admin joining after 3 seconds
-        setTimeout(() => {
-           setStatus('admin_joined');
-           const systemMsg = { id: Date.now() + 1, sender: 'system', text: 'Admin "Sarah" has joined the chat.', time: new Date().toISOString() };
-           const adminMsg = { id: Date.now() + 2, sender: 'admin', text: 'Hi there! I am Sarah, a Super Admin. How can I assist you with this issue?', time: new Date().toISOString(), name: 'Sarah (Admin)' };
-           setMessages(prev => [...prev, systemMsg, adminMsg]);
-           
-           if (chatId) {
-             supabase.from('support_chats').update({ status: 'admin_joined' }).eq('id', chatId).catch(console.error);
-             supabase.from('support_chat_messages').insert([
-               { chat_id: chatId, sender: 'system', text: systemMsg.text },
-               { chat_id: chatId, sender: 'admin', text: adminMsg.text }
-             ]).catch(console.error);
-           }
-        }, 3000);
       } else {
         const lowerText = newMsg.text.toLowerCase().trim();
         if (['hi', 'hello', 'hey', 'greetings'].includes(lowerText)) {
@@ -112,12 +94,46 @@ export default function ChatSupportPanel({ isOpen, onClose }) {
         }
       }
       
-      setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: replyText, time: new Date().toISOString() }]);
+      const aiMsg = { id: Date.now(), sender: 'ai', text: replyText, time: new Date().toISOString() };
+      setMessages(prev => [...prev, aiMsg]);
       if (chatId) {
          supabase.from('support_chat_messages').insert({ chat_id: chatId, sender: 'ai', text: replyText }).catch(console.error);
       }
     }, 1500);
   };
+
+  // Setup Realtime Subscriptions
+  useEffect(() => {
+    if (!chatId) return;
+
+    // Listen for new messages
+    const messageChannel = supabase.channel(`public:support_chat_messages:chat_id=eq.${chatId}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_chat_messages', filter: `chat_id=eq.${chatId}` }, payload => {
+        const newMsg = payload.new;
+        // Check if we already have this message locally (since we optimism-insert our own messages)
+        setMessages(prev => {
+          if (prev.some(m => m.id === newMsg.id || (m.sender === newMsg.sender && m.text === newMsg.text))) {
+            return prev;
+          }
+          return [...prev, { id: newMsg.id, sender: newMsg.sender, text: newMsg.text, time: newMsg.created_at, name: newMsg.sender === 'admin' ? 'Admin' : '' }];
+        });
+      })
+      .subscribe();
+
+    // Listen for chat status changes
+    const chatChannel = supabase.channel(`public:support_chats:id=eq.${chatId}`)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'support_chats', filter: `id=eq.${chatId}` }, payload => {
+        if (payload.new.status) {
+          setStatus(payload.new.status);
+        }
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(messageChannel);
+      supabase.removeChannel(chatChannel);
+    };
+  }, [chatId]);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
