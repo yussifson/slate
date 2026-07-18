@@ -122,7 +122,7 @@ export default function KnowledgeHealth() {
   return (
     <div className="min-h-[100dvh] bg-slate-50 dark:bg-background flex flex-col w-full page-enter">
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-6xl mx-auto px-6 py-10">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-10">
           <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black flex items-center gap-3">
@@ -157,7 +157,7 @@ export default function KnowledgeHealth() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         
         {/* Radar Chart */}
-        <div className="lg:col-span-2 p-8 rounded-3xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm flex flex-col relative overflow-hidden">
+        <div className="lg:col-span-2 p-4 md:p-8 rounded-3xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm flex flex-col relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
           <h3 className="text-xl font-bold mb-1 relative z-10">Operational Vectors</h3>
           <p className="text-sm text-slate-500 mb-6 relative z-10">Calculated from your raw organizational data</p>
@@ -188,7 +188,7 @@ export default function KnowledgeHealth() {
         </div>
 
         {/* AI Diagnosis */}
-        <div className="p-8 rounded-3xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 text-white shadow-xl flex flex-col relative overflow-hidden ring-1 ring-indigo-500/50">
+        <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 text-white shadow-xl flex flex-col relative overflow-hidden ring-1 ring-indigo-500/50">
           <div className="absolute top-0 right-0 p-6 opacity-10 pointer-events-none">
             <BrainCircuit className="w-48 h-48 -rotate-12 translate-x-8 -translate-y-8" />
           </div>
@@ -209,7 +209,7 @@ export default function KnowledgeHealth() {
           </div>
           
           <div className="mt-8 pt-6 border-t border-white/10 relative z-10">
-            <button className="w-full py-3.5 bg-white text-indigo-900 font-black rounded-xl hover:bg-indigo-50 hover:shadow-lg hover:-translate-y-0.5 transition-all focus:ring-4 focus:ring-indigo-300">
+            <button className="w-full py-3.5 bg-white text-indigo-900 font-black rounded-xl hover:bg-indigo-50 hover:shadow-lg hover:-translate-y-0.5 transition-all focus:ring-4 focus:ring-indigo-300 active:scale-95">
               Generate Detailed Report
             </button>
           </div>

@@ -9,8 +9,6 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend
 } from 'recharts';
 import ClipadLoader from '@/components/ui/ClipadLoader';
-import ClipadTopNav from '@/components/clipad/ClipadTopNav';
-
 export default function EnterpriseDashboard() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -71,8 +69,7 @@ export default function EnterpriseDashboard() {
 
   return (
     <div className="min-h-[100dvh] bg-slate-50 dark:bg-background pb-[80px] md:pb-8 flex flex-col overflow-x-hidden">
-      <ClipadTopNav />
-      <div className="flex-1 p-6 w-full max-w-7xl mx-auto">
+      <div className="flex-1 p-4 md:p-6 w-full max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
         <div className="flex items-center justify-between">
@@ -120,12 +117,12 @@ export default function EnterpriseDashboard() {
           </div>
 
           {/* Org Intelligence Health */}
-          <div className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-border p-6 shadow-sm">
+          <div className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-border p-4 md:p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-6">
               <Activity className="w-5 h-5 text-rose-500" />
               <h2 className="text-lg font-bold text-slate-900 dark:text-white">Organizational Intelligence</h2>
             </div>
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 gap-3 md:gap-6">
               <div className="text-center p-4 bg-rose-50 dark:bg-rose-500/10 rounded-xl border border-rose-100 dark:border-rose-500/20">
                 <AlertCircle className="w-6 h-6 text-rose-500 mx-auto mb-2" />
                 <p className="text-3xl font-black text-rose-700 dark:text-rose-400">{intelligence?.openBlockers || 0}</p>
@@ -145,7 +142,7 @@ export default function EnterpriseDashboard() {
           </div>
 
           {/* Asset List (Detailed Engagement Tracking) */}
-          <div className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-border p-6 shadow-sm overflow-hidden flex flex-col">
+          <div className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-border p-4 md:p-6 shadow-sm overflow-hidden flex flex-col">
             <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
               <Eye className="w-5 h-5 text-indigo-500" />
               Detailed Media Analytics
@@ -157,7 +154,7 @@ export default function EnterpriseDashboard() {
                 <button 
                   key={asset.id} 
                   onClick={() => handleAssetClick(asset)}
-                  className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-border hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center justify-between group"
+                  className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-border hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-[0.98] transition-all flex items-center justify-between group"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center shrink-0">
@@ -187,7 +184,7 @@ export default function EnterpriseDashboard() {
         {/* Right Column - Usage & Audit Stream */}
         <div className="space-y-6">
           {/* Usage Trends */}
-          <div className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-border p-6 shadow-sm">
+          <div className="bg-white dark:bg-card rounded-2xl border border-slate-200 dark:border-border p-4 md:p-6 shadow-sm">
             <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-6">30-Day Adoption Trends</h2>
             <div className="h-[250px] w-full">
               {trends.length > 0 ? (
@@ -290,7 +287,7 @@ export default function EnterpriseDashboard() {
               </div>
               <button 
                 onClick={() => setSelectedAsset(null)}
-                className="w-10 h-10 rounded-full bg-slate-200 dark:bg-secondary flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
+                className="w-10 h-10 rounded-full bg-slate-200 dark:bg-secondary flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all"
               >
                 <X className="w-5 h-5 text-slate-600 dark:text-foreground" />
               </button>

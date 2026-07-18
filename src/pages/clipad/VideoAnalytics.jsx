@@ -243,7 +243,7 @@ export default function VideoAnalytics() {
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
 
 
-      <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <div className="max-w-6xl mx-auto px-4 md:px-10 py-6 md:py-10">
         <div className="mb-10">
           <h1 className="text-3xl font-black text-foreground mb-1 flex items-center gap-3"><BarChart3 className="w-7 h-7 text-emerald-500" /> Analytics</h1>
           <p className="text-muted-foreground text-sm">See how your team interacts with your video recordings.</p>
@@ -311,10 +311,10 @@ export default function VideoAnalytics() {
               
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 relative z-10 gap-4">
                 <h3 className="text-xl font-bold flex items-center gap-2"><Video className="w-5 h-5 text-primary" /> Video Performance</h3>
-                <div className="flex bg-slate-100 dark:bg-secondary p-1 rounded-xl w-full sm:w-auto shadow-inner">
-                  <button onClick={() => setVideoFilter('top')} className={`flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all ${videoFilter === 'top' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-muted-foreground dark:hover:text-slate-200'}`}>Top 5</button>
-                  <button onClick={() => setVideoFilter('latest')} className={`flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all ${videoFilter === 'latest' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-muted-foreground dark:hover:text-slate-200'}`}>Latest</button>
-                  <button onClick={() => setVideoFilter('all')} className={`flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all ${videoFilter === 'all' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-muted-foreground dark:hover:text-slate-200'}`}>All Videos</button>
+                <div className="flex overflow-x-auto no-scrollbar bg-slate-100 dark:bg-secondary p-1 rounded-xl w-full sm:w-auto shadow-inner">
+                  <button onClick={() => setVideoFilter('top')} className={`whitespace-nowrap flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all active:scale-95 ${videoFilter === 'top' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-muted-foreground dark:hover:text-slate-200'}`}>Top 5</button>
+                  <button onClick={() => setVideoFilter('latest')} className={`whitespace-nowrap flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all active:scale-95 ${videoFilter === 'latest' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-muted-foreground dark:hover:text-slate-200'}`}>Latest</button>
+                  <button onClick={() => setVideoFilter('all')} className={`whitespace-nowrap flex-1 sm:flex-none px-5 py-1.5 text-sm font-semibold rounded-lg transition-all active:scale-95 ${videoFilter === 'all' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-muted-foreground dark:hover:text-slate-200'}`}>All Videos</button>
                 </div>
               </div>
               
@@ -381,7 +381,7 @@ export default function VideoAnalytics() {
                   </p>
                   <button 
                     onClick={() => navigate('/clipad/enterprise')}
-                    className="relative z-10 px-6 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-xl shadow-indigo-500/20 hover:-translate-y-0.5 transition-all"
+                    className="relative z-10 px-6 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-xl shadow-indigo-500/20 hover:-translate-y-0.5 active:scale-95 transition-all"
                   >
                     Upgrade to Enterprise
                   </button>
@@ -398,7 +398,7 @@ export default function VideoAnalytics() {
                 </p>
                 <button 
                   onClick={() => navigate('/clipad/billing')}
-                  className="relative z-10 px-6 py-2.5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm shadow-xl shadow-emerald-500/20 hover:-translate-y-0.5 transition-all"
+                  className="relative z-10 px-6 py-2.5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm shadow-xl shadow-emerald-500/20 hover:-translate-y-0.5 active:scale-95 transition-all"
                 >
                   Upgrade to Pro
                 </button>
@@ -463,7 +463,7 @@ export default function VideoAnalytics() {
               <div className="p-4 border-t border-slate-100 dark:border-border shrink-0 bg-slate-50 dark:bg-card/50">
                 <button 
                   onClick={() => navigate(`/watch/${selectedVideo.id}`)}
-                  className="w-full py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                  className="w-full py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm shadow-sm hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
                   <Video className="w-4 h-4" /> Watch Video
                 </button>

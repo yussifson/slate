@@ -108,7 +108,7 @@ export default function VideosList() {
       {/* Sleek top nav */}
 
 
-      <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <div className="max-w-6xl mx-auto px-4 md:px-10 py-6 md:py-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-2 flex items-center gap-3"><Video className="w-7 h-7 text-primary" /> My Recordings</h1>
@@ -116,7 +116,7 @@ export default function VideosList() {
           </div>
           <button
             onClick={() => navigate('/record')}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm shadow-md shadow-primary/20 transition-all hover:-translate-y-0.5 shrink-0"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm shadow-md shadow-primary/20 transition-all shrink-0 active:scale-95"
           >
             <Video className="w-4 h-4" />
             Record Video
@@ -136,7 +136,7 @@ export default function VideosList() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {[1,2,3,4,5,6].map(i => <div key={i} className="aspect-video rounded-2xl bg-white dark:bg-card animate-pulse border border-slate-200 dark:border-border" />)}
           </div>
         ) : filtered.length === 0 ? (
@@ -146,12 +146,12 @@ export default function VideosList() {
             <p className="text-slate-400 dark:text-slate-500 text-sm">Click the Record Video button to create your first async video.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {filtered.map(v => (
               <div
                 key={v.id}
                 onClick={() => navigate(`/watch/${v.id}`)}
-                className="group cursor-pointer rounded-2xl overflow-hidden bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] flex flex-col"
+                className="group cursor-pointer rounded-2xl overflow-hidden bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] flex flex-col"
               >
                 <div className="aspect-video bg-slate-100 dark:bg-secondary relative flex items-center justify-center overflow-hidden">
                   {v.thumbnail_url ? (

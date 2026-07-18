@@ -87,16 +87,16 @@ export default function CliPadSettings() {
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-background page-enter text-foreground">
 
-      <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <div className="max-w-6xl mx-auto px-4 md:px-10 py-6 md:py-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           
           {/* Sidebar */}
-          <div className="md:col-span-1 space-y-3">
+          <div className="md:col-span-1 flex flex-row overflow-x-auto md:flex-col gap-2 md:gap-3 pb-2 md:pb-0 no-scrollbar scrollbar-hide">
             {[{id: 'profile', icon: User, label: 'Profile'}, {id: 'notifs', icon: Bell, label: 'Notifications'}, {id: 'meeting', icon: Video, label: 'Meeting Defaults'}, ...(isAdmin(user) ? [{id: 'team', icon: Users, label: 'Team Management'}, {id: 'billing', icon: CreditCard, label: 'Billing & Plans'}] : [])].map(tab => (
               <button 
                 key={tab.id} 
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all border ${activeTab === tab.id ? 'bg-primary/10 text-primary border-primary/20' : 'bg-secondary text-foreground border-border hover:bg-secondary/80'}`}>
+                className={`whitespace-nowrap flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all border active:scale-95 ${activeTab === tab.id ? 'bg-primary/10 text-primary border-primary/20' : 'bg-secondary text-foreground border-border hover:bg-secondary/80'}`}>
                 <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-primary' : 'text-primary/70'}`} /> {tab.label}
               </button>
             ))}
@@ -166,7 +166,7 @@ export default function CliPadSettings() {
 
             {/* Profile */}
             {activeTab === 'profile' && (
-            <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
+            <div className="bg-card border border-border rounded-2xl p-4 md:p-8">
               <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2"><User className="w-5 h-5 text-primary" /> Account Profile</h2>
               <div className="flex items-center gap-6 mb-8">
                 <img
@@ -203,7 +203,7 @@ export default function CliPadSettings() {
 
             {/* Notifications */}
             {activeTab === 'notifs' && (
-            <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
+            <div className="bg-card border border-border rounded-2xl p-4 md:p-8">
               <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2"><Bell className="w-5 h-5 text-primary" /> Notifications</h2>
               <div className="space-y-4">
                 <label className="flex items-center justify-between cursor-pointer group">
@@ -267,7 +267,7 @@ export default function CliPadSettings() {
 
             {/* Meeting Defaults */}
             {activeTab === 'meeting' && (
-            <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
+            <div className="bg-card border border-border rounded-2xl p-4 md:p-8">
               <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2"><Camera className="w-5 h-5 text-primary" /> Meeting Defaults</h2>
               <div className="space-y-4">
                 <label className="flex items-center justify-between cursor-pointer group">
@@ -305,7 +305,7 @@ export default function CliPadSettings() {
               <button onClick={handleSignOut} className="flex items-center gap-2 px-4 py-2 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-colors text-sm font-semibold">
                 <LogOut className="w-4 h-4" /> Sign Out
               </button>
-              <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 px-8 py-3 rounded-xl bg-primary hover:bg-primary/90 text-foreground font-bold shadow-lg shadow-primary/25 transition-all disabled:opacity-70">
+              <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 px-8 py-3 rounded-xl bg-primary hover:bg-primary/90 text-foreground font-bold shadow-lg shadow-primary/25 transition-all disabled:opacity-70 active:scale-95">
                 {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <CheckCircle className="w-4 h-4" />}
                 Save Changes
               </button>

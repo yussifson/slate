@@ -138,7 +138,7 @@ export default function SpacesList() {
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
 
 
-      <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <div className="max-w-6xl mx-auto px-4 md:px-10 py-6 md:py-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
           <div>
             <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-2">Team Spaces</h1>
@@ -161,7 +161,7 @@ export default function SpacesList() {
                 Billing
               </button>
             )}
-            <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm shadow-md shadow-primary/20 transition-all shrink-0">
+            <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm shadow-md shadow-primary/20 transition-all shrink-0 active:scale-95">
               <Plus className="w-4 h-4" /> New Space
             </button>
           </div>
@@ -181,7 +181,7 @@ export default function SpacesList() {
             </button>
           </div>
         ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {filtered.map(space => {
                 const colors = ['from-blue-500 to-blue-700', 'from-indigo-500 to-indigo-700', 'from-purple-500 to-purple-700', 'from-fuchsia-500 to-fuchsia-700', 'from-rose-500 to-rose-700', 'from-orange-500 to-orange-700', 'from-emerald-500 to-emerald-700'];
                 const colorIndex = space.id ? space.id.split('-').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length : 0;
@@ -193,7 +193,7 @@ export default function SpacesList() {
                   <div
                     key={space.id}
                     onClick={() => navigate(`/spaces/${space.id}`)}
-                    className={`group p-5 rounded-2xl bg-white dark:bg-card border hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md relative overflow-hidden ${
+                    className={`group p-5 rounded-2xl bg-white dark:bg-card border hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] shadow-sm hover:shadow-md relative overflow-hidden ${
                       isRestricted
                         ? 'border-slate-200 dark:border-border opacity-80 hover:opacity-95'
                         : 'border-slate-200 dark:border-border'

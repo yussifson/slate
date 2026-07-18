@@ -129,7 +129,7 @@ export default function MeetingsList() {
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
 
-      <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <div className="max-w-6xl mx-auto px-4 md:px-10 py-6 md:py-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-2 flex items-center gap-3"><Calendar className="w-7 h-7 text-primary" /> Meetings History</h1>
@@ -138,7 +138,7 @@ export default function MeetingsList() {
           <button
             onClick={startInstantMeeting}
             disabled={isCreating}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm shadow-md shadow-primary/20 transition-all disabled:opacity-60 shrink-0"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm shadow-md shadow-primary/20 transition-all disabled:opacity-60 shrink-0 active:scale-95"
           >
             {isCreating ? <div className="w-4 h-4 border-2 border-white/30 border-t-transparent rounded-full animate-spin" /> : <Video className="w-4 h-4" />}
             Start Instant Meeting
@@ -184,7 +184,7 @@ export default function MeetingsList() {
               <div
                 key={m.id}
                 onClick={() => navigate(`/meetings/${m.id}`)}
-                className="group p-5 rounded-2xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all hover:-translate-y-0.5 flex flex-col md:flex-row md:items-center gap-4"
+                className="group p-5 rounded-2xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all hover:-translate-y-0.5 active:scale-[0.98] flex flex-col md:flex-row md:items-center gap-4"
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
