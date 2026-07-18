@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { Sparkles, Settings, Shield, LogOut } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
@@ -19,8 +19,16 @@ import { isAdmin } from '@/lib/constants';
 export default function ClipadTopNav() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
+
+  const navItems = [
+    { label: 'Spaces', path: '/spaces' },
+    { label: 'Recordings', path: '/videos' },
+    { label: 'Meetings', path: '/meetings' },
+    { label: 'Chat', path: '/chat' }
+  ];
 
   return (
     <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
@@ -36,16 +44,24 @@ export default function ClipadTopNav() {
       </div>
 
       <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
-        <button onClick={() => navigate('/spaces')} className="hidden sm:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors shrink-0">Spaces</button>
-        <button onClick={() => navigate('/videos')} className="hidden sm:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors shrink-0">Recordings</button>
-        <button onClick={() => navigate('/meetings')} className="hidden sm:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors shrink-0">Meetings</button>
-        <button onClick={() => navigate('/chat')} className="hidden sm:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors shrink-0">Chat</button>
+        {navItems.map(item => {
+          const isActive = location.pathname.startsWith(item.path);
+          return (
+            <button 
+              key={item.path}
+              onClick={() => navigate(item.path)} 
+              className={`hidden sm:block px-3 py-2 text-sm font-medium rounded-lg transition-colors shrink-0 ${isActive ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white'}`}
+            >
+              {item.label}
+            </button>
+          );
+        })}
         {isAdmin(user) && (
             <>
               {user?.clipad_plan === 'enterprise' ? (
-                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/enterprise' : '/clipad/enterprise')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Enterprise</button>
+                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/enterprise' : '/clipad/enterprise')} className={`hidden md:block px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname.includes('/enterprise') ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white'}`}>Enterprise</button>
               ) : (
-                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/analytics' : '/clipad/analytics')} className="hidden md:block px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white rounded-lg transition-colors">Analytics</button>
+                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/analytics' : '/clipad/analytics')} className={`hidden md:block px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname.includes('/analytics') ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white'}`}>Analytics</button>
               )}
             </>
         )}

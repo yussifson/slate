@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
 import { useCompanyPlan } from '@/hooks/useCompanyPlan';
 import { Eye, Users, Search, Video, BarChart3, TrendingUp, UserCircle, Play, Settings, Bell, X, Shield, MessageSquare, Heart, Target } from 'lucide-react';
-import ClipadTopNav from '@/components/clipad/ClipadTopNav';
+
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
@@ -241,9 +241,7 @@ export default function VideoAnalytics() {
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-screen bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 page-enter overflow-x-hidden pb-24 md:pb-8">
-      {/* Sleek top nav */}
-      {/* Sleek top nav */}
-      <ClipadTopNav />
+
 
       <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
         <div className="mb-10">

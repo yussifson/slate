@@ -15,7 +15,7 @@ import FeaturesCircle from '@/components/clipad/FeaturesCircle';
 import AdvancedFeaturesBento from '@/components/clipad/AdvancedFeaturesBento';
 import WithoutCliPadSection from '@/components/clipad/WithoutCliPadSection';
 import WithCliPadSection from '@/components/clipad/WithCliPadSection';
-import ErrorBoundary from '@/components/ErrorBoundary';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import ContactSalesModal from '@/components/clipad/ContactSalesModal';

@@ -125,7 +125,8 @@
     <script>
       (function() {
         var host = window.location.hostname.toLowerCase();
-        var isClipad = host.includes('clipad');
+        var isCapacitor = !!window.Capacitor || navigator.userAgent.toLowerCase().includes('capacitor');
+        var isClipad = host.includes('clipad') || isCapacitor;
         var isSlate = host.includes('slate');
         
         var appTitle = 'Workspace';

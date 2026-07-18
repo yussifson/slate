@@ -31,7 +31,7 @@ import FollowUpEngine from '@/components/clipad/features/FollowUpEngine';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import SpaceSelectorModal from '@/components/clipad/SpaceSelectorModal';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
-import ClipadTopNav from '@/components/clipad/ClipadTopNav';
+
 
 function StatCard({ icon: Icon, value, label, trend, accentColor, bgColor, iconColor }) {
   return (
@@ -334,8 +334,7 @@ export default function CliPadDashboard() {
       )}
 
       
-      {/* Sleek top nav */}
-      <ClipadTopNav />
+
 
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
 

@@ -88,7 +88,7 @@ export default function AppLayout() {
 
   useEffect(() => {
     const host = window.location.hostname.toLowerCase();
-    const isClipadApp = host.includes('clipad');
+    const isClipadApp = host.includes('clipad') || !!window.Capacitor || window.navigator.userAgent.toLowerCase().includes('capacitor');
     const isSlateApp = host.includes('slate');
     const isMainApp = host.includes('account') || host.includes('observel') || host.includes('optavel');
 

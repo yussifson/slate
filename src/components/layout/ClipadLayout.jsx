@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, Outlet } from 'react-router-dom';
 import GlobalAIAssistant from '@/components/layout/GlobalAIAssistant';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
+import ClipadTopNav from '@/components/clipad/ClipadTopNav';
 import { useChatDock } from '@/hooks/useChatDock';
 import ClipadChat from '@/pages/clipad/ClipadChat';
 import { MessageSquare } from 'lucide-react';
@@ -40,8 +41,14 @@ export default function ClipadLayout() {
     };
   }, []);
 
+  // Hide nav on immersive screens
+  const isImmersive = location.pathname.startsWith('/record') || 
+                      location.pathname.startsWith('/watch') || 
+                      /^\/meetings\/[^\/]+$/.test(location.pathname);
+
   return (
     <div className="flex flex-col h-[100dvh] w-full overflow-hidden bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
+      {!isImmersive && <ClipadTopNav />}
       <div className="flex flex-1 overflow-hidden relative">
         
         {/* Main Content Area */}
