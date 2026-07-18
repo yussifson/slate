@@ -12,6 +12,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import FeaturesCircle from '@/components/clipad/FeaturesCircle';
+import AdvancedFeaturesBento from '@/components/clipad/AdvancedFeaturesBento';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import ContactSalesModal from '@/components/clipad/ContactSalesModal';
@@ -519,40 +521,7 @@ export default function MeetLandingPage() {
         <FeaturesCircle />
       </section>
 
-        <section className="py-32 px-6 md:px-12 max-w-6xl mx-auto relative">
-          <div className="text-center mb-20 relative z-10">
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5 text-slate-900">The connected workflow.</h2>
-            <p className="text-slate-500 text-lg max-w-2xl mx-auto">The magic isn't any single feature — it's how they seamlessly connect into a unified intelligence pipeline.</p>
-          </div>
-
-          <div className="relative grid grid-cols-1 md:grid-cols-5 gap-8">
-            <div className="hidden md:block absolute top-24 left-[10%] right-[10%] h-1 bg-slate-100 rounded-full z-0">
-              <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary via-teal-400 to-primary rounded-full animate-pulse" style={{ width: '100%' }} />
-            </div>
-            
-            {[
-              { icon: Calendar, color: 'bg-indigo-500 shadow-indigo-500/30', step: '01', title: 'Schedule', desc: 'Syncs with your calendar automatically.' },
-              { icon: Video, color: 'bg-violet-500 shadow-violet-500/30', step: '02', title: 'Meet', desc: 'HD video with live AI transcription.' },
-              { icon: Brain, color: 'bg-pink-500 shadow-pink-500/30', step: '03', title: 'Analyze', desc: 'AI extracts decisions & action items.' },
-              { icon: Camera, color: 'bg-cyan-500 shadow-cyan-500/30', step: '04', title: 'Follow-up', desc: 'Send async video updates seamlessly.' },
-              { icon: TrendingUp, color: 'bg-emerald-500 shadow-emerald-500/30', step: '05', title: 'Compound', desc: 'Enterprise intelligence grows over time.' },
-            ].map((step, i) => {
-              const Icon = step.icon;
-              return (
-                <div key={step.step} className="relative z-10 flex flex-col items-center text-center group">
-                  <div className={`w-20 h-20 rounded-2xl ${step.color} text-white flex items-center justify-center shadow-2xl mb-6 group-hover:-translate-y-2 group-hover:scale-110 transition-all duration-300`}>
-                    <Icon className="w-8 h-8" />
-                  </div>
-                  <div className="bg-primary text-primary-foreground text-[10px] font-mono font-bold px-3 py-1 rounded-full mb-4 tracking-widest shadow-sm">
-                    STEP {step.step}
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-2">{step.title}</h3>
-                  <p className="text-sm text-slate-500 leading-relaxed">{step.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+        <AdvancedFeaturesBento />
 
         <section id="pricing" className="py-24 px-6 md:px-12 max-w-6xl mx-auto">
           <div className="text-center mb-16">
