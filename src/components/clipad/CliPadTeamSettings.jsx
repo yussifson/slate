@@ -305,8 +305,8 @@ export default function CliPadTeamSettings() {
           <RefreshCcw className="w-6 h-6 text-primary animate-spin" />
         </div>
       ) : (
-        <div className="border border-border rounded-2xl overflow-hidden bg-background">
-          <table className="w-full text-left border-collapse">
+        <div className="border border-border rounded-2xl overflow-x-auto bg-background">
+          <table className="w-full min-w-[600px] text-left border-collapse">
             <thead>
               <tr className="bg-secondary/50 border-b border-border">
                 <th className="px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Member</th>

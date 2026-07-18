@@ -413,7 +413,7 @@ export default function SpaceDashboard() {
           <div className={`w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-sm`}>
             {React.createElement(getSpaceIcon(space.name), { className: "w-4 h-4 md:w-4 md:h-4" })}
           </div>
-          <span className="font-semibold text-base md:text-lg text-foreground line-clamp-1">{space.name}</span>
+          <span className="hidden md:block font-semibold text-base md:text-lg text-foreground line-clamp-1">{space.name}</span>
         </div>
         <div className="hidden md:flex items-center gap-2">
           <button onClick={() => navigate('/chat')} className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all flex items-center gap-2 active:scale-95">
@@ -472,7 +472,7 @@ export default function SpaceDashboard() {
           </div>
           
           {/* Mobile Quick Actions Row */}
-          <div className="md:hidden flex items-center gap-2 mt-5">
+          <div className="hidden items-center gap-2 mt-5">
             <button onClick={() => navigate('/chat')} className="flex-1 flex flex-col items-center justify-center gap-1.5 py-2.5 bg-secondary rounded-2xl hover:bg-secondary/80 transition-colors active:scale-95">
               <MessageSquare className="w-5 h-5 text-slate-600 dark:text-slate-300" />
               <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">Chat</span>
@@ -503,7 +503,7 @@ export default function SpaceDashboard() {
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 md:py-2 text-sm font-semibold transition-all rounded-full active:scale-95 ${activeTab === tab.id ? 'bg-slate-800 dark:bg-white text-white dark:text-black shadow-md' : 'bg-slate-100 dark:bg-secondary/70 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-secondary'}`}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 md:py-2 text-sm font-semibold transition-all rounded-full active:scale-95 ${activeTab === tab.id ? 'bg-primary text-primary-foreground shadow-md' : 'bg-slate-100 dark:bg-secondary/70 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-secondary'}`}
                 >
                   <Icon className="w-3.5 h-3.5" />{tab.label}
                 </button>
@@ -811,8 +811,8 @@ export default function SpaceDashboard() {
 
       </div>
       {showEdit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-3xl p-8 max-w-md w-full shadow-2xl">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-3xl p-5 md:p-8 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Edit Space</h2>
             <form onSubmit={handleEditSpace} className="space-y-4">
               <div>
