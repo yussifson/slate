@@ -156,7 +156,7 @@ export default function SpacesList() {
             </div>
             {isAdminUser && (
               <button 
-                onClick={() => navigate('/clipad/settings', { state: { tab: 'billing' } })}
+                onClick={() => navigate('/settings', { state: { tab: 'billing' } })}
                 className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-amber-100 dark:bg-amber-500/10 text-amber-600 font-semibold text-sm rounded-lg hover:bg-amber-200 dark:hover:bg-amber-500/20 transition-colors"
               >
                 Billing
