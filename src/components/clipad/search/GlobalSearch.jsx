@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Search, Sparkles, FileText, CheckCircle, MessageSquare, Calendar, Video,
   Loader2, X, ShieldAlert, AlertTriangle, ArrowRight, ExternalLink, Zap, Lock
@@ -239,8 +240,8 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
     );
   }
 
-  // Spotlight modal
-  return (
+  // Spotlight modal using Portal to escape nav overflow constraints
+  return createPortal(
     <div
       ref={overlayRef}
       className="fixed inset-0 z-[9999] flex items-start justify-center pt-[8vh] px-4"
@@ -460,6 +461,7 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
