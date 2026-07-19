@@ -14,7 +14,7 @@ import {
  useParticipant,
  useActiveSpeakerId
 } from '@daily-co/daily-react';
-import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, ExternalLink, MessageSquare, Send, UserPlus, Mail, Settings, Smile, PanelRightClose, PenTool } from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, ExternalLink, MessageSquare, Send, UserPlus, Mail, Settings, Smile, PanelRightClose, PenTool, MoreHorizontal } from 'lucide-react';
 import { Button} from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -98,6 +98,7 @@ export const VIRTUAL_BACKGROUNDS = [
   const mediaRecorderRef = useRef(null);
   const recordedChunksRef = useRef([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [isStudioAudioOn, setIsStudioAudioOn] = useState(false);
 
   useEffect(() => {
@@ -907,8 +908,18 @@ export const VIRTUAL_BACKGROUNDS = [
  >
  {isVideoOff ? <VideoOff className={isPipMode ? "w-3 h-3" : "w-5 h-5"} /> : <VideoIcon className={isPipMode ? "w-3 h-3" : "w-5 h-5"} />}
  </Button>
- {!isPipMode && (
- <>
+  {!isPipMode && (
+  <>
+  <Button 
+    onClick={() => setShowMobileMenu(!showMobileMenu)}
+    variant={showMobileMenu ? "default" : "outline"}
+    size="icon"
+    className={`sm:hidden w-12 h-12 shrink-0 rounded-[1.25rem] shadow-sm transition-all ${showMobileMenu ? '' : 'bg-white dark:bg-secondary border-slate-200 dark:border-border text-slate-700 dark:text-foreground'}`}
+    title="More Options"
+  >
+    <MoreHorizontal className="w-5 h-5" />
+  </Button>
+  <div className={`${showMobileMenu ? 'absolute bottom-[calc(100%+1rem)] left-4 right-4 bg-white/95 dark:bg-card/95 backdrop-blur-xl border border-slate-200 dark:border-white/10 shadow-2xl rounded-3xl p-4 flex flex-wrap justify-center gap-3 z-50 animate-in fade-in slide-in-from-bottom-4' : 'hidden'} sm:flex sm:static sm:bg-transparent sm:border-0 sm:shadow-none sm:p-0 sm:flex-row sm:flex-nowrap items-center gap-2 sm:gap-4`}>
  <Button 
  onClick={toggleScreenShare}
  variant={isSharingScreen ? "default" : "outline"}
@@ -1138,6 +1149,7 @@ export const VIRTUAL_BACKGROUNDS = [
  >
   <Mail className="w-4 h-4" /> AI Follow-Up
  </Button>
+ </div>
  </>
  )}
  <Button 

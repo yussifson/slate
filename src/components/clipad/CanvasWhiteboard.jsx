@@ -88,6 +88,7 @@ export default function CanvasWhiteboard({ onClose }) {
   const [editSticky,   setEditSticky]   = useState(null);
   const [stickyColor,  setStickyColor]  = useState(STICKY_COLORS[0]);
   const [showPalette,  setShowPalette]  = useState(false);
+  const [showMobileTools, setShowMobileTools] = useState(false);
 
   // ── Canvas init / resize ────────────────────────────────────────────────────
   useEffect(() => {
@@ -372,8 +373,18 @@ export default function CanvasWhiteboard({ onClose }) {
 
   return (
     <div className="absolute inset-0 z-[9999] flex flex-col bg-white select-none" style={{ touchAction: 'none', fontFamily: "'Inter', sans-serif" }}>
+      {/* ── Mobile Toolbar Header ────────────────────────────────────────────── */}
+      <div className="flex md:hidden items-center justify-between px-3 py-2 bg-slate-50 border-b border-slate-200 flex-shrink-0 shadow-sm relative z-[10000]">
+        <button onClick={() => setShowMobileTools(!showMobileTools)} className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-sm text-slate-700">
+          Tools {showMobileTools ? '▲' : '▼'}
+        </button>
+        <button onClick={onClose} className="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm flex items-center gap-1.5">
+          ✕ Close
+        </button>
+      </div>
+
       {/* ── Toolbar ─────────────────────────────────────────────────────── */}
-      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border-b border-slate-200 flex-shrink-0 flex-wrap shadow-sm">
+      <div className={`${showMobileTools ? 'flex absolute top-[53px] left-0 right-0 bg-slate-50 border-b p-3 z-[9999] shadow-xl flex-wrap' : 'hidden'} md:flex items-center gap-1.5 md:px-3 md:py-1.5 md:bg-slate-50 md:border-b border-slate-200 flex-shrink-0 flex-wrap md:shadow-sm md:static`}>
 
         {/* Tool group */}
         <div className="flex items-center gap-0.5 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
@@ -446,7 +457,7 @@ export default function CanvasWhiteboard({ onClose }) {
 
         {/* Close */}
         <button onClick={onClose}
-          className="ml-auto px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-all flex items-center gap-1.5">
+          className="ml-auto px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-all hidden md:flex items-center gap-1.5">
           ✕ Close
         </button>
       </div>
