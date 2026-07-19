@@ -116,7 +116,8 @@ export default function PricingTags() {
             });
           }
         }
-        const notifRows = profiles.map(p => ({
+        const adminProfilesForNotifs = profiles.filter(p => ['company_admin', 'super_admin', 'admin'].includes(p.role));
+        const notifRows = adminProfilesForNotifs.map(p => ({
           user_id: p.id,
           type: 'plan_upgrade',
           title: `Your plan has been upgraded to ${resolvedPlan.charAt(0).toUpperCase() + resolvedPlan.slice(1)}!`,
@@ -124,7 +125,9 @@ export default function PricingTags() {
           link: '/clipad/billing',
           is_read: false,
         }));
-        await supabase.from('clipad_notifications').insert(notifRows);
+        if (notifRows.length > 0) {
+          await supabase.from('clipad_notifications').insert(notifRows);
+        }
       }
 
       toast({

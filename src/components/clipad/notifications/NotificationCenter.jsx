@@ -36,7 +36,12 @@ export default function NotificationCenter() {
           }, 
           (payload) => {
             if (payload.eventType === 'INSERT') {
-              setNotifications(prev => [payload.new, ...prev]);
+              const notif = payload.new;
+              if (['plan_upgrade', 'system'].includes(notif.type) && !['company_admin', 'super_admin', 'admin'].includes(user?.role)) {
+                return; // Ignore system level notifications for normal members
+              }
+
+              setNotifications(prev => [notif, ...prev]);
               setUnreadCount(prev => prev + 1);
               
               // Play native-feeling notification sound and trigger OS notification
@@ -94,8 +99,12 @@ export default function NotificationCenter() {
       if (error) throw error;
       
       if (data) {
-        setNotifications(data);
-        setUnreadCount(data.filter(n => !n.is_read).length);
+        let filteredData = data;
+        if (!['company_admin', 'super_admin', 'admin'].includes(user?.role)) {
+          filteredData = data.filter(n => !['plan_upgrade', 'system'].includes(n.type));
+        }
+        setNotifications(filteredData);
+        setUnreadCount(filteredData.filter(n => !n.is_read).length);
       }
     } catch (err) {
       console.error('Error fetching notifications:', err);

@@ -320,6 +320,16 @@ export default function CliPadDashboard() {
 
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
+  const getGreetingEmoji = () => {
+    const emojis = [
+      '👋', '✨', '🚀', '🌟', '🎉', '💡', '🔥', '🙌', '😎', '☕',
+      '💪', '🎯', '🌈', '⚡', '🎈', '😊', '🤩', '🌺', '🍀', '🏆',
+      '💎', '🌻', '🤝', '🦋', '🥳', '🙌', '🤠', '🔮', '🎊', '🥰', '✌️'
+    ];
+    const day = new Date().getDate(); // 1-31
+    return emojis[(day - 1) % emojis.length];
+  };
+
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 overflow-x-hidden pb-24 md:pb-8">
       <SpaceSelectorModal 
@@ -341,7 +351,7 @@ export default function CliPadDashboard() {
 
         {/* Greeting */}
         <div className="mb-8 md:mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <h1 className="text-3xl md:text-5xl font-black mb-2 tracking-tight">{greeting()}, {firstName} <span className="inline-block animate-bounce origin-bottom-right delay-500">👋</span></h1>
+          <h1 className="text-3xl md:text-5xl font-black mb-2 tracking-tight">{greeting()}, {firstName} <span className="inline-block animate-bounce origin-bottom-right delay-500">{getGreetingEmoji()}</span></h1>
           <p className="text-lg text-slate-500 dark:text-muted-foreground font-medium">Here's what's happening across your spaces.</p>
         </div>
 
