@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
 import { useCompanyPlan } from '@/hooks/useCompanyPlan';
@@ -17,9 +17,10 @@ export default function CliPadSettings() {
   const { user, logout } = useAuth();
   const { plan } = useCompanyPlan();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState(location.state?.tab || 'profile');
   const [fullName, setFullName] = useState(user?.full_name || user?.user_metadata?.full_name || '');
 
   // Settings state (persisted to Supabase)

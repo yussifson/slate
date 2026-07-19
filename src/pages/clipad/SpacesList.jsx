@@ -150,12 +150,13 @@ export default function SpacesList() {
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 focus:outline-none focus:border-primary/50 text-sm shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-all"
+                placeholder="Search spaces..."
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-white dark:bg-[#202c33]/95 backdrop-blur-md border border-slate-200 dark:border-border focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 text-sm shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-all"
               />
             </div>
             {isAdminUser && (
               <button 
-                onClick={() => navigate('/clipad/billing')}
+                onClick={() => navigate('/clipad/settings', { state: { tab: 'billing' } })}
                 className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-amber-100 dark:bg-amber-500/10 text-amber-600 font-semibold text-sm rounded-lg hover:bg-amber-200 dark:hover:bg-amber-500/20 transition-colors"
               >
                 Billing
