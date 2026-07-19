@@ -127,7 +127,8 @@ const OptavelPartnerships = React.lazy(() => import('@/pages/optavel/OptavelPart
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: null, isUpdating: false, updateProgress: 0 };
+    this.handleUpdate = this.handleUpdate.bind(this);
   }
   static getDerivedStateFromError(error) {
     return { hasError: true, error };
@@ -142,6 +143,33 @@ class ErrorBoundary extends React.Component {
       }
     }
   }
+  handleUpdate() {
+    this.setState({ isUpdating: true, updateProgress: 0 });
+    let p = 0;
+    const interval = setInterval(() => {
+      p += 15;
+      if (p >= 100) {
+        clearInterval(interval);
+        this.setState({ updateProgress: 100 });
+        
+        // Clear caches and unregister service workers to break the loop
+        if ('caches' in window) {
+          caches.keys().then(names => names.forEach(name => caches.delete(name)));
+        }
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+        }
+        sessionStorage.removeItem('chunk-error-reload');
+        
+        setTimeout(() => {
+          window.location.replace('/dashboard');
+        }, 150);
+      } else {
+        this.setState({ updateProgress: Math.min(p, 99) });
+      }
+    }, 150);
+  }
+
   render() {
     if (this.state.hasError) {
       const isChunkError = this.state.error?.message?.includes('Failed to fetch dynamically imported module') || this.state.error?.toString()?.includes('Failed to fetch dynamically imported module');
@@ -166,20 +194,25 @@ class ErrorBoundary extends React.Component {
                  })()}
               </div>
 
-              <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-3">Updating Workspace</h2>
+              <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-3">
+                {this.state.isUpdating ? "Applying Update..." : "Updating Workspace"}
+              </h2>
               <p className="text-slate-500 dark:text-muted-foreground mb-8 text-sm font-medium leading-relaxed">
-                We've just released a new update to improve your experience. Please refresh the page to load the latest version.
+                {this.state.isUpdating ? "Please wait while we install the newest features." : "We've just released a new update to improve your experience. Please refresh the page to load the latest version."}
               </p>
               
-              <button 
-                onClick={() => { 
-                  sessionStorage.removeItem('chunk-error-reload'); 
-                  window.location.replace(window.location.pathname + '?t=' + Date.now()); 
-                }} 
-                className="w-full py-4 px-6 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0"
-              >
-                Refresh Page
-              </button>
+              {this.state.isUpdating ? (
+                <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 mb-2 overflow-hidden">
+                  <div className="bg-primary h-2.5 rounded-full transition-all duration-200" style={{ width: `${this.state.updateProgress}%` }}></div>
+                </div>
+              ) : (
+                <button 
+                  onClick={this.handleUpdate} 
+                  className="w-full py-4 px-6 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0"
+                >
+                  Refresh Page
+                </button>
+              )}
             </div>
 
             {/* Native Mobile Version */}
@@ -190,20 +223,28 @@ class ErrorBoundary extends React.Component {
                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                </div>
-               <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2 text-center">Update Available</h2>
+               <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2 text-center">
+                 {this.state.isUpdating ? "Installing Update..." : "Update Available"}
+               </h2>
                <p className="text-slate-500 dark:text-muted-foreground mb-8 text-sm font-medium leading-relaxed text-center px-4">
-                 Tap to update to the newest features and bug fixes.
+                 {this.state.isUpdating ? "Please wait, do not close the app." : "Tap to update to the newest features and bug fixes."}
                </p>
                
-               <button 
-                 onClick={() => { 
-                   sessionStorage.removeItem('chunk-error-reload'); 
-                   window.location.replace(window.location.pathname + '?t=' + Date.now()); 
-                 }} 
-                 className="w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-lg transition-transform active:scale-95"
-               >
-                 Tap to Update Now
-               </button>
+               {this.state.isUpdating ? (
+                 <div className="w-full mb-4">
+                   <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-3 overflow-hidden shadow-inner">
+                     <div className="bg-primary h-3 rounded-full transition-all duration-200" style={{ width: `${this.state.updateProgress}%` }}></div>
+                   </div>
+                   <div className="text-center text-xs text-slate-500 font-bold mt-3">{this.state.updateProgress}%</div>
+                 </div>
+               ) : (
+                 <button 
+                   onClick={this.handleUpdate} 
+                   className="w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-lg transition-transform active:scale-95"
+                 >
+                   Tap to Update Now
+                 </button>
+               )}
             </div>
           </div>
         );

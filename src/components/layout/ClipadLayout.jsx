@@ -18,6 +18,20 @@ export default function ClipadLayout() {
   const { isChatDocked, setChatDock, dockWidth } = useChatDock();
   const location = useLocation();
 
+  const containerRef = React.useRef(null);
+  const [forceMobile, setForceMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        setForceMobile(entry.contentRect.width < 768);
+      }
+    });
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   // Auto-undock if we navigate back to the main chat page
   React.useEffect(() => {
     if (location.pathname === '/chat' && isChatDocked) {
@@ -49,8 +63,8 @@ export default function ClipadLayout() {
     <div className="flex flex-row h-[100dvh] w-full overflow-hidden bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
       
       {/* Main Content Column */}
-      <div className="flex flex-col flex-1 w-0 overflow-hidden relative">
-        {!isImmersive && <ClipadTopNav />}
+      <div ref={containerRef} className="flex flex-col flex-1 w-0 overflow-hidden relative @container">
+        {!isImmersive && <ClipadTopNav forceMobile={forceMobile} />}
         
         <PullToRefresh className="relative z-30 page-enter pb-[80px] md:pb-0">
           {location.pathname === '/chat' && isChatDocked ? (
@@ -101,7 +115,7 @@ export default function ClipadLayout() {
       )}
 
       <CliPadCommandPalette />
-      <ClipadMobileNav />
+      <ClipadMobileNav forceMobile={forceMobile} />
     </div>
   );
 }

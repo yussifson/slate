@@ -6,7 +6,8 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   server: {
     url: 'https://clipad.optavel.com',
-    cleartext: true
+    cleartext: true,
+    errorPath: 'error.html'
   },
   plugins: {
     CapacitorUpdater: {
