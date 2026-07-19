@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
-import { Activity, BrainCircuit, HeartPulse, ShieldAlert, Target, TrendingUp, Users, LogOut, Settings, Shield, Sparkles } from 'lucide-react';
+import { Activity, BrainCircuit, HeartPulse, ShieldAlert, Target, TrendingUp, Users, LogOut, Settings, Shield, Sparkles, Info } from 'lucide-react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import toast from 'react-hot-toast';
+import { generateText } from '@/lib/cloudflareAI';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,11 +24,6 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
   Tooltip,
 } from 'recharts';
 import { isAdmin } from '@/lib/constants';
@@ -54,7 +50,7 @@ export default function KnowledgeHealth() {
         const { data: meetings } = await supabase
           .from('clipad_meeting_records')
           .select('id')
-          .eq('workspace_id', user?.company_id);
+          .eq('company_id', user?.company_id);
 
         const { data: decisions } = await supabase
           .from('clipad_decisions')
@@ -66,16 +62,17 @@ export default function KnowledgeHealth() {
           .select('event_type')
           .eq('workspace_id', user?.company_id);
 
-        const meetingCount = meetings?.length || 1;
+        const meetingCount = meetings?.length || 0;
         const decisionCount = decisions?.length || 0;
         const blockerCount = events?.filter(e => e.event_type === 'blocker_raised')?.length || 0;
         const taskCompletedCount = events?.filter(e => e.event_type === 'task_completed')?.length || 0;
 
-        // Calculate some basic mock "health" metrics based on actual DB row counts
-        const velocity = Math.min(100, Math.round((decisionCount / meetingCount) * 100) + 30);
+        // Calculate health metrics. Use 1 as denominator to avoid Infinity/NaN if meetingCount is 0.
+        const safeMeetingCount = meetingCount || 1;
+        const velocity = Math.min(100, Math.round((decisionCount / safeMeetingCount) * 100) + 30);
         const resolution = blockerCount === 0 ? 100 : Math.min(100, Math.round((taskCompletedCount / blockerCount) * 100) + 20);
-        const silos = Math.min(100, 85 - (meetingCount % 10)); // proxy metric
-        const bloat = Math.max(20, 100 - (meetingCount * 2)); // proxy metric
+        const silos = Math.min(100, Math.max(0, 85 - (meetingCount % 10))); // proxy metric
+        const bloat = Math.max(20, Math.max(0, 100 - (meetingCount * 2))); // proxy metric
 
         setRawCounts({
           meetings: meetingCount,
@@ -92,14 +89,14 @@ export default function KnowledgeHealth() {
           { subject: 'Knowledge Capture', A: Math.min(100, decisionCount * 5 + 40), fullMark: 100 },
         ]);
 
-        // Generate a mock AI diagnosis based on the metrics
-        if (silos < 50) {
-          setDiagnosis("Your teams are operating in silos. Cross-functional knowledge sharing is below average. We recommend scheduling inter-departmental standups.");
-        } else if (velocity < 40) {
-          setDiagnosis("Meeting volume is high, but decision velocity is low. Consider using async standups to reduce meeting bloat.");
-        } else {
-          setDiagnosis("Your organizational intelligence is healthy. Teams are effectively capturing decisions and resolving blockers.");
-        }
+        // Generate a real AI diagnosis using LLM
+        const prompt = [
+          { role: 'system', content: 'You are an elite organizational psychologist and operations expert AI. Provide a concise, 2-3 sentence executive diagnosis of the company\'s operational health based on the provided metrics. Do not use markdown. Speak directly and professionally.' },
+          { role: 'user', content: `Metrics: Total Meetings: ${meetingCount}, Key Decisions Made: ${decisionCount}, Blockers Raised: ${blockerCount}, Tasks Completed: ${taskCompletedCount}. Calculated Scores (out of 100): Decision Velocity: ${velocity}, Resolution Speed: ${resolution}, Silos: ${silos}, Meeting Efficiency: ${bloat}. What is your diagnosis?` }
+        ];
+
+        const aiResponse = await generateText(prompt);
+        setDiagnosis(aiResponse?.trim() || "Organizational intelligence is healthy. Teams are effectively capturing decisions and resolving blockers.");
 
       } catch (err) {
         console.error(err);
@@ -212,15 +209,41 @@ export default function KnowledgeHealth() {
           
           <div className="mt-8 pt-6 border-t border-white/10 relative z-10">
             <button 
-              onClick={() => {
+              onClick={async () => {
                 setIsGenerating(true);
-                toast.success("Compiling organizational data...");
-                setTimeout(() => {
-                  setIsGenerating(false);
+                toast.success("Compiling organizational data and AI diagnosis...");
+                try {
+                  const htmlContent = `
+                    <div style="font-family: sans-serif; max-w: 600px; margin: 0 auto;">
+                      <h2>Optavel Knowledge Health Report</h2>
+                      <p><strong>Total Meetings:</strong> ${rawCounts?.meetings || 0}</p>
+                      <p><strong>Key Decisions:</strong> ${rawCounts?.decisions || 0}</p>
+                      <p><strong>Blockers Raised:</strong> ${rawCounts?.blockers || 0}</p>
+                      <p><strong>Tasks Completed:</strong> ${rawCounts?.completed || 0}</p>
+                      <hr />
+                      <h3>AI Executive Diagnosis</h3>
+                      <p>${diagnosis}</p>
+                    </div>
+                  `;
+                  
+                  const { error } = await supabase.functions.invoke('send-email', {
+                    body: {
+                      to: user.email,
+                      subject: "Your Organization's Detailed Health Report",
+                      html: htmlContent
+                    }
+                  });
+                  
+                  if (error) throw error;
                   toast.success("Detailed Health Report generated and sent to your email!", { duration: 5000, icon: '📊' });
-                }, 2000);
+                } catch (err) {
+                  console.error(err);
+                  toast.error("Failed to send report. Please try again later.");
+                } finally {
+                  setIsGenerating(false);
+                }
               }}
-              disabled={isGenerating}
+              disabled={isGenerating || !healthData}
               className="w-full py-3.5 bg-white text-indigo-900 font-black rounded-xl hover:bg-indigo-50 hover:shadow-lg hover:-translate-y-0.5 transition-all focus:ring-4 focus:ring-indigo-300 active:scale-95 disabled:opacity-70 disabled:cursor-wait flex items-center justify-center gap-2"
             >
               {isGenerating ? (
@@ -232,6 +255,44 @@ export default function KnowledgeHealth() {
                 "Generate Detailed Report"
               )}
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Metrics Glossary */}
+      <div className="mt-4 p-6 rounded-3xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm">
+        <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+          <Info className="w-5 h-5 text-indigo-500" />
+          Metrics Glossary
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex gap-3">
+            <div className="w-8 h-8 shrink-0 rounded-full bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600 font-bold">1</div>
+            <div>
+              <h4 className="font-bold text-slate-900 dark:text-white">Decision Velocity</h4>
+              <p className="text-sm text-slate-500 mt-1">Measures the ratio of key decisions made compared to the number of meetings held. High velocity means meetings are highly actionable.</p>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="w-8 h-8 shrink-0 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600 font-bold">2</div>
+            <div>
+              <h4 className="font-bold text-slate-900 dark:text-white">Resolution Speed</h4>
+              <p className="text-sm text-slate-500 mt-1">Evaluates how quickly blockers raised in standups or meetings are converted into completed tasks.</p>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="w-8 h-8 shrink-0 rounded-full bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center text-rose-600 font-bold">3</div>
+            <div>
+              <h4 className="font-bold text-slate-900 dark:text-white">Cross-Functional (Silos)</h4>
+              <p className="text-sm text-slate-500 mt-1">Indicates if teams are operating in isolation. A lower score suggests that knowledge is trapped within specific departments.</p>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="w-8 h-8 shrink-0 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 font-bold">4</div>
+            <div>
+              <h4 className="font-bold text-slate-900 dark:text-white">Meeting Efficiency</h4>
+              <p className="text-sm text-slate-500 mt-1">Analyzes meeting volume against organizational output. A low score warns of meeting bloat and wasted synchronous time.</p>
+            </div>
           </div>
         </div>
       </div>
