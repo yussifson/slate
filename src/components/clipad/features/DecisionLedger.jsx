@@ -133,7 +133,7 @@ export default function DecisionLedger({ workspaceId, spaceId, hasFullIntelligen
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
           <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
             Decision Ledger
@@ -144,9 +144,9 @@ export default function DecisionLedger({ workspaceId, spaceId, hasFullIntelligen
           <button
             onClick={handleAIDetect}
             disabled={detecting}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold disabled:opacity-50 transition-all"
+            className="flex items-center justify-center gap-2 px-6 py-3.5 sm:py-2.5 rounded-2xl sm:rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-[15px] sm:text-sm font-bold disabled:opacity-50 transition-all shadow-md active:scale-[0.98] w-full sm:w-auto mt-2 sm:mt-0"
           >
-            {detecting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+            {detecting ? <Loader2 className="w-5 h-5 sm:w-4 sm:h-4 animate-spin" /> : <Sparkles className="w-5 h-5 sm:w-4 sm:h-4" />}
             {detecting ? 'Detecting...' : detected > 0 ? `${detected} Found` : 'AI Detect'}
           </button>
         )}

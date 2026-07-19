@@ -222,15 +222,15 @@ export default function TaskBoard({ spaceId }) {
                     key={task.id}
                     draggable
                     onDragStart={(e) => handleDragStart(e, task.id)}
-                    className="bg-card p-4 rounded-xl border border-border hover:border-border/80 shadow-sm cursor-grab active:cursor-grabbing group transition-all"
+                    className="bg-white dark:bg-[#1A232C] p-4 sm:p-5 rounded-2xl border border-black/5 dark:border-white/5 hover:border-primary/30 shadow-sm cursor-grab active:cursor-grabbing active:scale-[0.98] group transition-all"
                   >
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <p className={`text-sm font-medium ${task.status === 'done' ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
+                    <div className="flex items-start justify-between gap-2 mb-3">
+                      <p className={`text-base font-semibold leading-snug ${task.status === 'done' ? 'line-through text-slate-400 dark:text-muted-foreground' : 'text-slate-900 dark:text-white'}`}>
                         {task.title}
                       </p>
                       <DropdownMenu>
-                        <DropdownMenuTrigger className="opacity-0 group-hover:opacity-100 p-1 hover:bg-secondary rounded-lg transition-all shrink-0">
-                          <MoreVertical className="w-3.5 h-3.5 text-muted-foreground" />
+                        <DropdownMenuTrigger className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all shrink-0">
+                          <MoreVertical className="w-4 h-4 text-slate-400" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-40 rounded-xl">
                           {stages.filter(s => s.id !== task.status).map(s => (
@@ -251,16 +251,16 @@ export default function TaskBoard({ spaceId }) {
                       </span>
                     )}
 
-                    <div className="flex items-center justify-between mt-auto pt-2">
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        {task.due_date && <span className="flex items-center gap-1"><CalendarIcon className="w-3 h-3" /> {new Date(task.due_date).toLocaleDateString()}</span>}
+                    <div className="flex items-center justify-between mt-auto pt-3 border-t border-black/5 dark:border-white/5 mt-3">
+                      <div className="flex items-center gap-2 text-[11px] font-medium text-slate-500 dark:text-muted-foreground">
+                        {task.due_date && <span className="flex items-center gap-1 bg-slate-100 dark:bg-white/5 px-2 py-1 rounded-md"><CalendarIcon className="w-3 h-3 text-indigo-400" /> {new Date(task.due_date).toLocaleDateString()}</span>}
                       </div>
                       {task.assignee && (
-                        <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center overflow-hidden border border-border" title={task.assignee.full_name}>
+                        <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-secondary flex items-center justify-center overflow-hidden border border-white dark:border-slate-800 shadow-sm" title={task.assignee.full_name}>
                           {task.assignee.avatar_url ? (
                             <img src={task.assignee.avatar_url} className="w-full h-full object-cover" />
                           ) : (
-                            <User className="w-3.5 h-3.5 text-muted-foreground" />
+                            <User className="w-4 h-4 text-slate-400" />
                           )}
                         </div>
                       )}

@@ -197,16 +197,16 @@ function DocEditor({ doc, onSave, isSaving, onBack }) {
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
-      <div className="flex items-center gap-2 md:gap-4 p-2 md:p-4 border-b bg-card overflow-x-auto no-scrollbar">
+      <div className="flex items-center gap-2 md:gap-4 p-2 sm:p-4 border-b bg-card overflow-x-auto no-scrollbar min-h-[60px]">
         {onBack && (
-          <Button variant="ghost" size="icon" className="md:hidden shrink-0" onClick={onBack}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          <Button variant="ghost" size="icon" className="md:hidden shrink-0 w-10 h-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800" onClick={onBack}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left text-slate-700 dark:text-slate-300"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
           </Button>
         )}
         <input
           value={title || ''}
           onChange={(e) => setTitle(e.target.value)}
-          className="text-lg font-semibold bg-transparent border-none focus:outline-none focus:ring-0 flex-1 placeholder:text-muted-foreground/50 min-w-[100px]"
+          className="text-lg md:text-xl font-bold bg-transparent border-none focus:outline-none focus:ring-0 flex-1 placeholder:text-muted-foreground/50 min-w-[100px] text-slate-900 dark:text-white"
           placeholder="Document Title"
         />
         
@@ -249,36 +249,36 @@ function DocEditor({ doc, onSave, isSaving, onBack }) {
       </div>
 
       {/* Formatting Bar */}
-      <div className="px-4 py-2 border-b bg-muted/5 flex gap-1 flex-wrap items-center">
-        <Button size="icon" variant={editor.isActive('bold') ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleBold().run()} title="Bold">
-          <Bold className="w-4 h-4" />
+      <div className="px-2 md:px-4 py-2 border-b bg-slate-50 dark:bg-card/50 flex gap-1 sm:gap-1.5 flex-nowrap overflow-x-auto no-scrollbar items-center mask-edges">
+        <Button size="icon" variant={editor.isActive('bold') ? 'secondary' : 'ghost'} className="w-10 h-10 sm:w-8 sm:h-8 rounded-xl sm:rounded-lg shrink-0" onClick={() => editor.chain().focus().toggleBold().run()} title="Bold">
+          <Bold className="w-4 h-4 sm:w-4 sm:h-4" />
         </Button>
-        <Button size="icon" variant={editor.isActive('italic') ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleItalic().run()} title="Italic">
-          <Italic className="w-4 h-4" />
+        <Button size="icon" variant={editor.isActive('italic') ? 'secondary' : 'ghost'} className="w-10 h-10 sm:w-8 sm:h-8 rounded-xl sm:rounded-lg shrink-0" onClick={() => editor.chain().focus().toggleItalic().run()} title="Italic">
+          <Italic className="w-4 h-4 sm:w-4 sm:h-4" />
         </Button>
-        <Button size="icon" variant={editor.isActive('strike') ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleStrike().run()} title="Strikethrough">
-          <Strikethrough className="w-4 h-4" />
+        <Button size="icon" variant={editor.isActive('strike') ? 'secondary' : 'ghost'} className="w-10 h-10 sm:w-8 sm:h-8 rounded-xl sm:rounded-lg shrink-0" onClick={() => editor.chain().focus().toggleStrike().run()} title="Strikethrough">
+          <Strikethrough className="w-4 h-4 sm:w-4 sm:h-4" />
         </Button>
-        <div className="w-px h-5 bg-border mx-1" />
-        <Button size="icon" variant={editor.isActive('heading', { level: 1 }) ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} title="Heading 1">
-          <Heading1 className="w-4 h-4" />
+        <div className="w-px h-6 sm:h-5 bg-border mx-1 sm:mx-1.5 shrink-0" />
+        <Button size="icon" variant={editor.isActive('heading', { level: 1 }) ? 'secondary' : 'ghost'} className="w-10 h-10 sm:w-8 sm:h-8 rounded-xl sm:rounded-lg shrink-0" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} title="Heading 1">
+          <Heading1 className="w-4 h-4 sm:w-4 sm:h-4" />
         </Button>
-        <Button size="icon" variant={editor.isActive('heading', { level: 2 }) ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} title="Heading 2">
-          <Heading2 className="w-4 h-4" />
+        <Button size="icon" variant={editor.isActive('heading', { level: 2 }) ? 'secondary' : 'ghost'} className="w-10 h-10 sm:w-8 sm:h-8 rounded-xl sm:rounded-lg shrink-0" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} title="Heading 2">
+          <Heading2 className="w-4 h-4 sm:w-4 sm:h-4" />
         </Button>
-        <div className="w-px h-5 bg-border mx-1" />
-        <Button size="icon" variant={editor.isActive('bulletList') ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleBulletList().run()} title="Bullet List">
-          <List className="w-4 h-4" />
+        <div className="w-px h-6 sm:h-5 bg-border mx-1 sm:mx-1.5 shrink-0" />
+        <Button size="icon" variant={editor.isActive('bulletList') ? 'secondary' : 'ghost'} className="w-10 h-10 sm:w-8 sm:h-8 rounded-xl sm:rounded-lg shrink-0" onClick={() => editor.chain().focus().toggleBulletList().run()} title="Bullet List">
+          <List className="w-4 h-4 sm:w-4 sm:h-4" />
         </Button>
-        <Button size="icon" variant={editor.isActive('orderedList') ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleOrderedList().run()} title="Numbered List">
-          <ListOrdered className="w-4 h-4" />
+        <Button size="icon" variant={editor.isActive('orderedList') ? 'secondary' : 'ghost'} className="w-10 h-10 sm:w-8 sm:h-8 rounded-xl sm:rounded-lg shrink-0" onClick={() => editor.chain().focus().toggleOrderedList().run()} title="Numbered List">
+          <ListOrdered className="w-4 h-4 sm:w-4 sm:h-4" />
         </Button>
-        <div className="w-px h-5 bg-border mx-1" />
-        <Button size="icon" variant={editor.isActive('blockquote') ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleBlockquote().run()} title="Quote">
-          <Quote className="w-4 h-4" />
+        <div className="w-px h-6 sm:h-5 bg-border mx-1 sm:mx-1.5 shrink-0" />
+        <Button size="icon" variant={editor.isActive('blockquote') ? 'secondary' : 'ghost'} className="w-10 h-10 sm:w-8 sm:h-8 rounded-xl sm:rounded-lg shrink-0" onClick={() => editor.chain().focus().toggleBlockquote().run()} title="Quote">
+          <Quote className="w-4 h-4 sm:w-4 sm:h-4" />
         </Button>
-        <Button size="icon" variant={editor.isActive('codeBlock') ? 'secondary' : 'ghost'} className="w-8 h-8 rounded" onClick={() => editor.chain().focus().toggleCodeBlock().run()} title="Code Block">
-          <Code className="w-4 h-4" />
+        <Button size="icon" variant={editor.isActive('codeBlock') ? 'secondary' : 'ghost'} className="w-10 h-10 sm:w-8 sm:h-8 rounded-xl sm:rounded-lg shrink-0" onClick={() => editor.chain().focus().toggleCodeBlock().run()} title="Code Block">
+          <Code className="w-4 h-4 sm:w-4 sm:h-4" />
         </Button>
       </div>
 

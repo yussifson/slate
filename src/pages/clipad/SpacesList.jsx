@@ -230,12 +230,9 @@ export default function SpacesList() {
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <div className="flex -space-x-2">
-                        {[1,2,3].map(i => (
-                          <div key={i} className="w-6 h-6 rounded-full bg-slate-100 dark:bg-secondary border-2 border-white dark:border-slate-900 flex items-center justify-center text-slate-500 dark:text-muted-foreground">
-                            <Users className="w-3 h-3" />
-                          </div>
-                        ))}
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-white/5 rounded-full border border-black/5 dark:border-white/5 shadow-sm">
+                        <Users className="w-3.5 h-3.5 text-slate-500 dark:text-muted-foreground" />
+                        <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Members</span>
                       </div>
                       <span className="text-[11px] font-medium text-slate-500 dark:text-muted-foreground">{new Date(space.created_at || Date.now()).toLocaleDateString()}</span>
                     </div>
