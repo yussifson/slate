@@ -3,6 +3,7 @@ import { supabase } from '@/api/supabaseClient';
 import { ShieldAlert, AlertTriangle, CheckCircle, Network, Plus, Loader2, Sparkles, Bot } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { detectBlockers, writeOrgEvent } from '@/lib/clipadIntelligence';
+import { isAdmin as isGlobalAdmin, isSpaceman } from '@/lib/constants';
 
 export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = false, hasFullIntelligence }) {
   const { user } = useAuth();
@@ -14,7 +15,7 @@ export default function BlockerRadar({ workspaceId, spaceId, isWorkspaceView = f
   const [detecting, setDetecting] = useState(false);
   const [detectedCount, setDetectedCount] = useState(0);
 
-  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
+  const isAdmin = isGlobalAdmin(user) || isSpaceman(user);
 
   useEffect(() => {
     // Fetch if we have at least a spaceId (workspaceId is optional bonus)

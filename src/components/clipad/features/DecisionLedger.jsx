@@ -3,6 +3,7 @@ import { supabase } from '@/api/supabaseClient';
 import { ShieldAlert, CheckCircle, Clock, Archive, BrainCircuit, Sparkles, Loader2, Star, Bot } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { detectDecisions, writeOrgEvent } from '@/lib/clipadIntelligence';
+import { isAdmin as isGlobalAdmin, isSpaceman } from '@/lib/constants';
 
 export default function DecisionLedger({ workspaceId, spaceId, hasFullIntelligence, teamColor }) {
   const { user } = useAuth();
@@ -12,7 +13,7 @@ export default function DecisionLedger({ workspaceId, spaceId, hasFullIntelligen
   const [detected, setDetected] = useState(0);
 
   // RBAC checks
-  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
+  const isAdmin = isGlobalAdmin(user) || isSpaceman(user);
 
   useEffect(() => {
     if (!spaceId) return;
