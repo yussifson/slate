@@ -187,9 +187,9 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
       {/* Back Button */}
       <button 
         onClick={() => navigate(-1)} 
-        className="absolute top-4 md:top-6 left-4 md:left-6 z-50 flex items-center gap-2 px-3 md:px-4 py-2 rounded-xl bg-white/80 dark:bg-card/80 backdrop-blur-md border border-slate-200 dark:border-border text-slate-700 dark:text-foreground font-semibold text-sm shadow-sm hover:shadow-md transition-all hover:-translate-x-1"
+        className="absolute top-4 md:top-6 left-4 md:left-6 z-50 hidden md:flex items-center gap-2 px-3 md:px-4 py-2 rounded-xl bg-white/80 dark:bg-card/80 backdrop-blur-md border border-slate-200 dark:border-border text-slate-700 dark:text-foreground font-semibold text-sm shadow-sm hover:shadow-md transition-all hover:-translate-x-1"
       >
-        <ChevronLeft className="w-4 h-4" /> <span className="hidden md:inline">Back</span>
+        <ChevronLeft className="w-4 h-4" /> <span>Back</span>
       </button>
 
       {/* Realistic Background Layers */}
