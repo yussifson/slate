@@ -1471,18 +1471,17 @@ export default function RecordVideo() {
               <p className="text-muted-foreground text-sm">Record a video message for your team. All recordings are stored in CliPad.</p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="flex flex-col md:grid md:grid-cols-3 gap-3">
               {MODES.map(m => {
                 const Icon = m.icon;
-                if ((m.id === 'screen_camera' || m.id === 'screen_only') && !hasDisplayMedia) return null;
                 return (
                   <button
                     key={m.id}
                     onClick={() => setMode(m.id)}
-                    className={`flex flex-col items-center justify-center p-4 md:p-5 rounded-2xl border transition-all duration-300 shadow-sm active:scale-95 ${mode === m.id ? 'border-primary bg-gradient-to-b from-primary/10 to-primary/5 text-primary scale-100' : 'bg-white dark:bg-[#1a2329] border-slate-200 dark:border-white/5 text-slate-600 dark:text-muted-foreground hover:border-primary/30'}`}
+                    className={`flex md:flex-col items-center justify-start md:justify-center p-4 md:p-5 rounded-2xl border transition-all duration-300 shadow-sm active:scale-95 ${mode === m.id ? 'border-primary bg-gradient-to-r md:bg-gradient-to-b from-primary/10 to-transparent md:to-primary/5 text-primary scale-100' : 'bg-white dark:bg-[#1a2329] border-slate-200 dark:border-white/5 text-slate-600 dark:text-muted-foreground hover:border-primary/30'}`}
                   >
-                    <Icon className={`w-8 h-8 mb-2 ${mode === m.id ? 'text-primary' : 'text-slate-400 dark:text-slate-500'}`} />
-                    <span className="font-semibold text-[13px] md:text-sm text-center leading-tight">
+                    <Icon className={`w-6 h-6 md:w-8 md:h-8 mr-4 md:mr-0 md:mb-2 ${mode === m.id ? 'text-primary' : 'text-slate-400 dark:text-slate-500'}`} />
+                    <span className="font-semibold text-[15px] md:text-sm text-left md:text-center leading-tight">
                       {m.label}
                     </span>
                   </button>
