@@ -50,9 +50,6 @@ export default function PullToRefresh({ onRefresh, children, className = "" }) {
           
           // Wait briefly to show the spinner spinning, giving satisfying feedback
           await new Promise(resolve => setTimeout(resolve, 800));
-          
-          // Forcefully reload the webview to fetch any new UI updates/JS bundles
-          window.location.reload();
         }
       } finally {
         setIsRefreshing(false);
