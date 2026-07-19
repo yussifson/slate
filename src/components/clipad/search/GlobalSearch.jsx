@@ -144,16 +144,35 @@ export default function GlobalSearch() {
 
       let formatted = [];
 
-      if (spaceIdArr.length > 0) {
-        // All queries are scoped to accessible spaces only — no bypassing possible
+      try {
+      if (term) {
+        // Build correct filters based on role to ensure admins see everything, and users see space+personal things
+        const spaceIdsStr = spaceIdArr.length > 0 ? spaceIdArr.join(',') : '00000000-0000-0000-0000-000000000000';
+        const isUserAdmin = isAdmin(user);
+        const cid = user.company_id;
+
+        const getFilter = (type) => {
+          if (isUserAdmin) return `company_id.eq.${cid}`;
+          return `space_id.in.(${spaceIdsStr})`; // fallback
+        };
+        const getWsFilter = (type) => {
+          if (isUserAdmin) return `workspace_id.eq.${cid}`;
+          return `space_id.in.(${spaceIdsStr})`; // fallback
+        };
+        
+        const videoFilter = isUserAdmin ? `company_id.eq.${cid}` : `space_id.in.(${spaceIdsStr}),creator_id.eq.${user.id}`;
+        const meetingFilter = isUserAdmin ? `workspace_id.eq.${cid}` : `space_id.in.(${spaceIdsStr}),host_id.eq.${user.id}`;
+        const decisionFilter = isUserAdmin ? `workspace_id.eq.${cid}` : `team_space_id.in.(${spaceIdsStr})`;
+        const blockerFilter = isUserAdmin ? `workspace_id.eq.${cid}` : `team_space_id.in.(${spaceIdsStr})`;
+
         const [docs, tasks, messages, meetings, decisions, videos, blockers] = await Promise.all([
-          supabase.from('clipad_docs').select('id, title, content, space_id').in('space_id', spaceIdArr).ilike('title', term).limit(5),
-          supabase.from('clipad_action_items').select('id, title, context, space_id').in('space_id', spaceIdArr).ilike('title', term).limit(5),
+          supabase.from('clipad_docs').select('id, title, content, space_id').or(getFilter('docs')).ilike('title', term).limit(5),
+          supabase.from('clipad_action_items').select('id, title, context, space_id').or(getWsFilter('tasks')).ilike('title', term).limit(5),
           supabase.from('clipad_messages').select('id, content, space_id').in('space_id', spaceIdArr).ilike('content', term).limit(3),
-          supabase.from('clipad_meeting_records').select('id, title, ai_summary, space_id').in('space_id', spaceIdArr).ilike('title', term).limit(5),
-          supabase.from('clipad_decisions').select('id, decision_text, team_space_id').in('team_space_id', spaceIdArr).ilike('decision_text', term).limit(3),
-          supabase.from('clipad_videos').select('id, title, ai_summary, space_id').in('space_id', spaceIdArr).ilike('title', term).limit(5),
-          supabase.from('clipad_blockers').select('id, description, team_space_id').in('team_space_id', spaceIdArr).ilike('description', term).limit(3),
+          supabase.from('clipad_meeting_records').select('id, title, ai_summary, space_id').or(meetingFilter).ilike('title', term).limit(5),
+          supabase.from('clipad_decisions').select('id, decision_text, team_space_id').or(decisionFilter).ilike('decision_text', term).limit(3),
+          supabase.from('clipad_videos').select('id, title, ai_summary, space_id').or(videoFilter).ilike('title', term).limit(5),
+          supabase.from('clipad_blockers').select('id, description, team_space_id').or(blockerFilter).ilike('description', term).limit(3),
         ]);
 
         formatted = [
@@ -249,8 +268,7 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
       onMouseDown={(e) => { if (e.target === overlayRef.current) setIsOpen(false); }}
     >
       <div
-        className="w-full max-w-2xl flex flex-col rounded-2xl overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.4)] border border-white/10"
-        style={{ background: 'rgba(255,255,255,0.98)', backdropFilter: 'blur(24px)' }}
+        className="w-full max-w-2xl flex flex-col rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-border bg-white/95 dark:bg-card/95 backdrop-blur-xl"
       >
         {/* Search input row */}
         <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-100">
@@ -267,7 +285,7 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask OrbitFlow anything about your workspace…"
-            className="flex-1 bg-transparent border-none outline-none text-slate-900 text-[17px] font-medium placeholder-slate-400 min-w-0"
+            className="flex-1 bg-transparent border-none outline-none text-foreground text-[17px] font-medium placeholder-slate-400 min-w-0"
             style={{ caretColor: '#10b981' }}
           />
           <div className="flex items-center gap-2 shrink-0">
@@ -286,6 +304,9 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
             >
               <Search className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Search</span>
+            </button>
+            <button onClick={() => setIsOpen(false)} className="p-1.5 ml-1 rounded-lg hover:bg-slate-100 dark:hover:bg-secondary text-slate-400 hover:text-slate-600 dark:hover:text-foreground transition-colors">
+              <X className="w-5 h-5" />
             </button>
           </div>
         </div>
@@ -316,10 +337,10 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
                 ))}
               </div>
               {/* Role badge */}
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2">
+              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-border flex items-center gap-2">
                 <Lock className="w-3 h-3 text-slate-400" />
                 <span className="text-[11px] text-slate-400">
-                  Searching within <span className="font-semibold text-slate-600">your authorized spaces</span> only
+                  Searching within <span className="font-semibold text-foreground">{isAdmin(user) ? 'all company spaces & resources' : 'your authorized spaces'}</span>
                 </span>
               </div>
             </div>
@@ -364,12 +385,12 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
               <div className="px-5 py-4">
                 {isSynthesizing ? (
                   <div className="space-y-2 animate-pulse">
-                    <div className="h-3.5 bg-emerald-100 rounded-full w-full" />
-                    <div className="h-3.5 bg-emerald-100 rounded-full w-4/5" />
-                    <div className="h-3.5 bg-emerald-100 rounded-full w-3/5" />
+                    <div className="h-3.5 bg-primary/20 rounded-full w-full" />
+                    <div className="h-3.5 bg-primary/20 rounded-full w-4/5" />
+                    <div className="h-3.5 bg-primary/20 rounded-full w-3/5" />
                   </div>
                 ) : (
-                  <p className="text-[15px] text-slate-800 leading-relaxed font-medium">
+                  <p className="text-[15px] text-foreground leading-relaxed font-medium">
                     <TypewriterText text={aiAnswer} />
                   </p>
                 )}
@@ -434,16 +455,16 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
           {/* No results */}
           {hasSearched && !isSearching && !isSynthesizing && results.length === 0 && !aiAnswer && (
             <div className="flex flex-col items-center justify-center py-14 text-slate-400">
-              <div className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center mb-4">
-                <Search className="w-7 h-7 text-slate-300" />
+              <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-secondary/50 border border-slate-100 dark:border-border flex items-center justify-center mb-4">
+                <Search className="w-7 h-7 text-slate-300 dark:text-slate-500" />
               </div>
-              <p className="text-base font-semibold text-slate-600">No matches found</p>
+              <p className="text-base font-semibold text-foreground">No matches found</p>
               <p className="text-sm mt-1 text-slate-400">Try different keywords or rephrase your question</p>
             </div>
           )}
 
           {/* Footer */}
-          <div className="px-5 py-3 border-t border-slate-100 flex items-center justify-between">
+          <div className="px-5 py-3 border-t border-slate-100 dark:border-border flex items-center justify-between bg-slate-50/50 dark:bg-card/50">
             <div className="flex items-center gap-3">
               <span className="text-[11px] text-slate-400 flex items-center gap-1">
                 <kbd className="px-1.5 py-0.5 bg-slate-100 rounded font-mono text-[10px]">⌘K</kbd> toggle

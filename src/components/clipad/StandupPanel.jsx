@@ -7,7 +7,7 @@ import { isAdmin, isSpaceman } from '@/lib/constants';
 import {
   Sun, CheckCircle, AlertTriangle, Smile, Frown, Meh, Zap, TrendingUp,
   Plus, Sparkles, Loader2, User, Clock, Send, ChevronDown, ChevronUp, RefreshCw,
-  Download, FileText, File, Video, Calendar, Tag, X, Link
+  Download, FileText, File, Video, Calendar, Tag, X, Link, ExternalLink
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import html2pdf from 'html2pdf.js';
@@ -89,7 +89,7 @@ function StandupCard({ update, isCurrentUser }) {
 
       {/* Tags section */}
       {(() => {
-        const tagMatches = [...update.today.matchAll(/\[\[TAG:(video|meeting):([^:]+):(.*?)\]\]/g)];
+        const tagMatches = [...update.today.matchAll(/\[\[TAG:(video|meeting|link):([^:]+):(.*?)\]\]/g)];
         if (tagMatches.length === 0) return null;
         return (
           <div className="mt-3 pt-3 border-t border-slate-100 dark:border-border flex flex-wrap gap-2">
@@ -98,13 +98,21 @@ function StandupCard({ update, isCurrentUser }) {
               const id = m[2];
               const title = m[3];
               const isVideo = type === 'video';
-              const Icon = isVideo ? Video : Calendar;
-              const route = isVideo ? `/watch/${id}` : `/meetings/${id}`;
+              const isLink = type === 'link';
+              const Icon = isVideo ? Video : isLink ? ExternalLink : Calendar;
+              const route = isLink ? atob(id) : isVideo ? `/watch/${id}` : `/meetings/${id}`;
+              
+              const colorClass = isVideo 
+                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' 
+                : isLink 
+                ? 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20'
+                : 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20';
+
               return (
                 <button
                   key={i}
                   onClick={() => window.open(route, '_blank')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:scale-105 active:scale-95 border ${isVideo ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:scale-105 active:scale-95 border ${colorClass}`}
                 >
                   <Icon className="w-3.5 h-3.5" />
                   <span className="truncate max-w-[200px]">{title}</span>
@@ -142,6 +150,9 @@ export default function StandupPanel({ spaceId }) {
 
   const [taggedResource, setTaggedResource] = useState(null);
   const [showTagMenu, setShowTagMenu] = useState(false);
+  const [tagMenuTab, setTagMenuTab] = useState('internal');
+  const [extUrl, setExtUrl] = useState('');
+  const [extTitle, setExtTitle] = useState('');
   const [myResources, setMyResources] = useState({ videos: [], meetings: [] });
   const [loadingResources, setLoadingResources] = useState(false);
 
@@ -451,8 +462,8 @@ export default function StandupPanel({ spaceId }) {
             </div>
             
             {taggedResource ? (
-              <div className={`flex items-center gap-2 p-2.5 rounded-xl border ${taggedResource.type === 'video' ? 'bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400' : 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400'}`}>
-                {taggedResource.type === 'video' ? <Video className="w-4 h-4 shrink-0" /> : <Calendar className="w-4 h-4 shrink-0" />}
+              <div className={`flex items-center gap-2 p-2.5 rounded-xl border ${taggedResource.type === 'video' ? 'bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400' : taggedResource.type === 'link' ? 'bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-500/10 dark:border-indigo-500/20 dark:text-indigo-400' : 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400'}`}>
+                {taggedResource.type === 'video' ? <Video className="w-4 h-4 shrink-0" /> : taggedResource.type === 'link' ? <ExternalLink className="w-4 h-4 shrink-0" /> : <Calendar className="w-4 h-4 shrink-0" />}
                 <span className="text-sm font-semibold truncate flex-1">{taggedResource.title}</span>
               </div>
             ) : (
@@ -465,24 +476,53 @@ export default function StandupPanel({ spaceId }) {
                   }}
                   className="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-card text-sm text-slate-500 hover:border-primary/40 transition-colors text-left"
                 >
-                  <span className="flex items-center gap-2"><Tag className="w-4 h-4" /> Tag one of your videos or meetings...</span>
+                  <span className="flex items-center gap-2"><Tag className="w-4 h-4" /> Tag a resource or external link...</span>
                   <ChevronDown className="w-4 h-4 opacity-50" />
                 </button>
 
                 {showTagMenu && (
-                  <div className="absolute z-50 top-full mt-2 w-full bg-white dark:bg-card border border-slate-200 dark:border-border rounded-xl shadow-xl overflow-hidden flex flex-col max-h-[250px]">
-                    <div className="p-2 border-b border-slate-100 dark:border-border/50 bg-slate-50 dark:bg-secondary/20">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1">Your Recent Resources</span>
+                  <div className="absolute z-50 top-full mt-2 w-full bg-white dark:bg-card border border-slate-200 dark:border-border rounded-xl shadow-xl overflow-hidden flex flex-col max-h-[300px]">
+                    <div className="flex border-b border-slate-100 dark:border-border/50 bg-slate-50 dark:bg-secondary/20">
+                      <button type="button" onClick={() => setTagMenuTab('internal')} className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider ${tagMenuTab === 'internal' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground'}`}>Internal</button>
+                      <button type="button" onClick={() => setTagMenuTab('external')} className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider ${tagMenuTab === 'external' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground'}`}>External Link</button>
                     </div>
                     <div className="overflow-y-auto p-1 flex-1">
-                      {loadingResources ? (
-                        <div className="flex justify-center py-4"><Loader2 className="w-4 h-4 animate-spin text-primary" /></div>
+                      {tagMenuTab === 'external' ? (
+                        <div className="p-3 space-y-3">
+                          <div>
+                            <label className="text-[10px] font-bold text-slate-500 uppercase mb-1 block">URL</label>
+                            <input value={extUrl} onChange={e => setExtUrl(e.target.value)} placeholder="https://..." className="w-full text-xs px-2 py-1.5 border border-slate-200 dark:border-border rounded focus:outline-none focus:border-primary bg-white dark:bg-secondary text-foreground" />
+                          </div>
+                          <div>
+                            <label className="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Title</label>
+                            <input value={extTitle} onChange={e => setExtTitle(e.target.value)} placeholder="Resource Title" className="w-full text-xs px-2 py-1.5 border border-slate-200 dark:border-border rounded focus:outline-none focus:border-primary bg-white dark:bg-secondary text-foreground" />
+                          </div>
+                          <button
+                            type="button"
+                            disabled={!extUrl || !extTitle}
+                            onClick={() => {
+                              try {
+                                const encodedUrl = btoa(extUrl.trim());
+                                setTaggedResource({ type: 'link', id: encodedUrl, title: extTitle.trim() });
+                                setShowTagMenu(false);
+                              } catch (e) {
+                                console.warn("Invalid characters for btoa");
+                              }
+                            }}
+                            className="w-full bg-primary text-white font-bold text-xs py-2 rounded-lg disabled:opacity-50"
+                          >
+                            Attach Link
+                          </button>
+                        </div>
                       ) : (
-                        <>
-                          {myResources.videos.length > 0 && (
-                            <div className="mb-2">
-                              <div className="px-2 py-1 text-[10px] font-bold text-slate-400 uppercase">Videos</div>
-                              {myResources.videos.map(v => (
+                        loadingResources ? (
+                          <div className="flex justify-center py-4"><Loader2 className="w-4 h-4 animate-spin text-primary" /></div>
+                        ) : (
+                          <>
+                            {myResources.videos.length > 0 && (
+                              <div className="mb-2">
+                                <div className="px-2 py-1 text-[10px] font-bold text-slate-400 uppercase">Videos</div>
+                                {myResources.videos.map(v => (
                                 <button
                                   key={v.id}
                                   type="button"
