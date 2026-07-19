@@ -367,6 +367,10 @@ export default function MeetLandingPage() {
   const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
 
+  if (isLoadingAuth) {
+    return <PageLoader label="" />;
+  }
+
   return (
     <div className={`light min-h-screen bg-white text-slate-900 flex flex-col font-sans relative transition-all duration-500 ease-in-out overflow-x-hidden ${supportPanel ? 'lg:pr-[400px]' : ''}`}>
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
