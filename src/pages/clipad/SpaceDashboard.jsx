@@ -448,7 +448,7 @@ export default function SpaceDashboard() {
         <div className={`hidden md:block absolute inset-0 bg-gradient-to-br ${color} opacity-[0.03] dark:opacity-[0.08]`} />
         
         {/* Nature Design */}
-        <div className="absolute top-0 right-0 bottom-0 pointer-events-none select-none flex items-center justify-end pr-6 md:pr-16 lg:pr-32 z-0">
+        <div className="hidden md:flex absolute top-0 right-0 bottom-0 pointer-events-none select-none items-center justify-end pr-6 md:pr-16 lg:pr-32 z-0">
           <div className="relative">
             <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-10 dark:opacity-20 blur-xl scale-150 rounded-full`} />
             <span className="relative text-6xl md:text-[90px] leading-none opacity-95 dark:opacity-100">
