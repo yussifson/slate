@@ -520,14 +520,14 @@ export default function SpaceDashboard() {
         {/* OVERVIEW (BENTO GRID REDESIGN) */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            {isAdmin(user) && hasFeature(user, 'hasAdvancedAI') && (
+            {canEdit && hasFeature(user, 'hasAdvancedAI') && (
               <>
                 <RedundantWorkAlert workspaceId={space.company_id} currentSpaceId={spaceId} />
                 <MeetingInsights spaceId={spaceId} />
                 <AIInsightsPanel spaceId={spaceId} workspaceId={space.company_id} />
               </>
             )}
-            {isAdmin(user) && hasFeature(user, 'hasEnterpriseAnalytics') && (
+            {canEdit && hasFeature(user, 'hasEnterpriseAnalytics') && (
               <MeetingROIDashboard workspaceId={space.company_id} spaceId={spaceId} />
             )}
 
