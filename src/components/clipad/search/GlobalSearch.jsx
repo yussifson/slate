@@ -328,10 +328,10 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
             <button
               onClick={() => handleSearch()}
               disabled={!query.trim() || isSearching}
-              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 dark:bg-white hover:bg-slate-800 dark:hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed text-white dark:text-slate-900 text-[13px] font-bold transition-all shadow-md active:scale-[0.98]"
+              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 disabled:opacity-30 disabled:cursor-not-allowed text-white text-[13px] font-bold transition-all shadow-md active:scale-[0.98]"
             >
               Ask AI
-              <CornerDownLeft className="w-3.5 h-3.5 opacity-60" />
+              <CornerDownLeft className="w-3.5 h-3.5 opacity-80" />
             </button>
           </div>
         </div>
