@@ -144,6 +144,7 @@ export default function RecordVideo() {
   const [transcript, setTranscript] = useState('');
 
   const canvasRef = useRef(null);
+  const audioRef = useRef(null);
   const previewRef = useRef(null); // main preview for screen + camera
   const playbackRef = useRef(null);
   const mediaRecorderRef = useRef(null);
