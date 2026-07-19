@@ -905,10 +905,6 @@ export default function RecordVideo() {
         throw new Error('No stream available');
       }
 
-      // Auto-open PiP if appropriate
-      if (pipPromise) {
-        startPip(pipPromise);
-      }
       return true;
     } catch (err) {
       console.error(err);
