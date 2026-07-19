@@ -56,8 +56,25 @@ export default function WatchVideo() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const getVideoColor = (id) => {
+    const colors = [
+      'linear-gradient(to bottom right, #3b82f6, #1d4ed8)',
+      'linear-gradient(to bottom right, #6366f1, #4338ca)',
+      'linear-gradient(to bottom right, #a855f7, #7e22ce)',
+      'linear-gradient(to bottom right, #d946ef, #a21caf)',
+      'linear-gradient(to bottom right, #f43f5e, #be123c)',
+      'linear-gradient(to bottom right, #f97316, #c2410c)',
+      'linear-gradient(to bottom right, #10b981, #047857)',
+      'linear-gradient(to bottom right, #06b6d4, #0e7490)',
+    ];
+    if (!id) return colors[0];
+    const charCodeSum = String(id).split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    return colors[charCodeSum % colors.length];
+  };
   const [floatingReactions, setFloatingReactions] = useState([]);
   const [activeCommentFilter, setActiveCommentFilter] = useState('all'); // 'all' | 'comments' | 'reactions'
   const [views, setViews] = useState(0);
@@ -450,17 +467,33 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
               <video
                 ref={videoRef}
                 src={video.video_url}
-                poster={video.thumbnail_url}
                 className="w-full h-full object-contain"
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
-                onPlay={() => setPlaying(true)}
+                onPlay={() => { setPlaying(true); setHasStartedPlaying(true); }}
                 onPause={() => setPlaying(false)}
                 onEnded={() => setPlaying(false)}
                 controlsList="nodownload"
                 onContextMenu={(e) => e.preventDefault()}
                 disablePictureInPicture={false}
               />
+
+              {/* Custom Thumbnail Overlay */}
+              {!hasStartedPlaying && (
+                <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black cursor-pointer" onClick={togglePlay}>
+                  {video?.thumbnail_url ? (
+                    <img src={video.thumbnail_url} className="absolute inset-0 w-full h-full object-cover opacity-80" alt="Video Thumbnail" />
+                  ) : (
+                    <div className="absolute inset-0 w-full h-full opacity-90" style={{ background: getVideoColor(video?.id) }} />
+                  )}
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shadow-2xl z-20 hover:scale-110 transition-transform">
+                    <Play className="w-8 h-8 sm:w-10 sm:h-10 text-white fill-white ml-1.5" />
+                  </div>
+                  <div className="absolute bottom-4 right-4 bg-black/70 backdrop-blur-md text-white text-xs font-mono font-medium px-2 py-1 rounded-md z-20 shadow-md">
+                    {video?.duration_seconds ? formatTime(video.duration_seconds) : formatTime(duration)}
+                  </div>
+                </div>
+              )}
 
               {/* Floating reactions overlay */}
               <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">

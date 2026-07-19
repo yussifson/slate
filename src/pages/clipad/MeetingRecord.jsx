@@ -429,7 +429,9 @@ export default function MeetingRecord() {
         {/* Video Player */}
         <div className="mb-4 sm:mb-6">
           {meeting.video_url ? (
-            <RichVideoPlayer videoUrl={meeting.video_url} recordType="meeting" entityId={meeting.id} />
+            <div className="bg-card md:rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-border overflow-hidden">
+              <RichVideoPlayer videoUrl={meeting.video_url} entityId={meeting.id} recordType="meeting" initialVideoRecord={meeting} />
+            </div>
             ) : (
               <button 
                 onClick={() => {

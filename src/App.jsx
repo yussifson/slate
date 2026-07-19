@@ -139,7 +139,8 @@ class ErrorBoundary extends React.Component {
     if (isChunkError) {
       if (!sessionStorage.getItem('chunk-error-reload')) {
         sessionStorage.setItem('chunk-error-reload', 'true');
-        window.location.reload();
+        // Force reload with cache bust
+        window.location.href = window.location.pathname + '?v=' + new Date().getTime();
       }
     }
   }
@@ -162,7 +163,8 @@ class ErrorBoundary extends React.Component {
         sessionStorage.removeItem('chunk-error-reload');
         
         setTimeout(() => {
-          window.location.replace('/dashboard');
+          // Force cache bust on the root reload so it pulls fresh index.html
+          window.location.href = '/dashboard?update=' + new Date().getTime();
         }, 150);
       } else {
         this.setState({ updateProgress: Math.min(p, 99) });

@@ -31,9 +31,9 @@ const FloatingReaction = ({ emoji, x, y, onDone }) => {
   );
 };
 
-export default function RichVideoPlayer({ videoUrl, recordType = 'video', entityId }) {
+export default function RichVideoPlayer({ videoUrl, recordType = 'video', entityId, initialVideoRecord }) {
   const { user } = useAuth();
-  const [videoRecord, setVideoRecord] = useState(null);
+  const [videoRecord, setVideoRecord] = useState(initialVideoRecord || null);
   const [comments, setComments] = useState([]);
   const [reactions, setReactions] = useState([]);
   const [floatingReactions, setFloatingReactions] = useState([]);
@@ -77,12 +77,23 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
   useEffect(() => {
     if (!videoUrl) return;
     async function loadVideo() {
+      // If we already passed it in, don't refetch from clipad_videos (which breaks for meetings)
+      if (initialVideoRecord) {
+        setVideoRecord(initialVideoRecord);
+        loadBlobUrl(initialVideoRecord.video_url);
+        return;
+      }
+      
       const { data, error } = await db.from('clipad_videos').select('*').eq('video_url', videoUrl).maybeSingle();
       if (!error && data) {
         setVideoRecord(data);
-        
+        loadBlobUrl(data.video_url);
+      }
+    }
+    
+    async function loadBlobUrl(url) {
         // Secure playback: Fetch directly and convert to blob to hide public URL from DOM
-        if (data.video_url) {
+        if (url) {
           try {
             const res = await fetch(data.video_url);
             if (res.ok) {
@@ -93,10 +104,9 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
             console.error("Failed to load secure video blob", err);
           }
         }
-      }
     }
     loadVideo();
-  }, [videoUrl]);
+  }, [videoUrl, initialVideoRecord]);
 
   // 2. Fetch comments and reactions for this video
   useEffect(() => {

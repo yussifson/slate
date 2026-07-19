@@ -1,18 +1,13 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.slate.slate',
+  appId: 'com.optavel.clipad',
   appName: 'CliPad',
   webDir: 'dist',
-  server: {
-    url: 'https://clipad.optavel.com',
-    cleartext: true,
-    errorPath: 'error.html'
-  },
   plugins: {
     CapacitorUpdater: {
       version: '0.0.0',
-      appId: 'com.slate.slate',
+      appId: 'com.optavel.clipad',
       autoUpdate: 'always',
       autoSplashscreen: true
     },
