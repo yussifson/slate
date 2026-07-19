@@ -555,6 +555,7 @@ export default function StandupPanel({ spaceId }) {
                             <div className="p-4 text-center text-xs text-muted-foreground">You haven't recorded any videos or meetings yet.</div>
                           )}
                         </>
+                        )
                       )}
                     </div>
                   </div>
