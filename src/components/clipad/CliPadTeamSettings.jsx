@@ -3,7 +3,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { registerSchoolUser } from '@/api/authUtils';
 import { useToast } from '@/components/ui/use-toast';
-import { Users, Mail, UserPlus, Shield, User, X, CheckCircle, RefreshCcw, UserMinus } from 'lucide-react';
+import { Users, Mail, UserPlus, Shield, User, X, CheckCircle, RefreshCcw, UserMinus, Rocket } from 'lucide-react';
 import { getSubdomainAndBase, getMainAppUrl, getAccountsUrl } from '@/lib/domainUtils';
 
 export default function CliPadTeamSettings() {
@@ -282,7 +282,8 @@ export default function CliPadTeamSettings() {
                 onChange={(e) => setInviteRole(e.target.value)}
                 className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary transition-all"
               >
-                <option value="user">User</option>
+                <option value="user">Member</option>
+                <option value="spaceman">🚀 Spaceman</option>
                 <option value="company_admin">Admin</option>
               </select>
             </div>
@@ -336,19 +337,28 @@ export default function CliPadTeamSettings() {
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-500 text-xs font-semibold">
                           <Shield className="w-3.5 h-3.5" /> Admin
                         </span>
+                      ) : member.role === 'spaceman' ? (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 text-xs font-semibold">
+                          <Rocket className="w-3.5 h-3.5" /> Spaceman
+                        </span>
                       ) : (
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-500/10 text-slate-500 dark:text-muted-foreground text-xs font-semibold">
-                          <User className="w-3.5 h-3.5" /> User
+                          <User className="w-3.5 h-3.5" /> Member
                         </span>
                       )
                     ) : (
                       <div className="flex items-center gap-4">
                         <select
-                          value={member.role === 'company_admin' || member.role === 'admin' ? 'company_admin' : 'user'}
+                          value={
+                            member.role === 'company_admin' || member.role === 'admin' ? 'company_admin'
+                            : member.role === 'spaceman' ? 'spaceman'
+                            : 'user'
+                          }
                           onChange={(e) => handleRoleChange(member.id, e.target.value)}
                           className="bg-secondary/50 border border-border rounded-lg text-xs font-semibold px-2 py-1 text-foreground focus:outline-none focus:border-primary cursor-pointer"
                         >
-                          <option value="user">User</option>
+                          <option value="user">Member</option>
+                          <option value="spaceman">🚀 Spaceman</option>
                           <option value="company_admin">Admin</option>
                         </select>
                         <button

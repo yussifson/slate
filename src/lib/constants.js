@@ -46,6 +46,15 @@ export const TASK_STATUS_COLORS = {
 export const isSuperAdmin = (user) => ['super_admin', 'admin'].includes(user?.role);
 export const isCompanyAdmin = (user) => user?.role === "company_admin";
 export const isAdmin = (user) => ["super_admin", "admin", "company_admin"].includes(user?.role);
+export const isSpaceman = (user) => user?.role === 'spaceman';
+// isSpacemanInSpace: true if user is a Spaceman AND is a member of this space
+// Spaceman rights are scoped to spaces they have been explicitly added to.
+export const isSpacemanInSpace = (user, spaceMembers) => {
+  if (!user || !spaceMembers) return false;
+  if (!isSpaceman(user)) return false;
+  return spaceMembers.some(m => m.user_id === user.id);
+};
+export const canCreateSpaces = (user) => isAdmin(user) || isSpaceman(user);
 export const isLawyer = (user) => ["lawyer", "paralegal"].includes(user?.role);
 
 // Retail Role Helpers

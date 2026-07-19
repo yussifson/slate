@@ -11,7 +11,7 @@ import {
 import { getSpaceIcon } from '@/utils/spaceIcons';
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { isAdmin } from '@/lib/constants';
+import { isAdmin, canCreateSpaces } from '@/lib/constants';
 import PaywallModal from '@/components/clipad/PaywallModal';
 
 const COLORS = [
@@ -161,9 +161,11 @@ export default function SpacesList() {
                 Billing
               </button>
             )}
-            <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm shadow-md shadow-primary/20 transition-all shrink-0 active:scale-95">
-              <Plus className="w-4 h-4" /> New Space
-            </button>
+            {canCreateSpaces(user) && (
+              <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm shadow-md shadow-primary/20 transition-all shrink-0 active:scale-95">
+                <Plus className="w-4 h-4" /> New Space
+              </button>
+            )}
           </div>
         </div>
 
@@ -176,9 +178,11 @@ export default function SpacesList() {
             <Layers className="w-16 h-16 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-slate-500 dark:text-muted-foreground mb-2">No spaces yet</h3>
             <p className="text-slate-400 dark:text-slate-500 mb-6 text-sm">Create a space for your first team or project.</p>
-            <button onClick={() => setShowCreate(true)} className="px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm shadow-md transition-all">
-              Create your first space
-            </button>
+            {canCreateSpaces(user) && (
+              <button onClick={() => setShowCreate(true)} className="px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm shadow-md transition-all">
+                Create your first space
+              </button>
+            )}
           </div>
         ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">

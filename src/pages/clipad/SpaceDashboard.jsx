@@ -3,7 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { getLimit, hasFeature } from '@/lib/clipadPricing';
 import { useAuth } from '@/lib/AuthContext';
-import { isAdmin } from '@/lib/constants';
+import { isAdmin, isSpacemanInSpace } from '@/lib/constants';
 import {
   Users, Video, Calendar, Plus, Play, Monitor, Activity,
   Brain, FileText, CheckCircle, Search, Settings, ArrowLeft,
@@ -211,8 +211,8 @@ export default function SpaceDashboard() {
         supabase.from('clipad_meeting_records').select('*').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(20),
         supabase.from('clipad_space_members').select('*').eq('space_id', spaceId),
         companyId
-          ? supabase.from('profiles').select('id, full_name, email, avatar_url').eq('company_id', companyId).limit(500)
-          : supabase.from('profiles').select('id, full_name, email, avatar_url').limit(50),
+          ? supabase.from('profiles').select('id, full_name, email, avatar_url, role').eq('company_id', companyId).limit(500)
+          : supabase.from('profiles').select('id, full_name, email, avatar_url, role').limit(50),
         companyId
           ? supabase.from('staff_records').select('user_id, user_email, full_name').eq('company_id', companyId)
           : { data: [] }
@@ -399,7 +399,8 @@ export default function SpaceDashboard() {
   
   // Only company admins / super admins / the platform admin can edit or delete spaces.
   // Regular staff (even space creators) can view but not modify.
-  const canEdit = isAdmin(user);
+  const isSpacemanHere = isSpacemanInSpace(user, spaceMembers);
+  const canEdit = isAdmin(user) || isSpacemanHere;
   const isMember = spaceMembers.some(m => m.user_id === user?.id);
 
 
@@ -462,7 +463,7 @@ export default function SpaceDashboard() {
                 <span className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-slate-600 dark:text-slate-300"><Calendar className="w-3.5 h-3.5 text-indigo-500" /> {meetings.length} meetings</span>
                 <span className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-slate-600 dark:text-slate-300"><Camera className="w-3.5 h-3.5 text-emerald-500" /> {videos.length} videos</span>
                 <span className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-slate-600 dark:text-slate-300"><CheckCircle className="w-3.5 h-3.5 text-amber-500" /> {openTasks.length} tasks</span>
-                {space.is_private && canEdit && (
+                {(isAdmin(user) || isSpacemanHere) && (
                   <button onClick={() => setShowMembers(true)} className="flex items-center gap-1.5 bg-primary/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-primary hover:bg-primary/20 transition-colors active:scale-95">
                     <Users className="w-3.5 h-3.5" /> Manage Members
                   </button>
@@ -495,7 +496,7 @@ export default function SpaceDashboard() {
           <div className="flex gap-1.5 min-w-max">
             {TABS.filter(t => {
               if (t.id === 'automations') return user?.role === 'super_admin';
-              if (['memory', 'decisions'].includes(t.id)) return isAdmin(user);
+              if (['memory', 'decisions'].includes(t.id)) return isAdmin(user) || isSpacemanHere;
               return true;
             }).map(tab => {
               const Icon = tab.icon;
@@ -879,14 +880,21 @@ export default function SpaceDashboard() {
               {profiles
                 .filter(p => p.id !== space.created_by && ((p.full_name || '').toLowerCase().includes((searchMember || '').toLowerCase()) || (p.email || '').toLowerCase().includes((searchMember || '').toLowerCase())))
                 .map(p => {
-                  const isMem = spaceMembers.some(m => m.user_id === p.id);
+                  const memberRow = spaceMembers.find(m => m.user_id === p.id);
+                  const isMem = !!memberRow;
+                  const isSpacemanMember = p.role === 'spaceman';
                   return (
                     <div key={p.id} className="flex items-center justify-between p-3 rounded-xl border border-slate-100 dark:border-border/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                       <div className="flex items-center gap-3">
                         <img src={p.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${p.full_name}`} alt={p.full_name} className="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-700 object-cover" />
                         <div>
                           <p className="text-sm font-semibold text-slate-900 dark:text-white">{p.full_name}</p>
-                          <p className="text-xs text-slate-500">{p.email}</p>
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            <p className="text-xs text-slate-500">{p.email}</p>
+                            {isSpacemanMember && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-teal-50 text-teal-700 dark:bg-teal-500/10 dark:text-teal-400 border border-teal-200 dark:border-teal-500/30">🚀 Spaceman</span>
+                            )}
+                          </div>
                         </div>
                       </div>
                       {p.isPending ? (
