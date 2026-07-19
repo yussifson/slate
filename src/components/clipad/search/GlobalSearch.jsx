@@ -115,9 +115,15 @@ export default function GlobalSearch() {
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
+  const [lastQuery, setLastQuery] = useState('');
+
   const handleSearch = useCallback(async (searchQuery) => {
     const q = (searchQuery || query).trim();
     if (!q) return;
+
+    // Prevent rewriting if the user clicks Ask AI again with the exact same query
+    if (q === lastQuery && hasSearched && (aiAnswer || isSynthesizing)) return;
+    setLastQuery(q);
 
     setIsSearching(true);
     setResults([]);
@@ -374,9 +380,6 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
             <div className="mx-4 mt-4 mb-2 p-[1px] rounded-3xl bg-gradient-to-br from-emerald-400/30 via-teal-500/10 to-transparent">
               <div className="rounded-[23px] bg-white dark:bg-[#151B28] p-5 shadow-inner">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-md">
-                    <OrbitIcon className="w-3.5 h-3.5 text-white fill-white" />
-                  </div>
                   <span className="text-[15px] font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">OrbitFlow Analysis</span>
                   {isSynthesizing && (
                     <div className="flex items-center gap-1.5 ml-auto bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1 rounded-full">
