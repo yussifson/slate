@@ -13,6 +13,7 @@ export default function CliPadBilling() {
   const { user } = useAuth();
   const companyId = useCompanyId();
   const [currentPlan, setCurrentPlan] = useState('free');
+  const [subscriptionData, setSubscriptionData] = useState(null);
   const [companyName, setCompanyName] = useState('');
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
@@ -55,7 +56,7 @@ export default function CliPadBilling() {
       // 1. Check company_subscriptions (set by Paystack payments or admin sync trigger)
       const { data: subData } = await supabase
         .from('company_subscriptions')
-        .select('plan_id, status')
+        .select('plan_id, status, updated_at, current_period_end')
         .eq('company_id', companyId)
         .eq('status', 'active')
         .maybeSingle();
@@ -78,6 +79,10 @@ export default function CliPadBilling() {
         }
       } else {
         setCurrentPlan(subData?.plan_id || 'free');
+      }
+
+      if (subData) {
+        setSubscriptionData(subData);
       }
     } catch (e) {
       console.error(e);
@@ -225,6 +230,56 @@ export default function CliPadBilling() {
         <h2 className="text-2xl font-bold text-foreground">Billing & Plans</h2>
         <p className="text-muted-foreground mt-2">Manage your CliPad subscription and features.</p>
       </div>
+
+      {/* Billing Cycle Progress */}
+      {currentPlan !== 'free' && subscriptionData && (
+        <div className="p-6 rounded-2xl border border-border bg-card">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="font-semibold text-foreground">Current Billing Cycle</h3>
+            <span className="text-sm font-medium text-muted-foreground">
+              {(() => {
+                const start = new Date(subscriptionData.updated_at || Date.now());
+                const end = subscriptionData.current_period_end ? new Date(subscriptionData.current_period_end) : new Date(start.getTime() + 30 * 24 * 60 * 60 * 1000);
+                const now = new Date();
+                const total = end.getTime() - start.getTime();
+                const elapsed = now.getTime() - start.getTime();
+                const percentage = Math.max(0, Math.min(100, (elapsed / total) * 100));
+                return `${Math.round(percentage)}% Elapsed`;
+              })()}
+            </span>
+          </div>
+          <div className="w-full bg-slate-100 dark:bg-secondary rounded-full h-3 mb-1 overflow-hidden">
+            <div 
+              className={`h-3 rounded-full transition-all duration-500 ${(() => {
+                const start = new Date(subscriptionData.updated_at || Date.now());
+                const end = subscriptionData.current_period_end ? new Date(subscriptionData.current_period_end) : new Date(start.getTime() + 30 * 24 * 60 * 60 * 1000);
+                const now = new Date();
+                const total = end.getTime() - start.getTime();
+                const elapsed = now.getTime() - start.getTime();
+                const percentage = Math.max(0, Math.min(100, (elapsed / total) * 100));
+                if (percentage > 90) return 'bg-red-500';
+                if (percentage > 70) return 'bg-amber-500';
+                return 'bg-emerald-500';
+              })()}`}
+              style={{ width: `${(() => {
+                const start = new Date(subscriptionData.updated_at || Date.now());
+                const end = subscriptionData.current_period_end ? new Date(subscriptionData.current_period_end) : new Date(start.getTime() + 30 * 24 * 60 * 60 * 1000);
+                const now = new Date();
+                const total = end.getTime() - start.getTime();
+                const elapsed = now.getTime() - start.getTime();
+                return Math.max(0, Math.min(100, (elapsed / total) * 100));
+              })()}%` }}
+            ></div>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">
+            {(() => {
+              const start = new Date(subscriptionData.updated_at || Date.now());
+              const end = subscriptionData.current_period_end ? new Date(subscriptionData.current_period_end) : new Date(start.getTime() + 30 * 24 * 60 * 60 * 1000);
+              return `Cycle ends on ${end.toLocaleDateString()}`;
+            })()}
+          </p>
+        </div>
+      )}
 
       {/* Storage Progress */}
       <div className="p-6 rounded-2xl border border-border bg-card">
