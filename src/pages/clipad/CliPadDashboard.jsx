@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { getSpaceIcon } from '@/utils/spaceIcons';
+import { generateShortId } from '@/utils/idGenerator';
 import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import {
@@ -280,10 +281,14 @@ export default function CliPadDashboard() {
     }
   };
 
-  const handleSpaceSelect = async (spaceId) => {
+  const handleSpaceSelect = async (spaceId, privacyType) => {
     setIsCreatingMeeting(true);
     try {
-      const { data, error } = await supabase.functions.invoke('create-daily-room', { body: { instant: true, max_participants: getLimit(user, 'maxParticipants') } });
+      const payload = { instant: true, max_participants: getLimit(user, 'maxParticipants'), privacy: privacyType };
+      if (privacyType === 'public') {
+        payload.roomName = generateShortId();
+      }
+      const { data, error } = await supabase.functions.invoke('create-daily-room', { body: payload });
       if (error) throw error;
       const url = `/join/${data.name || data.roomName}` + (spaceId ? `?spaceId=${spaceId}` : '');
       navigate(url);

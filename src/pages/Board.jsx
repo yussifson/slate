@@ -12,6 +12,7 @@ import { useCompanyId} from "@/hooks/useCompanyId";
 import { format} from "date-fns";
 import { useVideo} from "@/lib/VideoContext";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
+import { generateShortId } from '@/utils/idGenerator';
 
 export default function Board() {
  const { t} = useTranslation();
@@ -95,18 +96,6 @@ export default function Board() {
  const handleStartCall = async () => {
  setIsCreating(true);
  try {
- const generateShortId = () => {
-    const chars = 'abcdefghijklmnopqrstuvwxyz';
-    const randomStr = (length) => {
-      let result = '';
-      for (let i = 0; i < length; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return result;
-    };
-    return `${randomStr(3)}-${randomStr(3)}-${randomStr(1)}`;
-  };
-
   const dbId = crypto.randomUUID();
   const shortId = generateShortId();
  

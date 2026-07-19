@@ -15,7 +15,7 @@ serve(async (req) => {
   }
 
   try {
-    const { roomName, privacy, companyId, dbId } = await req.json()
+    const { roomName, privacy, companyId, dbId, max_participants } = await req.json()
 
     if (!DAILY_API_KEY) {
       throw new Error('DAILY_API_KEY is missing')
@@ -29,8 +29,9 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         name: roomName,
-        privacy: privacy || 'public',
+        privacy: privacy === 'public' ? 'private' : (privacy || 'public'),
         properties: {
+            enable_knocking: privacy === 'public' ? true : false,
             max_participants: max_participants || undefined,
             exp: Math.round(Date.now() / 1000) + 86400, // Expires in 24 hours
           enable_chat: true,

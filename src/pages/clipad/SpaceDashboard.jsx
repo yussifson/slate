@@ -13,6 +13,9 @@ import {
 import SpaceNotes from '@/components/clipad/SpaceNotes';
 import MeetingInsights from '@/components/clipad/MeetingInsights';
 import { getSpaceIcon } from '@/utils/spaceIcons';
+import { generateShortId } from '@/utils/idGenerator';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import LockWall from '@/components/clipad/LockWall';
 import { useToast } from '@/components/ui/use-toast';
@@ -155,6 +158,8 @@ export default function SpaceDashboard() {
   const [accessDenied, setAccessDenied] = useState(false);
   const [memoryTopic, setMemoryTopic] = useState('');
   const [memoryInput, setMemoryInput] = useState('');
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [privacyType, setPrivacyType] = useState('private');
   const { toast } = useToast();
 
   useEffect(() => { if (spaceId) fetchAll(); }, [spaceId]);
@@ -293,8 +298,17 @@ export default function SpaceDashboard() {
   };
 
   const handleJoinMeeting = async () => {
+    setShowPrivacyModal(true);
+  };
+
+  const confirmJoinMeeting = async () => {
+    setShowPrivacyModal(false);
     try {
-      const { data } = await supabase.functions.invoke('create-daily-room', { body: { instant: true, max_participants: getLimit(user, 'maxParticipants') } });
+      const payload = { instant: true, max_participants: getLimit(user, 'maxParticipants'), privacy: privacyType };
+      if (privacyType === 'public') {
+        payload.roomName = generateShortId();
+      }
+      const { data } = await supabase.functions.invoke('create-daily-room', { body: payload });
       if (data?.name || data?.roomName) {
         // Update space with room info
         await supabase.from('clipad_spaces').update({ meeting_url: data.url }).eq('id', spaceId);
@@ -426,6 +440,42 @@ export default function SpaceDashboard() {
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-slate-50 dark:bg-background page-enter text-foreground overflow-x-hidden pb-24 md:pb-8">
+      {/* Privacy Modal */}
+      <Dialog open={showPrivacyModal} onOpenChange={setShowPrivacyModal}>
+        <DialogContent className="sm:max-w-[440px]">
+          <DialogHeader>
+            <DialogTitle>Start Meeting</DialogTitle>
+            <DialogDescription>
+              Choose the privacy setting for this meeting.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center justify-between p-3 mt-2 bg-slate-50 dark:bg-secondary rounded-xl border border-slate-200 dark:border-border">
+            <div>
+              <p className="text-sm font-semibold text-slate-900 dark:text-white">Meeting Privacy</p>
+              <p className="text-xs text-slate-500 dark:text-muted-foreground">{privacyType === 'private' ? 'Only org members can join.' : 'External guests can knock to join.'}</p>
+            </div>
+            <div className="flex bg-slate-200 dark:bg-slate-700 p-1 rounded-lg">
+              <button
+                onClick={() => setPrivacyType('private')}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${privacyType === 'private' ? 'bg-white dark:bg-slate-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white'}`}
+              >
+                Private
+              </button>
+              <button
+                onClick={() => setPrivacyType('public')}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${privacyType === 'public' ? 'bg-white dark:bg-slate-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white'}`}
+              >
+                Public
+              </button>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowPrivacyModal(false)}>Cancel</Button>
+            <Button onClick={confirmJoinMeeting}>Start Meeting</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Nav */}
       <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-10 h-14 md:h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
         <div className="flex items-center gap-2 md:gap-3">

@@ -65,6 +65,9 @@ export default function StandaloneMeeting() {
   const [roomName, setRoomName] = useState(null);
   const [scheduledData, setScheduledData] = useState(null);
   const [countdown, setCountdown] = useState('');
+  const [guestName, setGuestName] = useState('');
+  const [needsName, setNeedsName] = useState(false);
+  const [nameSubmitted, setNameSubmitted] = useState(false);
 
   // Fetch user to enforce organization access
   const authResult = useAuth();
@@ -165,6 +168,10 @@ export default function StandaloneMeeting() {
           setAuthError('unauthorized');
           return;
         }
+      } else {
+        if (!user) {
+          setNeedsName(true);
+        }
       }
 
       // If scheduled and start time is in the future
@@ -177,22 +184,27 @@ export default function StandaloneMeeting() {
       }
 
       let joinUrl = room.daily_room_url;
-      const isPrivate = room.privacy_type === 'private';
+      const isPrivate = room.privacy_type !== 'public';
       const finalRoomName = room.title || room.daily_room_name;
 
-      if (isPrivate) {
-        const userName = user ? user.full_name : 'Guest';
-        const userId = user ? user.id : 'anonymous';
+      // Give token to anyone logged in, to make them owners or let them join private meetings
+      if (user) {
+        const userName = user.full_name;
+        const userId = user.id;
+        const userCompanyId = user.user_metadata?.company_id || user.company_id;
+        const isOwner = userCompanyId === room.company_id;
 
         const { data: tokenData, error: tokenError } = await supabase.functions.invoke('generate-daily-token', {
-          body: { roomName: room.daily_room_name, userName, userId },
+          body: { roomName: room.daily_room_name, userName, userId, isOwner },
         });
 
-        if (tokenError || !tokenData?.token) {
+        if (!tokenError && tokenData?.token) {
+          joinUrl = `${joinUrl}?t=${tokenData.token}`;
+        } else if (isPrivate) {
           throw new Error('You do not have permission to join this private meeting.');
         }
-
-        joinUrl = `${joinUrl}?t=${tokenData.token}`;
+      } else if (isPrivate) {
+        throw new Error('You do not have permission to join this private meeting.');
       }
 
       setScheduledData(null);
@@ -320,6 +332,40 @@ export default function StandaloneMeeting() {
     );
   }
 
+  if (needsName && !nameSubmitted) {
+    return (
+      <div className="w-full h-full min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-[#0B1121] p-4 relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 dark:bg-primary/10 blur-[120px]" />
+          <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[120px]" />
+        </div>
+        <div className="relative z-10 max-w-md w-full bg-white/80 dark:bg-card/80 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-3xl p-10 shadow-2xl space-y-6">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">Join Meeting</h1>
+            <p className="text-slate-500 dark:text-muted-foreground text-sm leading-relaxed">Please enter your name to join this public meeting.</p>
+          </div>
+          <form onSubmit={(e) => { e.preventDefault(); if (guestName.trim()) setNameSubmitted(true); }} className="space-y-4">
+            <input
+              type="text"
+              placeholder="Your Name"
+              value={guestName}
+              onChange={(e) => setGuestName(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
+              autoFocus
+            />
+            <button
+              type="submit"
+              disabled={!guestName.trim()}
+              className="w-full py-3.5 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-primary/90 transition-all shadow-lg hover:shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Continue
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   if (!meetingUrl) {
     return <ClipadLoader fullScreen text="Preparing your secure meeting..." />;
   }
@@ -328,7 +374,7 @@ export default function StandaloneMeeting() {
     <StandaloneMeetingInner
       url={meetingUrl}
       roomName={roomName}
-      userName={user ? user.full_name : 'Guest'}
+      userName={user ? user.full_name : guestName}
       onToast={toast}
       onLeave={() => {
         const base = window.location.pathname.startsWith('/clipad') ? '/clipad' : '';

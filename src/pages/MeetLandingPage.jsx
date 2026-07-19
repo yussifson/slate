@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SEO from '@/components/seo/SEO';
+import { generateShortId } from '@/utils/idGenerator';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -253,17 +254,7 @@ export default function MeetLandingPage() {
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
 
-  const generateShortId = () => {
-    const chars = 'abcdefghijklmnopqrstuvwxyz';
-    const randomStr = (length) => {
-      let result = '';
-      for (let i = 0; i < length; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return result;
-    };
-    return `${randomStr(3)}-${randomStr(3)}-${randomStr(1)}`;
-  };
+
 
   const handlePricingAction = async (tierName) => {
     if (!user) {

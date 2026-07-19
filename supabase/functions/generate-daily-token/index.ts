@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { roomName, userName, userId } = await req.json()
+    const { roomName, userName, userId, isOwner } = await req.json()
 
     if (!DAILY_API_KEY) {
       throw new Error('DAILY_API_KEY is missing')
@@ -30,6 +30,7 @@ serve(async (req) => {
           room_name: roomName,
           user_name: userName || 'Guest',
           user_id: userId || 'guest',
+          is_owner: isOwner === true,
         },
       }),
     })

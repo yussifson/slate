@@ -11,6 +11,7 @@ export default function SpaceSelectorModal({ open, onOpenChange, onConfirm, titl
   const [selectedSpaceId, setSelectedSpaceId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [privacyType, setPrivacyType] = useState('private');
 
   useEffect(() => {
     if (open) {
@@ -52,16 +53,17 @@ export default function SpaceSelectorModal({ open, onOpenChange, onConfirm, titl
   };
 
   const handleConfirm = () => {
-    onConfirm(selectedSpaceId);
+    onConfirm(selectedSpaceId, privacyType);
     onOpenChange(false);
     setSelectedSpaceId(null);
     setSearch('');
+    setPrivacyType('private');
   };
 
   const filtered = spaces.filter(s => s.name?.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) { setSearch(''); setSelectedSpaceId(null); } }}>
+    <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) { setSearch(''); setSelectedSpaceId(null); setPrivacyType('private'); } }}>
       <DialogContent className="sm:max-w-[440px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -129,6 +131,27 @@ export default function SpaceSelectorModal({ open, onOpenChange, onConfirm, titl
               ))}
             </>
           )}
+        </div>
+
+        <div className="flex items-center justify-between p-3 mt-2 bg-slate-50 dark:bg-secondary rounded-xl border border-slate-200 dark:border-border">
+          <div>
+            <p className="text-sm font-semibold text-slate-900 dark:text-white">Meeting Privacy</p>
+            <p className="text-xs text-slate-500 dark:text-muted-foreground">{privacyType === 'private' ? 'Only org members can join.' : 'External guests can knock to join.'}</p>
+          </div>
+          <div className="flex bg-slate-200 dark:bg-slate-700 p-1 rounded-lg">
+            <button
+              onClick={() => setPrivacyType('private')}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${privacyType === 'private' ? 'bg-white dark:bg-slate-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white'}`}
+            >
+              Private
+            </button>
+            <button
+              onClick={() => setPrivacyType('public')}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${privacyType === 'public' ? 'bg-white dark:bg-slate-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white'}`}
+            >
+              Public
+            </button>
+          </div>
         </div>
 
         <DialogFooter>

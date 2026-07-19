@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
+import { generateShortId } from '@/utils/idGenerator';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -97,18 +98,6 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
     setIsScheduling(true);
     try {
       const scheduledStart = new Date(`${date}T${time}`);
-      
-      const generateShortId = () => {
-        const chars = 'abcdefghijklmnopqrstuvwxyz';
-        const randomStr = (length) => {
-          let result = '';
-          for (let i = 0; i < length; i++) {
-            result += chars.charAt(Math.floor(Math.random() * chars.length));
-          }
-          return result;
-        };
-        return `${randomStr(3)}-${randomStr(3)}-${randomStr(1)}`;
-      };
       
       const dbId = crypto.randomUUID();
       const shortId = generateShortId();
