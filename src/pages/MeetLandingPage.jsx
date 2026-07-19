@@ -4,7 +4,7 @@ import SEO from '@/components/seo/SEO';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { OrbitLoader } from '@/components/ui/orbit-loader';
+import { OrbitLoader, PageLoader } from '@/components/ui/orbit-loader';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Menu, Zap, Target, Star, Brain, Camera, Rocket, MessageSquare, PhoneCall, ArrowRight, ShieldCheck, CheckCircle, Video, TrendingUp, Calendar, X, Keyboard, Sparkles, Copy, Link as LinkIcon, Users, Layers, ChevronRight, ChevronLeft, Monitor, Globe, Plus, Clock } from 'lucide-react';
@@ -201,7 +201,7 @@ export default function MeetLandingPage() {
   const [receiptDetails, setDetails] = useState(null);
   const [showHumanForm, setShowHumanForm] = useState(false);
   
-  const { user } = useAuth();
+  const { user, isLoadingAuth } = useAuth();
   const companyId = useCompanyId();
   const [exchangeRate, setExchangeRate] = useState(218 / 19);
   const [isProcessingPay, setIsProcessingPay] = useState(false);

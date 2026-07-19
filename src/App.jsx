@@ -5,7 +5,7 @@ import { Toaster as HotToaster } from "react-hot-toast"
 import { useToast } from "@/components/ui/use-toast"
 import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter, HashRouter, Route, Routes, Outlet, Navigate } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Route, Routes, Outlet, Navigate, useLocation } from 'react-router-dom';
 import { isDesktopApp } from '@/lib/domainUtils';
 const Router = isDesktopApp() ? HashRouter : BrowserRouter;
 import PageNotFound from './lib/PageNotFound';
@@ -1249,6 +1249,27 @@ function SuperAdminRoute() {
 }
 
 import { CapacitorUpdater } from '@capgo/capacitor-updater';
+import { Capacitor } from '@capacitor/core';
+import { Keyboard } from '@capacitor/keyboard';
+
+function CapacitorKeyboardFixer() {
+  const location = useLocation();
+  
+  useEffect(() => {
+    if (Capacitor.isNativePlatform()) {
+      Keyboard.hide().catch(() => {});
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (Capacitor.isNativePlatform()) {
+      setTimeout(() => Keyboard.hide().catch(() => {}), 500);
+      setTimeout(() => Keyboard.hide().catch(() => {}), 1500);
+    }
+  }, []);
+
+  return null;
+}
 
 function App() {
   const { currentSubdomain } = getSubdomainAndBase();
@@ -1280,6 +1301,7 @@ function App() {
           <VideoProvider>
             <QueryClientProvider client={queryClientInstance}>
             <Router>
+              <CapacitorKeyboardFixer />
               <SiteDomainResolver>
               <GlobalSystemListener />
               <ErrorBoundary>

@@ -116,6 +116,10 @@ export default function MeetingRecord() {
   const [showEdit, setShowEdit] = useState(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [editTitle, setEditTitle] = useState('');
+  const [editVisibility, setEditVisibility] = useState('internal');
+  const [editLockType, setEditLockType] = useState('none');
+  const [editUnlockDate, setEditUnlockDate] = useState('');
+  const [editUnlockTime, setEditUnlockTime] = useState('');
   const [savingEdit, setSavingEdit] = useState(false);
   const { toast } = useToast();
 
@@ -134,36 +138,10 @@ export default function MeetingRecord() {
       if (meetingRes.data) {
         const m = meetingRes.data;
 
-        // 0. Ensure user is logged in and belongs to the same company
-        if (!user) {
-          setAccessDenied({ type: 'private' }); // or a custom 'auth_required' type
-          setLoading(false);
-          return;
-        }
-        if (m.company_id && user.company_id && m.company_id !== user.company_id) {
-          setAccessDenied({ type: 'private' });
-          setLoading(false);
-          return;
-        }
+        const isHost = user && (m.host_id === user.id || m.created_by === user.id);
 
-        const isHost = m.host_id === user.id;
-
-        // 1. Check Space Privacy
-        const isAdminUser = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
-        if (m.space_id && !isHost && !isAdminUser) {
-          const { data: space } = await supabase.from('clipad_spaces').select('is_private').eq('id', m.space_id).single();
-          if (space?.is_private) {
-            const { data: member } = await supabase.from('clipad_space_members').select('id').eq('space_id', m.space_id).eq('user_id', user?.id || '').single();
-            if (!member) {
-              setAccessDenied({ type: 'private' });
-              setLoading(false);
-              return;
-            }
-          }
-        }
-
-        // 2. Check Locks
-        if (!isHost && !isAdminUser) {
+        // 1. Check Locks FIRST
+        if (!isHost) {
           if (m.unlock_at && new Date(m.unlock_at) > new Date()) {
             setAccessDenied({ type: 'scheduled', unlockAt: m.unlock_at });
             setLoading(false);
@@ -175,8 +153,49 @@ export default function MeetingRecord() {
           }
         }
 
+        const isExternal = m.visibility === 'external';
+
+        if (!isExternal) {
+          // 0. Ensure user is logged in and belongs to the same company
+          if (!user) {
+            setAccessDenied({ type: 'private' }); // or a custom 'auth_required' type
+            setLoading(false);
+            return;
+          }
+          if (m.company_id && user.company_id && m.company_id !== user.company_id) {
+            setAccessDenied({ type: 'private' });
+            setLoading(false);
+            return;
+          }
+
+          // 1. Check Space Privacy
+          const isAdminUser = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
+          if (m.space_id && !isHost && !isAdminUser) {
+            const { data: space } = await supabase.from('clipad_spaces').select('is_private').eq('id', m.space_id).single();
+            if (space?.is_private) {
+              const { data: member } = await supabase.from('clipad_space_members').select('id').eq('space_id', m.space_id).eq('user_id', user?.id || '').single();
+              if (!member) {
+                setAccessDenied({ type: 'private' });
+                setLoading(false);
+                return;
+              }
+            }
+          }
+        }
+
         setMeeting(m);
         setEditTitle(m.title || '');
+        setEditVisibility(m.visibility || 'internal');
+        if (m.unlock_at) {
+          setEditLockType('scheduled');
+          const d = new Date(m.unlock_at);
+          setEditUnlockDate(d.toISOString().split('T')[0]);
+          setEditUnlockTime(d.toTimeString().slice(0, 5));
+        } else if (m.is_locked) {
+          setEditLockType('manual');
+        } else {
+          setEditLockType('none');
+        }
 
         if (user) {
           supabase.from('clipad_meeting_views')
@@ -333,9 +352,26 @@ export default function MeetingRecord() {
     e.preventDefault();
     if (!editTitle.trim()) return;
     setSavingEdit(true);
+
+    let finalUnlockAt = null;
+    let finalIsLocked = false;
+    if (editLockType === 'manual') finalIsLocked = true;
+    else if (editLockType === 'scheduled') {
+      if (!editUnlockDate || !editUnlockTime) {
+        toast({ title: "Please set unlock date and time", variant: 'destructive' });
+        setSavingEdit(false);
+        return;
+      }
+      finalIsLocked = true;
+      finalUnlockAt = new Date(`${editUnlockDate}T${editUnlockTime}`).toISOString();
+    }
+
     try {
       const { data, error } = await supabase.from('clipad_meeting_records').update({
-        title: editTitle.trim()
+        title: editTitle.trim(),
+        visibility: editVisibility,
+        is_locked: finalIsLocked,
+        unlock_at: finalUnlockAt,
       }).eq('id', meetingId).select().single();
       if (error) throw error;
       setMeeting(data);
@@ -717,6 +753,43 @@ export default function MeetingRecord() {
                   required
                 />
               </div>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-muted-foreground mb-2 uppercase tracking-wider">Visibility</label>
+                  <select
+                    value={editVisibility}
+                    onChange={e => setEditVisibility(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-black/20 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all shadow-sm"
+                  >
+                    <option value="internal">Internal (Company Only)</option>
+                    <option value="external">External (Anyone with link)</option>
+                  </select>
+                </div>
+                <div className="flex-1">
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-muted-foreground mb-2 uppercase tracking-wider">Access Lock</label>
+                  <select
+                    value={editLockType}
+                    onChange={e => setEditLockType(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-black/20 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all shadow-sm"
+                  >
+                    <option value="none">Unlocked</option>
+                    <option value="manual">Locked (Only Me)</option>
+                    <option value="scheduled">Scheduled Release</option>
+                  </select>
+                </div>
+              </div>
+              {editLockType === 'scheduled' && (
+                <div className="flex gap-4 p-3 bg-amber-50 dark:bg-amber-500/10 rounded-xl border border-amber-200 dark:border-amber-500/20">
+                  <div className="flex-1">
+                    <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1">Unlock Date</label>
+                    <input type="date" value={editUnlockDate} onChange={e => setEditUnlockDate(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-white dark:bg-black/50 text-slate-900 dark:text-white border border-amber-200/50" />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1">Unlock Time</label>
+                    <input type="time" value={editUnlockTime} onChange={e => setEditUnlockTime(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-white dark:bg-black/50 text-slate-900 dark:text-white border border-amber-200/50" />
+                  </div>
+                </div>
+              )}
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowEdit(false)} className="flex-1 py-3 rounded-xl bg-white/50 dark:bg-black/20 hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-foreground font-semibold text-sm transition-all border border-black/5 dark:border-white/5 shadow-sm">Cancel</button>
                 <button type="submit" disabled={savingEdit} className="flex-1 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-all shadow-md disabled:opacity-60">

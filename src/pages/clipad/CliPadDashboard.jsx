@@ -328,10 +328,11 @@ export default function CliPadDashboard() {
         onConfirm={handleSpaceSelect} 
       />
       {loading && (
-        <div className="absolute inset-0 z-50 bg-white/50 dark:bg-[#111b21]/80 backdrop-blur-xl flex items-center justify-center">
-          <ClipadLoader />
+        <div className="flex-1 w-full flex items-center justify-center min-h-[50vh]">
+          <ClipadLoader text="Loading dashboard..." />
         </div>
       )}
+      {!loading && (
 
       
 
@@ -575,7 +576,6 @@ export default function CliPadDashboard() {
             </div>
           </div>
         )}
-      </div>
     </div>
   );
 }

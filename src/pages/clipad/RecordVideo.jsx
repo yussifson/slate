@@ -130,6 +130,7 @@ export default function RecordVideo() {
   const [spaces, setSpaces] = useState([]);
   const [description, setDescription] = useState('');
   const [title, setTitle] = useState('');
+  const [visibility, setVisibility] = useState('internal');
   const [lockType, setLockType] = useState('none');
   const [unlockDate, setUnlockDate] = useState('');
   const [unlockTime, setUnlockTime] = useState('');
@@ -1199,6 +1200,7 @@ export default function RecordVideo() {
           title: title.trim() || `Recording - ${new Date().toLocaleDateString()}`,
           description: description.trim() || null,
           space_id: selectedSpace || null,
+          visibility: visibility,
           is_locked: finalIsLocked,
           unlock_at: finalUnlockAt,
         }).eq('id', activeVideoId);
@@ -1330,6 +1332,7 @@ export default function RecordVideo() {
         title: videoTitle,
         space_id: selectedSpace || null,
         duration_seconds: recordingSeconds,
+        visibility: visibility,
         is_locked: finalIsLocked,
         unlock_at: finalUnlockAt,
       }).select().single();
@@ -1802,16 +1805,29 @@ export default function RecordVideo() {
               />
             </div>
 
-            {/* Action Row: Lock Settings & Save Buttons */}
-            <div className="mt-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <label className="hidden sm:block text-xs font-semibold text-muted-foreground uppercase tracking-wider shrink-0">Access Control</label>
-                <div className="relative inline-block min-w-[220px]">
+            {/* Action Row: Visibility, Lock Settings & Save Buttons */}
+            <div className="mt-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div className="flex flex-col sm:flex-row gap-4 flex-1">
+                <div className="flex-1 max-w-[220px]">
+                  <label className="hidden sm:block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Visibility</label>
                   <select
-                    value={lockType}
-                    onChange={e => setLockType(e.target.value)}
-                    className="w-full pl-10 pr-8 py-2.5 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] text-slate-900 dark:text-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60 transition-all cursor-pointer font-semibold"
+                    value={visibility}
+                    onChange={e => setVisibility(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] text-slate-900 dark:text-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition-all cursor-pointer font-semibold"
                   >
+                    <option value="internal">Internal (Company Only)</option>
+                    <option value="external">External (Anyone with link)</option>
+                  </select>
+                </div>
+
+                <div className="flex-1 max-w-[220px]">
+                  <label className="hidden sm:block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Access Control</label>
+                  <div className="relative inline-block w-full">
+                    <select
+                      value={lockType}
+                      onChange={e => setLockType(e.target.value)}
+                      className="w-full pl-10 pr-8 py-2.5 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] text-slate-900 dark:text-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition-all cursor-pointer font-semibold"
+                    >
                     <option value="none">Public (Space Members)</option>
                     <option value="manual">Locked (Only Me)</option>
                     <option value="scheduled">Scheduled Release</option>

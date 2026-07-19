@@ -3,9 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import {
-  ArrowLeft, Send, Smile, Clock, Play, Pause, Volume2, VolumeX,
-  Maximize2, Share2, Copy, Check, Sparkles, MessageSquare, Heart,
-  ThumbsUp, Zap, Star, BookOpen, ChevronRight, Eye, MoreHorizontal, PictureInPicture, RotateCcw, RotateCw, Edit3, Trash2, Lock
+  ArrowLeft, Send, Play, Pause, Volume2, VolumeX,
+  Maximize2, Share2, Check, Sparkles, MessageSquare, Eye, MoreHorizontal, PictureInPicture, RotateCcw, RotateCw, Edit3, Trash2
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import ClipadLoader from '@/components/ui/ClipadLoader';
@@ -66,6 +65,10 @@ export default function WatchVideo() {
   const [showEdit, setShowEdit] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [editDesc, setEditDesc] = useState('');
+  const [editVisibility, setEditVisibility] = useState('internal');
+  const [editLockType, setEditLockType] = useState('none');
+  const [editUnlockDate, setEditUnlockDate] = useState('');
+  const [editUnlockTime, setEditUnlockTime] = useState('');
   const [savingEdit, setSavingEdit] = useState(false);
   const [blobUrl, setBlobUrl] = useState(null);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
@@ -118,42 +121,26 @@ export default function WatchVideo() {
         setVideo(videoRes.data);
         setEditTitle(videoRes.data.title || '');
         setEditDesc(videoRes.data.description || '');
+        setEditVisibility(videoRes.data.visibility || 'internal');
+        if (videoRes.data.unlock_at) {
+          setEditLockType('scheduled');
+          const d = new Date(videoRes.data.unlock_at);
+          setEditUnlockDate(d.toISOString().split('T')[0]);
+          setEditUnlockTime(d.toTimeString().slice(0, 5));
+        } else if (videoRes.data.is_locked) {
+          setEditLockType('manual');
+        } else {
+          setEditLockType('none');
+        }
         
         // We stream directly from the storage URL for performance and range requests.
 
         // --- ACCESS CONTROL LOGIC ---
         const v = videoRes.data;
-
-        // 0. Ensure user is logged in and belongs to the same company
-        if (!user) {
-          setAccessDenied({ type: 'private' }); // or a custom 'auth_required' type
-          setLoading(false);
-          return;
-        }
-        if (v.company_id && user.company_id && v.company_id !== user.company_id) {
-          setAccessDenied({ type: 'private' });
-          setLoading(false);
-          return;
-        }
-
-        const isCreator = v.creator_id === user.id;
+        const isCreator = user && v.creator_id === user.id;
         
-        // 1. Check Space Privacy
-        const isAdminUser = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
-        if (v.space_id && !isCreator && !isAdminUser) {
-          const { data: space } = await supabase.from('clipad_spaces').select('is_private').eq('id', v.space_id).single();
-          if (space?.is_private) {
-            const { data: member } = await supabase.from('clipad_space_members').select('id').eq('space_id', v.space_id).eq('user_id', user?.id || '').single();
-            if (!member) {
-              setAccessDenied({ type: 'private' });
-              setLoading(false);
-              return;
-            }
-          }
-        }
-
-        // 2. Check Locks
-        if (!isCreator && !isAdminUser) {
+        // 1. Check Locks FIRST
+        if (!isCreator) {
           if (v.unlock_at && new Date(v.unlock_at) > new Date()) {
             setAccessDenied({ type: 'scheduled', unlockAt: v.unlock_at });
             setLoading(false);
@@ -162,6 +149,36 @@ export default function WatchVideo() {
             setAccessDenied({ type: 'manual' });
             setLoading(false);
             return;
+          }
+        }
+
+        const isExternal = v.visibility === 'external';
+
+        if (!isExternal) {
+          // 0. Ensure user is logged in and belongs to the same company
+          if (!user) {
+            setAccessDenied({ type: 'private' }); // or a custom 'auth_required' type
+            setLoading(false);
+            return;
+          }
+          if (v.company_id && user.company_id && v.company_id !== user.company_id) {
+            setAccessDenied({ type: 'private' });
+            setLoading(false);
+            return;
+          }
+
+          // 1. Check Space Privacy
+          const isAdminUser = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'company_admin';
+          if (v.space_id && !isCreator && !isAdminUser) {
+            const { data: space } = await supabase.from('clipad_spaces').select('is_private').eq('id', v.space_id).single();
+            if (space?.is_private) {
+              const { data: member } = await supabase.from('clipad_space_members').select('id').eq('space_id', v.space_id).eq('user_id', user?.id || '').single();
+              if (!member) {
+                setAccessDenied({ type: 'private' });
+                setLoading(false);
+                return;
+              }
+            }
           }
         }
       }
@@ -241,10 +258,27 @@ export default function WatchVideo() {
     e.preventDefault();
     if (!editTitle.trim()) return;
     setSavingEdit(true);
+
+    let finalUnlockAt = null;
+    let finalIsLocked = false;
+    if (editLockType === 'manual') finalIsLocked = true;
+    else if (editLockType === 'scheduled') {
+      if (!editUnlockDate || !editUnlockTime) {
+        alert("Please set unlock date and time");
+        setSavingEdit(false);
+        return;
+      }
+      finalIsLocked = true;
+      finalUnlockAt = new Date(`${editUnlockDate}T${editUnlockTime}`).toISOString();
+    }
+
     try {
       const { data, error } = await supabase.from('clipad_videos').update({
         title: editTitle.trim(),
         description: editDesc.trim() || null,
+        visibility: editVisibility,
+        is_locked: finalIsLocked,
+        unlock_at: finalUnlockAt,
       }).eq('id', videoId).select('*, creator:creator_id(full_name, avatar_url)').single();
       if (error) throw error;
       setVideo(data);
@@ -410,12 +444,13 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
 
           {/* Left: Video Player */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-4 relative">
             {/* Player */}
-            <div ref={playerRef} className="relative sm:rounded-2xl overflow-hidden bg-black aspect-video group -mx-4 sm:mx-0">
+            <div ref={playerRef} className="sticky top-0 z-50 relative sm:rounded-2xl overflow-hidden bg-black aspect-video group -mx-4 sm:mx-0 shadow-lg">
               <video
                 ref={videoRef}
                 src={video.video_url}
+                poster={video.thumbnail_url}
                 className="w-full h-full object-contain"
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
@@ -443,20 +478,23 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
                 <div className="px-4 mb-2 pointer-events-auto">
                   {/* Comment markers on timeline */}
                   <div className="relative h-1 mb-1">
-                    {comments.map(c => (
-                      <button
-                        key={c.id}
-                        onClick={() => seekTo(c.timestamp_seconds)}
-                        title={c.body}
-                        className="absolute top-0 w-2 h-2 -mt-0.5 rounded-full bg-indigo-400 hover:scale-150 transition-transform shadow-sm"
-                        style={{ left: `${(c.timestamp_seconds / (duration && duration !== Infinity ? duration : 1)) * 100}%` }}
-                      />
-                    ))}
+                    {comments.map(c => {
+                      const dur = duration && duration !== Infinity && !isNaN(duration) ? duration : (video?.duration_seconds || 1);
+                      return (
+                        <button
+                          key={c.id}
+                          onClick={() => seekTo(c.timestamp_seconds)}
+                          title={c.body}
+                          className="absolute top-0 w-2 h-2 -mt-0.5 rounded-full bg-indigo-400 hover:scale-150 transition-transform shadow-sm"
+                          style={{ left: `${(c.timestamp_seconds / dur) * 100}%` }}
+                        />
+                      );
+                    })}
                   </div>
                   <input
                     type="range"
                     min={0}
-                    max={duration && duration !== Infinity && !isNaN(duration) ? duration : Math.max(100, currentTime)}
+                    max={duration && duration !== Infinity && !isNaN(duration) ? duration : (video?.duration_seconds || Math.max(100, currentTime))}
                     value={currentTime}
                     onChange={e => seekTo(Number(e.target.value))}
                     onClick={e => e.stopPropagation()}
@@ -478,16 +516,16 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
                     {muted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                   </button>
                   <span className="text-white/90 text-sm font-mono font-medium ml-2">
-                    {formatTime(currentTime)} / {duration === Infinity || isNaN(duration) ? '--:--' : formatTime(duration)}
+                    {formatTime(currentTime)} / {formatTime(duration && duration !== Infinity && !isNaN(duration) ? duration : video?.duration_seconds)}
                   </span>
                   <div className="flex-1" />
                   {/* Emoji reaction bar in controls */}
-                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+                  <div className="hidden sm:flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
                     {EMOJIS.map(e => (
                       <button key={e} onClick={(evt) => { evt.stopPropagation(); addReaction(e); }} className="text-lg hover:scale-125 transition-transform active:scale-150">{e}</button>
                     ))}
                   </div>
-                  <div className="w-px h-5 bg-white/20 mx-2" />
+                  <div className="hidden sm:block w-px h-5 bg-white/20 mx-2" />
                   
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -737,6 +775,43 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
                   className="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-black/20 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all resize-none shadow-[0_2px_10px_rgba(0,0,0,0.04)]"
                 />
               </div>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-muted-foreground mb-2 uppercase tracking-wider">Visibility</label>
+                  <select
+                    value={editVisibility}
+                    onChange={e => setEditVisibility(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-black/20 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all shadow-sm"
+                  >
+                    <option value="internal">Internal (Company Only)</option>
+                    <option value="external">External (Anyone with link)</option>
+                  </select>
+                </div>
+                <div className="flex-1">
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-muted-foreground mb-2 uppercase tracking-wider">Access Lock</label>
+                  <select
+                    value={editLockType}
+                    onChange={e => setEditLockType(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-black/20 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all shadow-sm"
+                  >
+                    <option value="none">Unlocked</option>
+                    <option value="manual">Locked (Only Me)</option>
+                    <option value="scheduled">Scheduled Release</option>
+                  </select>
+                </div>
+              </div>
+              {editLockType === 'scheduled' && (
+                <div className="flex gap-4 p-3 bg-amber-50 dark:bg-amber-500/10 rounded-xl border border-amber-200 dark:border-amber-500/20">
+                  <div className="flex-1">
+                    <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1">Unlock Date</label>
+                    <input type="date" value={editUnlockDate} onChange={e => setEditUnlockDate(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-white dark:bg-black/50 text-slate-900 dark:text-white border border-amber-200/50" />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1">Unlock Time</label>
+                    <input type="time" value={editUnlockTime} onChange={e => setEditUnlockTime(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-white dark:bg-black/50 text-slate-900 dark:text-white border border-amber-200/50" />
+                  </div>
+                </div>
+              )}
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowEdit(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-secondary hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-foreground font-semibold text-sm transition-all border border-slate-200 dark:border-border shadow-sm">Cancel</button>
                 <button type="submit" disabled={savingEdit} className="flex-1 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-all shadow-md disabled:opacity-60">

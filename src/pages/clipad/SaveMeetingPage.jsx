@@ -22,6 +22,7 @@ export default function SaveMeetingPage() {
 
   // Form state
   const [title, setTitle] = useState('');
+  const [visibility, setVisibility] = useState('internal');
   const [isLocked, setIsLocked] = useState(false);
   const [lockType, setLockType] = useState('none'); // 'none', 'manual', 'scheduled'
   const [unlockDate, setUnlockDate] = useState('');
@@ -39,6 +40,7 @@ export default function SaveMeetingPage() {
         if (error) throw error;
         setMeeting(data);
         setTitle(data.title || data.meeting_title || `Meeting - ${new Date().toLocaleDateString()}`);
+        setVisibility(data.visibility || 'internal');
         setIsLocked(data.is_locked || false);
         if (data.is_locked) {
             setLockType('manual');
@@ -88,6 +90,7 @@ export default function SaveMeetingPage() {
         .from('clipad_meeting_records')
         .update({
           title: title.trim(),
+          visibility: visibility,
           is_locked: finalIsLocked,
           unlock_at: finalUnlockAt,
           ended_at: new Date().toISOString() // Ensure ended_at is set if not already
@@ -148,6 +151,19 @@ export default function SaveMeetingPage() {
               placeholder="e.g. Q3 Roadmap Planning"
               className="text-lg py-6"
             />
+          </div>
+
+          {/* Visibility */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-foreground mb-2">Visibility</label>
+            <select
+              value={visibility}
+              onChange={e => setVisibility(e.target.value)}
+              className="w-full pl-4 pr-10 py-3 rounded-xl bg-white dark:bg-card border border-slate-200 dark:border-border text-slate-900 dark:text-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60 transition-all cursor-pointer shadow-sm"
+            >
+              <option value="internal">Internal (Company & Space Members Only)</option>
+              <option value="external">External (Anyone with link)</option>
+            </select>
           </div>
 
           {/* Lock Settings */}
