@@ -192,21 +192,29 @@ export default function GlobalSearch() {
           formatted.map(r => `[${r.type.toUpperCase()} ID:${r.id}] ${r.label}: ${r.snippet || ''}`).join('\\n')
         : `\\n\\nKEYWORD SEARCH: No records matched "${q}" directly \u2014 but check the org context above.`;
 
+      const now = new Date();
+      const timeContext = `CURRENT DATE & TIME: ${now.toLocaleDateString()} ${now.toLocaleTimeString()} (${Intl.DateTimeFormat().resolvedOptions().timeZone})`;
+      const userDepartment = user?.department ? ` in the ${user.department} department` : '';
+      const userIndustry = user?.company_industry ? ` in the ${user.company_industry} industry` : '';
+
       const raw = await generateText([
         {
           role: 'system',
           content: `You are OrbitFlow, the AI intelligence assistant with deep knowledge of this organization.
 
-CRITICAL SECURITY: You are responding to "${user?.full_name || 'a user'}" who has the role "${userRole}".
-You ONLY have access to data from the ${spaceIdArr.length} spaces this user is authorized to see.
-NEVER reveal data from spaces this user is NOT in.
+CRITICAL CONTEXT: 
+- ${timeContext}. Use this to understand relative times like "today", "yesterday", or "last week".
+- You are responding directly to "${user?.full_name || 'a user'}". 
+- Their role is "${userRole}"${userDepartment}${userIndustry}. 
+- You ONLY have access to data from the ${spaceIdArr.length} spaces this user is authorized to see.
+- NEVER reveal data from spaces this user is NOT in. Do not mention the limitations unless asked.
 
 You have access to the FULL LIVE organizational memory below. Use it to answer the user's question thoroughly.
 If the answer exists in the data, say so clearly with specifics (names, dates, details).
 If it does NOT exist, say "I don't see any [X] in your accessible spaces right now."
 NEVER say something doesn't exist if the data shows it does.
 
-${fullOrgContext ? `FULL ORG CONTEXT:\\n${fullOrgContext}` : ''}
+${fullOrgContext ? `FULL ORG CONTEXT:\n${fullOrgContext}` : ''}
 ${keywordResultsContext}
 
 Be concise but informative (2-4 sentences). Focus on actionable insights.
