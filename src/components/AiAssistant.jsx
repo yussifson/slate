@@ -3,7 +3,7 @@ import { useTranslation} from "react-i18next";
 import React, { useState, useRef, useEffect, useCallback} from 'react';
 import { createPortal } from 'react-dom';
 import { useLocation, useNavigate} from 'react-router-dom';
-import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square} from 'lucide-react';
+import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square, Menu } from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { generateText, analyzeImage} from '@/lib/cloudflareAI';
@@ -687,7 +687,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  while (stepCount < maxSteps) {
  stepCount++;
  const responseText = await generateText(apiMessages);
- const { cleanText, actions} = parseAgentActions(responseText);
+ const { cleanText, actions } = parseAgentActions(responseText);
  
  if (cleanText) finalCleanText += (finalCleanText ? "\n\n" : "") + cleanText;
 
@@ -714,9 +714,13 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 }
 
  if (finalCleanText) {
- addMessages(sid, [{ role: 'assistant', content: finalCleanText}]);
-}
-}
+  addMessages(sid, [{ role: 'assistant', content: finalCleanText}]);
+ } else if (stepCount > 1) {
+  addMessages(sid, [{ role: 'assistant', content: "I've completed those actions for you!"}]);
+ } else {
+  addMessages(sid, [{ role: 'assistant', content: "I'm sorry, I encountered an issue processing that. Could you try again?"}]);
+ }
+ }
 } catch (err) {
  addMessages(sid, [{ role: 'assistant', content: "Error: " + err.message + ". Please try again."}]);
 } finally {
@@ -876,7 +880,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div className="flex h-full w-full">
  {/* History Sidebar */}
  {showHistory && (
- <div className="w-52 shrink-0 border-r border-primary/40 bg-muted/20 flex flex-col">
+ <div className="w-52 max-md:w-full max-md:absolute max-md:inset-0 max-md:z-50 shrink-0 border-r border-primary/40 bg-muted/20 max-md:bg-white dark:max-md:bg-[#0A0F1C] flex flex-col">
  <div className="px-3 py-2.5 border-b border-primary/40 flex items-center justify-between">
  <span className="text-[11px] font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("chat_history", "Chat History")}</span>
  <div className="flex items-center gap-2">
@@ -925,6 +929,21 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  {/* Header */}
  <div className="flex items-center justify-between px-4 py-2.5 shrink-0 bg-gradient-to-b from-slate-50/90 to-white/90 dark:from-[#111827]/90 dark:to-[#0A0F1C]/90 backdrop-blur-2xl border-b border-black/[0.06] dark:border-white/[0.06] relative z-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
  <div className="flex items-center gap-3">
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <button className="md:hidden p-1.5 -ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 transition-colors">
+        <Menu className="w-5 h-5" />
+      </button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="start" className="w-48 z-[80]">
+      <DropdownMenuItem onClick={() => setShowHistory(true)}>
+        <Clock className="w-4 h-4 mr-2 text-primary" /> {t("chat_history", "Chat History")}
+      </DropdownMenuItem>
+      <DropdownMenuItem onClick={startNewChat}>
+        <Plus className="w-4 h-4 mr-2 text-primary" /> {t("new_chat", "New Chat")}
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0 shadow-sm border border-emerald-100 dark:border-emerald-500/20">
  <OrbitIcon className="w-4 h-4" />
  </div>
@@ -939,20 +958,20 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div className="flex items-center gap-1 shrink-0">
  <button
  onClick={() => setShowHistory(prev => !prev)}
- className={`p-2 rounded-full transition-all ${showHistory ? 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-600' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-600 dark:hover:text-slate-300'}`}
+ className={`hidden md:block p-2 rounded-full transition-all ${showHistory ? 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-600' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-600 dark:hover:text-slate-300'}`}
  title="Chat history"
  >
  <Clock className="w-4 h-4" />
  </button>
  <div className="flex items-center gap-0.5 shrink-0">
- <button onClick={startNewChat} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors" title="New chat">
+ <button onClick={startNewChat} className="hidden md:block p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors" title="New chat">
  <Plus className="w-4 h-4" />
  </button>
- <button onClick={() => setIsExpanded(!isExpanded)} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors">
+ <button onClick={() => setIsExpanded(!isExpanded)} className="hidden md:block p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors">
  {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
  </button>
  <button onClick={onClose} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors">
- <X className="w-4 h-4" />
+ <X className="w-5 h-5 md:w-4 md:h-4 text-slate-700 dark:text-slate-300 md:text-inherit" />
  </button>
  </div>
  </div>

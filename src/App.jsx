@@ -148,8 +148,8 @@ class ErrorBoundary extends React.Component {
       
       if (isChunkError) {
         return (
-          <div className="min-h-screen bg-slate-50 dark:bg-background flex flex-col items-center justify-center p-6 font-sans">
-            <div className="bg-white dark:bg-card p-8 md:p-12 rounded-[24px] border border-slate-200 dark:border-border shadow-md flex flex-col items-center text-center max-w-md w-full relative overflow-hidden">
+          <div className="min-h-[100dvh] bg-[#f0f2f5] dark:bg-background flex flex-col items-center justify-center p-6 font-sans">
+            <div className="hidden md:flex bg-white dark:bg-card p-8 md:p-12 rounded-[24px] border border-slate-200 dark:border-border shadow-md flex-col items-center text-center max-w-md w-full relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
               
               <div className="w-20 h-20 relative flex items-center justify-center mb-6">
@@ -172,11 +172,32 @@ class ErrorBoundary extends React.Component {
               </p>
               
               <button 
-                onClick={() => { sessionStorage.removeItem('chunk-error-reload'); window.location.reload(); }} 
+                onClick={() => { sessionStorage.removeItem('chunk-error-reload'); window.location.reload(true); }} 
                 className="w-full py-4 px-6 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0"
               >
                 Refresh Page
               </button>
+            </div>
+
+            {/* Native Mobile Version */}
+            <div className="md:hidden flex flex-col items-center justify-center w-full max-w-sm mt-auto mb-auto">
+               <div className="w-16 h-16 bg-white dark:bg-card rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-black/5 dark:border-white/5 flex items-center justify-center mb-6 animate-bounce">
+                  <svg className="w-8 h-8 text-primary animate-spin" fill="none" viewBox="0 0 24 24">
+                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+               </div>
+               <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2 text-center">Update Available</h2>
+               <p className="text-slate-500 dark:text-muted-foreground mb-8 text-sm font-medium leading-relaxed text-center px-4">
+                 Tap to load the newest features and bug fixes.
+               </p>
+               
+               <button 
+                 onClick={() => { sessionStorage.removeItem('chunk-error-reload'); window.location.reload(true); }} 
+                 className="w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-lg transition-transform active:scale-95"
+               >
+                 Tap to Update Now
+               </button>
             </div>
           </div>
         );

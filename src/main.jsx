@@ -18,7 +18,25 @@ const updateSW = registerSW({
   },
   onOfflineReady() {
     console.log('App is ready for offline use');
-  }})
+  }
+});
+
+// Allow PullToRefresh to trigger a service worker update check
+window.addEventListener('app:refresh', async () => {
+  if ('serviceWorker' in navigator) {
+    const reg = await navigator.serviceWorker.ready;
+    if (reg) {
+      console.log('Pull to refresh: Checking for service worker updates...');
+      await reg.update();
+      // Wait a moment then hard reload if updateSW didn't kick in, to ensure clean state
+      setTimeout(() => window.location.reload(true), 1500);
+    } else {
+      window.location.reload(true);
+    }
+  } else {
+    window.location.reload(true);
+  }
+});
 
 // Listen for Vite chunk loading errors (e.g. when Vercel deploys a new version and old chunks are missing)
 window.addEventListener('vite:preloadError', async (event) => {
