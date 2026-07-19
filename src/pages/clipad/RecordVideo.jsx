@@ -142,6 +142,7 @@ export default function RecordVideo() {
   const [unlockDate, setUnlockDate] = useState('');
   const [unlockTime, setUnlockTime] = useState('');
   const [transcript, setTranscript] = useState('');
+  const [isPreparingStream, setIsPreparingStream] = useState(false);
 
   const canvasRef = useRef(null);
   const audioRef = useRef(null);
@@ -634,6 +635,8 @@ export default function RecordVideo() {
       toast({ title: 'Missing Title', description: 'Please enter a video title before recording.', variant: 'destructive' });
       return;
     }
+    
+    setIsPreparingStream(true);
 
     // IMMEDIATELY request PiP window to consume the synchronous user gesture
     let pipPromise = null;
@@ -667,6 +670,7 @@ export default function RecordVideo() {
             limitDescription: `You have reached the maximum monthly storage limit of ${maxStorageGB}GB for your current plan. Please upgrade to record more videos.`
           });
           setShowPaywall(true);
+          setIsPreparingStream(false);
           return;
         }
       }
@@ -689,18 +693,19 @@ export default function RecordVideo() {
             limitDescription: `You have reached the maximum limit of ${maxRecordings} recordings this month on your current plan.`
           });
           setShowPaywall(true);
+          setIsPreparingStream(false);
           return;
         }
       }
     } catch (err) {
-      console.error("Error checking limits", err);
-    }
-
-    if (!title) {
-      toast({ title: 'Missing Title', description: 'Please enter a video title before recording.', variant: 'destructive' });
+      console.error(err);
+      toast({ title: 'Plan Limit Error', description: 'Could not verify plan limits. Please try again.', variant: 'destructive' });
+      setIsPreparingStream(false);
       return;
     }
+
     const success = await prepareStreamsAndPip();
+    setIsPreparingStream(false);
     if (success) {
       if (pipPromise) startPip(pipPromise);
       setCountdown(5);
@@ -921,8 +926,8 @@ export default function RecordVideo() {
     try {
       // Pick best mimeType with audio codec (opus) to guarantee audio in output
       const mimeType = 
-        MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'video/webm;codecs=vp9,opus' :
-        MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus') ? 'video/webm;codecs=vp8,opus' :
+        MediaRecorder.isTypeSupported('video/webm; codecs=vp9, opus') ? 'video/webm; codecs=vp9, opus' :
+        MediaRecorder.isTypeSupported('video/webm; codecs=vp8, opus') ? 'video/webm; codecs=vp8, opus' :
         MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : '';
       const recorderOptions = mimeType ? { mimeType, videoBitsPerSecond: 3000000, audioBitsPerSecond: 128000 } : { videoBitsPerSecond: 3000000, audioBitsPerSecond: 128000 };
       const recorder = new MediaRecorder(recordStreamRef.current, recorderOptions);
@@ -1079,6 +1084,11 @@ export default function RecordVideo() {
       
       recorder.onstop = async () => {
         stopEverything();
+        // If no data was captured at all (e.g. stopped before first chunk), bail out
+        if (chunksRef.current.length === 0) {
+          setPhase('setup');
+          return;
+        }
         setPhase('uploading');
         setUploadProgress(10);
         wsEndRequestedRef.current = true;
@@ -1444,15 +1454,24 @@ export default function RecordVideo() {
 
       {/* Nav */}
       <nav className="sticky top-0 z-40 flex items-center gap-3 px-6 h-16 bg-white/50 dark:bg-background/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-foreground transition-all hover:-translate-y-0.5">
+        <button
+          onClick={() => {
+            if (phase === 'recording') {
+              if (!window.confirm('You are currently recording. Are you sure you want to leave? Your recording will be stopped and may be lost.')) return;
+              stopRecording();
+            }
+            navigate(-1);
+          }}
+          className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-foreground transition-all hover:-translate-y-0.5"
+        >
           <ArrowLeft className="w-4 h-4 text-slate-500" /> Back
         </button>
         <span className="text-foreground font-semibold">Record Async Video</span>
         {phase === 'recording' && (
-          <div className="ml-auto flex items-center gap-2">
-            <span className="flex items-center gap-1.5 text-primary text-sm font-mono font-bold">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              {formatDuration(recordingSeconds)}
+          <div className="ml-auto flex items-center gap-3">
+            <span className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-bold px-3 py-1 rounded-full">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              REC&nbsp;{formatDuration(recordingSeconds)}
             </span>
           </div>
         )}
@@ -1584,11 +1603,15 @@ export default function RecordVideo() {
             <div className="w-full mt-6 mb-8 z-50">
               <button
                 onClick={startRecording}
-                disabled={countdown !== null || !title.trim() || !selectedSpace}
-                className={`w-full md:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-2xl ${countdown !== null || !title.trim() || !selectedSpace ? 'bg-slate-400 cursor-not-allowed opacity-70' : 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500'} text-white font-bold text-lg shadow-[0_8px_30px_rgba(225,29,72,0.3)] transition-all hover:scale-[1.02]`}
+                disabled={countdown !== null || isPreparingStream || !title.trim() || !selectedSpace}
+                className={`w-full md:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-2xl ${countdown !== null || isPreparingStream || !title.trim() || !selectedSpace ? 'bg-slate-400 cursor-not-allowed opacity-70' : 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500'} text-white font-bold text-lg shadow-[0_8px_30px_rgba(225,29,72,0.3)] transition-all hover:scale-[1.02]`}
               >
-                <span className="w-3 h-3 rounded-full bg-white animate-pulse" />
-                {countdown !== null ? `Starting in ${countdown}...` : 'Start Recording'}
+                {isPreparingStream ? (
+                  <RefreshCw className="w-5 h-5 animate-spin" />
+                ) : (
+                  <span className="w-3 h-3 rounded-full bg-white animate-pulse" />
+                )}
+                {isPreparingStream ? 'Accessing Camera...' : countdown !== null ? `Starting in ${countdown}...` : 'Start Recording'}
               </button>
             </div>
           </>
