@@ -335,7 +335,7 @@ export default function IntegrationsHub() {
   const handleDisconnect = async (integration) => {
     setDisconnecting(prev => ({ ...prev, [integration.id]: true }));
     try {
-      await supabase.from('clipad_integrations').delete().eq('company_id', companyId).eq('provider', integration.provider);
+      await supabase.from('clipad_integrations').delete().eq('company_id', companyId).in('provider', [integration.provider, integration.id]);
       toast({ title: 'Disconnected', description: `${integration.name} has been disconnected.` });
       await loadConnected();
     } catch (e) {
