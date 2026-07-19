@@ -125,23 +125,45 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
   }, [localStream, isMicOn]);
 
   // Toggle handlers for the preview tracks
-  const toggleMic = () => {
+  const toggleMic = async () => {
     const newState = !isMicOn;
     setIsMicOn(newState);
     if (streamRef.current) {
       streamRef.current.getAudioTracks().forEach(track => {
         track.enabled = newState;
       });
+    } else if (newState) {
+      // Re-request if missing
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: isVideoOn });
+        streamRef.current = stream;
+        setLocalStream(stream);
+        if (videoRef.current) videoRef.current.srcObject = stream;
+        setError(null);
+      } catch (err) {
+        setIsMicOn(false);
+      }
     }
   };
 
-  const toggleVideo = () => {
+  const toggleVideo = async () => {
     const newState = !isVideoOn;
     setIsVideoOn(newState);
     if (streamRef.current) {
       streamRef.current.getVideoTracks().forEach(track => {
         track.enabled = newState;
       });
+    } else if (newState) {
+      // Re-request if missing
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: isMicOn, video: true });
+        streamRef.current = stream;
+        setLocalStream(stream);
+        if (videoRef.current) videoRef.current.srcObject = stream;
+        setError(null);
+      } catch (err) {
+        setIsVideoOn(false);
+      }
     }
   };
 
@@ -161,7 +183,7 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
   };
 
   return (
-    <div className="w-full min-h-[100dvh] bg-slate-50 dark:bg-[#050810] flex flex-col md:flex-row items-center justify-center p-4 md:p-12 gap-4 md:gap-16 overflow-x-hidden overflow-y-auto relative">
+    <div className="w-full h-full min-h-full bg-slate-50 dark:bg-[#050810] flex flex-col md:flex-row items-center justify-center p-4 md:p-12 gap-4 md:gap-16 overflow-x-hidden overflow-y-auto relative">
       {/* Back Button */}
       <button 
         onClick={() => navigate(-1)} 
@@ -241,7 +263,7 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
       </div>
 
       {/* Right Side: Join Form */}
-      <div className="relative z-10 flex-1 flex flex-col items-start justify-center w-full max-w-md bg-transparent p-6 md:p-10 space-y-8">
+      <div className="relative z-10 flex-1 flex flex-col items-center md:items-start text-center md:text-left justify-center w-full max-w-md bg-transparent p-6 md:p-10 space-y-8">
         <div>
           <h1 className="text-[2rem] font-medium text-slate-900 dark:text-white tracking-tight leading-tight">Ready to join?</h1>
           <p className="text-slate-500 dark:text-muted-foreground mt-1 text-base">{roomName || 'Secure Meeting'}</p>

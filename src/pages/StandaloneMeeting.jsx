@@ -33,7 +33,7 @@ function StandaloneMeetingInner({ url, roomName, userName, onLeave, onToast, spa
   }
 
   return (
-    <div className="w-screen h-screen bg-white dark:bg-background overflow-hidden flex flex-col relative">
+    <div className="w-full h-full min-h-full bg-white dark:bg-background overflow-hidden flex flex-col relative">
       {/* VideoRoom creates its own DailyProvider + callObject internally — do NOT wrap in another DailyProvider */}
       <VideoRoom
         roomUrl={url}
@@ -195,7 +195,7 @@ export default function StandaloneMeeting() {
 
   if (error) {
     return (
-      <div className="w-screen h-screen flex flex-col items-center justify-center bg-white dark:bg-background p-4">
+      <div className="w-full h-full min-h-full flex flex-col items-center justify-center bg-white dark:bg-background p-4">
         <div className="max-w-md w-full bg-slate-50 dark:bg-card border border-red-100 dark:border-red-500/20 rounded-2xl p-8 shadow-xl text-center space-y-6">
           <div className="w-16 h-16 bg-red-50 dark:bg-red-500/10 rounded-full flex items-center justify-center mx-auto">
             <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -219,7 +219,7 @@ export default function StandaloneMeeting() {
 
   if (scheduledData) {
     return (
-      <div className="w-screen h-screen bg-slate-50 dark:bg-background flex flex-col items-center justify-center p-4">
+      <div className="w-full h-full min-h-full bg-slate-50 dark:bg-background flex flex-col items-center justify-center p-4">
         <div className="max-w-lg w-full bg-white dark:bg-card border border-slate-200 dark:border-white/10 rounded-3xl p-10 shadow-2xl text-center space-y-8">
           <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
             <Sparkles className="w-10 h-10 text-primary" />

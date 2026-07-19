@@ -91,8 +91,8 @@ export default function SaveMeetingPage() {
         .update({
           title: title.trim(),
           visibility: visibility,
+          is_locked: finalIsLocked,
           unlock_at: finalUnlockAt,
-          // is_locked: finalIsLocked, // Temporarily disabled until Supabase schema is updated
           ended_at: new Date().toISOString() // Ensure ended_at is set if not already
         })
         .eq('id', id);

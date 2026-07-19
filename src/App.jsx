@@ -1334,7 +1334,9 @@ function App() {
                       <Route path="/login" element={<CliPadLogin />} />
                       <Route path="/auth/callback" element={<SSOCallback />} />
                       <Route path="/auth/google-callback" element={<GoogleCallback />} />
-                      <Route path="/join/:roomId" element={<StandaloneMeeting />} />
+                      <Route element={<ClipadLayout />}>
+                        <Route path="/join/:roomId" element={<StandaloneMeeting />} />
+                      </Route>
                       <Route path="/analytics" element={<VideoAnalytics />} />
                       <Route element={<ProtectedRoute />}>
                         <Route element={<ClipadAdminLayout />}>

@@ -1208,7 +1208,7 @@ export default function RecordVideo() {
           description: description.trim() || null,
           space_id: selectedSpace || null,
           visibility: visibility,
-          // is_locked: finalIsLocked, // Temporarily disabled
+          is_locked: finalIsLocked,
           unlock_at: finalUnlockAt,
         }).eq('id', activeVideoId);
         
@@ -1340,7 +1340,7 @@ export default function RecordVideo() {
         space_id: selectedSpace || null,
         duration_seconds: recordingSeconds,
         visibility: visibility,
-        // is_locked: finalIsLocked, // Temporarily disabled
+        is_locked: finalIsLocked,
         unlock_at: finalUnlockAt,
       }).select().single();
 
@@ -1471,7 +1471,7 @@ export default function RecordVideo() {
               <p className="text-muted-foreground text-sm">Record a video message for your team. All recordings are stored in CliPad.</p>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {MODES.map(m => {
                 const Icon = m.icon;
                 if ((m.id === 'screen_camera' || m.id === 'screen_only') && !hasDisplayMedia) return null;
@@ -1479,35 +1479,36 @@ export default function RecordVideo() {
                   <button
                     key={m.id}
                     onClick={() => setMode(m.id)}
-                    className={`flex-1 flex items-center justify-center p-4 md:rounded-full rounded-2xl border transition-all duration-300 shadow-sm hover:shadow-md ${mode === m.id ? 'border-primary bg-gradient-to-r from-primary to-emerald-500 text-white scale-[1.02]' : 'bg-white/95 dark:bg-[#202c33]/95 border-black/5 dark:border-white/5 text-slate-700 dark:text-foreground hover:border-primary/50'}`}
+                    className={`flex flex-col items-center justify-center p-4 md:p-5 rounded-2xl border transition-all duration-300 shadow-sm active:scale-95 ${mode === m.id ? 'border-primary bg-gradient-to-b from-primary/10 to-primary/5 text-primary scale-100' : 'bg-white dark:bg-[#1a2329] border-slate-200 dark:border-white/5 text-slate-600 dark:text-muted-foreground hover:border-primary/30'}`}
                   >
-                    <div className="flex items-center gap-2 font-bold text-[15px] md:text-sm">
-                      <Icon className="w-5 h-5 md:w-4 md:h-4" />
+                    <Icon className={`w-8 h-8 mb-2 ${mode === m.id ? 'text-primary' : 'text-slate-400 dark:text-slate-500'}`} />
+                    <span className="font-semibold text-[13px] md:text-sm text-center leading-tight">
                       {m.label}
-                    </div>
+                    </span>
                   </button>
                 );
               })}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-4 bg-white/60 dark:bg-black/20 p-4 rounded-3xl border border-slate-200/50 dark:border-white/5 shadow-sm">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-muted-foreground mb-2 uppercase tracking-wider">Video Title *</label>
+                <label className="block text-[13px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 ml-1">Video Title <span className="text-red-500">*</span></label>
                 <input
                   value={title}
                   onChange={e => setTitle(e.target.value)}
                   placeholder="e.g. Q3 Feature Walkthrough"
-                  className="w-full px-4 py-3 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-primary/60 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.04)]"
+                  className="w-full px-4 py-3.5 rounded-2xl bg-white dark:bg-[#1a2329] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-[15px] placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-muted-foreground mb-2 uppercase tracking-wider">Add to Space *</label>
+                <label className="block text-[13px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 ml-1">Add to Space <span className="text-red-500">*</span></label>
                 <select
                   value={selectedSpace}
                   onChange={e => setSelectedSpace(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-white/95 dark:bg-[#202c33]/95 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary/60 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.04)]"
+                  className="w-full px-4 py-3.5 rounded-2xl bg-white dark:bg-[#1a2329] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm appearance-none"
+                  style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem top 50%', backgroundSize: '0.65rem auto' }}
                 >
-                  <option value="">No space</option>
+                  <option value="">Select a space...</option>
                   {spaces.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
               </div>
