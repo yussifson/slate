@@ -576,7 +576,6 @@ export default function CliPadDashboard() {
             </div>
           </div>
         )}
-      )}
     </div>
   );
 }
