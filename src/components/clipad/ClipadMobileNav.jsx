@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Layers, Video, Camera, User, MessageSquare, Bot, Sparkles, Menu, Settings, Shield, LogOut, X, Tag, Star, Phone } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
+import { Home, Layers, Video, Camera, User, MessageSquare, Bot, Sparkles, Menu, Settings, Shield, LogOut, X, Tag, Star, Phone, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/AuthContext';
 import ThemeToggle from '@/components/layout/ThemeToggle';
@@ -133,6 +134,17 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
                     <ThemeToggle iconOnly />
                   </div>
                   <span className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Theme</span>
+                </div>
+
+                {/* Language Switcher */}
+                <div className="flex items-center justify-between px-3 py-2.5 rounded-[14px] hover:bg-slate-100/80 dark:hover:bg-white/[0.06] transition-colors group">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm border border-emerald-100/50 dark:border-transparent">
+                      <Globe className="w-4 h-4" />
+                    </div>
+                    <span className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Language</span>
+                  </div>
+                  <LanguageSwitcher currentLanguage={user?.user_metadata?.language} />
                 </div>
 
                 {/* Settings */}

@@ -1,12 +1,13 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { Sparkles, Settings, Shield, LogOut, MessageSquare } from 'lucide-react';
+import { Sparkles, Settings, Shield, LogOut, MessageSquare, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -72,9 +73,22 @@ export default function ClipadTopNav({ forceMobile = false }) {
         <div className={cn("h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1", forceMobile ? "hidden" : "hidden lg:block")} />
         
         <div className={forceMobile ? "hidden" : "hidden lg:block"}>
+          <LanguageSwitcher />
+        </div>
+        
+        <div className={forceMobile ? "hidden" : "hidden lg:block"}>
           <ThemeToggle />
         </div>
         
+        {/* Spotlight - Mobile Only */}
+        <button 
+          onClick={() => window.dispatchEvent(new CustomEvent('open-global-search'))}
+          className={cn("flex items-center justify-center w-[38px] h-[38px] rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-white/10 transition-all relative", forceMobile ? "flex" : "md:hidden")}
+          title="Search"
+        >
+          <Search className="w-5 h-5" />
+        </button>
+
         {/* Chat - Mobile Only (Premium Header placement) */}
         <button 
           onClick={() => navigate('/chat')}
