@@ -118,11 +118,12 @@ export default function RecordVideo() {
     setShowRecoverPrompt(false);
   };
 
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   const [mode, setMode] = useState('screen_camera');
   const [hasDisplayMedia, setHasDisplayMedia] = useState(true);
 
   useEffect(() => {
-    const supported = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
+    const supported = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) && !isMobile;
     setHasDisplayMedia(supported);
     if (!supported) setMode('camera_only');
   }, []);
@@ -723,10 +724,15 @@ export default function RecordVideo() {
       let cameraStream = null;
 
       if (mode === 'screen_camera' || mode === 'screen_only') {
-        screenStream = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: { ideal: 60 } }, audio: { echoCancellation: true, noiseSuppression: true } });
-        streamsRef.current.screen = screenStream;
-        // If user stops screen share from browser UI
-        screenStream.getVideoTracks()[0].onended = () => stopRecording();
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+          toast({ title: 'Screen Recording Unavailable', description: 'Screen recording is not supported on this device. Switching to Camera Only.', variant: 'default' });
+          // fall through — screenStream stays null, camera branch will handle it
+        } else {
+          screenStream = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: { ideal: 60 } }, audio: { echoCancellation: true, noiseSuppression: true } });
+          streamsRef.current.screen = screenStream;
+          // If user stops screen share from browser UI
+          screenStream.getVideoTracks()[0].onended = () => stopRecording();
+        }
       }
 
       if (mode === 'screen_camera' || mode === 'camera_only') {
@@ -1487,8 +1493,19 @@ export default function RecordVideo() {
               <p className="text-muted-foreground text-sm">Record a video message for your team. All recordings are stored in CliPad.</p>
             </div>
 
+            {/* Mobile banner */}
+            {!hasDisplayMedia && (
+              <div className="flex items-start gap-3 p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 rounded-2xl text-amber-800 dark:text-amber-400">
+                <Camera className="w-5 h-5 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold">Camera recording only</p>
+                  <p className="text-xs mt-0.5 opacity-80">Screen recording is not supported on mobile browsers. You can record using your camera.</p>
+                </div>
+              </div>
+            )}
+
             <div className="flex flex-col md:grid md:grid-cols-3 gap-3">
-              {MODES.map(m => {
+              {MODES.filter(m => hasDisplayMedia || m.id === 'camera_only').map(m => {
                 const Icon = m.icon;
                 return (
                   <button

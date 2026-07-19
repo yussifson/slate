@@ -998,12 +998,22 @@ export const VIRTUAL_BACKGROUNDS = [
         }
         // ---------------------------
         
-        const displayStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+        let displayStream;
+        const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (!isMobileDevice && navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+          displayStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+        } else {
+          // Mobile fallback: use front camera + mic instead of screen capture
+          toast({ title: 'Camera Recording', description: 'Screen recording is not available on mobile. Recording from camera instead.', variant: 'default' });
+          displayStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
+        }
         let micStream;
-        try {
-          micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        } catch (e) {
-          console.warn("No microphone access, recording without mic audio.", e);
+        if (!isMobileDevice) {
+          try {
+            micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          } catch (e) {
+            console.warn("No microphone access, recording without mic audio.", e);
+          }
         }
 
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
