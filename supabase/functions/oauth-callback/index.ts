@@ -24,8 +24,8 @@ serve(async (req) => {
 
     // Decode the state object
     const stateObj = JSON.parse(atob(state))
-    const { company_id, provider, return_url } = stateObj
-    const fallbackUrl = return_url || `${appUrl}/integrations`
+    const { company_id, provider, integration_id, return_url } = stateObj
+    const fallbackUrl = return_url || `${appUrl}/clipad/settings`
 
     if (!company_id || !provider) {
       const errUrl = new URL(fallbackUrl)
@@ -195,18 +195,59 @@ serve(async (req) => {
     const expiresAt = new Date()
     expiresAt.setSeconds(expiresAt.getSeconds() + expiresIn)
 
-    // Securely upsert the connected app credentials into the database
-    const { error } = await supabaseAdmin
-      .from('connected_apps')
+    // Fetch provider account info for display
+    let externalAccountId = ''
+    let externalAccountName = ''
+    try {
+      if (provider === 'google') {
+        const infoRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', { headers: { Authorization: `Bearer ${accessToken}` } })
+        const info = await infoRes.json()
+        externalAccountId = info.id || ''
+        externalAccountName = info.email || info.name || ''
+      } else if (provider === 'github') {
+        const infoRes = await fetch('https://api.github.com/user', { headers: { Authorization: `Bearer ${accessToken}`, 'User-Agent': 'CliPad' } })
+        const info = await infoRes.json()
+        externalAccountId = String(info.id || '')
+        externalAccountName = info.login || info.name || ''
+      } else if (provider === 'slack') {
+        const infoRes = await fetch('https://slack.com/api/auth.test', { headers: { Authorization: `Bearer ${accessToken}` } })
+        const info = await infoRes.json()
+        externalAccountId = info.team_id || ''
+        externalAccountName = info.team || info.user || ''
+      } else if (provider === 'zoom') {
+        const infoRes = await fetch('https://api.zoom.us/v2/users/me', { headers: { Authorization: `Bearer ${accessToken}` } })
+        const info = await infoRes.json()
+        externalAccountId = info.id || ''
+        externalAccountName = info.email || info.account_name || ''
+      } else if (provider === 'notion') {
+        const infoRes = await fetch('https://api.notion.com/v1/users/me', { headers: { Authorization: `Bearer ${accessToken}`, 'Notion-Version': '2022-06-28' } })
+        const info = await infoRes.json()
+        externalAccountId = info.bot?.owner?.workspace_id || info.id || ''
+        externalAccountName = info.bot?.owner?.workspace_name || info.name || ''
+      }
+    } catch (infoErr) {
+      console.warn('Could not fetch account info:', infoErr.message)
+    }
+
+    // Use integration_id (e.g. 'google_drive') if available, otherwise fall back to provider
+    const effectiveProvider = integration_id || provider
+
+    // Upsert into clipad_integrations
+    const { data: intgData, error } = await supabaseAdmin
+      .from('clipad_integrations')
       .upsert({
         company_id: company_id,
-        provider: provider,
+        provider: effectiveProvider,
         access_token: accessToken,
         refresh_token: refreshToken,
-        expires_at: expiresAt.toISOString(),
+        token_expires_at: expiresAt.toISOString(),
+        external_account_id: externalAccountId,
+        external_account_name: externalAccountName,
         status: 'active',
+        sync_error: null,
         updated_at: new Date().toISOString()
       }, { onConflict: 'company_id,provider' })
+      .select().single()
 
     if (error) {
       console.error("DB Upsert Error:", error)
@@ -217,11 +258,17 @@ serve(async (req) => {
       return Response.redirect(dbErrUrl.toString(), 302)
     }
 
-    // Redirect back to the exact URL the user came from
+    // Trigger initial sync after connect
+    if (intgData?.id) {
+      supabaseAdmin.functions.invoke('integration-sync', {
+        body: { integrationId: intgData.id, provider: effectiveProvider }
+      }).catch(() => {});
+    }
+
+    // Redirect back with success
     const successUrl = new URL(fallbackUrl)
     successUrl.searchParams.set('status', 'success')
-    successUrl.searchParams.set('provider', provider)
-    successUrl.searchParams.set('company_id', company_id)
+    successUrl.searchParams.set('provider', effectiveProvider)
     return Response.redirect(successUrl.toString(), 302)
 
   } catch (error) {
