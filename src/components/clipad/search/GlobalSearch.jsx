@@ -268,7 +268,7 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
       style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
       onMouseDown={(e) => { if (e.target === overlayRef.current) setIsOpen(false); }}
     >
-      <style>{\`
+      <style>{`
         @keyframes spotlightIn {
           0% { opacity: 0; transform: scale(0.96) translateY(-8px); }
           100% { opacity: 1; transform: scale(1) translateY(0); }
@@ -278,7 +278,7 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
           70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
           100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
-      \`}</style>
+      `}</style>
       <div
         className="w-full max-w-[720px] flex flex-col rounded-3xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.25)] border border-white/20 dark:border-white/10 bg-white/95 dark:bg-[#0F1420]/95 backdrop-blur-2xl relative"
         style={{ animation: 'spotlightIn 0.25s cubic-bezier(0.16, 1, 0.3, 1)' }}
