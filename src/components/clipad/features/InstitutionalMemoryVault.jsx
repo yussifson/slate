@@ -30,7 +30,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
           .limit(20),
         supabase
           .from('clipad_decisions')
-          .select('id, decision_text, rationale, status, created_at')
+          .select('id, decision_text, reasoning_text, status, created_at')
           .order('created_at', { ascending: false })
           .limit(10),
         supabase
@@ -79,7 +79,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
         contextParts.push('\n=== TEAM DECISIONS ===');
         decisions.forEach(d => {
           contextParts.push(`Decision [ID: D-${d.id}] [${d.status || 'active'}]: ${d.decision_text}`);
-          if (d.rationale) contextParts.push(`  Rationale: ${d.rationale}`);
+          if (d.reasoning_text) contextParts.push(`  Rationale: ${d.reasoning_text}`);
           contextParts.push(`  Date: ${new Date(d.created_at).toLocaleDateString()}`);
         });
       }
@@ -126,6 +126,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
       // 3. Query the real AI with full organizational context
       const aiResponse = await generateText([
         {
+          role: 'system',
           content: `You are an Enterprise Knowledge Graph AI assistant. Your job is to answer questions about an organization based ONLY on the real data provided below. Do NOT make up facts, names, dates, or events that aren't in the data. If the data doesn't contain the answer, say "I don't have enough recorded data to answer that yet — as your team adds more meetings, decisions, and recordings, the Knowledge Graph will grow richer."\n\nWhen you use data to answer, ALWAYS append a JSON array of the Source IDs you used on a new line at the very end of your response, formatted exactly like this: \nSOURCES: ["M-uuid", "D-uuid"]\n\nORGANIZATIONAL KNOWLEDGE BASE:\n${knowledgeContext}`
         },
         {

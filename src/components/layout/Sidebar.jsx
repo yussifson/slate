@@ -191,18 +191,22 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  enabled: !!user?.company_id
 });
 
- const cleanLogo = (url) => {
-   if (!url) return url;
-   const lastHttp = url.lastIndexOf('http');
-   let finalUrl = url;
-   if (lastHttp > 0) {
-     finalUrl = url.substring(lastHttp);
-   }
-   if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/')) {
-     finalUrl = 'https://' + finalUrl;
-   }
-   return finalUrl;
- };
+  const cleanLogo = (url) => {
+    if (!url) return url;
+    let finalUrl = url.trim();
+    // Handle duplicated pasted URLs
+    if (finalUrl.startsWith('http') && finalUrl.lastIndexOf('http') > 0) {
+       const secondHttp = finalUrl.lastIndexOf('http');
+       // Only truncate if we suspect it was pasted twice (e.g. query param glitch)
+       if (finalUrl.substring(0, secondHttp).includes('=')) {
+          finalUrl = finalUrl.substring(secondHttp);
+       }
+    }
+    if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/') && !finalUrl.startsWith('data:')) {
+      finalUrl = 'https://' + finalUrl;
+    }
+    return finalUrl;
+  };
 
  const activeCompanyLogoDark = cleanLogo(companyData?.logo_url || impersonatedCompany?.logo_url || user?.company_logo_url);
  const activeCompanyLogoLight = cleanLogo(companyData?.logo_light_url || impersonatedCompany?.logo_light_url || activeCompanyLogoDark);

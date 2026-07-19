@@ -166,12 +166,14 @@ export default function Login() {
        // Clean up accidentally duplicated URLs and ensure protocol
        const cleanLogo = (url) => {
          if (!url) return url;
-         const lastHttp = url.lastIndexOf('http');
-         let finalUrl = url;
-         if (lastHttp > 0) {
-           finalUrl = url.substring(lastHttp);
+         let finalUrl = url.trim();
+         if (finalUrl.startsWith('http') && finalUrl.lastIndexOf('http') > 0) {
+            const secondHttp = finalUrl.lastIndexOf('http');
+            if (finalUrl.substring(0, secondHttp).includes('=')) {
+               finalUrl = finalUrl.substring(secondHttp);
+            }
          }
-         if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/')) {
+         if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/') && !finalUrl.startsWith('data:')) {
            finalUrl = 'https://' + finalUrl;
          }
          return finalUrl;
@@ -216,12 +218,14 @@ export default function Login() {
            const parsed = JSON.parse(cached);
             const cleanLogo = (url) => {
               if (!url) return url;
-              const lastHttp = url.lastIndexOf('http');
-              let finalUrl = url;
-              if (lastHttp > 0) {
-                finalUrl = url.substring(lastHttp);
+              let finalUrl = url.trim();
+              if (finalUrl.startsWith('http') && finalUrl.lastIndexOf('http') > 0) {
+                 const secondHttp = finalUrl.lastIndexOf('http');
+                 if (finalUrl.substring(0, secondHttp).includes('=')) {
+                    finalUrl = finalUrl.substring(secondHttp);
+                 }
               }
-              if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/')) {
+              if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/') && !finalUrl.startsWith('data:')) {
                 finalUrl = 'https://' + finalUrl;
               }
               return finalUrl;

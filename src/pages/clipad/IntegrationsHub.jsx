@@ -358,7 +358,7 @@ export default function IntegrationsHub() {
         .update({ sync_error: null })
         .eq('id', conn.id);
 
-      const { error } = await supabase.functions.invoke('oauth-sync', {
+      const { error } = await supabase.functions.invoke('integration-sync', {
         body: { integrationId: conn.id, provider: integration.id }
       });
       if (error) throw error;
