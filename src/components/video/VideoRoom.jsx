@@ -1148,6 +1148,8 @@ export const VIRTUAL_BACKGROUNDS = [
  </Button>
  </div>
  </div>
+ </div>
+ </div>
  );
 }
 
