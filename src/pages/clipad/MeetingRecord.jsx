@@ -416,7 +416,7 @@ export default function MeetingRecord() {
         </div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1600px] mx-auto sm:px-6 lg:px-8 py-4 sm:py-8">
 
         <VideoDownloadModal 
           open={showDownloadModal} 
@@ -427,7 +427,7 @@ export default function MeetingRecord() {
           spaceId={meeting.space_id}
         />
         {/* Video Player */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           {meeting.video_url ? (
             <RichVideoPlayer videoUrl={meeting.video_url} recordType="meeting" entityId={meeting.id} />
             ) : (
@@ -435,7 +435,7 @@ export default function MeetingRecord() {
                 onClick={() => {
                   toast({ title: 'Recording Loading', description: 'Your recording is being processed by the cloud provider and will be available shortly.' });
                 }}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-secondary hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-foreground font-bold transition-all hover:-translate-y-0.5 mt-4 mb-8"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-secondary hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-foreground font-bold transition-all hover:-translate-y-0.5 mt-4 mb-8 mx-4 sm:mx-0"
               >
                 <Video className="w-4 h-4" /> Recording Pending...
               </button>
@@ -447,52 +447,78 @@ export default function MeetingRecord() {
           
           {/* Main Info (Col-Span-2) */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            {meeting.ai_summary && (
-              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pink-500/10 border border-pink-500/20 text-primary text-xs font-bold">
-                <Sparkles className="w-3 h-3" /> AI Summary Ready
-              </span>
-            )}
-          </div>
-          <div className="flex items-start justify-between gap-4 mb-2">
-            <h1 className="text-2xl md:text-3xl font-black text-foreground">{meeting.title || 'Team Meeting'}</h1>
-            <div className="flex items-center gap-2">
-              {meeting.video_url && (
-                <button onClick={() => setShowDownloadModal(true)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors mt-1" title="Download Recording">
-                  <Download className="w-5 h-5" />
-                </button>
-              )}
-              {canEdit && (
-                <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors mt-1">
-                    <MoreHorizontal className="w-5 h-5" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-40 rounded-xl">
-                  <DropdownMenuItem onClick={() => setShowEdit(true)} className="cursor-pointer gap-2">
-                    <Edit3 className="w-4 h-4" /> Edit Meeting
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleDeleteMeeting} className="cursor-pointer gap-2 text-rose-500 focus:text-rose-500">
-                    <Trash2 className="w-4 h-4" /> Delete Meeting
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4" />{new Date(meeting.created_at).toLocaleString()}</span>
-            {getMeetingDuration() && <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{getMeetingDuration()}</span>}
-            {meeting.participant_count && <span className="flex items-center gap-1.5"><Users className="w-4 h-4" />{meeting.participant_count} participants</span>}
-          </div>
-          
-        </div>
+            {/* Header (YouTube Style) */}
+            <div className="mb-6 px-4 sm:px-0">
+              <div className="flex items-center gap-3 mb-2">
+                {meeting.ai_summary && (
+                  <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-600 dark:text-pink-400 text-[10px] font-bold uppercase tracking-wider">
+                    <Sparkles className="w-3 h-3" /> AI Summary Ready
+                  </span>
+                )}
+              </div>
+              <h1 className="text-xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3 leading-tight">{meeting.title || 'Team Meeting'}</h1>
+              
+              <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-muted-foreground mb-4">
+                <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4" />{new Date(meeting.created_at).toLocaleDateString()}</span>
+                {getMeetingDuration() && <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{getMeetingDuration()}</span>}
+                {meeting.participant_count && <span className="flex items-center gap-1.5"><Users className="w-4 h-4" />{meeting.participant_count} participants</span>}
+              </div>
 
-        
+              {/* Horizontal Action Bar */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 mask-edges mt-2">
+                {/* Reactions / Likes */}
+                <div className="flex items-center bg-slate-100 dark:bg-white/5 rounded-full px-1.5 py-1 shrink-0 border border-black/5 dark:border-white/5">
+                  {EMOJIS.slice(0, 4).map(e => {
+                    const count = reactions.filter(r => {
+                      const cleanEmoji = r.emoji?.startsWith('[ANON]') ? r.emoji.slice(6) : r.emoji;
+                      return cleanEmoji === e;
+                    }).length;
+                    return (
+                      <button key={e} onClick={() => handleAddReaction(e)} className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors text-sm font-semibold">
+                        <span className="text-lg leading-none">{e}</span>
+                        {count > 0 && <span className="text-slate-700 dark:text-slate-300">{count}</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                {/* Share */}
+                <button onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  toast({ title: 'Link copied!' });
+                }} className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors text-sm font-semibold text-slate-900 dark:text-white shrink-0 border border-black/5 dark:border-white/5">
+                  <Share2 className="w-4 h-4" /> Share
+                </button>
+                
+                {/* Download */}
+                {meeting.video_url && (
+                  <button onClick={() => setShowDownloadModal(true)} className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors text-sm font-semibold text-slate-900 dark:text-white shrink-0 border border-black/5 dark:border-white/5">
+                    <Download className="w-4 h-4" /> Download
+                  </button>
+                )}
+
+                {/* Edit/More */}
+                {canEdit && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors text-sm font-semibold text-slate-900 dark:text-white shrink-0 border border-black/5 dark:border-white/5">
+                        <MoreHorizontal className="w-4 h-4" /> More
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40 rounded-xl">
+                      <DropdownMenuItem onClick={() => setShowEdit(true)} className="cursor-pointer gap-2">
+                        <Edit3 className="w-4 h-4" /> Edit Meeting
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleDeleteMeeting} className="cursor-pointer gap-2 text-rose-500 focus:text-rose-500">
+                        <Trash2 className="w-4 h-4" /> Delete Meeting
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </div>
+            </div>
             {/* AI Summary */}
+        <div className="px-4 sm:px-0">
         {meeting.ai_summary && hasFeature(plan, 'hasAdvancedAI') ? (
           <div className="space-y-6">
             <SectionCard icon={Brain} iconColor="from-pink-500 to-rose-500" title="Advanced AI Intelligence" defaultOpen>
@@ -556,9 +582,11 @@ export default function MeetingRecord() {
             </div>
           </SectionCard>
         ) : null}
+        </div>
 
         
-            {/* Transcript */}
+        {/* Transcript */}
+        <div className="px-4 sm:px-0">
         {(transcript.length > 0 || meeting.raw_transcript) && (
           <SectionCard icon={FileText} iconColor="from-violet-500 to-purple-500" title="Transcript">
             <div className="flex justify-between mb-4">
@@ -592,12 +620,12 @@ export default function MeetingRecord() {
             )}
           </SectionCard>
         )}
-
+        </div>
       
           </div>
 
           {/* Sidebar (Col-Span-1) */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-6 px-4 sm:px-0">
             {/* Key Decisions */}
         {meeting.key_decisions && meeting.key_decisions.length > 0 && (
           <SectionCard icon={Zap} iconColor="from-amber-500 to-orange-500" title="Key Decisions" badge={meeting.key_decisions.length}>

@@ -441,12 +441,12 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
           spaceId={video.space_id}
         />
         
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="max-w-7xl mx-auto md:px-8 md:py-6 grid grid-cols-1 lg:grid-cols-3 md:gap-8">
 
           {/* Left: Video Player */}
-          <div className="lg:col-span-2 space-y-4 relative">
+          <div className="lg:col-span-2 space-y-4 relative w-full">
             {/* Player */}
-            <div ref={playerRef} className="sticky top-0 z-50 relative sm:rounded-2xl overflow-hidden bg-black aspect-video group -mx-4 sm:mx-0 shadow-lg">
+            <div ref={playerRef} className="sticky top-0 z-50 relative md:rounded-2xl overflow-hidden bg-black aspect-video group w-full shadow-lg">
               <video
                 ref={videoRef}
                 src={video.video_url}
@@ -552,19 +552,60 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
               </div>
             </div>
 
-            {/* Video info */}
-            <div>
-              <div className="flex items-start justify-between gap-4 mb-2">
-                <h1 className="text-xl font-bold text-slate-900 dark:text-white">{video.title || 'Untitled Recording'}</h1>
-                <div className="flex items-center gap-2">
-                  <button onClick={() => setShowDownloadModal(true)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors" title="Download">
-                    <Download className="w-5 h-5" />
+            {/* Video info & Actions (YouTube Style) */}
+            <div className="px-4 md:px-0">
+              <h1 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-3 leading-tight">{video.title || 'Untitled Recording'}</h1>
+              
+              <div className="flex flex-col gap-4 mb-4">
+                {/* Creator and View info */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={video.creator?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${video.creator?.full_name}`}
+                      className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 object-cover border border-black/5 dark:border-white/5"
+                      alt="Creator"
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-[15px] font-bold text-slate-900 dark:text-foreground">{video.creator?.full_name || 'Unknown'}</span>
+                      <span className="text-[12px] font-medium text-slate-500 dark:text-muted-foreground">{new Date(video.created_at).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Horizontal Action Bar */}
+                <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 mask-edges">
+                  {/* Reactions / Likes */}
+                  <div className="flex items-center bg-slate-100 dark:bg-white/5 rounded-full px-1.5 py-1 shrink-0 border border-black/5 dark:border-white/5">
+                    {EMOJIS.slice(0, 4).map(e => {
+                      const count = reactions.filter(r => {
+                        const cleanEmoji = r.emoji?.startsWith('[ANON]') ? r.emoji.slice(6) : r.emoji;
+                        return cleanEmoji === e;
+                      }).length;
+                      return (
+                        <button key={e} onClick={() => addReaction(e)} className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors text-sm font-semibold">
+                          <span className="text-lg leading-none">{e}</span>
+                          {count > 0 && <span className="text-slate-700 dark:text-slate-300">{count}</span>}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  
+                  {/* Share */}
+                  <button onClick={copyShareLink} className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors text-sm font-semibold text-slate-900 dark:text-white shrink-0 border border-black/5 dark:border-white/5">
+                    {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />} Share
                   </button>
+                  
+                  {/* Download */}
+                  <button onClick={() => setShowDownloadModal(true)} className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors text-sm font-semibold text-slate-900 dark:text-white shrink-0 border border-black/5 dark:border-white/5">
+                    <Download className="w-4 h-4" /> Download
+                  </button>
+
+                  {/* Edit/More */}
                   {canEdit && (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors">
-                          <MoreHorizontal className="w-5 h-5" />
+                        <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors text-sm font-semibold text-slate-900 dark:text-white shrink-0 border border-black/5 dark:border-white/5">
+                          <MoreHorizontal className="w-4 h-4" /> More
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-40 rounded-xl">
@@ -579,16 +620,6 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <img
-                  src={video.creator?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${video.creator?.full_name}`}
-                  className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 object-cover"
-                  alt="Creator"
-                />
-                <span className="text-sm font-semibold text-slate-700 dark:text-foreground">{video.creator?.full_name || 'Unknown'}</span>
-                <span className="text-slate-400 dark:text-slate-500">·</span>
-                <span className="text-sm font-medium text-slate-500 dark:text-muted-foreground">{new Date(video.created_at).toLocaleDateString()}</span>
-              </div>
             </div>
 
             {/* AI Summary */}
@@ -598,7 +629,7 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
               try { summaryData = JSON.parse(video.ai_summary); }
               catch { summaryData = { summary: video.ai_summary }; }
               return (
-                <div className="p-6 rounded-2xl bg-indigo-50/50 dark:bg-indigo-500/10 backdrop-blur-3xl border border-indigo-100/50 dark:border-indigo-500/20 shadow-[0_8px_30px_rgba(0,0,0,0.12)] mt-6">
+                <div className="p-6 rounded-2xl bg-indigo-50/50 dark:bg-indigo-500/10 backdrop-blur-3xl border border-indigo-100/50 dark:border-indigo-500/20 shadow-[0_8px_30px_rgba(0,0,0,0.12)] mt-6 mx-4 md:mx-0">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
                       <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
@@ -646,7 +677,7 @@ return <LockWall type={accessDenied.type} unlockAt={accessDenied.unlockAt || nul
           </div>
 
           {/* Right: Comments & Reactions */}
-          <div className="lg:col-span-1 flex flex-col gap-4">
+          <div className="lg:col-span-1 flex flex-col gap-4 px-4 md:px-0">
 
             {/* Filter tabs */}
             <div className="flex gap-1 p-1 bg-white/95 dark:bg-[#202c33]/95 rounded-xl border border-black/5 dark:border-white/5 shadow-sm">
