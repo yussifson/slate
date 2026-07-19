@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/AuthContext';
 export default function ClipadAdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, profile, signOut } = useAuth();
+  const { user, signOut } = useAuth();
 
   const handleLogout = async () => {
     await signOut();
@@ -14,12 +14,12 @@ export default function ClipadAdminLayout() {
   };
 
   useEffect(() => {
-    if (profile && profile.role !== 'super_admin') {
+    if (user && user.role !== 'super_admin') {
       navigate('/');
     }
-  }, [profile, navigate]);
+  }, [user, navigate]);
 
-  if (!profile || profile.role !== 'super_admin') {
+  if (!user || user.role !== 'super_admin') {
     return null; // Don't render layout while redirecting
   }
 

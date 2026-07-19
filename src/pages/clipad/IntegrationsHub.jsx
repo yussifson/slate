@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 import {
   CheckCircle2, XCircle, RefreshCw, Plug, Unplug, ExternalLink,
   Loader2, Clock, FileText, MessageSquare, Video, Github,
-  AlertCircle, Zap, Search, Filter
+  AlertCircle, Zap, Search, Filter, ArrowLeft
 } from 'lucide-react';
 
 // ─── Integration Definitions ─────────────────────────────────────────────────
@@ -41,7 +41,7 @@ const INTEGRATIONS = [
     id: 'slack',
     name: 'Slack',
     description: 'Capture channel messages, threads, and files for AI analysis.',
-    icon: <svg viewBox="0 0 24 24" className="w-6 h-6"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.835a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.835a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.835zM17.688 8.835a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.313zM15.165 18.958a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.523-2.52v-2.522h2.523zM15.165 17.687a2.527 2.527 0 0 1-2.523-2.521 2.528 2.528 0 0 1 2.523-2.521h6.313A2.527 2.527 0 0 1 24 15.166a2.528 2.528 0 0 1-2.522 2.521h-6.313z" fill="#E01E5A"/></svg>,
+    icon: <svg viewBox="0 0 24 24" className="w-6 h-6"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.835a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.835a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.835zM17.688 8.835a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.313zM15.165 18.958a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.523-2.52v-2.522h2.523zM15.165 17.687a2.527 2.527 0 0 1-2.523-2.521 2.528 2.528 0 0 1 2.523-2.521h6.313A2.527 2.527 0 0 1 24 15.166a2.528 2.528 0 0 1-2.522 2.521h-6.313z" fill="#E01E5A"/><path d="M18.956 8.835a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.835a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.835z" fill="#36C5F0"/><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52z" fill="#2EB67D"/><path d="M8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834z" fill="#ECB22E"/></svg>,
     color: 'from-purple-500/10 to-purple-600/5',
     border: 'border-purple-500/20',
     category: 'Messaging',
@@ -54,7 +54,7 @@ const INTEGRATIONS = [
     id: 'zoom',
     name: 'Zoom',
     description: 'Auto-import meeting recordings and transcripts. Get instant AI summaries.',
-    icon: <svg viewBox="0 0 24 24" fill="#2D8CFF" className="w-6 h-6"><path d="M17.063 5.438h-11.45c-2.31 0-4.188 1.878-4.188 4.188v6.75c0 2.31 1.878 4.188 4.188 4.188h11.45c2.31 0 4.188-1.878 4.188-4.188v-6.75c0-2.31-1.878-4.188-4.188-4.188zm-5.188 9.375h-2.25v2.25c0 .315-.248.563-.563.563s-.563-.248-.563-.563v-2.25h-2.25c-.315 0-.563-.248-.563-.563s.248-.563.563-.563h2.25v-2.25c0-.315.248-.563.563-.563s.563.248.563.563v2.25h2.25c.315 0 .563.248.563.563s-.248.563-.563.563zm10.125-1.125l-2.688 1.688v-3.375l2.688 1.688z"/></svg>,
+    icon: <svg viewBox="0 0 120 120" className="w-6 h-6"><circle cx="60" cy="60" r="60" fill="#0B5CFF"/><path d="M33.5 35h33a10.5 10.5 0 0 1 10.5 10.5v29A10.5 10.5 0 0 1 66.5 85h-33A10.5 10.5 0 0 1 23 74.5v-29A10.5 10.5 0 0 1 33.5 35zM80.6 44.4l13.1-9.9a4.5 4.5 0 0 1 7.3 3.6v43.8a4.5 4.5 0 0 1-7.3 3.6l-13.1-9.9a4.5 4.5 0 0 1-1.6-3.6V48a4.5 4.5 0 0 1 1.6-3.6z" fill="#fff"/></svg>,
     color: 'from-blue-500/10 to-blue-600/5',
     border: 'border-blue-500/20',
     category: 'Meetings',
@@ -80,7 +80,7 @@ const INTEGRATIONS = [
     id: 'microsoft_onedrive',
     name: 'Microsoft OneDrive',
     description: 'Connect Microsoft 365 documents, SharePoint, and OneDrive files.',
-    icon: '🔷',
+    icon: <svg viewBox="0 0 24 24" fill="#0078D4" className="w-6 h-6"><path d="M23.5 12c0-2.3-1.8-4.1-4.1-4.1-.2 0-.4 0-.6.1-1.3-3.5-4.6-5.9-8.4-5.9-5.1 0-9.2 4.1-9.2 9.2 0 1.7.5 3.3 1.3 4.7-2.6 1.4-4.3 4.2-4.3 7.2 0 4.6 3.8 8.4 8.4 8.4h12.5c4 0 7.3-3.3 7.3-7.3 0-3.3-2.2-6.1-5.3-7.1-.1-.1-.1-.1-.1-.2.8-1.5 1.2-3.1 1.2-4.8z"/></svg>,
     color: 'from-sky-500/10 to-sky-600/5',
     border: 'border-sky-500/20',
     category: 'Storage',
@@ -93,7 +93,7 @@ const INTEGRATIONS = [
     id: 'ms_teams',
     name: 'Microsoft Teams',
     description: 'Sync Teams chats, meeting recordings, and shared files.',
-    icon: '🟦',
+    icon: <svg viewBox="0 0 24 24" className="w-6 h-6"><path d="M12.984 10.144H7.992V5.152h4.992v4.992zM21.96 10.144H14.12v-4.992h7.84v4.992zM12.984 21.36H7.992v-9.552h4.992v9.552zM21.96 21.36H14.12v-9.552h7.84v9.552z" fill="#6264A7"/></svg>,
     color: 'from-indigo-500/10 to-indigo-600/5',
     border: 'border-indigo-500/20',
     category: 'Meetings',
@@ -106,7 +106,7 @@ const INTEGRATIONS = [
     id: 'gmail',
     name: 'Gmail',
     description: 'Capture important emails and link them to projects and meetings.',
-    icon: '📧',
+    icon: <svg viewBox="0 0 24 24" className="w-6 h-6"><path d="M24 5.457v13.909c0 1.104-.896 2-2 2h-3V9.043l-7 4.348-7-4.348v12.323h-3c-1.104 0-2-.896-2-2V5.457c0-.578.259-1.073.666-1.428L12 9.717l10.334-5.688c.407.355.666.85.666 1.428z" fill="#EA4335"/></svg>,
     color: 'from-red-500/10 to-red-600/5',
     border: 'border-red-500/20',
     category: 'Email',
@@ -119,7 +119,7 @@ const INTEGRATIONS = [
     id: 'jira',
     name: 'Jira',
     description: 'Connect tickets, sprints, and bugs to meeting decisions.',
-    icon: '🔵',
+    icon: <svg viewBox="0 0 24 24" className="w-6 h-6"><path d="M2.28 14.88L9.06 21.66l6.81-6.81-6.81-6.81L2.28 14.88zM15.87 2.34l-6.81 6.81 6.81 6.81 6.81-6.81L15.87 2.34z" fill="#0052CC"/></svg>,
     color: 'from-blue-600/10 to-blue-700/5',
     border: 'border-blue-600/20',
     category: 'Project Management',
@@ -131,7 +131,7 @@ const INTEGRATIONS = [
     id: 'confluence',
     name: 'Confluence',
     description: 'Import engineering docs and enterprise knowledge pages.',
-    icon: '🔵',
+    icon: <svg viewBox="0 0 24 24" className="w-6 h-6"><path d="M2.96 15.441a10.02 10.02 0 01-.892-1.688l5.225-8.508c.553-.9 1.488-1.503 2.548-1.543l9.539-.364c.26-.01.52.053.754.195a1.472 1.472 0 01.693 1.25v2.808a2.531 2.531 0 01-1.22 2.164L9.198 16.03l-1.574 2.564a2.553 2.553 0 01-2.547 1.218L2.96 15.441zm18.067-1.127a10.02 10.02 0 01-1.391 1.296l-7.227 5.228a2.536 2.536 0 01-2.547.464L.32 17.653A1.474 1.474 0 010 16.353V13.54a2.531 2.531 0 011.22-2.164l10.408-6.275 1.574-2.564A2.553 2.553 0 0115.75 1.32l2.115 4.372a10.02 10.02 0 011.391 1.296l7.227-5.228a2.536 2.536 0 012.547-.464l9.542 3.649c.243.093.454.262.598.483a1.473 1.473 0 01.096 1.31v2.812a2.531 2.531 0 01-1.22 2.164L10.408 6.275z" fill="#172B4D"/></svg>,
     color: 'from-cyan-500/10 to-cyan-600/5',
     border: 'border-cyan-500/20',
     category: 'Knowledge Base',
@@ -143,7 +143,7 @@ const INTEGRATIONS = [
     id: 'clickup',
     name: 'ClickUp',
     description: 'Tasks and project management integrated with your meeting knowledge.',
-    icon: '🟪',
+    icon: <svg viewBox="0 0 24 24" className="w-6 h-6"><path d="M12.016 1.838a5.215 5.215 0 0 1 5.215 5.216h-3.413a1.802 1.802 0 0 0-3.605 0H6.8A5.215 5.215 0 0 1 12.016 1.838zM19.345 8.358a9.421 9.421 0 0 1 2.062 5.922 9.388 9.388 0 0 1-9.39 9.39 9.388 9.388 0 0 1-9.39-9.39 9.421 9.421 0 0 1 2.062-5.922l2.42 2.42a6.002 6.002 0 0 0 9.852 0l2.42-2.42z" fill="#7B68EE"/></svg>,
     color: 'from-violet-500/10 to-violet-600/5',
     border: 'border-violet-500/20',
     category: 'Project Management',
@@ -155,7 +155,7 @@ const INTEGRATIONS = [
     id: 'asana',
     name: 'Asana',
     description: 'Sync projects and tasks with your organizational memory.',
-    icon: '🔴',
+    icon: <svg viewBox="0 0 24 24" className="w-6 h-6"><path d="M12 1.636A10.364 10.364 0 1 0 22.364 12 10.364 10.364 0 0 0 12 1.636zm0 18.256A7.892 7.892 0 1 1 19.892 12 7.892 7.892 0 0 1 12 19.892zm0-13.43A5.538 5.538 0 1 0 17.538 12 5.538 5.538 0 0 0 12 6.462z" fill="#F06A6A"/></svg>,
     color: 'from-red-400/10 to-red-500/5',
     border: 'border-red-400/20',
     category: 'Project Management',
@@ -167,7 +167,7 @@ const INTEGRATIONS = [
     id: 'linear',
     name: 'Linear',
     description: 'Engineering issue tracking connected to your meeting notes.',
-    icon: '🟤',
+    icon: <svg viewBox="0 0 24 24" className="w-6 h-6"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.72A6.72 6.72 0 1118.72 12 6.728 6.728 0 0112 18.72zm2.846-9.742l-4.577 4.577a.64.64 0 01-.905-.905l4.577-4.577a.64.64 0 01.905.905z" fill="#5E6AD2"/></svg>,
     color: 'from-amber-500/10 to-amber-600/5',
     border: 'border-amber-500/20',
     category: 'Engineering',
@@ -264,11 +264,14 @@ const INTEGRATIONS = [
 
 const CATEGORIES = ['All', 'Storage', 'Messaging', 'Meetings', 'Engineering', 'Knowledge Base', 'Project Management', 'Email', 'CRM'];
 
+const isSuperAdmin = (user) => user?.role === 'super_admin' || user?.user_metadata?.role === 'super_admin';
+
 // ─── Main Component ──────────────────────────────────────────────────────────
 export default function IntegrationsHub() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const companyId = user?.user_metadata?.company_id || user?.company_id;
 
@@ -343,15 +346,23 @@ export default function IntegrationsHub() {
   };
 
   const handleSyncNow = async (integration) => {
-    const conn = connected[integration.provider];
-    if (!conn) return;
-    setSyncing(prev => ({ ...prev, [integration.id]: true }));
     try {
-      const { error } = await supabase.functions.invoke('integration-sync', {
+      const conn = connected[integration.provider] || connected[integration.id];
+      if (!conn) return;
+
+      setSyncing(prev => ({ ...prev, [integration.id]: true }));
+
+      // Optimistically clear any sync error
+      await supabase
+        .from('clipad_integrations')
+        .update({ sync_error: null })
+        .eq('id', conn.id);
+
+      const { error } = await supabase.functions.invoke('oauth-sync', {
         body: { integrationId: conn.id, provider: integration.id }
       });
       if (error) throw error;
-      toast({ title: '🔄 Sync started', description: `Syncing ${integration.name}. New items will appear shortly.` });
+      toast({ title: '🔄 Sync started', description: `Syncing ${integration.name}.` });
       setTimeout(() => { loadConnected(); loadKnowledge(); }, 3000);
     } catch (e) {
       toast({ title: 'Sync failed', description: e.message || 'Could not sync.', variant: 'destructive' });
@@ -380,17 +391,44 @@ export default function IntegrationsHub() {
   const connectedCount = Object.keys(connected).length;
   const knowledgeCount = knowledge.length;
 
+  if (!isSuperAdmin(user)) {
+    return (
+      <div className="min-h-full bg-background flex flex-col items-center justify-center p-10 page-enter">
+        <div className="bg-card border border-border rounded-2xl p-10 flex flex-col items-center text-center gap-4 max-w-lg shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+            <Plug className="w-8 h-8 text-primary/40" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-foreground mb-2">Integrations are restricted</h2>
+            <p className="text-muted-foreground text-sm mt-3">
+              Currently, only Super Admins can connect workspace integrations. We are testing this feature to ensure data security before rolling it out.
+            </p>
+          </div>
+          <button onClick={() => navigate(-1)} className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-full bg-background text-foreground pb-12" style={{ fontFamily: "'Inter', sans-serif" }}>
       {/* Hero Header */}
       <div className="relative overflow-hidden border-b border-border bg-gradient-to-br from-primary/5 via-background to-background px-6 py-10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(var(--primary-rgb),0.08),transparent_60%)] pointer-events-none" />
         <div className="max-w-5xl mx-auto relative z-10">
-          <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-start gap-4 mb-3">
+            <button 
+              onClick={() => navigate(-1)}
+              className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:bg-secondary transition-colors shrink-0"
+            >
+              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+            </button>
             <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
               <Plug className="w-5 h-5 text-primary" />
             </div>
-            <div>
+            <div className="mt-1">
               <h1 className="text-2xl font-bold text-foreground">Integrations</h1>
               <p className="text-sm text-muted-foreground">Connect your tools. Build organizational memory.</p>
             </div>
@@ -578,7 +616,7 @@ export default function IntegrationsHub() {
         </div>
 
         {/* Recent Imported Knowledge */}
-        {knowledge.length > 0 && (
+        {knowledge.length > 0 ? (
           <div>
             <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
               <FileText className="w-4 h-4 text-primary" />
@@ -615,7 +653,19 @@ export default function IntegrationsHub() {
               })}
             </div>
           </div>
-        )}
+        ) : Object.keys(connected).length > 0 ? (
+          <div className="bg-secondary/50 border border-border border-dashed rounded-2xl p-8 flex flex-col items-center justify-center text-center gap-3">
+             <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
+               <Loader2 className="w-6 h-6 text-muted-foreground animate-spin" />
+             </div>
+             <div>
+               <h3 className="font-bold text-foreground">Waiting for knowledge sync</h3>
+               <p className="text-sm text-muted-foreground max-w-sm mt-1">
+                 Your connected integrations are syncing in the background. If you see any errors on the cards above (like 403 or invalid_auth), you'll need to reconnect or clear the errors before data will appear here.
+               </p>
+             </div>
+          </div>
+        ) : null}
 
         {/* API credentials notice */}
         <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-5 flex gap-3">

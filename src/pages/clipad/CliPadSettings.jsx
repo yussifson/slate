@@ -11,7 +11,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import CliPadBilling from './CliPadBilling';
 import CliPadTeamSettings from '@/components/clipad/CliPadTeamSettings';
-import IntegrationsHub from './IntegrationsHub';
+
 import { Camera as CapCamera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 export default function CliPadSettings() {
@@ -118,7 +118,13 @@ export default function CliPadSettings() {
             {[{id: 'profile', icon: User, label: 'Profile'}, {id: 'notifs', icon: Bell, label: 'Notifications'}, {id: 'meeting', icon: Video, label: 'Meeting Defaults'}, ...(isSuperAdmin(user) ? [{id: 'integrations', icon: Plug, label: 'Integrations ⚡'}] : []), ...(isAdmin(user) ? [{id: 'team', icon: Users, label: 'Team Management'}, {id: 'billing', icon: CreditCard, label: 'Billing & Plans'}] : [])].map(tab => (
               <button 
                 key={tab.id} 
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  if (tab.id === 'integrations') {
+                    navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/settings/integrations' : '/settings/integrations');
+                  } else {
+                    setActiveTab(tab.id);
+                  }
+                }}
                 className={`whitespace-nowrap flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all border active:scale-95 ${activeTab === tab.id ? 'bg-primary/10 text-primary border-primary/20' : 'bg-secondary text-foreground border-border hover:bg-secondary/80'}`}>
                 <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-primary' : 'text-primary/70'}`} /> {tab.label}
               </button>
@@ -129,24 +135,6 @@ export default function CliPadSettings() {
           <div className="md:col-span-3 space-y-8">
             
             {isAdmin(user) && activeTab === 'billing' && <CliPadBilling />}
-            {activeTab === 'integrations' && (
-              isSuperAdmin(user)
-                ? <IntegrationsHub />
-                : (
-                  <div className="bg-card border border-border rounded-2xl p-10 flex flex-col items-center justify-center text-center gap-4">
-                    <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
-                      <Plug className="w-8 h-8 text-primary/40" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-bold text-foreground mb-2">Integrations</h2>
-                      <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold uppercase tracking-wider">Coming Soon</span>
-                      <p className="text-muted-foreground text-sm mt-3 max-w-sm">
-                        Connect CliPad with Google Drive, Slack, Zoom, GitHub, Notion and 15 more tools. We're finalising this feature and will release it soon.
-                      </p>
-                    </div>
-                  </div>
-                )
-            )}
             {isAdmin(user) && activeTab === 'team' && (
         <>
         {/* Enterprise Features */}
