@@ -878,3 +878,9 @@ select:not([class*="hidden"]):not([multiple]) {
 .scrollbar-primary::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--primary) / 0.8);
 }
+
+/* Hide native password reveal button in Edge/Windows to prevent shaking */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}

@@ -374,6 +374,16 @@ export default function SpaceDashboard() {
   const colorIndex = space?.name?.charCodeAt(0) % COLORS.length || 0;
   const color = COLORS[colorIndex];
 
+  const getDailyNatureElement = () => {
+    const nature = [
+      '🌿', '🌸', '🏔️', '🍁', '🍃', '🌲', '🌴', '🌾', '🌵', '🌻',
+      '🌼', '🍄', '🌳', '🍂', '⛅', '🌈', '🪴', '🌊', '❄️', '🪵',
+      '🌺', '🍀', '🌷', '🌱', '🏵️', '💐', '🎋', '🪴', '🌅', '🌌', '🌠'
+    ];
+    const day = new Date().getDate(); // 1-31
+    return nature[(day - 1) % nature.length];
+  };
+
   if (loading || isLoadingAuth) {
     return <ClipadLoader fullScreen text="Loading space dashboard..." />;
   }
@@ -435,7 +445,14 @@ export default function SpaceDashboard() {
 
       {/* Space header */}
       <div className="relative overflow-hidden bg-white dark:bg-card border-b border-black/5 dark:border-white/5 md:border-none md:bg-transparent">
-        <div className={`hidden md:block absolute inset-0 bg-gradient-to-br ${color} opacity-10`} />
+        <div className={`hidden md:block absolute inset-0 bg-gradient-to-br ${color} opacity-[0.03] dark:opacity-[0.08]`} />
+        
+        {/* Latent Nature Design */}
+        <div className="absolute top-0 right-0 pointer-events-none select-none overflow-hidden h-full w-1/2 flex items-start justify-end opacity-[0.12] dark:opacity-[0.08] p-4 pr-8 md:pr-24 mix-blend-luminosity dark:mix-blend-screen">
+          <span className="text-[120px] md:text-[180px] leading-none transform -rotate-12 translate-y-[-20%] translate-x-[20%] blur-[2px]">
+            {getDailyNatureElement()}
+          </span>
+        </div>
         <div className="relative px-4 md:px-10 py-6 md:py-8">
           <div className="flex items-start gap-3 md:gap-4">
             <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-lg md:shadow-xl shrink-0`}>

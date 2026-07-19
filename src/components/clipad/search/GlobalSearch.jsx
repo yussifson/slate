@@ -144,7 +144,6 @@ export default function GlobalSearch() {
 
       let formatted = [];
 
-      try {
       if (term) {
         // Build correct filters based on role to ensure admins see everything, and users see space+personal things
         const spaceIdsStr = spaceIdArr.length > 0 ? spaceIdArr.join(',') : '00000000-0000-0000-0000-000000000000';
