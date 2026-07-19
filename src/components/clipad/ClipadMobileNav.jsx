@@ -105,113 +105,112 @@ export default function ClipadMobileNav({ isMarketing = false }) {
 
             {/* Floating Panel */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.88, y: 8 }}
+              initial={{ opacity: 0, scale: 0.9, y: 10, transformOrigin: "bottom right" }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.88, y: 8 }}
-              transition={{ type: "spring", damping: 24, stiffness: 380 }}
-              className="lg:hidden fixed bottom-[80px] right-3 z-[60] w-[230px] overflow-hidden rounded-[18px] bg-white/90 dark:bg-[#111827]/85 backdrop-blur-[28px] saturate-[1.8] shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.8)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4),0_2px_8px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.05)] border border-black/[0.08] dark:border-white/[0.12]"
+              exit={{ opacity: 0, scale: 0.9, y: 10 }}
+              transition={{ type: "spring", damping: 25, stiffness: 400 }}
+              className="lg:hidden fixed bottom-[76px] right-4 z-[60] w-[260px] overflow-hidden rounded-[24px] bg-white/80 dark:bg-[#09090b]/80 backdrop-blur-3xl saturate-[2] shadow-[0_16px_40px_-8px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,0.9)] dark:shadow-[0_16px_40px_-8px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.1)] border border-slate-200/50 dark:border-white/10"
               onClick={(e) => e.stopPropagation()}
             >
               {/* User Info */}
               {user && (
-                <div className="flex items-center gap-2.5 px-3.5 py-3 border-b border-black/[0.06] dark:border-white/[0.06]">
-                  <div className="w-8 h-8 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden shadow-sm">
+                <div className="flex items-center gap-3 px-4 py-4 border-b border-black/[0.04] dark:border-white/[0.06] bg-gradient-to-br from-slate-50/50 to-transparent dark:from-slate-900/30 dark:to-transparent">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/80 text-primary-foreground flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden shadow-md ring-2 ring-white/60 dark:ring-white/10">
                     {user.avatar_url || user?.user_metadata?.avatar_url ? (
                       <img src={user.avatar_url || user.user_metadata.avatar_url} alt="" className="w-full h-full object-cover" />
                     ) : (
                       (user.full_name || user.email)?.[0]?.toUpperCase() || 'U'
                     )}
                   </div>
-                  <div className="overflow-hidden">
-                    <p className="font-semibold text-[12px] text-slate-900 dark:text-slate-100 truncate leading-tight">{user.full_name || user?.user_metadata?.full_name || 'User'}</p>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500 truncate">{user.email}</p>
+                  <div className="overflow-hidden flex-1">
+                    <p className="font-semibold text-[14px] text-slate-900 dark:text-slate-100 truncate leading-tight">{user.full_name || user?.user_metadata?.full_name || 'User'}</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">{user.email}</p>
                   </div>
                 </div>
               )}
 
-              {/* Action Grid — icons + tiny labels */}
-              <div className="p-2 grid grid-cols-4 gap-1">
+              {/* Action List */}
+              <div className="p-2 flex flex-col gap-0.5">
                 {/* Theme */}
-                <div className="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-secondary transition-colors cursor-pointer" title="Theme">
-                  <ThemeToggle iconOnly />
-                  <span className="text-[9px] font-semibold text-slate-500 dark:text-slate-400">Theme</span>
+                <div className="flex items-center gap-3 px-3 py-2.5 rounded-[14px] hover:bg-slate-100/80 dark:hover:bg-white/[0.06] transition-colors group">
+                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm border border-slate-200/50 dark:border-transparent">
+                    <ThemeToggle iconOnly />
+                  </div>
+                  <span className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Theme</span>
                 </div>
 
                 {/* Settings */}
                 <button
                   onClick={() => { setIsMenuOpen(false); navigate('/settings'); }}
-                  className="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
-                  title="Settings"
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[14px] hover:bg-blue-50/80 dark:hover:bg-blue-500/10 transition-colors group"
                 >
-                  <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm border border-blue-100/50 dark:border-transparent">
                     <Settings className="w-4 h-4" />
                   </div>
-                  <span className="text-[9px] font-semibold text-slate-500 dark:text-slate-400">Settings</span>
+                  <span className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Settings</span>
                 </button>
 
                 {/* Analytics / Enterprise */}
                 {user?.clipad_plan !== 'enterprise' ? (
                   <button
                     onClick={() => { setIsMenuOpen(false); navigate(window.location.hostname.includes('clipad') ? '/analytics' : '/clipad/analytics'); }}
-                    className="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
-                    title="Analytics"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[14px] hover:bg-purple-50/80 dark:hover:bg-purple-500/10 transition-colors group"
                   >
-                    <div className="w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm border border-purple-100/50 dark:border-transparent">
                       <Bot className="w-4 h-4" />
                     </div>
-                    <span className="text-[9px] font-semibold text-slate-500 dark:text-slate-400">Analytics</span>
+                    <span className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Analytics</span>
                   </button>
                 ) : (
                   <button
                     onClick={() => { setIsMenuOpen(false); navigate(window.location.hostname.includes('clipad') ? '/enterprise' : '/clipad/enterprise'); }}
-                    className="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
-                    title="Enterprise"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[14px] hover:bg-indigo-50/80 dark:hover:bg-indigo-500/10 transition-colors group"
                   >
-                    <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm border border-indigo-100/50 dark:border-transparent">
                       <Layers className="w-4 h-4" />
                     </div>
-                    <span className="text-[9px] font-semibold text-indigo-500 dark:text-indigo-400">Enterprise</span>
+                    <span className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Enterprise</span>
                   </button>
                 )}
 
                 {/* Optavel Account */}
                 <button
                   onClick={() => window.location.href = 'https://account.optavel.com'}
-                  className="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-secondary transition-colors"
-                  title="Account"
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[14px] hover:bg-slate-100/80 dark:hover:bg-white/[0.06] transition-colors group"
                 >
-                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm border border-slate-200/50 dark:border-transparent">
                     <User className="w-4 h-4" />
                   </div>
-                  <span className="text-[9px] font-semibold text-slate-500 dark:text-slate-400">Account</span>
+                  <span className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Account</span>
                 </button>
 
                 {/* Super Admin */}
                 {user?.role === 'super_admin' && (
                   <button
                     onClick={() => { setIsMenuOpen(false); navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin'); }}
-                    className="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors"
-                    title="Admin"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[14px] hover:bg-rose-50/80 dark:hover:bg-rose-500/10 transition-colors group"
                   >
-                    <div className="w-8 h-8 rounded-full bg-rose-50 dark:bg-rose-900/20 text-rose-500 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm border border-rose-100/50 dark:border-transparent">
                       <Shield className="w-4 h-4" />
                     </div>
-                    <span className="text-[9px] font-semibold text-rose-500">Admin</span>
+                    <span className="text-[13px] font-medium text-rose-600 dark:text-rose-400">Admin</span>
                   </button>
                 )}
               </div>
 
               {/* Sign Out */}
-              <div className="border-t border-black/[0.06] dark:border-white/[0.06] mx-2 mb-1" />
-              <button
-                onClick={async () => { await logout(); navigate('/login'); }}
-                className="w-full flex items-center gap-2.5 px-3 py-2.5 mb-1 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors rounded-xl mx-auto"
-              >
-                <div className="w-7 h-7 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center shrink-0">
-                  <LogOut className="w-3.5 h-3.5" />
-                </div>
-                <span className="text-[12px] font-semibold text-red-500 dark:text-red-400">Sign Out</span>
-              </button>
+              <div className="border-t border-slate-200/50 dark:border-white/[0.06] mx-3 my-1" />
+              <div className="p-2 pt-1">
+                <button
+                  onClick={async () => { await logout(); navigate('/login'); }}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[14px] hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm border border-red-100/50 dark:border-transparent">
+                    <LogOut className="w-4 h-4 ml-0.5" />
+                  </div>
+                  <span className="text-[13px] font-semibold text-red-600 dark:text-red-400">Sign Out</span>
+                </button>
+              </div>
             </motion.div>
           </>
         )}
