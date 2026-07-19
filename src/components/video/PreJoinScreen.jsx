@@ -278,7 +278,7 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
             variant="ghost"
             className="w-full text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 py-6 rounded-2xl font-medium"
             onClick={() => {
-              navigator.clipboard.writeText(window.location.origin + '/meet/' + (roomName || window.location.pathname.split('/').pop()));
+              navigator.clipboard.writeText(window.location.origin + '/join/' + (roomName || window.location.pathname.split('/').pop()));
               toast({ title: 'Copied!', description: 'Meeting link copied to clipboard.' });
             }}
           >
