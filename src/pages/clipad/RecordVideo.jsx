@@ -1840,6 +1840,7 @@ export default function RecordVideo() {
                   <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
                     <ChevronDown className="w-4 h-4" />
                   </div>
+                  </div>
                 </div>
               </div>
 
