@@ -22,6 +22,7 @@ import { generateText} from "@/lib/cloudflareAI";
 import { detectDecisions, detectCommitments, writeOrgEvent } from '@/lib/clipadIntelligence';
 import { useToast} from "@/components/ui/use-toast";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
+import ClipadLoader from "@/components/ui/ClipadLoader";
 import { useTheme } from "@/lib/ThemeContext";
 import CanvasWhiteboard from '@/components/clipad/CanvasWhiteboard';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
@@ -612,15 +613,7 @@ export const VIRTUAL_BACKGROUNDS = [
  {/* Video Content Area */}
  <div className="flex-1 flex flex-col relative min-w-0">
 
- {/* PiP Toggle Button */}
- <Button 
- variant="secondary" 
- size="icon" 
- onClick={togglePipMode}
- className="absolute top-2 right-2 z-50 rounded-full w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity"
- >
- {isPipMode ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
- </Button>
+
 
  {/* Recording Status Indicator */}
  {isRecording && (
@@ -872,7 +865,8 @@ export const VIRTUAL_BACKGROUNDS = [
  `}</style>
 
  {/* Control Bar */}
- <div className={`relative z-10 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border border-white/60 dark:border-white/10 flex items-center justify-center transition-all shadow-2xl rounded-full mx-auto mb-6 max-w-fit ${isPipMode ? 'h-14 px-3 gap-2' : 'h-[80px] px-6 gap-3 sm:gap-4'}`}>
+ <div className={`relative z-10 w-full max-w-full px-2 sm:px-0 sm:max-w-fit mx-auto mb-4 sm:mb-6`}>
+   <div className={`bg-white/80 dark:bg-card/80 backdrop-blur-3xl border border-white/60 dark:border-white/10 flex items-center justify-start sm:justify-center transition-all shadow-2xl rounded-3xl sm:rounded-full overflow-x-auto no-scrollbar ${isPipMode ? 'h-14 px-3 gap-2' : 'h-[72px] sm:h-[80px] px-4 sm:px-6 gap-2 sm:gap-4'}`}>
  <div className="relative">
    {showEmojis && (
      <div className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-card border border-primary/20 shadow-xl rounded-full px-4 py-3 flex gap-3 animate-in fade-in slide-in-from-bottom-4 z-50">
@@ -918,7 +912,7 @@ export const VIRTUAL_BACKGROUNDS = [
  onClick={toggleScreenShare}
  variant={isSharingScreen ? "default" : "outline"}
  size="icon"
- className={`w-12 h-12 rounded-full hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isSharingScreen ? '' : 'bg-white dark:bg-secondary border-slate-200 dark:border-border'}`}
+ className={`w-12 h-12 shrink-0 rounded-full flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isSharingScreen ? '' : 'bg-white dark:bg-secondary border-slate-200 dark:border-border'}`}
  title="Share Screen"
  >
  <MonitorUp className="w-5 h-5" />
@@ -927,7 +921,7 @@ export const VIRTUAL_BACKGROUNDS = [
  onClick={() => setShowWhiteboard(!showWhiteboard)}
  variant={showWhiteboard ? "default" : "outline"}
  size="icon"
- className={`w-12 h-12 rounded-full hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${showWhiteboard ? '' : 'bg-white dark:bg-secondary border-slate-200 dark:border-border'}`}
+ className={`w-12 h-12 shrink-0 rounded-full flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${showWhiteboard ? '' : 'bg-white dark:bg-secondary border-slate-200 dark:border-border'}`}
  title="Whiteboard"
  >
  <PenTool className="w-5 h-5" />
@@ -936,7 +930,7 @@ export const VIRTUAL_BACKGROUNDS = [
  onClick={() => setShowChat(!showChat)}
  variant={showChat ? "default" : "outline"}
  size="icon"
- className={`w-12 h-12 rounded-full hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${showChat ? '' : 'bg-white dark:bg-secondary border-slate-200 dark:border-border'}`}
+ className={`w-12 h-12 shrink-0 rounded-full flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${showChat ? '' : 'bg-white dark:bg-secondary border-slate-200 dark:border-border'}`}
  title="Chat"
  >
  <MessageSquare className="w-5 h-5" />
@@ -945,7 +939,7 @@ export const VIRTUAL_BACKGROUNDS = [
   onClick={() => setShowInvite(true)}
   variant="outline"
   size="icon"
-  className="w-12 h-12 rounded-full hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white dark:bg-secondary border-slate-200 dark:border-border text-slate-700 dark:text-foreground"
+  className="w-12 h-12 shrink-0 rounded-full flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white dark:bg-secondary border-slate-200 dark:border-border text-slate-700 dark:text-foreground"
   title="Invite People"
   >
   <UserPlus className="w-5 h-5" />
@@ -1083,7 +1077,7 @@ export const VIRTUAL_BACKGROUNDS = [
   }}
   variant={isRecording ? "destructive" : "outline"}
   size="icon"
-  className={`w-12 h-12 rounded-full hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isRecording ? 'animate-pulse' : 'bg-white dark:bg-secondary border-slate-200 dark:border-border text-slate-700 dark:text-foreground'}`}
+  className={`w-12 h-12 shrink-0 rounded-full flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isRecording ? 'animate-pulse' : 'bg-white dark:bg-secondary border-slate-200 dark:border-border text-slate-700 dark:text-foreground'}`}
   title="Record Meeting"
   >
   <VideoIcon className="w-5 h-5" />
@@ -1092,7 +1086,7 @@ export const VIRTUAL_BACKGROUNDS = [
   onClick={() => setShowSettings(true)}
   variant="outline"
   size="icon"
-  className="w-12 h-12 rounded-full hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white dark:bg-secondary border-slate-200 dark:border-border text-slate-700 dark:text-foreground"
+  className="w-12 h-12 shrink-0 rounded-full flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white dark:bg-secondary border-slate-200 dark:border-border text-slate-700 dark:text-foreground"
   title="Settings"
   >
   <Settings className="w-5 h-5" />
@@ -1121,7 +1115,7 @@ export const VIRTUAL_BACKGROUNDS = [
   }}
   variant={isStudioAudioOn ? "default" : "outline"}
   size="icon"
-  className={`w-12 h-12 rounded-full hidden sm:flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 relative group ${isStudioAudioOn ? 'bg-primary/20 border-primary text-primary shadow-[0_0_15px_rgba(var(--primary),0.3)]' : 'bg-white dark:bg-secondary border-slate-200 dark:border-border text-slate-700 dark:text-foreground'}`}
+  className={`w-12 h-12 shrink-0 rounded-full flex shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 relative group ${isStudioAudioOn ? 'bg-primary/20 border-primary text-primary shadow-[0_0_15px_rgba(var(--primary),0.3)]' : 'bg-white dark:bg-secondary border-slate-200 dark:border-border text-slate-700 dark:text-foreground'}`}
   title="Studio Audio"
   >
   <Sparkles className="w-5 h-5" />
@@ -1131,7 +1125,7 @@ export const VIRTUAL_BACKGROUNDS = [
   variant="default"
   onClick={handleAiAssist}
   disabled={isAiLoading}
-  className="h-14 px-6 rounded-[1.25rem] font-semibold gap-2 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all hover:-translate-y-0.5 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white"
+  className="h-14 px-6 shrink-0 rounded-[1.25rem] font-semibold flex items-center gap-2 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all hover:-translate-y-0.5 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white"
  >
   <Sparkles className="w-4 h-4" /> {isAiLoading ? "Processing..." : "AI Notes"}
  </Button>
@@ -1139,7 +1133,7 @@ export const VIRTUAL_BACKGROUNDS = [
   variant="secondary"
   onClick={handleAiFollowUp}
   disabled={isAiLoading}
-  className="h-12 px-5 rounded-full font-semibold gap-2 hover:bg-primary hover:text-primary-foreground transition-colors hidden lg:flex"
+  className="h-12 px-5 shrink-0 rounded-full font-semibold flex items-center gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
  >
   <Mail className="w-4 h-4" /> AI Follow-Up
  </Button>
@@ -1148,7 +1142,7 @@ export const VIRTUAL_BACKGROUNDS = [
  <Button 
  onClick={leaveCall}
  variant="destructive"
- className={`${isPipMode ? 'h-10 w-10 p-0 rounded-xl' : 'h-14 px-8 ml-4 rounded-[1.25rem]'} font-bold flex items-center justify-center shadow-lg shadow-red-500/20 hover:shadow-red-500/40 transition-all hover:-translate-y-0.5 bg-red-500 hover:bg-red-600`}
+ className={`${isPipMode ? 'h-10 w-10 p-0 rounded-xl' : 'h-14 px-6 sm:px-8 shrink-0 rounded-[1.25rem]'} font-bold flex items-center justify-center shadow-lg shadow-red-500/20 hover:shadow-red-500/40 transition-all hover:-translate-y-0.5 bg-red-500 hover:bg-red-600 text-white`}
  >
  {isPipMode ? <PhoneOff className="w-3 h-3" /> : <><PhoneOff className="w-5 h-5 mr-2" /> Leave</>}
  </Button>
@@ -1343,9 +1337,9 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
    const callObject = DailyIframe.createCallObject();
    callRef.current = callObject;
 
-   const userSettings = user?.user_metadata?.clipad_settings || {};
-   const startMic = userSettings.micDefault !== undefined ? userSettings.micDefault : initialAudio;
-   const startCam = userSettings.cameraDefault !== undefined ? userSettings.cameraDefault : initialVideo;
+   // Always respect the choices made on the pre-join screen
+   const startMic = initialAudio;
+   const startCam = initialVideo;
    
    const joinOpts = { url: roomUrl, startAudioOff: !startMic, startVideoOff: !startCam };
    if (typeof token === 'string' && token.length > 0) {
@@ -1436,11 +1430,8 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
 
   if (!daily || !roomUrl) {
    return (
-    <div className="flex flex-col h-full bg-white dark:bg-background rounded-xl items-center justify-center gap-4">
-     <div className="w-16 h-16 relative flex items-center justify-center animate-pulse">
-      <CliPadLogo className="w-12 h-12" />
-     </div>
-     <p className="text-slate-500 font-medium tracking-wide animate-pulse">Connecting to secure video server...</p>
+    <div className="flex flex-col h-full bg-slate-50 dark:bg-background rounded-xl items-center justify-center gap-4">
+      <ClipadLoader size="lg" text="Connecting to secure video server..." />
     </div>
    );
   }

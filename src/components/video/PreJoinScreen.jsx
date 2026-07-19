@@ -161,13 +161,13 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
   };
 
   return (
-    <div className="w-screen h-screen bg-slate-50 dark:bg-[#050810] flex flex-col md:flex-row items-center justify-center px-4 md:px-12 gap-8 md:gap-16 overflow-y-auto relative overflow-hidden">
+    <div className="w-screen min-h-[100dvh] bg-slate-50 dark:bg-[#050810] flex flex-col md:flex-row items-center justify-center p-4 md:p-12 gap-6 md:gap-16 overflow-y-auto relative">
       {/* Back Button */}
       <button 
         onClick={() => navigate(-1)} 
-        className="absolute top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 rounded-xl bg-white/80 dark:bg-card/80 backdrop-blur-md border border-slate-200 dark:border-border text-slate-700 dark:text-foreground font-semibold text-sm shadow-sm hover:shadow-md transition-all hover:-translate-x-1"
+        className="absolute top-4 md:top-6 left-4 md:left-6 z-50 flex items-center gap-2 px-3 md:px-4 py-2 rounded-xl bg-white/80 dark:bg-card/80 backdrop-blur-md border border-slate-200 dark:border-border text-slate-700 dark:text-foreground font-semibold text-sm shadow-sm hover:shadow-md transition-all hover:-translate-x-1"
       >
-        <ChevronLeft className="w-4 h-4" /> Back
+        <ChevronLeft className="w-4 h-4" /> <span className="hidden md:inline">Back</span>
       </button>
 
       {/* Realistic Background Layers */}
@@ -177,8 +177,8 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
       </div>
       
       {/* Left Side: Camera Preview */}
-      <div className="relative z-10 flex-1 flex flex-col items-end justify-center w-full max-w-3xl">
-        <div className="relative w-full aspect-video bg-gradient-to-br from-slate-900 to-black rounded-[2rem] overflow-hidden flex items-center justify-center transition-colors shadow-2xl border border-white/10">
+      <div className="relative z-10 flex-1 flex flex-col items-center md:items-end justify-center w-full max-w-3xl mt-16 md:mt-0">
+        <div className="relative w-full max-w-sm md:max-w-none aspect-[3/4] md:aspect-video bg-gradient-to-br from-slate-900 to-black rounded-[2rem] overflow-hidden flex items-center justify-center transition-colors shadow-2xl border border-white/10">
           
           {/* Video element is always rendered to preserve srcObject, but hidden when isVideoOn is false */}
           <video 
