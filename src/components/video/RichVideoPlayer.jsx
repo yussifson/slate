@@ -95,7 +95,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
         // Secure playback: Fetch directly and convert to blob to hide public URL from DOM
         if (url) {
           try {
-            const res = await fetch(data.video_url);
+            const res = await fetch(url);
             if (res.ok) {
               const blob = await res.blob();
               setBlobUrl(URL.createObjectURL(blob));
@@ -119,7 +119,7 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
       const id = entityId || videoRecord.id;
 
       const queries = [
-        db.from(cTable).select('*, author:auth.users(full_name, avatar_url)').eq(fk, id).order('timestamp_seconds', { ascending: true }),
+        db.from(cTable).select('*, author:profiles(full_name, avatar_url)').eq(fk, id).order('timestamp_seconds', { ascending: true }),
         db.from(rTable).select('*').eq(fk, id)
       ];
       

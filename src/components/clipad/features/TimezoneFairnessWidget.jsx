@@ -105,9 +105,34 @@ Distribution: Early morning (00-06 UTC): ${earlyMorning}, Business hours (08-18 
       const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
       let parsed = {};
       try {
-        parsed = JSON.parse(cleanText);
+        // Try fixing truncated JSON by appending closing brace if missing
+        let toParse = cleanText;
+        if (toParse.trim().startsWith('{') && !toParse.trim().endsWith('}')) {
+          toParse += '"}'; // close last string and object
+        }
+        try {
+          parsed = JSON.parse(toParse);
+        } catch {
+          // If still fails, try closing just the object
+          parsed = JSON.parse(cleanText + '}');
+        }
       } catch {
-        parsed = { fairness_score: 50, fairness_label: 'Good', insight: text, recommendation: '' };
+        try {
+           const extract = (key) => {
+               // Match the key, then the value wrapped in quotes.
+               const regex = new RegExp(`"${key}"\\s*:\\s*"([\\s\\S]*?)"(?:\\s*,|\\s*}|$)`);
+               const match = cleanText.match(regex);
+               return match ? match[1].replace(/\\"/g, '"').replace(/\\n/g, ' ') : '';
+           };
+           parsed = {
+               fairness_score: parseInt((cleanText.match(/"fairness_score"\s*:\s*(\d+)/) || [])[1]) || 50,
+               fairness_label: extract('fairness_label') || 'Good',
+               insight: extract('insight') || cleanText.replace(/[{}]/g, '').trim(),
+               recommendation: extract('recommendation') || ''
+           };
+        } catch {
+           parsed = { fairness_score: 50, fairness_label: 'Good', insight: cleanText.replace(/[{}]/g, '').trim(), recommendation: '' };
+        }
       }
 
       const result = {

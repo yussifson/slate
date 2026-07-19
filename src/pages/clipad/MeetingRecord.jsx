@@ -567,17 +567,17 @@ export default function MeetingRecord() {
             </SectionCard>
           </div>
         ) : meeting.ai_summary && !hasFeature(plan, 'hasAdvancedAI') ? (
-          <SectionCard icon={Brain} iconColor="from-slate-400 to-slate-500" title="AI Intelligence Locked" defaultOpen>
+          <SectionCard icon={Brain} iconColor="from-emerald-500 to-emerald-600" title="AI Intelligence Locked" defaultOpen>
             <div className="relative overflow-hidden rounded-xl bg-slate-50 dark:bg-card border border-slate-200 dark:border-border p-8 text-center">
               <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-slate-950/90 pointer-events-none" />
-              <Lock className="w-8 h-8 text-slate-400 mx-auto mb-4" />
+              <Lock className="w-8 h-8 text-emerald-500 mx-auto mb-4" />
               <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 relative z-10 mb-2">Advanced AI & Smart Follow-ups</h3>
               <p className="text-sm text-slate-500 max-w-sm mx-auto relative z-10 mb-6">
                 Upgrade to Pro to unlock the full AI Intelligence layer, sentiment analysis, and automated smart follow-ups.
               </p>
               <button 
                 onClick={() => navigate('/clipad/billing')}
-                className="relative z-10 px-6 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm shadow-xl"
+                className="relative z-10 px-6 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-xl transition-colors"
               >
                 Upgrade to Pro
               </button>
