@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/api/supabaseClient';
 import { logAuditEvent } from '@/lib/auditLogger';
@@ -10,6 +10,8 @@ import { CliPadLogo } from '@/components/ui/CliPadLogo';
 
 export default function CliPadLogin() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectUrl = searchParams.get('redirect') || '/dashboard';
   const { toast } = useToast();
   const [mode, setMode] = useState('sso');
   const [email, setEmail] = useState('');
@@ -20,7 +22,7 @@ export default function CliPadLogin() {
   const [showWorkspaceSelect, setShowWorkspaceSelect] = useState(false);
 
   const handleSSOLogin = () => {
-    const continueUrl = encodeURIComponent(`${window.location.origin}/auth/callback?continue=%2Fdashboard`);
+    const continueUrl = encodeURIComponent(`${window.location.origin}/auth/callback?continue=${encodeURIComponent(redirectUrl)}`);
     window.location.href = `https://account.optavel.com/sso?redirect_uri=${continueUrl}`;
   };
 
@@ -51,7 +53,7 @@ export default function CliPadLogin() {
       
       await logLoginEvent(data.user);
       
-      navigate('/dashboard');
+      navigate(redirectUrl);
     } catch (err) {
       toast({ title: 'Sign in failed', description: err.message, variant: 'destructive' });
     } finally {
@@ -67,7 +69,7 @@ export default function CliPadLogin() {
       
       await logLoginEvent(data.user);
       
-      navigate('/dashboard');
+      navigate(redirectUrl);
     } catch (err) {
       toast({ title: 'Sign in failed', description: err.message, variant: 'destructive' });
       setLoading(false);

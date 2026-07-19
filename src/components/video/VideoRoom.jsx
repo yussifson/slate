@@ -179,19 +179,19 @@ export const VIRTUAL_BACKGROUNDS = [
     setShowEmojis(false);
   };
 
- const handleCopyLink = () => {
-   navigator.clipboard.writeText(window.location.origin + '/meet/' + roomUrl.split('/').pop());
-   setCopiedLink(true);
-   toast({ title: "Link Copied", description: "Meeting link copied to clipboard." });
-   setTimeout(() => setCopiedLink(false), 2000);
- };
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.origin + '/join/' + roomUrl.split('/').pop());
+    setCopiedLink(true);
+    toast({ title: "Link Copied", description: "Meeting link copied to clipboard." });
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
 
   const handleInvite = async (e) => {
     if (e) e.preventDefault();
     if (!inviteEmail.trim()) return;
     setIsInviteLoading(true);
     
-    const properLink = window.location.origin + '/meet/' + roomUrl.split('/').pop();
+    const properLink = window.location.origin + '/join/' + roomUrl.split('/').pop();
     
     try {
       // Direct call to send-email edge function
@@ -771,8 +771,8 @@ export const VIRTUAL_BACKGROUNDS = [
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium">Copy Link</label>
           <div className="flex gap-2">
-            <Input readOnly value={window.location.origin + '/meet/' + roomUrl.split('/').pop()} className="bg-muted" />
-            <Button variant="secondary" onClick={() => navigator.clipboard.writeText(window.location.origin + '/meet/' + roomUrl.split('/').pop())} className="w-24">
+            <Input readOnly value={window.location.origin + '/join/' + roomUrl.split('/').pop()} className="bg-muted" />
+            <Button variant="secondary" onClick={() => navigator.clipboard.writeText(window.location.origin + '/join/' + roomUrl.split('/').pop())} className="w-24">
               Copy
             </Button>
           </div>

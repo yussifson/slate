@@ -60,12 +60,13 @@ export default function StandaloneMeeting() {
 
   // All state declarations first — no hooks after early returns
   const [error, setError] = useState(null);
+  const [authError, setAuthError] = useState(null);
   const [meetingUrl, setMeetingUrl] = useState(null);
   const [roomName, setRoomName] = useState(null);
   const [scheduledData, setScheduledData] = useState(null);
   const [countdown, setCountdown] = useState('');
 
-  // Try to get current user if logged in, but allow anonymous guests
+  // Fetch user to enforce organization access
   const authResult = useAuth();
   const user = authResult?.user ?? null;
 
@@ -152,6 +153,18 @@ export default function StandaloneMeeting() {
         );
       }
 
+      // Enforce organization access
+      if (!user) {
+        setAuthError('unauthenticated');
+        return;
+      }
+
+      const userCompanyId = user.user_metadata?.company_id || user.company_id;
+      if (room.company_id && userCompanyId !== room.company_id) {
+        setAuthError('unauthorized');
+        return;
+      }
+
       // If scheduled and start time is in the future
       if (room.status === 'scheduled' && room.scheduled_start_time) {
         const targetDate = new Date(room.scheduled_start_time).getTime();
@@ -193,22 +206,80 @@ export default function StandaloneMeeting() {
 
   // ── Conditional renders AFTER all hooks ──────────────────────────────────────
 
-  if (error) {
+  if (authError === 'unauthenticated') {
     return (
-      <div className="w-full h-full min-h-full flex flex-col items-center justify-center bg-white dark:bg-background p-4">
-        <div className="max-w-md w-full bg-slate-50 dark:bg-card border border-red-100 dark:border-red-500/20 rounded-2xl p-8 shadow-xl text-center space-y-6">
-          <div className="w-16 h-16 bg-red-50 dark:bg-red-500/10 rounded-full flex items-center justify-center mx-auto">
-            <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      <div className="w-full h-full min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-[#0B1121] p-4 relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 dark:bg-primary/10 blur-[120px]" />
+          <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[120px]" />
+        </div>
+        <div className="relative z-10 max-w-md w-full bg-white/80 dark:bg-card/80 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-3xl p-10 shadow-2xl text-center space-y-6">
+          <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto shadow-inner">
+            <svg className="w-10 h-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-medium text-slate-900 dark:text-white mb-2">Meeting Not Found</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">Login Required</h1>
+            <p className="text-slate-500 dark:text-muted-foreground text-sm leading-relaxed">This is a secure meeting. You must be logged in to your organization's workspace to join.</p>
+          </div>
+          <button
+            onClick={() => navigate(`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`)}
+            className="w-full py-3.5 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-primary/90 transition-all shadow-lg hover:shadow-primary/25"
+          >
+            Log In to Join
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (authError === 'unauthorized') {
+    return (
+      <div className="w-full h-full min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-[#0B1121] p-4 relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-red-500/5 dark:bg-red-500/10 blur-[120px]" />
+        </div>
+        <div className="relative z-10 max-w-md w-full bg-white/80 dark:bg-card/80 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-3xl p-10 shadow-2xl text-center space-y-6">
+          <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto shadow-inner">
+            <svg className="w-10 h-10 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">Access Denied</h1>
+            <p className="text-slate-500 dark:text-muted-foreground text-sm leading-relaxed">You do not have permission to join this meeting because you are not part of the host organization.</p>
+          </div>
+          <button
+            onClick={() => navigate('/')}
+            className="w-full py-3.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-white font-semibold text-sm hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
+          >
+            Return Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full h-full min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-[#0B1121] p-4 relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-red-500/5 dark:bg-red-500/10 blur-[120px]" />
+        </div>
+        <div className="relative z-10 max-w-md w-full bg-white/80 dark:bg-card/80 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-3xl p-10 shadow-2xl text-center space-y-6">
+          <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto shadow-inner">
+            <svg className="w-10 h-10 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">Meeting Not Found</h1>
             <p className="text-slate-500 dark:text-muted-foreground text-sm leading-relaxed">{error}</p>
           </div>
           <button
             onClick={() => navigate('/')}
-            className="w-full py-3 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition-colors"
+            className="w-full py-3.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-white font-semibold text-sm hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
           >
             Back to Home
           </button>
