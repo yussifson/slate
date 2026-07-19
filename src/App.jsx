@@ -172,7 +172,10 @@ class ErrorBoundary extends React.Component {
               </p>
               
               <button 
-                onClick={() => { sessionStorage.removeItem('chunk-error-reload'); window.location.reload(true); }} 
+                onClick={() => { 
+                  sessionStorage.removeItem('chunk-error-reload'); 
+                  window.location.replace(window.location.pathname + '?t=' + Date.now()); 
+                }} 
                 className="w-full py-4 px-6 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0"
               >
                 Refresh Page
@@ -189,11 +192,14 @@ class ErrorBoundary extends React.Component {
                </div>
                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2 text-center">Update Available</h2>
                <p className="text-slate-500 dark:text-muted-foreground mb-8 text-sm font-medium leading-relaxed text-center px-4">
-                 Tap to load the newest features and bug fixes.
+                 Tap to update to the newest features and bug fixes.
                </p>
                
                <button 
-                 onClick={() => { sessionStorage.removeItem('chunk-error-reload'); window.location.reload(true); }} 
+                 onClick={() => { 
+                   sessionStorage.removeItem('chunk-error-reload'); 
+                   window.location.replace(window.location.pathname + '?t=' + Date.now()); 
+                 }} 
                  className="w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-lg transition-transform active:scale-95"
                >
                  Tap to Update Now
