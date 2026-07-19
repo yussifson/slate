@@ -12,7 +12,8 @@ import {
  useDailyEvent,
  useScreenShare,
  useParticipant,
- useActiveSpeakerId
+ useActiveSpeakerId,
+ useWaitingParticipants
 } from '@daily-co/daily-react';
 import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, ExternalLink, MessageSquare, Send, UserPlus, Mail, Settings, Smile, PanelRightClose, PenTool, MoreHorizontal } from 'lucide-react';
 import { Button} from "@/components/ui/button";
@@ -180,7 +181,7 @@ export const VIRTUAL_BACKGROUNDS = [
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.origin + '/join/' + roomUrl.split('/').pop());
+    navigator.clipboard.writeText(window.location.origin + '/join/' + roomUrl.split('/').pop().split('?')[0]);
     setCopiedLink(true);
     toast({ title: "Link Copied", description: "Meeting link copied to clipboard." });
     setTimeout(() => setCopiedLink(false), 2000);
@@ -191,7 +192,7 @@ export const VIRTUAL_BACKGROUNDS = [
     if (!inviteEmail.trim()) return;
     setIsInviteLoading(true);
     
-    const properLink = window.location.origin + '/join/' + roomUrl.split('/').pop();
+    const properLink = window.location.origin + '/join/' + roomUrl.split('/').pop().split('?')[0];
     
     try {
       // Direct call to send-email edge function
@@ -270,6 +271,27 @@ export const VIRTUAL_BACKGROUNDS = [
         description: `${ev.participant.user_name || 'Someone'} joined the meeting.`,
       });
     }
+  }, [toast]));
+
+  // Knocking hooks
+  const { waitingParticipants } = useWaitingParticipants();
+  const waitingIds = Object.keys(waitingParticipants || {});
+  
+  const admitParticipant = (id) => {
+    if (daily) daily.updateWaitingParticipant(id, { grantRequestedAccess: true });
+  };
+  
+  const denyParticipant = (id) => {
+    if (daily) daily.updateWaitingParticipant(id, { grantRequestedAccess: false });
+  };
+  
+  const admitAll = () => {
+    waitingIds.forEach(id => admitParticipant(id));
+  };
+
+  useDailyEvent('waiting-participant-added', useCallback(() => {
+    playSound('join');
+    toast({ title: 'Someone is knocking', description: 'A guest is waiting to join the meeting.' });
   }, [toast]));
 
  useDailyEvent('left-meeting', useCallback(() => {
@@ -389,7 +411,7 @@ export const VIRTUAL_BACKGROUNDS = [
         if (db) {
           const meetingData = {
             title: meetingTitle,
-            daily_room_name: roomUrl.split('/').pop() || 'room',
+            daily_room_name: roomUrl.split('/').pop().split('?')[0] || 'room',
             host_id: user?.id || null,
             ai_summary: rawTranscript ? 'Generating summary...' : 'No transcript recorded.',
             started_at: new Date(joinTimeRef.current).toISOString(),
@@ -631,15 +653,43 @@ export const VIRTUAL_BACKGROUNDS = [
 
 
 
- {/* Recording Status Indicator */}
- {isRecording && (
-   <div className="absolute top-4 left-4 z-50 bg-red-600/90 backdrop-blur-md text-white px-3 py-1.5 rounded-full font-bold text-xs shadow-lg flex items-center gap-2 animate-pulse border border-red-500/30 tracking-wide">
-     <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-     {Math.floor(recordingSeconds / 60).toString().padStart(2, '0')}:{(recordingSeconds % 60).toString().padStart(2, '0')}
-   </div>
- )}
+  {/* Recording Status Indicator */}
+  {isRecording && (
+    <div className="absolute top-4 left-4 z-50 bg-red-600/90 backdrop-blur-md text-white px-3 py-1.5 rounded-full font-bold text-xs shadow-lg flex items-center gap-2 animate-pulse border border-red-500/30 tracking-wide">
+      <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+      {Math.floor(recordingSeconds / 60).toString().padStart(2, '0')}:{(recordingSeconds % 60).toString().padStart(2, '0')}
+    </div>
+  )}
 
-  {/* Video Grid */}
+  {/* Waiting Room UI */}
+  {waitingIds.length > 0 && (
+    <div className="absolute top-20 left-1/2 -translate-x-1/2 z-50 bg-white dark:bg-card px-5 py-4 rounded-2xl shadow-2xl border border-primary/30 animate-in slide-in-from-top flex flex-col gap-3 min-w-[320px]">
+      <div className="flex items-center justify-between">
+        <h4 className="font-bold text-sm text-slate-900 dark:text-white">{waitingIds.length} guest(s) waiting to join</h4>
+        {waitingIds.length > 1 && (
+          <Button size="sm" onClick={admitAll} className="h-7 text-xs bg-primary hover:bg-primary/90">Admit All</Button>
+        )}
+      </div>
+      <div className="flex flex-col gap-2 max-h-48 overflow-y-auto pr-1">
+        {waitingIds.map(id => (
+          <div key={id} className="flex items-center justify-between bg-slate-100 dark:bg-secondary p-2.5 rounded-xl">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold shrink-0">
+                {(waitingParticipants[id].name || 'G').charAt(0).toUpperCase()}
+              </div>
+              <span className="text-sm font-semibold truncate text-slate-700 dark:text-slate-200">{waitingParticipants[id].name || 'Guest'}</span>
+            </div>
+            <div className="flex gap-1.5 shrink-0">
+              <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10" onClick={() => denyParticipant(id)}>✕</Button>
+              <Button size="sm" className="h-8 px-4 text-xs font-semibold" onClick={() => admitParticipant(id)}>Admit</Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
+   {/* Video Grid */}
   {(() => {
     const allParticipants = [localSessionId, ...participantIds.filter(id => id !== localSessionId)].filter(Boolean);
     const mainSpeakerId = activeSpeakerId || (allParticipants.length > 1 ? allParticipants.find(id => id !== localSessionId) : localSessionId);
