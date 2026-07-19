@@ -120,6 +120,14 @@ export default function RecordVideo() {
   };
 
   const [mode, setMode] = useState('screen_camera');
+  const [hasDisplayMedia, setHasDisplayMedia] = useState(true);
+
+  useEffect(() => {
+    const supported = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
+    setHasDisplayMedia(supported);
+    if (!supported) setMode('camera_only');
+  }, []);
+
   const isRecordingRef = useRef(false);
 
   const [phase, setPhase] = useState('setup'); // setup | recording | review | uploading | done
@@ -1467,15 +1475,19 @@ export default function RecordVideo() {
             <div className="flex flex-col md:flex-row gap-3">
               {MODES.map(m => {
                 const Icon = m.icon;
+                if ((m.id === 'screen_camera' || m.id === 'screen_only') && !hasDisplayMedia) return null;
                 return (
                   <button
                     key={m.id}
                     onClick={() => setMode(m.id)}
-                    className={`flex-1 flex flex-col items-center justify-center p-4 rounded-full border transition-all duration-300 shadow-sm hover:shadow-md ${mode === m.id ? 'border-primary bg-gradient-to-r from-primary to-primary text-white scale-[1.02]' : 'bg-white/95 dark:bg-[#202c33]/95 border-black/5 dark:border-white/5 text-slate-700 dark:text-foreground hover:border-primary/50'}`}
+                    className={`flex-1 flex md:flex-col items-center md:justify-center p-4 md:p-5 rounded-[20px] md:rounded-3xl border transition-all duration-300 shadow-sm hover:shadow-md ${mode === m.id ? 'border-primary bg-primary/10 dark:bg-primary/20 text-primary scale-[1.02]' : 'bg-white/95 dark:bg-[#202c33]/95 border-black/5 dark:border-white/5 text-slate-700 dark:text-foreground hover:border-primary/50'}`}
                   >
-                    <div className="flex items-center gap-2 font-bold text-sm">
-                      <Icon className="w-4 h-4" />
-                      {m.label}
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-sm mb-0 md:mb-3 mr-4 md:mr-0 shrink-0 ${mode === m.id ? 'bg-primary text-white shadow-[0_4px_14px_rgba(25,184,110,0.35)]' : 'bg-slate-100 dark:bg-black/20 text-slate-500'}`}>
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div className="text-left md:text-center flex-1">
+                      <div className={`font-bold text-[15px] ${mode === m.id ? 'text-primary' : ''}`}>{m.label}</div>
+                      <div className="text-[11px] text-slate-500 dark:text-muted-foreground mt-0.5 hidden md:block line-clamp-2 leading-tight">{m.desc}</div>
                     </div>
                   </button>
                 );
@@ -1576,14 +1588,16 @@ export default function RecordVideo() {
               </div>
             </div>
 
-            <button
-              onClick={startRecording}
-              disabled={countdown !== null || !title.trim() || !selectedSpace}
-              className={`flex items-center gap-3 px-8 py-4 rounded-2xl ${countdown !== null || !title.trim() || !selectedSpace ? 'bg-slate-400 cursor-not-allowed opacity-70' : 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500'} text-white font-bold shadow-2xl shadow-red-500/25 transition-all hover:scale-[1.02]`}
-            >
-              <span className="w-3 h-3 rounded-full bg-white animate-pulse" />
-              {countdown !== null ? `Starting in ${countdown}...` : 'Start Recording'}
-            </button>
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 dark:bg-background/80 backdrop-blur-xl border-t border-black/5 dark:border-white/5 md:relative md:bg-transparent md:border-none md:p-0 md:backdrop-blur-none z-50">
+              <button
+                onClick={startRecording}
+                disabled={countdown !== null || !title.trim() || !selectedSpace}
+                className={`w-full md:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-2xl ${countdown !== null || !title.trim() || !selectedSpace ? 'bg-slate-400 cursor-not-allowed opacity-70' : 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500'} text-white font-bold text-lg shadow-[0_8px_30px_rgba(225,29,72,0.3)] transition-all hover:scale-[1.02]`}
+              >
+                <span className="w-3 h-3 rounded-full bg-white animate-pulse" />
+                {countdown !== null ? `Starting in ${countdown}...` : 'Start Recording'}
+              </button>
+            </div>
           </>
         )}
 
