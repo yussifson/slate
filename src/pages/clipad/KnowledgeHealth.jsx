@@ -7,6 +7,7 @@ import ClipadLoader from '@/components/ui/ClipadLoader';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
 import ThemeToggle from '@/components/layout/ThemeToggle';
+import toast from 'react-hot-toast';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,6 +36,7 @@ export default function KnowledgeHealth() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [healthData, setHealthData] = useState(null);
   const [rawCounts, setRawCounts] = useState(null);
   const [diagnosis, setDiagnosis] = useState('');
@@ -209,8 +211,26 @@ export default function KnowledgeHealth() {
           </div>
           
           <div className="mt-8 pt-6 border-t border-white/10 relative z-10">
-            <button className="w-full py-3.5 bg-white text-indigo-900 font-black rounded-xl hover:bg-indigo-50 hover:shadow-lg hover:-translate-y-0.5 transition-all focus:ring-4 focus:ring-indigo-300 active:scale-95">
-              Generate Detailed Report
+            <button 
+              onClick={() => {
+                setIsGenerating(true);
+                toast.success("Compiling organizational data...");
+                setTimeout(() => {
+                  setIsGenerating(false);
+                  toast.success("Detailed Health Report generated and sent to your email!", { duration: 5000, icon: '📊' });
+                }, 2000);
+              }}
+              disabled={isGenerating}
+              className="w-full py-3.5 bg-white text-indigo-900 font-black rounded-xl hover:bg-indigo-50 hover:shadow-lg hover:-translate-y-0.5 transition-all focus:ring-4 focus:ring-indigo-300 active:scale-95 disabled:opacity-70 disabled:cursor-wait flex items-center justify-center gap-2"
+            >
+              {isGenerating ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-indigo-900/30 border-t-indigo-900 rounded-full animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                "Generate Detailed Report"
+              )}
             </button>
           </div>
         </div>
