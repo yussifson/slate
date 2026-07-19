@@ -447,13 +447,16 @@ export default function SpaceDashboard() {
       <div className="relative overflow-hidden bg-white dark:bg-card border-b border-black/5 dark:border-white/5 md:border-none md:bg-transparent">
         <div className={`hidden md:block absolute inset-0 bg-gradient-to-br ${color} opacity-[0.03] dark:opacity-[0.08]`} />
         
-        {/* Latent Nature Design */}
-        <div className="absolute top-0 right-0 pointer-events-none select-none overflow-hidden h-full w-1/2 flex items-start justify-end opacity-[0.12] dark:opacity-[0.08] p-4 pr-8 md:pr-24 mix-blend-luminosity dark:mix-blend-screen">
-          <span className="text-[120px] md:text-[180px] leading-none transform -rotate-12 translate-y-[-20%] translate-x-[20%] blur-[2px]">
-            {getDailyNatureElement()}
-          </span>
+        {/* Nature Design */}
+        <div className="absolute top-0 right-0 bottom-0 pointer-events-none select-none flex items-center justify-end pr-6 md:pr-16 lg:pr-32 z-0">
+          <div className="relative">
+            <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-10 dark:opacity-20 blur-xl scale-150 rounded-full`} />
+            <span className="relative text-6xl md:text-[90px] leading-none opacity-95 dark:opacity-100">
+              {getDailyNatureElement()}
+            </span>
+          </div>
         </div>
-        <div className="relative px-4 md:px-10 py-6 md:py-8">
+        <div className="relative px-4 md:px-10 py-6 md:py-8 z-10">
           <div className="flex items-start gap-3 md:gap-4">
             <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-lg md:shadow-xl shrink-0`}>
               {React.createElement(getSpaceIcon(space.name), { className: "w-6 h-6 md:w-7 md:h-7" })}
