@@ -190,13 +190,16 @@ export const VIRTUAL_BACKGROUNDS = [
     if (e) e.preventDefault();
     if (!inviteEmail.trim()) return;
     setIsInviteLoading(true);
+    
+    const properLink = window.location.origin + '/meet/' + roomUrl.split('/').pop();
+    
     try {
       // Direct call to send-email edge function
       const { data, error } = await db.functions.invoke('send-email', {
         body: {
           to: [inviteEmail.trim()],
-          subject: "You're invited to a video meeting on Orbit",
-          html: `<p>Please join my video meeting using this secure link:</p><p><a href="${roomUrl}">${roomUrl}</a></p><p>Powered by Orbit Intelligence.</p>`
+          subject: "You're invited to a video meeting on CliPad",
+          html: `<p>Please join my video meeting using this secure link:</p><p><a href="${properLink}">${properLink}</a></p><p>Powered by CliPad Intelligence.</p>`
         }
       });
       
@@ -208,8 +211,8 @@ export const VIRTUAL_BACKGROUNDS = [
       setShowInvite(false);
     } catch (error) {
       console.warn("API invite failed, using mailto fallback:", error);
-      const subject = encodeURIComponent("You're invited to a video meeting on Orbit");
-      const body = encodeURIComponent(`Please join my video meeting using this secure link:\n\n${roomUrl}\n\nPowered by Orbit Intelligence.`);
+      const subject = encodeURIComponent("You're invited to a video meeting on CliPad");
+      const body = encodeURIComponent(`Please join my video meeting using this secure link:\n\n${properLink}\n\nPowered by CliPad Intelligence.`);
       // Prevent page unload by using window.open instead of window.location.href
       window.open(`mailto:${inviteEmail.trim()}?subject=${subject}&body=${body}`, '_blank');
       toast({ title: "Opening Email Client", description: "Could not send via server. Opening your email app to send the invite." });
