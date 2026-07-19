@@ -7,7 +7,7 @@ import { useChatDock } from '@/hooks/useChatDock';
 import ClipadChat from '@/pages/clipad/ClipadChat';
 import { MessageSquare, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import CliPadCommandPalette from '@/components/clipad/CliPadCommandPalette';
+import GlobalSearch from '@/components/clipad/search/GlobalSearch';
 import PullToRefresh from '@/components/ui/PullToRefresh';
 
 import DockResizer from './DockResizer';
@@ -114,7 +114,7 @@ export default function ClipadLayout() {
         </button>
       )}
 
-      <CliPadCommandPalette />
+      <GlobalSearch />
       <ClipadMobileNav forceMobile={forceMobile} />
     </div>
   );

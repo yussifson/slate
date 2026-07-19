@@ -191,16 +191,29 @@ export async function generateStandupSummary(updates = [], contextDate = 'today'
 // ──────────────────────────────────────────────────────────────────
 export async function buildOrgContext(options = {}) {
   const limit = options.limit || 15;
+  const spaceIds = options.spaceIds || [];
 
   const [meetingsRes, decisionsRes, blockersRes, videosRes, tasksRes, commitmentsRes, spacesRes] =
     await Promise.all([
-      supabase.from('clipad_meeting_records').select('id, title, ai_summary, created_at').order('created_at', { ascending: false }).limit(limit),
-      supabase.from('clipad_decisions').select('id, decision_text, rationale, status, created_at').eq('status', 'active').order('created_at', { ascending: false }).limit(10),
-      supabase.from('clipad_blockers').select('id, description, status, severity, detected_at').eq('status', 'open').order('detected_at', { ascending: false }).limit(10),
-      supabase.from('clipad_videos').select('id, title, ai_summary, created_at').order('created_at', { ascending: false }).limit(10),
-      supabase.from('clipad_action_items').select('id, title, is_complete, due_date').eq('is_complete', false).order('created_at', { ascending: false }).limit(15),
-      supabase.from('clipad_commitments').select('id, commitment_text, status, due_date').eq('status', 'pending').order('created_at', { ascending: false }).limit(10),
-      supabase.from('clipad_spaces').select('id, name, description, created_at').order('created_at', { ascending: false }).limit(10),
+      spaceIds.length > 0 
+        ? supabase.from('clipad_meeting_records').select('id, title, ai_summary, created_at').in('space_id', spaceIds).order('created_at', { ascending: false }).limit(limit)
+        : supabase.from('clipad_meeting_records').select('id, title, ai_summary, created_at').order('created_at', { ascending: false }).limit(limit),
+      spaceIds.length > 0
+        ? supabase.from('clipad_decisions').select('id, decision_text, rationale, status, created_at').eq('status', 'active').in('team_space_id', spaceIds).order('created_at', { ascending: false }).limit(10)
+        : supabase.from('clipad_decisions').select('id, decision_text, rationale, status, created_at').eq('status', 'active').order('created_at', { ascending: false }).limit(10),
+      spaceIds.length > 0
+        ? supabase.from('clipad_blockers').select('id, description, status, severity, detected_at').eq('status', 'open').in('team_space_id', spaceIds).order('detected_at', { ascending: false }).limit(10)
+        : supabase.from('clipad_blockers').select('id, description, status, severity, detected_at').eq('status', 'open').order('detected_at', { ascending: false }).limit(10),
+      spaceIds.length > 0
+        ? supabase.from('clipad_videos').select('id, title, ai_summary, created_at').in('space_id', spaceIds).order('created_at', { ascending: false }).limit(10)
+        : supabase.from('clipad_videos').select('id, title, ai_summary, created_at').order('created_at', { ascending: false }).limit(10),
+      spaceIds.length > 0
+        ? supabase.from('clipad_action_items').select('id, title, is_complete, due_date').eq('is_complete', false).in('space_id', spaceIds).order('created_at', { ascending: false }).limit(15)
+        : supabase.from('clipad_action_items').select('id, title, is_complete, due_date').eq('is_complete', false).order('created_at', { ascending: false }).limit(15),
+      supabase.from('clipad_commitments').select('id, commitment_text, status, due_date').eq('status', 'pending').order('created_at', { ascending: false }).limit(10), // Not space-bound
+      spaceIds.length > 0
+        ? supabase.from('clipad_spaces').select('id, name, description, created_at').in('id', spaceIds).order('created_at', { ascending: false }).limit(10)
+        : supabase.from('clipad_spaces').select('id, name, description, created_at').order('created_at', { ascending: false }).limit(10),
     ]);
 
   const meetings = meetingsRes.data || [];

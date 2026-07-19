@@ -19,7 +19,20 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useAuth} from '@/lib/AuthContext';
+import { isAdmin, isSpaceman } from '@/lib/constants';
 
+async function fetchAccessibleSpaceIds(user) {
+  if (!user?.company_id) return new Set();
+  if (isAdmin(user)) {
+    const { data } = await supabase.from('clipad_spaces').select('id').eq('company_id', user.company_id);
+    return new Set((data || []).map(s => s.id));
+  }
+  const { data: memberships } = await supabase.from('clipad_space_members').select('space_id').eq('user_id', user.id);
+  const memberSpaceIds = new Set((memberships || []).map(m => m.space_id));
+  const { data: publicSpaces } = await supabase.from('clipad_spaces').select('id').eq('company_id', user.company_id).eq('is_private', false);
+  (publicSpaces || []).forEach(s => memberSpaceIds.add(s.id));
+  return memberSpaceIds;
+}
 
 const PAGE_SUGGESTIONS = {
    '/dashboard': ['What needs my attention today?', 'Summarize my recent meetings', 'Show me knowledge health alerts'],
@@ -485,28 +498,33 @@ To create an automation, use the \`create_record\` tool with recordType "automat
     default: verticalPersona = "You are assisting in a professional business environment. Be efficient, analytical, and highly capable.";
   }
 
-   // Fetch live org context to make AI knowledge-aware
   let orgContextSection = '';
   if (location.pathname.startsWith('/clipad') || location.pathname === '/dashboard') {
     try {
-      const { contextText } = await buildOrgContext({ limit: 10 });
+      const accessibleIds = await fetchAccessibleSpaceIds(user);
+      const { contextText } = await buildOrgContext({ limit: 10, spaceIds: Array.from(accessibleIds) });
       if (contextText && contextText.length > 50) {
         orgContextSection = `
 
 🏢 LIVE ORGANIZATIONAL MEMORY — REAL DATA FROM THIS COMPANY:
-You have access to the following verified, live data from this organization's memory. Use it to answer questions, provide context, and surface relevant insights. Never fabricate data not listed here.
+You have access to the following verified, live data from the ${accessibleIds.size} spaces this user is authorized to see.
+Use it to answer questions, provide context, and surface relevant insights. Never fabricate data not listed here.
 ${contextText}
 `;
       }
     } catch (orgErr) {
-      // Org context is optional — don't break the assistant if it fails
       console.warn('[OrbitAI] Could not load org context:', orgErr.message);
     }
   }
 
+  const userRole = isAdmin(user) ? 'Company Admin' : isSpaceman(user) ? 'Spaceman (Space Admin)' : 'Member';
   const systemPrompt = `You are OrbitFlow — a highly enthusiastic, intelligent, and entertaining AI assistant embedded in the ClipPad organizational memory and workspace.
 Your personality is that of a powerful but friendly AI companion—think of a hyper-intelligent digital lion/owl hybrid! Be cheerful, slightly playful, use emojis naturally, but remain highly capable and laser-focused on orchestrating the user's workflows flawlessly.
 Your current context is the ClipPad workspace, specifically the '${ctx?.title || 'Dashboard'}' page.
+
+CRITICAL SECURITY RULE: You are responding to "${user?.full_name || 'a user'}" who has the role "${userRole}". 
+You ONLY have access to data from the spaces this user is authorized to see (provided below).
+NEVER reveal, reference, or speculate about data from spaces or teams this user is not part of.
 
 ${verticalPersona}
 ${modeContext}
