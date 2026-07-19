@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback, memo } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import DailyIframe from '@daily-co/daily-js';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation} from "react-i18next";
@@ -14,11 +14,10 @@ import {
  useParticipant,
  useActiveSpeakerId
 } from '@daily-co/daily-react';
-import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink, MessageSquare, Send, X, UserPlus, Mail, Settings, Check, Copy, Smile, PanelRightClose, PenTool } from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, ExternalLink, MessageSquare, Send, UserPlus, Mail, Settings, Smile, PanelRightClose, PenTool } from 'lucide-react';
 import { Button} from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { generateText} from "@/lib/cloudflareAI";
 import { detectDecisions, detectCommitments, writeOrgEvent } from '@/lib/clipadIntelligence';
 import { useToast} from "@/components/ui/use-toast";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
@@ -489,10 +488,12 @@ export const VIRTUAL_BACKGROUNDS = [
  recognition.onresult = (event) => {
  const lastResult = event.results[event.results.length - 1];
  if (lastResult.isFinal) {
- const text = lastResult[0].transcript;
- const msg = { type: 'transcription', text, name: 'Me'};
- if (daily) daily.sendAppMessage(msg, '*');
- setTranscriptData(prev => [...prev, { name: 'Me', text}]);
+  const text = lastResult[0].transcript;
+  const msg = { type: 'transcription', text, name: 'Me'};
+  if (daily && daily.meetingState() === 'joined-meeting') {
+    daily.sendAppMessage(msg, '*');
+  }
+  setTranscriptData(prev => [...prev, { name: 'Me', text}]);
  }
  };
 
@@ -885,7 +886,7 @@ export const VIRTUAL_BACKGROUNDS = [
      onClick={() => setShowEmojis(!showEmojis)}
      variant={showEmojis ? "default" : "secondary"}
      size="icon"
-     className={`${isPipMode ? 'w-10 h-10' : 'w-14 h-14'} rounded-[1.25rem] shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5`}
+     className={`${isPipMode ? 'w-10 h-10' : 'w-12 h-12 sm:w-14 sm:h-14 shrink-0'} rounded-[1.25rem] shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5`}
    >
      <Smile className={isPipMode ? "w-3 h-3" : "w-5 h-5"} />
    </Button>
@@ -894,7 +895,7 @@ export const VIRTUAL_BACKGROUNDS = [
  onClick={toggleAudio}
  variant={isMuted ? "destructive" : "secondary"}
  size="icon"
- className={`${isPipMode ? 'w-10 h-10' : 'w-14 h-14'} rounded-[1.25rem] shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isMuted ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-white dark:bg-secondary border border-slate-200 dark:border-border text-slate-700 dark:text-foreground'}`}
+ className={`${isPipMode ? 'w-10 h-10' : 'w-12 h-12 sm:w-14 sm:h-14 shrink-0'} rounded-[1.25rem] shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isMuted ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-white dark:bg-secondary border border-slate-200 dark:border-border text-slate-700 dark:text-foreground'}`}
  >
  {isMuted ? <MicOff className={isPipMode ? "w-3 h-3" : "w-5 h-5"} /> : <Mic className={isPipMode ? "w-3 h-3" : "w-5 h-5"} />}
  </Button>
@@ -902,7 +903,7 @@ export const VIRTUAL_BACKGROUNDS = [
  onClick={toggleVideo}
  variant={isVideoOff ? "destructive" : "secondary"}
  size="icon"
- className={`${isPipMode ? 'w-10 h-10' : 'w-14 h-14'} rounded-[1.25rem] shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isVideoOff ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-white dark:bg-secondary border border-slate-200 dark:border-border text-slate-700 dark:text-foreground'}`}
+ className={`${isPipMode ? 'w-10 h-10' : 'w-12 h-12 sm:w-14 sm:h-14 shrink-0'} rounded-[1.25rem] shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${isVideoOff ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-white dark:bg-secondary border border-slate-200 dark:border-border text-slate-700 dark:text-foreground'}`}
  >
  {isVideoOff ? <VideoOff className={isPipMode ? "w-3 h-3" : "w-5 h-5"} /> : <VideoIcon className={isPipMode ? "w-3 h-3" : "w-5 h-5"} />}
  </Button>
@@ -1125,7 +1126,7 @@ export const VIRTUAL_BACKGROUNDS = [
   variant="default"
   onClick={handleAiAssist}
   disabled={isAiLoading}
-  className="h-14 px-6 shrink-0 rounded-[1.25rem] font-semibold flex items-center gap-2 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all hover:-translate-y-0.5 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white"
+  className="h-12 px-3 sm:h-14 sm:px-6 shrink-0 rounded-[1.25rem] font-semibold text-sm sm:text-base flex items-center gap-2 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all hover:-translate-y-0.5 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white"
  >
   <Sparkles className="w-4 h-4" /> {isAiLoading ? "Processing..." : "AI Notes"}
  </Button>
@@ -1133,7 +1134,7 @@ export const VIRTUAL_BACKGROUNDS = [
   variant="secondary"
   onClick={handleAiFollowUp}
   disabled={isAiLoading}
-  className="h-12 px-5 shrink-0 rounded-full font-semibold flex items-center gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
+  className="h-12 px-3 sm:px-5 shrink-0 rounded-full font-semibold text-sm sm:text-base flex items-center gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
  >
   <Mail className="w-4 h-4" /> AI Follow-Up
  </Button>
@@ -1142,7 +1143,7 @@ export const VIRTUAL_BACKGROUNDS = [
  <Button 
  onClick={leaveCall}
  variant="destructive"
- className={`${isPipMode ? 'h-10 w-10 p-0 rounded-xl' : 'h-14 px-6 sm:px-8 shrink-0 rounded-[1.25rem]'} font-bold flex items-center justify-center shadow-lg shadow-red-500/20 hover:shadow-red-500/40 transition-all hover:-translate-y-0.5 bg-red-500 hover:bg-red-600 text-white`}
+ className={`${isPipMode ? 'h-10 w-10 p-0 rounded-xl' : 'h-12 px-4 sm:h-14 sm:px-8 shrink-0 rounded-[1.25rem]'} font-bold text-sm sm:text-base flex items-center justify-center shadow-lg shadow-red-500/20 hover:shadow-red-500/40 transition-all hover:-translate-y-0.5 bg-red-500 hover:bg-red-600 text-white`}
  >
  {isPipMode ? <PhoneOff className="w-3 h-3" /> : <><PhoneOff className="w-5 h-5 mr-2" /> Leave</>}
  </Button>
@@ -1184,7 +1185,7 @@ function ScreenShareTile({ screen, className }) {
  </div>
  )}
  
- {!screen.local && <audio ref={audioRef} autoPlay playsInline />}
+ {!screen.local && <audio ref={audioRef} autoPlay />}
  
  <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-lg">
  <span className="text-white text-xs font-semibold tracking-wide">{screen.local ? "Your Screen" : "Shared Screen"}</span>
@@ -1283,7 +1284,7 @@ function ParticipantTile({ id, isLocal, className }) {
  </div>
  )}
  
- {!isLocal && <audio ref={audioRef} autoPlay playsInline />}
+ {!isLocal && <audio ref={audioRef} autoPlay />}
  
   <div className={`absolute bottom-4 left-4 ${finalAvatarColor} px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-sm border border-black/10 dark:border-white/10 transition-all z-10`}>
   <span className="text-white text-xs font-bold tracking-wide">{displayName}</span>

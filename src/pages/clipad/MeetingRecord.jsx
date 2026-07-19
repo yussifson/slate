@@ -370,7 +370,7 @@ export default function MeetingRecord() {
       const { data, error } = await supabase.from('clipad_meeting_records').update({
         title: editTitle.trim(),
         visibility: editVisibility,
-        is_locked: finalIsLocked,
+        // is_locked: finalIsLocked, // Temporarily disabled
         unlock_at: finalUnlockAt,
       }).eq('id', meetingId).select().single();
       if (error) throw error;

@@ -277,7 +277,7 @@ export default function WatchVideo() {
         title: editTitle.trim(),
         description: editDesc.trim() || null,
         visibility: editVisibility,
-        is_locked: finalIsLocked,
+        // is_locked: finalIsLocked, // Temporarily disabled
         unlock_at: finalUnlockAt,
       }).eq('id', videoId).select('*, creator:creator_id(full_name, avatar_url)').single();
       if (error) throw error;

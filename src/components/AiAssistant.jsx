@@ -931,7 +931,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div className="flex items-center gap-3">
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <button className="md:hidden p-1.5 -ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 transition-colors">
+      <button className="lg:hidden p-1.5 -ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 transition-colors">
         <Menu className="w-5 h-5" />
       </button>
     </DropdownMenuTrigger>
@@ -958,20 +958,20 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div className="flex items-center gap-1 shrink-0">
  <button
  onClick={() => setShowHistory(prev => !prev)}
- className={`hidden md:block p-2 rounded-full transition-all ${showHistory ? 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-600' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-600 dark:hover:text-slate-300'}`}
+ className={`hidden lg:flex items-center justify-center p-2 rounded-full transition-all ${showHistory ? 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-600' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-600 dark:hover:text-slate-300'}`}
  title="Chat history"
  >
  <Clock className="w-4 h-4" />
  </button>
- <div className="flex items-center gap-0.5 shrink-0">
- <button onClick={startNewChat} className="hidden md:block p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors" title="New chat">
+ <div className="flex items-center gap-1.5 shrink-0">
+ <button onClick={startNewChat} className="hidden lg:flex items-center justify-center p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors" title="New chat">
  <Plus className="w-4 h-4" />
  </button>
- <button onClick={() => setIsExpanded(!isExpanded)} className="hidden md:block p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors">
+ <button onClick={() => setIsExpanded(!isExpanded)} className="hidden lg:flex items-center justify-center p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors">
  {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
  </button>
- <button onClick={onClose} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors">
- <X className="w-5 h-5 md:w-4 md:h-4 text-slate-700 dark:text-slate-300 md:text-inherit" />
+ <button onClick={onClose} className="w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-white/5 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400 rounded-full transition-colors shadow-sm ml-1">
+ <X className="w-4 h-4 text-slate-600 dark:text-slate-400" />
  </button>
  </div>
  </div>

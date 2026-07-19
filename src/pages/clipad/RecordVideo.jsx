@@ -1,14 +1,13 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
-  Camera, Monitor, Mic, MicOff, StopCircle, CheckCircle, Save, Trash2, Home,
-  Play, Pause, AlertTriangle, AlertCircle, RefreshCw, XCircle, ArrowLeft, Info,
-  Wand2, AlignLeft, Video, Layers, Clock, Upload, RotateCcw, Sparkles, Lock, Unlock, ChevronDown
+  Camera, Monitor, Mic, MicOff, CheckCircle,
+  Play, Pause, AlertCircle, RefreshCw, XCircle, ArrowLeft,
+  Wand2, AlignLeft, Clock, Upload, RotateCcw, Sparkles, Lock, Unlock, ChevronDown
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
 import { generateText } from '@/lib/cloudflareAI';
 import { detectDecisions, detectCommitments, writeOrgEvent } from '@/lib/clipadIntelligence';
-import { logAuditEvent } from '@/lib/auditLogger';
 import { useAuth } from '@/lib/AuthContext';
 import { getPlanLimits, getUserPlan, getLimit } from '@/lib/clipadPricing';
 import PaywallModal from '@/components/clipad/PaywallModal';
@@ -1209,7 +1208,7 @@ export default function RecordVideo() {
           description: description.trim() || null,
           space_id: selectedSpace || null,
           visibility: visibility,
-          is_locked: finalIsLocked,
+          // is_locked: finalIsLocked, // Temporarily disabled
           unlock_at: finalUnlockAt,
         }).eq('id', activeVideoId);
         
@@ -1341,7 +1340,7 @@ export default function RecordVideo() {
         space_id: selectedSpace || null,
         duration_seconds: recordingSeconds,
         visibility: visibility,
-        is_locked: finalIsLocked,
+        // is_locked: finalIsLocked, // Temporarily disabled
         unlock_at: finalUnlockAt,
       }).select().single();
 
@@ -1480,14 +1479,11 @@ export default function RecordVideo() {
                   <button
                     key={m.id}
                     onClick={() => setMode(m.id)}
-                    className={`flex-1 flex md:flex-col items-center md:justify-center p-4 md:p-5 rounded-[20px] md:rounded-3xl border transition-all duration-300 shadow-sm hover:shadow-md ${mode === m.id ? 'border-primary bg-primary/10 dark:bg-primary/20 text-primary scale-[1.02]' : 'bg-white/95 dark:bg-[#202c33]/95 border-black/5 dark:border-white/5 text-slate-700 dark:text-foreground hover:border-primary/50'}`}
+                    className={`flex-1 flex items-center justify-center p-4 md:rounded-full rounded-2xl border transition-all duration-300 shadow-sm hover:shadow-md ${mode === m.id ? 'border-primary bg-gradient-to-r from-primary to-emerald-500 text-white scale-[1.02]' : 'bg-white/95 dark:bg-[#202c33]/95 border-black/5 dark:border-white/5 text-slate-700 dark:text-foreground hover:border-primary/50'}`}
                   >
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-sm mb-0 md:mb-3 mr-4 md:mr-0 shrink-0 ${mode === m.id ? 'bg-primary text-white shadow-[0_4px_14px_rgba(25,184,110,0.35)]' : 'bg-slate-100 dark:bg-black/20 text-slate-500'}`}>
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <div className="text-left md:text-center flex-1">
-                      <div className={`font-bold text-[15px] ${mode === m.id ? 'text-primary' : ''}`}>{m.label}</div>
-                      <div className="text-[11px] text-slate-500 dark:text-muted-foreground mt-0.5 hidden md:block line-clamp-2 leading-tight">{m.desc}</div>
+                    <div className="flex items-center gap-2 font-bold text-[15px] md:text-sm">
+                      <Icon className="w-5 h-5 md:w-4 md:h-4" />
+                      {m.label}
                     </div>
                   </button>
                 );
@@ -1588,7 +1584,7 @@ export default function RecordVideo() {
               </div>
             </div>
 
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 dark:bg-background/80 backdrop-blur-xl border-t border-black/5 dark:border-white/5 md:relative md:bg-transparent md:border-none md:p-0 md:backdrop-blur-none z-50">
+            <div className="w-full mt-6 mb-8 z-50">
               <button
                 onClick={startRecording}
                 disabled={countdown !== null || !title.trim() || !selectedSpace}
@@ -1659,6 +1655,7 @@ export default function RecordVideo() {
             )}
 
             <div id="preview-container" className="relative w-full max-w-2xl rounded-3xl overflow-hidden bg-black aspect-video shadow-2xl ring-1 ring-white/10 select-none">
+              <audio ref={audioRef} autoPlay style={{ display: 'none' }} />
               {mode === 'screen_camera' && (
                 <>
                   <video ref={previewRef} autoPlay muted playsInline className="w-full h-full object-contain" />

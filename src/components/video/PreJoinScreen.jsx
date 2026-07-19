@@ -161,7 +161,7 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
   };
 
   return (
-    <div className="w-screen min-h-[100dvh] bg-slate-50 dark:bg-[#050810] flex flex-col md:flex-row items-center justify-center p-4 md:p-12 gap-6 md:gap-16 overflow-y-auto relative">
+    <div className="w-full min-h-[100dvh] bg-slate-50 dark:bg-[#050810] flex flex-col md:flex-row items-center justify-center p-4 md:p-12 gap-4 md:gap-16 overflow-x-hidden overflow-y-auto relative">
       {/* Back Button */}
       <button 
         onClick={() => navigate(-1)} 
@@ -171,14 +171,14 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
       </button>
 
       {/* Realistic Background Layers */}
-      <div className="absolute inset-0 pointer-events-none z-0">
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/5 dark:bg-primary/10 blur-[120px]" />
         <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[120px]" />
       </div>
       
       {/* Left Side: Camera Preview */}
-      <div className="relative z-10 flex-1 flex flex-col items-center md:items-end justify-center w-full max-w-3xl mt-16 md:mt-0">
-        <div className="relative w-full max-w-sm md:max-w-none aspect-[3/4] md:aspect-video bg-gradient-to-br from-slate-900 to-black rounded-[2rem] overflow-hidden flex items-center justify-center transition-colors shadow-2xl border border-white/10">
+      <div className="relative z-10 w-full md:flex-1 flex flex-col items-center md:items-end justify-center max-w-3xl mt-12 md:mt-0">
+        <div className="relative w-full max-w-sm md:max-w-none aspect-[4/3] md:aspect-video bg-gradient-to-br from-slate-900 to-black rounded-[2rem] overflow-hidden flex items-center justify-center transition-colors shadow-2xl border border-white/10">
           
           {/* Video element is always rendered to preserve srcObject, but hidden when isVideoOn is false */}
           <video 
