@@ -61,13 +61,13 @@ function StandupCard({ update, isCurrentUser }) {
 
       <div className={`mt-3 space-y-2 overflow-hidden transition-all ${expanded ? 'block' : 'hidden'}`}>
         {update.today && (
-          <div>
+          <div className="bg-emerald-50 dark:bg-emerald-500/10 rounded-xl p-3 border border-emerald-100 dark:border-emerald-500/20">
             <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1">Today</p>
             <p className="text-sm text-foreground whitespace-pre-wrap">{update.today.replace(/\[\[TAG:.*?\]\]/g, '')}</p>
           </div>
         )}
         {update.yesterday && (
-          <div>
+          <div className="bg-blue-50 dark:bg-blue-500/10 rounded-xl p-3 border border-blue-100 dark:border-blue-500/20">
             <p className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-1">Yesterday</p>
             <p className="text-sm text-foreground">{update.yesterday}</p>
           </div>
