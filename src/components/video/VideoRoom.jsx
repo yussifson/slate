@@ -191,8 +191,18 @@ export const VIRTUAL_BACKGROUNDS = [
     if (!inviteEmail.trim()) return;
     setIsInviteLoading(true);
     try {
-      const { NotificationService } = await import('@/api/NotificationService');
-      await NotificationService.notifyMeetingInvite(roomUrl, inviteEmail.trim());
+      // Direct call to send-email edge function
+      const { data, error } = await db.functions.invoke('send-email', {
+        body: {
+          to: [inviteEmail.trim()],
+          subject: "You're invited to a video meeting on Orbit",
+          html: `<p>Please join my video meeting using this secure link:</p><p><a href="${roomUrl}">${roomUrl}</a></p><p>Powered by Orbit Intelligence.</p>`
+        }
+      });
+      
+      // If error (or function doesn't exist), throw to trigger fallback
+      if (error) throw error;
+
       toast({ title: "Invite Sent", description: `Meeting invite securely sent to ${inviteEmail}.` });
       setInviteEmail("");
       setShowInvite(false);
@@ -200,7 +210,8 @@ export const VIRTUAL_BACKGROUNDS = [
       console.warn("API invite failed, using mailto fallback:", error);
       const subject = encodeURIComponent("You're invited to a video meeting on Orbit");
       const body = encodeURIComponent(`Please join my video meeting using this secure link:\n\n${roomUrl}\n\nPowered by Orbit Intelligence.`);
-      window.location.href = `mailto:${inviteEmail.trim()}?subject=${subject}&body=${body}`;
+      // Prevent page unload by using window.open instead of window.location.href
+      window.open(`mailto:${inviteEmail.trim()}?subject=${subject}&body=${body}`, '_blank');
       toast({ title: "Opening Email Client", description: "Could not send via server. Opening your email app to send the invite." });
       setShowInvite(false);
     } finally {
