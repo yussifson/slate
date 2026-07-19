@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { Sparkles, Settings, Shield, LogOut } from 'lucide-react';
+import { Sparkles, Settings, Shield, LogOut, MessageSquare } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
 import ThemeToggle from '@/components/layout/ThemeToggle';
@@ -74,6 +74,15 @@ export default function ClipadTopNav() {
           <ThemeToggle />
         </div>
         
+        {/* Chat - Mobile Only (Premium Header placement) */}
+        <button 
+          onClick={() => navigate('/chat')}
+          className="lg:hidden flex items-center justify-center w-[38px] h-[38px] rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-white/10 transition-all ml-1 relative"
+          title="Chat"
+        >
+          <MessageSquare className="w-5 h-5" />
+        </button>
+
         <NotificationCenter />
 
         <div className="hidden md:block">

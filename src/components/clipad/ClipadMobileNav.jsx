@@ -22,7 +22,6 @@ export default function ClipadMobileNav({ isMarketing = false }) {
   const appNavItems = [
     { label: 'Home', path: '/dashboard', icon: Home },
     { label: 'Spaces', path: '/spaces', icon: Layers },
-    { label: 'Chat', path: '/chat', icon: MessageSquare },
     { label: 'Record', path: '/videos', icon: Camera },
     { label: 'Meetings', path: '/meetings', icon: Video },
     { label: 'Menu', action: () => setIsMenuOpen(true), icon: Menu },
