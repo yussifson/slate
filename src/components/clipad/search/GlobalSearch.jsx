@@ -22,6 +22,7 @@ const TYPE_META = {
   decision: { icon: ShieldAlert,   label: 'Decision',  color: 'text-rose-500',   bg: 'bg-rose-500/10',    route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=decisions` : null },
   blocker:  { icon: AlertTriangle, label: 'Blocker',   color: 'text-orange-500', bg: 'bg-orange-500/10',  route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=overview` : null },
   standup:  { icon: Zap,           label: 'Standup',   color: 'text-teal-500',   bg: 'bg-teal-500/10',    route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=standup` : null },
+  integration:{ icon: ExternalLink,label: 'Imported',  color: 'text-slate-500',  bg: 'bg-slate-500/10',   route: (id) => `/integrations` },
 };
 
 const SUGGESTIONS = [
@@ -142,28 +143,26 @@ export default function GlobalSearch() {
 
       if (term) {
         const spaceIdsStr = spaceIdArr.length > 0 ? spaceIdArr.join(',') : '00000000-0000-0000-0000-000000000000';
-        const isUserAdmin = isAdmin(user);
         const cid = user.company_id;
 
-        const getFilter = () => isUserAdmin ? `company_id.eq.${cid}` : `space_id.in.(${spaceIdsStr})`;
-        const getWsFilter = () => isUserAdmin ? `workspace_id.eq.${cid}` : `space_id.in.(${spaceIdsStr})`;
+        const getSpaceFilter = () => `space_id.in.(${spaceIdsStr})`;
+        const getTeamSpaceFilter = () => `team_space_id.in.(${spaceIdsStr})`;
         
-        const videoFilter = isUserAdmin ? `company_id.eq.${cid}` : `space_id.in.(${spaceIdsStr}),creator_id.eq.${user.id}`;
-        const meetingFilter = isUserAdmin ? `workspace_id.eq.${cid}` : `space_id.in.(${spaceIdsStr}),host_id.eq.${user.id}`;
-        const decisionFilter = isUserAdmin ? `workspace_id.eq.${cid}` : `team_space_id.in.(${spaceIdsStr})`;
-        const blockerFilter = isUserAdmin ? `workspace_id.eq.${cid}` : `team_space_id.in.(${spaceIdsStr})`;
+        const videoFilter = `space_id.in.(${spaceIdsStr})`;
+        const meetingFilter = `space_id.in.(${spaceIdsStr})`;
 
-        const [docs, tasks, messages, meetings, decisions, videos, blockers, standups] = await Promise.all([
-          supabase.from('clipad_docs').select('id, title, content, space_id').or(getFilter()).ilike('title', term).limit(5),
-          supabase.from('clipad_action_items').select('id, title, context, space_id').or(getWsFilter()).ilike('title', term).limit(5),
+        const [docs, tasks, messages, meetings, decisions, videos, blockers, standups, integrations] = await Promise.all([
+          supabase.from('clipad_docs').select('id, title, content, space_id').or(getSpaceFilter()).ilike('title', term).limit(5),
+          supabase.from('clipad_action_items').select('id, title, context, space_id').or(getSpaceFilter()).ilike('title', term).limit(5),
           supabase.from('clipad_messages').select('id, content, space_id').in('space_id', spaceIdArr).ilike('content', term).limit(3),
           supabase.from('clipad_meeting_records').select('id, title, ai_summary, space_id').or(meetingFilter).ilike('title', term).limit(5),
-          supabase.from('clipad_decisions').select('id, decision_text, team_space_id').or(decisionFilter).ilike('decision_text', term).limit(3),
+          supabase.from('clipad_decisions').select('id, decision_text, team_space_id').or(getTeamSpaceFilter()).ilike('decision_text', term).limit(3),
           supabase.from('clipad_videos').select('id, title, ai_summary, space_id').or(videoFilter).ilike('title', term).limit(5),
-          supabase.from('clipad_blockers').select('id, description, team_space_id').or(blockerFilter).ilike('description', term).limit(3),
+          supabase.from('clipad_blockers').select('id, description, team_space_id').or(getTeamSpaceFilter()).ilike('description', term).limit(3),
           spaceIdArr.length > 0
             ? supabase.from('clipad_standups').select('id, user_name, today, yesterday, blockers, space_id, created_at').in('space_id', spaceIdArr).or(`today.ilike.${term},yesterday.ilike.${term},user_name.ilike.${term}`).limit(5)
             : supabase.from('clipad_standups').select('id, user_name, today, yesterday, blockers, space_id, created_at').or(`today.ilike.${term},yesterday.ilike.${term},user_name.ilike.${term}`).limit(5),
+          supabase.from('clipad_imported_knowledge').select('id, title, content, provider, content_type').eq('company_id', cid).or(`title.ilike.${term},content.ilike.${term}`).limit(5),
         ]);
 
         formatted = [
@@ -175,6 +174,7 @@ export default function GlobalSearch() {
           ...(videos.data || []).map(v => ({ type: 'video', id: v.id, space_id: v.space_id, label: v.title || 'Video', snippet: v.ai_summary?.substring(0, 120) })),
           ...(blockers.data || []).map(b => ({ type: 'blocker', id: b.id, space_id: b.team_space_id, label: 'Blocker', snippet: b.description?.substring(0, 120) })),
           ...(standups.data || []).map(s => ({ type: 'standup', id: s.id, space_id: s.space_id, label: `Standup \u2014 ${s.user_name || 'Team member'} (${s.created_at?.slice(0,10)})`, snippet: s.today?.substring(0, 120) })),
+          ...(integrations.data || []).map(i => ({ type: 'integration', id: i.id, space_id: null, label: `[${i.provider}] ${i.title}`, snippet: i.content?.substring(0, 120) })),
         ];
       }
 

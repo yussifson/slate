@@ -14,7 +14,8 @@ export const ROLES = {
   ADMIN: "admin",
   OWNER: "owner",
   LAWYER: "lawyer",
-  EMPLOYEE: "employee"
+  EMPLOYEE: "employee",
+  SPACEMAN: "spaceman"
 };
 
 // Define default permissions matrix for each role across modules
@@ -22,6 +23,9 @@ export const ROLES = {
 export const ROLE_PERMISSIONS = {
   [ROLES.SUPER_ADMIN]: {
     all: ["create", "read", "update", "delete"] // Implicit all access
+  },
+  [ROLES.SPACEMAN]: {
+    all: ["create", "read", "update", "delete"]
   },
   [ROLES.COMPANY_ADMIN]: {
     all: ["create", "read", "update", "delete"]
@@ -92,7 +96,7 @@ export function hasPermission(role, module, action) {
   let permissions = ROLE_PERMISSIONS[roleKey] || ROLE_PERMISSIONS[role];
   
   if (!permissions) {
-    if (['admin', 'ceo', 'founder', 'director', 'owner'].some(r => role.toLowerCase().includes(r))) {
+    if (['admin', 'ceo', 'founder', 'director', 'owner', 'spaceman'].some(r => role.toLowerCase().includes(r))) {
       permissions = { all: ["create", "read", "update", "delete"] };
     } else {
       permissions = ROLE_PERMISSIONS[ROLES.USER]; // Default to USER permissions if unknown

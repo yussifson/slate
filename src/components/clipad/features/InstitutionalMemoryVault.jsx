@@ -22,7 +22,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
 
     try {
       // 1. Fetch real organizational context from the database
-      const [meetingsRes, decisionsRes, blockersRes, videosRes, tasksRes] = await Promise.all([
+      const [meetingsRes, decisionsRes, blockersRes, videosRes, tasksRes, importedDataRes] = await Promise.all([
         supabase
           .from('clipad_meeting_records')
           .select('id, title, ai_summary, created_at, ended_at, host_id')
@@ -48,6 +48,11 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
           .select('id, title, is_complete, created_at')
           .order('created_at', { ascending: false })
           .limit(15),
+        supabase
+          .from('clipad_imported_knowledge')
+          .select('id, title, ai_summary, provider, imported_at, url')
+          .order('imported_at', { ascending: false })
+          .limit(15),
       ]);
 
       // 2. Build a rich context document from real data
@@ -56,6 +61,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
       const blockers = blockersRes.data || [];
       const videos = videosRes.data || [];
       const tasks = tasksRes.data || [];
+      const imported = importedDataRes.data || [];
 
       const contextParts = [];
 
@@ -98,6 +104,14 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
         contextParts.push('\n=== ACTION ITEMS ===');
         tasks.forEach(t => {
           contextParts.push(`[ID: T-${t.id}] [${t.is_complete ? 'DONE' : 'OPEN'}] ${t.title}`);
+        });
+      }
+
+      if (imported.length > 0) {
+        contextParts.push('\n=== EXTERNAL KNOWLEDGE (INTEGRATIONS) ===');
+        imported.forEach(i => {
+          contextParts.push(`Imported Data [ID: I-${i.id}] from ${i.provider}: "${i.title}"`);
+          if (i.ai_summary) contextParts.push(`  Summary: ${i.ai_summary}`);
         });
       }
 
@@ -207,6 +221,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
                     if (type === 'D') { label = 'Decision'; colorClass = "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"; }
                     if (type === 'B') { label = 'Blocker'; colorClass = "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400"; }
                     if (type === 'T') { label = 'Action Item'; colorClass = "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400"; }
+                    if (type === 'I') { label = 'External Knowledge'; colorClass = "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-400"; }
                     return (
                       <button
                         key={i}

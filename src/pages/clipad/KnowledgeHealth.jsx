@@ -62,10 +62,16 @@ export default function KnowledgeHealth() {
           .select('event_type')
           .eq('workspace_id', user?.company_id);
 
+        const { data: importedData } = await supabase
+          .from('clipad_imported_knowledge')
+          .select('id')
+          .eq('company_id', user?.company_id);
+
         const meetingCount = meetings?.length || 0;
         const decisionCount = decisions?.length || 0;
         const blockerCount = events?.filter(e => e.event_type === 'blocker_raised')?.length || 0;
         const taskCompletedCount = events?.filter(e => e.event_type === 'task_completed')?.length || 0;
+        const importedCount = importedData?.length || 0;
 
         // Calculate health metrics. Use 1 as denominator to avoid Infinity/NaN if meetingCount is 0.
         const safeMeetingCount = meetingCount || 1;
@@ -73,20 +79,23 @@ export default function KnowledgeHealth() {
         const resolution = blockerCount === 0 ? 100 : Math.min(100, Math.round((taskCompletedCount / blockerCount) * 100) + 20);
         const silos = Math.min(100, Math.max(0, 85 - (meetingCount % 10))); // proxy metric
         const bloat = Math.max(20, Math.max(0, 100 - (meetingCount * 2))); // proxy metric
+        const integrationHealth = Math.min(100, importedCount * 2 + 10);
 
         setRawCounts({
           meetings: meetingCount,
           decisions: decisionCount,
           blockers: blockerCount,
-          completed: taskCompletedCount
+          completed: taskCompletedCount,
+          imported: importedCount
         });
 
         setHealthData([
           { subject: 'Decision Velocity', A: velocity, fullMark: 100 },
           { subject: 'Resolution Speed', A: resolution, fullMark: 100 },
-          { subject: 'Cross-Functional (Silos)', A: silos, fullMark: 100 },
+          { subject: 'Cross-Functional', A: silos, fullMark: 100 },
           { subject: 'Meeting Efficiency', A: bloat, fullMark: 100 },
           { subject: 'Knowledge Capture', A: Math.min(100, decisionCount * 5 + 40), fullMark: 100 },
+          { subject: 'External Sync', A: integrationHealth, fullMark: 100 },
         ]);
 
         // Generate a real AI diagnosis using LLM
@@ -133,12 +142,13 @@ export default function KnowledgeHealth() {
       </div>
 
       {/* Raw Data Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
         {[
           { title: 'Total Meetings', value: rawCounts?.meetings || 0, desc: 'Recorded on platform', icon: Activity, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-500/10' },
           { title: 'Key Decisions', value: rawCounts?.decisions || 0, desc: 'Extracted automatically', icon: BrainCircuit, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
           { title: 'Blockers Raised', value: rawCounts?.blockers || 0, desc: 'Identified in syncs', icon: ShieldAlert, color: 'text-rose-500', bg: 'bg-rose-50 dark:bg-rose-500/10' },
           { title: 'Tasks Completed', value: rawCounts?.completed || 0, desc: 'Resolved action items', icon: Target, color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-500/10' },
+          { title: 'Imported Data', value: rawCounts?.imported || 0, desc: 'From external integrations', icon: Sparkles, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
         ].map((stat, i) => (
           <div key={i} className="p-6 rounded-2xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm flex flex-col hover:border-primary/30 transition-colors">
             <div className="flex justify-between items-start mb-4">

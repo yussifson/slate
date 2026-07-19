@@ -206,6 +206,7 @@ export async function buildOrgContext(options = {}) {
     blockersRes,
     videosRes,
     tasksRes,
+    importedKnowledgeRes,
     commitmentsRes,
     spacesRes,
     standupsRes,
@@ -281,6 +282,15 @@ export async function buildOrgContext(options = {}) {
           .order('created_at', { ascending: false })
           .limit(20),
 
+    // Imported Knowledge (Integrations)
+    companyId
+      ? supabase.from('clipad_imported_knowledge')
+          .select('id, provider, content_type, title, content, ai_summary, ai_action_items, metadata, updated_at')
+          .eq('company_id', companyId)
+          .order('updated_at', { ascending: false })
+          .limit(30)
+      : { data: [] },
+
     // Commitments (global, not space-bound)
     supabase.from('clipad_commitments')
       .select('id, commitment_text, status, due_date, owner_name')
@@ -350,6 +360,7 @@ export async function buildOrgContext(options = {}) {
       .eq('status', 'pending')
       .order('created_at', { ascending: false })
       .limit(15)
+      .then(res => res)
       .catch(() => ({ data: [] })),
 
     // Completed action items (recent, for history) 
@@ -367,19 +378,20 @@ export async function buildOrgContext(options = {}) {
           .limit(10),
   ]);
 
-  const meetings     = meetingsRes.data     || [];
-  const decisions    = decisionsRes.data    || [];
-  const blockers     = blockersRes.data     || [];
-  const videos       = videosRes.data       || [];
-  const tasks        = tasksRes.data        || [];
-  const commitments  = commitmentsRes.data  || [];
-  const spaces       = spacesRes.data       || [];
-  const standups     = standupsRes.data     || [];
-  const orgEvents    = orgEventsRes.data    || [];
-  const members      = membersRes.data      || [];
-  const chatRooms    = chatRoomsRes.data    || [];
-  const followUps    = followUpsRes.data    || [];
-  const completedTasks = actionItemsRes.data || [];
+  const meetings     = meetingsRes?.data     || [];
+  const decisions    = decisionsRes?.data    || [];
+  const blockers     = blockersRes?.data     || [];
+  const videos       = videosRes?.data       || [];
+  const tasks        = tasksRes?.data        || [];
+  const importedKnowledge = importedKnowledgeRes?.data || [];
+  const commitments  = commitmentsRes?.data  || [];
+  const spaces       = spacesRes?.data       || [];
+  const standups     = standupsRes?.data     || [];
+  const orgEvents    = orgEventsRes?.data    || [];
+  const members      = membersRes?.data      || [];
+  const chatRooms    = chatRoomsRes?.data    || [];
+  const followUps    = followUpsRes?.data    || [];
+  const completedTasks = actionItemsRes?.data || [];
 
   // Build source map for citation
   const sourceMap = {};
@@ -404,6 +416,11 @@ export async function buildOrgContext(options = {}) {
     spaces.length > 0
       ? spaces.map(s => `• [SPACE:${s.id}] "${s.name}"${s.is_private ? ' (private)' : ''}: ${s.description?.substring(0, 120) || 'No description'}`).join('\n')
       : '  No spaces found.',
+
+    `\n━━ CONNECTED KNOWLEDGE PLATFORMS (${importedKnowledge.length} items recently imported) ━━`,
+    importedKnowledge.length > 0
+      ? importedKnowledge.map(ik => `• [${ik.provider?.toUpperCase()} - ${ik.content_type}] "${ik.title}" (updated ${ik.updated_at?.slice(0,10)}): ${ik.ai_summary || ik.content?.substring(0,250)}`).join('\n')
+      : '  No external knowledge imported.',
 
     `\n━━ TEAM MEMBERS (${members.length}) ━━`,
     members.length > 0
@@ -473,9 +490,6 @@ export async function buildOrgContext(options = {}) {
       : '',
 
     orgEvents.length > 0
-      ? `\n━━ RECENT ORG ACTIVITY TIMELINE (${orgEvents.length}) ━━\n` +
-        orgEvents.map(e => `• [${e.event_type}] ${e.title}${e.description ? ` — ${e.description.substring(0, 100)}` : ''} (${e.created_at?.slice(0, 10)})`).join('\n')
-      : '',
   ].filter(Boolean).join('\n');
 
   return {

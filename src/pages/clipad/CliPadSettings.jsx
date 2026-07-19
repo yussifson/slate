@@ -115,7 +115,7 @@ export default function CliPadSettings() {
           
           {/* Sidebar */}
           <div className="md:col-span-1 flex flex-row overflow-x-auto md:flex-col gap-2 md:gap-3 pb-2 md:pb-0 no-scrollbar scrollbar-hide">
-            {[{id: 'profile', icon: User, label: 'Profile'}, {id: 'notifs', icon: Bell, label: 'Notifications'}, {id: 'meeting', icon: Video, label: 'Meeting Defaults'}, ...(isSuperAdmin(user) ? [{id: 'integrations', icon: Plug, label: 'Integrations 🧪'}] : []), ...(isAdmin(user) ? [{id: 'team', icon: Users, label: 'Team Management'}, {id: 'billing', icon: CreditCard, label: 'Billing & Plans'}] : [])].map(tab => (
+            {[{id: 'profile', icon: User, label: 'Profile'}, {id: 'notifs', icon: Bell, label: 'Notifications'}, {id: 'meeting', icon: Video, label: 'Meeting Defaults'}, ...(isSuperAdmin(user) ? [{id: 'integrations', icon: Plug, label: 'Integrations ⚡'}] : []), ...(isAdmin(user) ? [{id: 'team', icon: Users, label: 'Team Management'}, {id: 'billing', icon: CreditCard, label: 'Billing & Plans'}] : [])].map(tab => (
               <button 
                 key={tab.id} 
                 onClick={() => setActiveTab(tab.id)}
