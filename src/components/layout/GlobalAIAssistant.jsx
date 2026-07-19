@@ -189,15 +189,22 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
    }
  }, [isLoading]);
 
+ const baseInputRef = useRef(''); // the text that was in input before mic started
+
  const { isListening: isRecording, hasSupport, toggleListening, stopListening } = useSpeechRecognition({
-   onTranscript: (transcript) => {
-     setInput(originalInputBeforeVoice + ' ' + transcript);
+   onTranscript: (combined, finalPart, interimPart) => {
+     // combined = all final words so far + current interim preview
+     setInput(baseInputRef.current + (baseInputRef.current && combined ? ' ' : '') + combined);
    }
  });
 
  const handleMicToggle = () => {
    if (!isRecording) {
-     setOriginalInputBeforeVoice(input.trim());
+     // Snapshot what's already typed so we can append to it
+     baseInputRef.current = input.trim();
+   } else {
+     // When stopping, clean up the base ref
+     baseInputRef.current = '';
    }
    toggleListening();
  };
@@ -518,13 +525,25 @@ ${contextText}
   }
 
   const userRole = isAdmin(user) ? 'Company Admin' : isSpaceman(user) ? 'Spaceman (Space Admin)' : 'Member';
+  const isAdminUser = isAdmin(user);
+  const isSpaceAdmin = isSpaceman(user);
+
+  const roleRestrictions = isAdminUser
+    ? `You have FULL ACCESS to all company data visible to this admin.`
+    : isSpaceAdmin
+    ? `ROLE RESTRICTIONS: You are a Space Admin. You can see data within spaces you manage, but CANNOT access company billing, user management, admin settings, or other spaces' private data.`
+    : `ROLE RESTRICTIONS: You are a regular Member. You MUST NOT reveal or discuss: company billing, subscription plans, other users' salaries or private info, admin settings, other spaces you are not a member of, or any data outside your authorized spaces. If asked about admin-only topics, politely say you don't have access to that information and suggest contacting a company admin.`;
+
   const systemPrompt = `You are OrbitFlow — a highly enthusiastic, intelligent, and entertaining AI assistant embedded in the ClipPad organizational memory and workspace.
 Your personality is that of a powerful but friendly AI companion—think of a hyper-intelligent digital lion/owl hybrid! Be cheerful, slightly playful, use emojis naturally, but remain highly capable and laser-focused on orchestrating the user's workflows flawlessly.
 Your current context is the ClipPad workspace, specifically the '${ctx?.title || 'Dashboard'}' page.
 
-CRITICAL SECURITY RULE: You are responding to "${user?.full_name || 'a user'}" who has the role "${userRole}". 
-You ONLY have access to data from the spaces this user is authorized to see (provided below).
-NEVER reveal, reference, or speculate about data from spaces or teams this user is not part of.
+CRITICAL SECURITY & ROLE RULES:
+- You are responding to "${user?.full_name || 'a user'}" who has the role "${userRole}".
+- ${roleRestrictions}
+- You ONLY have access to data from the spaces this user is authorized to see (provided below).
+- NEVER reveal, reference, or speculate about data from spaces or teams this user is not part of.
+- NEVER discuss admin-only features (billing, user management, company settings) with Members or Space Admins.
 
 ${verticalPersona}
 ${modeContext}

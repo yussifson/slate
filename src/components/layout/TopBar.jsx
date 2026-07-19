@@ -185,8 +185,15 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  )}
  </div>
 
- {/* Right: AI & Notifications */}
+ {/* Right: Search, AI & Notifications */}
  <div className="flex items-center gap-1">
+ <button
+   onClick={() => window.dispatchEvent(new CustomEvent('open-spotlight'))}
+   className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors active:scale-95", "text-[#8E8E93]")}
+   title="Search"
+ >
+   <Search className="w-[18px] h-[18px]" strokeWidth={2.5} />
+ </button>
  <button onClick={toggleAI} className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors active:scale-95", isAIOpen ? "bg-primary/10 text-primary" : "text-[#8E8E93]")}>
  <Sparkles className="w-[18px] h-[18px]" strokeWidth={2.5} />
  </button>
