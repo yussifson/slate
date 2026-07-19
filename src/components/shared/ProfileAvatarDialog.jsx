@@ -9,6 +9,7 @@ import { powerSync} from "@/api/PowerSyncConnector";
 import { useToast} from "@/components/ui/use-toast";
 import {Camera} from "lucide-react";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 
 const ROBOT_SEEDS = ["Felix", "Aneka", "Jack", "Midnight", "Oliver", "Bella"];
 
@@ -125,6 +126,12 @@ export default function ProfileAvatarDialog({ open, onOpenChange}) {
  );
 })}
  </div>
+ </div>
+
+ {/* Language Settings */}
+ <div className="w-full pt-4 border-t border-primary/40 mt-4 text-left">
+  <p className="text-sm font-medium text-[#71717a] dark:text-gray-400 mb-2">{t("system_language", "System Language")}</p>
+  <LanguageSwitcher currentLanguage={user?.user_metadata?.language} />
  </div>
  </div>
  </DialogContent>

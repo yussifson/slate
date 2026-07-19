@@ -406,7 +406,7 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
                           onClick={() => handleResultClick(src)}
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 border border-slate-200/50 dark:border-white/10 transition-all hover:scale-105 active:scale-95 group"
                         >
-                          <Icon className={\`w-3.5 h-3.5 \${meta?.color || 'text-slate-500'}\`} />
+                          <Icon className={`w-3.5 h-3.5 ${meta?.color || 'text-slate-500'}`} />
                           <span className="text-[12px] font-semibold text-slate-700 dark:text-slate-300 max-w-[150px] truncate">{src.label}</span>
                           <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-emerald-500 transition-colors" />
                         </button>
@@ -429,17 +429,17 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
                   const isFocused = focusedIndex === i;
                   return (
                     <button
-                      key={\`\${res.type}-\${res.id}-\${i}\`}
+                      key={`${res.type}-${res.id}-${i}`}
                       onClick={() => handleResultClick(res)}
-                      className={\`w-full text-left px-4 py-3.5 rounded-2xl cursor-pointer transition-all flex items-center gap-4 group border \${isFocused ? 'bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 shadow-sm' : 'border-transparent hover:bg-slate-50 dark:hover:bg-white/5'}\`}
+                      className={`w-full text-left px-4 py-3.5 rounded-2xl cursor-pointer transition-all flex items-center gap-4 group border ${isFocused ? 'bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 shadow-sm' : 'border-transparent hover:bg-slate-50 dark:hover:bg-white/5'}`}
                     >
-                      <div className={\`w-10 h-10 rounded-xl \${meta.bg || 'bg-slate-100'} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform\`}>
-                        <Icon className={\`w-4.5 h-4.5 \${meta.color || 'text-slate-500'}\`} />
+                      <div className={`w-10 h-10 rounded-xl ${meta.bg || 'bg-slate-100'} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
+                        <Icon className={`w-4.5 h-4.5 ${meta.color || 'text-slate-500'}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="text-[15px] font-semibold text-slate-900 dark:text-white truncate">{res.label}</span>
-                          <span className={\`text-[10px] font-bold px-2 py-0.5 rounded-md \${meta.bg} \${meta.color} tracking-wide uppercase\`}>{meta.label}</span>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${meta.bg} ${meta.color} tracking-wide uppercase`}>{meta.label}</span>
                         </div>
                         {res.snippet && <p className="text-[13px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-1 truncate pr-4">{res.snippet}</p>}
                       </div>

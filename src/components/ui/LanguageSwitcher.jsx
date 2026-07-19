@@ -148,10 +148,23 @@ export function LanguageSwitcher({ currentLanguage, onChange, className }) {
     }
   };
 
-  const handleLanguageChange = (val) => {
+  const handleLanguageChange = async (val) => {
     setLang(val);
     triggerGoogleTranslate(val);
     if (onChange) onChange(val);
+    
+    // Persist language across devices in user metadata
+    try {
+      const { supabase } = await import('@/api/supabaseClient');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        await supabase.auth.updateUser({
+          data: { language: val }
+        });
+      }
+    } catch (e) {
+      console.warn('Failed to persist language preference:', e);
+    }
   };
 
   return (

@@ -127,6 +127,28 @@ export const AuthProvider = ({ children }) => {
         throw new Error("Not logged in");
       }
       
+      // === GLOBALIZATION (i18n) SYNC ===
+      // Check if user has a saved language preference from another device
+      const savedLang = sessionUser.user_metadata?.language;
+      if (savedLang) {
+        const currentCookie = document.cookie.match(/(^|;) ?googtrans=([^;]*)(;|$)/);
+        let currentLang = null;
+        if (currentCookie && currentCookie[2]) {
+          const parts = currentCookie[2].split('/');
+          if (parts.length > 2) currentLang = parts[2];
+        }
+        if (savedLang !== currentLang) {
+          document.cookie = `googtrans=/en/${savedLang}; path=/; domain=${window.location.hostname}`;
+          document.cookie = `googtrans=/en/${savedLang}; path=/`;
+          // If google translate is already loaded, trigger it
+          const googleSelect = document.querySelector('.goog-te-combo');
+          if (googleSelect) {
+            googleSelect.value = savedLang;
+            googleSelect.dispatchEvent(new Event('change'));
+          }
+        }
+      }
+      
       // Optimization: If already authenticated with the same user ID and not forcing a refresh, return immediately.
       // This prevents redundant database queries and layout/sidebar flickering on window refocus.
       const currentUser = userRef.current;
