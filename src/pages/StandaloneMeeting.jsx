@@ -153,16 +153,18 @@ export default function StandaloneMeeting() {
         );
       }
 
-      // Enforce organization access
-      if (!user) {
-        setAuthError('unauthenticated');
-        return;
-      }
+      // Enforce organization access for private/internal meetings
+      if (room.privacy_type !== 'public') {
+        if (!user) {
+          setAuthError('unauthenticated');
+          return;
+        }
 
-      const userCompanyId = user.user_metadata?.company_id || user.company_id;
-      if (room.company_id && userCompanyId !== room.company_id) {
-        setAuthError('unauthorized');
-        return;
+        const userCompanyId = user.user_metadata?.company_id || user.company_id;
+        if (room.company_id && userCompanyId !== room.company_id) {
+          setAuthError('unauthorized');
+          return;
+        }
       }
 
       // If scheduled and start time is in the future

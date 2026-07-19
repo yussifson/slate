@@ -66,7 +66,8 @@ serve(async (req) => {
         title: 'Meeting Room',
         daily_room_url: room.url,
         daily_room_name: room.name,
-        status: 'active'
+        status: 'active',
+        privacy_type: privacy || 'public'
       };
 
       const { error: dbError } = await supabase

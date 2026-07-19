@@ -206,7 +206,7 @@ export default function SpaceDashboard() {
       const companyId = spaceRes.data?.company_id || user?.company_id || user?.companies?.id;
 
       // Phase 2: fetch everything else in parallel, using reliable companyId
-      const [videosRes, meetingsRes, membersRes, profilesRes, staffRes] = await Promise.all([
+      const [videosRes, meetingsRes, membersRes, profilesRes, staffRes, activeRoomRes] = await Promise.all([
         supabase.from('clipad_videos').select('*, creator:creator_id(full_name, avatar_url)').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(12),
         supabase.from('clipad_meeting_records').select('*').eq('space_id', spaceId).order('created_at', { ascending: false }).limit(20),
         supabase.from('clipad_space_members').select('*').eq('space_id', spaceId),
@@ -215,7 +215,10 @@ export default function SpaceDashboard() {
           : supabase.from('profiles').select('id, full_name, email, avatar_url, role').limit(50),
         companyId
           ? supabase.from('staff_records').select('user_id, user_email, full_name').eq('company_id', companyId)
-          : { data: [] }
+          : { data: [] },
+        spaceRes.data?.meeting_url
+          ? supabase.from('video_rooms').select('daily_room_name, status').eq('daily_room_url', spaceRes.data.meeting_url).eq('status', 'active').maybeSingle()
+          : { data: null }
       ]);
 
       // Fetch action items via meeting_id (no space_id on that table)
@@ -228,8 +231,14 @@ export default function SpaceDashboard() {
       if (videosRes.data) setVideos(videosRes.data);
       if (meetingsRes.data) {
         setMeetings(meetingsRes.data);
+      }
+      
+      if (activeRoomRes?.data) {
+        setIsLive(true);
+      } else if (meetingsRes.data?.[0]) {
+        // Fallback for immediate UI updates if status sync is delayed
         const recent = meetingsRes.data[0];
-        if (recent && Date.now() - new Date(recent.created_at).getTime() < 7200000) {
+        if (Date.now() - new Date(recent.created_at).getTime() < 7200000 && !recent.ended_at) {
           setIsLive(true);
         }
       }
