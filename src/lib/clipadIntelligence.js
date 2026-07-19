@@ -187,67 +187,313 @@ export async function generateStandupSummary(updates = [], contextDate = 'today'
 }
 
 // ──────────────────────────────────────────────────────────────────
-// 6. Build Organization Context for AI Brain
+// 6. Build Organization Context for AI Brain — FULL KNOWLEDGE ENGINE
+//    Pulls every table that holds organisational knowledge so that
+//    OrbitFlow & Spotlight can answer questions about anything.
 // ──────────────────────────────────────────────────────────────────
 export async function buildOrgContext(options = {}) {
-  const limit = options.limit || 15;
-  const spaceIds = options.spaceIds || [];
+  const limit     = options.limit     || 20;
+  const spaceIds  = options.spaceIds  || [];
+  const companyId = options.companyId || null;
 
-  const [meetingsRes, decisionsRes, blockersRes, videosRes, tasksRes, commitmentsRes, spacesRes] =
-    await Promise.all([
-      spaceIds.length > 0 
-        ? supabase.from('clipad_meeting_records').select('id, title, ai_summary, created_at').in('space_id', spaceIds).order('created_at', { ascending: false }).limit(limit)
-        : supabase.from('clipad_meeting_records').select('id, title, ai_summary, created_at').order('created_at', { ascending: false }).limit(limit),
-      spaceIds.length > 0
-        ? supabase.from('clipad_decisions').select('id, decision_text, rationale, status, created_at').eq('status', 'active').in('team_space_id', spaceIds).order('created_at', { ascending: false }).limit(10)
-        : supabase.from('clipad_decisions').select('id, decision_text, rationale, status, created_at').eq('status', 'active').order('created_at', { ascending: false }).limit(10),
-      spaceIds.length > 0
-        ? supabase.from('clipad_blockers').select('id, description, status, severity, detected_at').eq('status', 'open').in('team_space_id', spaceIds).order('detected_at', { ascending: false }).limit(10)
-        : supabase.from('clipad_blockers').select('id, description, status, severity, detected_at').eq('status', 'open').order('detected_at', { ascending: false }).limit(10),
-      spaceIds.length > 0
-        ? supabase.from('clipad_videos').select('id, title, ai_summary, created_at').in('space_id', spaceIds).order('created_at', { ascending: false }).limit(10)
-        : supabase.from('clipad_videos').select('id, title, ai_summary, created_at').order('created_at', { ascending: false }).limit(10),
-      spaceIds.length > 0
-        ? supabase.from('clipad_action_items').select('id, title, is_complete, due_date').eq('is_complete', false).in('space_id', spaceIds).order('created_at', { ascending: false }).limit(15)
-        : supabase.from('clipad_action_items').select('id, title, is_complete, due_date').eq('is_complete', false).order('created_at', { ascending: false }).limit(15),
-      supabase.from('clipad_commitments').select('id, commitment_text, status, due_date').eq('status', 'pending').order('created_at', { ascending: false }).limit(10), // Not space-bound
-      spaceIds.length > 0
-        ? supabase.from('clipad_spaces').select('id, name, description, created_at').in('id', spaceIds).order('created_at', { ascending: false }).limit(10)
-        : supabase.from('clipad_spaces').select('id, name, description, created_at').order('created_at', { ascending: false }).limit(10),
-    ]);
+  // Helper: build space filter clause
+  const inSpaces = (col) => spaceIds.length > 0 ? { in: [col, spaceIds] } : null;
 
-  const meetings = meetingsRes.data || [];
-  const decisions = decisionsRes.data || [];
-  const blockers = blockersRes.data || [];
-  const videos = videosRes.data || [];
-  const tasks = tasksRes.data || [];
-  const commitments = commitmentsRes.data || [];
-  const spaces = spacesRes.data || [];
+  // Run ALL fetches in parallel for speed
+  const [
+    meetingsRes,
+    decisionsRes,
+    blockersRes,
+    videosRes,
+    tasksRes,
+    commitmentsRes,
+    spacesRes,
+    standupsRes,
+    orgEventsRes,
+    membersRes,
+    chatRoomsRes,
+    followUpsRes,
+    actionItemsRes,
+  ] = await Promise.all([
+    // Meetings
+    spaceIds.length > 0
+      ? supabase.from('clipad_meeting_records')
+          .select('id, title, ai_summary, created_at, ended_at, space_id')
+          .in('space_id', spaceIds)
+          .order('created_at', { ascending: false })
+          .limit(limit)
+      : supabase.from('clipad_meeting_records')
+          .select('id, title, ai_summary, created_at, ended_at, space_id')
+          .order('created_at', { ascending: false })
+          .limit(limit),
 
+    // Decisions
+    spaceIds.length > 0
+      ? supabase.from('clipad_decisions')
+          .select('id, decision_text, rationale, status, created_at, team_space_id')
+          .eq('status', 'active')
+          .in('team_space_id', spaceIds)
+          .order('created_at', { ascending: false })
+          .limit(15)
+      : supabase.from('clipad_decisions')
+          .select('id, decision_text, rationale, status, created_at, team_space_id')
+          .eq('status', 'active')
+          .order('created_at', { ascending: false })
+          .limit(15),
+
+    // Blockers
+    spaceIds.length > 0
+      ? supabase.from('clipad_blockers')
+          .select('id, description, status, severity, detected_at, team_space_id')
+          .eq('status', 'open')
+          .in('team_space_id', spaceIds)
+          .order('detected_at', { ascending: false })
+          .limit(10)
+      : supabase.from('clipad_blockers')
+          .select('id, description, status, severity, detected_at, team_space_id')
+          .eq('status', 'open')
+          .order('detected_at', { ascending: false })
+          .limit(10),
+
+    // Videos
+    spaceIds.length > 0
+      ? supabase.from('clipad_videos')
+          .select('id, title, ai_summary, created_at, duration_seconds, space_id')
+          .in('space_id', spaceIds)
+          .order('created_at', { ascending: false })
+          .limit(limit)
+      : supabase.from('clipad_videos')
+          .select('id, title, ai_summary, created_at, duration_seconds, space_id')
+          .order('created_at', { ascending: false })
+          .limit(limit),
+
+    // Tasks / Action items (clipad_action_items)
+    spaceIds.length > 0
+      ? supabase.from('clipad_action_items')
+          .select('id, title, is_complete, due_date, assigned_to, space_id')
+          .eq('is_complete', false)
+          .in('space_id', spaceIds)
+          .order('created_at', { ascending: false })
+          .limit(20)
+      : supabase.from('clipad_action_items')
+          .select('id, title, is_complete, due_date, assigned_to, space_id')
+          .eq('is_complete', false)
+          .order('created_at', { ascending: false })
+          .limit(20),
+
+    // Commitments (global, not space-bound)
+    supabase.from('clipad_commitments')
+      .select('id, commitment_text, status, due_date, owner_name')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+      .limit(15),
+
+    // Spaces
+    spaceIds.length > 0
+      ? supabase.from('clipad_spaces')
+          .select('id, name, description, created_at, is_private')
+          .in('id', spaceIds)
+          .order('created_at', { ascending: false })
+          .limit(20)
+      : supabase.from('clipad_spaces')
+          .select('id, name, description, created_at, is_private')
+          .order('created_at', { ascending: false })
+          .limit(20),
+
+    // ── NEW: Standups (the data that was previously missing!) ──
+    spaceIds.length > 0
+      ? supabase.from('clipad_standups')
+          .select('id, user_name, today, yesterday, blockers, mood, created_at, space_id')
+          .in('space_id', spaceIds)
+          .order('created_at', { ascending: false })
+          .limit(30)
+      : supabase.from('clipad_standups')
+          .select('id, user_name, today, yesterday, blockers, mood, created_at, space_id')
+          .order('created_at', { ascending: false })
+          .limit(30),
+
+    // ── NEW: Org Events timeline ──
+    spaceIds.length > 0
+      ? supabase.from('clipad_org_events')
+          .select('id, event_type, title, description, created_at, space_id, actor_id, importance')
+          .in('space_id', spaceIds)
+          .order('created_at', { ascending: false })
+          .limit(20)
+      : supabase.from('clipad_org_events')
+          .select('id, event_type, title, description, created_at, space_id, actor_id, importance')
+          .order('created_at', { ascending: false })
+          .limit(20),
+
+    // ── NEW: Space members (who is in each space) ──
+    spaceIds.length > 0
+      ? supabase.from('clipad_space_members')
+          .select('id, space_id, user_id, role, joined_at, profiles:user_id(full_name, email, role)')
+          .in('space_id', spaceIds)
+          .limit(50)
+      : { data: [] },
+
+    // ── NEW: Chat rooms / channels ──
+    spaceIds.length > 0
+      ? supabase.from('clipad_chat_rooms')
+          .select('id, name, description, space_id, created_at')
+          .in('space_id', spaceIds)
+          .order('created_at', { ascending: false })
+          .limit(20)
+      : supabase.from('clipad_chat_rooms')
+          .select('id, name, description, space_id, created_at')
+          .order('created_at', { ascending: false })
+          .limit(20),
+
+    // ── NEW: Follow-ups ──
+    supabase.from('clipad_follow_ups')
+      .select('id, commitment_text, due_date, status, detected_from')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+      .limit(15)
+      .catch(() => ({ data: [] })),
+
+    // Completed action items (recent, for history) 
+    spaceIds.length > 0
+      ? supabase.from('clipad_action_items')
+          .select('id, title, is_complete, due_date, assigned_to, space_id')
+          .eq('is_complete', true)
+          .in('space_id', spaceIds)
+          .order('created_at', { ascending: false })
+          .limit(10)
+      : supabase.from('clipad_action_items')
+          .select('id, title, is_complete, due_date, assigned_to, space_id')
+          .eq('is_complete', true)
+          .order('created_at', { ascending: false })
+          .limit(10),
+  ]);
+
+  const meetings     = meetingsRes.data     || [];
+  const decisions    = decisionsRes.data    || [];
+  const blockers     = blockersRes.data     || [];
+  const videos       = videosRes.data       || [];
+  const tasks        = tasksRes.data        || [];
+  const commitments  = commitmentsRes.data  || [];
+  const spaces       = spacesRes.data       || [];
+  const standups     = standupsRes.data     || [];
+  const orgEvents    = orgEventsRes.data    || [];
+  const members      = membersRes.data      || [];
+  const chatRooms    = chatRoomsRes.data    || [];
+  const followUps    = followUpsRes.data    || [];
+  const completedTasks = actionItemsRes.data || [];
+
+  // Build source map for citation
   const sourceMap = {};
   meetings.forEach((m) => { sourceMap[m.id] = { type: 'meeting', title: m.title, id: m.id }; });
   decisions.forEach((d) => { sourceMap[d.id] = { type: 'decision', title: d.decision_text?.substring(0, 60), id: d.id }; });
   videos.forEach((v) => { sourceMap[v.id] = { type: 'video', title: v.title, id: v.id }; });
   spaces.forEach((s) => { sourceMap[s.id] = { type: 'space', title: s.name, id: s.id }; });
 
-  const contextText = [
-    `RECENT MEETINGS (${meetings.length}):`,
-    meetings.map((m) => `• [MEETING:${m.id}] "${m.title}" (${m.created_at?.slice(0, 10)}): ${m.ai_summary?.substring(0, 200) || 'No summary'}`).join('\n'),
-    `\nACTIVE DECISIONS (${decisions.length}):`,
-    decisions.map((d) => `• [DECISION:${d.id}] ${d.decision_text} — ${d.rationale || 'No rationale'}`).join('\n'),
-    `\nOPEN BLOCKERS (${blockers.length}):`,
-    blockers.map((b) => `• [BLOCKER:${b.id}] [${(b.severity || 'medium').toUpperCase()}] ${b.description}`).join('\n'),
-    `\nRECENT VIDEOS (${videos.length}):`,
-    videos.map((v) => `• [VIDEO:${v.id}] "${v.title}": ${v.ai_summary?.substring(0, 150) || 'No summary'}`).join('\n'),
-    `\nOPEN TASKS (${tasks.length}):`,
-    tasks.map((t) => `• ${t.title}${t.due_date ? ` (due ${t.due_date})` : ''}`).join('\n'),
-    `\nPENDING COMMITMENTS (${commitments.length}):`,
-    commitments.map((c) => `• ${c.commitment_text}${c.due_date ? ` (by ${c.due_date})` : ''}`).join('\n'),
-    `\nACTIVE SPACES (${spaces.length}):`,
-    spaces.map((s) => `• [SPACE:${s.id}] "${s.name}": ${s.description?.substring(0, 150) || 'No description'}`).join('\n'),
-  ].join('\n');
+  // Build context text — comprehensive view of the entire org
+  const today = new Date().toISOString().slice(0, 10);
 
-  return { contextText, sourceMap, meetings, decisions, blockers, videos, tasks, commitments, spaces };
+  const standupsByDate = {};
+  standups.forEach(s => {
+    const date = s.created_at?.slice(0, 10) || 'unknown';
+    if (!standupsByDate[date]) standupsByDate[date] = [];
+    standupsByDate[date].push(s);
+  });
+
+  const contextText = [
+    `[TODAY: ${today}]`,
+    `\n━━ ACTIVE SPACES (${spaces.length}) ━━`,
+    spaces.length > 0
+      ? spaces.map(s => `• [SPACE:${s.id}] "${s.name}"${s.is_private ? ' (private)' : ''}: ${s.description?.substring(0, 120) || 'No description'}`).join('\n')
+      : '  No spaces found.',
+
+    `\n━━ TEAM MEMBERS (${members.length}) ━━`,
+    members.length > 0
+      ? members.map(m => {
+          const profile = Array.isArray(m.profiles) ? m.profiles[0] : m.profiles;
+          return `• ${profile?.full_name || 'Unknown'} <${profile?.email || 'no email'}> — role: ${m.role || 'member'} in space ${m.space_id}`;
+        }).join('\n')
+      : '  No member data.',
+
+    `\n━━ DAILY STANDUPS (${standups.length} total) ━━`,
+    standups.length > 0
+      ? Object.entries(standupsByDate)
+          .slice(0, 5) // last 5 days
+          .map(([date, dayUpdates]) => {
+            return `\n  [${date}] — ${dayUpdates.length} update(s):\n` +
+              dayUpdates.map(s =>
+                `    👤 ${s.user_name || 'Team member'}:\n` +
+                `       Today: ${s.today || 'not specified'}\n` +
+                `       Yesterday: ${s.yesterday || 'not specified'}\n` +
+                `       Blockers: ${s.blockers || 'none'}\n` +
+                `       Mood: ${s.mood || 'neutral'}`
+              ).join('\n');
+          }).join('\n')
+      : '  No standups posted yet.',
+
+    `\n━━ RECENT MEETINGS (${meetings.length}) ━━`,
+    meetings.length > 0
+      ? meetings.map(m => `• [MEETING:${m.id}] "${m.title}" (${m.created_at?.slice(0, 10)}): ${m.ai_summary?.substring(0, 250) || 'No summary yet'}`).join('\n')
+      : '  No meetings recorded.',
+
+    `\n━━ ACTIVE DECISIONS (${decisions.length}) ━━`,
+    decisions.length > 0
+      ? decisions.map(d => `• [DECISION:${d.id}] ${d.decision_text} — Rationale: ${d.rationale || 'none'}`).join('\n')
+      : '  No active decisions.',
+
+    `\n━━ OPEN BLOCKERS (${blockers.length}) ━━`,
+    blockers.length > 0
+      ? blockers.map(b => `• [${(b.severity || 'medium').toUpperCase()}] ${b.description}`).join('\n')
+      : '  No open blockers.',
+
+    `\n━━ OPEN TASKS / ACTION ITEMS (${tasks.length}) ━━`,
+    tasks.length > 0
+      ? tasks.map(t => `• ${t.title}${t.assigned_to ? ` → @${t.assigned_to}` : ''}${t.due_date ? ` (due ${t.due_date})` : ''}`).join('\n')
+      : '  No open tasks.',
+
+    completedTasks.length > 0 ? `\n━━ RECENTLY COMPLETED TASKS (${completedTasks.length}) ━━\n` +
+      completedTasks.map(t => `• ✅ ${t.title}${t.assigned_to ? ` — ${t.assigned_to}` : ''}`).join('\n') : '',
+
+    `\n━━ PENDING COMMITMENTS (${commitments.length}) ━━`,
+    commitments.length > 0
+      ? commitments.map(c => `• ${c.commitment_text}${c.owner_name ? ` (${c.owner_name})` : ''}${c.due_date ? ` by ${c.due_date}` : ''}`).join('\n')
+      : '  No pending commitments.',
+
+    followUps.length > 0
+      ? `\n━━ PENDING FOLLOW-UPS (${followUps.length}) ━━\n` +
+        followUps.map(f => `• ${f.commitment_text}${f.detected_from ? ` (from: ${f.detected_from})` : ''}${f.due_date ? ` by ${f.due_date}` : ''}`).join('\n')
+      : '',
+
+    `\n━━ RECENT ASYNC VIDEOS (${videos.length}) ━━`,
+    videos.length > 0
+      ? videos.map(v => `• [VIDEO:${v.id}] "${v.title}" (${v.created_at?.slice(0, 10)}${v.duration_seconds ? `, ${Math.round(v.duration_seconds / 60)}min` : ''}): ${v.ai_summary?.substring(0, 200) || 'No summary'}`).join('\n')
+      : '  No videos recorded.',
+
+    chatRooms.length > 0
+      ? `\n━━ CHAT CHANNELS (${chatRooms.length}) ━━\n` +
+        chatRooms.map(c => `• #${c.name || 'unnamed'}${c.description ? ` — ${c.description.substring(0, 80)}` : ''}`).join('\n')
+      : '',
+
+    orgEvents.length > 0
+      ? `\n━━ RECENT ORG ACTIVITY TIMELINE (${orgEvents.length}) ━━\n` +
+        orgEvents.map(e => `• [${e.event_type}] ${e.title}${e.description ? ` — ${e.description.substring(0, 100)}` : ''} (${e.created_at?.slice(0, 10)})`).join('\n')
+      : '',
+  ].filter(Boolean).join('\n');
+
+  return {
+    contextText,
+    sourceMap,
+    meetings,
+    decisions,
+    blockers,
+    videos,
+    tasks,
+    commitments,
+    spaces,
+    standups,
+    orgEvents,
+    members,
+    chatRooms,
+    followUps,
+  };
 }
 
 // ──────────────────────────────────────────────────────────────────

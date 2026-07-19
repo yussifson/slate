@@ -506,22 +506,29 @@ To create an automation, use the \`create_record\` tool with recordType "automat
   }
 
   let orgContextSection = '';
-  if (location.pathname.startsWith('/clipad') || location.pathname === '/dashboard') {
-    try {
-      const accessibleIds = await fetchAccessibleSpaceIds(user);
-      const { contextText } = await buildOrgContext({ limit: 10, spaceIds: Array.from(accessibleIds) });
-      if (contextText && contextText.length > 50) {
-        orgContextSection = `
+  // Always load org context — it's the brain of the system
+  try {
+    const accessibleIds = await fetchAccessibleSpaceIds(user);
+    const { contextText } = await buildOrgContext({
+      limit: 25,
+      spaceIds: Array.from(accessibleIds),
+      companyId,
+    });
+    if (contextText && contextText.length > 50) {
+      orgContextSection = `
 
-🏢 LIVE ORGANIZATIONAL MEMORY — REAL DATA FROM THIS COMPANY:
-You have access to the following verified, live data from the ${accessibleIds.size} spaces this user is authorized to see.
-Use it to answer questions, provide context, and surface relevant insights. Never fabricate data not listed here.
+🏢 LIVE ORGANIZATIONAL MEMORY — VERIFIED REAL DATA:
+You have FULL access to the following live data from ${accessibleIds.size} space(s) this user is authorized to see.
+This includes: standups, meetings, decisions, blockers, tasks, videos, commitments, team members, org events, and more.
+ALWAYS use this data to answer questions. If the data exists below, say so clearly with specifics.
+If something is NOT in this data, say you don't see it in the current data, not that it doesn't exist.
+NEVER fabricate data. NEVER say something doesn't exist unless the relevant section is empty.
+
 ${contextText}
 `;
-      }
-    } catch (orgErr) {
-      console.warn('[OrbitAI] Could not load org context:', orgErr.message);
     }
+  } catch (orgErr) {
+    console.warn('[OrbitAI] Could not load org context:', orgErr.message);
   }
 
   const userRole = isAdmin(user) ? 'Company Admin' : isSpaceman(user) ? 'Spaceman (Space Admin)' : 'Member';

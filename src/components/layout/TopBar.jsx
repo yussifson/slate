@@ -188,7 +188,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  {/* Right: Search, AI & Notifications */}
  <div className="flex items-center gap-1">
  <button
-   onClick={() => window.dispatchEvent(new CustomEvent('open-spotlight'))}
+   onClick={() => window.dispatchEvent(new CustomEvent('open-global-search'))}
    className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors active:scale-95", "text-[#8E8E93]")}
    title="Search"
  >
