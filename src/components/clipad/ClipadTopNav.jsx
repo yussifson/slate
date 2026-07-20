@@ -86,32 +86,7 @@ export default function ClipadTopNav({ forceMobile = false }) {
           );
         })}
 
-        {/* Knowledge Intelligence dropdown */}
-        <div className={cn('relative group', forceMobile ? 'hidden' : 'hidden lg:block')}>
-          <button
-            className={cn('flex items-center gap-1 px-1.5 lg:px-2 xl:px-3 py-1.5 lg:py-2 text-xs xl:text-sm font-medium rounded-lg transition-colors',
-              ['/knowledge-graph','/timeline','/decisions','/action-items','/journey','/integrations'].some(p => location.pathname.startsWith(p))
-                ? 'text-primary bg-primary/10'
-                : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white'
-            )}
-          >
-            <Network className="w-3.5 h-3.5" />
-            Intelligence
-            <ChevronDown className="w-3 h-3 ml-0.5" />
-          </button>
-          <div className="absolute top-full left-0 mt-1 w-56 bg-card border border-border rounded-2xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-            {knowledgeItems.map(ki => (
-              <button
-                key={ki.path}
-                onClick={() => navigate(ki.path)}
-                className={cn('w-full flex flex-col items-start px-4 py-2.5 text-left hover:bg-secondary transition-colors', location.pathname === ki.path ? 'text-primary bg-primary/5' : '')}
-              >
-                <span className="text-xs font-semibold text-foreground">{ki.label}</span>
-                <span className="text-[10px] text-muted-foreground">{ki.desc}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+
         {isAdmin(user) && (
             <>
               {user?.clipad_plan === 'enterprise' ? (

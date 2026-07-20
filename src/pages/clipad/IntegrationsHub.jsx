@@ -8,7 +8,7 @@ import {
   CheckCircle2, XCircle, RefreshCw, Plug, Unplug, ExternalLink,
   Loader2, Clock, FileText, MessageSquare, Video, Github,
   AlertCircle, Zap, Search, Filter, ArrowLeft, BarChart2, ChevronDown, Key, Eye, EyeOff,
-  Settings, FolderOpen, Hash, Sliders
+  Settings, FolderOpen, Hash, Sliders, Network, Scale, Link, CheckSquare
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -302,18 +302,51 @@ export default function IntegrationsHub() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4 md:px-6 mt-6">
-        <div className="flex border-b border-border">
+        <div className="flex border-b border-border overflow-x-auto no-scrollbar">
           <button
             onClick={() => setActiveView('hub')}
-            className={`flex items-center gap-2 px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${activeView === 'hub' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+            className={`flex items-center gap-2 px-4 lg:px-6 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'hub' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
           >
             <Plug className="w-4 h-4" /> Integrations
           </button>
           <button
             onClick={() => setActiveView('analytics')}
-            className={`flex items-center gap-2 px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${activeView === 'analytics' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+            className={`flex items-center gap-2 px-4 lg:px-6 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'analytics' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
           >
             <BarChart2 className="w-4 h-4" /> Analytics
+          </button>
+          
+          <div className="w-px h-6 bg-border mx-2 mt-2.5 shrink-0" />
+          
+          <button
+            onClick={() => navigate('/knowledge-graph')}
+            className="flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 border-transparent text-muted-foreground hover:text-foreground whitespace-nowrap transition-colors"
+          >
+            <Network className="w-4 h-4" /> Knowledge Graph
+          </button>
+          <button
+            onClick={() => navigate('/timeline')}
+            className="flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 border-transparent text-muted-foreground hover:text-foreground whitespace-nowrap transition-colors"
+          >
+            <Clock className="w-4 h-4" /> Timeline
+          </button>
+          <button
+            onClick={() => navigate('/decisions')}
+            className="flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 border-transparent text-muted-foreground hover:text-foreground whitespace-nowrap transition-colors"
+          >
+            <Scale className="w-4 h-4" /> Decisions
+          </button>
+          <button
+            onClick={() => navigate('/action-items')}
+            className="flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 border-transparent text-muted-foreground hover:text-foreground whitespace-nowrap transition-colors"
+          >
+            <CheckSquare className="w-4 h-4" /> Action Items
+          </button>
+          <button
+            onClick={() => navigate('/journey')}
+            className="flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 border-transparent text-muted-foreground hover:text-foreground whitespace-nowrap transition-colors"
+          >
+            <Link className="w-4 h-4" /> Knowledge Journey
           </button>
         </div>
       </div>
