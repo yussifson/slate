@@ -130,8 +130,21 @@ export default function SignUp() {
   let targetUserId = user?.id;
 
   if (!isAuthenticated) {
+    const emailInput = email.trim().toLowerCase();
+
+    // Check for aliased emails to prevent duplicate accounts
+    const { data: aliasExists, error: rpcError } = await supabase.rpc('check_email_alias_exists', {
+      input_email: emailInput
+    });
+
+    if (rpcError) throw rpcError;
+
+    if (aliasExists) {
+      throw new Error('An account with this email (or an alias) already exists. Please log in or request a workspace invitation from your admin.');
+    }
+
     const res = await supabase.auth.signUp({
-      email,
+      email: emailInput,
       password,
       options: {
         data: {
