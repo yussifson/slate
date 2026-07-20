@@ -183,12 +183,9 @@ serve(async (req) => {
         } else {
           throw new Error(`Unsupported provider: ${provider}`)
         }
-      } catch (err) {
-        console.warn(`Real Token Exchange Failed for ${provider}, using mock tokens. Error:`, err.message)
-        // Fallback to mock token so the UI still connects (useful for demo/testing without secrets)
-        accessToken = `mock_fallback_access_token_${provider}_${Date.now()}`;
-        refreshToken = `mock_fallback_refresh_token_${provider}_${Date.now()}`;
-        expiresIn = 31536000; // 1 year
+      catch (err) {
+        console.error(`Real Token Exchange Failed for ${provider}. Error:`, err.message)
+        throw err;
       }
     }
 
