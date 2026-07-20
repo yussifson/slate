@@ -60,6 +60,10 @@ export default function AccountSignUp() {
     try { 
       const emailInput = email.trim().toLowerCase();
 
+      if (emailInput.includes('+')) {
+        throw new Error('Please use a standard email address. Email aliases (containing "+") are not permitted.');
+      }
+
       // Check for aliased emails to prevent duplicate accounts
       const { data: aliasExists, error: rpcError } = await supabase.rpc('check_email_alias_exists', {
         input_email: emailInput

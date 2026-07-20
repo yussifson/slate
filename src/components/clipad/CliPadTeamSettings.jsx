@@ -125,6 +125,11 @@ export default function CliPadTeamSettings() {
   const handleInvite = async (e) => {
     e.preventDefault();
     if (!inviteName.trim() || !inviteEmail.trim()) return;
+
+    if (inviteEmail.includes('+')) {
+      toast({ title: 'Invalid Email', description: 'Please use a standard email address. Email aliases (containing "+") are not permitted.', variant: 'destructive' });
+      return;
+    }
     
     setInviting(true);
     try {
