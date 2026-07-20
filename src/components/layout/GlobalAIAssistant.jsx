@@ -608,6 +608,9 @@ EXACT VERIFIED ROUTE MAP — ALWAYS USE THESE EXACT PATHS FOR navigate_to. NEVER
 /health → Knowledge Health
 /timeline → Knowledge Timeline (chronological feed of all synced knowledge)
 /decisions → Decision Ledger (AI-detected decisions from meetings, docs, messages)
+/knowledge-graph → Knowledge Graph (interactive visual graph of cross-system relationships)
+/action-items → Action Items (AI-extracted tasks from all sources, exportable to Jira/ClickUp etc.)
+/journey → Knowledge Journey (trace how ideas flow across Slack → Notion → Jira → GitHub)
 /integrations → Integrations Hub (connect external apps)
 /integration-analytics → Integration Analytics
 /settings → Settings

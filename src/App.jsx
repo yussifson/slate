@@ -23,6 +23,9 @@ const CliPadEnterpriseDashboard = React.lazy(() => import('@/pages/clipad/admin/
 const KnowledgeHealth = React.lazy(() => import('@/pages/clipad/KnowledgeHealth'));
 const KnowledgeTimeline = React.lazy(() => import('@/pages/clipad/KnowledgeTimeline'));
 const DecisionLedger = React.lazy(() => import('@/pages/clipad/DecisionLedger'));
+const KnowledgeGraph = React.lazy(() => import('@/pages/clipad/KnowledgeGraph'));
+const ActionItems = React.lazy(() => import('@/pages/clipad/ActionItems'));
+const KnowledgeJourney = React.lazy(() => import('@/pages/clipad/KnowledgeJourney'));
 const IntegrationAnalytics = React.lazy(() => import('@/pages/clipad/IntegrationAnalytics'));
 const CliPadDashboard = React.lazy(() => import('@/pages/clipad/CliPadDashboard'));
 const CliPadLogin = React.lazy(() => import('@/pages/clipad/CliPadLogin'));
@@ -902,6 +905,11 @@ function PlatformRoutes() {
         <Route path="/clipad/enterprise" element={<CliPadEnterpriseDashboard />} />
         <Route path="/clipad/health" element={<KnowledgeHealth />} />
         <Route path="/clipad/integration-analytics" element={<IntegrationAnalytics />} />
+        <Route path="/clipad/timeline" element={<KnowledgeTimeline />} />
+        <Route path="/clipad/decisions" element={<DecisionLedger />} />
+        <Route path="/clipad/knowledge-graph" element={<KnowledgeGraph />} />
+        <Route path="/clipad/action-items" element={<ActionItems />} />
+        <Route path="/clipad/journey" element={<KnowledgeJourney />} />
       </Route>
 
       {/* Clipad Super Admin Routes */}
@@ -1410,6 +1418,9 @@ function App() {
                           <Route path="/health" element={<KnowledgeHealth />} />
                           <Route path="/timeline" element={<KnowledgeTimeline />} />
                           <Route path="/decisions" element={<DecisionLedger />} />
+                          <Route path="/knowledge-graph" element={<KnowledgeGraph />} />
+                          <Route path="/action-items" element={<ActionItems />} />
+                          <Route path="/journey" element={<KnowledgeJourney />} />
                           <Route path="/integration-analytics" element={<IntegrationAnalytics />} />
                           <Route path="/record" element={<RecordVideo />} />
                           <Route path="/record/:id" element={<RecordVideo />} />
