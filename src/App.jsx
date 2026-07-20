@@ -195,9 +195,9 @@ class ErrorBoundary extends React.Component {
                  {(() => {
                    let logoSrc = '/optavel-favicon.svg';
                    try {
-                     const host = window.location.hostname.toLowerCase();
-                     if (host.includes('clipad') || !!window.Capacitor || window.navigator.userAgent.toLowerCase().includes('capacitor')) logoSrc = '/clipad-logo-green.svg';
-                     else if (host.includes('slate') && !host.includes('optavel')) logoSrc = '/slate-favicon.svg';
+                      const host = window.location.hostname.toLowerCase();
+                      if (host.includes('clipad')) logoSrc = '/clipad-logo-green.svg';
+                      else if (host.includes('slate') && !host.includes('optavel')) logoSrc = '/slate-favicon.svg';
                    } catch(e) {}
                    return <img src={logoSrc} alt="Logo" className="w-10 h-10 object-contain animate-pulse" />;
                  })()}
@@ -1359,7 +1359,7 @@ function App() {
   const { currentSubdomain } = getSubdomainAndBase();
   const isNativeApp = isDesktopApp();
   const isBaseDomain = currentSubdomain === null;
-  const isMeetDomain = currentSubdomain === 'clipad' || window.location.hostname.startsWith('clipad.') || !!window.Capacitor || window.navigator.userAgent.toLowerCase().includes('capacitor');
+  const isMeetDomain = currentSubdomain === 'clipad' || window.location.hostname.startsWith('clipad.');
   const isAccountDomain = currentSubdomain === 'account' || window.location.hostname.startsWith('account.');
 
   useEffect(() => {

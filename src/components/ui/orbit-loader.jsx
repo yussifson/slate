@@ -14,7 +14,7 @@ export function OrbitLoader({ size = 'md', className = '', label = 'Loading', co
   let isClipad = false;
   try {
     const host = window.location.hostname.toLowerCase();
-    if (host.includes('clipad') || !!window.Capacitor || window.navigator.userAgent.toLowerCase().includes('capacitor')) {
+    if (host.includes('clipad')) {
       isClipad = true;
     } else if (host.includes('account') || host === 'optavel.com' || host === 'www.optavel.com') {
       isRootAccount = true;
@@ -63,7 +63,7 @@ export function PageLoader({ label = 'Loading...' }) {
   let isClipad = false;
   try {
     const host = window.location.hostname.toLowerCase();
-    if (host.includes('clipad') || !!window.Capacitor || window.navigator.userAgent.toLowerCase().includes('capacitor')) {
+    if (host.includes('clipad')) {
       isClipad = true;
     } else if (host.includes('account') || host === 'optavel.com' || host === 'www.optavel.com') {
       isRootAccount = true;

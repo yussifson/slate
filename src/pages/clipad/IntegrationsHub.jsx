@@ -9,6 +9,14 @@ import {
   AlertCircle, Zap, Search, Filter, ArrowLeft, BarChart2, ChevronDown, Key, Eye, EyeOff,
   Settings, FolderOpen, Hash, Sliders
 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu";
 import IntegrationAnalytics from './IntegrationAnalytics';
 
 import { INTEGRATIONS, CATEGORIES } from '@/config/integrationsList';
@@ -458,28 +466,33 @@ export default function IntegrationsHub() {
                             {isSyncing ? 'Syncing...' : 'Sync Now'}
                           </button>
                           
-                          <div className="relative group" title={`Auto-Sync: ${conn.sync_frequency || 'Manual'}`}>
-                            <button
-                              type="button"
-                              className="flex items-center justify-center w-8 h-8 rounded-xl bg-secondary/50 hover:bg-secondary text-muted-foreground transition-colors border border-transparent hover:border-border cursor-pointer"
-                            >
-                              <Clock className="w-4 h-4" />
-                            </button>
-                            <select
-                              value={conn.sync_frequency || 'Manual'}
-                              onChange={(e) => handleUpdateSyncFrequency(conn.id, e.target.value)}
-                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                            >
-                              <option value="Manual">Manual</option>
-                              <option value="15 Minutes">Every 15m</option>
-                              <option value="Hourly">Hourly</option>
-                              <option value="Daily">Daily</option>
-                              <option value="Weekly">Weekly</option>
-                            </select>
-                          </div>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <button
+                                className="flex items-center justify-center w-8 h-8 rounded-xl bg-secondary/50 hover:bg-secondary text-muted-foreground transition-colors border border-transparent hover:border-border"
+                                title={`Auto-Sync: ${conn.sync_frequency || 'Manual'}`}
+                              >
+                                <Clock className="w-4 h-4" />
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="center" className="w-40 font-sans z-[100]">
+                              <DropdownMenuLabel className="text-xs text-muted-foreground font-semibold px-2 py-1.5 uppercase tracking-wider">Sync Frequency</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              {['Manual', '15 Minutes', 'Hourly', 'Daily', 'Weekly'].map(freq => (
+                                <DropdownMenuItem
+                                  key={freq}
+                                  onClick={() => handleUpdateSyncFrequency(conn.id, freq)}
+                                  className={`cursor-pointer py-2 text-sm ${conn.sync_frequency === freq ? 'bg-primary/10 text-primary font-semibold' : ''}`}
+                                >
+                                  {freq === '15 Minutes' ? 'Every 15m' : freq}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
 
                           <button
-                            onClick={() => setConfigModal({ integration, conn })}
+                            type="button"
+                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setConfigModal({ integration, conn }); }}
                             className="flex items-center justify-center w-8 h-8 rounded-xl bg-secondary/50 hover:bg-secondary text-muted-foreground transition-colors border border-transparent hover:border-border"
                             title="Configure import settings"
                           >

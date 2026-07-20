@@ -469,11 +469,11 @@ export default function CliPadDashboard() {
 
             {/* My Action Items */}
             <div className="bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 rounded-[20px] overflow-hidden shadow-sm">
-              <div className="flex items-center justify-between px-6 py-5 border-b border-black/5 dark:border-white/5">
+              <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-5 border-b border-black/5 dark:border-white/5">
                 <h2 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2"><CheckCircle className="w-5 h-5 text-emerald-500" /> My Action Items</h2>
                 <span className="text-xs font-semibold px-2.5 py-1 bg-slate-100 dark:bg-black/20 text-slate-600 dark:text-foreground rounded-full">{actionItems.length} open</span>
               </div>
-              <div className="p-4 max-h-[320px] overflow-y-auto scrollbar-primary">
+              <div className="p-2 md:p-4 max-h-[320px] overflow-y-auto scrollbar-primary">
                 {actionItems.length === 0 ? (
                   <div className="py-10 text-center">
                     <Star className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
@@ -486,7 +486,7 @@ export default function CliPadDashboard() {
             </div>
 
             {/* AI Intelligence Insight */}
-            <div className="bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 backdrop-blur-md rounded-[20px] p-6 shadow-sm">
+            <div className="bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 backdrop-blur-md rounded-[20px] p-4 md:p-6 shadow-sm">
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
                   <Brain className="w-4.5 h-4.5 text-primary" />
@@ -524,7 +524,7 @@ export default function CliPadDashboard() {
 
             {/* Recent Meetings */}
             <div className="bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-3xl border border-black/5 dark:border-white/5 rounded-[20px] overflow-hidden shadow-sm">
-              <div className="flex items-center justify-between px-6 py-5 border-b border-black/5 dark:border-white/5">
+              <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-5 border-b border-black/5 dark:border-white/5">
                 <h2 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2"><Calendar className="w-5 h-5 text-primary" /> Recent Meetings</h2>
                 <button onClick={() => navigate('/meetings')} className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors">View all</button>
               </div>
@@ -536,7 +536,7 @@ export default function CliPadDashboard() {
                   </div>
                 ) : (
                   meetings.slice(0, 4).map(m => (
-                    <div key={m.id} onClick={() => navigate(`/meetings/${m.id}`)} className="px-6 py-4 hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer transition-colors group">
+                    <div key={m.id} onClick={() => navigate(`/meetings/${m.id}`)} className="px-4 py-3 md:px-6 md:py-4 hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer transition-colors group">
                       <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center gap-2">
                           <p className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{m.title || 'Team Meeting'}</p>
