@@ -128,12 +128,16 @@ export default function IntegrationAnalytics() {
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
           
           <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-black flex items-center gap-3">
-                <Network className="w-8 h-8 text-indigo-500" />
-                Integration Analytics
-              </h1>
-              <p className="text-slate-500 mt-2">Monitor data ingestion, AI processing, and knowledge graph health.</p>
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
+                <Network className="w-6 h-6" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-black">
+                  Integration Analytics
+                </h1>
+                <p className="text-sm text-slate-500 mt-1">Monitor data ingestion, AI processing, and knowledge graph health.</p>
+              </div>
             </div>
             <button 
               onClick={() => window.location.reload()}
@@ -174,9 +178,9 @@ export default function IntegrationAnalytics() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Chart: Data Ingestion Over Time */}
-            <div className="lg:col-span-2 p-6 rounded-3xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm flex flex-col">
-              <h3 className="text-lg font-bold mb-1">Knowledge Ingestion (14 Days)</h3>
-              <p className="text-sm text-slate-500 mb-6">Volume of items synced into the organizational memory</p>
+            <div className="lg:col-span-2 p-5 rounded-2xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm flex flex-col hover:border-indigo-500/30 transition-all hover:shadow-md">
+              <h3 className="text-base font-bold mb-1">Knowledge Ingestion (14 Days)</h3>
+              <p className="text-xs text-slate-500 mb-6">Volume of items synced into the organizational memory</p>
               <div className="flex-1 min-h-[300px]">
                 {timelineData.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
@@ -204,9 +208,9 @@ export default function IntegrationAnalytics() {
             </div>
 
             {/* Chart: Source Distribution */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm flex flex-col">
-              <h3 className="text-lg font-bold mb-1">Knowledge Sources</h3>
-              <p className="text-sm text-slate-500 mb-6">Distribution by integration</p>
+            <div className="p-5 rounded-2xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm flex flex-col hover:border-indigo-500/30 transition-all hover:shadow-md">
+              <h3 className="text-base font-bold mb-1">Knowledge Sources</h3>
+              <p className="text-xs text-slate-500 mb-6">Distribution by integration</p>
               <div className="flex-1 min-h-[300px] flex items-center justify-center">
                 {providerData.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
@@ -235,9 +239,9 @@ export default function IntegrationAnalytics() {
           </div>
 
           {/* Sync Status Table */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm">
-            <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-              <RefreshCw className="w-5 h-5 text-indigo-500" />
+          <div className="p-5 rounded-2xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm hover:border-indigo-500/30 transition-all hover:shadow-md">
+            <h3 className="text-base font-bold mb-5 flex items-center gap-2">
+              <RefreshCw className="w-4 h-4 text-indigo-500" />
               Integration Sync Status
             </h3>
             

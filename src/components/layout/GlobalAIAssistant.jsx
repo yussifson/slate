@@ -527,6 +527,37 @@ NEVER fabricate data. NEVER say something doesn't exist unless the relevant sect
 ${contextText}
 `;
     }
+
+    // ── Integration Knowledge Search: query clipad_imported_knowledge ──────────
+    try {
+      const { data: knowledgeResults, error: kErr } = await supabase.functions.invoke('knowledge-search', {
+        body: { query: text, company_id: companyId, match_count: 8, threshold: 0.4 }
+      });
+      if (!kErr && knowledgeResults?.results?.length > 0) {
+        const kItems = knowledgeResults.results.slice(0, 8).map(r => {
+          const parts = [`[${r.provider?.toUpperCase() || 'INTEGRATION'} – ${r.content_type || 'item'}]`];
+          if (r.title) parts.push(`Title: ${r.title}`);
+          if (r.ai_summary) parts.push(`Summary: ${r.ai_summary}`);
+          else if (r.content) parts.push(`Content: ${r.content.substring(0, 300)}`);
+          if (r.url) parts.push(`Source: ${r.url}`);
+          if (r.author) parts.push(`Author: ${r.author}`);
+          if (r.imported_at) parts.push(`Indexed: ${new Date(r.imported_at).toLocaleDateString()}`);
+          return parts.join('\n');
+        }).join('\n\n---\n\n');
+
+        orgContextSection += `
+
+🔗 INTEGRATION KNOWLEDGE BASE — CROSS-SYSTEM DATA:
+The following items were retrieved from connected integrations (Slack, Google Drive, GitHub, Jira, Notion, etc.) relevant to the user's query.
+Use these to answer questions about documents, messages, meetings, tasks, and more across all connected systems.
+Always cite the source provider and title when referencing these results.
+
+${kItems}
+`;
+      }
+    } catch (kSearchErr) {
+      console.warn('[OrbitAI] Knowledge search failed:', kSearchErr.message);
+    }
   } catch (orgErr) {
     console.warn('[OrbitAI] Could not load org context:', orgErr.message);
   }

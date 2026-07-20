@@ -1,0 +1,220 @@
+import React, { useState, useEffect } from 'react';
+import { supabase } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { format } from 'date-fns';
+import { 
+  History, Clock, FileText, FileCode, CheckCircle, Database, GitMerge, Search, 
+  ExternalLink, ChevronRight, Zap, RefreshCw, Box
+} from 'lucide-react';
+import { INTEGRATIONS } from '@/config/integrationsList';
+import { OrbitLoader } from '@/components/ui/orbit-loader';
+import { useNavigate } from 'react-router-dom';
+
+export default function KnowledgeTimeline() {
+  const { user } = useAuth();
+  const companyId = useCompanyId();
+  const navigate = useNavigate();
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('all');
+
+  useEffect(() => {
+    if (!companyId) return;
+    loadTimeline();
+  }, [companyId]);
+
+  const loadTimeline = async () => {
+    setLoading(true);
+    try {
+      // Fetch imported knowledge
+      const { data, error } = await supabase
+        .from('clipad_imported_knowledge')
+        .select('*')
+        .eq('company_id', companyId)
+        .order('imported_at', { ascending: false })
+        .limit(100);
+
+      if (error) throw error;
+      setEvents(data || []);
+    } catch (err) {
+      console.error('Failed to load timeline:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getProviderIcon = (providerId) => {
+    const intg = INTEGRATIONS.find(i => i.id === providerId || i.provider === providerId);
+    return intg?.icon || '📄';
+  };
+
+  const filteredEvents = events.filter(e => {
+    const matchesSearch = 
+      (e.title || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+      (e.ai_summary || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (e.provider || '').toLowerCase().includes(searchQuery.toLowerCase());
+    
+    if (activeFilter === 'all') return matchesSearch;
+    return matchesSearch && e.provider === activeFilter;
+  });
+
+  const providers = [...new Set(events.map(e => e.provider))];
+
+  return (
+    <div className="min-h-full bg-background text-foreground pb-12 font-sans page-enter">
+      {/* Header */}
+      <div className="relative overflow-hidden border-b border-border bg-gradient-to-br from-indigo-500/5 via-background to-background px-6 py-10">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(99,102,241,0.08),transparent_60%)] pointer-events-none" />
+        <div className="max-w-5xl mx-auto relative z-10 flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 flex items-center justify-center">
+                <History className="w-5 h-5 text-indigo-500" />
+              </div>
+              <h1 className="text-2xl font-bold text-foreground">Knowledge Timeline</h1>
+            </div>
+            <p className="text-sm text-muted-foreground max-w-xl">
+              A chronological feed of all knowledge ingested across your connected applications. 
+              See exactly what the AI is learning in real-time.
+            </p>
+          </div>
+          <button 
+            onClick={loadTimeline}
+            className="flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-xl text-sm font-medium hover:bg-secondary/80 transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" /> Refresh
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 md:px-6 mt-8 flex flex-col md:flex-row gap-8">
+        
+        {/* Left Sidebar: Filters */}
+        <div className="w-full md:w-64 shrink-0 space-y-6">
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <input 
+              type="text"
+              placeholder="Search timeline..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-card border border-border rounded-xl pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-sm"
+            />
+          </div>
+
+          <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
+            <div className="px-4 py-3 border-b border-border bg-secondary/30">
+              <h3 className="font-semibold text-sm">Data Sources</h3>
+            </div>
+            <div className="p-2 space-y-1">
+              <button
+                onClick={() => setActiveFilter('all')}
+                className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${activeFilter === 'all' ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-medium' : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}`}
+              >
+                <div className="flex items-center gap-2"><Database className="w-4 h-4" /> All Sources</div>
+                <span className="text-xs bg-background border border-border px-1.5 py-0.5 rounded-md">{events.length}</span>
+              </button>
+              {providers.map(p => {
+                const count = events.filter(e => e.provider === p).length;
+                const intg = INTEGRATIONS.find(i => i.id === p || i.provider === p);
+                return (
+                  <button
+                    key={p}
+                    onClick={() => setActiveFilter(p)}
+                    className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${activeFilter === p ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-medium' : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}`}
+                  >
+                    <div className="flex items-center gap-2"><span className="text-base">{intg?.icon || '📄'}</span> {intg?.name || p}</div>
+                    <span className="text-xs bg-background border border-border px-1.5 py-0.5 rounded-md">{count}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Content: Timeline */}
+        <div className="flex-1">
+          {loading ? (
+            <div className="flex justify-center p-12"><OrbitLoader size="md" /></div>
+          ) : filteredEvents.length === 0 ? (
+            <div className="text-center p-12 border border-dashed border-border rounded-2xl bg-card">
+              <Box className="w-8 h-8 text-muted-foreground mx-auto mb-3 opacity-50" />
+              <h3 className="font-semibold text-foreground mb-1">No knowledge found</h3>
+              <p className="text-sm text-muted-foreground">Try adjusting your filters or search query.</p>
+            </div>
+          ) : (
+            <div className="relative pl-6 border-l-2 border-indigo-500/20 space-y-8">
+              {filteredEvents.map((item, index) => {
+                const intg = INTEGRATIONS.find(i => i.id === item.provider || i.provider === item.provider);
+                
+                return (
+                  <div key={item.id} className="relative group">
+                    {/* Timeline node */}
+                    <div className="absolute -left-[35px] w-6 h-6 rounded-full bg-background border-2 border-indigo-500 flex items-center justify-center shadow-sm">
+                      <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                    </div>
+                    
+                    <div className="bg-card border border-border rounded-2xl p-5 hover:shadow-md hover:border-indigo-500/30 transition-all">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl" title={intg?.name}>{intg?.icon || '📄'}</span>
+                          <span className="text-xs font-semibold px-2 py-1 bg-secondary text-secondary-foreground rounded-md uppercase tracking-wider">
+                            {item.content_type || 'Document'}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <Clock className="w-3.5 h-3.5" />
+                          {format(new Date(item.imported_at), 'MMM d, yyyy • h:mm a')}
+                        </div>
+                      </div>
+                      
+                      <h3 className="text-base font-bold text-foreground mb-2 line-clamp-1 group-hover:text-indigo-500 transition-colors">
+                        {item.title || 'Untitled Knowledge Artifact'}
+                      </h3>
+                      
+                      {item.ai_summary ? (
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">
+                          {item.ai_summary}
+                        </p>
+                      ) : item.content ? (
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed opacity-80">
+                          {item.content.substring(0, 150)}...
+                        </p>
+                      ) : null}
+                      
+                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-border/50">
+                        <div className="flex items-center gap-2 text-xs">
+                          {item.author && (
+                            <span className="flex items-center gap-1 text-muted-foreground bg-secondary/50 px-2 py-1 rounded-md">
+                              <span className="font-medium text-foreground">{item.author}</span>
+                            </span>
+                          )}
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Database className="w-3.5 h-3.5" /> Indexed automatically
+                          </span>
+                        </div>
+                        
+                        {item.url && (
+                          <a 
+                            href={item.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 hover:underline"
+                          >
+                            Open Source <ExternalLink className="w-3 h-3" />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

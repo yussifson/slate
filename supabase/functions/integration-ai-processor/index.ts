@@ -58,6 +58,7 @@ serve(async (req) => {
     let aiActionItems: string[] | null = null;
     let aiEntities: Record<string, any> | null = null;
     let aiKeywords: string[] | null = null;
+    let aiRisks: string[] | null = null;
     let embedding: number[] | null = null;
 
     if (cloudflareAccountId && cloudflareApiToken && textToProcess.trim().length > 20) {
@@ -98,6 +99,7 @@ ${textToProcess}`;
             aiActionItems = Array.isArray(parsed.action_items) ? parsed.action_items : null;
             aiEntities = parsed.entities || null;
             aiKeywords = Array.isArray(parsed.keywords) ? parsed.keywords : null;
+            aiRisks = Array.isArray(parsed.risks) ? parsed.risks : null;
           } catch {
             // Extract summary from plain text if JSON parse fails
             aiSummary = rawText.length > 50 ? rawText.substring(0, 300) : null;
@@ -140,6 +142,7 @@ ${textToProcess}`;
       ai_action_items: aiActionItems,
       ai_entities: aiEntities,
       ai_keywords: aiKeywords,
+      ai_risks: aiRisks,
     };
 
     if (embedding) {

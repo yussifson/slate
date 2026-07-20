@@ -21,6 +21,8 @@ const CliPadSettings = React.lazy(() => import('@/pages/clipad/CliPadSettings'))
 const VideoAnalytics = React.lazy(() => import('@/pages/clipad/VideoAnalytics'));
 const CliPadEnterpriseDashboard = React.lazy(() => import('@/pages/clipad/admin/EnterpriseDashboard'));
 const KnowledgeHealth = React.lazy(() => import('@/pages/clipad/KnowledgeHealth'));
+const KnowledgeTimeline = React.lazy(() => import('@/pages/clipad/KnowledgeTimeline'));
+const DecisionLedger = React.lazy(() => import('@/pages/clipad/DecisionLedger'));
 const IntegrationAnalytics = React.lazy(() => import('@/pages/clipad/IntegrationAnalytics'));
 const CliPadDashboard = React.lazy(() => import('@/pages/clipad/CliPadDashboard'));
 const CliPadLogin = React.lazy(() => import('@/pages/clipad/CliPadLogin'));
@@ -1406,6 +1408,8 @@ function App() {
                           <Route path="/spaces" element={<SpacesList />} />
                           <Route path="/spaces/:spaceId" element={<SpaceDashboard />} />
                           <Route path="/health" element={<KnowledgeHealth />} />
+                          <Route path="/timeline" element={<KnowledgeTimeline />} />
+                          <Route path="/decisions" element={<DecisionLedger />} />
                           <Route path="/integration-analytics" element={<IntegrationAnalytics />} />
                           <Route path="/record" element={<RecordVideo />} />
                           <Route path="/record/:id" element={<RecordVideo />} />

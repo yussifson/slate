@@ -226,6 +226,176 @@ serve(async (req) => {
         return Response.redirect(returnWithInfo.toString(), 302)
       }
 
+      case 'trello': {
+        // Trello OAuth 1.0a — redirect to API key acquisition page for PAT
+        const returnWithInfo = new URL(return_url)
+        returnWithInfo.searchParams.set('status', 'needs_api_key')
+        returnWithInfo.searchParams.set('provider', 'trello')
+        return Response.redirect(returnWithInfo.toString(), 302)
+      }
+
+      case 'box': {
+        const boxClientId = Deno.env.get('BOX_CLIENT_ID')
+        if (!boxClientId) throw new Error("Missing BOX_CLIENT_ID")
+        authUrl = `https://account.box.com/api/oauth2/authorize?response_type=code&client_id=${boxClientId}&redirect_uri=${redirectUri}&state=${state}`
+        break;
+      }
+
+      case 'stripe': {
+        // Stripe uses API keys, not OAuth — redirect to config page
+        const returnWithInfo = new URL(return_url)
+        returnWithInfo.searchParams.set('status', 'needs_api_key')
+        returnWithInfo.searchParams.set('provider', 'stripe')
+        return Response.redirect(returnWithInfo.toString(), 302)
+      }
+
+      case 'mailchimp': {
+        const mcClientId = Deno.env.get('MAILCHIMP_CLIENT_ID')
+        if (!mcClientId) throw new Error("Missing MAILCHIMP_CLIENT_ID")
+        authUrl = `https://login.mailchimp.com/oauth2/authorize?response_type=code&client_id=${mcClientId}&redirect_uri=${redirectUri}&state=${state}`
+        break;
+      }
+
+      case 'pipedrive': {
+        const pdClientId = Deno.env.get('PIPEDRIVE_CLIENT_ID')
+        if (!pdClientId) throw new Error("Missing PIPEDRIVE_CLIENT_ID")
+        authUrl = `https://oauth.pipedrive.com/oauth/authorize?client_id=${pdClientId}&redirect_uri=${redirectUri}&state=${state}`
+        break;
+      }
+
+      case 'calendly': {
+        const calClientId = Deno.env.get('CALENDLY_CLIENT_ID')
+        if (!calClientId) throw new Error("Missing CALENDLY_CLIENT_ID")
+        authUrl = `https://auth.calendly.com/oauth/authorize?client_id=${calClientId}&response_type=code&redirect_uri=${redirectUri}&state=${state}`
+        break;
+      }
+
+      case 'airtable': {
+        const atClientId = Deno.env.get('AIRTABLE_CLIENT_ID')
+        if (!atClientId) throw new Error("Missing AIRTABLE_CLIENT_ID")
+        const atScopes = 'data.records:read schema.bases:read'
+        authUrl = `https://airtable.com/oauth2/v1/authorize?response_type=code&client_id=${atClientId}&redirect_uri=${redirectUri}&scope=${encodeURIComponent(atScopes)}&state=${state}&code_challenge_method=S256&code_challenge=${state.substring(0, 43)}`
+        break;
+      }
+
+      case 'datadog': {
+        // Datadog uses API keys
+        const returnWithInfo = new URL(return_url)
+        returnWithInfo.searchParams.set('status', 'needs_api_key')
+        returnWithInfo.searchParams.set('provider', 'datadog')
+        return Response.redirect(returnWithInfo.toString(), 302)
+      }
+
+      case 'sentry': {
+        const snClientId = Deno.env.get('SENTRY_CLIENT_ID')
+        if (!snClientId) throw new Error("Missing SENTRY_CLIENT_ID")
+        authUrl = `https://sentry.io/oauth/authorize/?client_id=${snClientId}&response_type=code&redirect_uri=${redirectUri}&state=${state}`
+        break;
+      }
+
+      case 'pagerduty': {
+        const pdClientId = Deno.env.get('PAGERDUTY_CLIENT_ID')
+        if (!pdClientId) throw new Error("Missing PAGERDUTY_CLIENT_ID")
+        authUrl = `https://app.pagerduty.com/oauth/authorize?client_id=${pdClientId}&response_type=code&redirect_uri=${redirectUri}&state=${state}`
+        break;
+      }
+
+      case 'jenkins': {
+        // Jenkins uses API token auth
+        const returnWithInfo = new URL(return_url)
+        returnWithInfo.searchParams.set('status', 'needs_api_key')
+        returnWithInfo.searchParams.set('provider', 'jenkins')
+        return Response.redirect(returnWithInfo.toString(), 302)
+      }
+
+      case 'canva': {
+        const cvClientId = Deno.env.get('CANVA_CLIENT_ID')
+        if (!cvClientId) throw new Error("Missing CANVA_CLIENT_ID")
+        authUrl = `https://www.canva.com/api/oauth/code?response_type=code&client_id=${cvClientId}&redirect_uri=${redirectUri}&scope=asset:read+design:meta:read&state=${state}`
+        break;
+      }
+
+      case 'whatsapp': {
+        // WhatsApp Business API uses permanent access tokens
+        const returnWithInfo = new URL(return_url)
+        returnWithInfo.searchParams.set('status', 'needs_api_key')
+        returnWithInfo.searchParams.set('provider', 'whatsapp')
+        return Response.redirect(returnWithInfo.toString(), 302)
+      }
+
+      case 'telegram': {
+        // Telegram uses bot tokens
+        const returnWithInfo = new URL(return_url)
+        returnWithInfo.searchParams.set('status', 'needs_api_key')
+        returnWithInfo.searchParams.set('provider', 'telegram')
+        return Response.redirect(returnWithInfo.toString(), 302)
+      }
+
+      case 'aws': {
+        // AWS uses access key + secret
+        const returnWithInfo = new URL(return_url)
+        returnWithInfo.searchParams.set('status', 'needs_api_key')
+        returnWithInfo.searchParams.set('provider', 'aws')
+        return Response.redirect(returnWithInfo.toString(), 302)
+      }
+
+      case 'azure': {
+        const azClientId = Deno.env.get('AZURE_CLIENT_ID')
+        if (!azClientId) throw new Error("Missing AZURE_CLIENT_ID")
+        authUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${azClientId}&response_type=code&redirect_uri=${redirectUri}&scope=${encodeURIComponent('https://management.azure.com/user_impersonation offline_access')}&state=${state}`
+        break;
+      }
+
+      case 'google_cloud': {
+        // GCP uses service account JSON key
+        const returnWithInfo = new URL(return_url)
+        returnWithInfo.searchParams.set('status', 'needs_api_key')
+        returnWithInfo.searchParams.set('provider', 'google_cloud')
+        return Response.redirect(returnWithInfo.toString(), 302)
+      }
+
+      case 'sap': {
+        const returnWithInfo = new URL(return_url)
+        returnWithInfo.searchParams.set('status', 'needs_api_key')
+        returnWithInfo.searchParams.set('provider', 'sap')
+        return Response.redirect(returnWithInfo.toString(), 302)
+      }
+
+      case 'oracle': {
+        const returnWithInfo = new URL(return_url)
+        returnWithInfo.searchParams.set('status', 'needs_api_key')
+        returnWithInfo.searchParams.set('provider', 'oracle')
+        return Response.redirect(returnWithInfo.toString(), 302)
+      }
+
+      case 'servicenow': {
+        const returnWithInfo = new URL(return_url)
+        returnWithInfo.searchParams.set('status', 'needs_api_key')
+        returnWithInfo.searchParams.set('provider', 'servicenow')
+        return Response.redirect(returnWithInfo.toString(), 302)
+      }
+
+      case 'workday': {
+        const returnWithInfo = new URL(return_url)
+        returnWithInfo.searchParams.set('status', 'needs_api_key')
+        returnWithInfo.searchParams.set('provider', 'workday')
+        return Response.redirect(returnWithInfo.toString(), 302)
+      }
+
+      case 'bamboohr': {
+        const returnWithInfo = new URL(return_url)
+        returnWithInfo.searchParams.set('status', 'needs_api_key')
+        returnWithInfo.searchParams.set('provider', 'bamboohr')
+        return Response.redirect(returnWithInfo.toString(), 302)
+      }
+
+      case 'docusign': {
+        const dsClientId = Deno.env.get('DOCUSIGN_CLIENT_ID')
+        if (!dsClientId) throw new Error("Missing DOCUSIGN_CLIENT_ID")
+        authUrl = `https://account.docusign.com/oauth/auth?response_type=code&scope=signature&client_id=${dsClientId}&redirect_uri=${redirectUri}&state=${state}`
+        break;
+      }
+
       default: {
         const errUrl = new URL(return_url)
         errUrl.searchParams.set('status', 'error')

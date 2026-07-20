@@ -6,7 +6,7 @@ import { useToast } from '@/components/ui/use-toast';
 import {
   CheckCircle2, XCircle, RefreshCw, Plug, Unplug, ExternalLink,
   Loader2, Clock, FileText, MessageSquare, Video, Github,
-  AlertCircle, Zap, Search, Filter, ArrowLeft, BarChart2, ChevronDown
+  AlertCircle, Zap, Search, Filter, ArrowLeft, BarChart2, ChevronDown, Key, Eye, EyeOff
 } from 'lucide-react';
 import IntegrationAnalytics from './IntegrationAnalytics';
 
@@ -31,6 +31,7 @@ export default function IntegrationsHub() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeView, setActiveView] = useState('hub'); // 'hub' or 'analytics'
+  const [apiKeyModal, setApiKeyModal] = useState(null); // { provider, integration, fields }
 
   // Handle OAuth callback status
   useEffect(() => {
@@ -42,6 +43,11 @@ export default function IntegrationsHub() {
       toast({ title: '✅ Connected!', description: `${provider.replace('_', ' ')} connected successfully. Syncing your data...` });
       setSearchParams({});
       loadConnected();
+    } else if (status === 'needs_api_key' && provider) {
+      // API key-based provider — open the key input modal
+      const integration = INTEGRATIONS.find(i => i.provider === provider || i.id === provider);
+      setApiKeyModal({ provider, integration });
+      setSearchParams({});
     } else if (status === 'error') {
       toast({ title: 'Connection Failed', description: message?.replace(/_/g, ' ') || 'Authentication failed.', variant: 'destructive' });
       setSearchParams({});
@@ -167,6 +173,27 @@ export default function IntegrationsHub() {
       setConnected(prev => ({ ...prev, [integration.id || integration.provider]: { ...conn, sync_error: null }}));
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  const handleSaveApiKey = async (provider, keyData) => {
+    if (!companyId) return;
+    try {
+      const { error } = await supabase.from('clipad_integrations').upsert({
+        company_id: companyId,
+        provider: provider,
+        status: 'active',
+        access_token: keyData.api_key || keyData.token || '',
+        metadata: keyData,
+        connected_at: new Date().toISOString(),
+      }, { onConflict: 'company_id,provider' });
+
+      if (error) throw error;
+      toast({ title: '✅ Connected!', description: `${provider.replace(/_/g, ' ')} connected successfully.` });
+      setApiKeyModal(null);
+      await loadConnected();
+    } catch (e) {
+      toast({ title: 'Connection Failed', description: e.message, variant: 'destructive' });
     }
   };
 
@@ -396,11 +423,17 @@ export default function IntegrationsHub() {
                             {isSyncing ? 'Syncing...' : 'Sync Now'}
                           </button>
                           
-                          <div className="relative">
+                          <div className="relative group" title={`Auto-Sync: ${conn.sync_frequency || 'Manual'}`}>
+                            <button
+                              type="button"
+                              className="flex items-center justify-center w-8 h-8 rounded-xl bg-secondary/50 hover:bg-secondary text-muted-foreground transition-colors border border-transparent hover:border-border cursor-pointer"
+                            >
+                              <Clock className="w-4 h-4" />
+                            </button>
                             <select
                               value={conn.sync_frequency || 'Manual'}
                               onChange={(e) => handleUpdateSyncFrequency(conn.id, e.target.value)}
-                              className="appearance-none bg-secondary/50 hover:bg-secondary text-muted-foreground text-xs font-medium px-3 py-1.5 pr-7 rounded-xl transition-colors border border-transparent hover:border-border cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20"
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                             >
                               <option value="Manual">Manual</option>
                               <option value="15 Minutes">Every 15m</option>
@@ -408,7 +441,6 @@ export default function IntegrationsHub() {
                               <option value="Daily">Daily</option>
                               <option value="Weekly">Weekly</option>
                             </select>
-                            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground pointer-events-none" />
                           </div>
 
                           <button
@@ -502,9 +534,101 @@ export default function IntegrationsHub() {
               Contact your administrator or check the <strong>CliPad Integration Setup Guide</strong> for step-by-step instructions.
             </p>
           </div>
+          </div>
         </div>
-      </div>
       )}
+
+      {/* API Key Modal */}
+      {apiKeyModal && (
+        <ApiKeyModal
+          integration={apiKeyModal.integration}
+          provider={apiKeyModal.provider}
+          onSave={handleSaveApiKey}
+          onClose={() => setApiKeyModal(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+// ─── API Key Input Modal ──────────────────────────────────────────────────────
+const API_KEY_CONFIGS = {
+  freshdesk:   { label: 'Freshdesk',         fields: [{ key: 'api_key', label: 'API Key', secret: true }, { key: 'subdomain', label: 'Subdomain (e.g. yourcompany)', secret: false }] },
+  guru:        { label: 'Guru',               fields: [{ key: 'api_key', label: 'API Key', secret: true }, { key: 'username', label: 'Username / Email', secret: false }] },
+  trello:      { label: 'Trello',             fields: [{ key: 'api_key', label: 'API Key', secret: false }, { key: 'token', label: 'Personal Access Token', secret: true }] },
+  stripe:      { label: 'Stripe',             fields: [{ key: 'api_key', label: 'Secret Key (sk_live_...)', secret: true }] },
+  datadog:     { label: 'Datadog',            fields: [{ key: 'api_key', label: 'API Key', secret: true }, { key: 'app_key', label: 'Application Key', secret: true }] },
+  jenkins:     { label: 'Jenkins',            fields: [{ key: 'url', label: 'Jenkins URL', secret: false }, { key: 'username', label: 'Username', secret: false }, { key: 'api_key', label: 'API Token', secret: true }] },
+  whatsapp:    { label: 'WhatsApp Business',  fields: [{ key: 'api_key', label: 'Permanent Access Token', secret: true }, { key: 'phone_id', label: 'Phone Number ID', secret: false }] },
+  telegram:    { label: 'Telegram',           fields: [{ key: 'api_key', label: 'Bot Token', secret: true }] },
+  aws:         { label: 'AWS',                fields: [{ key: 'access_key_id', label: 'Access Key ID', secret: false }, { key: 'api_key', label: 'Secret Access Key', secret: true }, { key: 'region', label: 'Region (e.g. us-east-1)', secret: false }] },
+  google_cloud:{ label: 'Google Cloud',       fields: [{ key: 'api_key', label: 'Service Account JSON Key', secret: true }] },
+  sap:         { label: 'SAP',                fields: [{ key: 'url', label: 'API URL', secret: false }, { key: 'api_key', label: 'API Key / Token', secret: true }] },
+  oracle:      { label: 'Oracle',             fields: [{ key: 'url', label: 'Oracle Instance URL', secret: false }, { key: 'api_key', label: 'API Key', secret: true }] },
+  servicenow:  { label: 'ServiceNow',         fields: [{ key: 'subdomain', label: 'Instance (e.g. mycompany)', secret: false }, { key: 'username', label: 'Username', secret: false }, { key: 'api_key', label: 'Password / API Token', secret: true }] },
+  workday:     { label: 'Workday',            fields: [{ key: 'tenant', label: 'Tenant Name', secret: false }, { key: 'api_key', label: 'Integration System User Password', secret: true }] },
+  bamboohr:    { label: 'BambooHR',           fields: [{ key: 'subdomain', label: 'Company Domain', secret: false }, { key: 'api_key', label: 'API Key', secret: true }] },
+};
+
+function ApiKeyModal({ integration, provider, onSave, onClose }) {
+  const config = API_KEY_CONFIGS[provider] || { label: provider, fields: [{ key: 'api_key', label: 'API Key / Token', secret: true }] };
+  const [values, setValues] = React.useState({});
+  const [showSecrets, setShowSecrets] = React.useState({});
+  const [saving, setSaving] = React.useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    await onSave(provider, values);
+    setSaving(false);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="bg-white dark:bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center">
+            <Key className="w-5 h-5 text-indigo-500" />
+          </div>
+          <div>
+            <h2 className="text-base font-bold">Connect {integration?.name || config.label}</h2>
+            <p className="text-xs text-muted-foreground">Enter your API credentials to connect</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {config.fields.map(field => (
+            <div key={field.key}>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">{field.label}</label>
+              <div className="relative">
+                <input
+                  type={field.secret && !showSecrets[field.key] ? 'password' : 'text'}
+                  required
+                  value={values[field.key] || ''}
+                  onChange={e => setValues(prev => ({ ...prev, [field.key]: e.target.value }))}
+                  className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-border rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 pr-10"
+                  placeholder={field.secret ? '••••••••••••••••' : ''}
+                />
+                {field.secret && (
+                  <button type="button" onClick={() => setShowSecrets(p => ({ ...p, [field.key]: !p[field.key] }))} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                    {showSecrets[field.key] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+
+          <div className="flex gap-3 pt-2">
+            <button type="button" onClick={onClose} className="flex-1 px-4 py-2.5 rounded-xl border border-border text-sm font-semibold hover:bg-secondary transition-colors">
+              Cancel
+            </button>
+            <button type="submit" disabled={saving} className="flex-1 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plug className="w-4 h-4" />}
+              {saving ? 'Connecting...' : 'Connect'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
