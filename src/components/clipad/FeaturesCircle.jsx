@@ -65,6 +65,7 @@ export default function FeaturesCircle() {
     return () => clearInterval(timer);
   }, []);
 
+  return (
     <div className="relative w-full max-w-5xl mx-auto py-10 md:py-20 flex flex-col md:flex-row items-center justify-center gap-12 lg:gap-24 overflow-hidden">
       
       {/* Circle Container */}
