@@ -245,17 +245,17 @@ export default function IntegrationsHub() {
         <div className="max-w-5xl mx-auto px-4 md:px-6 mt-8 space-y-8">
 
         {/* Search + Filter */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <div className="flex flex-col gap-5">
+          <div className="relative w-full max-w-2xl mx-auto">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input
               placeholder="Search integrations..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:border-primary transition-colors"
+              className="w-full pl-11 pr-4 py-3.5 bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl text-[15px] focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
             />
           </div>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap justify-center mb-4">
             {CATEGORIES.map(cat => (
               <button
                 key={cat}

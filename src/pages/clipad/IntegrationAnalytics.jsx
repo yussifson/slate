@@ -305,14 +305,14 @@ export default function IntegrationAnalytics() {
 
 function MetricCard({ title, value, icon: Icon, color, bg, subtitle, subtitleClass = "text-slate-400" }) {
   return (
-    <div className="p-6 rounded-2xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm flex flex-col hover:border-indigo-500/30 transition-colors">
-      <div className="flex justify-between items-start mb-4">
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${bg} ${color}`}>
-          <Icon className="w-6 h-6" />
+    <div className="p-5 rounded-2xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm flex flex-col hover:border-indigo-500/30 transition-all hover:shadow-md">
+      <div className="flex items-center gap-3 mb-3">
+        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${bg} ${color}`}>
+          <Icon className="w-5 h-5" />
         </div>
+        <h4 className="text-slate-500 dark:text-muted-foreground text-xs font-semibold uppercase tracking-wider">{title}</h4>
       </div>
-      <h4 className="text-slate-500 dark:text-muted-foreground text-sm font-bold uppercase tracking-wider mb-1">{title}</h4>
-      <div className="text-3xl font-black text-slate-900 dark:text-white mb-2">{value}</div>
+      <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1.5">{value}</div>
       <p className={`text-xs mt-auto ${subtitleClass}`}>{subtitle}</p>
     </div>
   );
