@@ -1,4 +1,7 @@
-import React from 'react';\n\nexport const INTEGRATIONS = [\n  {
+import React from 'react';
+
+export const INTEGRATIONS = [
+  {
     id: 'slack',
     name: 'Slack',
     description: 'Capture channel messages, threads, and files for AI analysis.',
