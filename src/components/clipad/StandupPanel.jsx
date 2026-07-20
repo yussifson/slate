@@ -37,6 +37,7 @@ function StandupCard({ update, isCurrentUser }) {
   const mood = MOOD_OPTIONS.find(m => m.value === update.mood) || MOOD_OPTIONS[2];
   const [expanded, setExpanded] = useState(false);
 
+  return (
     <div className={`rounded-xl md:rounded-2xl border-x-0 md:border-x border-y p-3 md:p-4 transition-all ${isCurrentUser ? 'border-primary/30 bg-primary/5' : 'border-slate-200 dark:border-border bg-white dark:bg-card'}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
