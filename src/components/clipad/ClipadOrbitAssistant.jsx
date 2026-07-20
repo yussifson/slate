@@ -102,11 +102,15 @@ KEY RULES:
 - If data doesn't exist, say "I don't see any [X] in the workspace yet."
 
 AGENTIC CAPABILITIES:
-You can execute actions by outputting a JSON block starting with ACTION: followed by JSON.
+You can execute autonomous workflows by outputting a JSON block starting with ACTION: followed by JSON.
 Available actions:
 1. create_task: {"action": "create_task", "title": "...", "assignee": "..."}
 2. send_message: {"action": "send_message", "recipient": "...", "message": "..."}
-Output ACTION: at the very end of your response (before SOURCES).
+3. schedule_meeting: {"action": "schedule_meeting", "topic": "..."}
+4. log_blocker: {"action": "log_blocker", "description": "...", "severity": "medium"}
+5. record_decision: {"action": "record_decision", "decision_text": "...", "rationale": "..."}
+6. draft_document: {"action": "draft_document", "title": "...", "content": "..."}
+Output ACTION: at the very end of your response (before SOURCES). Use these proactively if the user asks you to schedule, record, or draft something.
 
 CURRENT WORKSPACE KNOWLEDGE:
 ${orgContext?.contextText || 'Workspace data is still loading. Click the refresh button to reload.'}`;
@@ -150,9 +154,8 @@ ${orgContext?.contextText || 'Workspace data is still loading. Click the refresh
           } else if (executedAction.action === 'send_message') {
              console.log("[Orbit Agent] Executing send_message", executedAction);
              try {
-                // If it fails due to RLS, it means the channel_id needs to be correct. We default to general channel if available.
                 const { error } = await supabase.from('chat_messages').insert({
-                  channel_id: 'general', // We could try to extract from executedAction.recipient if it was an ID
+                  channel_id: 'general',
                   user_id: user?.id,
                   content: executedAction.message || '',
                   created_at: new Date().toISOString()
@@ -164,7 +167,74 @@ ${orgContext?.contextText || 'Workspace data is still loading. Click the refresh
                executedAction.status = 'error';
                executedAction.error = err.message;
              }
+          } else if (executedAction.action === 'schedule_meeting') {
+             console.log("[Orbit Agent] Executing schedule_meeting", executedAction);
+             try {
+               const { error } = await supabase.from('clipad_meeting_records').insert({
+                 title: executedAction.topic || 'Orbit Scheduled Sync',
+                 company_id: companyId,
+                 space_id: spaceId || null,
+                 host_id: user?.id,
+                 created_at: new Date().toISOString()
+               });
+               if (error) throw error;
+               executedAction.status = 'success';
+             } catch (err) {
+               executedAction.status = 'error';
+               executedAction.error = err.message;
+             }
+          } else if (executedAction.action === 'log_blocker') {
+             console.log("[Orbit Agent] Executing log_blocker", executedAction);
+             try {
+               const { error } = await supabase.from('clipad_blockers').insert({
+                 description: executedAction.description || 'Unknown blocker',
+                 severity: executedAction.severity || 'medium',
+                 status: 'open',
+                 team_space_id: spaceId || null,
+                 detected_at: new Date().toISOString()
+               });
+               if (error) throw error;
+               executedAction.status = 'success';
+             } catch (err) {
+               executedAction.status = 'error';
+               executedAction.error = err.message;
+             }
+          } else if (executedAction.action === 'record_decision') {
+             console.log("[Orbit Agent] Executing record_decision", executedAction);
+             try {
+               const { error } = await supabase.from('clipad_decisions').insert({
+                 decision_text: executedAction.decision_text || 'Decision recorded by Orbit',
+                 rationale: executedAction.rationale || '',
+                 status: 'active',
+                 team_space_id: spaceId || null,
+                 workspace_id: companyId,
+                 created_at: new Date().toISOString()
+               });
+               if (error) throw error;
+               executedAction.status = 'success';
+             } catch (err) {
+               executedAction.status = 'error';
+               executedAction.error = err.message;
+             }
+          } else if (executedAction.action === 'draft_document') {
+             console.log("[Orbit Agent] Executing draft_document", executedAction);
+             try {
+               const { error } = await supabase.from('clipad_docs').insert({
+                 title: executedAction.title || 'Untitled Draft',
+                 content: executedAction.content || '',
+                 company_id: companyId,
+                 space_id: spaceId || null,
+                 author_id: user?.id,
+                 created_at: new Date().toISOString()
+               });
+               if (error) throw error;
+               executedAction.status = 'success';
+             } catch (err) {
+               executedAction.status = 'error';
+               executedAction.error = err.message;
+             }
           }
+
         } catch(e) {
           console.error("Failed to parse action JSON", e);
           cleanText = text.replace(/ACTION:.*$/s, '').trim();
@@ -310,6 +380,14 @@ ${orgContext?.contextText || 'Workspace data is still loading. Click the refresh
                         ? `Created task: "${msg.executedAction.title}"` + (msg.executedAction.assignee ? ` assigned to ${msg.executedAction.assignee}` : '')
                         : msg.executedAction.action === 'send_message'
                         ? `Sent message to ${msg.executedAction.recipient || 'channel'}: "${msg.executedAction.message}"`
+                        : msg.executedAction.action === 'schedule_meeting'
+                        ? `Scheduled meeting: "${msg.executedAction.topic}"`
+                        : msg.executedAction.action === 'log_blocker'
+                        ? `Logged ${msg.executedAction.severity} blocker: "${msg.executedAction.description}"`
+                        : msg.executedAction.action === 'record_decision'
+                        ? `Recorded decision: "${msg.executedAction.decision_text}"`
+                        : msg.executedAction.action === 'draft_document'
+                        ? `Drafted document: "${msg.executedAction.title}"`
                         : `Executed: ${msg.executedAction.action}`}
                     </p>
                   </div>

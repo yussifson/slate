@@ -36,6 +36,7 @@ export default function KnowledgeHealth() {
   const [healthData, setHealthData] = useState(null);
   const [rawCounts, setRawCounts] = useState(null);
   const [diagnosis, setDiagnosis] = useState('');
+  const [insights, setInsights] = useState([]);
 
   const isUserAdmin = isAdmin(user);
 
@@ -106,6 +107,27 @@ export default function KnowledgeHealth() {
 
         const aiResponse = await generateText(prompt);
         setDiagnosis(aiResponse?.trim() || "Organizational intelligence is healthy. Teams are effectively capturing decisions and resolving blockers.");
+
+        // Generate Proactive Insights
+        try {
+          const insightPrompt = [
+            { role: 'system', content: 'You are an AI organizational insights engine. Based on the following metrics, generate 3 specific, proactive, and actionable insights. Output strictly valid JSON as an array of objects. Each object must have "type" ("warning", "suggestion", or "insight"), "title" (short summary), and "description" (detailed actionable context).' },
+            { role: 'user', content: `Metrics: Total Meetings: ${meetingCount}, Key Decisions Made: ${decisionCount}, Blockers Raised: ${blockerCount}, Tasks Completed: ${taskCompletedCount}, Imported Integrations: ${importedCount}. Calculated Scores: Velocity: ${velocity}, Resolution: ${resolution}, Silos: ${silos}, Efficiency: ${bloat}.` }
+          ];
+          const insightRaw = await generateText(insightPrompt);
+          // Try to extract JSON from the response
+          const jsonMatch = insightRaw.match(/\[.*\]/s);
+          if (jsonMatch) {
+            setInsights(JSON.parse(jsonMatch[0]));
+          } else {
+            setInsights([
+               { type: 'insight', title: 'Knowledge Base Growing', description: 'Your external integrations are successfully syncing data into the graph.' },
+               { type: 'suggestion', title: 'Review Open Blockers', description: 'There are unresolved blockers that need attention to maintain resolution speed.' }
+            ]);
+          }
+        } catch(e) {
+          console.warn("Failed to generate insights", e);
+        }
 
       } catch (err) {
         console.error(err);
@@ -268,6 +290,42 @@ export default function KnowledgeHealth() {
           </div>
         </div>
       </div>
+
+      {/* Proactive Insights Feed */}
+      {insights && insights.length > 0 && (
+        <div className="mt-8 mb-8">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-slate-900 dark:text-white">
+            <Sparkles className="w-5 h-5 text-amber-500" />
+            Proactive Insights
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {insights.map((insight, idx) => {
+               const isWarning = insight.type === 'warning';
+               const isSuggestion = insight.type === 'suggestion';
+               const iconClass = isWarning ? 'text-red-500 bg-red-50 dark:bg-red-500/10' : isSuggestion ? 'text-blue-500 bg-blue-50 dark:bg-blue-500/10' : 'text-amber-500 bg-amber-50 dark:bg-amber-500/10';
+               const IconCmp = isWarning ? ShieldAlert : isSuggestion ? BrainCircuit : TrendingUp;
+
+               return (
+                 <div key={idx} className="p-5 rounded-2xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm flex flex-col gap-3 hover:border-primary/30 transition-colors relative overflow-hidden">
+                   {isWarning && <div className="absolute top-0 left-0 right-0 h-1 bg-red-500" />}
+                   {isSuggestion && <div className="absolute top-0 left-0 right-0 h-1 bg-blue-500" />}
+                   {!isWarning && !isSuggestion && <div className="absolute top-0 left-0 right-0 h-1 bg-amber-500" />}
+                   
+                   <div className="flex items-center gap-3">
+                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${iconClass}`}>
+                       <IconCmp className="w-5 h-5" />
+                     </div>
+                     <h4 className="font-bold text-slate-900 dark:text-white">{insight.title}</h4>
+                   </div>
+                   <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                     {insight.description}
+                   </p>
+                 </div>
+               );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Metrics Glossary */}
       <div className="mt-4 p-6 rounded-3xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm">

@@ -484,16 +484,58 @@ export async function buildOrgContext(options = {}) {
       ? videos.map(v => `• [VIDEO:${v.id}] "${v.title}" (${v.created_at?.slice(0, 10)}${v.duration_seconds ? `, ${Math.round(v.duration_seconds / 60)}min` : ''}): ${v.ai_summary?.substring(0, 200) || 'No summary'}`).join('\n')
       : '  No videos recorded.',
 
-    chatRooms.length > 0
-      ? `\n━━ CHAT CHANNELS (${chatRooms.length}) ━━\n` +
-        chatRooms.map(c => `• #${c.name || 'unnamed'}${c.description ? ` — ${c.description.substring(0, 80)}` : ''}`).join('\n')
-      : '',
+    chatRooms.length > 0 ? `\n━━ ACTIVE CHAT ROOMS (${chatRooms.length}) ━━\n` +
+      chatRooms.map(r => `• #${r.name} — ${r.description || 'No description'}`).join('\n') : '',
+  ];
 
-    orgEvents.length > 0
-  ].filter(Boolean).join('\n');
+  // ── TOPOLOGICAL GRAPH MAPPING ──
+  // Build relationship vectors (User -> Authored Content, Meeting -> Decisions)
+  const topologicalMap = [];
+  topologicalMap.push('\n━━ SEMANTIC RELATIONSHIPS (TOPOLOGICAL MAP) ━━');
+  
+  // People -> Content mapping
+  const authorMap = {};
+  importedKnowledge.forEach(ik => {
+    if (ik.author) {
+      if (!authorMap[ik.author]) authorMap[ik.author] = [];
+      authorMap[ik.author].push(`[${ik.content_type || 'file'} ID:${ik.id}] ${ik.title}`);
+    }
+  });
+  Object.entries(authorMap).forEach(([author, items]) => {
+    topologicalMap.push(`• Person "${author}" authored/owns: ${items.join(', ')}`);
+  });
+
+  // Task Assignments
+  const assigneeMap = {};
+  [...tasks, ...completedTasks].forEach(t => {
+    if (t.assigned_to) {
+      if (!assigneeMap[t.assigned_to]) assigneeMap[t.assigned_to] = [];
+      assigneeMap[t.assigned_to].push(`[Task ID:${t.id}] ${t.title} (${t.is_complete ? 'Completed' : 'Open'})`);
+    }
+  });
+  Object.entries(assigneeMap).forEach(([assignee, tasks]) => {
+    topologicalMap.push(`• Person "${assignee}" is assigned to: ${tasks.join(', ')}`);
+  });
+
+  // Host -> Meetings
+  const hostMap = {};
+  meetings.forEach(m => {
+    if (m.host_name || m.host_id) {
+      const host = m.host_name || `User ID:${m.host_id}`;
+      if (!hostMap[host]) hostMap[host] = [];
+      hostMap[host].push(`[Meeting ID:${m.id}] ${m.title}`);
+    }
+  });
+  Object.entries(hostMap).forEach(([host, meetings]) => {
+    topologicalMap.push(`• Person "${host}" hosted/attended: ${meetings.join(', ')}`);
+  });
+
+  if (topologicalMap.length > 1) {
+    contextText.push(...topologicalMap);
+  }
 
   return {
-    contextText,
+    contextText: contextText.filter(Boolean).join('\n'),
     sourceMap,
     meetings,
     decisions,

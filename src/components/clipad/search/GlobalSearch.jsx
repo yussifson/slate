@@ -220,6 +220,9 @@ If the answer exists in the data, say so clearly with specifics (names, dates, d
 If it does NOT exist, say "I don't see any [X] in your accessible spaces right now."
 NEVER say something doesn't exist if the data shows it does.
 
+PERSONAL GRAPH BOOST:
+You must prioritize and boost any data or nodes connected directly to ${user?.full_name || 'this user'}. If a document was authored by them, a decision made in their space, or a task assigned to them, treat it as highly relevant to their query.
+
 ${fullOrgContext ? `FULL ORG CONTEXT:\n${fullOrgContext}` : ''}
 ${keywordResultsContext}
 

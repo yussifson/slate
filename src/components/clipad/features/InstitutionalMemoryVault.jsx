@@ -147,8 +147,8 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
 
 Answer questions based ONLY on the real data provided. Do NOT make up facts. If the data doesn't contain the answer, say "I don't have enough recorded data to answer that yet."
 
-When you use data, ALWAYS append source IDs at the very end:
-SOURCES: ["M-uuid", "D-uuid", "I-uuid"]
+When you use data, ALWAYS append source details at the very end in strictly valid JSON format:
+SOURCES: [{"id": "uuid", "type": "meeting/decision/task/imported", "title": "Contextual Title", "source": "Where it came from"}]
 
 ORGANIZATIONAL KNOWLEDGE BASE:
 ${knowledgeContext}`
@@ -224,6 +224,27 @@ ${knowledgeContext}`
           </div>
         )}
 
+        {!response && !loading && (
+          <div className="mt-8 animate-in fade-in slide-in-from-bottom-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-amber-500" /> Trending Knowledge Nodes
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {['Project Roadmap', 'Q3 Planning', 'Design System Updates', 'Recent Blockers'].map((topic) => (
+                <button
+                  key={topic}
+                  onClick={() => {
+                    setQuery(`What is the latest context on ${topic}?`);
+                  }}
+                  className="px-3 py-1.5 text-xs font-medium bg-white dark:bg-card border border-slate-200 dark:border-border rounded-full hover:border-primary hover:text-primary transition-colors text-slate-600 dark:text-slate-300 shadow-sm"
+                >
+                  {topic}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {response && (
           <div className="mt-6 bg-white dark:bg-card border border-slate-200 dark:border-border rounded-xl p-5 md:p-6 flex gap-4 animate-in fade-in slide-in-from-bottom-2 shadow-sm">
             <div className="mt-0.5 shrink-0">
@@ -234,29 +255,56 @@ ${knowledgeContext}`
             <div>
               <p className="text-sm text-slate-700 dark:text-foreground leading-relaxed whitespace-pre-wrap">{response}</p>
               {citations.length > 0 && (
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-border flex flex-wrap gap-2">
-                  {citations.map((cite, i) => {
-                    const type = cite.charAt(0);
-                    const id = cite.substring(2);
-                    let route = '#';
-                    let label = cite;
-                    let colorClass = "bg-slate-100 text-slate-600 dark:bg-secondary dark:text-muted-foreground";
-                    if (type === 'M') { route = `/clipad/meetings/${id}`; label = 'Meeting Record'; colorClass = "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400"; }
-                    if (type === 'V') { route = `/clipad/videos/${id}`; label = 'Video Record'; colorClass = "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400"; }
-                    if (type === 'D') { label = 'Decision'; colorClass = "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"; }
-                    if (type === 'B') { label = 'Blocker'; colorClass = "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400"; }
-                    if (type === 'T') { label = 'Action Item'; colorClass = "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400"; }
-                    if (type === 'I') { label = 'External Knowledge'; colorClass = "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-400"; }
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => route !== '#' && navigate(route)}
-                        className={`text-xs px-2.5 py-1 rounded-md font-medium flex items-center gap-1.5 transition-colors ${colorClass} ${route !== '#' ? 'hover:opacity-80 cursor-pointer' : 'cursor-default'}`}
-                      >
-                        <Link className="w-3 h-3" /> {label}
-                      </button>
-                    );
-                  })}
+                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-border">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+                    <Database className="w-3 h-3" /> Semantic Graph Links
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {citations.map((cite, i) => {
+                      // Attempt to parse new rich JSON citation format or fallback to old ID format
+                      let type = '';
+                      let id = '';
+                      let title = '';
+                      let source = '';
+                      
+                      if (typeof cite === 'object') {
+                        type = cite.type;
+                        id = cite.id;
+                        title = cite.title || cite.id;
+                        source = cite.source || '';
+                      } else {
+                        // Fallback for old simple citations like "M:123" or just "123"
+                        type = typeof cite === 'string' && cite.includes(':') ? cite.charAt(0) : 'U';
+                        id = typeof cite === 'string' && cite.includes(':') ? cite.substring(2) : cite;
+                        title = `Node ${id}`;
+                      }
+
+                      let route = '#';
+                      let icon = Link;
+                      let colorClass = "bg-slate-50 text-slate-600 border-slate-200 dark:bg-secondary dark:text-muted-foreground";
+                      
+                      if (type === 'M' || type === 'meeting') { route = `/clipad/meetings/${id}`; title = title !== `Node ${id}` ? title : 'Meeting Record'; colorClass = "bg-indigo-50 border-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:border-indigo-800 dark:text-indigo-400"; }
+                      if (type === 'V' || type === 'video') { route = `/clipad/videos/${id}`; title = title !== `Node ${id}` ? title : 'Video Record'; colorClass = "bg-purple-50 border-purple-100 text-purple-700 dark:bg-purple-900/20 dark:border-purple-800 dark:text-purple-400"; }
+                      if (type === 'D' || type === 'decision') { title = title !== `Node ${id}` ? title : 'Recorded Decision'; colorClass = "bg-emerald-50 border-emerald-100 text-emerald-700 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400"; }
+                      if (type === 'B' || type === 'blocker') { title = title !== `Node ${id}` ? title : 'Blocker'; colorClass = "bg-amber-50 border-amber-100 text-amber-700 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-400"; }
+                      if (type === 'T' || type === 'task') { title = title !== `Node ${id}` ? title : 'Action Item'; colorClass = "bg-blue-50 border-blue-100 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400"; }
+                      if (type === 'I' || type === 'imported') { title = title !== `Node ${id}` ? title : 'External Knowledge'; colorClass = "bg-sky-50 border-sky-100 text-sky-700 dark:bg-sky-900/20 dark:border-sky-800 dark:text-sky-400"; }
+                      
+                      return (
+                        <div
+                          key={i}
+                          onClick={() => route !== '#' && navigate(route)}
+                          className={`p-3 rounded-xl border flex flex-col gap-1 transition-all ${colorClass} ${route !== '#' ? 'hover:shadow-md cursor-pointer hover:-translate-y-0.5' : 'cursor-default'}`}
+                        >
+                          <div className="flex items-center gap-2 font-semibold text-sm">
+                            <Database className="w-3.5 h-3.5 opacity-70" />
+                            <span className="truncate">{title}</span>
+                          </div>
+                          {source && <div className="text-xs opacity-70 ml-5.5 truncate">via {source}</div>}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
             </div>
