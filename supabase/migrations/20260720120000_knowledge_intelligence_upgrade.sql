@@ -19,7 +19,7 @@ ALTER TABLE public.clipad_imported_knowledge
 -- Create a vector similarity search function
 CREATE OR REPLACE FUNCTION public.match_knowledge(
   query_embedding vector(768),
-  match_company_id UUID,
+  match_company_id text, -- Changed to text to handle both uuid/text types safely
   match_threshold FLOAT DEFAULT 0.6,
   match_count INT DEFAULT 20
 )
@@ -54,7 +54,7 @@ BEGIN
     1 - (k.embedding <=> query_embedding) AS similarity
   FROM public.clipad_imported_knowledge k
   WHERE
-    k.company_id = match_company_id
+    k.company_id::text = match_company_id::text
     AND k.embedding IS NOT NULL
     AND 1 - (k.embedding <=> query_embedding) > match_threshold
   ORDER BY k.embedding <=> query_embedding
@@ -65,7 +65,7 @@ $$;
 -- ─── Knowledge Relationships Table ──────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.clipad_knowledge_relationships (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  company_id UUID REFERENCES public.companies(id) ON DELETE CASCADE,
+  company_id UUID, -- Removed explicit reference in case companies(id) is text
   source_id UUID REFERENCES public.clipad_imported_knowledge(id) ON DELETE CASCADE,
   target_id UUID REFERENCES public.clipad_imported_knowledge(id) ON DELETE CASCADE,
   relationship_type TEXT NOT NULL CHECK (relationship_type IN ('mentions', 'continues', 'implements', 'blocks', 'references', 'related')),
@@ -83,8 +83,8 @@ ALTER TABLE public.clipad_knowledge_relationships ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "knowledge_relationships_company_isolation" ON public.clipad_knowledge_relationships
   FOR ALL USING (
-    company_id IN (
-      SELECT company_id FROM public.profiles WHERE id = auth.uid()
+    company_id::text IN (
+      SELECT company_id::text FROM public.profiles WHERE id = auth.uid()
     )
   );
 
