@@ -6,7 +6,8 @@ import { useToast } from '@/components/ui/use-toast';
 import {
   CheckCircle2, XCircle, RefreshCw, Plug, Unplug, ExternalLink,
   Loader2, Clock, FileText, MessageSquare, Video, Github,
-  AlertCircle, Zap, Search, Filter, ArrowLeft, BarChart2, ChevronDown, Key, Eye, EyeOff
+  AlertCircle, Zap, Search, Filter, ArrowLeft, BarChart2, ChevronDown, Key, Eye, EyeOff,
+  Settings, FolderOpen, Hash, Sliders
 } from 'lucide-react';
 import IntegrationAnalytics from './IntegrationAnalytics';
 
@@ -32,6 +33,7 @@ export default function IntegrationsHub() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeView, setActiveView] = useState('hub'); // 'hub' or 'analytics'
   const [apiKeyModal, setApiKeyModal] = useState(null); // { provider, integration, fields }
+  const [configModal, setConfigModal] = useState(null); // { integration, conn }
 
   // Handle OAuth callback status
   useEffect(() => {
@@ -423,13 +425,21 @@ export default function IntegrationsHub() {
                     </div>
                   )}
                   {isConnected && conn?.sync_error && (
-                    <div className="flex items-start justify-between gap-1.5 text-xs text-red-500 bg-red-500/10 p-2 rounded-lg">
-                      <div className="flex gap-1.5">
-                        <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                        <span className="leading-snug break-all">{conn.sync_error}</span>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-start justify-between gap-1.5 text-xs text-red-500 bg-red-500/10 p-2 rounded-lg">
+                        <div className="flex gap-1.5">
+                          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                          <span className="leading-snug break-all">{conn.sync_error}</span>
+                        </div>
+                        <button onClick={() => clearSyncError(integration)} className="hover:bg-red-500/20 rounded p-0.5 shrink-0 transition-colors">
+                          <XCircle className="w-3.5 h-3.5" />
+                        </button>
                       </div>
-                      <button onClick={() => clearSyncError(integration)} className="hover:bg-red-500/20 rounded p-0.5 shrink-0 transition-colors">
-                        <XCircle className="w-3.5 h-3.5" />
+                      <button
+                        onClick={() => handleConnect(integration)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-semibold transition-colors w-fit"
+                      >
+                        <RefreshCw className="w-3 h-3" /> Re-connect to fix
                       </button>
                     </div>
                   )}
@@ -467,6 +477,14 @@ export default function IntegrationsHub() {
                               <option value="Weekly">Weekly</option>
                             </select>
                           </div>
+
+                          <button
+                            onClick={() => setConfigModal({ integration, conn })}
+                            className="flex items-center justify-center w-8 h-8 rounded-xl bg-secondary/50 hover:bg-secondary text-muted-foreground transition-colors border border-transparent hover:border-border"
+                            title="Configure import settings"
+                          >
+                            <Settings className="w-4 h-4" />
+                          </button>
 
                           <button
                             onClick={() => handleDisconnect(integration)}
@@ -572,27 +590,60 @@ export default function IntegrationsHub() {
           onClose={() => setApiKeyModal(null)}
         />
       )}
+
+      {/* Integration Config Modal */}
+      {configModal && (
+        <IntegrationConfigModal
+          integration={configModal.integration}
+          conn={configModal.conn}
+          onSave={async (updates) => {
+            try {
+              const { error } = await supabase
+                .from('clipad_integrations')
+                .update({ metadata: { ...(configModal.conn.metadata || {}), ...updates } })
+                .eq('id', configModal.conn.id);
+              if (error) throw error;
+              toast({ title: '✅ Settings saved', description: 'Import configuration updated.' });
+              setConfigModal(null);
+              await loadConnected();
+            } catch (e) {
+              toast({ title: 'Error', description: e.message, variant: 'destructive' });
+            }
+          }}
+          onClose={() => setConfigModal(null)}
+        />
+      )}
     </div>
   );
 }
 
 // ─── API Key Input Modal ──────────────────────────────────────────────────────
 const API_KEY_CONFIGS = {
-  freshdesk:   { label: 'Freshdesk',         fields: [{ key: 'api_key', label: 'API Key', secret: true }, { key: 'subdomain', label: 'Subdomain (e.g. yourcompany)', secret: false }] },
-  guru:        { label: 'Guru',               fields: [{ key: 'api_key', label: 'API Key', secret: true }, { key: 'username', label: 'Username / Email', secret: false }] },
-  trello:      { label: 'Trello',             fields: [{ key: 'api_key', label: 'API Key', secret: false }, { key: 'token', label: 'Personal Access Token', secret: true }] },
-  stripe:      { label: 'Stripe',             fields: [{ key: 'api_key', label: 'Secret Key (sk_live_...)', secret: true }] },
-  datadog:     { label: 'Datadog',            fields: [{ key: 'api_key', label: 'API Key', secret: true }, { key: 'app_key', label: 'Application Key', secret: true }] },
-  jenkins:     { label: 'Jenkins',            fields: [{ key: 'url', label: 'Jenkins URL', secret: false }, { key: 'username', label: 'Username', secret: false }, { key: 'api_key', label: 'API Token', secret: true }] },
-  whatsapp:    { label: 'WhatsApp Business',  fields: [{ key: 'api_key', label: 'Permanent Access Token', secret: true }, { key: 'phone_id', label: 'Phone Number ID', secret: false }] },
-  telegram:    { label: 'Telegram',           fields: [{ key: 'api_key', label: 'Bot Token', secret: true }] },
-  aws:         { label: 'AWS',                fields: [{ key: 'access_key_id', label: 'Access Key ID', secret: false }, { key: 'api_key', label: 'Secret Access Key', secret: true }, { key: 'region', label: 'Region (e.g. us-east-1)', secret: false }] },
-  google_cloud:{ label: 'Google Cloud',       fields: [{ key: 'api_key', label: 'Service Account JSON Key', secret: true }] },
-  sap:         { label: 'SAP',                fields: [{ key: 'url', label: 'API URL', secret: false }, { key: 'api_key', label: 'API Key / Token', secret: true }] },
-  oracle:      { label: 'Oracle',             fields: [{ key: 'url', label: 'Oracle Instance URL', secret: false }, { key: 'api_key', label: 'API Key', secret: true }] },
-  servicenow:  { label: 'ServiceNow',         fields: [{ key: 'subdomain', label: 'Instance (e.g. mycompany)', secret: false }, { key: 'username', label: 'Username', secret: false }, { key: 'api_key', label: 'Password / API Token', secret: true }] },
-  workday:     { label: 'Workday',            fields: [{ key: 'tenant', label: 'Tenant Name', secret: false }, { key: 'api_key', label: 'Integration System User Password', secret: true }] },
-  bamboohr:    { label: 'BambooHR',           fields: [{ key: 'subdomain', label: 'Company Domain', secret: false }, { key: 'api_key', label: 'API Key', secret: true }] },
+  freshdesk:        { label: 'Freshdesk',             fields: [{ key: 'api_key', label: 'API Key', secret: true }, { key: 'subdomain', label: 'Subdomain (e.g. yourcompany)', secret: false }] },
+  guru:             { label: 'Guru',                   fields: [{ key: 'api_key', label: 'API Key', secret: true }, { key: 'username', label: 'Username / Email', secret: false }] },
+  trello:           { label: 'Trello',                 fields: [{ key: 'api_key', label: 'API Key', secret: false }, { key: 'token', label: 'Personal Access Token', secret: true }] },
+  stripe:           { label: 'Stripe',                 fields: [{ key: 'api_key', label: 'Secret Key (sk_live_...)', secret: true }] },
+  datadog:          { label: 'Datadog',                fields: [{ key: 'api_key', label: 'API Key', secret: true }, { key: 'app_key', label: 'Application Key', secret: true }] },
+  jenkins:          { label: 'Jenkins',                fields: [{ key: 'url', label: 'Jenkins URL', secret: false }, { key: 'username', label: 'Username', secret: false }, { key: 'api_key', label: 'API Token', secret: true }] },
+  whatsapp:         { label: 'WhatsApp Business',      fields: [{ key: 'api_key', label: 'Permanent Access Token', secret: true }, { key: 'phone_id', label: 'Phone Number ID', secret: false }] },
+  telegram:         { label: 'Telegram',               fields: [{ key: 'api_key', label: 'Bot Token', secret: true }] },
+  aws:              { label: 'AWS',                    fields: [{ key: 'access_key_id', label: 'Access Key ID', secret: false }, { key: 'api_key', label: 'Secret Access Key', secret: true }, { key: 'region', label: 'Region (e.g. us-east-1)', secret: false }] },
+  google_cloud:     { label: 'Google Cloud',           fields: [{ key: 'api_key', label: 'Service Account JSON Key', secret: true }] },
+  sap:              { label: 'SAP',                    fields: [{ key: 'url', label: 'API URL', secret: false }, { key: 'api_key', label: 'API Key / Token', secret: true }] },
+  oracle:           { label: 'Oracle',                 fields: [{ key: 'url', label: 'Oracle Instance URL', secret: false }, { key: 'api_key', label: 'API Key', secret: true }] },
+  servicenow:       { label: 'ServiceNow',             fields: [{ key: 'subdomain', label: 'Instance (e.g. mycompany)', secret: false }, { key: 'username', label: 'Username', secret: false }, { key: 'api_key', label: 'Password / API Token', secret: true }] },
+  workday:          { label: 'Workday',                fields: [{ key: 'tenant', label: 'Tenant Name', secret: false }, { key: 'api_key', label: 'Integration System User Password', secret: true }] },
+  bamboohr:         { label: 'BambooHR',               fields: [{ key: 'subdomain', label: 'Company Domain', secret: false }, { key: 'api_key', label: 'API Key', secret: true }] },
+  // PAT (Personal Access Token) providers
+  github_enterprise:{ label: 'GitHub Enterprise',      fields: [{ key: 'url', label: 'GitHub Enterprise URL', secret: false }, { key: 'api_key', label: 'Personal Access Token', secret: true }] },
+  airtable:         { label: 'Airtable',               fields: [{ key: 'api_key', label: 'Personal Access Token', secret: true }] },
+  confluence_pat:   { label: 'Confluence (Server)',    fields: [{ key: 'url', label: 'Confluence Base URL', secret: false }, { key: 'username', label: 'Username', secret: false }, { key: 'api_key', label: 'Personal Access Token', secret: true }] },
+  jira_pat:         { label: 'Jira (Server)',           fields: [{ key: 'url', label: 'Jira Base URL', secret: false }, { key: 'username', label: 'Username', secret: false }, { key: 'api_key', label: 'Personal Access Token', secret: true }] },
+  gitlab_pat:       { label: 'GitLab (Self-Hosted)',   fields: [{ key: 'url', label: 'GitLab URL', secret: false }, { key: 'api_key', label: 'Personal Access Token', secret: true }] },
+  notion_integration:{ label: 'Notion (Integration)', fields: [{ key: 'api_key', label: 'Internal Integration Token', secret: true }] },
+  openai:           { label: 'OpenAI',                 fields: [{ key: 'api_key', label: 'API Key (sk-...)', secret: true }] },
+  pagerduty:        { label: 'PagerDuty',              fields: [{ key: 'api_key', label: 'API Key', secret: true }] },
+  monday_api:       { label: 'Monday.com',             fields: [{ key: 'api_key', label: 'API Token', secret: true }] },
 };
 
 function ApiKeyModal({ integration, provider, onSave, onClose }) {
@@ -650,6 +701,113 @@ function ApiKeyModal({ integration, provider, onSave, onClose }) {
             <button type="submit" disabled={saving} className="flex-1 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plug className="w-4 h-4" />}
               {saving ? 'Connecting...' : 'Connect'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ─── Per-Integration Config Modal ─────────────────────────────────────────────
+function IntegrationConfigModal({ integration, conn, onSave, onClose }) {
+  const meta = conn?.metadata || {};
+  const [importLimit, setImportLimit] = React.useState(meta.import_limit || 100);
+  const [includeFilter, setIncludeFilter] = React.useState(meta.include_filter || '');
+  const [excludeFilter, setExcludeFilter] = React.useState(meta.exclude_filter || '');
+  const [syncAttachments, setSyncAttachments] = React.useState(meta.sync_attachments ?? true);
+  const [saving, setSaving] = React.useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    await onSave({
+      import_limit: Number(importLimit),
+      include_filter: includeFilter,
+      exclude_filter: excludeFilter,
+      sync_attachments: syncAttachments,
+    });
+    setSaving(false);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="bg-white dark:bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-xl">
+            {integration?.icon || <Sliders className="w-5 h-5 text-blue-500" />}
+          </div>
+          <div>
+            <h2 className="text-base font-bold">{integration?.name} — Import Settings</h2>
+            <p className="text-xs text-muted-foreground">Control what gets imported and how</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+              Max items per sync
+            </label>
+            <input
+              type="number"
+              min={10}
+              max={1000}
+              value={importLimit}
+              onChange={e => setImportLimit(e.target.value)}
+              className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-border rounded-xl text-sm focus:outline-none focus:border-blue-500"
+            />
+            <p className="text-[11px] text-muted-foreground mt-1">Higher limits increase sync time. Default: 100.</p>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+              Include filter (optional)
+            </label>
+            <input
+              type="text"
+              value={includeFilter}
+              onChange={e => setIncludeFilter(e.target.value)}
+              placeholder="e.g. engineering, product, design"
+              className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-border rounded-xl text-sm focus:outline-none focus:border-blue-500"
+            />
+            <p className="text-[11px] text-muted-foreground mt-1">Comma-separated channels/folders/labels to include.</p>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+              Exclude filter (optional)
+            </label>
+            <input
+              type="text"
+              value={excludeFilter}
+              onChange={e => setExcludeFilter(e.target.value)}
+              placeholder="e.g. random, general, archive"
+              className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-border rounded-xl text-sm focus:outline-none focus:border-blue-500"
+            />
+            <p className="text-[11px] text-muted-foreground mt-1">Comma-separated channels/folders/labels to skip.</p>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-foreground">Sync Attachments</p>
+              <p className="text-xs text-muted-foreground">Include file attachments in sync</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSyncAttachments(p => !p)}
+              className={`w-11 h-6 rounded-full transition-colors relative ${syncAttachments ? 'bg-blue-500' : 'bg-secondary border border-border'}`}
+            >
+              <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${syncAttachments ? 'left-6' : 'left-1'}`} />
+            </button>
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button type="button" onClick={onClose} className="flex-1 px-4 py-2.5 rounded-xl border border-border text-sm font-semibold hover:bg-secondary transition-colors">
+              Cancel
+            </button>
+            <button type="submit" disabled={saving} className="flex-1 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Settings className="w-4 h-4" />}
+              {saving ? 'Saving...' : 'Save Settings'}
             </button>
           </div>
         </form>

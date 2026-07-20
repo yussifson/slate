@@ -121,11 +121,25 @@ function parseAgentActions(text) {
  return { cleanText, actions};
 }
 
-// Format message with simple markdown 
-function FormatMessage({ content}) {
+// Format message with markdown + styled citation links
+function FormatMessage({ content }) {
  return (
  <div className="prose prose-sm dark:prose-invert max-w-none break-words [&>p]:mb-2 [&>p:last-child]:mb-0 [&>ul]:mt-1 [&>ul]:mb-2 [&>ol]:mt-1 [&>ol]:mb-2 [&>ul]:pl-4 [&>ol]:pl-4">
- <ReactMarkdown remarkPlugins={[remarkGfm]}>
+ <ReactMarkdown
+   remarkPlugins={[remarkGfm]}
+   components={{
+     a: ({ href, children }) => (
+       <a
+         href={href}
+         target="_blank"
+         rel="noopener noreferrer"
+         className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors no-underline border border-primary/20 mx-0.5"
+       >
+         🔗 {children}
+       </a>
+     ),
+   }}
+ >
  {content}
  </ReactMarkdown>
  </div>
