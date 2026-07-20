@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
 import { getSubdomainAndBase, isDesktopApp } from '@/lib/domainUtils';
@@ -9,6 +9,7 @@ import { useImpersonation} from "@/lib/ImpersonationContext";
 import * as LucideIcons from "lucide-react";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 import { base44 } from "@/api/base44Client";
+import { getSavedAccounts } from '@/lib/multiAccountUtils';
 
 const SHORT_NAMES = {
   "Dashboard": "Home",
@@ -40,14 +41,26 @@ export default function MobileBottomNav() {
  const { t} = useTranslation();
  const location = useLocation();
  const navigate = useNavigate();
- const { user} = useAuth();
+ const { user, switchAccount} = useAuth();
  const { impersonatedCompany} = useImpersonation();
  const { navItems} = useNavigation(user, impersonatedCompany);
  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+ const [savedAccounts, setSavedAccounts] = useState([]);
+
+ useEffect(() => {
+   setSavedAccounts(getSavedAccounts());
+ }, [user]);
 
  // We want to show exactly 4 items in the bottom nav + 1 "More" button
  const bottomNavItems = navItems.slice(0, 4);
- const overflowItems = navItems.slice(4);
+ 
+ // Inject Integrations into overflow items if not present
+ const baseOverflowItems = navItems.slice(4);
+ const hasIntegrations = baseOverflowItems.some(i => i.path.includes('/integrations'));
+ const overflowItems = hasIntegrations ? baseOverflowItems : [
+   ...baseOverflowItems,
+   { label: 'Integrations', path: window.location.pathname.startsWith('/clipad') ? '/clipad/integrations' : '/integrations', icon: 'Plug' }
+ ];
 
  return (
  <>
@@ -200,6 +213,51 @@ export default function MobileBottomNav() {
                       <option key={comp.id} value={comp.id}>{comp.name}</option>
                     ))}
                   </select>
+                </div>
+              )}
+
+              {/* Account Switcher */}
+              {savedAccounts.length > 1 && (
+                <div className="flex flex-col border-t border-[#E5E5EA] dark:border-[#3A3A3C]">
+                  <div className="px-4 py-2 bg-[#F2F2F7]/50 dark:bg-card/50">
+                    <span className="text-[13px] uppercase tracking-wider text-[#8E8E93] dark:text-[#98989D] font-semibold">Switch Account</span>
+                  </div>
+                  {savedAccounts.filter(acc => acc.id !== user?.id).map(acc => (
+                    <button
+                      key={acc.id}
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        switchAccount(acc.id);
+                      }}
+                      className="flex items-center gap-3 px-4 py-3 bg-transparent active:bg-[#E5E5EA] dark:active:bg-[#3A3A3C] transition-colors border-b border-[#E5E5EA] dark:border-[#3A3A3C] last:border-b-0 w-full text-left"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-secondary flex items-center justify-center overflow-hidden shrink-0">
+                        {acc.avatar_url ? (
+                          <img src={acc.avatar_url} alt={acc.full_name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-[12px] font-bold text-slate-500 dark:text-slate-400">
+                            {acc.full_name ? acc.full_name[0].toUpperCase() : <LucideIcons.User className="w-4 h-4"/>}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-col min-w-0 flex-1">
+                        <span className="text-[17px] tracking-[-0.41px] text-black dark:text-white font-normal truncate">{acc.full_name || 'User'}</span>
+                        <span className="text-[13px] tracking-[-0.08px] text-[#8E8E93] truncate">{acc.email}</span>
+                      </div>
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      navigate('/login?prompt=login');
+                    }}
+                    className="flex items-center gap-3 px-4 py-3 bg-transparent active:bg-[#E5E5EA] dark:active:bg-[#3A3A3C] transition-colors w-full text-left"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <LucideIcons.Plus className="w-4 h-4 text-primary" />
+                    </div>
+                    <span className="text-[17px] tracking-[-0.41px] text-primary font-medium flex-1">Add another account</span>
+                  </button>
                 </div>
               )}
 

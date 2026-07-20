@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { Sparkles, Settings, Shield, LogOut, MessageSquare, Search } from 'lucide-react';
+import { Sparkles, Settings, Shield, LogOut, MessageSquare, Search, Plus, User, Plug } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
+import { getSavedAccounts } from '@/lib/multiAccountUtils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,9 +20,14 @@ import {
 import { isAdmin } from '@/lib/constants';
 
 export default function ClipadTopNav({ forceMobile = false }) {
-  const { user, logout } = useAuth();
+  const { user, logout, switchAccount } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [savedAccounts, setSavedAccounts] = useState([]);
+
+  useEffect(() => {
+    setSavedAccounts(getSavedAccounts());
+  }, [user]);
 
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
@@ -31,6 +37,10 @@ export default function ClipadTopNav({ forceMobile = false }) {
     { label: 'Meetings', path: '/meetings' },
     { label: 'Chat', path: '/chat' }
   ];
+
+  const handleAddAccount = () => {
+    navigate('/login?prompt=login');
+  };
 
   return (
     <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-2 md:px-4 lg:px-6 h-14 md:h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5 overflow-hidden gap-1 md:gap-3">
@@ -111,25 +121,66 @@ export default function ClipadTopNav({ forceMobile = false }) {
                 )}
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 font-sans">
-              <DropdownMenuLabel className="font-semibold">{user?.email}</DropdownMenuLabel>
+            <DropdownMenuContent align="end" className="w-64 font-sans max-h-[85vh] overflow-y-auto">
+              <DropdownMenuLabel className="font-semibold px-3 py-2 flex flex-col">
+                <span className="text-foreground">{user?.full_name || 'User'}</span>
+                <span className="text-xs text-muted-foreground font-normal">{user?.email}</span>
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
-                <Settings className="mr-2 h-4 w-4" />
+              <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer py-2">
+                <Settings className="mr-3 h-4 w-4 text-muted-foreground" />
                 <span>Settings</span>
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/clipad/integrations')} className="cursor-pointer py-2">
+                <Plug className="mr-3 h-4 w-4 text-muted-foreground" />
+                <span>Integrations</span>
+              </DropdownMenuItem>
               {user?.role === 'super_admin' && (
+                <DropdownMenuItem onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin')} className="cursor-pointer bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 py-2">
+                  <Shield className="mr-3 h-4 w-4" />
+                  <span className="font-semibold">Super Admin Dashboard</span>
+                </DropdownMenuItem>
+              )}
+              
+              {/* Account Switcher Section */}
+              {savedAccounts.length > 1 && (
                 <>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin')} className="cursor-pointer bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400">
-                    <Shield className="mr-2 h-4 w-4" />
-                    <span className="font-semibold">Super Admin Dashboard</span>
-                  </DropdownMenuItem>
+                  <DropdownMenuLabel className="text-xs text-muted-foreground font-semibold px-3 py-1.5 uppercase tracking-wider">
+                    Switch Account
+                  </DropdownMenuLabel>
+                  {savedAccounts.filter(acc => acc.id !== user?.id).map(acc => (
+                    <DropdownMenuItem 
+                      key={acc.id} 
+                      onClick={() => switchAccount(acc.id)}
+                      className="cursor-pointer flex items-center py-2"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center mr-3 overflow-hidden shrink-0 border border-border">
+                        {acc.avatar_url ? (
+                          <img src={acc.avatar_url} alt={acc.full_name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-[10px] font-bold text-muted-foreground">
+                            {acc.full_name ? acc.full_name[0].toUpperCase() : <User className="w-3 h-3"/>}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-sm font-medium truncate">{acc.full_name || 'User'}</span>
+                        <span className="text-xs text-muted-foreground truncate">{acc.email}</span>
+                      </div>
+                    </DropdownMenuItem>
+                  ))}
                 </>
               )}
+              
+              <DropdownMenuItem onClick={handleAddAccount} className="cursor-pointer py-2 text-primary focus:text-primary">
+                <Plus className="mr-3 h-4 w-4" />
+                <span>Add another account</span>
+              </DropdownMenuItem>
+
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={async () => { await logout(); navigate('/login'); }} className="cursor-pointer text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400">
-                <LogOut className="mr-2 h-4 w-4" />
+              <DropdownMenuItem onClick={async () => { await logout(); navigate('/login'); }} className="cursor-pointer py-2 text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400">
+                <LogOut className="mr-3 h-4 w-4" />
                 <span>Sign Out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

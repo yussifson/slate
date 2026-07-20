@@ -3,7 +3,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { 
   Network, Database, Activity, Zap, RefreshCw, AlertTriangle, 
-  ArrowUpRight, Clock, ShieldAlert, Cpu, Sparkles 
+  ArrowUpRight, Clock, ShieldAlert, Cpu, Sparkles, Plug
 } from 'lucide-react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import ClipadLoader from '@/components/ui/ClipadLoader';
