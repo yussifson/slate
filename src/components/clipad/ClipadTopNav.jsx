@@ -131,7 +131,7 @@ export default function ClipadTopNav({ forceMobile = false }) {
                 <Settings className="mr-3 h-4 w-4 text-muted-foreground" />
                 <span>Settings</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/clipad/integrations')} className="cursor-pointer py-2">
+              <DropdownMenuItem onClick={() => navigate('/integrations')} className="cursor-pointer py-2">
                 <Plug className="mr-3 h-4 w-4 text-muted-foreground" />
                 <span>Integrations</span>
               </DropdownMenuItem>
@@ -146,33 +146,42 @@ export default function ClipadTopNav({ forceMobile = false }) {
               {savedAccounts.length > 1 && (
                 <>
                   <DropdownMenuSeparator />
-                  <DropdownMenuLabel className="text-xs text-muted-foreground font-semibold px-3 py-1.5 uppercase tracking-wider">
-                    Switch Account
-                  </DropdownMenuLabel>
-                  {savedAccounts.filter(acc => acc.id !== user?.id).map(acc => (
-                    <DropdownMenuItem 
-                      key={acc.id} 
-                      onClick={() => switchAccount(acc.id)}
-                      className="cursor-pointer flex items-center py-2"
-                    >
-                      <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center mr-3 overflow-hidden shrink-0 border border-border">
-                        {acc.avatar_url ? (
-                          <img src={acc.avatar_url} alt={acc.full_name} className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="text-[10px] font-bold text-muted-foreground">
-                            {acc.full_name ? acc.full_name[0].toUpperCase() : <User className="w-3 h-3"/>}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-sm font-medium truncate">{acc.full_name || 'User'}</span>
-                        <span className="text-xs text-muted-foreground truncate">{acc.email}</span>
-                      </div>
-                    </DropdownMenuItem>
-                  ))}
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger className="cursor-pointer py-2">
+                      <User className="mr-3 h-4 w-4 text-muted-foreground" />
+                      <span>Switch Account</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent className="w-56 font-sans">
+                      <DropdownMenuLabel className="text-xs text-muted-foreground font-semibold px-3 py-1.5 uppercase tracking-wider">
+                        Available Accounts
+                      </DropdownMenuLabel>
+                      {savedAccounts.filter(acc => acc.id !== user?.id).map(acc => (
+                        <DropdownMenuItem 
+                          key={acc.id} 
+                          onClick={() => switchAccount(acc.id)}
+                          className="cursor-pointer flex items-center py-2"
+                        >
+                          <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center mr-3 overflow-hidden shrink-0 border border-border">
+                            {acc.avatar_url ? (
+                              <img src={acc.avatar_url} alt={acc.full_name} className="w-full h-full object-cover" />
+                            ) : (
+                              <span className="text-[10px] font-bold text-muted-foreground">
+                                {acc.full_name ? acc.full_name[0].toUpperCase() : <User className="w-3 h-3"/>}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-sm font-medium truncate">{acc.full_name || 'User'}</span>
+                            <span className="text-xs text-muted-foreground truncate">{acc.email}</span>
+                          </div>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
                 </>
               )}
               
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleAddAccount} className="cursor-pointer py-2 text-primary focus:text-primary">
                 <Plus className="mr-3 h-4 w-4" />
                 <span>Add another account</span>

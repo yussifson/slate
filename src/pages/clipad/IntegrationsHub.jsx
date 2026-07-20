@@ -87,7 +87,7 @@ const INTEGRATIONS = [
     category: 'Storage',
     provider: 'microsoft',
     scopes: 'offline_access user.read Files.Read.All',
-    phase: 2,
+    phase: 1,
     importTypes: ['Documents', 'Spreadsheets', 'Presentations'],
   },
   {
@@ -100,7 +100,7 @@ const INTEGRATIONS = [
     category: 'Meetings',
     provider: 'microsoft',
     scopes: 'offline_access user.read Chat.Read ChannelMessage.Read.All',
-    phase: 2,
+    phase: 1,
     importTypes: ['Chats', 'Recordings', 'Files'],
   },
   {
@@ -113,7 +113,7 @@ const INTEGRATIONS = [
     category: 'Email',
     provider: 'google',
     scopes: 'email profile https://www.googleapis.com/auth/gmail.readonly',
-    phase: 2,
+    phase: 1,
     importTypes: ['Emails', 'Attachments', 'Threads'],
   },
   {
@@ -125,7 +125,7 @@ const INTEGRATIONS = [
     border: 'border-blue-600/20',
     category: 'Project Management',
     provider: 'jira',
-    phase: 2,
+    phase: 1,
     importTypes: ['Issues', 'Sprints', 'Epics'],
   },
   {
@@ -137,7 +137,7 @@ const INTEGRATIONS = [
     border: 'border-cyan-500/20',
     category: 'Knowledge Base',
     provider: 'confluence',
-    phase: 2,
+    phase: 1,
     importTypes: ['Pages', 'Spaces', 'Blogs'],
   },
   {
@@ -149,7 +149,7 @@ const INTEGRATIONS = [
     border: 'border-violet-500/20',
     category: 'Project Management',
     provider: 'clickup',
-    phase: 2,
+    phase: 1,
     importTypes: ['Tasks', 'Docs', 'Comments'],
   },
   {
@@ -161,7 +161,7 @@ const INTEGRATIONS = [
     border: 'border-red-400/20',
     category: 'Project Management',
     provider: 'asana',
-    phase: 2,
+    phase: 1,
     importTypes: ['Projects', 'Tasks', 'Goals'],
   },
   {
@@ -173,7 +173,7 @@ const INTEGRATIONS = [
     border: 'border-amber-500/20',
     category: 'Engineering',
     provider: 'linear',
-    phase: 2,
+    phase: 1,
     importTypes: ['Issues', 'Projects', 'Cycles'],
   },
   {
