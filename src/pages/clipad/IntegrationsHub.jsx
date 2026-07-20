@@ -6,8 +6,9 @@ import { useToast } from '@/components/ui/use-toast';
 import {
   CheckCircle2, XCircle, RefreshCw, Plug, Unplug, ExternalLink,
   Loader2, Clock, FileText, MessageSquare, Video, Github,
-  AlertCircle, Zap, Search, Filter, ArrowLeft
+  AlertCircle, Zap, Search, Filter, ArrowLeft, BarChart2
 } from 'lucide-react';
+import IntegrationAnalytics from './IntegrationAnalytics';
 
 // ─── Integration Definitions ─────────────────────────────────────────────────
 const INTEGRATIONS = [
@@ -282,6 +283,7 @@ export default function IntegrationsHub() {
   const [disconnecting, setDisconnecting] = useState({});
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeView, setActiveView] = useState('hub'); // 'hub' or 'analytics'
 
   // Handle OAuth callback status
   useEffect(() => {
@@ -473,7 +475,27 @@ export default function IntegrationsHub() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 md:px-6 mt-8 space-y-8">
+      <div className="max-w-5xl mx-auto px-4 md:px-6 mt-6">
+        <div className="flex border-b border-border">
+          <button
+            onClick={() => setActiveView('hub')}
+            className={`flex items-center gap-2 px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${activeView === 'hub' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+          >
+            <Plug className="w-4 h-4" /> Integrations
+          </button>
+          <button
+            onClick={() => setActiveView('analytics')}
+            className={`flex items-center gap-2 px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${activeView === 'analytics' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+          >
+            <BarChart2 className="w-4 h-4" /> Analytics
+          </button>
+        </div>
+      </div>
+
+      {activeView === 'analytics' ? (
+        <IntegrationAnalytics embedded={true} />
+      ) : (
+        <div className="max-w-5xl mx-auto px-4 md:px-6 mt-8 space-y-8">
 
         {/* Search + Filter */}
         <div className="flex flex-col sm:flex-row gap-3">
@@ -679,29 +701,6 @@ export default function IntegrationsHub() {
         ) : Object.keys(connected).length > 0 ? (
           <div className="bg-secondary/50 border border-border border-dashed rounded-2xl p-8 flex flex-col items-center justify-center text-center gap-3">
              <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
-               <Loader2 className="w-6 h-6 text-muted-foreground animate-spin" />
-             </div>
-             <div>
-               <h3 className="font-bold text-foreground">Waiting for knowledge sync</h3>
-               <p className="text-sm text-muted-foreground max-w-sm mt-1">
-                 Your connected integrations are syncing in the background. If you see any errors on the cards above (like 403 or invalid_auth), you'll need to reconnect or clear the errors before data will appear here.
-               </p>
-             </div>
-          </div>
-        ) : null}
-
-        {/* API credentials notice */}
-        <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-5 flex gap-3">
-          <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-          <div>
-            <h3 className="font-bold text-sm text-amber-600 dark:text-amber-400 mb-1">API Credentials Required</h3>
-            <p className="text-sm text-muted-foreground">
-              To activate integrations, register OAuth apps on each provider's developer portal and add the credentials as Supabase secrets. 
-              Contact your administrator or check the <strong>CliPad Integration Setup Guide</strong> for step-by-step instructions.
-            </p>
-          </div>
-        </div>
-
       </div>
     </div>
   );

@@ -554,7 +554,135 @@ export async function buildOrgContext(options = {}) {
 }
 
 // ──────────────────────────────────────────────────────────────────
-// 7. Write to Org Timeline (clipad_org_events)
+// 7. Detect Organizational Risks
+// ──────────────────────────────────────────────────────────────────
+export async function detectRisks(companyId, spaceIds = []) {
+  const risks = [];
+  const now = new Date();
+
+  try {
+    // 1. Overdue tasks (due more than 3 days ago, still open)
+    const overdueCutoff = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const tasksQuery = supabase
+      .from('clipad_action_items')
+      .select('id, title, due_date, assigned_to, space_id')
+      .eq('is_complete', false)
+      .not('due_date', 'is', null)
+      .lt('due_date', overdueCutoff);
+    if (spaceIds.length > 0) tasksQuery.in('space_id', spaceIds);
+    const { data: overdueTasks } = await tasksQuery.limit(10);
+    (overdueTasks || []).forEach(task => {
+      risks.push({
+        type: 'overdue_task',
+        severity: 'high',
+        title: `Overdue task: "${task.title}"`,
+        description: `Due ${task.due_date}, still open${task.assigned_to ? ` — assigned to ${task.assigned_to}` : ''}`,
+        source_id: task.id,
+        source_table: 'clipad_action_items',
+      });
+    });
+
+    // 2. Old open blockers (raised more than 7 days ago)
+    const blockerCutoff = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const blockersQuery = supabase
+      .from('clipad_blockers')
+      .select('id, description, severity, detected_at, team_space_id')
+      .eq('status', 'open')
+      .lt('detected_at', blockerCutoff);
+    if (spaceIds.length > 0) blockersQuery.in('team_space_id', spaceIds);
+    const { data: staleBlockers } = await blockersQuery.limit(10);
+    (staleBlockers || []).forEach(blocker => {
+      const daysOpen = Math.floor((now - new Date(blocker.detected_at)) / (1000 * 60 * 60 * 24));
+      risks.push({
+        type: 'stale_blocker',
+        severity: blocker.severity === 'high' ? 'critical' : 'high',
+        title: `Unresolved blocker for ${daysOpen} days`,
+        description: blocker.description,
+        source_id: blocker.id,
+        source_table: 'clipad_blockers',
+      });
+    });
+
+    // 3. Decisions with no follow-up actions (older than 7 days)
+    const decisionCutoff = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const decisionsQuery = supabase
+      .from('clipad_decisions')
+      .select('id, decision_text, created_at, team_space_id')
+      .eq('status', 'active')
+      .lt('created_at', decisionCutoff);
+    if (spaceIds.length > 0) decisionsQuery.in('team_space_id', spaceIds);
+    const { data: oldDecisions } = await decisionsQuery.limit(5);
+
+    for (const decision of (oldDecisions || [])) {
+      // Check if there are any action items linked to this decision
+      const { data: linkedTasks } = await supabase
+        .from('clipad_action_items')
+        .select('id')
+        .eq('source_id', decision.id)
+        .limit(1);
+
+      if (!linkedTasks || linkedTasks.length === 0) {
+        risks.push({
+          type: 'unactioned_decision',
+          severity: 'medium',
+          title: `Decision with no follow-up tasks`,
+          description: `"${decision.decision_text?.substring(0, 100)}" — made ${new Date(decision.created_at).toLocaleDateString()} with no assigned tasks`,
+          source_id: decision.id,
+          source_table: 'clipad_decisions',
+        });
+      }
+    }
+
+    // 4. No meetings in the last 14 days (org going quiet)
+    const meetingCutoff = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString();
+    const meetingQuery = supabase
+      .from('clipad_meeting_records')
+      .select('id')
+      .gt('created_at', meetingCutoff);
+    if (spaceIds.length > 0) meetingQuery.in('space_id', spaceIds);
+    else if (companyId) meetingQuery.eq('company_id', companyId);
+    const { data: recentMeetings } = await meetingQuery.limit(1);
+
+    if (!recentMeetings || recentMeetings.length === 0) {
+      risks.push({
+        type: 'low_activity',
+        severity: 'medium',
+        title: 'No meetings in the last 14 days',
+        description: 'The team has had no recorded meetings recently. This may indicate reduced collaboration or missing data.',
+        source_id: null,
+        source_table: null,
+      });
+    }
+
+    // 5. Commitments overdue (due_date passed and still pending)
+    const { data: overdueCommitments } = await supabase
+      .from('clipad_commitments')
+      .select('id, commitment_text, owner_name, due_date')
+      .eq('status', 'pending')
+      .not('due_date', 'is', null)
+      .lt('due_date', now.toISOString().split('T')[0])
+      .limit(5);
+
+    (overdueCommitments || []).forEach(c => {
+      risks.push({
+        type: 'overdue_commitment',
+        severity: 'high',
+        title: `Commitment overdue`,
+        description: `"${c.commitment_text?.substring(0, 100)}"${c.owner_name ? ` (${c.owner_name})` : ''} — was due ${c.due_date}`,
+        source_id: c.id,
+        source_table: 'clipad_commitments',
+      });
+    });
+
+  } catch (err) {
+    console.warn('[detectRisks] Error:', err.message);
+  }
+
+  return risks;
+}
+
+// ──────────────────────────────────────────────────────────────────
+// 8. Write to Org Timeline (clipad_org_events)
 // ──────────────────────────────────────────────────────────────────
 export async function writeOrgEvent({ workspace_id, space_id, event_type, title, description, actor_id, source_id, source_table, metadata, importance = 3 }) {
   try {

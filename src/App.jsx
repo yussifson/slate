@@ -21,6 +21,7 @@ const CliPadSettings = React.lazy(() => import('@/pages/clipad/CliPadSettings'))
 const VideoAnalytics = React.lazy(() => import('@/pages/clipad/VideoAnalytics'));
 const CliPadEnterpriseDashboard = React.lazy(() => import('@/pages/clipad/admin/EnterpriseDashboard'));
 const KnowledgeHealth = React.lazy(() => import('@/pages/clipad/KnowledgeHealth'));
+const IntegrationAnalytics = React.lazy(() => import('@/pages/clipad/IntegrationAnalytics'));
 const CliPadDashboard = React.lazy(() => import('@/pages/clipad/CliPadDashboard'));
 const CliPadLogin = React.lazy(() => import('@/pages/clipad/CliPadLogin'));
 const SpacesList = React.lazy(() => import('@/pages/clipad/SpacesList'));
@@ -894,10 +895,11 @@ function PlatformRoutes() {
         <Route path="/clipad/meeting/:id" element={<MeetingRecord />} />
         <Route path="/clipad/save-meeting/:id" element={<SaveMeetingPage />} />
         <Route path="/clipad/settings" element={<CliPadSettings />} />
-        <Route path="/clipad/settings/integrations" element={<IntegrationsHub />} />
+        <Route path="/clipad/integrations" element={<IntegrationsHub />} />
         <Route path="/clipad/analytics" element={<VideoAnalytics />} />
         <Route path="/clipad/enterprise" element={<CliPadEnterpriseDashboard />} />
         <Route path="/clipad/health" element={<KnowledgeHealth />} />
+        <Route path="/clipad/integration-analytics" element={<IntegrationAnalytics />} />
       </Route>
 
       {/* Clipad Super Admin Routes */}
@@ -1404,6 +1406,7 @@ function App() {
                           <Route path="/spaces" element={<SpacesList />} />
                           <Route path="/spaces/:spaceId" element={<SpaceDashboard />} />
                           <Route path="/health" element={<KnowledgeHealth />} />
+                          <Route path="/integration-analytics" element={<IntegrationAnalytics />} />
                           <Route path="/record" element={<RecordVideo />} />
                           <Route path="/record/:id" element={<RecordVideo />} />
                           <Route path="/meetings" element={<MeetingsList />} />
@@ -1411,7 +1414,7 @@ function App() {
                           <Route path="/meetings/:meetingId" element={<MeetingRecord />} />
                           <Route path="/save-meeting/:id" element={<SaveMeetingPage />} />
                           <Route path="/settings" element={<CliPadSettings />} />
-                          <Route path="/settings/integrations" element={<IntegrationsHub />} />
+                          <Route path="/integrations" element={<IntegrationsHub />} />
                           <Route path="/support" element={<CliPadSupport />} />
                           <Route path="/chat" element={<ClipadChat />} />
                           <Route path="/chat/:roomId" element={<ClipadChat />} />

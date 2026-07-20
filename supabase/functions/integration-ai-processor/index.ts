@@ -34,12 +34,10 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Knowledge item not found' }), { status: 404, headers: corsHeaders });
     }
 
-    // Build rich text to process — handle all content types
+    // Build rich text to process
     const contentParts = [];
     if (item.title) contentParts.push(`Title: ${item.title}`);
     if (item.content) contentParts.push(`Content:\n${item.content}`);
-    
-    // For items without content body, build from metadata
     if (!item.content && item.metadata) {
       const meta = typeof item.metadata === 'string' ? JSON.parse(item.metadata) : item.metadata;
       if (meta?.channel_name) contentParts.push(`Channel: #${meta.channel_name}`);
@@ -48,26 +46,29 @@ serve(async (req) => {
       if (meta?.duration) contentParts.push(`Duration: ${meta.duration} minutes`);
       if (meta?.start_time) contentParts.push(`Date: ${meta.start_time}`);
       if (meta?.participants) contentParts.push(`Participants: ${meta.participants}`);
+      if (meta?.board) contentParts.push(`Board: ${meta.board}`);
+      if (meta?.project) contentParts.push(`Project: ${meta.project}`);
     }
-    
     if (item.author) contentParts.push(`Author: ${item.author}`);
     if (item.tags?.length) contentParts.push(`Tags: ${item.tags.join(', ')}`);
-    
+
     const textToProcess = contentParts.join('\n\n').substring(0, 4000);
 
-    // Always generate at least a basic summary — never skip
     let aiSummary: string | null = null;
     let aiActionItems: string[] | null = null;
     let aiEntities: Record<string, any> | null = null;
     let aiKeywords: string[] | null = null;
+    let embedding: number[] | null = null;
 
     if (cloudflareAccountId && cloudflareApiToken && textToProcess.trim().length > 20) {
+      // ── Step 1: Generate AI summary, entities, actions, keywords ────────
       try {
         const prompt = `You are an organizational knowledge assistant. Analyze this ${provider} ${item.content_type || 'item'} and return ONLY valid JSON with these exact keys:
 - "summary": concise 2-3 sentence summary of what this content is about
 - "action_items": array of strings (actionable tasks found, max 5, or empty array)
-- "entities": object with "people" (names mentioned), "projects" (project/product names), "dates" (important dates mentioned)  
+- "entities": object with "people" (names mentioned), "projects" (project/product names), "dates" (important dates mentioned), "decisions" (key decisions made)
 - "keywords": array of 5-8 key topic words from the content
+- "risks": array of potential risks or blockers identified (max 3, or empty array)
 
 Content:
 ${textToProcess}`;
@@ -79,7 +80,7 @@ ${textToProcess}`;
             headers: { Authorization: `Bearer ${cloudflareApiToken}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({
               messages: [
-                { role: 'system', content: 'You are a data extraction AI. Always respond with ONLY valid JSON, no markdown, no code fences.' },
+                { role: 'system', content: 'You are a data extraction AI. Always respond with ONLY valid JSON.' },
                 { role: 'user', content: prompt }
               ],
               max_tokens: 600
@@ -89,40 +90,61 @@ ${textToProcess}`;
 
         if (cfRes.ok) {
           const cfData = await cfRes.json();
-          let raw = cfData.result?.response || '';
-          raw = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-          // Handle if wrapped in outer JSON
-          if (raw.startsWith('{')) {
-            const parsed = JSON.parse(raw);
+          const rawText = cfData?.result?.response || '';
+          const cleaned = rawText.replace(/```json|```/g, '').trim();
+          try {
+            const parsed = JSON.parse(cleaned);
             aiSummary = parsed.summary || null;
             aiActionItems = Array.isArray(parsed.action_items) ? parsed.action_items : null;
             aiEntities = parsed.entities || null;
             aiKeywords = Array.isArray(parsed.keywords) ? parsed.keywords : null;
+          } catch {
+            // Extract summary from plain text if JSON parse fails
+            aiSummary = rawText.length > 50 ? rawText.substring(0, 300) : null;
           }
         }
-      } catch (e) {
-        console.warn('AI processing failed:', e.message);
+      } catch (err) {
+        console.error('AI summarization error:', err);
+      }
+
+      // ── Step 2: Generate vector embedding for semantic search ────────────
+      try {
+        const embeddingText = [item.title, aiSummary, item.content?.substring(0, 1000)].filter(Boolean).join('\n').substring(0, 2000);
+
+        const embRes = await fetch(
+          `https://api.cloudflare.com/client/v4/accounts/${cloudflareAccountId}/ai/run/@cf/baai/bge-base-en-v1.5`,
+          {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${cloudflareApiToken}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: [embeddingText] })
+          }
+        );
+
+        if (embRes.ok) {
+          const embData = await embRes.json();
+          embedding = embData?.result?.data?.[0] || null;
+        }
+      } catch (err) {
+        console.error('Embedding generation error:', err);
       }
     }
 
-    // Always ensure a summary exists — fallback to content excerpt
+    // Fallback summary if AI is unavailable
     if (!aiSummary) {
-      if (item.content && item.content.length > 50) {
-        aiSummary = item.content.substring(0, 300) + (item.content.length > 300 ? '...' : '');
-      } else if (item.title) {
-        aiSummary = `${item.content_type || 'Item'} from ${provider}: "${item.title}"`;
-        if (item.author) aiSummary += ` by ${item.author}`;
-      }
+      aiSummary = `${item.content_type || 'Item'} from ${provider}: ${item.title || 'Untitled'}`;
     }
 
-    // Save AI results
+    // ── Update the knowledge item with AI results ────────────────────────
     const updatePayload: Record<string, any> = {
       ai_summary: aiSummary,
-      updated_at: new Date().toISOString(),
+      ai_action_items: aiActionItems,
+      ai_entities: aiEntities,
+      ai_keywords: aiKeywords,
     };
-    if (aiActionItems) updatePayload.ai_action_items = aiActionItems;
-    if (aiEntities) updatePayload.ai_entities = aiEntities;
-    if (aiKeywords) updatePayload.tags = aiKeywords;
+
+    if (embedding) {
+      updatePayload.embedding = JSON.stringify(embedding);
+    }
 
     const { error: updateErr } = await supabase
       .from('clipad_imported_knowledge')
@@ -130,27 +152,31 @@ ${textToProcess}`;
       .eq('integration_id', integrationId)
       .eq('external_id', externalId);
 
-    if (updateErr) throw updateErr;
-
-    // If action items found, create clipad_action_items entries
-    if (aiActionItems && Array.isArray(aiActionItems) && aiActionItems.length > 0) {
-      const actionItemRows = aiActionItems.map((title: string) => ({
-        space_id: item.space_id || null,
-        title: title.substring(0, 255),
-        context: `Imported from ${provider}: ${item.title}`,
-        is_complete: false,
-        source: `integration_${provider}`,
-        company_id: item.company_id,
-      }));
-      await supabase.from('clipad_action_items').insert(actionItemRows).select();
+    if (updateErr) {
+      console.error('Update error:', updateErr.message);
     }
 
-    return new Response(JSON.stringify({ success: true, aiSummary, actionItemsCreated: aiActionItems?.length || 0 }), {
+    // ── Step 3: Store detected risks as org events ───────────────────────
+    if (aiEntities?.decisions?.length > 0 || (aiActionItems && aiActionItems.length > 0)) {
+      try {
+        // Write org event for significant content
+        await supabase.from('clipad_org_events').insert({
+          workspace_id: item.company_id,
+          event_type: 'knowledge_indexed',
+          title: `Knowledge indexed: ${item.title?.substring(0, 60) || 'Untitled'}`,
+          description: `AI processed ${provider} ${item.content_type || 'item'}${aiActionItems?.length ? ` — ${aiActionItems.length} action items found` : ''}`,
+          source_id: item.id,
+          source_table: 'clipad_imported_knowledge',
+          importance: aiActionItems?.length > 0 ? 5 : 3,
+        }).catch(() => {});
+      } catch { /* ignore */ }
+    }
+
+    return new Response(JSON.stringify({ success: true, hasSummary: !!aiSummary, hasEmbedding: !!embedding }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (e) {
-    console.error('AI Processor error:', e.message);
     return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: corsHeaders });
   }
 });

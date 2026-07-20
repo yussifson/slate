@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
-import { Activity, BrainCircuit, HeartPulse, ShieldAlert, Target, TrendingUp, Users, LogOut, Settings, Shield, Sparkles, Info } from 'lucide-react';
+import { Activity, BrainCircuit, HeartPulse, ShieldAlert, Target, TrendingUp, Users, LogOut, Settings, Shield, Sparkles, Info, AlertTriangle } from 'lucide-react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
@@ -9,6 +9,7 @@ import NotificationCenter from '@/components/clipad/notifications/NotificationCe
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import toast from 'react-hot-toast';
 import { generateText } from '@/lib/cloudflareAI';
+import { detectRisks } from '@/lib/clipadIntelligence';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,6 +38,7 @@ export default function KnowledgeHealth() {
   const [rawCounts, setRawCounts] = useState(null);
   const [diagnosis, setDiagnosis] = useState('');
   const [insights, setInsights] = useState([]);
+  const [risks, setRisks] = useState([]);
 
   const isUserAdmin = isAdmin(user);
 
@@ -128,6 +130,10 @@ export default function KnowledgeHealth() {
         } catch(e) {
           console.warn("Failed to generate insights", e);
         }
+
+        // Detect Organizational Risks
+        const detectedRisks = await detectRisks(user?.company_id);
+        setRisks(detectedRisks);
 
       } catch (err) {
         console.error(err);
@@ -323,6 +329,35 @@ export default function KnowledgeHealth() {
                  </div>
                );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Organizational Risks Feed */}
+      {risks && risks.length > 0 && (
+        <div className="mt-8 mb-8">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-slate-900 dark:text-white">
+            <AlertTriangle className="w-5 h-5 text-rose-500" />
+            Detected Risks
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {risks.map((risk, idx) => (
+              <div key={idx} className="p-5 rounded-2xl bg-white dark:bg-card border border-rose-200 dark:border-rose-900/50 shadow-sm flex flex-col gap-3 hover:border-rose-300 transition-colors relative overflow-hidden">
+                <div className={`absolute top-0 left-0 right-0 h-1 ${risk.severity === 'critical' ? 'bg-rose-600' : risk.severity === 'high' ? 'bg-rose-500' : 'bg-orange-400'}`} />
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${risk.severity === 'critical' ? 'bg-rose-100 text-rose-700' : 'bg-orange-50 text-orange-600'}`}>
+                    <AlertTriangle className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900 dark:text-white leading-tight">{risk.title}</h4>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{risk.type.replace('_', ' ')}</span>
+                  </div>
+                </div>
+                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mt-1">
+                  {risk.description}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       )}

@@ -30,73 +30,115 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Integration not found' }), { status: 404, headers: corsHeaders });
     }
 
+    // ── Incremental sync: only import items newer than last sync ─────────────
+    const lastSynced = integration.last_synced_at ? new Date(integration.last_synced_at) : null;
+
     let imported = 0;
     let syncError = null;
 
     try {
       switch (provider) {
-        // ── PHASE 1: Fully implemented ────────────────────────────────────────
+        // ── Phase 1: Existing connectors (now with incremental sync) ──────────
         case 'google_drive':
-          imported = await syncGoogleDrive(integration, supabase);
+          imported = await syncGoogleDrive(integration, supabase, lastSynced);
           break;
         case 'notion':
-          imported = await syncNotion(integration, supabase);
+          imported = await syncNotion(integration, supabase, lastSynced);
           break;
         case 'slack':
-          imported = await syncSlack(integration, supabase);
+          imported = await syncSlack(integration, supabase, lastSynced);
           break;
         case 'zoom':
-          imported = await syncZoom(integration, supabase);
+          imported = await syncZoom(integration, supabase, lastSynced);
           break;
         case 'github':
-          imported = await syncGitHub(integration, supabase);
+          imported = await syncGitHub(integration, supabase, lastSynced);
           break;
-
-        // ── PHASE 2: New implementations ──────────────────────────────────────
         case 'microsoft_onedrive':
-          imported = await syncOneDrive(integration, supabase);
+          imported = await syncOneDrive(integration, supabase, lastSynced);
           break;
         case 'ms_teams':
-          imported = await syncMSTeams(integration, supabase);
+          imported = await syncMSTeams(integration, supabase, lastSynced);
           break;
         case 'gmail':
-          imported = await syncGmail(integration, supabase);
+          imported = await syncGmail(integration, supabase, lastSynced);
           break;
         case 'jira':
-          imported = await syncJira(integration, supabase);
+          imported = await syncJira(integration, supabase, lastSynced);
           break;
         case 'confluence':
-          imported = await syncConfluence(integration, supabase);
+          imported = await syncConfluence(integration, supabase, lastSynced);
           break;
         case 'clickup':
-          imported = await syncClickUp(integration, supabase);
+          imported = await syncClickUp(integration, supabase, lastSynced);
           break;
         case 'asana':
-          imported = await syncAsana(integration, supabase);
+          imported = await syncAsana(integration, supabase, lastSynced);
           break;
         case 'linear':
-          imported = await syncLinear(integration, supabase);
+          imported = await syncLinear(integration, supabase, lastSynced);
           break;
         case 'trello':
-          imported = await syncTrello(integration, supabase);
+          imported = await syncTrello(integration, supabase, lastSynced);
           break;
         case 'dropbox':
-          imported = await syncDropbox(integration, supabase);
+          imported = await syncDropbox(integration, supabase, lastSynced);
           break;
         case 'box':
-          imported = await syncBox(integration, supabase);
+          imported = await syncBox(integration, supabase, lastSynced);
           break;
         case 'salesforce':
-          imported = await syncSalesforce(integration, supabase);
+          imported = await syncSalesforce(integration, supabase, lastSynced);
           break;
         case 'hubspot':
-          imported = await syncHubSpot(integration, supabase);
+          imported = await syncHubSpot(integration, supabase, lastSynced);
           break;
         case 'google_meet':
-          imported = await syncGoogleMeet(integration, supabase);
+          imported = await syncGoogleMeet(integration, supabase, lastSynced);
           break;
         case 'outlook':
-          imported = await syncOutlook(integration, supabase);
+          imported = await syncOutlook(integration, supabase, lastSynced);
+          break;
+
+        // ── Phase 3: New connectors ───────────────────────────────────────────
+        case 'discord':
+          imported = await syncDiscord(integration, supabase, lastSynced);
+          break;
+        case 'monday':
+          imported = await syncMonday(integration, supabase, lastSynced);
+          break;
+        case 'gitlab':
+          imported = await syncGitLab(integration, supabase, lastSynced);
+          break;
+        case 'bitbucket':
+          imported = await syncBitbucket(integration, supabase, lastSynced);
+          break;
+        case 'zoho_crm':
+          imported = await syncZohoCRM(integration, supabase, lastSynced);
+          break;
+        case 'zendesk':
+          imported = await syncZendesk(integration, supabase, lastSynced);
+          break;
+        case 'intercom':
+          imported = await syncIntercom(integration, supabase, lastSynced);
+          break;
+        case 'freshdesk':
+          imported = await syncFreshdesk(integration, supabase, lastSynced);
+          break;
+        case 'figma':
+          imported = await syncFigma(integration, supabase, lastSynced);
+          break;
+        case 'miro':
+          imported = await syncMiro(integration, supabase, lastSynced);
+          break;
+        case 'google_calendar':
+          imported = await syncGoogleCalendar(integration, supabase, lastSynced);
+          break;
+        case 'sharepoint':
+          imported = await syncSharePoint(integration, supabase, lastSynced);
+          break;
+        case 'guru':
+          imported = await syncGuru(integration, supabase, lastSynced);
           break;
         default:
           throw new Error(`Provider '${provider}' sync not implemented`);
@@ -112,6 +154,17 @@ serve(async (req) => {
       sync_error: syncError,
       status: syncError ? 'error' : 'active'
     }).eq('id', integrationId);
+
+    // Write org event for timeline
+    if (imported > 0 && !syncError) {
+      await supabase.from('clipad_org_events').insert({
+        workspace_id: integration.company_id,
+        event_type: 'integration_synced',
+        title: `${provider.replace(/_/g, ' ')} synced — ${imported} items imported`,
+        description: `Automatic knowledge import from ${provider}`,
+        importance: 3,
+      }).catch(() => {});
+    }
 
     return new Response(JSON.stringify({ success: true, imported, error: syncError }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -142,12 +195,16 @@ async function upsertKnowledge(supabase: any, item: Record<string, any>, integra
 }
 
 // ─── Google Drive Sync ────────────────────────────────────────────────────────
-async function syncGoogleDrive(integration: any, supabase: any) {
+async function syncGoogleDrive(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
 
+  const modifiedQuery = lastSynced
+    ? `&q=trashed=false and modifiedTime>'${lastSynced.toISOString()}'`
+    : `&q=trashed=false`;
+
   const res = await fetch(
-    `https://www.googleapis.com/drive/v3/files?pageSize=50&fields=files(id,name,mimeType,webViewLink,modifiedTime,owners)&q=trashed=false`,
+    `https://www.googleapis.com/drive/v3/files?pageSize=50&fields=files(id,name,mimeType,webViewLink,modifiedTime,owners)${modifiedQuery}`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
   if (!res.ok) throw new Error(`Google Drive API error: ${res.status}`);
@@ -188,9 +245,19 @@ async function syncGoogleDrive(integration: any, supabase: any) {
 }
 
 // ─── Notion Sync ─────────────────────────────────────────────────────────────
-async function syncNotion(integration: any, supabase: any) {
+async function syncNotion(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+
+  const filterBody: any = { filter: { value: 'page', property: 'object' }, page_size: 50 };
+  if (lastSynced) {
+    filterBody.filter = {
+      and: [
+        { property: 'object', value: 'page' },
+        { timestamp: 'last_edited_time', last_edited_time: { after: lastSynced.toISOString() } }
+      ]
+    };
+  }
 
   const res = await fetch('https://api.notion.com/v1/search', {
     method: 'POST',
@@ -199,7 +266,7 @@ async function syncNotion(integration: any, supabase: any) {
       'Notion-Version': '2022-06-28',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ filter: { value: 'page', property: 'object' }, page_size: 50 })
+    body: JSON.stringify(filterBody)
   });
   if (!res.ok) throw new Error(`Notion API error: ${res.status}`);
   const data = await res.json();
@@ -220,7 +287,7 @@ async function syncNotion(integration: any, supabase: any) {
 }
 
 // ─── Slack Sync ───────────────────────────────────────────────────────────────
-async function syncSlack(integration: any, supabase: any) {
+async function syncSlack(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
 
@@ -230,8 +297,10 @@ async function syncSlack(integration: any, supabase: any) {
   const chData = await chRes.json();
   if (!chData.ok) throw new Error(chData.error);
 
+  const oldestParam = lastSynced ? `&oldest=${Math.floor(lastSynced.getTime() / 1000)}` : '';
+
   for (const channel of (chData.channels || []).slice(0, 10)) {
-    const msgRes = await fetch(`https://slack.com/api/conversations.history?channel=${channel.id}&limit=30`, {
+    const msgRes = await fetch(`https://slack.com/api/conversations.history?channel=${channel.id}&limit=30${oldestParam}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     const msgData = await msgRes.json();
@@ -254,11 +323,12 @@ async function syncSlack(integration: any, supabase: any) {
 }
 
 // ─── Zoom Sync ────────────────────────────────────────────────────────────────
-async function syncZoom(integration: any, supabase: any) {
+async function syncZoom(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
 
-  const res = await fetch('https://api.zoom.us/v2/users/me/recordings?page_size=30', {
+  const fromParam = lastSynced ? `&from=${lastSynced.toISOString().split('T')[0]}` : '';
+  const res = await fetch(`https://api.zoom.us/v2/users/me/recordings?page_size=30${fromParam}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error(`Zoom API error: ${res.status}`);
@@ -286,9 +356,11 @@ async function syncZoom(integration: any, supabase: any) {
 }
 
 // ─── GitHub Sync ──────────────────────────────────────────────────────────────
-async function syncGitHub(integration: any, supabase: any) {
+async function syncGitHub(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+
+  const sinceParam = lastSynced ? `&since=${lastSynced.toISOString()}` : '';
 
   const repoRes = await fetch('https://api.github.com/user/repos?per_page=20&sort=updated', {
     headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'CliPad-Integration' }
@@ -297,7 +369,7 @@ async function syncGitHub(integration: any, supabase: any) {
   const repos = await repoRes.json();
 
   for (const repo of repos.slice(0, 5)) {
-    const issuesRes = await fetch(`https://api.github.com/repos/${repo.full_name}/issues?per_page=20&state=all`, {
+    const issuesRes = await fetch(`https://api.github.com/repos/${repo.full_name}/issues?per_page=20&state=all${sinceParam}`, {
       headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'CliPad-Integration' }
     });
     if (!issuesRes.ok) continue;
@@ -323,19 +395,22 @@ async function syncGitHub(integration: any, supabase: any) {
 }
 
 // ─── Microsoft OneDrive Sync ──────────────────────────────────────────────────
-async function syncOneDrive(integration: any, supabase: any) {
+async function syncOneDrive(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
 
-  const res = await fetch('https://graph.microsoft.com/v1.0/me/drive/root/children?$top=50&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy', {
+  const filterParam = lastSynced
+    ? `&$filter=lastModifiedDateTime gt '${lastSynced.toISOString()}'`
+    : '';
+
+  const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/root/children?$top=50&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy${filterParam}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error(`OneDrive API error: ${res.status}`);
   const data = await res.json();
 
   for (const item of (data.value || [])) {
-    if (!item.file) continue; // skip folders
-
+    if (!item.file) continue;
     const ext = item.name?.split('.').pop()?.toLowerCase();
     const SUPPORTED_EXT = ['docx', 'xlsx', 'pptx', 'pdf', 'txt', 'md'];
     if (!SUPPORTED_EXT.includes(ext)) continue;
@@ -355,11 +430,10 @@ async function syncOneDrive(integration: any, supabase: any) {
 }
 
 // ─── Microsoft Teams Sync ─────────────────────────────────────────────────────
-async function syncMSTeams(integration: any, supabase: any) {
+async function syncMSTeams(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
 
-  // Get joined teams
   const teamsRes = await fetch('https://graph.microsoft.com/v1.0/me/joinedTeams', {
     headers: { Authorization: `Bearer ${token}` }
   });
@@ -367,7 +441,6 @@ async function syncMSTeams(integration: any, supabase: any) {
   const teamsData = await teamsRes.json();
 
   for (const team of (teamsData.value || []).slice(0, 5)) {
-    // Get channels
     const chRes = await fetch(`https://graph.microsoft.com/v1.0/teams/${team.id}/channels`, {
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -375,8 +448,8 @@ async function syncMSTeams(integration: any, supabase: any) {
     const chData = await chRes.json();
 
     for (const channel of (chData.value || []).slice(0, 3)) {
-      // Get messages
-      const msgRes = await fetch(`https://graph.microsoft.com/v1.0/teams/${team.id}/channels/${channel.id}/messages?$top=20`, {
+      const filterParam = lastSynced ? `?$filter=lastModifiedDateTime ge ${lastSynced.toISOString()}` : '';
+      const msgRes = await fetch(`https://graph.microsoft.com/v1.0/teams/${team.id}/channels/${channel.id}/messages${filterParam || '?$top=20'}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!msgRes.ok) continue;
@@ -404,12 +477,15 @@ async function syncMSTeams(integration: any, supabase: any) {
 }
 
 // ─── Gmail Sync ───────────────────────────────────────────────────────────────
-async function syncGmail(integration: any, supabase: any) {
+async function syncGmail(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
 
-  // Get recent emails
-  const listRes = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=30&q=is:important', {
+  const afterParam = lastSynced
+    ? `after:${Math.floor(lastSynced.getTime() / 1000)} `
+    : '';
+
+  const listRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=30&q=${encodeURIComponent(afterParam + 'is:important')}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!listRes.ok) throw new Error(`Gmail API error: ${listRes.status}`);
@@ -426,16 +502,15 @@ async function syncGmail(integration: any, supabase: any) {
     const subject = headers.find((h: any) => h.name === 'Subject')?.value || '(No Subject)';
     const from = headers.find((h: any) => h.name === 'From')?.value || '';
     const date = headers.find((h: any) => h.name === 'Date')?.value || '';
-    const snippet = msg.snippet || '';
 
     const ok = await upsertKnowledge(supabase, {
       provider: 'gmail',
       external_id: msg.id,
       content_type: 'email',
       title: subject,
-      content: snippet.substring(0, 2000),
+      content: (msg.snippet || '').substring(0, 2000),
       author: from,
-      metadata: { date, threadId: msg.threadId, labelIds: msg.labelIds },
+      metadata: { date, threadId: msg.threadId },
     }, integration);
     if (ok) imported++;
   }
@@ -443,17 +518,18 @@ async function syncGmail(integration: any, supabase: any) {
 }
 
 // ─── Jira Sync ────────────────────────────────────────────────────────────────
-async function syncJira(integration: any, supabase: any) {
+async function syncJira(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   const baseUrl = integration.metadata?.base_url || integration.config?.base_url;
-  if (!baseUrl) throw new Error('Jira base URL not configured. Please reconnect and provide your Jira domain.');
+  if (!baseUrl) throw new Error('Jira base URL not configured.');
   let imported = 0;
 
-  const res = await fetch(`${baseUrl}/rest/api/3/search?jql=updated>=-30d&maxResults=50&fields=summary,description,status,assignee,priority,issuetype,project,updated`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Accept': 'application/json'
-    }
+  const jql = lastSynced
+    ? `updated >= "${lastSynced.toISOString().split('T')[0]}"`
+    : 'updated >= -30d';
+
+  const res = await fetch(`${baseUrl}/rest/api/3/search?jql=${encodeURIComponent(jql)}&maxResults=50&fields=summary,description,status,assignee,priority,issuetype,project,updated`, {
+    headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
   });
   if (!res.ok) throw new Error(`Jira API error: ${res.status}`);
   const data = await res.json();
@@ -465,7 +541,7 @@ async function syncJira(integration: any, supabase: any) {
       provider: 'jira',
       external_id: issue.id,
       content_type: fields.issuetype?.name?.toLowerCase() || 'issue',
-      title: `[${fields.project?.key}-${issue.key?.split('-')[1]}] ${fields.summary}`,
+      title: `[${fields.project?.key}] ${fields.summary}`,
       content: description.substring(0, 3000),
       url: `${baseUrl}/browse/${issue.key}`,
       author: fields.assignee?.displayName || null,
@@ -478,23 +554,23 @@ async function syncJira(integration: any, supabase: any) {
 }
 
 // ─── Confluence Sync ──────────────────────────────────────────────────────────
-async function syncConfluence(integration: any, supabase: any) {
+async function syncConfluence(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   const baseUrl = integration.metadata?.base_url || integration.config?.base_url;
   if (!baseUrl) throw new Error('Confluence base URL not configured.');
   let imported = 0;
 
-  const res = await fetch(`${baseUrl}/rest/api/content?type=page&limit=50&expand=body.storage,space,history`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Accept': 'application/json'
-    }
+  const lastModParam = lastSynced
+    ? `&lastModified>${lastSynced.toISOString().replace('T', '+').split('.')[0]}`
+    : '';
+
+  const res = await fetch(`${baseUrl}/rest/api/content?type=page&limit=50&expand=body.storage,space,history${lastModParam}`, {
+    headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
   });
   if (!res.ok) throw new Error(`Confluence API error: ${res.status}`);
   const data = await res.json();
 
   for (const page of (data.results || [])) {
-    // Strip HTML from body
     const rawHtml = page.body?.storage?.value || '';
     const textContent = rawHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
     const ok = await upsertKnowledge(supabase, {
@@ -513,19 +589,22 @@ async function syncConfluence(integration: any, supabase: any) {
 }
 
 // ─── ClickUp Sync ─────────────────────────────────────────────────────────────
-async function syncClickUp(integration: any, supabase: any) {
+async function syncClickUp(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
 
-  // Get teams
   const teamsRes = await fetch('https://api.clickup.com/api/v2/team', {
     headers: { Authorization: token }
   });
   if (!teamsRes.ok) throw new Error(`ClickUp API error: ${teamsRes.status}`);
   const teamsData = await teamsRes.json();
 
+  const dateUpdatedParam = lastSynced
+    ? `&date_updated_gt=${lastSynced.getTime()}`
+    : '';
+
   for (const team of (teamsData.teams || []).slice(0, 2)) {
-    const tasksRes = await fetch(`https://api.clickup.com/api/v2/team/${team.id}/task?page=0&order_by=updated&subtasks=true&include_closed=true`, {
+    const tasksRes = await fetch(`https://api.clickup.com/api/v2/team/${team.id}/task?page=0&order_by=updated&subtasks=true&include_closed=true${dateUpdatedParam}`, {
       headers: { Authorization: token }
     });
     if (!tasksRes.ok) continue;
@@ -550,11 +629,14 @@ async function syncClickUp(integration: any, supabase: any) {
 }
 
 // ─── Asana Sync ───────────────────────────────────────────────────────────────
-async function syncAsana(integration: any, supabase: any) {
+async function syncAsana(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
 
-  // Get user's workspaces
+  const modifiedSinceParam = lastSynced
+    ? `&modified_since=${lastSynced.toISOString()}`
+    : '';
+
   const wsRes = await fetch('https://app.asana.com/api/1.0/workspaces', {
     headers: { Authorization: `Bearer ${token}` }
   });
@@ -562,7 +644,7 @@ async function syncAsana(integration: any, supabase: any) {
   const wsData = await wsRes.json();
 
   for (const ws of (wsData.data || []).slice(0, 2)) {
-    const tasksRes = await fetch(`https://app.asana.com/api/1.0/tasks?workspace=${ws.gid}&assignee=me&opt_fields=gid,name,notes,completed,due_on,assignee.name,projects.name,permalink_url&limit=50`, {
+    const tasksRes = await fetch(`https://app.asana.com/api/1.0/tasks?workspace=${ws.gid}&assignee=me&opt_fields=gid,name,notes,completed,due_on,assignee.name,projects.name,permalink_url,modified_at&limit=50${modifiedSinceParam}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (!tasksRes.ok) continue;
@@ -587,12 +669,16 @@ async function syncAsana(integration: any, supabase: any) {
 }
 
 // ─── Linear Sync ──────────────────────────────────────────────────────────────
-async function syncLinear(integration: any, supabase: any) {
+async function syncLinear(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
 
+  const updatedAtFilter = lastSynced
+    ? `, filter: { updatedAt: { gte: "${lastSynced.toISOString()}" } }`
+    : '';
+
   const query = `{
-    issues(first: 50, orderBy: updatedAt) {
+    issues(first: 50, orderBy: updatedAt${updatedAtFilter}) {
       nodes {
         id title description state { name } assignee { name } team { name } url priority updatedAt
       }
@@ -625,7 +711,7 @@ async function syncLinear(integration: any, supabase: any) {
 }
 
 // ─── Trello Sync ──────────────────────────────────────────────────────────────
-async function syncTrello(integration: any, supabase: any) {
+async function syncTrello(integration: any, supabase: any, _lastSynced: Date | null) {
   const token = integration.access_token;
   const apiKey = integration.metadata?.api_key || Deno.env.get('TRELLO_API_KEY');
   if (!apiKey) throw new Error('Trello API key not configured.');
@@ -653,7 +739,7 @@ async function syncTrello(integration: any, supabase: any) {
         content: card.desc?.substring(0, 2000) || '',
         url: card.url,
         tags: (card.labels || []).map((l: any) => l.name).filter(Boolean),
-        metadata: { board: board.name, due: card.due, listId: card.idList },
+        metadata: { board: board.name, due: card.due },
       }, integration);
       if (ok) imported++;
     }
@@ -662,7 +748,7 @@ async function syncTrello(integration: any, supabase: any) {
 }
 
 // ─── Dropbox Sync ─────────────────────────────────────────────────────────────
-async function syncDropbox(integration: any, supabase: any) {
+async function syncDropbox(integration: any, supabase: any, _lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
 
@@ -686,7 +772,6 @@ async function syncDropbox(integration: any, supabase: any) {
       external_id: entry.id,
       content_type: ext === 'pdf' ? 'pdf' : 'document',
       title: entry.name,
-      url: entry.preview_url || null,
       metadata: { size: entry.size, modified: entry.client_modified, path: entry.path_display },
     }, integration);
     if (ok) imported++;
@@ -695,7 +780,7 @@ async function syncDropbox(integration: any, supabase: any) {
 }
 
 // ─── Box Sync ─────────────────────────────────────────────────────────────────
-async function syncBox(integration: any, supabase: any) {
+async function syncBox(integration: any, supabase: any, _lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
 
@@ -727,14 +812,17 @@ async function syncBox(integration: any, supabase: any) {
 }
 
 // ─── Salesforce Sync ──────────────────────────────────────────────────────────
-async function syncSalesforce(integration: any, supabase: any) {
+async function syncSalesforce(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   const instanceUrl = integration.metadata?.instance_url || integration.config?.instance_url;
   if (!instanceUrl) throw new Error('Salesforce instance URL not configured.');
   let imported = 0;
 
-  // Query recent Notes and ContentNotes
-  const notesRes = await fetch(`${instanceUrl}/services/data/v57.0/query?q=SELECT+Id,Title,Body,CreatedDate,CreatedBy.Name+FROM+Note+ORDER+BY+CreatedDate+DESC+LIMIT+30`, {
+  const dateFilter = lastSynced
+    ? `WHERE CreatedDate > ${lastSynced.toISOString()}`
+    : '';
+
+  const notesRes = await fetch(`${instanceUrl}/services/data/v57.0/query?q=${encodeURIComponent(`SELECT Id,Title,Body,CreatedDate,CreatedBy.Name FROM Note ${dateFilter} ORDER BY CreatedDate DESC LIMIT 30`)}`, {
     headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
   });
   if (!notesRes.ok) throw new Error(`Salesforce API error: ${notesRes.status}`);
@@ -757,12 +845,13 @@ async function syncSalesforce(integration: any, supabase: any) {
 }
 
 // ─── HubSpot Sync ─────────────────────────────────────────────────────────────
-async function syncHubSpot(integration: any, supabase: any) {
+async function syncHubSpot(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
 
-  // Get recent notes
-  const notesRes = await fetch('https://api.hubapi.com/crm/v3/objects/notes?limit=50&properties=hs_note_body,hs_timestamp,hubspot_owner_id&sort=-hs_timestamp', {
+  const afterParam = lastSynced ? `&after=${lastSynced.getTime()}` : '';
+
+  const notesRes = await fetch(`https://api.hubapi.com/crm/v3/objects/notes?limit=50&properties=hs_note_body,hs_timestamp,hubspot_owner_id&sort=-hs_timestamp${afterParam}`, {
     headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
   });
   if (!notesRes.ok) throw new Error(`HubSpot API error: ${notesRes.status}`);
@@ -776,13 +865,12 @@ async function syncHubSpot(integration: any, supabase: any) {
       content_type: 'note',
       title: `HubSpot Note (${note.properties?.hs_timestamp?.slice(0, 10) || 'recent'})`,
       content: body.substring(0, 3000),
-      metadata: { timestamp: note.properties?.hs_timestamp, ownerId: note.properties?.hubspot_owner_id },
+      metadata: { timestamp: note.properties?.hs_timestamp },
     }, integration);
     if (ok) imported++;
   }
 
-  // Also get recent deals
-  const dealsRes = await fetch('https://api.hubapi.com/crm/v3/objects/deals?limit=30&properties=dealname,dealstage,amount,closedate&sort=-hs_lastmodifieddate', {
+  const dealsRes = await fetch(`https://api.hubapi.com/crm/v3/objects/deals?limit=30&properties=dealname,dealstage,amount,closedate&sort=-hs_lastmodifieddate${afterParam}`, {
     headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
   });
   if (dealsRes.ok) {
@@ -794,7 +882,7 @@ async function syncHubSpot(integration: any, supabase: any) {
         content_type: 'deal',
         title: `Deal: ${deal.properties?.dealname || 'Unnamed'}`,
         content: `Stage: ${deal.properties?.dealstage || 'unknown'}. Amount: ${deal.properties?.amount || 'N/A'}. Close date: ${deal.properties?.closedate || 'N/A'}.`,
-        metadata: { stage: deal.properties?.dealstage, amount: deal.properties?.amount, closedate: deal.properties?.closedate },
+        metadata: { stage: deal.properties?.dealstage, amount: deal.properties?.amount },
       }, integration);
       if (ok) imported++;
     }
@@ -802,20 +890,20 @@ async function syncHubSpot(integration: any, supabase: any) {
   return imported;
 }
 
-// ─── Google Meet Sync (via Calendar API) ─────────────────────────────────────
-async function syncGoogleMeet(integration: any, supabase: any) {
+// ─── Google Meet Sync ─────────────────────────────────────────────────────────
+async function syncGoogleMeet(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
 
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-  const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${thirtyDaysAgo}&maxResults=30&singleEvents=true&orderBy=startTime&q=meet`, {
+  const timeMin = lastSynced ? lastSynced.toISOString() : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&maxResults=30&singleEvents=true&orderBy=startTime&q=meet`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error(`Google Calendar API error: ${res.status}`);
   const data = await res.json();
 
   for (const event of (data.items || [])) {
-    if (!event.conferenceData) continue; // Only process Meet events
+    if (!event.conferenceData) continue;
     const meetLink = event.conferenceData?.entryPoints?.find((ep: any) => ep.entryPointType === 'video')?.uri;
     const attendees = (event.attendees || []).map((a: any) => a.email).join(', ');
 
@@ -827,12 +915,7 @@ async function syncGoogleMeet(integration: any, supabase: any) {
       content: [event.description, attendees ? `Attendees: ${attendees}` : ''].filter(Boolean).join('\n'),
       url: meetLink || event.htmlLink,
       author: event.organizer?.email || null,
-      metadata: {
-        start: event.start?.dateTime,
-        end: event.end?.dateTime,
-        attendeeCount: event.attendees?.length || 0,
-        status: event.status
-      },
+      metadata: { start: event.start?.dateTime, end: event.end?.dateTime, attendeeCount: event.attendees?.length || 0 },
     }, integration);
     if (ok) imported++;
   }
@@ -840,11 +923,15 @@ async function syncGoogleMeet(integration: any, supabase: any) {
 }
 
 // ─── Microsoft Outlook Sync ───────────────────────────────────────────────────
-async function syncOutlook(integration: any, supabase: any) {
+async function syncOutlook(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
 
-  const res = await fetch("https://graph.microsoft.com/v1.0/me/messages?$top=30&$select=id,subject,bodyPreview,from,receivedDateTime,importance&$filter=importance eq 'high'&$orderby=receivedDateTime desc", {
+  const filterParam = lastSynced
+    ? `&$filter=receivedDateTime ge ${lastSynced.toISOString()}`
+    : `&$filter=importance eq 'high'`;
+
+  const res = await fetch(`https://graph.microsoft.com/v1.0/me/messages?$top=30&$select=id,subject,bodyPreview,from,receivedDateTime,importance&$orderby=receivedDateTime desc${filterParam}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error(`Outlook API error: ${res.status}`);
@@ -859,6 +946,445 @@ async function syncOutlook(integration: any, supabase: any) {
       content: email.bodyPreview?.substring(0, 2000) || '',
       author: email.from?.emailAddress?.address || null,
       metadata: { receivedDateTime: email.receivedDateTime, importance: email.importance },
+    }, integration);
+    if (ok) imported++;
+  }
+  return imported;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PHASE 3: NEW CONNECTORS
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ─── Discord Sync ─────────────────────────────────────────────────────────────
+async function syncDiscord(integration: any, supabase: any, lastSynced: Date | null) {
+  const token = integration.access_token;
+  let imported = 0;
+
+  const guildsRes = await fetch('https://discord.com/api/v10/users/@me/guilds', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!guildsRes.ok) throw new Error(`Discord API error: ${guildsRes.status}`);
+  const guilds = await guildsRes.json();
+
+  for (const guild of (guilds || []).slice(0, 3)) {
+    const channelsRes = await fetch(`https://discord.com/api/v10/guilds/${guild.id}/channels`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!channelsRes.ok) continue;
+    const channels = await channelsRes.json();
+    const textChannels = (channels || []).filter((c: any) => c.type === 0).slice(0, 3);
+
+    for (const channel of textChannels) {
+      const afterParam = lastSynced ? `?after=${BigInt(lastSynced.getTime() - 1420070400000) << BigInt(22)}` : '?limit=50';
+      const msgsRes = await fetch(`https://discord.com/api/v10/channels/${channel.id}/messages${afterParam}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!msgsRes.ok) continue;
+      const messages = await msgsRes.json();
+
+      for (const msg of (messages || []).slice(0, 20)) {
+        if (!msg.content) continue;
+        const ok = await upsertKnowledge(supabase, {
+          provider: 'discord',
+          external_id: msg.id,
+          content_type: 'message',
+          title: `#${channel.name} (${guild.name})`,
+          content: msg.content.substring(0, 2000),
+          author: msg.author?.username || null,
+          metadata: { guildId: guild.id, guildName: guild.name, channelName: channel.name },
+        }, integration);
+        if (ok) imported++;
+      }
+    }
+  }
+  return imported;
+}
+
+// ─── Monday.com Sync ─────────────────────────────────────────────────────────
+async function syncMonday(integration: any, supabase: any, _lastSynced: Date | null) {
+  const token = integration.access_token;
+  let imported = 0;
+
+  const query = `{ boards(limit: 5) { id name items_page(limit: 30) { items { id name state column_values { text } } } } }`;
+  const res = await fetch('https://api.monday.com/v2', {
+    method: 'POST',
+    headers: { Authorization: token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query })
+  });
+  if (!res.ok) throw new Error(`Monday API error: ${res.status}`);
+  const data = await res.json();
+
+  for (const board of (data.data?.boards || [])) {
+    for (const item of (board.items_page?.items || [])) {
+      const details = (item.column_values || []).map((c: any) => c.text).filter(Boolean).join(' | ');
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'monday',
+        external_id: item.id,
+        content_type: 'task',
+        title: `[${board.name}] ${item.name}`,
+        content: details.substring(0, 2000),
+        tags: [item.state].filter(Boolean),
+        metadata: { board: board.name, state: item.state },
+      }, integration);
+      if (ok) imported++;
+    }
+  }
+  return imported;
+}
+
+// ─── GitLab Sync ─────────────────────────────────────────────────────────────
+async function syncGitLab(integration: any, supabase: any, lastSynced: Date | null) {
+  const token = integration.access_token;
+  let imported = 0;
+
+  const updatedParam = lastSynced ? `&updated_after=${lastSynced.toISOString()}` : '';
+
+  const projectsRes = await fetch(`https://gitlab.com/api/v4/projects?membership=true&per_page=10&order_by=last_activity_at`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!projectsRes.ok) throw new Error(`GitLab API error: ${projectsRes.status}`);
+  const projects = await projectsRes.json();
+
+  for (const project of (projects || []).slice(0, 5)) {
+    const issuesRes = await fetch(`https://gitlab.com/api/v4/projects/${project.id}/issues?per_page=20${updatedParam}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!issuesRes.ok) continue;
+    const issues = await issuesRes.json();
+
+    for (const issue of (issues || [])) {
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'gitlab',
+        external_id: String(issue.id),
+        content_type: 'issue',
+        title: `[${project.name}] ${issue.title}`,
+        content: issue.description?.substring(0, 3000) || '',
+        url: issue.web_url,
+        author: issue.author?.username || null,
+        tags: [...(issue.labels || []), issue.state].filter(Boolean),
+        metadata: { project: project.name, state: issue.state, milestone: issue.milestone?.title },
+      }, integration);
+      if (ok) imported++;
+    }
+  }
+  return imported;
+}
+
+// ─── Bitbucket Sync ───────────────────────────────────────────────────────────
+async function syncBitbucket(integration: any, supabase: any, lastSynced: Date | null) {
+  const token = integration.access_token;
+  let imported = 0;
+
+  const wsRes = await fetch('https://api.bitbucket.org/2.0/repositories?role=member&pagelen=10', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!wsRes.ok) throw new Error(`Bitbucket API error: ${wsRes.status}`);
+  const wsData = await wsRes.json();
+
+  for (const repo of (wsData.values || []).slice(0, 5)) {
+    const updatedParam = lastSynced ? `&q=updated_on>"${lastSynced.toISOString()}"` : '';
+    const issuesRes = await fetch(`https://api.bitbucket.org/2.0/repositories/${repo.full_name}/issues?pagelen=20${updatedParam}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!issuesRes.ok) continue;
+    const issuesData = await issuesRes.json();
+
+    for (const issue of (issuesData.values || [])) {
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'bitbucket',
+        external_id: String(issue.id),
+        content_type: 'issue',
+        title: `[${repo.name}] ${issue.title}`,
+        content: issue.content?.raw?.substring(0, 3000) || '',
+        url: issue.links?.html?.href || null,
+        author: issue.reporter?.nickname || null,
+        tags: [issue.state, issue.priority].filter(Boolean),
+        metadata: { repo: repo.full_name, state: issue.state, kind: issue.kind },
+      }, integration);
+      if (ok) imported++;
+    }
+  }
+  return imported;
+}
+
+// ─── Zoho CRM Sync ────────────────────────────────────────────────────────────
+async function syncZohoCRM(integration: any, supabase: any, lastSynced: Date | null) {
+  const token = integration.access_token;
+  let imported = 0;
+
+  const lastModParam = lastSynced ? `&Last_Modified_Time=${lastSynced.toISOString()}` : '';
+
+  const notesRes = await fetch(`https://www.zohoapis.com/crm/v2/Notes?sort_by=Modified_Time&sort_order=desc&per_page=50${lastModParam}`, {
+    headers: { Authorization: `Zoho-oauthtoken ${token}` }
+  });
+  if (!notesRes.ok) throw new Error(`Zoho CRM API error: ${notesRes.status}`);
+  const notesData = await notesRes.json();
+
+  for (const note of (notesData.data || [])) {
+    const ok = await upsertKnowledge(supabase, {
+      provider: 'zoho_crm',
+      external_id: note.id,
+      content_type: 'note',
+      title: note.Note_Title || `Zoho Note (${note.Modified_Time?.slice(0, 10)})`,
+      content: note.Note_Content?.substring(0, 3000) || '',
+      author: note.Created_By?.name || null,
+      metadata: { parentModule: note.Parent_Id?.$se_module, parentId: note.Parent_Id?.id },
+    }, integration);
+    if (ok) imported++;
+  }
+  return imported;
+}
+
+// ─── Zendesk Sync ─────────────────────────────────────────────────────────────
+async function syncZendesk(integration: any, supabase: any, lastSynced: Date | null) {
+  const token = integration.access_token;
+  const subdomain = integration.metadata?.subdomain;
+  if (!subdomain) throw new Error('Zendesk subdomain not configured.');
+  let imported = 0;
+
+  const updatedParam = lastSynced ? `&updated_since=${lastSynced.toISOString()}` : '';
+
+  const res = await fetch(`https://${subdomain}.zendesk.com/api/v2/tickets.json?sort_by=updated_at&sort_order=desc&per_page=50${updatedParam}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error(`Zendesk API error: ${res.status}`);
+  const data = await res.json();
+
+  for (const ticket of (data.tickets || [])) {
+    const ok = await upsertKnowledge(supabase, {
+      provider: 'zendesk',
+      external_id: String(ticket.id),
+      content_type: 'ticket',
+      title: `[#${ticket.id}] ${ticket.subject}`,
+      content: ticket.description?.substring(0, 3000) || '',
+      url: `https://${subdomain}.zendesk.com/agent/tickets/${ticket.id}`,
+      tags: ticket.tags || [],
+      metadata: { status: ticket.status, priority: ticket.priority, type: ticket.type },
+    }, integration);
+    if (ok) imported++;
+  }
+  return imported;
+}
+
+// ─── Intercom Sync ────────────────────────────────────────────────────────────
+async function syncIntercom(integration: any, supabase: any, lastSynced: Date | null) {
+  const token = integration.access_token;
+  let imported = 0;
+
+  const updatedSince = lastSynced ? Math.floor(lastSynced.getTime() / 1000) : Math.floor((Date.now() - 30 * 24 * 60 * 60 * 1000) / 1000);
+
+  const res = await fetch(`https://api.intercom.io/conversations?per_page=50&starting_after=0`, {
+    headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
+  });
+  if (!res.ok) throw new Error(`Intercom API error: ${res.status}`);
+  const data = await res.json();
+
+  for (const conv of (data.conversations || []).slice(0, 30)) {
+    if (lastSynced && conv.updated_at < updatedSince) continue;
+    const ok = await upsertKnowledge(supabase, {
+      provider: 'intercom',
+      external_id: conv.id,
+      content_type: 'conversation',
+      title: conv.title || `Conversation ${conv.id}`,
+      content: conv.conversation_message?.body?.replace(/<[^>]+>/g, '').substring(0, 3000) || '',
+      tags: [conv.state, conv.read ? 'read' : 'unread'].filter(Boolean),
+      metadata: { state: conv.state, assignee: conv.assignee?.name, contact: conv.contacts?.contacts?.[0]?.id },
+    }, integration);
+    if (ok) imported++;
+  }
+  return imported;
+}
+
+// ─── Freshdesk Sync ───────────────────────────────────────────────────────────
+async function syncFreshdesk(integration: any, supabase: any, lastSynced: Date | null) {
+  const apiKey = integration.access_token;
+  const subdomain = integration.metadata?.subdomain;
+  if (!subdomain) throw new Error('Freshdesk subdomain not configured.');
+  let imported = 0;
+
+  const auth = btoa(`${apiKey}:X`);
+  const updatedParam = lastSynced ? `&updated_since=${lastSynced.toISOString()}` : '';
+
+  const res = await fetch(`https://${subdomain}.freshdesk.com/api/v2/tickets?order_by=updated_at&order_type=desc&per_page=50${updatedParam}`, {
+    headers: { Authorization: `Basic ${auth}` }
+  });
+  if (!res.ok) throw new Error(`Freshdesk API error: ${res.status}`);
+  const tickets = await res.json();
+
+  for (const ticket of (tickets || [])) {
+    const ok = await upsertKnowledge(supabase, {
+      provider: 'freshdesk',
+      external_id: String(ticket.id),
+      content_type: 'ticket',
+      title: `[#${ticket.id}] ${ticket.subject}`,
+      content: ticket.description_text?.substring(0, 3000) || '',
+      url: `https://${subdomain}.freshdesk.com/a/tickets/${ticket.id}`,
+      tags: (ticket.tags || []).concat([ticket.status_text, ticket.priority_text]).filter(Boolean),
+      metadata: { status: ticket.status, priority: ticket.priority, type: ticket.type },
+    }, integration);
+    if (ok) imported++;
+  }
+  return imported;
+}
+
+// ─── Figma Sync ───────────────────────────────────────────────────────────────
+async function syncFigma(integration: any, supabase: any, lastSynced: Date | null) {
+  const token = integration.access_token;
+  let imported = 0;
+
+  const res = await fetch('https://api.figma.com/v1/me/files', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error(`Figma API error: ${res.status}`);
+  const data = await res.json();
+
+  for (const file of (data.files || []).slice(0, 20)) {
+    if (lastSynced && new Date(file.last_modified) <= lastSynced) continue;
+    const ok = await upsertKnowledge(supabase, {
+      provider: 'figma',
+      external_id: file.key,
+      content_type: 'design',
+      title: file.name,
+      url: `https://www.figma.com/file/${file.key}`,
+      author: file.last_modified_by?.handle || null,
+      metadata: { thumbnail: file.thumbnail_url, lastModified: file.last_modified, projectId: file.project_id },
+    }, integration);
+    if (ok) imported++;
+  }
+  return imported;
+}
+
+// ─── Miro Sync ────────────────────────────────────────────────────────────────
+async function syncMiro(integration: any, supabase: any, lastSynced: Date | null) {
+  const token = integration.access_token;
+  let imported = 0;
+
+  const res = await fetch('https://api.miro.com/v2/boards?limit=50&sort=last_modified', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error(`Miro API error: ${res.status}`);
+  const data = await res.json();
+
+  for (const board of (data.data || []).slice(0, 20)) {
+    if (lastSynced && new Date(board.modifiedAt) <= lastSynced) continue;
+    const ok = await upsertKnowledge(supabase, {
+      provider: 'miro',
+      external_id: board.id,
+      content_type: 'whiteboard',
+      title: board.name,
+      url: board.viewLink || `https://miro.com/app/board/${board.id}/`,
+      author: board.owner?.name || null,
+      metadata: { teamId: board.team?.id, createdAt: board.createdAt, modifiedAt: board.modifiedAt },
+    }, integration);
+    if (ok) imported++;
+  }
+  return imported;
+}
+
+// ─── Google Calendar Sync ─────────────────────────────────────────────────────
+async function syncGoogleCalendar(integration: any, supabase: any, lastSynced: Date | null) {
+  const token = integration.access_token;
+  let imported = 0;
+
+  const timeMin = lastSynced ? lastSynced.toISOString() : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const timeMax = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+  const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&timeMax=${timeMax}&maxResults=50&singleEvents=true&orderBy=startTime`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error(`Google Calendar API error: ${res.status}`);
+  const data = await res.json();
+
+  for (const event of (data.items || [])) {
+    const attendees = (event.attendees || []).map((a: any) => a.email).join(', ');
+    const ok = await upsertKnowledge(supabase, {
+      provider: 'google_calendar',
+      external_id: event.id,
+      content_type: 'calendar_event',
+      title: event.summary || '(No Title)',
+      content: [event.description, attendees ? `Attendees: ${attendees}` : '', event.location ? `Location: ${event.location}` : ''].filter(Boolean).join('\n'),
+      url: event.htmlLink,
+      author: event.organizer?.email || null,
+      metadata: { start: event.start?.dateTime || event.start?.date, end: event.end?.dateTime || event.end?.date, attendeeCount: event.attendees?.length || 0, recurrence: !!event.recurrence },
+    }, integration);
+    if (ok) imported++;
+  }
+  return imported;
+}
+
+// ─── SharePoint Sync ──────────────────────────────────────────────────────────
+async function syncSharePoint(integration: any, supabase: any, lastSynced: Date | null) {
+  const token = integration.access_token;
+  let imported = 0;
+
+  const filterParam = lastSynced
+    ? `&$filter=lastModifiedDateTime ge '${lastSynced.toISOString()}'`
+    : '';
+
+  // Get all sites the user has access to
+  const sitesRes = await fetch(`https://graph.microsoft.com/v1.0/sites?search=*&$top=5`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!sitesRes.ok) throw new Error(`SharePoint API error: ${sitesRes.status}`);
+  const sitesData = await sitesRes.json();
+
+  for (const site of (sitesData.value || []).slice(0, 3)) {
+    const docsRes = await fetch(`https://graph.microsoft.com/v1.0/sites/${site.id}/drive/root/children?$top=30&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy${filterParam}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!docsRes.ok) continue;
+    const docsData = await docsRes.json();
+
+    for (const item of (docsData.value || [])) {
+      if (!item.file) continue;
+      const ext = item.name?.split('.').pop()?.toLowerCase();
+      const SUPPORTED_EXT = ['docx', 'xlsx', 'pptx', 'pdf', 'txt', 'md'];
+      if (!SUPPORTED_EXT.includes(ext)) continue;
+
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'sharepoint',
+        external_id: item.id,
+        content_type: ext === 'pdf' ? 'pdf' : ext === 'xlsx' ? 'spreadsheet' : 'document',
+        title: `[${site.displayName}] ${item.name}`,
+        url: item.webUrl,
+        author: item.createdBy?.user?.displayName || null,
+        metadata: { siteId: site.id, siteName: site.displayName, lastModified: item.lastModifiedDateTime },
+      }, integration);
+      if (ok) imported++;
+    }
+  }
+  return imported;
+}
+
+// ─── Guru Sync ────────────────────────────────────────────────────────────────
+async function syncGuru(integration: any, supabase: any, lastSynced: Date | null) {
+  const token = integration.access_token;
+  const username = integration.metadata?.username || integration.metadata?.email;
+  if (!username) throw new Error('Guru username not configured.');
+  let imported = 0;
+
+  const auth = btoa(`${username}:${token}`);
+  const updatedParam = lastSynced ? `?dateUpdated=${lastSynced.toISOString()}` : '';
+
+  const res = await fetch(`https://api.getguru.com/api/v1/cards${updatedParam}`, {
+    headers: { Authorization: `Basic ${auth}`, 'Accept': 'application/json' }
+  });
+  if (!res.ok) throw new Error(`Guru API error: ${res.status}`);
+  const cards = await res.json();
+
+  for (const card of (cards || []).slice(0, 50)) {
+    const textContent = card.content?.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() || '';
+    const ok = await upsertKnowledge(supabase, {
+      provider: 'guru',
+      external_id: card.id,
+      content_type: 'knowledge_card',
+      title: card.preferredPhrase || card.title,
+      content: textContent.substring(0, 5000),
+      url: `https://app.getguru.com/card/${card.id}`,
+      author: card.owner?.user?.email || null,
+      tags: (card.tags || []).map((t: any) => t.value).filter(Boolean),
+      metadata: { collection: card.collection?.name, boardsCount: card.boards?.length },
     }, integration);
     if (ok) imported++;
   }
