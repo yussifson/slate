@@ -6,7 +6,7 @@ import { useToast } from '@/components/ui/use-toast';
 import {
   CheckCircle2, XCircle, RefreshCw, Plug, Unplug, ExternalLink,
   Loader2, Clock, FileText, MessageSquare, Video, Github,
-  AlertCircle, Zap, Search, Filter, ArrowLeft, BarChart2
+  AlertCircle, Zap, Search, Filter, ArrowLeft, BarChart2, ChevronDown
 } from 'lucide-react';
 import IntegrationAnalytics from './IntegrationAnalytics';
 
@@ -91,6 +91,22 @@ export default function IntegrationsHub() {
       toast({ title: 'Error', description: 'Could not disconnect.', variant: 'destructive' });
     } finally {
       setDisconnecting(prev => ({ ...prev, [integration.id]: false }));
+    }
+  };
+
+  const handleUpdateSyncFrequency = async (connId, newFrequency) => {
+    try {
+      const { error } = await supabase
+        .from('clipad_integrations')
+        .update({ sync_frequency: newFrequency })
+        .eq('id', connId);
+      
+      if (error) throw error;
+      
+      toast({ title: 'Success', description: `Auto-sync updated to ${newFrequency}.` });
+      await loadConnected();
+    } catch (e) {
+      toast({ title: 'Error', description: 'Failed to update auto-sync.', variant: 'destructive' });
     }
   };
 
@@ -379,13 +395,30 @@ export default function IntegrationsHub() {
                             {isSyncing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
                             {isSyncing ? 'Syncing...' : 'Sync Now'}
                           </button>
+                          
+                          <div className="relative">
+                            <select
+                              value={conn.sync_frequency || 'Manual'}
+                              onChange={(e) => handleUpdateSyncFrequency(conn.id, e.target.value)}
+                              className="appearance-none bg-secondary/50 hover:bg-secondary text-muted-foreground text-xs font-medium px-3 py-1.5 pr-7 rounded-xl transition-colors border border-transparent hover:border-border cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20"
+                            >
+                              <option value="Manual">Manual</option>
+                              <option value="15 Minutes">Every 15m</option>
+                              <option value="Hourly">Hourly</option>
+                              <option value="Daily">Daily</option>
+                              <option value="Weekly">Weekly</option>
+                            </select>
+                            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground pointer-events-none" />
+                          </div>
+
                           <button
                             onClick={() => handleDisconnect(integration)}
                             disabled={isDisconnecting}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 text-xs font-semibold transition-colors disabled:opacity-50 ml-auto"
+                            title="Disconnect"
                           >
                             {isDisconnecting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Unplug className="w-3.5 h-3.5" />}
-                            Disconnect
+                            <span className="hidden sm:inline">Disconnect</span>
                           </button>
                         </>
                       ) : (
