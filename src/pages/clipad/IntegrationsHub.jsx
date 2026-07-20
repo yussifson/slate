@@ -653,7 +653,7 @@ export default function IntegrationsHub() {
             try {
               const { error } = await supabase
                 .from('clipad_integrations')
-                .update({ metadata: { ...(configModal.conn.metadata || {}), ...updates } })
+                .update({ settings: { ...(configModal.conn.settings || {}), ...updates } })
                 .eq('id', configModal.conn.id);
               if (error) throw error;
               toast({ title: '✅ Settings saved', description: 'Import configuration updated.' });
@@ -765,7 +765,7 @@ function ApiKeyModal({ integration, provider, onSave, onClose }) {
 
 // ─── Per-Integration Config Modal ─────────────────────────────────────────────
 function IntegrationConfigModal({ integration, conn, onSave, onClose }) {
-  const meta = conn?.metadata || {};
+  const meta = conn?.settings || {};
   const [importLimit, setImportLimit] = useState(meta.import_limit || 100);
   const [includeFilter, setIncludeFilter] = useState(meta.include_filter || '');
   const [excludeFilter, setExcludeFilter] = useState(meta.exclude_filter || '');

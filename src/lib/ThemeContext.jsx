@@ -86,14 +86,17 @@ export const ThemeProvider = ({ children }) => {
       isUpdatingRef.current = true;
       localStorage.setItem('theme_synced_user_id', user.id);
       try {
-        const { error } = await supabase.auth.updateUser({
-          data: { theme: newTheme }
-        });
-        if (error) {
-          console.error('Failed to persist theme preference on server:', error);
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionData?.session) {
+          const { error } = await supabase.auth.updateUser({
+            data: { theme: newTheme }
+          });
+          if (error && error.name !== 'AuthSessionMissingError') {
+            console.error('Failed to persist theme preference on server:', error);
+          }
         }
       } catch (err) {
-        console.error('Error persisting theme:', err);
+        // Suppress expected auth errors for non-critical theme updates
       } finally {
         isUpdatingRef.current = false;
       }
