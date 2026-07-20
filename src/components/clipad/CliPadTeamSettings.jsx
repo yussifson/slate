@@ -147,20 +147,27 @@ export default function CliPadTeamSettings() {
         }
       }
 
-      // Generate a complex temp password, since they'll log in via email link anyway
-      const tempPassword = Math.random().toString(36).slice(-10) + 'A1!';
-      
-      const { user: newUser, error } = await registerSchoolUser(
-        inviteEmail, 
-        tempPassword, 
-        inviteRole, 
-        user.company_id, 
-        inviteName,
-        false
-      );
-      
-      if (error && error.message !== 'already registered in this firm') {
-        throw error;
+      let newUser = null;
+      let tempPassword = '';
+
+      // If it's NOT an exact match (brand new user), create the user
+      if (!aliasData || !aliasData.exactMatch) {
+        // Generate a complex temp password, since they'll log in via email link anyway
+        tempPassword = Math.random().toString(36).slice(-10) + 'A1!';
+        
+        const { user: createdUser, error } = await registerSchoolUser(
+          inviteEmail, 
+          tempPassword, 
+          inviteRole, 
+          user.company_id, 
+          inviteName,
+          false
+        );
+        
+        if (error && error.message !== 'already registered in this firm') {
+          throw error;
+        }
+        newUser = createdUser;
       }
       
       // Explicitly insert into staff_records so their name immediately appears in the UI
@@ -177,7 +184,7 @@ export default function CliPadTeamSettings() {
         console.error("Failed to insert into staff_records:", staffErr);
       }
       
-      // Explicitly update the profile to heal any missing data from DB triggers
+      // Explicitly update the profile to heal any missing data from DB triggers (only if we created a new user)
       if (newUser && newUser.id) {
         await supabase.from('profiles').update({
           full_name: inviteName.trim(),
@@ -185,24 +192,37 @@ export default function CliPadTeamSettings() {
         }).eq('id', newUser.id);
       }
       
-      // Send a proper invitation email with the temporary password
+      // Send a proper invitation email
       const accountsUrl = getAccountsUrl();
       const currentOrigin = window.location.origin;
       const loginUrl = `${accountsUrl}/login?continue=${encodeURIComponent(currentOrigin)}&prompt=login`;
       
-      const emailHtml = `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2>You've been invited to CliPad!</h2>
-          <p>Hi ${inviteName},</p>
-          <p>You have been invited to join the team on CliPad.</p>
-          <p>You can log in using your email address and the following temporary password:</p>
-          <div style="background-color: #f4f4f5; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 18px; margin: 16px 0; letter-spacing: 1px;">
-            <strong>${tempPassword}</strong>
+      let emailHtml = '';
+      if (!aliasData || !aliasData.exactMatch) {
+        emailHtml = `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2>You've been invited to CliPad!</h2>
+            <p>Hi ${inviteName},</p>
+            <p>You have been invited to join the team on CliPad.</p>
+            <p>You can log in using your email address and the following temporary password:</p>
+            <div style="background-color: #f4f4f5; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 18px; margin: 16px 0; letter-spacing: 1px;">
+              <strong>${tempPassword}</strong>
+            </div>
+            <p>Please log in and change your password immediately in your account settings.</p>
+            <a href="${loginUrl}" style="display: inline-block; background-color: #10b981; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 16px;">Log In to CliPad</a>
           </div>
-          <p>Please log in and change your password immediately in your account settings.</p>
-          <a href="${loginUrl}" style="display: inline-block; background-color: #10b981; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 16px;">Log In to CliPad</a>
-        </div>
-      `;
+        `;
+      } else {
+        emailHtml = `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2>You've been added to a new workspace on CliPad!</h2>
+            <p>Hi ${inviteName},</p>
+            <p>Good news! You have been invited to join a new workspace on CliPad.</p>
+            <p>Since you already have an account with us, simply log in using your existing email and password to access your new workspace.</p>
+            <a href="${loginUrl}" style="display: inline-block; background-color: #10b981; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 16px;">Log In to CliPad</a>
+          </div>
+        `;
+      }
 
       const { error: sendError } = await supabase.functions.invoke('send-email', {
         body: {
