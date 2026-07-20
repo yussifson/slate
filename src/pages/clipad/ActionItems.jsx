@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -7,7 +8,7 @@ import { useToast } from '@/components/ui/use-toast';
 import {
   CheckSquare, AlertCircle, RefreshCw, ExternalLink, Search,
   Send, Filter, Calendar, Users, Zap, ChevronDown, Loader2,
-  Github, Trello, ClipboardList, Slack, CheckCircle2, Circle, Clock
+  Github, Trello, ClipboardList, Slack, CheckCircle2, Circle, Clock, ArrowLeft
 } from 'lucide-react';
 import { INTEGRATIONS } from '@/config/integrationsList';
 
@@ -26,6 +27,7 @@ const STATUS_OPTIONS = ['todo', 'in_progress', 'done'];
 export default function ActionItems() {
   const { user } = useAuth();
   const companyId = useCompanyId();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -165,6 +167,9 @@ export default function ActionItems() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-3 mb-2">
+                <button onClick={() => navigate('/integrations')} className="w-8 h-8 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors shrink-0">
+                  <ArrowLeft className="w-4 h-4 text-muted-foreground" />
+                </button>
                 <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
                   <CheckSquare className="w-5 h-5 text-emerald-500" />
                 </div>

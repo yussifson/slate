@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -17,7 +18,7 @@ import {
 import '@xyflow/react/dist/style.css';
 import {
   Network, RefreshCw, Loader2, Filter, AlertCircle, ZoomIn, ZoomOut,
-  Layers, GitBranch, Search, X, Info, ExternalLink
+  Layers, GitBranch, Search, X, Info, ExternalLink, ArrowLeft
 } from 'lucide-react';
 import { INTEGRATIONS } from '@/config/integrationsList';
 
@@ -126,6 +127,7 @@ function layoutNodes(nodes) {
 export default function KnowledgeGraph() {
   const { user } = useAuth();
   const companyId = useCompanyId();
+  const navigate = useNavigate();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [loading, setLoading] = useState(true);
@@ -225,6 +227,9 @@ export default function KnowledgeGraph() {
       <div className="relative border-b border-border bg-gradient-to-r from-violet-500/5 via-background to-indigo-500/5 px-6 py-6 shrink-0">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
+            <button onClick={() => navigate('/integrations')} className="w-8 h-8 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors shrink-0">
+              <ArrowLeft className="w-4 h-4 text-muted-foreground" />
+            </button>
             <div className="w-10 h-10 rounded-2xl bg-violet-500/10 flex items-center justify-center">
               <Network className="w-5 h-5 text-violet-500" />
             </div>

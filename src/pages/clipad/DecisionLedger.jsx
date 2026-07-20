@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { format } from 'date-fns';
 import {
   Scale, AlertCircle, FileText, Calendar, CheckCircle2, Search,
-  Target, Users, ChevronDown, RefreshCw, Sparkles
+  Target, Users, ChevronDown, RefreshCw, Sparkles, ArrowLeft
 } from 'lucide-react';
 import { INTEGRATIONS } from '@/config/integrationsList';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
@@ -13,6 +14,7 @@ import { OrbitLoader } from '@/components/ui/orbit-loader';
 export default function DecisionLedger() {
   const { user } = useAuth();
   const companyId = useCompanyId();
+  const navigate = useNavigate();
   const [decisions, setDecisions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -95,6 +97,9 @@ export default function DecisionLedger() {
         <div className="max-w-5xl mx-auto relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 mb-2">
+              <button onClick={() => navigate('/integrations')} className="w-8 h-8 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors shrink-0">
+                <ArrowLeft className="w-4 h-4 text-muted-foreground" />
+              </button>
               <div className="w-10 h-10 rounded-2xl bg-amber-500/10 flex items-center justify-center">
                 <Scale className="w-5 h-5 text-amber-500" />
               </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -6,7 +7,7 @@ import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   GitBranch, ChevronRight, Calendar, Search, RefreshCw,
-  Loader2, AlertCircle, Users, ExternalLink, Sparkles, Zap
+  Loader2, AlertCircle, Users, ExternalLink, Sparkles, Zap, ArrowLeft
 } from 'lucide-react';
 import { INTEGRATIONS } from '@/config/integrationsList';
 
@@ -35,6 +36,7 @@ const getColor = (provider) =>
 export default function KnowledgeJourney() {
   const { user } = useAuth();
   const companyId = useCompanyId();
+  const navigate = useNavigate();
   const [journeys, setJourneys] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedJourney, setSelectedJourney] = useState(null);
@@ -149,6 +151,9 @@ export default function KnowledgeJourney() {
         <div className="max-w-5xl mx-auto relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 mb-2">
+              <button onClick={() => navigate('/integrations')} className="w-8 h-8 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors shrink-0">
+                <ArrowLeft className="w-4 h-4 text-muted-foreground" />
+              </button>
               <div className="w-10 h-10 rounded-2xl bg-blue-500/10 flex items-center justify-center">
                 <GitBranch className="w-5 h-5 text-blue-500" />
               </div>

@@ -5,7 +5,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { format } from 'date-fns';
 import { 
   History, Clock, FileText, FileCode, CheckCircle, Database, GitMerge, Search, 
-  ExternalLink, ChevronRight, Zap, RefreshCw, Box
+  ExternalLink, ChevronRight, Zap, RefreshCw, Box, ArrowLeft
 } from 'lucide-react';
 import { INTEGRATIONS } from '@/config/integrationsList';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
@@ -70,6 +70,9 @@ export default function KnowledgeTimeline() {
         <div className="max-w-5xl mx-auto relative z-10 flex items-start justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
+              <button onClick={() => navigate('/integrations')} className="w-8 h-8 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors shrink-0">
+                <ArrowLeft className="w-4 h-4 text-muted-foreground" />
+              </button>
               <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 flex items-center justify-center">
                 <History className="w-5 h-5 text-indigo-500" />
               </div>
