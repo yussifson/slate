@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { Sparkles, Settings, Shield, LogOut, MessageSquare, Search, Plus, User, Plug, Network, ChevronDown } from 'lucide-react';
+import { Sparkles, Settings, Shield, LogOut, MessageSquare, Search, Plus, User, Plug, Network, ChevronDown, Layout, Video, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
@@ -36,10 +36,10 @@ export default function ClipadTopNav({ forceMobile = false }) {
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
   const navItems = [
-    { label: 'Spaces', path: '/spaces' },
-    { label: 'Recordings', path: '/videos' },
-    { label: 'Meetings', path: '/meetings' },
-    { label: 'Chat', path: '/chat' }
+    { label: 'Spaces', path: '/spaces', icon: Layout },
+    { label: 'Recordings', path: '/videos', icon: Video },
+    { label: 'Meetings', path: '/meetings', icon: Calendar },
+    { label: 'Chat', path: '/chat', icon: MessageSquare }
   ];
 
   const knowledgeItems = [
@@ -56,7 +56,7 @@ export default function ClipadTopNav({ forceMobile = false }) {
   };
 
   return (
-    <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-2 md:px-4 lg:px-6 h-14 md:h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5 overflow-hidden gap-1 md:gap-3">
+    <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-2 md:px-4 lg:px-6 h-14 md:h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5 gap-1 md:gap-3">
       <div className="flex items-center gap-2 lg:gap-3 cursor-pointer shrink-0" onClick={() => navigate('/dashboard')}>
         <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center border border-slate-200 dark:border-border shadow-sm text-primary">
           <CliPadLogo size={20} className="md:w-[22px] md:h-[22px]" />
@@ -73,12 +73,14 @@ export default function ClipadTopNav({ forceMobile = false }) {
         {/* Nav links — desktop only */}
         {navItems.map(item => {
           const isActive = location.pathname.startsWith(item.path);
+          const Icon = item.icon;
           return (
             <button 
               key={item.path}
               onClick={() => navigate(item.path)} 
-              className={cn(`px-1.5 lg:px-2 xl:px-3 py-1.5 lg:py-2 text-xs xl:text-sm font-medium rounded-lg transition-colors shrink-0`, forceMobile ? "hidden" : "hidden lg:block", isActive ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white')}
+              className={cn(`flex items-center gap-1.5 px-1.5 lg:px-2 xl:px-3 py-1.5 lg:py-2 text-xs xl:text-sm font-medium rounded-lg transition-colors shrink-0`, forceMobile ? "hidden" : "hidden lg:flex", isActive ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white')}
             >
+              {Icon && <Icon className="w-3.5 h-3.5" />}
               {item.label}
             </button>
           );
