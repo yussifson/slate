@@ -304,7 +304,7 @@ export default function SpaceDashboard() {
   const confirmJoinMeeting = async () => {
     setShowPrivacyModal(false);
     try {
-      const payload = { instant: true, max_participants: getLimit(user, 'maxParticipants'), privacy: privacyType };
+      const payload = { instant: true, max_participants: getLimit(user, 'maxParticipants'), privacy: privacyType, companyId: user?.company_id || user?.user_metadata?.company_id };
       if (privacyType === 'public') {
         payload.roomName = generateShortId();
       }

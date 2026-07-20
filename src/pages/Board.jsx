@@ -101,7 +101,7 @@ export default function Board() {
  
   // Call our Supabase Edge function to create a Daily room securely
   const { data: dailyData, error: functionError} = await supabase.functions.invoke('create-daily-room', {
-  body: { dbId, roomName: shortId }
+  body: { dbId, roomName: shortId, companyId }
 });
  
  if (functionError) {

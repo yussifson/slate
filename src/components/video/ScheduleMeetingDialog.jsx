@@ -103,7 +103,7 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
       const shortId = generateShortId();
       
       const { data: dailyData, error: functionError } = await supabase.functions.invoke('create-daily-room', {
-        body: { dbId, roomName: shortId, privacy: isPrivate ? 'private' : 'public' }
+        body: { dbId, roomName: shortId, privacy: isPrivate ? 'private' : 'public', companyId }
       });
 
       if (functionError) throw new Error(functionError.message || 'Failed to create Daily room via edge function');

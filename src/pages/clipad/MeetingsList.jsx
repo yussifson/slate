@@ -90,7 +90,7 @@ export default function MeetingsList() {
   const handleSpaceSelect = async (spaceId, privacyType) => {
     setIsCreating(true);
     try {
-      const payload = { instant: true, max_participants: getLimit(user, 'maxParticipants'), privacy: privacyType };
+      const payload = { instant: true, max_participants: getLimit(user, 'maxParticipants'), privacy: privacyType, companyId: user?.company_id || user?.user_metadata?.company_id };
       if (privacyType === 'public') {
         payload.roomName = generateShortId();
       }
@@ -112,7 +112,7 @@ export default function MeetingsList() {
   const startInstantMeeting_OLD = async () => {
     setIsCreating(true);
     try {
-      const { data } = await supabase.functions.invoke('create-daily-room', { body: { instant: true, max_participants: getLimit(user, 'maxParticipants') } });
+      const { data } = await supabase.functions.invoke('create-daily-room', { body: { instant: true, max_participants: getLimit(user, 'maxParticipants'), companyId: user?.company_id || user?.user_metadata?.company_id } });
       if (data?.name) navigate(`/join/${data.name}`);
       else navigate(`/join/${Math.random().toString(36).substring(2, 10)}`);
     } catch {

@@ -328,7 +328,7 @@ export default function MeetLandingPage() {
       const shortId = generateShortId();
       
       const { data, error } = await supabase.functions.invoke('create-daily-room', {
-        body: { dbId, roomName: shortId, privacy: 'public' },
+        body: { dbId, roomName: shortId, privacy: 'public', companyId },
       });
       if (error) throw error;
 

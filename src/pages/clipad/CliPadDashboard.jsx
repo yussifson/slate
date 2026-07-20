@@ -284,7 +284,7 @@ export default function CliPadDashboard() {
   const handleSpaceSelect = async (spaceId, privacyType) => {
     setIsCreatingMeeting(true);
     try {
-      const payload = { instant: true, max_participants: getLimit(user, 'maxParticipants'), privacy: privacyType };
+      const payload = { instant: true, max_participants: getLimit(user, 'maxParticipants'), privacy: privacyType, companyId: user?.company_id || user?.user_metadata?.company_id };
       if (privacyType === 'public') {
         payload.roomName = generateShortId();
       }
@@ -306,7 +306,7 @@ export default function CliPadDashboard() {
   const startInstantMeeting_OLD = async () => {
     setIsCreatingMeeting(true);
     try {
-      const { data, error } = await supabase.functions.invoke('create-daily-room', { body: { instant: true, max_participants: getLimit(user, 'maxParticipants') } });
+      const { data, error } = await supabase.functions.invoke('create-daily-room', { body: { instant: true, max_participants: getLimit(user, 'maxParticipants'), companyId: user?.company_id || user?.user_metadata?.company_id } });
       if (error || !data?.name) throw error || new Error('Failed');
       navigate(`/join/${data.name}`);
     } catch {
