@@ -114,7 +114,7 @@ export default function OrgTimeline({ workspaceId, spaceId }) {
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : events.length === 0 ? (
-        <div className="text-center py-16 px-4 bg-slate-50 dark:bg-secondary/30 rounded-3xl border border-slate-200 dark:border-border/50">
+        <div className="text-center py-10 md:py-16 px-4 bg-slate-50 dark:bg-secondary/30 rounded-2xl md:rounded-3xl border border-slate-200 dark:border-border/50">
           <Clock className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No Events Found</h3>
           <p className="text-sm text-slate-500 dark:text-muted-foreground max-w-sm mx-auto">
@@ -138,7 +138,7 @@ export default function OrgTimeline({ workspaceId, spaceId }) {
                     </div>
                   </div>
                   
-                  <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] ml-auto md:ml-0 p-5 rounded-2xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm hover:shadow-md hover:border-primary/30 transition-all cursor-pointer" onClick={() => handleNavigate(event)}>
+                  <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] ml-auto md:ml-0 p-4 md:p-5 rounded-2xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm hover:shadow-md hover:border-primary/30 transition-all cursor-pointer" onClick={() => handleNavigate(event)}>
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-3">
                       <div>
                         <span className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-2 ${colorClass}`}>

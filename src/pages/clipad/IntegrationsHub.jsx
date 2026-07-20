@@ -725,11 +725,11 @@ function ApiKeyModal({ integration, provider, onSave, onClose }) {
 // ─── Per-Integration Config Modal ─────────────────────────────────────────────
 function IntegrationConfigModal({ integration, conn, onSave, onClose }) {
   const meta = conn?.metadata || {};
-  const [importLimit, setImportLimit] = React.useState(meta.import_limit || 100);
-  const [includeFilter, setIncludeFilter] = React.useState(meta.include_filter || '');
-  const [excludeFilter, setExcludeFilter] = React.useState(meta.exclude_filter || '');
-  const [syncAttachments, setSyncAttachments] = React.useState(meta.sync_attachments ?? true);
-  const [saving, setSaving] = React.useState(false);
+  const [importLimit, setImportLimit] = useState(meta.import_limit || 100);
+  const [includeFilter, setIncludeFilter] = useState(meta.include_filter || '');
+  const [excludeFilter, setExcludeFilter] = useState(meta.exclude_filter || '');
+  const [syncAttachments, setSyncAttachments] = useState(meta.sync_attachments ?? true);
+  const [saving, setSaving] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

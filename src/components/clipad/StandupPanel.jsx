@@ -37,8 +37,7 @@ function StandupCard({ update, isCurrentUser }) {
   const mood = MOOD_OPTIONS.find(m => m.value === update.mood) || MOOD_OPTIONS[2];
   const [expanded, setExpanded] = useState(false);
 
-  return (
-    <div className={`rounded-2xl border p-4 transition-all ${isCurrentUser ? 'border-primary/30 bg-primary/5' : 'border-slate-200 dark:border-border bg-white dark:bg-card'}`}>
+    <div className={`rounded-xl md:rounded-2xl border-x-0 md:border-x border-y p-3 md:p-4 transition-all ${isCurrentUser ? 'border-primary/30 bg-primary/5' : 'border-slate-200 dark:border-border bg-white dark:bg-card'}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
@@ -338,7 +337,7 @@ export default function StandupPanel({ spaceId }) {
   const todayLabel = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
   return (
-    <div className="space-y-4 p-1">
+    <div className="space-y-3 md:space-y-4 p-0 md:p-1">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="w-full sm:w-auto overflow-hidden">
@@ -376,7 +375,7 @@ export default function StandupPanel({ spaceId }) {
 
       {/* Advanced Filter Range */}
       {filterMode === 'advanced' && (
-        <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-card rounded-xl border border-border mt-2">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-slate-50 dark:bg-card rounded-xl md:rounded-2xl border border-border mt-2">
           <div className="flex items-center gap-2">
             <label className="text-xs font-semibold text-muted-foreground">From:</label>
             <input type="date" value={customStartDate} onChange={e => setCustomStartDate(e.target.value)} className="bg-white dark:bg-secondary border border-slate-200 dark:border-border rounded-lg px-2 py-1 text-xs text-foreground focus:outline-none focus:border-primary" />
@@ -391,7 +390,7 @@ export default function StandupPanel({ spaceId }) {
 
       {/* Post Form */}
       {showForm && !todayUpdate && (
-        <div className="rounded-2xl border border-primary/30 bg-primary/5 p-5 space-y-4">
+        <div className="rounded-xl md:rounded-2xl border-x-0 md:border-x border-y border-primary/30 bg-primary/5 p-4 md:p-5 space-y-4">
           <h3 className="font-bold text-foreground text-sm">Your Standup Update</h3>
 
           <div>
@@ -591,7 +590,7 @@ export default function StandupPanel({ spaceId }) {
       <div id="standup-report-container" className="space-y-4">
         {/* AI Summary */}
         {(isAdmin(user) || isSpaceman(user)) && updates.length >= 2 && (
-          <div className="rounded-2xl border border-indigo-200 dark:border-indigo-500/20 bg-indigo-50 dark:bg-indigo-500/10 p-4">
+          <div className="rounded-xl md:rounded-2xl border-x-0 md:border-x border-y border-indigo-200 dark:border-indigo-500/20 bg-indigo-50 dark:bg-indigo-500/10 p-3 md:p-4">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-bold text-indigo-700 dark:text-indigo-400 flex items-center gap-2">
                 <Sparkles className="w-4 h-4" /> AI Team Summary

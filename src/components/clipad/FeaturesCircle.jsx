@@ -65,8 +65,7 @@ export default function FeaturesCircle() {
     return () => clearInterval(timer);
   }, []);
 
-  return (
-    <div className="relative w-full max-w-5xl mx-auto py-20 flex flex-col md:flex-row items-center justify-center gap-12 lg:gap-24 overflow-hidden">
+    <div className="relative w-full max-w-5xl mx-auto py-10 md:py-20 flex flex-col md:flex-row items-center justify-center gap-12 lg:gap-24 overflow-hidden">
       
       {/* Circle Container */}
       <div className="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] shrink-0">
@@ -132,9 +131,9 @@ export default function FeaturesCircle() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className={`relative p-8 rounded-3xl ${pillars[activeIndex].bg} border border-white/60 dark:border-border/50 shadow-2xl shadow-slate-200/50 dark:shadow-none backdrop-blur-xl`}
+            className={`relative p-6 md:p-8 rounded-2xl md:rounded-3xl ${pillars[activeIndex].bg} border border-white/60 dark:border-border/50 shadow-2xl shadow-slate-200/50 dark:shadow-none backdrop-blur-xl`}
           >
-            <div className={`absolute -inset-1 opacity-20 blur-xl z-0 bg-gradient-to-br ${pillars[activeIndex].color} rounded-3xl pointer-events-none transition-colors duration-500`} />
+            <div className={`absolute -inset-1 opacity-20 blur-xl z-0 bg-gradient-to-br ${pillars[activeIndex].color} rounded-2xl md:rounded-3xl pointer-events-none transition-colors duration-500`} />
             
             <div className="relative z-10">
               <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${pillars[activeIndex].color} ${pillars[activeIndex].glow} flex items-center justify-center mb-6 shadow-lg shadow-black/10 border border-white/20`}>
