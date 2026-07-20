@@ -34,22 +34,40 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Knowledge item not found' }), { status: 404, headers: corsHeaders });
     }
 
-    const textToProcess = [item.title, item.content].filter(Boolean).join('\n\n').substring(0, 4000);
-    if (!textToProcess.trim()) {
-      return new Response(JSON.stringify({ skipped: true, reason: 'No content to process' }), { headers: corsHeaders });
+    // Build rich text to process — handle all content types
+    const contentParts = [];
+    if (item.title) contentParts.push(`Title: ${item.title}`);
+    if (item.content) contentParts.push(`Content:\n${item.content}`);
+    
+    // For items without content body, build from metadata
+    if (!item.content && item.metadata) {
+      const meta = typeof item.metadata === 'string' ? JSON.parse(item.metadata) : item.metadata;
+      if (meta?.channel_name) contentParts.push(`Channel: #${meta.channel_name}`);
+      if (meta?.repo) contentParts.push(`Repository: ${meta.repo}`);
+      if (meta?.state) contentParts.push(`State: ${meta.state}`);
+      if (meta?.duration) contentParts.push(`Duration: ${meta.duration} minutes`);
+      if (meta?.start_time) contentParts.push(`Date: ${meta.start_time}`);
+      if (meta?.participants) contentParts.push(`Participants: ${meta.participants}`);
     }
+    
+    if (item.author) contentParts.push(`Author: ${item.author}`);
+    if (item.tags?.length) contentParts.push(`Tags: ${item.tags.join(', ')}`);
+    
+    const textToProcess = contentParts.join('\n\n').substring(0, 4000);
 
-    let aiSummary = null;
-    let aiActionItems = null;
-    let aiEntities = null;
+    // Always generate at least a basic summary — never skip
+    let aiSummary: string | null = null;
+    let aiActionItems: string[] | null = null;
+    let aiEntities: Record<string, any> | null = null;
+    let aiKeywords: string[] | null = null;
 
-    // Use Cloudflare AI if available
-    if (cloudflareAccountId && cloudflareApiToken) {
+    if (cloudflareAccountId && cloudflareApiToken && textToProcess.trim().length > 20) {
       try {
-        const prompt = `You are an organizational knowledge assistant. Analyze the following content from ${provider} and return ONLY valid JSON with these keys:
-- "summary": a concise 2-3 sentence summary
-- "action_items": array of strings (actionable tasks found, max 5)
-- "entities": object with "people" (names mentioned), "projects" (project names), "dates" (dates/deadlines mentioned)
+        const prompt = `You are an organizational knowledge assistant. Analyze this ${provider} ${item.content_type || 'item'} and return ONLY valid JSON with these exact keys:
+- "summary": concise 2-3 sentence summary of what this content is about
+- "action_items": array of strings (actionable tasks found, max 5, or empty array)
+- "entities": object with "people" (names mentioned), "projects" (project/product names), "dates" (important dates mentioned)  
+- "keywords": array of 5-8 key topic words from the content
 
 Content:
 ${textToProcess}`;
@@ -59,37 +77,58 @@ ${textToProcess}`;
           {
             method: 'POST',
             headers: { Authorization: `Bearer ${cloudflareApiToken}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], max_tokens: 800 })
+            body: JSON.stringify({
+              messages: [
+                { role: 'system', content: 'You are a data extraction AI. Always respond with ONLY valid JSON, no markdown, no code fences.' },
+                { role: 'user', content: prompt }
+              ],
+              max_tokens: 600
+            })
           }
         );
 
         if (cfRes.ok) {
           const cfData = await cfRes.json();
           let raw = cfData.result?.response || '';
-          // Strip markdown code blocks if present
           raw = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-          const parsed = JSON.parse(raw);
-          aiSummary = parsed.summary || null;
-          aiActionItems = parsed.action_items || null;
-          aiEntities = parsed.entities || null;
+          // Handle if wrapped in outer JSON
+          if (raw.startsWith('{')) {
+            const parsed = JSON.parse(raw);
+            aiSummary = parsed.summary || null;
+            aiActionItems = Array.isArray(parsed.action_items) ? parsed.action_items : null;
+            aiEntities = parsed.entities || null;
+            aiKeywords = Array.isArray(parsed.keywords) ? parsed.keywords : null;
+          }
         }
       } catch (e) {
         console.warn('AI processing failed:', e.message);
-        // Fallback: generate a basic summary from first 200 chars
-        aiSummary = textToProcess.substring(0, 200) + '...';
       }
-    } else {
-      // No AI credentials — create a basic auto-summary from content
-      aiSummary = textToProcess.substring(0, 300) + (textToProcess.length > 300 ? '...' : '');
+    }
+
+    // Always ensure a summary exists — fallback to content excerpt
+    if (!aiSummary) {
+      if (item.content && item.content.length > 50) {
+        aiSummary = item.content.substring(0, 300) + (item.content.length > 300 ? '...' : '');
+      } else if (item.title) {
+        aiSummary = `${item.content_type || 'Item'} from ${provider}: "${item.title}"`;
+        if (item.author) aiSummary += ` by ${item.author}`;
+      }
     }
 
     // Save AI results
-    const { error: updateErr } = await supabase.from('clipad_imported_knowledge').update({
+    const updatePayload: Record<string, any> = {
       ai_summary: aiSummary,
-      ai_action_items: aiActionItems,
-      ai_entities: aiEntities,
       updated_at: new Date().toISOString(),
-    }).eq('integration_id', integrationId).eq('external_id', externalId);
+    };
+    if (aiActionItems) updatePayload.ai_action_items = aiActionItems;
+    if (aiEntities) updatePayload.ai_entities = aiEntities;
+    if (aiKeywords) updatePayload.tags = aiKeywords;
+
+    const { error: updateErr } = await supabase
+      .from('clipad_imported_knowledge')
+      .update(updatePayload)
+      .eq('integration_id', integrationId)
+      .eq('external_id', externalId);
 
     if (updateErr) throw updateErr;
 
@@ -103,7 +142,6 @@ ${textToProcess}`;
         source: `integration_${provider}`,
         company_id: item.company_id,
       }));
-
       await supabase.from('clipad_action_items').insert(actionItemRows).select();
     }
 

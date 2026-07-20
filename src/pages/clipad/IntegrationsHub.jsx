@@ -358,12 +358,35 @@ export default function IntegrationsHub() {
         .update({ sync_error: null })
         .eq('id', conn.id);
 
-      const { error } = await supabase.functions.invoke('integration-sync', {
+      const { data: syncResult, error } = await supabase.functions.invoke('integration-sync', {
         body: { integrationId: conn.id, provider: integration.id }
       });
       if (error) throw error;
-      toast({ title: '🔄 Sync started', description: `Syncing ${integration.name}.` });
-      setTimeout(() => { loadConnected(); loadKnowledge(); }, 3000);
+
+      const imported = syncResult?.imported || 0;
+      toast({ title: `✅ ${integration.name} synced`, description: `${imported} item${imported !== 1 ? 's' : ''} imported. AI is now processing the content...` });
+
+      // Trigger AI reprocessing for any items missing ai_summary
+      setTimeout(async () => {
+        try {
+          const { data: unprocessed } = await supabase
+            .from('clipad_imported_knowledge')
+            .select('id, external_id')
+            .eq('integration_id', conn.id)
+            .is('ai_summary', null)
+            .limit(20);
+
+          if (unprocessed?.length > 0) {
+            for (const item of unprocessed) {
+              supabase.functions.invoke('integration-ai-processor', {
+                body: { integrationId: conn.id, provider: integration.id, externalId: item.external_id }
+              }).catch(() => {});
+            }
+          }
+        } catch { /* ignore */ }
+        loadConnected();
+        loadKnowledge();
+      }, 3000);
     } catch (e) {
       toast({ title: 'Sync failed', description: e.message || 'Could not sync.', variant: 'destructive' });
     } finally {

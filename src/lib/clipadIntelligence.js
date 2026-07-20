@@ -500,6 +500,7 @@ export async function buildOrgContext(options = {}) {
     blockers,
     videos,
     tasks,
+    importedKnowledge,
     commitments,
     spaces,
     standups,

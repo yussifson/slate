@@ -1,15 +1,16 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Bot, Send, Sparkles, X, Brain, Loader2, ExternalLink, Calendar, Video, ShieldAlert, AlertTriangle, RefreshCw, ChevronDown, Plus } from 'lucide-react';
+import { Bot, Send, Sparkles, X, Brain, Loader2, ExternalLink, Calendar, Video, ShieldAlert, AlertTriangle, RefreshCw, ChevronDown, Plus, Link } from 'lucide-react';
 import { buildOrgContext } from '@/lib/clipadIntelligence';
 import { generateText } from '@/lib/cloudflareAI';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 
 const SOURCE_META = {
-  meeting:  { icon: Calendar,      color: 'text-blue-500',   bg: 'bg-blue-500/10'   },
-  decision: { icon: ShieldAlert,   color: 'text-rose-500',   bg: 'bg-rose-500/10'   },
-  video:    { icon: Video,         color: 'text-purple-500', bg: 'bg-purple-500/10' },
-  blocker:  { icon: AlertTriangle, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+  meeting:     { icon: Calendar,      color: 'text-blue-500',   bg: 'bg-blue-500/10'   },
+  decision:    { icon: ShieldAlert,   color: 'text-rose-500',   bg: 'bg-rose-500/10'   },
+  video:       { icon: Video,         color: 'text-purple-500', bg: 'bg-purple-500/10' },
+  blocker:     { icon: AlertTriangle, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+  integration: { icon: Link,          color: 'text-sky-500',    bg: 'bg-sky-500/10'    },
 };
 
 const STARTER_QUESTIONS = [
@@ -48,7 +49,9 @@ export default function ClipadOrbitAssistant({ isOpen = true, onClose, spaceId =
   const loadContext = async () => {
     setIsLoadingContext(true);
     try {
-      const ctx = await buildOrgContext({ limit: 15 });
+      // Pass companyId so imported integration knowledge is included
+      const companyId = user?.company_id || user?.user_metadata?.company_id || null;
+      const ctx = await buildOrgContext({ limit: 20, companyId, spaceId: spaceId || undefined });
       setOrgContext(ctx);
     } catch (err) {
       console.error('[Orbit] Failed to load org context:', err);
@@ -89,18 +92,24 @@ export default function ClipadOrbitAssistant({ isOpen = true, onClose, spaceId =
         content: m.text,
       }));
 
-      const systemPrompt = `You are Orbit, the organizational intelligence assistant for ClipPad. You have access to real-time workspace data. Answer questions concisely and accurately. Always cite your sources by including at the end: SOURCES:[{"id":"<source_id>","type":"<type>"},...] for the relevant items you used. If you cannot find the answer in the data, say so honestly. Never invent meetings, decisions, or facts.
+      const companyId = user?.company_id || user?.user_metadata?.company_id;
+      const systemPrompt = `You are Orbit, the AI organizational intelligence assistant for CliPad. You have FULL real-time access to the workspace data below — including meetings, decisions, videos, blockers, tasks, commitments, standup updates, AND content imported from external tools like Google Drive, Slack, GitHub, Zoom, Notion, and more.
+
+KEY RULES:
+- Answer using ONLY the data provided. Never invent facts, names, dates, or events.
+- When asked about documents, files, or external data, check the "CONNECTED KNOWLEDGE PLATFORMS" section carefully.
+- When answering, cite your sources using SOURCES:[{"id":"<id>","type":"<type>"},...] at the very end.
+- If data doesn't exist, say "I don't see any [X] in the workspace yet."
 
 AGENTIC CAPABILITIES:
-You can proactively execute actions on behalf of the user by outputting a JSON block starting with ACTION: followed by a JSON object. 
+You can execute actions by outputting a JSON block starting with ACTION: followed by JSON.
 Available actions:
 1. create_task: {"action": "create_task", "title": "...", "assignee": "..."}
 2. send_message: {"action": "send_message", "recipient": "...", "message": "..."}
-
-If you decide to take an action, output the ACTION: block at the very end of your response (before SOURCES).
+Output ACTION: at the very end of your response (before SOURCES).
 
 CURRENT WORKSPACE KNOWLEDGE:
-${orgContext?.contextText || 'No workspace data loaded yet. Ask the user to refresh.'}`;
+${orgContext?.contextText || 'Workspace data is still loading. Click the refresh button to reload.'}`;
 
       const allMessages = [
         { role: 'system', content: systemPrompt },
@@ -244,9 +253,10 @@ ${orgContext?.contextText || 'No workspace data loaded yet. Ask the user to refr
 
       {/* Context Status */}
       {orgContext && (
-        <div className="flex items-center justify-center gap-2 px-4 py-1.5 bg-slate-50 dark:bg-white/[0.02] border-b border-slate-100 dark:border-white/5 text-[10px] text-slate-500 dark:text-slate-400 font-medium shrink-0">
+        <div className="flex items-center justify-center gap-2 px-4 py-1.5 bg-slate-50 dark:bg-white/[0.02] border-b border-slate-100 dark:border-white/5 text-[10px] text-slate-500 dark:text-slate-400 font-medium shrink-0 flex-wrap">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           {orgContext.meetings.length} meetings · {orgContext.decisions.length} decisions · {orgContext.blockers.length} blockers · {orgContext.tasks.length} tasks
+          {orgContext.importedKnowledge?.length > 0 && <span>· <span className="text-sky-500 font-semibold">{orgContext.importedKnowledge.length} integrations</span></span>}
         </div>
       )}
 

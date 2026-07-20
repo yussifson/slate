@@ -26,6 +26,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
         supabase
           .from('clipad_meeting_records')
           .select('id, title, ai_summary, created_at, ended_at, host_id')
+          .eq('company_id', workspaceId)
           .order('created_at', { ascending: false })
           .limit(20),
         supabase
@@ -41,18 +42,22 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
         supabase
           .from('clipad_videos')
           .select('id, title, ai_summary, created_at')
+          .eq('company_id', workspaceId)
           .order('created_at', { ascending: false })
           .limit(10),
         supabase
           .from('clipad_action_items')
           .select('id, title, is_complete, created_at')
+          .eq('company_id', workspaceId)
           .order('created_at', { ascending: false })
           .limit(15),
+        // Include full content so AI can answer questions about document contents
         supabase
           .from('clipad_imported_knowledge')
-          .select('id, title, ai_summary, provider, imported_at, url')
+          .select('id, title, content, ai_summary, provider, content_type, imported_at, url, ai_entities')
+          .eq('company_id', workspaceId)
           .order('imported_at', { ascending: false })
-          .limit(15),
+          .limit(30),
       ]);
 
       // 2. Build a rich context document from real data
@@ -108,15 +113,26 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
       }
 
       if (imported.length > 0) {
-        contextParts.push('\n=== EXTERNAL KNOWLEDGE (INTEGRATIONS) ===');
+        contextParts.push('\n=== EXTERNAL KNOWLEDGE FROM INTEGRATIONS ===');
+        contextParts.push(`(${imported.length} items imported from connected tools)`);
         imported.forEach(i => {
-          contextParts.push(`Imported Data [ID: I-${i.id}] from ${i.provider}: "${i.title}"`);
-          if (i.ai_summary) contextParts.push(`  Summary: ${i.ai_summary}`);
+          contextParts.push(`\n[${i.provider?.toUpperCase()} - ${i.content_type || 'file'}] "${i.title}" (ID: I-${i.id})`);
+          if (i.ai_summary) contextParts.push(`  AI Summary: ${i.ai_summary}`);
+          // Include actual document content so AI can answer questions about what is IN the file
+          if (i.content && !i.ai_summary) contextParts.push(`  Content: ${i.content.substring(0, 1500)}`);
+          if (i.ai_entities) {
+            try {
+              const ent = typeof i.ai_entities === 'string' ? JSON.parse(i.ai_entities) : i.ai_entities;
+              if (ent?.people?.length) contextParts.push(`  People mentioned: ${ent.people.join(', ')}`);
+              if (ent?.projects?.length) contextParts.push(`  Projects: ${ent.projects.join(', ')}`);
+            } catch { /* ignore */ }
+          }
+          if (i.url) contextParts.push(`  Link: ${i.url}`);
         });
       }
 
       if (contextParts.length === 0) {
-        setResponse("No organizational data has been recorded yet. Start by running meetings, recording decisions, or logging blockers — the Knowledge Graph will build from your team's real activity.");
+        setResponse('No organizational data has been recorded yet. Start by running meetings, recording decisions, or connecting integrations. The Knowledge Graph will build from your team\'s real activity.');
         setLoading(false);
         return;
       }
@@ -127,7 +143,15 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
       const aiResponse = await generateText([
         {
           role: 'system',
-          content: `You are an Enterprise Knowledge Graph AI assistant. Your job is to answer questions about an organization based ONLY on the real data provided below. Do NOT make up facts, names, dates, or events that aren't in the data. If the data doesn't contain the answer, say "I don't have enough recorded data to answer that yet — as your team adds more meetings, decisions, and recordings, the Knowledge Graph will grow richer."\n\nWhen you use data to answer, ALWAYS append a JSON array of the Source IDs you used on a new line at the very end of your response, formatted exactly like this: \nSOURCES: ["M-uuid", "D-uuid"]\n\nORGANIZATIONAL KNOWLEDGE BASE:\n${knowledgeContext}`
+          content: `You are an Enterprise Knowledge Graph AI assistant with access to this organization's FULL knowledge base — including internal meetings, decisions, blockers, action items, AND documents/files imported from external integrations (Google Drive, Slack, GitHub, Zoom, Notion, etc.).
+
+Answer questions based ONLY on the real data provided. Do NOT make up facts. If the data doesn't contain the answer, say "I don't have enough recorded data to answer that yet."
+
+When you use data, ALWAYS append source IDs at the very end:
+SOURCES: ["M-uuid", "D-uuid", "I-uuid"]
+
+ORGANIZATIONAL KNOWLEDGE BASE:
+${knowledgeContext}`
         },
         {
           role: 'user',
