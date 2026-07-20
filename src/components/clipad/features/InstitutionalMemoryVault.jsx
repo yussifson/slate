@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
-import { Database, Search, Bot, Lock, ArrowRight, Loader2, AlertCircle, Link } from 'lucide-react';
+import { Database, Search, Bot, Lock, ArrowRight, Loader2, AlertCircle, Link, Sparkles } from 'lucide-react';
 import { generateText } from '@/lib/cloudflareAI';
 import { useNavigate } from 'react-router-dom';
 
