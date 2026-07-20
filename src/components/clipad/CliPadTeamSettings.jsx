@@ -133,6 +133,20 @@ export default function CliPadTeamSettings() {
     
     setInviting(true);
     try {
+      const emailInput = inviteEmail.trim().toLowerCase();
+
+      // Check for alias collisions using our new RPC
+      const { data: aliasData, error: aliasError } = await supabase.rpc('check_invite_alias_collision', {
+        input_email: emailInput
+      });
+
+      if (!aliasError && aliasData) {
+        // If it's an alias collision but NOT an exact match, block it.
+        if (aliasData.aliasCollision && !aliasData.exactMatch) {
+          throw new Error('This email appears to be an alias of an existing account. Please invite the user using their original registered email without dots/modifiers.');
+        }
+      }
+
       // Generate a complex temp password, since they'll log in via email link anyway
       const tempPassword = Math.random().toString(36).slice(-10) + 'A1!';
       
