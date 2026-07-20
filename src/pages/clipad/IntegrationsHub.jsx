@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
@@ -475,18 +476,24 @@ export default function IntegrationsHub() {
                                 <Clock className="w-4 h-4" />
                               </button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="center" className="w-40 font-sans z-[100]">
-                              <DropdownMenuLabel className="text-xs text-muted-foreground font-semibold px-2 py-1.5 uppercase tracking-wider">Sync Frequency</DropdownMenuLabel>
-                              <DropdownMenuSeparator />
-                              {['Manual', '15 Minutes', 'Hourly', 'Daily', 'Weekly'].map(freq => (
-                                <DropdownMenuItem
-                                  key={freq}
-                                  onClick={() => handleUpdateSyncFrequency(conn.id, freq)}
-                                  className={`cursor-pointer py-2 text-sm ${conn.sync_frequency === freq ? 'bg-primary/10 text-primary font-semibold' : ''}`}
-                                >
-                                  {freq === '15 Minutes' ? 'Every 15m' : freq}
-                                </DropdownMenuItem>
-                              ))}
+                            <DropdownMenuContent align="center" className="w-48 font-sans z-[100] p-2 rounded-2xl border border-border shadow-xl bg-card">
+                              <DropdownMenuLabel className="text-[11px] text-muted-foreground font-bold px-3 py-2 uppercase tracking-widest text-center">Sync Frequency</DropdownMenuLabel>
+                              <DropdownMenuSeparator className="bg-border my-1" />
+                              {['Manual', '15 Minutes', 'Hourly', 'Daily', 'Weekly'].map(freq => {
+                                const isSelected = conn.sync_frequency === freq;
+                                return (
+                                  <DropdownMenuItem
+                                    key={freq}
+                                    onClick={() => handleUpdateSyncFrequency(conn.id, freq)}
+                                    className={`cursor-pointer px-4 py-2.5 my-0.5 rounded-xl text-sm font-medium transition-all ${isSelected ? 'bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20' : 'text-foreground hover:bg-secondary hover:translate-x-1'}`}
+                                  >
+                                    <div className="flex items-center w-full justify-between">
+                                      <span>{freq === '15 Minutes' ? 'Every 15m' : freq}</span>
+                                      {isSelected && <CheckCircle2 className="w-4 h-4 text-primary" />}
+                                    </div>
+                                  </DropdownMenuItem>
+                                );
+                              })}
                             </DropdownMenuContent>
                           </DropdownMenu>
 
@@ -672,9 +679,9 @@ function ApiKeyModal({ integration, provider, onSave, onClose }) {
     setSaving(false);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-white dark:bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="bg-white dark:bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200 relative">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center">
             <Key className="w-5 h-5 text-indigo-500" />
@@ -718,7 +725,8 @@ function ApiKeyModal({ integration, provider, onSave, onClose }) {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -743,9 +751,9 @@ function IntegrationConfigModal({ integration, conn, onSave, onClose }) {
     setSaving(false);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-white dark:bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="bg-white dark:bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200 relative">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-xl">
             {integration?.icon || <Sliders className="w-5 h-5 text-blue-500" />}
@@ -825,6 +833,7 @@ function IntegrationConfigModal({ integration, conn, onSave, onClose }) {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

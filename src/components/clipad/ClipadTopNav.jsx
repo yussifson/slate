@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { Sparkles, Settings, Shield, LogOut, MessageSquare, Search, Plus, User, Plug, Network, ChevronDown, Layout, Video, Calendar } from 'lucide-react';
+import { Sparkles, Settings, Shield, LogOut, MessageSquare, Search, Plus, User, Plug, Network, ChevronDown, Layout, Video, Calendar, BarChart2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
@@ -115,9 +115,15 @@ export default function ClipadTopNav({ forceMobile = false }) {
         {isAdmin(user) && (
             <>
               {user?.clipad_plan === 'enterprise' ? (
-                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/enterprise' : '/clipad/enterprise')} className={cn(`px-1.5 lg:px-2 xl:px-3 py-1.5 lg:py-2 text-xs xl:text-sm font-medium rounded-lg transition-colors shrink-0`, forceMobile ? "hidden" : "hidden lg:block", location.pathname.includes('/enterprise') ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white')}>Enterprise</button>
+                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/enterprise' : '/clipad/enterprise')} className={cn(`flex items-center gap-1.5 px-1.5 lg:px-2 xl:px-3 py-1.5 lg:py-2 text-xs xl:text-sm font-medium rounded-lg transition-colors shrink-0`, forceMobile ? "hidden" : "hidden lg:flex", location.pathname.includes('/enterprise') ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white')}>
+                  <Shield className="w-3.5 h-3.5" />
+                  Enterprise
+                </button>
               ) : (
-                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/analytics' : '/clipad/analytics')} className={cn(`px-1.5 lg:px-2 xl:px-3 py-1.5 lg:py-2 text-xs xl:text-sm font-medium rounded-lg transition-colors shrink-0`, forceMobile ? "hidden" : "hidden lg:block", location.pathname.includes('/analytics') ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white')}>Analytics</button>
+                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/analytics' : '/clipad/analytics')} className={cn(`flex items-center gap-1.5 px-1.5 lg:px-2 xl:px-3 py-1.5 lg:py-2 text-xs xl:text-sm font-medium rounded-lg transition-colors shrink-0`, forceMobile ? "hidden" : "hidden lg:flex", location.pathname.includes('/analytics') ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white')}>
+                  <BarChart2 className="w-3.5 h-3.5" />
+                  Analytics
+                </button>
               )}
             </>
         )}
