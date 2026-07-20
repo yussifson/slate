@@ -766,14 +766,31 @@ export const AuthProvider = ({ children }) => {
       setIsLoadingAuth(true);
       const accounts = getSavedAccounts();
       const targetAccount = accounts.find(a => a.id === targetAccountId);
+      
       if (targetAccount && targetAccount.access_token) {
-        const { error } = await supabase.auth.setSession({
+        // Instead of calling setSession which hits the network and fails if the token was rotated elsewhere,
+        // we manually overwrite the local storage token and reload the app so Supabase initializes with it.
+        const sessionVal = {
           access_token: targetAccount.access_token,
-          refresh_token: targetAccount.refresh_token
-        });
-        if (error) throw error;
-        // The onAuthStateChange listener in AuthContext will automatically trigger
-        // checkUserAuth, which will set the new user state across the app seamlessly.
+          refresh_token: targetAccount.refresh_token,
+          user: {
+            id: targetAccount.id,
+            email: targetAccount.email,
+            user_metadata: {
+              full_name: targetAccount.full_name,
+              avatar_url: targetAccount.avatar_url
+            }
+          }
+        };
+
+        const projectId = import.meta.env.VITE_SUPABASE_URL.split('//')[1].split('.')[0];
+        localStorage.setItem(`sb-${projectId}-auth-token`, JSON.stringify(sessionVal));
+        
+        // Remove the cached profile so it's forced to re-fetch the new account's profile
+        localStorage.removeItem('slate_cached_user');
+        
+        // Reload to let the app initialize with the newly swapped account
+        window.location.reload();
       } else {
         throw new Error("No tokens found for account");
       }
