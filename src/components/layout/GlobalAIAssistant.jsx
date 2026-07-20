@@ -606,10 +606,19 @@ EXACT VERIFIED ROUTE MAP — ALWAYS USE THESE EXACT PATHS FOR navigate_to. NEVER
 /videos → Videos / Recordings
 /record → Record Video
 /health → Knowledge Health
+/timeline → Knowledge Timeline (chronological feed of all synced knowledge)
+/decisions → Decision Ledger (AI-detected decisions from meetings, docs, messages)
+/integrations → Integrations Hub (connect external apps)
+/integration-analytics → Integration Analytics
 /settings → Settings
 /support → Support
 /chat → Chat
 
+CITATION RULES (MANDATORY when using INTEGRATION KNOWLEDGE BASE):
+- When answering from the 🔗 INTEGRATION KNOWLEDGE BASE section, you MUST cite the source.
+- Format citations inline like: [Source: {Provider} – "{Title}"]
+- If a URL is available in the source data, format it as a markdown link: [View Source]({url})
+- Always cite, never omit the source when referencing integrated data.
 
 AGENT POWERS (return EXACTLY this JSON format inline to act):
 - Search: <AGENT_ACTION>{"tool":"search_records","recordType":"patient|case|client|student|staff","query":"John"}</AGENT_ACTION>

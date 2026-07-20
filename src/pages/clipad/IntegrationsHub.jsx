@@ -208,20 +208,45 @@ export default function IntegrationsHub() {
 
   if (!isSuperAdmin(user)) {
     return (
-      <div className="min-h-full bg-background flex flex-col items-center justify-center p-10 page-enter">
-        <div className="bg-card border border-border rounded-2xl p-10 flex flex-col items-center text-center gap-4 max-w-lg shadow-sm">
-          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
-            <Plug className="w-8 h-8 text-primary/40" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-foreground mb-2">Integrations are restricted</h2>
-            <p className="text-muted-foreground text-sm mt-3">
-              Currently, only Super Admins can connect workspace integrations. We are testing this feature to ensure data security before rolling it out.
+      <div className="min-h-full bg-background text-foreground pb-16 page-enter" style={{ fontFamily: "'Inter', sans-serif" }}>
+        {/* Hero */}
+        <div className="relative overflow-hidden border-b border-border bg-gradient-to-br from-primary/5 via-background to-background px-6 py-12">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(var(--primary-rgb),0.08),transparent_60%)] pointer-events-none" />
+          <div className="max-w-4xl mx-auto relative z-10 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 text-primary text-xs font-bold rounded-full mb-5 border border-primary/20">
+              <Zap className="w-3.5 h-3.5" /> Coming Soon to Your Workspace
+            </div>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">
+              Knowledge Integrations
+            </h1>
+            <p className="text-muted-foreground text-base max-w-xl mx-auto leading-relaxed">
+              Connect every tool your team uses — Slack, Notion, Google Drive, GitHub, Jira and more — into one unified organizational memory powered by AI.
             </p>
           </div>
-          <button onClick={() => navigate(-1)} className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
-            Go Back
-          </button>
+        </div>
+
+        {/* Preview cards */}
+        <div className="max-w-5xl mx-auto px-4 md:px-6 mt-10">
+          <h2 className="text-lg font-bold text-foreground mb-6">50+ Integrations Coming Soon</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {INTEGRATIONS.slice(0, 16).map(intg => (
+              <div key={intg.id} className="relative bg-card border border-border rounded-2xl p-5 flex flex-col items-center gap-3 text-center opacity-75 select-none overflow-hidden group">
+                <div className="absolute inset-0 bg-background/60 backdrop-blur-[1px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl z-10">
+                  <span className="text-xs font-bold text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20">Coming Soon</span>
+                </div>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-secondary text-2xl">
+                  {typeof intg.icon === 'string' ? intg.icon : <Plug className="w-6 h-6 text-muted-foreground" />}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">{intg.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{intg.category}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-sm text-muted-foreground mt-8">
+            Your workspace admin will be able to activate integrations soon. Stay tuned! 🚀
+          </p>
         </div>
       </div>
     );
