@@ -267,49 +267,59 @@ async function upsertKnowledge(supabase: any, item: Record<string, any>, integra
 async function syncGoogleDrive(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const modifiedQuery = lastSynced
     ? `&q=trashed=false and modifiedTime>'${lastSynced.toISOString()}'`
     : `&q=trashed=false`;
 
-  const res = await fetch(
-    `https://www.googleapis.com/drive/v3/files?pageSize=50&fields=files(id,name,mimeType,webViewLink,modifiedTime,owners)${modifiedQuery}`,
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
-  if (!res.ok) throw new Error(`Google Drive API error: ${res.status}`);
-  const data = await res.json();
+  let pageToken = '';
 
-  const SUPPORTED_TYPES: Record<string, string> = {
-    'application/vnd.google-apps.document': 'document',
-    'application/vnd.google-apps.spreadsheet': 'spreadsheet',
-    'application/vnd.google-apps.presentation': 'presentation',
-    'application/pdf': 'pdf',
-  };
+  do {
+    const pageParam = pageToken ? `&pageToken=${pageToken}` : '';
+    const res = await fetch(
+      `https://www.googleapis.com/drive/v3/files?pageSize=50&fields=nextPageToken,files(id,name,mimeType,webViewLink,modifiedTime,owners)${modifiedQuery}${pageParam}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (!res.ok) throw new Error(`Google Drive API error: ${res.status}`);
+    const data = await res.json();
 
-  for (const file of (data.files || [])) {
-    const contentType = SUPPORTED_TYPES[file.mimeType];
-    if (!contentType) continue;
+    const SUPPORTED_TYPES: Record<string, string> = {
+      'application/vnd.google-apps.document': 'document',
+      'application/vnd.google-apps.spreadsheet': 'spreadsheet',
+      'application/vnd.google-apps.presentation': 'presentation',
+      'application/pdf': 'pdf',
+    };
 
-    let textContent = '';
-    if (file.mimeType === 'application/vnd.google-apps.document') {
-      const exportRes = await fetch(
-        `https://www.googleapis.com/drive/v3/files/${file.id}/export?mimeType=text/plain`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      if (exportRes.ok) textContent = await exportRes.text();
+    for (const file of (data.files || [])) {
+      if (imported >= limit) break;
+      const contentType = SUPPORTED_TYPES[file.mimeType];
+      if (!contentType) continue;
+
+      let textContent = '';
+      if (file.mimeType === 'application/vnd.google-apps.document') {
+        const exportRes = await fetch(
+          `https://www.googleapis.com/drive/v3/files/${file.id}/export?mimeType=text/plain`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (exportRes.ok) textContent = await exportRes.text();
+      }
+
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'google_drive',
+        external_id: file.id,
+        content_type: contentType,
+        title: file.name,
+        content: textContent.substring(0, 10000),
+        url: file.webViewLink,
+        author: file.owners?.[0]?.displayName || null,
+      }, integration);
+      if (ok) imported++;
     }
+    
+    pageToken = data.nextPageToken;
+  } while (pageToken && imported < limit);
 
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'google_drive',
-      external_id: file.id,
-      content_type: contentType,
-      title: file.name,
-      content: textContent.substring(0, 10000),
-      url: file.webViewLink,
-      author: file.owners?.[0]?.displayName || null,
-    }, integration);
-    if (ok) imported++;
-  }
   return imported;
 }
 
@@ -467,32 +477,41 @@ async function syncGitHub(integration: any, supabase: any, lastSynced: Date | nu
 async function syncOneDrive(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const filterParam = '';
 
-  const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/root/children?$top=50&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy${filterParam}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  if (!res.ok) throw new Error(`OneDrive API error: ${res.status}`);
-  const data = await res.json();
+  let nextLink = `https://graph.microsoft.com/v1.0/me/drive/root/children?$top=50&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy${filterParam}`;
 
-  for (const item of (data.value || [])) {
-    if (!item.file) continue;
-    const ext = item.name?.split('.').pop()?.toLowerCase();
-    const SUPPORTED_EXT = ['docx', 'xlsx', 'pptx', 'pdf', 'txt', 'md'];
-    if (!SUPPORTED_EXT.includes(ext)) continue;
+  do {
+    const res = await fetch(nextLink, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error(`OneDrive API error: ${res.status}`);
+    const data = await res.json();
 
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'microsoft_onedrive',
-      external_id: item.id,
-      content_type: ext === 'pdf' ? 'pdf' : ext === 'xlsx' ? 'spreadsheet' : ext === 'pptx' ? 'presentation' : 'document',
-      title: item.name,
-      url: item.webUrl,
-      author: item.createdBy?.user?.displayName || null,
-      metadata: { lastModified: item.lastModifiedDateTime, size: item.file?.size },
-    }, integration);
-    if (ok) imported++;
-  }
+    for (const item of (data.value || [])) {
+      if (imported >= limit) break;
+      if (!item.file) continue;
+      const ext = item.name?.split('.').pop()?.toLowerCase();
+      const SUPPORTED_EXT = ['docx', 'xlsx', 'pptx', 'pdf', 'txt', 'md'];
+      if (!SUPPORTED_EXT.includes(ext)) continue;
+
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'microsoft_onedrive',
+        external_id: item.id,
+        content_type: ext === 'pdf' ? 'pdf' : ext === 'xlsx' ? 'spreadsheet' : ext === 'pptx' ? 'presentation' : 'document',
+        title: item.name,
+        url: item.webUrl,
+        author: item.createdBy?.user?.displayName || null,
+        metadata: { lastModified: item.lastModifiedDateTime, size: item.file?.size },
+      }, integration);
+      if (ok) imported++;
+    }
+    
+    nextLink = data['@odata.nextLink'] || '';
+  } while (nextLink && imported < limit);
+
   return imported;
 }
 
