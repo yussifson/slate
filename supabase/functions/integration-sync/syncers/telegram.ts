@@ -29,18 +29,7 @@ export async function syncTelegram(integration: any, supabase: any, lastSynced: 
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'telegram',
-      external_id: `telegram-${integration.id}-status`,
-      content_type: 'record',
-      title: 'Telegram Connected',
-      content: 'Telegram integration active. Webhook ready.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

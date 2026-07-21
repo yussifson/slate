@@ -34,18 +34,7 @@ export async function syncSentry(integration: any, supabase: any, lastSynced: Da
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'sentry',
-      external_id: `sentry-${integration.id}-status`,
-      content_type: 'record',
-      title: 'Sentry Connected',
-      content: 'Sentry integration active. No projects found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

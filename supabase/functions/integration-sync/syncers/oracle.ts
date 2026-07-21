@@ -36,18 +36,7 @@ export async function syncOracle(integration: any, supabase: any, lastSynced: Da
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'oracle',
-      external_id: `oracle-${integration.id}-status`,
-      content_type: 'record',
-      title: 'Oracle Connected',
-      content: 'Oracle integration active. No employee records found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

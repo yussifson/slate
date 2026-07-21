@@ -32,18 +32,7 @@ export async function syncWhatsApp(integration: any, supabase: any, lastSynced: 
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'whatsapp',
-      external_id: `wa-${integration.id}-status`,
-      content_type: 'record',
-      title: 'WhatsApp Connected',
-      content: 'WhatsApp integration active. Webhook listener ready.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

@@ -36,18 +36,7 @@ export async function syncSAP(integration: any, supabase: any, lastSynced: Date 
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'sap',
-      external_id: `sap-${integration.id}-status`,
-      content_type: 'record',
-      title: 'SAP Connected',
-      content: 'SAP integration active. No business partners found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

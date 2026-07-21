@@ -34,18 +34,7 @@ export async function syncAzure(integration: any, supabase: any, lastSynced: Dat
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'azure',
-      external_id: `azure-${integration.id}-status`,
-      content_type: 'record',
-      title: 'Azure Cloud Connected',
-      content: 'Azure integration active. No accessible subscriptions found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

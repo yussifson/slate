@@ -438,7 +438,12 @@ async function syncZoom(integration: any, supabase: any, lastSynced: Date | null
   let imported = 0;
   const limit = integration.settings?.sync_limit || 1000;
 
-  const fromParam = lastSynced ? `&from=${lastSynced.toISOString().split('T')[0]}` : '';
+  let fromDate = lastSynced;
+  if (fromDate) {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    if (fromDate < thirtyDaysAgo) fromDate = thirtyDaysAgo;
+  }
+  const fromParam = fromDate ? `&from=${fromDate.toISOString().split('T')[0]}` : '';
   let nextPageToken = '';
 
   do {
@@ -446,14 +451,7 @@ async function syncZoom(integration: any, supabase: any, lastSynced: Date | null
     const res = await fetch(`https://api.zoom.us/v2/users/me/recordings?page_size=100${fromParam}${tokenParam}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    if (!res.ok) {
-      if (res.status === 400 || res.status === 403) {
-        console.warn(`Zoom API warning: ${res.status}. Token issues or date range too large.`);
-        break;
-      } else {
-        throw new Error(`Zoom API error: ${res.status}`);
-      }
-    }
+    if (!res.ok) throw new Error(`Zoom API error: ${res.status}`);
     
     const data = await res.json();
 
@@ -479,18 +477,7 @@ async function syncZoom(integration: any, supabase: any, lastSynced: Date | null
     nextPageToken = data.next_page_token || '';
   } while (nextPageToken && imported < limit);
 
-  if (imported === 0) {
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'zoom',
-      external_id: `zoom-${integration.id}-connected`,
-      content_type: 'record',
-      title: 'Zoom Connected',
-      content: 'Zoom account connected successfully. Waiting for recent recordings.',
-      url: '',
-      author: null,
-    }, integration);
-    if (ok) imported++;
-  }
+  
 
   return imported;
 }
@@ -599,16 +586,8 @@ async function syncMSTeams(integration: any, supabase: any, lastSynced: Date | n
   const teamsRes = await fetch('https://graph.microsoft.com/v1.0/me/joinedTeams', {
     headers: { Authorization: `Bearer ${token}` }
   });
-  if (!teamsRes.ok) {
-    if (teamsRes.status === 403) {
-      console.warn("MS Teams: 403 Forbidden. User token likely missing Team.ReadBasic.All scope.");
-      // We will skip throwing so it reaches the 'imported === 0' block below
-    } else {
-      throw new Error(`Teams API error: ${teamsRes.status}`);
-    }
-  }
-
-  const teamsData = teamsRes.ok ? await teamsRes.json() : { value: [] };
+  if (!teamsRes.ok) throw new Error(`Teams API error: ${teamsRes.status}`);
+  const teamsData = await teamsRes.json();
 
   for (const team of (teamsData.value || [])) {
     if (imported >= limit) break;
@@ -1772,15 +1751,8 @@ async function syncSharePoint(integration: any, supabase: any, lastSynced: Date 
   const sitesRes = await fetch(`https://graph.microsoft.com/v1.0/sites?search=*&$top=500`, {
     headers: { Authorization: `Bearer ${token}` }
   });
-  if (!sitesRes.ok) {
-    if (sitesRes.status === 403) {
-      console.warn("SharePoint: 403 Forbidden. User token likely missing Sites.Read.All scope.");
-    } else {
-      throw new Error(`SharePoint API error: ${sitesRes.status}`);
-    }
-  }
-
-  const sitesData = sitesRes.ok ? await sitesRes.json() : { value: [] };
+  if (!sitesRes.ok) throw new Error(`SharePoint API error: ${sitesRes.status}`);
+  const sitesData = await sitesRes.json();
 
   for (const site of (sitesData.value || [])) {
     if (imported >= limit) break;
@@ -1869,18 +1841,7 @@ async function syncGoogleWorkspace(integration: any, supabase: any, lastSynced: 
     console.error('Google Workspace (Calendar) error:', e?.message || String(e));
   }
   
-  if (imported === 0) {
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'google_workspace',
-      external_id: `google_workspace-${integration.id}-connected`,
-      content_type: 'record',
-      title: 'Google Workspace Connected',
-      content: 'Workspace connected successfully. Waiting for files or calendar events.',
-      url: '',
-      author: null,
-    }, integration);
-    if (ok) imported++;
-  }
+  
   return imported;
 }
 
@@ -1911,16 +1872,8 @@ async function syncGoogleCloud(integration: any, supabase: any, lastSynced: Date
   const res = await fetch(`https://cloudresourcemanager.googleapis.com/v1/projects`, {
     headers: { Authorization: `Bearer ${token}` }
   });
-  
-  if (!res.ok) {
-    if (res.status === 403) {
-      console.warn("Google Cloud: 403 Forbidden. Token missing cloud-platform scope.");
-    } else {
-      throw new Error(`Google Cloud API error: ${res.status}`);
-    }
-  }
-  
-  const data = res.ok ? await res.json() : { projects: [] };
+  if (!res.ok) throw new Error(`Google Cloud API error: ${res.status}`);
+  const data = await res.json();
   
   for (const proj of (data.projects || [])) {
     const ok = await upsertKnowledge(supabase, {
@@ -1935,18 +1888,7 @@ async function syncGoogleCloud(integration: any, supabase: any, lastSynced: Date
     if (ok) imported++;
   }
   
-  if (imported === 0) {
-    await upsertKnowledge(supabase, { 
-      provider: 'google_cloud', 
-      external_id: `gcp-${integration.id}`, 
-      content_type: 'record', 
-      title: 'Google Cloud Connected', 
-      content: 'No accessible projects found, but API connection was successful.', 
-      url: '', 
-      author: null 
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

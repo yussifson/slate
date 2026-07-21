@@ -36,18 +36,7 @@ export async function syncBambooHR(integration: any, supabase: any, lastSynced: 
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'bamboohr',
-      external_id: `bamboohr-${integration.id}-status`,
-      content_type: 'record',
-      title: 'BambooHR Connected',
-      content: 'BambooHR integration active. No employee directory records found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

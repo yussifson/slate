@@ -31,18 +31,7 @@ export async function syncCanva(integration: any, supabase: any, lastSynced: Dat
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'canva',
-      external_id: `canva-${integration.id}-status`,
-      content_type: 'record',
-      title: 'Canva Connected',
-      content: 'Canva integration active. No designs found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

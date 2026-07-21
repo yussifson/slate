@@ -36,18 +36,7 @@ export async function syncDatadog(integration: any, supabase: any, lastSynced: D
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'datadog',
-      external_id: `datadog-${integration.id}-status`,
-      content_type: 'record',
-      title: 'Datadog Connected',
-      content: 'Datadog integration active. No monitors found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

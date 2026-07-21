@@ -31,18 +31,7 @@ export async function syncAirtable(integration: any, supabase: any, lastSynced: 
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'airtable',
-      external_id: `airtable-${integration.id}-status`,
-      content_type: 'record',
-      title: 'Airtable Connected',
-      content: 'Airtable integration active. No bases found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

@@ -32,18 +32,7 @@ export async function syncMailchimp(integration: any, supabase: any, lastSynced:
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'mailchimp',
-      external_id: `mailchimp-${integration.id}-status`,
-      content_type: 'record',
-      title: 'Mailchimp Connected',
-      content: 'Mailchimp integration active. No audiences found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

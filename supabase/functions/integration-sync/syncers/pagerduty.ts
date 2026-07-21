@@ -37,18 +37,7 @@ export async function syncPagerDuty(integration: any, supabase: any, lastSynced:
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'pagerduty',
-      external_id: `pagerduty-${integration.id}-status`,
-      content_type: 'record',
-      title: 'PagerDuty Connected',
-      content: 'PagerDuty integration active. No open incidents found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

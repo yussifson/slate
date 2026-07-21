@@ -38,18 +38,7 @@ export async function syncJenkins(integration: any, supabase: any, lastSynced: D
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'jenkins',
-      external_id: `jenkins-${integration.id}-status`,
-      content_type: 'record',
-      title: 'Jenkins Connected',
-      content: 'Jenkins integration active. No jobs found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

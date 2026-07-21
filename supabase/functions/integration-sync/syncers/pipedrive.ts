@@ -35,18 +35,7 @@ export async function syncPipedrive(integration: any, supabase: any, lastSynced:
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'pipedrive',
-      external_id: `pipedrive-${integration.id}-status`,
-      content_type: 'record',
-      title: 'Pipedrive Connected',
-      content: 'Pipedrive integration active. No open deals found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

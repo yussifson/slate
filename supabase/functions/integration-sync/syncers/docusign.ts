@@ -52,18 +52,7 @@ export async function syncDocuSign(integration: any, supabase: any, lastSynced: 
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'docusign',
-      external_id: `docusign-${integration.id}-status`,
-      content_type: 'record',
-      title: 'DocuSign Connected',
-      content: 'DocuSign integration active. Account validated.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

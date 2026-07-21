@@ -37,18 +37,7 @@ export async function syncWorkday(integration: any, supabase: any, lastSynced: D
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'workday',
-      external_id: `workday-${integration.id}-status`,
-      content_type: 'record',
-      title: 'Workday Connected',
-      content: 'Workday integration active. No worker records found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

@@ -31,18 +31,7 @@ export async function syncStripe(integration: any, supabase: any, lastSynced: Da
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'stripe',
-      external_id: `stripe-${integration.id}-status`,
-      content_type: 'record',
-      title: 'Stripe Connected',
-      content: 'Stripe integration active. No customers found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

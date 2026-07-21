@@ -44,18 +44,7 @@ export async function syncCalendly(integration: any, supabase: any, lastSynced: 
     }
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'calendly',
-      external_id: `calendly-${integration.id}-status`,
-      content_type: 'record',
-      title: 'Calendly Connected',
-      content: 'Calendly integration active. No upcoming active events found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }

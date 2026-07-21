@@ -39,18 +39,7 @@ export async function syncServiceNow(integration: any, supabase: any, lastSynced
     if (ok) imported++;
   }
 
-  if (imported === 0) {
-    await upsertKnowledge(supabase, {
-      provider: 'servicenow',
-      external_id: `servicenow-${integration.id}-status`,
-      content_type: 'record',
-      title: 'ServiceNow Connected',
-      content: 'ServiceNow integration active. No open incidents found.',
-      url: '',
-      author: null,
-    }, integration);
-    imported++;
-  }
+  
   
   return imported;
 }
