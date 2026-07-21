@@ -469,7 +469,7 @@ async function syncOneDrive(integration: any, supabase: any, lastSynced: Date | 
   let imported = 0;
 
   const filterParam = lastSynced
-    ? `&$filter=lastModifiedDateTime gt '${lastSynced.toISOString()}'`
+    ? `&$filter=lastModifiedDateTime gt ${lastSynced.toISOString()}`
     : '';
 
   const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/root/children?$top=50&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy${filterParam}`, {
@@ -1388,7 +1388,7 @@ async function syncSharePoint(integration: any, supabase: any, lastSynced: Date 
   let imported = 0;
 
   const filterParam = lastSynced
-    ? `&$filter=lastModifiedDateTime ge '${lastSynced.toISOString()}'`
+    ? `&$filter=lastModifiedDateTime ge ${lastSynced.toISOString()}`
     : '';
 
   // Get all sites the user has access to

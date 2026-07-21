@@ -39,7 +39,7 @@ serve(async (req) => {
         if (!msClientId) throw new Error("Missing MICROSOFT_CLIENT_ID")
         let scopes = 'offline_access user.read'
         if (integration_id === 'microsoft_onedrive') scopes += ' Files.Read.All'
-        if (integration_id === 'ms_teams') scopes += ' Chat.Read ChannelMessage.Read.All'
+        if (integration_id === 'ms_teams') scopes += ' Team.ReadBasic.All Chat.Read ChannelMessage.Read.All'
         if (integration_id === 'outlook') scopes += ' Mail.Read Calendars.ReadWrite'
         if (integration_id === 'sharepoint') scopes += ' Sites.Read.All Files.Read.All'
         authUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${msClientId}&response_type=code&redirect_uri=${redirectUri}&response_mode=query&scope=${encodeURIComponent(scopes)}&state=${state}`
