@@ -194,16 +194,14 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
   const cleanLogo = (url) => {
     if (!url) return url;
     let finalUrl = url.trim();
-    // Handle duplicated pasted URLs
-    if (finalUrl.startsWith('http') && finalUrl.lastIndexOf('http') > 0) {
+    if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/') && !finalUrl.startsWith('data:')) {
+      finalUrl = 'https://' + finalUrl;
+    }
+    if (finalUrl.lastIndexOf('http') > 0) {
        const secondHttp = finalUrl.lastIndexOf('http');
-       // Only truncate if we suspect it was pasted twice (e.g. query param glitch)
        if (finalUrl.substring(0, secondHttp).includes('=')) {
           finalUrl = finalUrl.substring(secondHttp);
        }
-    }
-    if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/') && !finalUrl.startsWith('data:')) {
-      finalUrl = 'https://' + finalUrl;
     }
     return finalUrl;
   };

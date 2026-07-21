@@ -1,5 +1,5 @@
 // Jenkins Syncer Module
-import { upsertKnowledge } from '../index.ts';
+import { upsertKnowledge } from '../utils.ts';
 
 export async function syncJenkins(integration: any, supabase: any, lastSynced: Date | null) {
   let imported = 0;

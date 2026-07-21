@@ -167,14 +167,14 @@ export default function Login() {
        const cleanLogo = (url) => {
          if (!url) return url;
          let finalUrl = url.trim();
-         if (finalUrl.startsWith('http') && finalUrl.lastIndexOf('http') > 0) {
+         if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/') && !finalUrl.startsWith('data:')) {
+           finalUrl = 'https://' + finalUrl;
+         }
+         if (finalUrl.lastIndexOf('http') > 0) {
             const secondHttp = finalUrl.lastIndexOf('http');
             if (finalUrl.substring(0, secondHttp).includes('=')) {
                finalUrl = finalUrl.substring(secondHttp);
             }
-         }
-         if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/') && !finalUrl.startsWith('data:')) {
-           finalUrl = 'https://' + finalUrl;
          }
          return finalUrl;
        };
@@ -217,19 +217,19 @@ export default function Login() {
          if (cached) {
            const parsed = JSON.parse(cached);
             const cleanLogo = (url) => {
-              if (!url) return url;
-              let finalUrl = url.trim();
-              if (finalUrl.startsWith('http') && finalUrl.lastIndexOf('http') > 0) {
-                 const secondHttp = finalUrl.lastIndexOf('http');
-                 if (finalUrl.substring(0, secondHttp).includes('=')) {
-                    finalUrl = finalUrl.substring(secondHttp);
-                 }
-              }
-              if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/') && !finalUrl.startsWith('data:')) {
-                finalUrl = 'https://' + finalUrl;
-              }
-              return finalUrl;
-            };
+               if (!url) return url;
+               let finalUrl = url.trim();
+               if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('/') && !finalUrl.startsWith('data:')) {
+                 finalUrl = 'https://' + finalUrl;
+               }
+               if (finalUrl.lastIndexOf('http') > 0) {
+                  const secondHttp = finalUrl.lastIndexOf('http');
+                  if (finalUrl.substring(0, secondHttp).includes('=')) {
+                     finalUrl = finalUrl.substring(secondHttp);
+                  }
+               }
+               return finalUrl;
+             };
            if (parsed.company_name || parsed.company_logo_url) {
               setBranding({
                 name: parsed.company_name || 'Your Workslate',

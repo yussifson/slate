@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
+import { upsertKnowledge } from './utils.ts'
 
 // Imports for extracted syncers
 import { syncAWS } from './syncers/aws.ts';
@@ -268,25 +269,7 @@ serve(async (req) => {
   }
 });
 
-// ── Shared helper: upsert a knowledge item and trigger AI ──────────────────────
-export async function upsertKnowledge(supabase: any, item: Record<string, any>, integration: any) {
-  const { error } = await supabase.from('clipad_imported_knowledge').upsert({
-    company_id: integration.company_id,
-    integration_id: integration.id,
-    updated_at: new Date().toISOString(),
-    ...item,
-  }, { onConflict: 'integration_id,external_id' });
-
-  if (!error) {
-    supabase.functions.invoke('integration-ai-processor', {
-      body: { integrationId: integration.id, provider: item.provider, externalId: item.external_id }
-    }).catch(() => {});
-    return true;
-  }
-  console.error('upsert error:', error.message);
-  return false;
-}
-
+// upsertKnowledge has been moved to ./utils.ts
 // ─── Google Drive Sync ────────────────────────────────────────────────────────
 async function syncGoogleDrive(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;

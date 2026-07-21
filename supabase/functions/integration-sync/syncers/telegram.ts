@@ -1,5 +1,5 @@
 // Telegram Syncer Module
-import { upsertKnowledge } from '../index.ts';
+import { upsertKnowledge } from '../utils.ts';
 
 export async function syncTelegram(integration: any, supabase: any, lastSynced: Date | null) {
   let imported = 0;

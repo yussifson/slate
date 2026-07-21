@@ -1,4 +1,4 @@
-import { upsertKnowledge } from '../index.ts';
+import { upsertKnowledge } from '../utils.ts';
 
 export async function syncGitHub(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;

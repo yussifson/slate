@@ -1,5 +1,5 @@
 // PagerDuty Syncer Module
-import { upsertKnowledge } from '../index.ts';
+import { upsertKnowledge } from '../utils.ts';
 
 export async function syncPagerDuty(integration: any, supabase: any, lastSynced: Date | null) {
   let imported = 0;

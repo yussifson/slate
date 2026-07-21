@@ -1,5 +1,5 @@
 // QuickBooks Syncer Module
-import { upsertKnowledge } from '../index.ts';
+import { upsertKnowledge } from '../utils.ts';
 
 export async function syncQuickbooks(integration: any, supabase: any, lastSynced: Date | null) {
   let imported = 0;

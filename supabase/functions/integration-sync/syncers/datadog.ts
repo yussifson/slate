@@ -1,5 +1,5 @@
 // Datadog Syncer Module
-import { upsertKnowledge } from '../index.ts';
+import { upsertKnowledge } from '../utils.ts';
 
 export async function syncDatadog(integration: any, supabase: any, lastSynced: Date | null) {
   let imported = 0;

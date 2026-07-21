@@ -1,5 +1,5 @@
 // AWS Syncer Module
-import { upsertKnowledge } from '../index.ts';
+import { upsertKnowledge } from '../utils.ts';
 
 /**
  * AWS Sync Integration

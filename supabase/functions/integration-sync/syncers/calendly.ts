@@ -1,5 +1,5 @@
 // Calendly Syncer Module
-import { upsertKnowledge } from '../index.ts';
+import { upsertKnowledge } from '../utils.ts';
 
 export async function syncCalendly(integration: any, supabase: any, lastSynced: Date | null) {
   let imported = 0;
