@@ -1,6 +1,30 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
 
+// Imports for extracted syncers
+import { syncAWS } from './syncers/aws.ts';
+import { syncAzure } from './syncers/azure.ts';
+import { syncDatadog } from './syncers/datadog.ts';
+import { syncSentry } from './syncers/sentry.ts';
+import { syncPagerDuty } from './syncers/pagerduty.ts';
+import { syncJenkins } from './syncers/jenkins.ts';
+import { syncSAP } from './syncers/sap.ts';
+import { syncOracle } from './syncers/oracle.ts';
+import { syncServiceNow } from './syncers/servicenow.ts';
+import { syncPipedrive } from './syncers/pipedrive.ts';
+import { syncWorkday } from './syncers/workday.ts';
+import { syncBambooHR } from './syncers/bamboohr.ts';
+import { syncDocuSign } from './syncers/docusign.ts';
+import { syncCalendly } from './syncers/calendly.ts';
+import { syncMailchimp } from './syncers/mailchimp.ts';
+import { syncStripe } from './syncers/stripe.ts';
+import { syncQuickbooks } from './syncers/quickbooks.ts';
+import { syncCanva } from './syncers/canva.ts';
+import { syncWhatsApp } from './syncers/whatsapp.ts';
+import { syncTelegram } from './syncers/telegram.ts';
+import { syncAirtable } from './syncers/airtable.ts';
+import { syncGitHub } from './syncers/github.ts';
+import { syncGitLab } from './syncers/gitlab.ts';
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -483,57 +507,7 @@ async function syncZoom(integration: any, supabase: any, lastSynced: Date | null
 }
 
 // ─── GitHub Sync ──────────────────────────────────────────────────────────────
-async function syncGitHub(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
-  let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
-
-  const sinceParam = lastSynced ? `&since=${lastSynced.toISOString()}` : '';
-
-  const repoRes = await fetch('https://api.github.com/user/repos?per_page=100&sort=updated', {
-    headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'CliPad-Integration' }
-  });
-  if (!repoRes.ok) throw new Error(`GitHub API error: ${repoRes.status}`);
-  const repos = await repoRes.json();
-
-  for (const repo of repos) {
-    if (imported >= limit) break;
-    let page = 1;
-    let hasMore = true;
-
-    while (hasMore && imported < limit) {
-      const issuesRes = await fetch(`https://api.github.com/repos/${repo.full_name}/issues?per_page=100&page=${page}&state=all${sinceParam}`, {
-        headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'CliPad-Integration' }
-      });
-      if (!issuesRes.ok) break;
-      const issues = await issuesRes.json();
-      
-      if (issues.length === 0) {
-        hasMore = false;
-        break;
-      }
-
-      for (const issue of issues) {
-        if (imported >= limit) break;
-        const isPR = !!issue.pull_request;
-        const ok = await upsertKnowledge(supabase, {
-          provider: 'github',
-          external_id: String(issue.id),
-          content_type: isPR ? 'pull_request' : 'issue',
-          title: `[${repo.name}] ${issue.title}`,
-          content: issue.body?.substring(0, 3000) || '',
-          url: issue.html_url,
-          author: issue.user?.login,
-          tags: issue.labels?.map((l: any) => l.name) || [],
-          metadata: { repo: repo.full_name, number: issue.number, state: issue.state },
-        }, integration);
-        if (ok) imported++;
-      }
-      page++;
-    }
-  }
-  return imported;
-}
+// syncGitHub has been moved to ./syncers/github.ts
 
 // ─── Microsoft OneDrive Sync ──────────────────────────────────────────────────
 async function syncOneDrive(integration: any, supabase: any, lastSynced: Date | null) {
@@ -1347,62 +1321,7 @@ async function syncMonday(integration: any, supabase: any, _lastSynced: Date | n
 }
 
 // ─── GitLab Sync ─────────────────────────────────────────────────────────────
-async function syncGitLab(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
-  let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
-
-  const updatedParam = lastSynced ? `&updated_after=${lastSynced.toISOString()}` : '';
-
-  let page = 1;
-  let hasMoreProjects = true;
-
-  while (hasMoreProjects && imported < limit) {
-    const projectsRes = await fetch(`https://gitlab.com/api/v4/projects?membership=true&per_page=100&page=${page}&order_by=last_activity_at`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!projectsRes.ok) throw new Error(`GitLab API error: ${projectsRes.status}`);
-    const projects = await projectsRes.json();
-    if (projects.length === 0) break;
-
-    for (const project of projects) {
-      if (imported >= limit) break;
-      
-      let issuesPage = 1;
-      let hasMoreIssues = true;
-      while (hasMoreIssues && imported < limit) {
-        const issuesRes = await fetch(`https://gitlab.com/api/v4/projects/${project.id}/issues?per_page=100&page=${issuesPage}${updatedParam}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (!issuesRes.ok) break;
-        const issues = await issuesRes.json();
-        if (issues.length === 0) {
-          hasMoreIssues = false;
-          break;
-        }
-
-        for (const issue of issues) {
-          if (imported >= limit) break;
-          const ok = await upsertKnowledge(supabase, {
-            provider: 'gitlab',
-            external_id: String(issue.id),
-            content_type: 'issue',
-            title: `[${project.name}] ${issue.title}`,
-            content: issue.description?.substring(0, 3000) || '',
-            url: issue.web_url,
-            author: issue.author?.username || null,
-            tags: [...(issue.labels || []), issue.state].filter(Boolean),
-            metadata: { project: project.name, state: issue.state, milestone: issue.milestone?.title },
-          }, integration);
-          if (ok) imported++;
-        }
-        issuesPage++;
-      }
-    }
-    page++;
-  }
-  return imported;
-}
+// syncGitLab has been moved to ./syncers/gitlab.ts
 
 // ─── Bitbucket Sync ───────────────────────────────────────────────────────────
 async function syncBitbucket(integration: any, supabase: any, lastSynced: Date | null) {
