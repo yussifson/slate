@@ -278,7 +278,7 @@ async function syncGoogleDrive(integration: any, supabase: any, lastSynced: Date
   do {
     const pageParam = pageToken ? `&pageToken=${pageToken}` : '';
     const res = await fetch(
-      `https://www.googleapis.com/drive/v3/files?pageSize=50&fields=nextPageToken,files(id,name,mimeType,webViewLink,modifiedTime,owners)${modifiedQuery}${pageParam}`,
+      `https://www.googleapis.com/drive/v3/files?pageSize=1000&fields=nextPageToken,files(id,name,mimeType,webViewLink,modifiedTime,owners)${modifiedQuery}${pageParam}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     if (!res.ok) throw new Error(`Google Drive API error: ${res.status}`);
@@ -327,6 +327,7 @@ async function syncGoogleDrive(integration: any, supabase: any, lastSynced: Date
 async function syncNotion(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const filterBody: any = { filter: { value: 'page', property: 'object' }, page_size: 50 };
   if (lastSynced) {
@@ -338,29 +339,40 @@ async function syncNotion(integration: any, supabase: any, lastSynced: Date | nu
     };
   }
 
-  const res = await fetch('https://api.notion.com/v1/search', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Notion-Version': '2022-06-28',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(filterBody)
-  });
-  if (!res.ok) throw new Error(`Notion API error: ${res.status}`);
-  const data = await res.json();
+  let nextCursor = undefined;
+  let hasMore = true;
 
-  for (const page of (data.results || [])) {
-    const title = page.properties?.title?.title?.[0]?.plain_text ||
-                  page.properties?.Name?.title?.[0]?.plain_text || 'Untitled';
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'notion',
-      external_id: page.id,
-      content_type: 'page',
-      title,
-      url: page.url,
-    }, integration);
-    if (ok) imported++;
+  while (hasMore && imported < limit) {
+    if (nextCursor) filterBody.start_cursor = nextCursor;
+
+    const res = await fetch('https://api.notion.com/v1/search', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Notion-Version': '2022-06-28',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(filterBody)
+    });
+    if (!res.ok) throw new Error(`Notion API error: ${res.status}`);
+    const data = await res.json();
+
+    for (const page of (data.results || [])) {
+      if (imported >= limit) break;
+      const title = page.properties?.title?.title?.[0]?.plain_text ||
+                    page.properties?.Name?.title?.[0]?.plain_text || 'Untitled';
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'notion',
+        external_id: page.id,
+        content_type: 'page',
+        title,
+        url: page.url,
+      }, integration);
+      if (ok) imported++;
+    }
+
+    hasMore = data.has_more;
+    nextCursor = data.next_cursor;
   }
   return imported;
 }
@@ -369,34 +381,53 @@ async function syncNotion(integration: any, supabase: any, lastSynced: Date | nu
 async function syncSlack(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
-  const chRes = await fetch('https://slack.com/api/conversations.list?limit=50&types=public_channel,private_channel', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  const chData = await chRes.json();
-  if (!chData.ok) throw new Error(chData.error);
+  let chCursor = undefined;
+  let channels = [];
+
+  do {
+    const cursorParam = chCursor ? `&cursor=${chCursor}` : '';
+    const chRes = await fetch(`https://slack.com/api/conversations.list?limit=100&types=public_channel,private_channel${cursorParam}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const chData = await chRes.json();
+    if (!chData.ok) throw new Error(chData.error);
+    
+    channels = channels.concat(chData.channels || []);
+    chCursor = chData.response_metadata?.next_cursor;
+  } while (chCursor && channels.length < 50); // limit to 50 channels to prevent abuse
 
   const oldestParam = lastSynced ? `&oldest=${Math.floor(lastSynced.getTime() / 1000)}` : '';
 
-  for (const channel of (chData.channels || []).slice(0, 10)) {
-    const msgRes = await fetch(`https://slack.com/api/conversations.history?channel=${channel.id}&limit=30${oldestParam}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const msgData = await msgRes.json();
-    if (!msgData.ok) continue;
+  for (const channel of channels) {
+    if (imported >= limit) break;
+    let msgCursor = undefined;
+    
+    do {
+      if (imported >= limit) break;
+      const msgCursorParam = msgCursor ? `&cursor=${msgCursor}` : '';
+      const msgRes = await fetch(`https://slack.com/api/conversations.history?channel=${channel.id}&limit=100${oldestParam}${msgCursorParam}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const msgData = await msgRes.json();
+      if (!msgData.ok) break;
 
-    for (const msg of (msgData.messages || [])) {
-      if (!msg.text || msg.subtype) continue;
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'slack',
-        external_id: `${channel.id}_${msg.ts}`,
-        content_type: 'message',
-        title: `#${channel.name}`,
-        content: msg.text.substring(0, 2000),
-        metadata: { channel_id: channel.id, channel_name: channel.name, ts: msg.ts },
-      }, integration);
-      if (ok) imported++;
-    }
+      for (const msg of (msgData.messages || [])) {
+        if (imported >= limit) break;
+        if (!msg.text || msg.subtype) continue;
+        const ok = await upsertKnowledge(supabase, {
+          provider: 'slack',
+          external_id: `${channel.id}_${msg.ts}`,
+          content_type: 'message',
+          title: `#${channel.name}`,
+          content: msg.text.substring(0, 2000),
+          metadata: { channel_id: channel.id, channel_name: channel.name, ts: msg.ts },
+        }, integration);
+        if (ok) imported++;
+      }
+      msgCursor = msgData.response_metadata?.next_cursor;
+    } while (msgCursor);
   }
   return imported;
 }
@@ -405,32 +436,41 @@ async function syncSlack(integration: any, supabase: any, lastSynced: Date | nul
 async function syncZoom(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const fromParam = lastSynced ? `&from=${lastSynced.toISOString().split('T')[0]}` : '';
-  const res = await fetch(`https://api.zoom.us/v2/users/me/recordings?page_size=30${fromParam}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  if (!res.ok) throw new Error(`Zoom API error: ${res.status}`);
-  const data = await res.json();
+  let nextPageToken = '';
 
-  for (const meeting of (data.meetings || [])) {
-    const transcript = meeting.recording_files?.find((f: any) => f.file_type === 'TRANSCRIPT');
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'zoom',
-      external_id: meeting.uuid,
-      content_type: 'meeting',
-      title: meeting.topic || 'Zoom Meeting',
-      url: meeting.share_url,
-      author: meeting.host_email,
-      metadata: {
-        duration: meeting.duration,
-        start_time: meeting.start_time,
-        participants: meeting.participant_count,
-        transcript_url: transcript?.download_url
-      },
-    }, integration);
-    if (ok) imported++;
-  }
+  do {
+    const tokenParam = nextPageToken ? `&next_page_token=${nextPageToken}` : '';
+    const res = await fetch(`https://api.zoom.us/v2/users/me/recordings?page_size=100${fromParam}${tokenParam}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error(`Zoom API error: ${res.status}`);
+    const data = await res.json();
+
+    for (const meeting of (data.meetings || [])) {
+      if (imported >= limit) break;
+      const transcript = meeting.recording_files?.find((f: any) => f.file_type === 'TRANSCRIPT');
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'zoom',
+        external_id: meeting.uuid,
+        content_type: 'meeting',
+        title: meeting.topic || 'Zoom Meeting',
+        url: meeting.share_url,
+        author: meeting.host_email,
+        metadata: {
+          duration: meeting.duration,
+          start_time: meeting.start_time,
+          participants: meeting.participant_count,
+          transcript_url: transcript?.download_url
+        },
+      }, integration);
+      if (ok) imported++;
+    }
+    nextPageToken = data.next_page_token || '';
+  } while (nextPageToken && imported < limit);
+
   return imported;
 }
 
@@ -438,36 +478,50 @@ async function syncZoom(integration: any, supabase: any, lastSynced: Date | null
 async function syncGitHub(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const sinceParam = lastSynced ? `&since=${lastSynced.toISOString()}` : '';
 
-  const repoRes = await fetch('https://api.github.com/user/repos?per_page=20&sort=updated', {
+  const repoRes = await fetch('https://api.github.com/user/repos?per_page=100&sort=updated', {
     headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'CliPad-Integration' }
   });
   if (!repoRes.ok) throw new Error(`GitHub API error: ${repoRes.status}`);
   const repos = await repoRes.json();
 
-  for (const repo of repos.slice(0, 5)) {
-    const issuesRes = await fetch(`https://api.github.com/repos/${repo.full_name}/issues?per_page=20&state=all${sinceParam}`, {
-      headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'CliPad-Integration' }
-    });
-    if (!issuesRes.ok) continue;
-    const issues = await issuesRes.json();
+  for (const repo of repos) {
+    if (imported >= limit) break;
+    let page = 1;
+    let hasMore = true;
 
-    for (const issue of issues) {
-      const isPR = !!issue.pull_request;
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'github',
-        external_id: String(issue.id),
-        content_type: isPR ? 'pull_request' : 'issue',
-        title: `[${repo.name}] ${issue.title}`,
-        content: issue.body?.substring(0, 3000) || '',
-        url: issue.html_url,
-        author: issue.user?.login,
-        tags: issue.labels?.map((l: any) => l.name) || [],
-        metadata: { repo: repo.full_name, number: issue.number, state: issue.state },
-      }, integration);
-      if (ok) imported++;
+    while (hasMore && imported < limit) {
+      const issuesRes = await fetch(`https://api.github.com/repos/${repo.full_name}/issues?per_page=100&page=${page}&state=all${sinceParam}`, {
+        headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'CliPad-Integration' }
+      });
+      if (!issuesRes.ok) break;
+      const issues = await issuesRes.json();
+      
+      if (issues.length === 0) {
+        hasMore = false;
+        break;
+      }
+
+      for (const issue of issues) {
+        if (imported >= limit) break;
+        const isPR = !!issue.pull_request;
+        const ok = await upsertKnowledge(supabase, {
+          provider: 'github',
+          external_id: String(issue.id),
+          content_type: isPR ? 'pull_request' : 'issue',
+          title: `[${repo.name}] ${issue.title}`,
+          content: issue.body?.substring(0, 3000) || '',
+          url: issue.html_url,
+          author: issue.user?.login,
+          tags: issue.labels?.map((l: any) => l.name) || [],
+          metadata: { repo: repo.full_name, number: issue.number, state: issue.state },
+        }, integration);
+        if (ok) imported++;
+      }
+      page++;
     }
   }
   return imported;
@@ -481,7 +535,7 @@ async function syncOneDrive(integration: any, supabase: any, lastSynced: Date | 
 
   const filterParam = '';
 
-  let nextLink = `https://graph.microsoft.com/v1.0/me/drive/root/children?$top=50&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy${filterParam}`;
+  let nextLink = `https://graph.microsoft.com/v1.0/me/drive/root/children?$top=999&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy${filterParam}`;
 
   do {
     const res = await fetch(nextLink, {
@@ -519,6 +573,7 @@ async function syncOneDrive(integration: any, supabase: any, lastSynced: Date | 
 async function syncMSTeams(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const teamsRes = await fetch('https://graph.microsoft.com/v1.0/me/joinedTeams', {
     headers: { Authorization: `Bearer ${token}` }
@@ -526,37 +581,46 @@ async function syncMSTeams(integration: any, supabase: any, lastSynced: Date | n
   if (!teamsRes.ok) throw new Error(`Teams API error: ${teamsRes.status}`);
   const teamsData = await teamsRes.json();
 
-  for (const team of (teamsData.value || []).slice(0, 5)) {
+  for (const team of (teamsData.value || [])) {
+    if (imported >= limit) break;
     const chRes = await fetch(`https://graph.microsoft.com/v1.0/teams/${team.id}/channels`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (!chRes.ok) continue;
     const chData = await chRes.json();
 
-    for (const channel of (chData.value || []).slice(0, 3)) {
+    for (const channel of (chData.value || [])) {
+      if (imported >= limit) break;
       const filterParam = lastSynced ? `?$filter=lastModifiedDateTime ge ${lastSynced.toISOString()}` : '';
-      const msgRes = await fetch(`https://graph.microsoft.com/v1.0/teams/${team.id}/channels/${channel.id}/messages${filterParam || '?$top=20'}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!msgRes.ok) continue;
-      const msgData = await msgRes.json();
+      let nextLink = `https://graph.microsoft.com/v1.0/teams/${team.id}/channels/${channel.id}/messages${filterParam || '?$top=100'}`;
 
-      for (const msg of (msgData.value || [])) {
-        if (!msg.body?.content || msg.messageType !== 'message') continue;
-        const textContent = msg.body.content.replace(/<[^>]+>/g, '').trim();
-        if (!textContent) continue;
+      do {
+        if (imported >= limit) break;
+        const msgRes = await fetch(nextLink, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!msgRes.ok) break;
+        const msgData = await msgRes.json();
 
-        const ok = await upsertKnowledge(supabase, {
-          provider: 'ms_teams',
-          external_id: msg.id,
-          content_type: 'message',
-          title: `${team.displayName} > ${channel.displayName}`,
-          content: textContent.substring(0, 2000),
-          author: msg.from?.user?.displayName || null,
-          metadata: { teamId: team.id, teamName: team.displayName, channelName: channel.displayName },
-        }, integration);
-        if (ok) imported++;
-      }
+        for (const msg of (msgData.value || [])) {
+          if (imported >= limit) break;
+          if (!msg.body?.content || msg.messageType !== 'message') continue;
+          const textContent = msg.body.content.replace(/<[^>]+>/g, '').trim();
+          if (!textContent) continue;
+
+          const ok = await upsertKnowledge(supabase, {
+            provider: 'ms_teams',
+            external_id: msg.id,
+            content_type: 'message',
+            title: `${team.displayName} > ${channel.displayName}`,
+            content: textContent.substring(0, 2000),
+            author: msg.from?.user?.displayName || null,
+            metadata: { teamId: team.id, teamName: team.displayName, channelName: channel.displayName },
+          }, integration);
+          if (ok) imported++;
+        }
+        nextLink = msgData['@odata.nextLink'] || '';
+      } while (nextLink);
     }
   }
   return imported;
@@ -566,40 +630,47 @@ async function syncMSTeams(integration: any, supabase: any, lastSynced: Date | n
 async function syncGmail(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const afterParam = lastSynced
     ? `after:${Math.floor(lastSynced.getTime() / 1000)} `
     : '';
 
-  const listRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=30&q=${encodeURIComponent(afterParam + 'is:important')}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  if (!listRes.ok) throw new Error(`Gmail API error: ${listRes.status}`);
-  const listData = await listRes.json();
-
-  for (const msgRef of (listData.messages || []).slice(0, 20)) {
-    const msgRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msgRef.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`, {
+  let pageToken = '';
+  do {
+    const tokenParam = pageToken ? `&pageToken=${pageToken}` : '';
+    const listRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=100&q=${encodeURIComponent(afterParam + 'is:important')}${tokenParam}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    if (!msgRes.ok) continue;
-    const msg = await msgRes.json();
+    if (!listRes.ok) throw new Error(`Gmail API error: ${listRes.status}`);
+    const listData = await listRes.json();
 
-    const headers = msg.payload?.headers || [];
-    const subject = headers.find((h: any) => h.name === 'Subject')?.value || '(No Subject)';
-    const from = headers.find((h: any) => h.name === 'From')?.value || '';
-    const date = headers.find((h: any) => h.name === 'Date')?.value || '';
+    for (const msgRef of (listData.messages || [])) {
+      if (imported >= limit) break;
+      const msgRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msgRef.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!msgRes.ok) continue;
+      const msg = await msgRes.json();
 
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'gmail',
-      external_id: msg.id,
-      content_type: 'email',
-      title: subject,
-      content: (msg.snippet || '').substring(0, 2000),
-      author: from,
-      metadata: { date, threadId: msg.threadId },
-    }, integration);
-    if (ok) imported++;
-  }
+      const headers = msg.payload?.headers || [];
+      const subject = headers.find((h: any) => h.name === 'Subject')?.value || '(No Subject)';
+      const from = headers.find((h: any) => h.name === 'From')?.value || '';
+      const date = headers.find((h: any) => h.name === 'Date')?.value || '';
+
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'gmail',
+        external_id: msg.id,
+        content_type: 'email',
+        title: subject,
+        content: (msg.snippet || '').substring(0, 2000),
+        author: from,
+        metadata: { date, threadId: msg.threadId },
+      }, integration);
+      if (ok) imported++;
+    }
+    pageToken = listData.nextPageToken || '';
+  } while (pageToken && imported < limit);
   return imported;
 }
 
@@ -609,32 +680,42 @@ async function syncJira(integration: any, supabase: any, lastSynced: Date | null
   const baseUrl = integration.metadata?.base_url || integration.config?.base_url;
   if (!baseUrl) throw new Error('Jira base URL not configured.');
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const jql = lastSynced
     ? `updated >= "${lastSynced.toISOString().split('T')[0]}"`
     : 'updated >= -30d';
 
-  const res = await fetch(`${baseUrl}/rest/api/3/search?jql=${encodeURIComponent(jql)}&maxResults=50&fields=summary,description,status,assignee,priority,issuetype,project,updated`, {
-    headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
-  });
-  if (!res.ok) throw new Error(`Jira API error: ${res.status}`);
-  const data = await res.json();
+  let startAt = 0;
+  let hasMore = true;
 
-  for (const issue of (data.issues || [])) {
-    const fields = issue.fields || {};
-    const description = fields.description?.content?.[0]?.content?.[0]?.text || '';
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'jira',
-      external_id: issue.id,
-      content_type: fields.issuetype?.name?.toLowerCase() || 'issue',
-      title: `[${fields.project?.key}] ${fields.summary}`,
-      content: description.substring(0, 3000),
-      url: `${baseUrl}/browse/${issue.key}`,
-      author: fields.assignee?.displayName || null,
-      tags: [fields.status?.name, fields.priority?.name].filter(Boolean),
-      metadata: { project: fields.project?.name, status: fields.status?.name, priority: fields.priority?.name },
-    }, integration);
-    if (ok) imported++;
+  while (hasMore && imported < limit) {
+    const res = await fetch(`${baseUrl}/rest/api/3/search?jql=${encodeURIComponent(jql)}&maxResults=100&startAt=${startAt}&fields=summary,description,status,assignee,priority,issuetype,project,updated`, {
+      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
+    });
+    if (!res.ok) throw new Error(`Jira API error: ${res.status}`);
+    const data = await res.json();
+
+    for (const issue of (data.issues || [])) {
+      if (imported >= limit) break;
+      const fields = issue.fields || {};
+      const description = fields.description?.content?.[0]?.content?.[0]?.text || '';
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'jira',
+        external_id: issue.id,
+        content_type: fields.issuetype?.name?.toLowerCase() || 'issue',
+        title: `[${fields.project?.key}] ${fields.summary}`,
+        content: description.substring(0, 3000),
+        url: `${baseUrl}/browse/${issue.key}`,
+        author: fields.assignee?.displayName || null,
+        tags: [fields.status?.name, fields.priority?.name].filter(Boolean),
+        metadata: { project: fields.project?.name, status: fields.status?.name, priority: fields.priority?.name },
+      }, integration);
+      if (ok) imported++;
+    }
+
+    startAt += data.maxResults;
+    hasMore = startAt < data.total;
   }
   return imported;
 }
@@ -645,31 +726,38 @@ async function syncConfluence(integration: any, supabase: any, lastSynced: Date 
   const baseUrl = integration.metadata?.base_url || integration.config?.base_url;
   if (!baseUrl) throw new Error('Confluence base URL not configured.');
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const lastModParam = lastSynced
     ? `&lastModified>${lastSynced.toISOString().replace('T', '+').split('.')[0]}`
     : '';
 
-  const res = await fetch(`${baseUrl}/rest/api/content?type=page&limit=50&expand=body.storage,space,history${lastModParam}`, {
-    headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
-  });
-  if (!res.ok) throw new Error(`Confluence API error: ${res.status}`);
-  const data = await res.json();
+  let nextUrl = `${baseUrl}/rest/api/content?type=page&limit=100&expand=body.storage,space,history${lastModParam}`;
 
-  for (const page of (data.results || [])) {
-    const rawHtml = page.body?.storage?.value || '';
-    const textContent = rawHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'confluence',
-      external_id: page.id,
-      content_type: 'page',
-      title: page.title,
-      content: textContent.substring(0, 5000),
-      url: `${baseUrl}${page._links?.webui || ''}`,
-      author: page.history?.createdBy?.displayName || null,
-      metadata: { space: page.space?.name, version: page.version?.number },
-    }, integration);
-    if (ok) imported++;
+  while (nextUrl && imported < limit) {
+    const res = await fetch(nextUrl, {
+      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
+    });
+    if (!res.ok) throw new Error(`Confluence API error: ${res.status}`);
+    const data = await res.json();
+
+    for (const page of (data.results || [])) {
+      if (imported >= limit) break;
+      const rawHtml = page.body?.storage?.value || '';
+      const textContent = rawHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'confluence',
+        external_id: page.id,
+        content_type: 'page',
+        title: page.title,
+        content: textContent.substring(0, 5000),
+        url: `${baseUrl}${page._links?.webui || ''}`,
+        author: page.history?.createdBy?.displayName || null,
+        metadata: { space: page.space?.name, version: page.version?.number },
+      }, integration);
+      if (ok) imported++;
+    }
+    nextUrl = data._links?.next ? `${baseUrl}${data._links.next}` : '';
   }
   return imported;
 }
@@ -678,6 +766,7 @@ async function syncConfluence(integration: any, supabase: any, lastSynced: Date 
 async function syncClickUp(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const teamsRes = await fetch('https://api.clickup.com/api/v2/team', {
     headers: { Authorization: token }
@@ -689,26 +778,40 @@ async function syncClickUp(integration: any, supabase: any, lastSynced: Date | n
     ? `&date_updated_gt=${lastSynced.getTime()}`
     : '';
 
-  for (const team of (teamsData.teams || []).slice(0, 2)) {
-    const tasksRes = await fetch(`https://api.clickup.com/api/v2/team/${team.id}/task?page=0&order_by=updated&subtasks=true&include_closed=true${dateUpdatedParam}`, {
-      headers: { Authorization: token }
-    });
-    if (!tasksRes.ok) continue;
-    const tasksData = await tasksRes.json();
+  for (const team of (teamsData.teams || [])) {
+    if (imported >= limit) break;
+    let page = 0;
+    let hasMoreTasks = true;
 
-    for (const task of (tasksData.tasks || []).slice(0, 30)) {
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'clickup',
-        external_id: task.id,
-        content_type: 'task',
-        title: task.name,
-        content: task.description?.substring(0, 2000) || '',
-        url: task.url,
-        author: task.creator?.username || null,
-        tags: [task.status?.status].filter(Boolean),
-        metadata: { status: task.status?.status, priority: task.priority?.priority, teamName: team.name },
-      }, integration);
-      if (ok) imported++;
+    while (hasMoreTasks && imported < limit) {
+      const tasksRes = await fetch(`https://api.clickup.com/api/v2/team/${team.id}/task?page=${page}&order_by=updated&subtasks=true&include_closed=true${dateUpdatedParam}`, {
+        headers: { Authorization: token }
+      });
+      if (!tasksRes.ok) break;
+      const tasksData = await tasksRes.json();
+      
+      const tasks = tasksData.tasks || [];
+      if (tasks.length === 0) {
+        hasMoreTasks = false;
+        break;
+      }
+
+      for (const task of tasks) {
+        if (imported >= limit) break;
+        const ok = await upsertKnowledge(supabase, {
+          provider: 'clickup',
+          external_id: task.id,
+          content_type: 'task',
+          title: task.name,
+          content: task.description?.substring(0, 2000) || '',
+          url: task.url,
+          author: task.creator?.username || null,
+          tags: [task.status?.status].filter(Boolean),
+          metadata: { status: task.status?.status, priority: task.priority?.priority, teamName: team.name },
+        }, integration);
+        if (ok) imported++;
+      }
+      page++;
     }
   }
   return imported;
@@ -718,6 +821,7 @@ async function syncClickUp(integration: any, supabase: any, lastSynced: Date | n
 async function syncAsana(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const modifiedSinceParam = lastSynced
     ? `&modified_since=${lastSynced.toISOString()}`
@@ -729,26 +833,35 @@ async function syncAsana(integration: any, supabase: any, lastSynced: Date | nul
   if (!wsRes.ok) throw new Error(`Asana API error: ${wsRes.status}`);
   const wsData = await wsRes.json();
 
-  for (const ws of (wsData.data || []).slice(0, 2)) {
-    const tasksRes = await fetch(`https://app.asana.com/api/1.0/tasks?workspace=${ws.gid}&assignee=me&opt_fields=gid,name,notes,completed,due_on,assignee.name,projects.name,permalink_url,modified_at&limit=50${modifiedSinceParam}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!tasksRes.ok) continue;
-    const tasksData = await tasksRes.json();
+  for (const ws of (wsData.data || [])) {
+    if (imported >= limit) break;
+    
+    let nextUrl = `https://app.asana.com/api/1.0/tasks?workspace=${ws.gid}&assignee=me&opt_fields=gid,name,notes,completed,due_on,assignee.name,projects.name,permalink_url,modified_at&limit=100${modifiedSinceParam}`;
 
-    for (const task of (tasksData.data || [])) {
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'asana',
-        external_id: task.gid,
-        content_type: 'task',
-        title: task.name,
-        content: task.notes?.substring(0, 2000) || '',
-        url: task.permalink_url,
-        author: task.assignee?.name || null,
-        tags: [task.completed ? 'completed' : 'open'].concat((task.projects || []).map((p: any) => p.name)),
-        metadata: { completed: task.completed, due_on: task.due_on, workspace: ws.name },
-      }, integration);
-      if (ok) imported++;
+    while (nextUrl && imported < limit) {
+      const tasksRes = await fetch(nextUrl, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!tasksRes.ok) break;
+      const tasksData = await tasksRes.json();
+
+      for (const task of (tasksData.data || [])) {
+        if (imported >= limit) break;
+        const ok = await upsertKnowledge(supabase, {
+          provider: 'asana',
+          external_id: task.gid,
+          content_type: 'task',
+          title: task.name,
+          content: task.notes?.substring(0, 2000) || '',
+          url: task.permalink_url,
+          author: task.assignee?.name || null,
+          tags: [task.completed ? 'completed' : 'open'].concat((task.projects || []).map((p: any) => p.name)),
+          metadata: { completed: task.completed, due_on: task.due_on, workspace: ws.name },
+        }, integration);
+        if (ok) imported++;
+      }
+
+      nextUrl = tasksData.next_page?.uri || '';
     }
   }
   return imported;
@@ -758,40 +871,55 @@ async function syncAsana(integration: any, supabase: any, lastSynced: Date | nul
 async function syncLinear(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const updatedAtFilter = lastSynced
     ? `, filter: { updatedAt: { gte: "${lastSynced.toISOString()}" } }`
     : '';
 
-  const query = `{
-    issues(first: 50, orderBy: updatedAt${updatedAtFilter}) {
-      nodes {
-        id title description state { name } assignee { name } team { name } url priority updatedAt
+  let hasNextPage = true;
+  let endCursor = '';
+
+  while (hasNextPage && imported < limit) {
+    const afterArg = endCursor ? `, after: "${endCursor}"` : '';
+    const query = `{
+      issues(first: 100, orderBy: updatedAt${updatedAtFilter}${afterArg}) {
+        pageInfo { hasNextPage endCursor }
+        nodes {
+          id title description state { name } assignee { name } team { name } url priority updatedAt
+        }
       }
+    }`;
+
+    const res = await fetch('https://api.linear.app/graphql', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query })
+    });
+    if (!res.ok) throw new Error(`Linear API error: ${res.status}`);
+    const data = await res.json();
+    
+    const issuesData = data.data?.issues;
+    if (!issuesData) break;
+
+    for (const issue of (issuesData.nodes || [])) {
+      if (imported >= limit) break;
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'linear',
+        external_id: issue.id,
+        content_type: 'issue',
+        title: `[${issue.team?.name}] ${issue.title}`,
+        content: issue.description?.substring(0, 3000) || '',
+        url: issue.url,
+        author: issue.assignee?.name || null,
+        tags: [issue.state?.name].filter(Boolean),
+        metadata: { state: issue.state?.name, team: issue.team?.name, priority: issue.priority },
+      }, integration);
+      if (ok) imported++;
     }
-  }`;
-
-  const res = await fetch('https://api.linear.app/graphql', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query })
-  });
-  if (!res.ok) throw new Error(`Linear API error: ${res.status}`);
-  const data = await res.json();
-
-  for (const issue of (data.data?.issues?.nodes || [])) {
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'linear',
-      external_id: issue.id,
-      content_type: 'issue',
-      title: `[${issue.team?.name}] ${issue.title}`,
-      content: issue.description?.substring(0, 3000) || '',
-      url: issue.url,
-      author: issue.assignee?.name || null,
-      tags: [issue.state?.name].filter(Boolean),
-      metadata: { state: issue.state?.name, team: issue.team?.name, priority: issue.priority },
-    }, integration);
-    if (ok) imported++;
+    
+    hasNextPage = issuesData.pageInfo?.hasNextPage;
+    endCursor = issuesData.pageInfo?.endCursor;
   }
   return imported;
 }
@@ -802,6 +930,7 @@ async function syncTrello(integration: any, supabase: any, _lastSynced: Date | n
   const apiKey = integration.metadata?.api_key || Deno.env.get('TRELLO_API_KEY');
   if (!apiKey) throw new Error('Trello API key not configured.');
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const boardsRes = await fetch(`https://api.trello.com/1/members/me/boards?key=${apiKey}&token=${token}&fields=id,name,url`, {
     headers: { 'Accept': 'application/json' }
@@ -809,14 +938,16 @@ async function syncTrello(integration: any, supabase: any, _lastSynced: Date | n
   if (!boardsRes.ok) throw new Error(`Trello API error: ${boardsRes.status}`);
   const boards = await boardsRes.json();
 
-  for (const board of (boards || []).slice(0, 5)) {
+  for (const board of (boards || [])) {
+    if (imported >= limit) break;
     const cardsRes = await fetch(`https://api.trello.com/1/boards/${board.id}/cards?key=${apiKey}&token=${token}&fields=id,name,desc,url,labels,due,idList`, {
       headers: { 'Accept': 'application/json' }
     });
     if (!cardsRes.ok) continue;
     const cards = await cardsRes.json();
 
-    for (const card of (cards || []).slice(0, 30)) {
+    for (const card of (cards || [])) {
+      if (imported >= limit) break;
       const ok = await upsertKnowledge(supabase, {
         provider: 'trello',
         external_id: card.id,
@@ -837,30 +968,44 @@ async function syncTrello(integration: any, supabase: any, _lastSynced: Date | n
 async function syncDropbox(integration: any, supabase: any, _lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
-  const res = await fetch('https://api.dropboxapi.com/2/files/list_folder', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ path: '', recursive: false, limit: 50 })
-  });
-  if (!res.ok) throw new Error(`Dropbox API error: ${res.status}`);
-  const data = await res.json();
+  let url = 'https://api.dropboxapi.com/2/files/list_folder';
+  let body: any = { path: '', recursive: true, limit: 100 };
+  let hasMore = true;
 
   const SUPPORTED_EXT = ['pdf', 'doc', 'docx', 'txt', 'md', 'xlsx', 'pptx'];
 
-  for (const entry of (data.entries || [])) {
-    if (entry['.tag'] !== 'file') continue;
-    const ext = entry.name?.split('.').pop()?.toLowerCase();
-    if (!SUPPORTED_EXT.includes(ext)) continue;
+  while (hasMore && imported < limit) {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error(`Dropbox API error: ${res.status}`);
+    const data = await res.json();
 
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'dropbox',
-      external_id: entry.id,
-      content_type: ext === 'pdf' ? 'pdf' : 'document',
-      title: entry.name,
-      metadata: { size: entry.size, modified: entry.client_modified, path: entry.path_display },
-    }, integration);
-    if (ok) imported++;
+    for (const entry of (data.entries || [])) {
+      if (imported >= limit) break;
+      if (entry['.tag'] !== 'file') continue;
+      const ext = entry.name?.split('.').pop()?.toLowerCase();
+      if (!SUPPORTED_EXT.includes(ext)) continue;
+
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'dropbox',
+        external_id: entry.id,
+        content_type: ext === 'pdf' ? 'pdf' : 'document',
+        title: entry.name,
+        metadata: { size: entry.size, modified: entry.client_modified, path: entry.path_display },
+      }, integration);
+      if (ok) imported++;
+    }
+
+    hasMore = data.has_more;
+    if (hasMore) {
+      url = 'https://api.dropboxapi.com/2/files/list_folder/continue';
+      body = { cursor: data.cursor };
+    }
   }
   return imported;
 }
@@ -869,30 +1014,39 @@ async function syncDropbox(integration: any, supabase: any, _lastSynced: Date | 
 async function syncBox(integration: any, supabase: any, _lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-
-  const res = await fetch('https://api.box.com/2.0/folders/0/items?limit=50&fields=id,name,type,size,created_at,modified_at,created_by,shared_link', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  if (!res.ok) throw new Error(`Box API error: ${res.status}`);
-  const data = await res.json();
+  const limit = integration.settings?.sync_limit || 1000;
+  let offset = 0;
+  let totalCount = 1; // dummy initial
+  const limitPerPage = 100;
 
   const SUPPORTED_EXT = ['pdf', 'doc', 'docx', 'txt', 'md', 'xlsx', 'pptx'];
 
-  for (const entry of (data.entries || [])) {
-    if (entry.type !== 'file') continue;
-    const ext = entry.name?.split('.').pop()?.toLowerCase();
-    if (!SUPPORTED_EXT.includes(ext)) continue;
+  while (offset < totalCount && imported < limit) {
+    const res = await fetch(`https://api.box.com/2.0/folders/0/items?limit=${limitPerPage}&offset=${offset}&fields=id,name,type,size,created_at,modified_at,created_by,shared_link`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error(`Box API error: ${res.status}`);
+    const data = await res.json();
+    totalCount = data.total_count || 0;
 
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'box',
-      external_id: entry.id,
-      content_type: ext === 'pdf' ? 'pdf' : 'document',
-      title: entry.name,
-      url: entry.shared_link?.url || null,
-      author: entry.created_by?.name || null,
-      metadata: { size: entry.size, modified: entry.modified_at },
-    }, integration);
-    if (ok) imported++;
+    for (const entry of (data.entries || [])) {
+      if (imported >= limit) break;
+      if (entry.type !== 'file') continue;
+      const ext = entry.name?.split('.').pop()?.toLowerCase();
+      if (!SUPPORTED_EXT.includes(ext)) continue;
+
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'box',
+        external_id: entry.id,
+        content_type: ext === 'pdf' ? 'pdf' : 'document',
+        title: entry.name,
+        url: entry.shared_link?.url || null,
+        author: entry.created_by?.name || null,
+        metadata: { size: entry.size, modified: entry.modified_at },
+      }, integration);
+      if (ok) imported++;
+    }
+    offset += limitPerPage;
   }
   return imported;
 }
@@ -903,29 +1057,36 @@ async function syncSalesforce(integration: any, supabase: any, lastSynced: Date 
   const instanceUrl = integration.metadata?.instance_url || integration.config?.instance_url;
   if (!instanceUrl) throw new Error('Salesforce instance URL not configured.');
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const dateFilter = lastSynced
     ? `WHERE CreatedDate > ${lastSynced.toISOString()}`
     : '';
 
-  const notesRes = await fetch(`${instanceUrl}/services/data/v57.0/query?q=${encodeURIComponent(`SELECT Id,Title,Body,CreatedDate,CreatedBy.Name FROM Note ${dateFilter} ORDER BY CreatedDate DESC LIMIT 30`)}`, {
-    headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
-  });
-  if (!notesRes.ok) throw new Error(`Salesforce API error: ${notesRes.status}`);
-  const notesData = await notesRes.json();
+  let nextUrl = `${instanceUrl}/services/data/v57.0/query?q=${encodeURIComponent(`SELECT Id,Title,Body,CreatedDate,CreatedBy.Name FROM Note ${dateFilter} ORDER BY CreatedDate DESC`)}`;
 
-  for (const note of (notesData.records || [])) {
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'salesforce',
-      external_id: note.Id,
-      content_type: 'note',
-      title: note.Title || 'Salesforce Note',
-      content: note.Body?.substring(0, 3000) || '',
-      author: note.CreatedBy?.Name || null,
-      url: `${instanceUrl}/${note.Id}`,
-      metadata: { createdDate: note.CreatedDate },
-    }, integration);
-    if (ok) imported++;
+  while (nextUrl && imported < limit) {
+    const notesRes = await fetch(nextUrl, {
+      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
+    });
+    if (!notesRes.ok) throw new Error(`Salesforce API error: ${notesRes.status}`);
+    const notesData = await notesRes.json();
+
+    for (const note of (notesData.records || [])) {
+      if (imported >= limit) break;
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'salesforce',
+        external_id: note.Id,
+        content_type: 'note',
+        title: note.Title || 'Salesforce Note',
+        content: note.Body?.substring(0, 3000) || '',
+        author: note.CreatedBy?.Name || null,
+        url: `${instanceUrl}/${note.Id}`,
+        metadata: { createdDate: note.CreatedDate },
+      }, integration);
+      if (ok) imported++;
+    }
+    nextUrl = notesData.nextRecordsUrl ? `${instanceUrl}${notesData.nextRecordsUrl}` : '';
   }
   return imported;
 }
@@ -934,34 +1095,49 @@ async function syncSalesforce(integration: any, supabase: any, lastSynced: Date 
 async function syncHubSpot(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const afterParam = lastSynced ? `&after=${lastSynced.getTime()}` : '';
 
-  const notesRes = await fetch(`https://api.hubapi.com/crm/v3/objects/notes?limit=50&properties=hs_note_body,hs_timestamp,hubspot_owner_id&sort=-hs_timestamp${afterParam}`, {
-    headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
-  });
-  if (!notesRes.ok) throw new Error(`HubSpot API error: ${notesRes.status}`);
-  const notesData = await notesRes.json();
+  let afterId = '';
+  let hasMore = true;
 
-  for (const note of (notesData.results || [])) {
-    const body = note.properties?.hs_note_body || '';
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'hubspot',
-      external_id: note.id,
-      content_type: 'note',
-      title: `HubSpot Note (${note.properties?.hs_timestamp?.slice(0, 10) || 'recent'})`,
-      content: body.substring(0, 3000),
-      metadata: { timestamp: note.properties?.hs_timestamp },
-    }, integration);
-    if (ok) imported++;
+  while (hasMore && imported < limit) {
+    const after = afterId ? `&after=${afterId}` : afterParam;
+    const notesRes = await fetch(`https://api.hubapi.com/crm/v3/objects/notes?limit=100&properties=hs_note_body,hs_timestamp,hubspot_owner_id&sort=-hs_timestamp${after}`, {
+      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
+    });
+    if (!notesRes.ok) throw new Error(`HubSpot API error: ${notesRes.status}`);
+    const notesData = await notesRes.json();
+
+    for (const note of (notesData.results || [])) {
+      if (imported >= limit) break;
+      const body = note.properties?.hs_note_body || '';
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'hubspot',
+        external_id: note.id,
+        content_type: 'note',
+        title: `HubSpot Note (${note.properties?.hs_timestamp?.slice(0, 10) || 'recent'})`,
+        content: body.substring(0, 3000),
+        metadata: { timestamp: note.properties?.hs_timestamp },
+      }, integration);
+      if (ok) imported++;
+    }
+    
+    if (notesData.paging?.next?.after) {
+      afterId = notesData.paging.next.after;
+    } else {
+      hasMore = false;
+    }
   }
 
-  const dealsRes = await fetch(`https://api.hubapi.com/crm/v3/objects/deals?limit=30&properties=dealname,dealstage,amount,closedate&sort=-hs_lastmodifieddate${afterParam}`, {
+  const dealsRes = await fetch(`https://api.hubapi.com/crm/v3/objects/deals?limit=100&properties=dealname,dealstage,amount,closedate&sort=-hs_lastmodifieddate${afterParam}`, {
     headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
   });
   if (dealsRes.ok) {
     const dealsData = await dealsRes.json();
     for (const deal of (dealsData.results || [])) {
+      if (imported >= limit) break;
       const ok = await upsertKnowledge(supabase, {
         provider: 'hubspot',
         external_id: `deal_${deal.id}`,
@@ -980,31 +1156,40 @@ async function syncHubSpot(integration: any, supabase: any, lastSynced: Date | n
 async function syncGoogleMeet(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const timeMin = lastSynced ? lastSynced.toISOString() : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-  const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&maxResults=30&singleEvents=true&orderBy=startTime&q=meet`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  if (!res.ok) throw new Error(`Google Calendar API error: ${res.status}`);
-  const data = await res.json();
+  
+  let pageToken = '';
 
-  for (const event of (data.items || [])) {
-    if (!event.conferenceData) continue;
-    const meetLink = event.conferenceData?.entryPoints?.find((ep: any) => ep.entryPointType === 'video')?.uri;
-    const attendees = (event.attendees || []).map((a: any) => a.email).join(', ');
+  do {
+    const tokenParam = pageToken ? `&pageToken=${pageToken}` : '';
+    const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&maxResults=100&singleEvents=true&orderBy=startTime&q=meet${tokenParam}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error(`Google Calendar API error: ${res.status}`);
+    const data = await res.json();
 
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'google_meet',
-      external_id: event.id,
-      content_type: 'meeting',
-      title: event.summary || 'Google Meet',
-      content: [event.description, attendees ? `Attendees: ${attendees}` : ''].filter(Boolean).join('\n'),
-      url: meetLink || event.htmlLink,
-      author: event.organizer?.email || null,
-      metadata: { start: event.start?.dateTime, end: event.end?.dateTime, attendeeCount: event.attendees?.length || 0 },
-    }, integration);
-    if (ok) imported++;
-  }
+    for (const event of (data.items || [])) {
+      if (imported >= limit) break;
+      if (!event.conferenceData) continue;
+      const meetLink = event.conferenceData?.entryPoints?.find((ep: any) => ep.entryPointType === 'video')?.uri;
+      const attendees = (event.attendees || []).map((a: any) => a.email).join(', ');
+
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'google_meet',
+        external_id: event.id,
+        content_type: 'meeting',
+        title: event.summary || 'Google Meet',
+        content: [event.description, attendees ? `Attendees: ${attendees}` : ''].filter(Boolean).join('\n'),
+        url: meetLink || event.htmlLink,
+        author: event.organizer?.email || null,
+        metadata: { start: event.start?.dateTime, end: event.end?.dateTime, attendeeCount: event.attendees?.length || 0 },
+      }, integration);
+      if (ok) imported++;
+    }
+    pageToken = data.nextPageToken || '';
+  } while (pageToken && imported < limit);
   return imported;
 }
 
@@ -1012,28 +1197,35 @@ async function syncGoogleMeet(integration: any, supabase: any, lastSynced: Date 
 async function syncOutlook(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const filterParam = lastSynced
     ? `&$filter=receivedDateTime ge ${lastSynced.toISOString()}`
     : `&$filter=importance eq 'high'`;
 
-  const res = await fetch(`https://graph.microsoft.com/v1.0/me/messages?$top=30&$select=id,subject,bodyPreview,from,receivedDateTime,importance&$orderby=receivedDateTime desc${filterParam}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  if (!res.ok) throw new Error(`Outlook API error: ${res.status}`);
-  const data = await res.json();
+  let nextLink = `https://graph.microsoft.com/v1.0/me/messages?$top=100&$select=id,subject,bodyPreview,from,receivedDateTime,importance&$orderby=receivedDateTime desc${filterParam}`;
 
-  for (const email of (data.value || [])) {
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'outlook',
-      external_id: email.id,
-      content_type: 'email',
-      title: email.subject || '(No Subject)',
-      content: email.bodyPreview?.substring(0, 2000) || '',
-      author: email.from?.emailAddress?.address || null,
-      metadata: { receivedDateTime: email.receivedDateTime, importance: email.importance },
-    }, integration);
-    if (ok) imported++;
+  while (nextLink && imported < limit) {
+    const res = await fetch(nextLink, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error(`Outlook API error: ${res.status}`);
+    const data = await res.json();
+
+    for (const email of (data.value || [])) {
+      if (imported >= limit) break;
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'outlook',
+        external_id: email.id,
+        content_type: 'email',
+        title: email.subject || '(No Subject)',
+        content: email.bodyPreview?.substring(0, 2000) || '',
+        author: email.from?.emailAddress?.address || null,
+        metadata: { receivedDateTime: email.receivedDateTime, importance: email.importance },
+      }, integration);
+      if (ok) imported++;
+    }
+    nextLink = data['@odata.nextLink'] || '';
   }
   return imported;
 }
@@ -1046,6 +1238,7 @@ async function syncOutlook(integration: any, supabase: any, lastSynced: Date | n
 async function syncDiscord(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const guildsRes = await fetch('https://discord.com/api/v10/users/@me/guilds', {
     headers: { Authorization: `Bearer ${token}` }
@@ -1053,34 +1246,57 @@ async function syncDiscord(integration: any, supabase: any, lastSynced: Date | n
   if (!guildsRes.ok) throw new Error(`Discord API error: ${guildsRes.status}`);
   const guilds = await guildsRes.json();
 
-  for (const guild of (guilds || []).slice(0, 3)) {
+  for (const guild of (guilds || [])) {
+    if (imported >= limit) break;
     const channelsRes = await fetch(`https://discord.com/api/v10/guilds/${guild.id}/channels`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (!channelsRes.ok) continue;
     const channels = await channelsRes.json();
-    const textChannels = (channels || []).filter((c: any) => c.type === 0).slice(0, 3);
+    const textChannels = (channels || []).filter((c: any) => c.type === 0);
 
     for (const channel of textChannels) {
-      const afterParam = lastSynced ? `?after=${BigInt(lastSynced.getTime() - 1420070400000) << BigInt(22)}` : '?limit=50';
-      const msgsRes = await fetch(`https://discord.com/api/v10/channels/${channel.id}/messages${afterParam}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!msgsRes.ok) continue;
-      const messages = await msgsRes.json();
+      if (imported >= limit) break;
+      let lastMsgId = '';
+      let hasMore = true;
 
-      for (const msg of (messages || []).slice(0, 20)) {
-        if (!msg.content) continue;
-        const ok = await upsertKnowledge(supabase, {
-          provider: 'discord',
-          external_id: msg.id,
-          content_type: 'message',
-          title: `#${channel.name} (${guild.name})`,
-          content: msg.content.substring(0, 2000),
-          author: msg.author?.username || null,
-          metadata: { guildId: guild.id, guildName: guild.name, channelName: channel.name },
-        }, integration);
-        if (ok) imported++;
+      while (hasMore && imported < limit) {
+        let afterParam = '';
+        if (lastMsgId) {
+          afterParam = `?after=${lastMsgId}&limit=100`;
+        } else if (lastSynced) {
+          afterParam = `?after=${BigInt(lastSynced.getTime() - 1420070400000) << BigInt(22)}&limit=100`;
+        } else {
+          afterParam = '?limit=100';
+        }
+        
+        const msgsRes = await fetch(`https://discord.com/api/v10/channels/${channel.id}/messages${afterParam}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!msgsRes.ok) break;
+        const messages = await msgsRes.json();
+        if (messages.length === 0) {
+          hasMore = false;
+          break;
+        }
+
+        for (const msg of messages) {
+          if (imported >= limit) break;
+          if (!msg.content) continue;
+          const ok = await upsertKnowledge(supabase, {
+            provider: 'discord',
+            external_id: msg.id,
+            content_type: 'message',
+            title: `#${channel.name} (${guild.name})`,
+            content: msg.content.substring(0, 2000),
+            author: msg.author?.username || null,
+            metadata: { guildId: guild.id, guildName: guild.name, channelName: channel.name },
+          }, integration);
+          if (ok) imported++;
+          lastMsgId = msg.id;
+        }
+        
+        if (messages.length < 100) hasMore = false;
       }
     }
   }
@@ -1091,8 +1307,9 @@ async function syncDiscord(integration: any, supabase: any, lastSynced: Date | n
 async function syncMonday(integration: any, supabase: any, _lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
-  const query = `{ boards(limit: 5) { id name items_page(limit: 30) { items { id name state column_values { text } } } } }`;
+  const query = `{ boards(limit: 50) { id name items_page(limit: 100) { items { id name state column_values { text } } } } }`;
   const res = await fetch('https://api.monday.com/v2', {
     method: 'POST',
     headers: { Authorization: token, 'Content-Type': 'application/json' },
@@ -1102,7 +1319,9 @@ async function syncMonday(integration: any, supabase: any, _lastSynced: Date | n
   const data = await res.json();
 
   for (const board of (data.data?.boards || [])) {
+    if (imported >= limit) break;
     for (const item of (board.items_page?.items || [])) {
+      if (imported >= limit) break;
       const details = (item.column_values || []).map((c: any) => c.text).filter(Boolean).join(' | ');
       const ok = await upsertKnowledge(supabase, {
         provider: 'monday',
@@ -1123,36 +1342,56 @@ async function syncMonday(integration: any, supabase: any, _lastSynced: Date | n
 async function syncGitLab(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const updatedParam = lastSynced ? `&updated_after=${lastSynced.toISOString()}` : '';
 
-  const projectsRes = await fetch(`https://gitlab.com/api/v4/projects?membership=true&per_page=10&order_by=last_activity_at`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  if (!projectsRes.ok) throw new Error(`GitLab API error: ${projectsRes.status}`);
-  const projects = await projectsRes.json();
+  let page = 1;
+  let hasMoreProjects = true;
 
-  for (const project of (projects || []).slice(0, 5)) {
-    const issuesRes = await fetch(`https://gitlab.com/api/v4/projects/${project.id}/issues?per_page=20${updatedParam}`, {
+  while (hasMoreProjects && imported < limit) {
+    const projectsRes = await fetch(`https://gitlab.com/api/v4/projects?membership=true&per_page=100&page=${page}&order_by=last_activity_at`, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    if (!issuesRes.ok) continue;
-    const issues = await issuesRes.json();
+    if (!projectsRes.ok) throw new Error(`GitLab API error: ${projectsRes.status}`);
+    const projects = await projectsRes.json();
+    if (projects.length === 0) break;
 
-    for (const issue of (issues || [])) {
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'gitlab',
-        external_id: String(issue.id),
-        content_type: 'issue',
-        title: `[${project.name}] ${issue.title}`,
-        content: issue.description?.substring(0, 3000) || '',
-        url: issue.web_url,
-        author: issue.author?.username || null,
-        tags: [...(issue.labels || []), issue.state].filter(Boolean),
-        metadata: { project: project.name, state: issue.state, milestone: issue.milestone?.title },
-      }, integration);
-      if (ok) imported++;
+    for (const project of projects) {
+      if (imported >= limit) break;
+      
+      let issuesPage = 1;
+      let hasMoreIssues = true;
+      while (hasMoreIssues && imported < limit) {
+        const issuesRes = await fetch(`https://gitlab.com/api/v4/projects/${project.id}/issues?per_page=100&page=${issuesPage}${updatedParam}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!issuesRes.ok) break;
+        const issues = await issuesRes.json();
+        if (issues.length === 0) {
+          hasMoreIssues = false;
+          break;
+        }
+
+        for (const issue of issues) {
+          if (imported >= limit) break;
+          const ok = await upsertKnowledge(supabase, {
+            provider: 'gitlab',
+            external_id: String(issue.id),
+            content_type: 'issue',
+            title: `[${project.name}] ${issue.title}`,
+            content: issue.description?.substring(0, 3000) || '',
+            url: issue.web_url,
+            author: issue.author?.username || null,
+            tags: [...(issue.labels || []), issue.state].filter(Boolean),
+            metadata: { project: project.name, state: issue.state, milestone: issue.milestone?.title },
+          }, integration);
+          if (ok) imported++;
+        }
+        issuesPage++;
+      }
     }
+    page++;
   }
   return imported;
 }
@@ -1161,35 +1400,48 @@ async function syncGitLab(integration: any, supabase: any, lastSynced: Date | nu
 async function syncBitbucket(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
-  const wsRes = await fetch('https://api.bitbucket.org/2.0/repositories?role=member&pagelen=10', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  if (!wsRes.ok) throw new Error(`Bitbucket API error: ${wsRes.status}`);
-  const wsData = await wsRes.json();
+  let wsUrl = 'https://api.bitbucket.org/2.0/repositories?role=member&pagelen=100';
 
-  for (const repo of (wsData.values || []).slice(0, 5)) {
-    const updatedParam = lastSynced ? `&q=updated_on>"${lastSynced.toISOString()}"` : '';
-    const issuesRes = await fetch(`https://api.bitbucket.org/2.0/repositories/${repo.full_name}/issues?pagelen=20${updatedParam}`, {
+  while (wsUrl && imported < limit) {
+    const wsRes = await fetch(wsUrl, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    if (!issuesRes.ok) continue;
-    const issuesData = await issuesRes.json();
+    if (!wsRes.ok) throw new Error(`Bitbucket API error: ${wsRes.status}`);
+    const wsData = await wsRes.json();
 
-    for (const issue of (issuesData.values || [])) {
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'bitbucket',
-        external_id: String(issue.id),
-        content_type: 'issue',
-        title: `[${repo.name}] ${issue.title}`,
-        content: issue.content?.raw?.substring(0, 3000) || '',
-        url: issue.links?.html?.href || null,
-        author: issue.reporter?.nickname || null,
-        tags: [issue.state, issue.priority].filter(Boolean),
-        metadata: { repo: repo.full_name, state: issue.state, kind: issue.kind },
-      }, integration);
-      if (ok) imported++;
+    for (const repo of (wsData.values || [])) {
+      if (imported >= limit) break;
+      const updatedParam = lastSynced ? `&q=updated_on>"${lastSynced.toISOString()}"` : '';
+      
+      let issuesUrl = `https://api.bitbucket.org/2.0/repositories/${repo.full_name}/issues?pagelen=100${updatedParam}`;
+      while (issuesUrl && imported < limit) {
+        const issuesRes = await fetch(issuesUrl, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!issuesRes.ok) break;
+        const issuesData = await issuesRes.json();
+
+        for (const issue of (issuesData.values || [])) {
+          if (imported >= limit) break;
+          const ok = await upsertKnowledge(supabase, {
+            provider: 'bitbucket',
+            external_id: String(issue.id),
+            content_type: 'issue',
+            title: `[${repo.name}] ${issue.title}`,
+            content: issue.content?.raw?.substring(0, 3000) || '',
+            url: issue.links?.html?.href || null,
+            author: issue.reporter?.nickname || null,
+            tags: [issue.state, issue.priority].filter(Boolean),
+            metadata: { repo: repo.full_name, state: issue.state, kind: issue.kind },
+          }, integration);
+          if (ok) imported++;
+        }
+        issuesUrl = issuesData.next || '';
+      }
     }
+    wsUrl = wsData.next || '';
   }
   return imported;
 }
@@ -1198,26 +1450,43 @@ async function syncBitbucket(integration: any, supabase: any, lastSynced: Date |
 async function syncZohoCRM(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const lastModParam = lastSynced ? `&Last_Modified_Time=${lastSynced.toISOString()}` : '';
 
-  const notesRes = await fetch(`https://www.zohoapis.com/crm/v2/Notes?sort_by=Modified_Time&sort_order=desc&per_page=50${lastModParam}`, {
-    headers: { Authorization: `Zoho-oauthtoken ${token}` }
-  });
-  if (!notesRes.ok) throw new Error(`Zoho CRM API error: ${notesRes.status}`);
-  const notesData = await notesRes.json();
+  let page = 1;
+  let hasMore = true;
 
-  for (const note of (notesData.data || [])) {
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'zoho_crm',
-      external_id: note.id,
-      content_type: 'note',
-      title: note.Note_Title || `Zoho Note (${note.Modified_Time?.slice(0, 10)})`,
-      content: note.Note_Content?.substring(0, 3000) || '',
-      author: note.Created_By?.name || null,
-      metadata: { parentModule: note.Parent_Id?.$se_module, parentId: note.Parent_Id?.id },
-    }, integration);
-    if (ok) imported++;
+  while (hasMore && imported < limit) {
+    const notesRes = await fetch(`https://www.zohoapis.com/crm/v2/Notes?sort_by=Modified_Time&sort_order=desc&per_page=100&page=${page}${lastModParam}`, {
+      headers: { Authorization: `Zoho-oauthtoken ${token}` }
+    });
+    if (!notesRes.ok) throw new Error(`Zoho CRM API error: ${notesRes.status}`);
+    const notesData = await notesRes.json();
+    
+    if (!notesData.data || notesData.data.length === 0) {
+      hasMore = false;
+      break;
+    }
+
+    for (const note of notesData.data) {
+      if (imported >= limit) break;
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'zoho_crm',
+        external_id: note.id,
+        content_type: 'note',
+        title: note.Note_Title || `Zoho Note (${note.Modified_Time?.slice(0, 10)})`,
+        content: note.Note_Content?.substring(0, 3000) || '',
+        author: note.Created_By?.name || null,
+        metadata: { parentModule: note.Parent_Id?.$se_module, parentId: note.Parent_Id?.id },
+      }, integration);
+      if (ok) imported++;
+    }
+    
+    if (!notesData.info?.more_records) {
+      hasMore = false;
+    }
+    page++;
   }
   return imported;
 }
@@ -1228,27 +1497,34 @@ async function syncZendesk(integration: any, supabase: any, lastSynced: Date | n
   const subdomain = integration.metadata?.subdomain;
   if (!subdomain) throw new Error('Zendesk subdomain not configured.');
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const updatedParam = lastSynced ? `&updated_since=${lastSynced.toISOString()}` : '';
 
-  const res = await fetch(`https://${subdomain}.zendesk.com/api/v2/tickets.json?sort_by=updated_at&sort_order=desc&per_page=50${updatedParam}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  if (!res.ok) throw new Error(`Zendesk API error: ${res.status}`);
-  const data = await res.json();
+  let nextUrl = `https://${subdomain}.zendesk.com/api/v2/tickets.json?sort_by=updated_at&sort_order=desc&per_page=100${updatedParam}`;
 
-  for (const ticket of (data.tickets || [])) {
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'zendesk',
-      external_id: String(ticket.id),
-      content_type: 'ticket',
-      title: `[#${ticket.id}] ${ticket.subject}`,
-      content: ticket.description?.substring(0, 3000) || '',
-      url: `https://${subdomain}.zendesk.com/agent/tickets/${ticket.id}`,
-      tags: ticket.tags || [],
-      metadata: { status: ticket.status, priority: ticket.priority, type: ticket.type },
-    }, integration);
-    if (ok) imported++;
+  while (nextUrl && imported < limit) {
+    const res = await fetch(nextUrl, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error(`Zendesk API error: ${res.status}`);
+    const data = await res.json();
+
+    for (const ticket of (data.tickets || [])) {
+      if (imported >= limit) break;
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'zendesk',
+        external_id: String(ticket.id),
+        content_type: 'ticket',
+        title: `[#${ticket.id}] ${ticket.subject}`,
+        content: ticket.description?.substring(0, 3000) || '',
+        url: `https://${subdomain}.zendesk.com/agent/tickets/${ticket.id}`,
+        tags: ticket.tags || [],
+        metadata: { status: ticket.status, priority: ticket.priority, type: ticket.type },
+      }, integration);
+      if (ok) imported++;
+    }
+    nextUrl = data.next_page || '';
   }
   return imported;
 }
@@ -1257,27 +1533,42 @@ async function syncZendesk(integration: any, supabase: any, lastSynced: Date | n
 async function syncIntercom(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const updatedSince = lastSynced ? Math.floor(lastSynced.getTime() / 1000) : Math.floor((Date.now() - 30 * 24 * 60 * 60 * 1000) / 1000);
+  let startingAfter = '';
+  let hasMore = true;
 
-  const res = await fetch(`https://api.intercom.io/conversations?per_page=50&starting_after=0`, {
-    headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
-  });
-  if (!res.ok) throw new Error(`Intercom API error: ${res.status}`);
-  const data = await res.json();
+  while (hasMore && imported < limit) {
+    const afterParam = startingAfter ? `&starting_after=${startingAfter}` : '';
+    const res = await fetch(`https://api.intercom.io/conversations?per_page=100${afterParam}`, {
+      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
+    });
+    if (!res.ok) throw new Error(`Intercom API error: ${res.status}`);
+    const data = await res.json();
+    
+    if (!data.conversations || data.conversations.length === 0) break;
 
-  for (const conv of (data.conversations || []).slice(0, 30)) {
-    if (lastSynced && conv.updated_at < updatedSince) continue;
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'intercom',
-      external_id: conv.id,
-      content_type: 'conversation',
-      title: conv.title || `Conversation ${conv.id}`,
-      content: conv.conversation_message?.body?.replace(/<[^>]+>/g, '').substring(0, 3000) || '',
-      tags: [conv.state, conv.read ? 'read' : 'unread'].filter(Boolean),
-      metadata: { state: conv.state, assignee: conv.assignee?.name, contact: conv.contacts?.contacts?.[0]?.id },
-    }, integration);
-    if (ok) imported++;
+    for (const conv of data.conversations) {
+      if (imported >= limit) break;
+      if (lastSynced && conv.updated_at < updatedSince) continue;
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'intercom',
+        external_id: conv.id,
+        content_type: 'conversation',
+        title: conv.title || `Conversation ${conv.id}`,
+        content: conv.conversation_message?.body?.replace(/<[^>]+>/g, '').substring(0, 3000) || '',
+        tags: [conv.state, conv.read ? 'read' : 'unread'].filter(Boolean),
+        metadata: { state: conv.state, assignee: conv.assignee?.name, contact: conv.contacts?.contacts?.[0]?.id },
+      }, integration);
+      if (ok) imported++;
+    }
+    
+    if (data.pages && data.pages.next && data.pages.next.starting_after) {
+      startingAfter = data.pages.next.starting_after;
+    } else {
+      hasMore = false;
+    }
   }
   return imported;
 }
@@ -1288,28 +1579,43 @@ async function syncFreshdesk(integration: any, supabase: any, lastSynced: Date |
   const subdomain = integration.metadata?.subdomain;
   if (!subdomain) throw new Error('Freshdesk subdomain not configured.');
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const auth = btoa(`${apiKey}:X`);
   const updatedParam = lastSynced ? `&updated_since=${lastSynced.toISOString()}` : '';
 
-  const res = await fetch(`https://${subdomain}.freshdesk.com/api/v2/tickets?order_by=updated_at&order_type=desc&per_page=50${updatedParam}`, {
-    headers: { Authorization: `Basic ${auth}` }
-  });
-  if (!res.ok) throw new Error(`Freshdesk API error: ${res.status}`);
-  const tickets = await res.json();
+  let page = 1;
+  let hasMore = true;
 
-  for (const ticket of (tickets || [])) {
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'freshdesk',
-      external_id: String(ticket.id),
-      content_type: 'ticket',
-      title: `[#${ticket.id}] ${ticket.subject}`,
-      content: ticket.description_text?.substring(0, 3000) || '',
-      url: `https://${subdomain}.freshdesk.com/a/tickets/${ticket.id}`,
-      tags: (ticket.tags || []).concat([ticket.status_text, ticket.priority_text]).filter(Boolean),
-      metadata: { status: ticket.status, priority: ticket.priority, type: ticket.type },
-    }, integration);
-    if (ok) imported++;
+  while (hasMore && imported < limit) {
+    const res = await fetch(`https://${subdomain}.freshdesk.com/api/v2/tickets?order_by=updated_at&order_type=desc&per_page=100&page=${page}${updatedParam}`, {
+      headers: { Authorization: `Basic ${auth}` }
+    });
+    if (!res.ok) throw new Error(`Freshdesk API error: ${res.status}`);
+    const tickets = await res.json();
+    
+    if (tickets.length === 0) {
+      hasMore = false;
+      break;
+    }
+
+    for (const ticket of tickets) {
+      if (imported >= limit) break;
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'freshdesk',
+        external_id: String(ticket.id),
+        content_type: 'ticket',
+        title: `[#${ticket.id}] ${ticket.subject}`,
+        content: ticket.description_text?.substring(0, 3000) || '',
+        url: `https://${subdomain}.freshdesk.com/a/tickets/${ticket.id}`,
+        tags: (ticket.tags || []).concat([ticket.status_text, ticket.priority_text]).filter(Boolean),
+        metadata: { status: ticket.status, priority: ticket.priority, type: ticket.type },
+      }, integration);
+      if (ok) imported++;
+    }
+    
+    if (tickets.length < 100) hasMore = false;
+    page++;
   }
   return imported;
 }
@@ -1318,6 +1624,7 @@ async function syncFreshdesk(integration: any, supabase: any, lastSynced: Date |
 async function syncFigma(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const res = await fetch('https://api.figma.com/v1/me/files', {
     headers: { Authorization: `Bearer ${token}` }
@@ -1325,7 +1632,8 @@ async function syncFigma(integration: any, supabase: any, lastSynced: Date | nul
   if (!res.ok) throw new Error(`Figma API error: ${res.status}`);
   const data = await res.json();
 
-  for (const file of (data.files || []).slice(0, 20)) {
+  for (const file of (data.files || [])) {
+    if (imported >= limit) break;
     if (lastSynced && new Date(file.last_modified) <= lastSynced) continue;
     const ok = await upsertKnowledge(supabase, {
       provider: 'figma',
@@ -1345,25 +1653,40 @@ async function syncFigma(integration: any, supabase: any, lastSynced: Date | nul
 async function syncMiro(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
-  const res = await fetch('https://api.miro.com/v2/boards?limit=50&sort=last_modified', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  if (!res.ok) throw new Error(`Miro API error: ${res.status}`);
-  const data = await res.json();
+  let offset = 0;
+  let hasMore = true;
 
-  for (const board of (data.data || []).slice(0, 20)) {
-    if (lastSynced && new Date(board.modifiedAt) <= lastSynced) continue;
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'miro',
-      external_id: board.id,
-      content_type: 'whiteboard',
-      title: board.name,
-      url: board.viewLink || `https://miro.com/app/board/${board.id}/`,
-      author: board.owner?.name || null,
-      metadata: { teamId: board.team?.id, createdAt: board.createdAt, modifiedAt: board.modifiedAt },
-    }, integration);
-    if (ok) imported++;
+  while (hasMore && imported < limit) {
+    const res = await fetch(`https://api.miro.com/v2/boards?limit=50&offset=${offset}&sort=last_modified`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error(`Miro API error: ${res.status}`);
+    const data = await res.json();
+
+    if (!data.data || data.data.length === 0) {
+      hasMore = false;
+      break;
+    }
+
+    for (const board of data.data) {
+      if (imported >= limit) break;
+      if (lastSynced && new Date(board.modifiedAt) <= lastSynced) continue;
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'miro',
+        external_id: board.id,
+        content_type: 'whiteboard',
+        title: board.name,
+        url: board.viewLink || `https://miro.com/app/board/${board.id}/`,
+        author: board.owner?.name || null,
+        metadata: { teamId: board.team?.id, createdAt: board.createdAt, modifiedAt: board.modifiedAt },
+      }, integration);
+      if (ok) imported++;
+    }
+    
+    offset += data.data.length;
+    if (data.data.length < 50) hasMore = false;
   }
   return imported;
 }
@@ -1372,30 +1695,39 @@ async function syncMiro(integration: any, supabase: any, lastSynced: Date | null
 async function syncGoogleCalendar(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const timeMin = lastSynced ? lastSynced.toISOString() : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const timeMax = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
-  const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&timeMax=${timeMax}&maxResults=50&singleEvents=true&orderBy=startTime`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  if (!res.ok) throw new Error(`Google Calendar API error: ${res.status}`);
-  const data = await res.json();
+  let pageToken = '';
 
-  for (const event of (data.items || [])) {
-    const attendees = (event.attendees || []).map((a: any) => a.email).join(', ');
-    const ok = await upsertKnowledge(supabase, {
-      provider: 'google_calendar',
-      external_id: event.id,
-      content_type: 'calendar_event',
-      title: event.summary || '(No Title)',
-      content: [event.description, attendees ? `Attendees: ${attendees}` : '', event.location ? `Location: ${event.location}` : ''].filter(Boolean).join('\n'),
-      url: event.htmlLink,
-      author: event.organizer?.email || null,
-      metadata: { start: event.start?.dateTime || event.start?.date, end: event.end?.dateTime || event.end?.date, attendeeCount: event.attendees?.length || 0, recurrence: !!event.recurrence },
-    }, integration);
-    if (ok) imported++;
-  }
+  do {
+    const tokenParam = pageToken ? `&pageToken=${pageToken}` : '';
+    const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&timeMax=${timeMax}&maxResults=100&singleEvents=true&orderBy=startTime${tokenParam}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error(`Google Calendar API error: ${res.status}`);
+    const data = await res.json();
+
+    for (const event of (data.items || [])) {
+      if (imported >= limit) break;
+      const attendees = (event.attendees || []).map((a: any) => a.email).join(', ');
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'google_calendar',
+        external_id: event.id,
+        content_type: 'calendar_event',
+        title: event.summary || '(No Title)',
+        content: [event.description, attendees ? `Attendees: ${attendees}` : '', event.location ? `Location: ${event.location}` : ''].filter(Boolean).join('\n'),
+        url: event.htmlLink,
+        author: event.organizer?.email || null,
+        metadata: { start: event.start?.dateTime || event.start?.date, end: event.end?.dateTime || event.end?.date, attendeeCount: event.attendees?.length || 0, recurrence: !!event.recurrence },
+      }, integration);
+      if (ok) imported++;
+    }
+    pageToken = data.nextPageToken || '';
+  } while (pageToken && imported < limit);
+
   return imported;
 }
 
@@ -1403,39 +1735,49 @@ async function syncGoogleCalendar(integration: any, supabase: any, lastSynced: D
 async function syncSharePoint(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const filterParam = '';
 
   // Get all sites the user has access to
-  const sitesRes = await fetch(`https://graph.microsoft.com/v1.0/sites?search=*&$top=5`, {
+  const sitesRes = await fetch(`https://graph.microsoft.com/v1.0/sites?search=*&$top=500`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!sitesRes.ok) throw new Error(`SharePoint API error: ${sitesRes.status}`);
   const sitesData = await sitesRes.json();
 
-  for (const site of (sitesData.value || []).slice(0, 3)) {
-    const docsRes = await fetch(`https://graph.microsoft.com/v1.0/sites/${site.id}/drive/root/children?$top=30&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy${filterParam}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!docsRes.ok) continue;
-    const docsData = await docsRes.json();
+  for (const site of (sitesData.value || [])) {
+    if (imported >= limit) break;
+    
+    let nextLink = `https://graph.microsoft.com/v1.0/sites/${site.id}/drive/root/children?$top=100&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy${filterParam}`;
+    
+    while (nextLink && imported < limit) {
+      const docsRes = await fetch(nextLink, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!docsRes.ok) break;
+      const docsData = await docsRes.json();
 
-    for (const item of (docsData.value || [])) {
-      if (!item.file) continue;
-      const ext = item.name?.split('.').pop()?.toLowerCase();
-      const SUPPORTED_EXT = ['docx', 'xlsx', 'pptx', 'pdf', 'txt', 'md'];
-      if (!SUPPORTED_EXT.includes(ext)) continue;
+      for (const item of (docsData.value || [])) {
+        if (imported >= limit) break;
+        if (!item.file) continue;
+        const ext = item.name?.split('.').pop()?.toLowerCase();
+        const SUPPORTED_EXT = ['docx', 'xlsx', 'pptx', 'pdf', 'txt', 'md'];
+        if (!SUPPORTED_EXT.includes(ext)) continue;
 
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'sharepoint',
-        external_id: item.id,
-        content_type: ext === 'pdf' ? 'pdf' : ext === 'xlsx' ? 'spreadsheet' : 'document',
-        title: `[${site.displayName}] ${item.name}`,
-        url: item.webUrl,
-        author: item.createdBy?.user?.displayName || null,
-        metadata: { siteId: site.id, siteName: site.displayName, lastModified: item.lastModifiedDateTime },
-      }, integration);
-      if (ok) imported++;
+        const ok = await upsertKnowledge(supabase, {
+          provider: 'sharepoint',
+          external_id: item.id,
+          content_type: ext === 'pdf' ? 'pdf' : ext === 'xlsx' ? 'spreadsheet' : 'document',
+          title: `[${site.displayName}] ${item.name}`,
+          url: item.webUrl,
+          author: item.createdBy?.user?.displayName || null,
+          metadata: { siteId: site.id, siteName: site.displayName, lastModified: item.lastModifiedDateTime },
+        }, integration);
+        if (ok) imported++;
+      }
+      
+      nextLink = docsData['@odata.nextLink'] || '';
     }
   }
   return imported;
@@ -1447,6 +1789,7 @@ async function syncGuru(integration: any, supabase: any, lastSynced: Date | null
   const username = integration.metadata?.username || integration.metadata?.email;
   if (!username) throw new Error('Guru username not configured.');
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
 
   const auth = btoa(`${username}:${token}`);
   const updatedParam = lastSynced ? `?dateUpdated=${lastSynced.toISOString()}` : '';
@@ -1457,7 +1800,8 @@ async function syncGuru(integration: any, supabase: any, lastSynced: Date | null
   if (!res.ok) throw new Error(`Guru API error: ${res.status}`);
   const cards = await res.json();
 
-  for (const card of (cards || []).slice(0, 50)) {
+  for (const card of (cards || [])) {
+    if (imported >= limit) break;
     const textContent = card.content?.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() || '';
     const ok = await upsertKnowledge(supabase, {
       provider: 'guru',
@@ -1479,11 +1823,13 @@ async function syncGuru(integration: any, supabase: any, lastSynced: Date | null
 async function syncGoogleWorkspace(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.google_workspace.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`google_workspace API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'google_workspace',
       external_id: item.id,
@@ -1502,11 +1848,13 @@ async function syncGoogleWorkspace(integration: any, supabase: any, lastSynced: 
 async function syncPipedrive(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.pipedrive.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`pipedrive API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'pipedrive',
       external_id: item.id,
@@ -1525,11 +1873,13 @@ async function syncPipedrive(integration: any, supabase: any, lastSynced: Date |
 async function syncMailchimp(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.mailchimp.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`mailchimp API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'mailchimp',
       external_id: item.id,
@@ -1548,11 +1898,13 @@ async function syncMailchimp(integration: any, supabase: any, lastSynced: Date |
 async function syncStripe(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.stripe.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`stripe API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'stripe',
       external_id: item.id,
@@ -1571,11 +1923,13 @@ async function syncStripe(integration: any, supabase: any, lastSynced: Date | nu
 async function syncQuickbooks(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.quickbooks.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`quickbooks API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'quickbooks',
       external_id: item.id,
@@ -1594,11 +1948,13 @@ async function syncQuickbooks(integration: any, supabase: any, lastSynced: Date 
 async function syncAWS(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.aws.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`aws API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'aws',
       external_id: item.id,
@@ -1617,11 +1973,13 @@ async function syncAWS(integration: any, supabase: any, lastSynced: Date | null)
 async function syncAzure(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.azure.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`azure API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'azure',
       external_id: item.id,
@@ -1640,11 +1998,13 @@ async function syncAzure(integration: any, supabase: any, lastSynced: Date | nul
 async function syncGoogleCloud(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.google_cloud.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`google_cloud API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'google_cloud',
       external_id: item.id,
@@ -1663,11 +2023,13 @@ async function syncGoogleCloud(integration: any, supabase: any, lastSynced: Date
 async function syncDatadog(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.datadog.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`datadog API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'datadog',
       external_id: item.id,
@@ -1686,11 +2048,13 @@ async function syncDatadog(integration: any, supabase: any, lastSynced: Date | n
 async function syncSentry(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.sentry.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`sentry API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'sentry',
       external_id: item.id,
@@ -1709,11 +2073,13 @@ async function syncSentry(integration: any, supabase: any, lastSynced: Date | nu
 async function syncPagerDuty(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.pagerduty.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`pagerduty API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'pagerduty',
       external_id: item.id,
@@ -1732,11 +2098,13 @@ async function syncPagerDuty(integration: any, supabase: any, lastSynced: Date |
 async function syncJenkins(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.jenkins.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`jenkins API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'jenkins',
       external_id: item.id,
@@ -1755,11 +2123,13 @@ async function syncJenkins(integration: any, supabase: any, lastSynced: Date | n
 async function syncCanva(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.canva.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`canva API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'canva',
       external_id: item.id,
@@ -1778,11 +2148,13 @@ async function syncCanva(integration: any, supabase: any, lastSynced: Date | nul
 async function syncWhatsApp(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.whatsapp.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`whatsapp API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'whatsapp',
       external_id: item.id,
@@ -1801,11 +2173,13 @@ async function syncWhatsApp(integration: any, supabase: any, lastSynced: Date | 
 async function syncTelegram(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.telegram.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`telegram API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'telegram',
       external_id: item.id,
@@ -1824,11 +2198,13 @@ async function syncTelegram(integration: any, supabase: any, lastSynced: Date | 
 async function syncAirtable(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.airtable.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`airtable API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'airtable',
       external_id: item.id,
@@ -1847,11 +2223,13 @@ async function syncAirtable(integration: any, supabase: any, lastSynced: Date | 
 async function syncSAP(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.sap.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`sap API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'sap',
       external_id: item.id,
@@ -1870,11 +2248,13 @@ async function syncSAP(integration: any, supabase: any, lastSynced: Date | null)
 async function syncOracle(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.oracle.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`oracle API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'oracle',
       external_id: item.id,
@@ -1893,11 +2273,13 @@ async function syncOracle(integration: any, supabase: any, lastSynced: Date | nu
 async function syncServiceNow(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.servicenow.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`servicenow API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'servicenow',
       external_id: item.id,
@@ -1916,11 +2298,13 @@ async function syncServiceNow(integration: any, supabase: any, lastSynced: Date 
 async function syncWorkday(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.workday.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`workday API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'workday',
       external_id: item.id,
@@ -1939,11 +2323,13 @@ async function syncWorkday(integration: any, supabase: any, lastSynced: Date | n
 async function syncBambooHR(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.bamboohr.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`bamboohr API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'bamboohr',
       external_id: item.id,
@@ -1962,11 +2348,13 @@ async function syncBambooHR(integration: any, supabase: any, lastSynced: Date | 
 async function syncDocuSign(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.docusign.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`docusign API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'docusign',
       external_id: item.id,
@@ -1985,11 +2373,13 @@ async function syncDocuSign(integration: any, supabase: any, lastSynced: Date | 
 async function syncCalendly(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
+  const limit = integration.settings?.sync_limit || 1000;
   // Production-ready REST fetch loop structure
   const res = await fetch(`https://api.calendly.com/v1/data`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`calendly API error: ${res.status}`);
   const data = await res.json();
   for (const item of (data.items || [])) {
+    if (imported >= limit) break;
     const ok = await upsertKnowledge(supabase, {
       provider: 'calendly',
       external_id: item.id,
@@ -2003,3 +2393,4 @@ async function syncCalendly(integration: any, supabase: any, lastSynced: Date | 
   }
   return imported;
 }
+

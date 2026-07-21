@@ -151,7 +151,7 @@ export default function KnowledgeGraph() {
         .eq('company_id', companyId)
         .not('ai_summary', 'is', null)
         .order('imported_at', { ascending: false })
-        .limit(80);
+        .limit(1000);
 
       // Load relationships (edges)
       const { data: relationships } = await supabase
@@ -159,7 +159,7 @@ export default function KnowledgeGraph() {
         .select('*')
         .eq('company_id', companyId)
         .gte('confidence_score', 0.6)
-        .limit(300);
+        .limit(3000);
 
       const itemSet = new Set((items || []).map(i => i.id));
       const uniqueProviders = [...new Set((items || []).map(i => i.provider).filter(Boolean))];
