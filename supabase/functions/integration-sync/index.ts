@@ -1921,40 +1921,10 @@ async function syncQuickbooks(integration: any, supabase: any, lastSynced: Date 
 }
 
 // ─── syncAWS ─────────────────────────────────────────────────────────────
-async function syncAWS(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'aws';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncAWS has been moved to ./syncers/aws.ts
 
 // ─── syncAzure ─────────────────────────────────────────────────────────────
-async function syncAzure(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'azure';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncAzure has been moved to ./syncers/azure.ts
 
 // ─── syncGoogleCloud ─────────────────────────────────────────────────────────────
 async function syncGoogleCloud(integration: any, supabase: any, lastSynced: Date | null) {
@@ -1999,76 +1969,16 @@ async function syncGoogleCloud(integration: any, supabase: any, lastSynced: Date
 }
 
 // ─── syncDatadog ─────────────────────────────────────────────────────────────
-async function syncDatadog(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'datadog';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncDatadog has been moved to ./syncers/datadog.ts
 
 // ─── syncSentry ─────────────────────────────────────────────────────────────
-async function syncSentry(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'sentry';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncSentry has been moved to ./syncers/sentry.ts
 
 // ─── syncPagerDuty ─────────────────────────────────────────────────────────────
-async function syncPagerDuty(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'pager_duty';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncPagerDuty has been moved to ./syncers/pagerduty.ts
 
 // ─── syncJenkins ─────────────────────────────────────────────────────────────
-async function syncJenkins(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'jenkins';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncJenkins has been moved to ./syncers/jenkins.ts
 
 // ─── syncCanva ─────────────────────────────────────────────────────────────
 async function syncCanva(integration: any, supabase: any, lastSynced: Date | null) {
