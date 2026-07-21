@@ -128,9 +128,10 @@ serve(async (req) => {
           })
           const data = await tokenResponse.json()
           if (!data.ok) throw new Error(data.error)
-          accessToken = data.authed_user?.access_token || data.access_token
-          refreshToken = data.authed_user?.refresh_token || data.refresh_token || ''
-          expiresIn = data.authed_user?.expires_in || data.expires_in || 3600
+          // Always prioritize the Bot Token (data.access_token) over the User Token for Slack integrations
+          accessToken = data.access_token || data.authed_user?.access_token
+          refreshToken = data.refresh_token || data.authed_user?.refresh_token || ''
+          expiresIn = data.expires_in || data.authed_user?.expires_in || 3600
         } else if (provider === 'zoom') {
           const clientId = Deno.env.get('ZOOM_CLIENT_ID')
           const clientSecret = Deno.env.get('ZOOM_CLIENT_SECRET')
@@ -183,7 +184,7 @@ serve(async (req) => {
         } else {
           throw new Error(`Unsupported provider: ${provider}`)
         }
-      catch (err) {
+      } catch (err) {
         console.error(`Real Token Exchange Failed for ${provider}. Error:`, err.message)
         throw err;
       }
