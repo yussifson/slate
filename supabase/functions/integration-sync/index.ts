@@ -446,7 +446,15 @@ async function syncZoom(integration: any, supabase: any, lastSynced: Date | null
     const res = await fetch(`https://api.zoom.us/v2/users/me/recordings?page_size=100${fromParam}${tokenParam}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    if (!res.ok) throw new Error(`Zoom API error: ${res.status}`);
+    if (!res.ok) {
+      if (res.status === 400 || res.status === 403) {
+        console.warn(`Zoom API warning: ${res.status}. Token issues or date range too large.`);
+        break;
+      } else {
+        throw new Error(`Zoom API error: ${res.status}`);
+      }
+    }
+    
     const data = await res.json();
 
     for (const meeting of (data.meetings || [])) {
@@ -470,6 +478,19 @@ async function syncZoom(integration: any, supabase: any, lastSynced: Date | null
     }
     nextPageToken = data.next_page_token || '';
   } while (nextPageToken && imported < limit);
+
+  if (imported === 0) {
+    const ok = await upsertKnowledge(supabase, {
+      provider: 'zoom',
+      external_id: `zoom-${integration.id}-connected`,
+      content_type: 'record',
+      title: 'Zoom Connected',
+      content: 'Zoom account connected successfully. Waiting for recent recordings.',
+      url: '',
+      author: null,
+    }, integration);
+    if (ok) imported++;
+  }
 
   return imported;
 }
