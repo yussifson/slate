@@ -269,7 +269,7 @@ serve(async (req) => {
 });
 
 // ── Shared helper: upsert a knowledge item and trigger AI ──────────────────────
-async function upsertKnowledge(supabase: any, item: Record<string, any>, integration: any) {
+export async function upsertKnowledge(supabase: any, item: Record<string, any>, integration: any) {
   const { error } = await supabase.from('clipad_imported_knowledge').upsert({
     company_id: integration.company_id,
     integration_id: integration.id,
