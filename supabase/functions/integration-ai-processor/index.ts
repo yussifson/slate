@@ -129,6 +129,57 @@ ${textToProcess}`;
       } catch (err) {
         console.error('Embedding generation error:', err);
       }
+
+      // ── Step 2.5: Generate Document Chunks ─────────────────────────────
+      if (item.content) {
+        try {
+          const fullText = `Title: ${item.title || 'Untitled'}\n\n${item.content}`;
+          const CHUNK_SIZE = 1500;
+          const OVERLAP = 200;
+          const chunks = [];
+          for (let i = 0; i < fullText.length; i += CHUNK_SIZE - OVERLAP) {
+            chunks.push(fullText.substring(i, i + CHUNK_SIZE));
+            if (i + CHUNK_SIZE >= fullText.length) break;
+          }
+
+          // Limit to 50 chunks to avoid payload size limits
+          const limitedChunks = chunks.slice(0, 50);
+
+          if (limitedChunks.length > 0) {
+            const chunkEmbRes = await fetch(
+              `https://api.cloudflare.com/client/v4/accounts/${cloudflareAccountId}/ai/run/@cf/baai/bge-base-en-v1.5`,
+              {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${cloudflareApiToken}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: limitedChunks })
+              }
+            );
+
+            if (chunkEmbRes.ok) {
+              const chunkEmbData = await chunkEmbRes.json();
+              const chunkEmbeddings = chunkEmbData?.result?.data;
+              
+              if (chunkEmbeddings && chunkEmbeddings.length === limitedChunks.length) {
+                const chunkRows = limitedChunks.map((content, index) => ({
+                  knowledge_id: item.id,
+                  company_id: item.company_id,
+                  chunk_index: index,
+                  content: content,
+                  embedding: JSON.stringify(chunkEmbeddings[index])
+                }));
+
+                // Clear old chunks for this document
+                await supabase.from('clipad_knowledge_chunks').delete().eq('knowledge_id', item.id);
+                // Insert new chunks
+                const { error: chunkErr } = await supabase.from('clipad_knowledge_chunks').insert(chunkRows);
+                if (chunkErr) console.error('Chunk insert error:', chunkErr.message);
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Chunking error:', err);
+        }
+      }
     }
 
     // Fallback summary if AI is unavailable

@@ -35,6 +35,7 @@ export default function IntegrationsHub() {
 
   const [connected, setConnected] = useState({});
   const [knowledge, setKnowledge] = useState([]);
+  const [totalKnowledge, setTotalKnowledge] = useState(0);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState({});
   const [disconnecting, setDisconnecting] = useState({});
@@ -79,6 +80,11 @@ export default function IntegrationsHub() {
 
   const loadKnowledge = useCallback(async () => {
     if (!companyId) return;
+    
+    // Fetch total count
+    const { count } = await supabase.from('clipad_imported_knowledge').select('*', { count: 'exact', head: true }).eq('company_id', companyId);
+    if (count !== null) setTotalKnowledge(count);
+
     const { data } = await supabase.from('clipad_imported_knowledge').select('id, provider, content_type, title, url, imported_at, ai_summary').eq('company_id', companyId).order('imported_at', { ascending: false }).limit(20);
     if (data) setKnowledge(data);
   }, [companyId]);
@@ -215,7 +221,7 @@ export default function IntegrationsHub() {
   });
 
   const connectedCount = Object.keys(connected).length;
-  const knowledgeCount = knowledge.length;
+  const knowledgeCount = totalKnowledge || knowledge.length;
 
   if (!isSuperAdmin(user)) {
     return (

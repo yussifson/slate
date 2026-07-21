@@ -42,17 +42,53 @@ serve(async (req) => {
           const queryEmbedding = embData?.result?.data?.[0];
 
           if (queryEmbedding) {
-            // Run vector similarity search using pgvector RPC
-            const { data: vectorResults, error: vecErr } = await supabase.rpc('match_knowledge', {
+            // Run vector similarity search using new chunks RPC
+            const { data: chunkResults, error: chunkErr } = await supabase.rpc('match_knowledge_chunks', {
               query_embedding: queryEmbedding,
               match_company_id: company_id,
               match_threshold: threshold,
-              match_count
+              match_count: match_count * 2
             });
 
-            if (!vecErr && vectorResults?.length > 0) {
-              results = vectorResults;
-              console.log(`Vector search found ${results.length} results`);
+            // Run vector similarity search using original RPC for backwards compatibility
+            const { data: mainResults, error: mainErr } = await supabase.rpc('match_knowledge', {
+              query_embedding: queryEmbedding,
+              match_company_id: company_id,
+              match_threshold: threshold,
+              match_count: match_count
+            });
+
+            let combined = [];
+            
+            // Process chunk results first
+            if (!chunkErr && chunkResults?.length > 0) {
+              const grouped = new Map();
+              for (const row of chunkResults) {
+                if (!grouped.has(row.id)) {
+                  grouped.set(row.id, { ...row, chunk_contents: [] });
+                }
+                grouped.get(row.id).chunk_contents.push(row.content);
+              }
+              combined = Array.from(grouped.values()).map(doc => ({
+                ...doc,
+                content: doc.chunk_contents.join('\n\n[...]\n\n')
+              }));
+            }
+
+            // Append main results that aren't already in combined
+            if (!mainErr && mainResults?.length > 0) {
+              for (const row of mainResults) {
+                if (!combined.some(c => c.id === row.id)) {
+                  combined.push(row);
+                }
+              }
+            }
+
+            // Sort by similarity descending and slice
+            if (combined.length > 0) {
+              combined.sort((a, b) => b.similarity - a.similarity);
+              results = combined.slice(0, match_count);
+              console.log(`Vector search found ${results.length} results (chunks + main)`);
             }
           }
         }
