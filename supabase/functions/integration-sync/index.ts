@@ -37,7 +37,7 @@ serve(async (req) => {
     let syncError = null;
 
     try {
-      switch (provider) {
+      switch (provider.toLowerCase()) {
         // ── Phase 1: Existing connectors (now with incremental sync) ──────────
         case 'google_drive':
           imported = await syncGoogleDrive(integration, supabase, lastSynced);
@@ -468,9 +468,7 @@ async function syncOneDrive(integration: any, supabase: any, lastSynced: Date | 
   const token = integration.access_token;
   let imported = 0;
 
-  const filterParam = lastSynced
-    ? `&$filter=lastModifiedDateTime gt ${lastSynced.toISOString()}`
-    : '';
+  const filterParam = '';
 
   const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/root/children?$top=50&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy${filterParam}`, {
     headers: { Authorization: `Bearer ${token}` }
@@ -1387,9 +1385,7 @@ async function syncSharePoint(integration: any, supabase: any, lastSynced: Date 
   const token = integration.access_token;
   let imported = 0;
 
-  const filterParam = lastSynced
-    ? `&$filter=lastModifiedDateTime ge ${lastSynced.toISOString()}`
-    : '';
+  const filterParam = '';
 
   // Get all sites the user has access to
   const sitesRes = await fetch(`https://graph.microsoft.com/v1.0/sites?search=*&$top=5`, {

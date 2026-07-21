@@ -26,6 +26,18 @@ export const INTEGRATIONS = [
     importTypes: ["Chats","Recordings","Files"]
   },
   {
+    id: 'outlook',
+    name: 'Microsoft Outlook',
+    description: 'Sync your Outlook emails and calendar events.',
+    icon: <svg viewBox="0 0 24 24" className="w-6 h-6"><path d="M24 19.382v-11.53c0-1.025-.83-1.854-1.854-1.854H1.854C.83 6 0 6.829 0 7.854v11.53c0 1.023.83 1.854 1.854 1.854h20.292c1.024 0 1.854-.83 1.854-1.854zM2.906 7.416h18.188L12 13.918 2.906 7.416zm19.678 11.966c0 .242-.196.438-.438.438H1.854a.439.439 0 0 1-.438-.438V8.653l10.15 7.25c.13.093.282.14.434.14.152 0 .305-.047.434-.14l10.15-7.25v10.73z" fill="#0078D4"/></svg>,
+    color: 'from-slate-500/10 to-slate-600/5',
+    border: 'border-slate-500/20',
+    category: 'Messaging',
+    provider: 'microsoft',
+    phase: 1,
+    importTypes: ["Mail","Calendar","Contacts"]
+  },
+  {
     id: 'google_workspace',
     name: 'Google Workspace',
     description: 'Connect all your Google Workspace data seamlessly.',
