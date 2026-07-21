@@ -2047,74 +2047,14 @@ async function syncAirtable(integration: any, supabase: any, lastSynced: Date | 
 // syncServiceNow has been moved to ./syncers/servicenow.ts
 
 // ─── syncWorkday ─────────────────────────────────────────────────────────────
-async function syncWorkday(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'workday';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncWorkday has been moved to ./syncers/workday.ts
 
 // ─── syncBambooHR ─────────────────────────────────────────────────────────────
-async function syncBambooHR(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'bamboo_hr';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncBambooHR has been moved to ./syncers/bamboohr.ts
 
 // ─── syncDocuSign ─────────────────────────────────────────────────────────────
-async function syncDocuSign(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'docu_sign';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncDocuSign has been moved to ./syncers/docusign.ts
 
 // ─── syncCalendly ─────────────────────────────────────────────────────────────
-async function syncCalendly(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'calendly';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncCalendly has been moved to ./syncers/calendly.ts
 
