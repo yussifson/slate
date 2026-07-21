@@ -1852,58 +1852,13 @@ async function syncGoogleWorkspace(integration: any, supabase: any, lastSynced: 
 // syncPipedrive has been moved to ./syncers/pipedrive.ts
 
 // ─── syncMailchimp ─────────────────────────────────────────────────────────────
-async function syncMailchimp(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'mailchimp';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncMailchimp has been moved to ./syncers/mailchimp.ts
 
 // ─── syncStripe ─────────────────────────────────────────────────────────────
-async function syncStripe(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'stripe';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncStripe has been moved to ./syncers/stripe.ts
 
 // ─── syncQuickbooks ─────────────────────────────────────────────────────────────
-async function syncQuickbooks(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'quickbooks';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncQuickbooks has been moved to ./syncers/quickbooks.ts
 
 // ─── syncAWS ─────────────────────────────────────────────────────────────
 // syncAWS has been moved to ./syncers/aws.ts
@@ -1966,76 +1921,16 @@ async function syncGoogleCloud(integration: any, supabase: any, lastSynced: Date
 // syncJenkins has been moved to ./syncers/jenkins.ts
 
 // ─── syncCanva ─────────────────────────────────────────────────────────────
-async function syncCanva(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'canva';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncCanva has been moved to ./syncers/canva.ts
 
 // ─── syncWhatsApp ─────────────────────────────────────────────────────────────
-async function syncWhatsApp(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'whats_app';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncWhatsApp has been moved to ./syncers/whatsapp.ts
 
 // ─── syncTelegram ─────────────────────────────────────────────────────────────
-async function syncTelegram(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'telegram';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncTelegram has been moved to ./syncers/telegram.ts
 
 // ─── syncAirtable ─────────────────────────────────────────────────────────────
-async function syncAirtable(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'airtable';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncAirtable has been moved to ./syncers/airtable.ts
 
 // ─── syncSAP ─────────────────────────────────────────────────────────────
 // syncSAP has been moved to ./syncers/sap.ts
