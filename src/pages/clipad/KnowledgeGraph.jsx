@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
+import { useTheme } from 'next-themes';
 import {
   ReactFlow,
   Background,
@@ -128,6 +129,7 @@ export default function KnowledgeGraph() {
   const { user } = useAuth();
   const companyId = useCompanyId();
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [loading, setLoading] = useState(true);
@@ -326,6 +328,7 @@ export default function KnowledgeGraph() {
           </div>
         ) : (
           <ReactFlow
+            colorMode={theme === 'dark' ? 'dark' : 'light'}
             nodes={filteredNodes}
             edges={filteredEdges}
             onNodesChange={onNodesChange}
@@ -338,11 +341,10 @@ export default function KnowledgeGraph() {
             maxZoom={2}
             className="bg-background"
           >
-            <Background color="#6366F120" gap={24} size={1} />
-            <Controls className="bg-card border-border rounded-xl shadow-sm" />
+            <Background color={theme === 'dark' ? '#6366F140' : '#6366F120'} gap={24} size={1} />
+            <Controls />
             <MiniMap
               nodeColor={n => getProviderColor(n.data?.provider)}
-              className="bg-card border-border rounded-xl shadow-sm"
             />
           </ReactFlow>
         )}
