@@ -212,9 +212,9 @@ serve(async (req) => {
         default:
           throw new Error(`Provider '${provider}' sync not implemented`);
       }
-    } catch (e) {
-      syncError = e.message;
-      console.error(`Sync error for ${provider}:`, e.message);
+    } catch (e: any) {
+      syncError = e?.message || String(e);
+      console.error(`Sync error for ${provider}:`, syncError);
     }
 
     // Update last_synced_at
@@ -239,8 +239,8 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
 
-  } catch (e) {
-    return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: corsHeaders });
+  } catch (e: any) {
+    return new Response(JSON.stringify({ error: e?.message || String(e) }), { status: 500, headers: corsHeaders });
   }
 });
 
@@ -1824,13 +1824,13 @@ async function syncGoogleWorkspace(integration: any, supabase: any, lastSynced: 
   let imported = 0;
   try {
     imported += await syncGoogleDrive(integration, supabase, lastSynced);
-  } catch (e) {
-    console.error('Google Workspace (Drive) error:', e.message);
+  } catch (e: any) {
+    console.error('Google Workspace (Drive) error:', e?.message || String(e));
   }
   try {
     imported += await syncGoogleCalendar(integration, supabase, lastSynced);
-  } catch (e) {
-    console.error('Google Workspace (Calendar) error:', e.message);
+  } catch (e: any) {
+    console.error('Google Workspace (Calendar) error:', e?.message || String(e));
   }
   
   if (imported === 0) {
