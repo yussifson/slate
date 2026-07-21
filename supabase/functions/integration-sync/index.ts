@@ -578,8 +578,16 @@ async function syncMSTeams(integration: any, supabase: any, lastSynced: Date | n
   const teamsRes = await fetch('https://graph.microsoft.com/v1.0/me/joinedTeams', {
     headers: { Authorization: `Bearer ${token}` }
   });
-  if (!teamsRes.ok) throw new Error(`Teams API error: ${teamsRes.status}`);
-  const teamsData = await teamsRes.json();
+  if (!teamsRes.ok) {
+    if (teamsRes.status === 403) {
+      console.warn("MS Teams: 403 Forbidden. User token likely missing Team.ReadBasic.All scope.");
+      // We will skip throwing so it reaches the 'imported === 0' block below
+    } else {
+      throw new Error(`Teams API error: ${teamsRes.status}`);
+    }
+  }
+
+  const teamsData = teamsRes.ok ? await teamsRes.json() : { value: [] };
 
   for (const team of (teamsData.value || [])) {
     if (imported >= limit) break;
@@ -1740,11 +1748,18 @@ async function syncSharePoint(integration: any, supabase: any, lastSynced: Date 
   const filterParam = '';
 
   // Get all sites the user has access to
-  const sitesRes = await fetch(`https://graph.microsoft.com/v1.0/sites?search=&$top=500`, {
+  const sitesRes = await fetch(`https://graph.microsoft.com/v1.0/sites?search=*&$top=500`, {
     headers: { Authorization: `Bearer ${token}` }
   });
-  if (!sitesRes.ok) throw new Error(`SharePoint API error: ${sitesRes.status}`);
-  const sitesData = await sitesRes.json();
+  if (!sitesRes.ok) {
+    if (sitesRes.status === 403) {
+      console.warn("SharePoint: 403 Forbidden. User token likely missing Sites.Read.All scope.");
+    } else {
+      throw new Error(`SharePoint API error: ${sitesRes.status}`);
+    }
+  }
+
+  const sitesData = sitesRes.ok ? await sitesRes.json() : { value: [] };
 
   for (const site of (sitesData.value || [])) {
     if (imported >= limit) break;
@@ -1876,8 +1891,15 @@ async function syncGoogleCloud(integration: any, supabase: any, lastSynced: Date
     headers: { Authorization: `Bearer ${token}` }
   });
   
-  if (!res.ok) throw new Error(`Google Cloud API error: ${res.status}`);
-  const data = await res.json();
+  if (!res.ok) {
+    if (res.status === 403) {
+      console.warn("Google Cloud: 403 Forbidden. Token missing cloud-platform scope.");
+    } else {
+      throw new Error(`Google Cloud API error: ${res.status}`);
+    }
+  }
+  
+  const data = res.ok ? await res.json() : { projects: [] };
   
   for (const proj of (data.projects || [])) {
     const ok = await upsertKnowledge(supabase, {
