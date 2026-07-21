@@ -339,10 +339,82 @@ export default function SignUp() {
     </button>
     */}
   </div>
-  ) : (
+  )}
+
+  {!isAuthenticated && (
+    <div className="relative mb-6">
+      <div className="absolute inset-0 flex items-center">
+        <div className="w-full border-t border-slate-200 dark:border-border"></div>
+      </div>
+      <div className="relative flex justify-center text-xs uppercase">
+        <span className="bg-white dark:bg-card px-2 text-slate-500 font-semibold tracking-wider">Or register with email</span>
+      </div>
+    </div>
+  )}
+
   <form className="space-y-4" onSubmit={handleSignUp}>
   {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
+  {success && <div className="rounded-xl bg-emerald-50 p-3 text-xs text-emerald-600 border-[0.5px] border-emerald-100 font-medium tracking-[0.04em]">{success}</div>}
  
+  {!isAuthenticated && (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
+          {t("full_name", "Full Name")}
+        </label>
+        <Input
+          type="text"
+          required
+          placeholder="Jane Doe"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+        />
+      </div>
+      <div>
+        <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
+          {t("email", "Email")}
+        </label>
+        <Input
+          type="email"
+          required
+          placeholder="name@company.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
+            {t("password", "Password")}
+          </label>
+          <Input
+            type="password"
+            required
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+          />
+        </div>
+        <div>
+          <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
+            {t("confirm_password", "Confirm Password")}
+          </label>
+          <Input
+            type="password"
+            required
+            placeholder="••••••••"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+          />
+        </div>
+      </div>
+    </div>
+  )}
+
   <div className="pt-2 border-t border-slate-100">
     <div className="mb-4">
       <h3 className="text-sm font-semibold text-slate-800">{t("workslate_details", "Workslate Details")}</h3>
@@ -384,7 +456,6 @@ export default function SignUp() {
     {loading ? t("creating_account", "Creating account...") : t("create_workspace", "Create Workslate")}
   </Button>
   </form>
-  )}
 
   <div className="text-center mt-10">
     <span className="text-sm text-slate-500 font-medium tracking-[0.04em]">{t("already_have_an_account", "Already have an account?")} </span>

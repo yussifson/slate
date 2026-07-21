@@ -272,6 +272,7 @@ serve(async (req) => {
   } catch (error) {
     const appUrl = Deno.env.get('APP_URL') || 'http://localhost:3000'
     console.error("OAuth Callback Error:", error.message)
-    return Response.redirect(`${appUrl}/integrations?status=error&message=Server_Error`, 302)
+    const safeErrorMessage = error.message ? error.message.replace(/\s+/g, '_') : 'Server_Error'
+    return Response.redirect(`${appUrl}/integrations?status=error&message=${safeErrorMessage}`, 302)
   }
 })

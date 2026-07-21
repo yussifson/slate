@@ -609,7 +609,7 @@ export default function Login() {
         Sign in with Google
       </button>
     </div>
-    {/* 
+    {/*
     <button 
       onClick={handleAppleSignIn}
       type="button"
@@ -622,6 +622,81 @@ export default function Login() {
     </button>
     */}
   </div>
+
+  <div className="relative mb-6">
+    <div className="absolute inset-0 flex items-center">
+      <div className="w-full border-t border-slate-200 dark:border-border"></div>
+    </div>
+    <div className="relative flex justify-center text-xs uppercase">
+      <span className="bg-white dark:bg-card px-2 text-slate-500 font-semibold tracking-wider">Or continue with email</span>
+    </div>
+  </div>
+
+  <form onSubmit={handleLogin} className="space-y-4">
+    {error && (
+      <div className="rounded-xl bg-red-50 dark:bg-red-500/10 p-3 text-xs text-red-600 dark:text-red-400 border-[0.5px] border-red-100 dark:border-red-500/20 font-medium tracking-[0.04em]">
+        {error}
+      </div>
+    )}
+
+    {isRootAccount && !currentSubdomain && (
+      <div>
+        <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
+          {t("workspace_url", "Workspace URL")}
+        </label>
+        <div className="relative flex items-center">
+          <Input
+            type="text"
+            required
+            placeholder="acme"
+            value={workspace}
+            onChange={(e) => setWorkspace(e.target.value)}
+            className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 pr-32 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+          />
+          <div className="absolute right-3 text-xs font-semibold text-slate-400 pointer-events-none">
+            .optavel.com
+          </div>
+        </div>
+      </div>
+    )}
+
+    <div>
+      <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
+        {t("email", "Email")}
+      </label>
+      <Input
+        type="email"
+        required
+        placeholder="name@company.com"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+      />
+    </div>
+
+    <div>
+      <div className="flex items-center justify-between mb-1.5">
+        <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest tracking-[0.04em]">
+          {t("password", "Password")}
+        </label>
+        <Link to="/forgot-password" className="text-xs font-semibold text-primary hover:underline">
+          {t("forgot_password", "Forgot?")}
+        </Link>
+      </div>
+      <Input
+        type="password"
+        required
+        placeholder="••••••••"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+      />
+    </div>
+
+    <Button type="submit" className="w-full h-12 mt-2 text-base font-semibold transition-all active:scale-[0.98]" disabled={loading}>
+      {loading ? t("signing_in", "Signing in...") : t("sign_in", "Sign In")}
+    </Button>
+  </form>
 
   <div className="text-center mt-10">
     <span className="text-sm text-slate-500 font-medium tracking-[0.04em]">{t("don_t_have_an_account", "Don't have an account?")} </span>

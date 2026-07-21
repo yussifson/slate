@@ -56,7 +56,7 @@ export default function MobileBottomNav() {
  
  // Inject Integrations into overflow items if not present
  const baseOverflowItems = navItems.slice(4);
- const hasIntegrations = baseOverflowItems.some(i => i.path.includes('/integrations'));
+ const hasIntegrations = baseOverflowItems.some(i => i.path?.includes('/integrations'));
  const overflowItems = hasIntegrations ? baseOverflowItems : [
    ...baseOverflowItems,
    { label: 'Integrations', path: window.location.pathname.startsWith('/clipad') ? '/clipad/integrations' : '/integrations', icon: 'Plug' }
@@ -68,7 +68,7 @@ export default function MobileBottomNav() {
  <div className="flex items-center justify-around h-[52px] px-2 pt-1">
  {bottomNavItems.map((item) => {
    const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin", "/optavel", "/logistics", "/real-estate", "/retail", "/hotel", "/pharmacy", "/religion"].includes(item.path);
-   const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
+   const isActive = location.pathname === item.path || (!isRootPath && item.path && location.pathname.startsWith(item.path));
    const IconComp = typeof item.icon === 'string' ? (LucideIcons[item.icon] || LucideIcons.LayoutDashboard) : (item.icon || LucideIcons.LayoutDashboard);
    const shortLabel = SHORT_NAMES[item.label] || item.label;
  
@@ -132,7 +132,7 @@ export default function MobileBottomNav() {
            <div className="bg-white dark:bg-[#2C2C2E] rounded-[10px] overflow-hidden divide-y divide-[#E5E5EA] dark:divide-[#3A3A3C]">
            {overflowItems.map((item, index) => {
              const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin", "/optavel", "/logistics", "/real-estate", "/retail", "/hotel", "/pharmacy", "/religion"].includes(item.path);
-             const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
+             const isActive = location.pathname === item.path || (!isRootPath && item.path && location.pathname.startsWith(item.path));
              const IconComp = typeof item.icon === 'string' ? (LucideIcons[item.icon] || LucideIcons.LayoutDashboard) : (item.icon || LucideIcons.LayoutDashboard);
              const shortLabel = SHORT_NAMES[item.label] || item.label;
            
