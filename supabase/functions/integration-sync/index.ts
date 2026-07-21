@@ -1849,22 +1849,7 @@ async function syncGoogleWorkspace(integration: any, supabase: any, lastSynced: 
 }
 
 // ─── syncPipedrive ─────────────────────────────────────────────────────────────
-async function syncPipedrive(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'pipedrive';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncPipedrive has been moved to ./syncers/pipedrive.ts
 
 // ─── syncMailchimp ─────────────────────────────────────────────────────────────
 async function syncMailchimp(integration: any, supabase: any, lastSynced: Date | null) {
@@ -2053,58 +2038,13 @@ async function syncAirtable(integration: any, supabase: any, lastSynced: Date | 
 }
 
 // ─── syncSAP ─────────────────────────────────────────────────────────────
-async function syncSAP(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'sap';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncSAP has been moved to ./syncers/sap.ts
 
 // ─── syncOracle ─────────────────────────────────────────────────────────────
-async function syncOracle(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'oracle';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncOracle has been moved to ./syncers/oracle.ts
 
 // ─── syncServiceNow ─────────────────────────────────────────────────────────────
-async function syncServiceNow(integration: any, supabase: any, lastSynced: Date | null) {
-  // Graceful Standby Architecture: Acknowledge connection without crashing on dummy endpoints
-  let imported = 0;
-  const providerName = integration.provider || 'service_now';
-  const ok = await upsertKnowledge(supabase, {
-    provider: providerName,
-    external_id: `${providerName}-${integration.id}-connected`,
-    content_type: 'record',
-    title: `${providerName} Connected Successfully`,
-    content: `Integration with ${providerName} has been established. Waiting for deep data sync implementation.`,
-    url: '',
-    author: null,
-  }, integration);
-  if (ok) imported++;
-  return imported;
-}
+// syncServiceNow has been moved to ./syncers/servicenow.ts
 
 // ─── syncWorkday ─────────────────────────────────────────────────────────────
 async function syncWorkday(integration: any, supabase: any, lastSynced: Date | null) {
