@@ -15,7 +15,7 @@ import {
  useActiveSpeakerId,
  useWaitingParticipants
 } from '@daily-co/daily-react';
-import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, ExternalLink, MessageSquare, Send, UserPlus, Mail, Settings, Smile, PanelRightClose, PenTool, MoreHorizontal } from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, ExternalLink, MessageSquare, Send, UserPlus, Mail, Settings, Smile, PanelRightClose, PenTool, MoreHorizontal, Wifi, WifiOff, Users } from 'lucide-react';
 import { Button} from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -53,8 +53,10 @@ export const VIRTUAL_BACKGROUNDS = [
   { id: 'bg15', label: 'Deep Ocean', type: 'background-image', url: 'https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=600&auto=format&fit=crop' }
 ];
 
+// Fix #17: EMOJIS constant outside component — avoids recreation on every render
+const EMOJIS = ['👍', '❤️', '👏', '😂', '🎉', '🔥'];
 
- function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBackground, spaceId}) {
+function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBackground, spaceId}) {
   const navigate = useNavigate();
   const { t} = useTranslation();
   const { user } = useAuth();
@@ -72,13 +74,19 @@ export const VIRTUAL_BACKGROUNDS = [
  const localVideoTrack = useVideoTrack(localSessionId);
  const activeSpeakerId = useActiveSpeakerId();
  
+ // Fix #4: Use both state AND direct Daily meetingState() check to eliminate race conditions.
+ // The ref ensures ensureJoined() always sees the latest value without stale closures.
  const [joined, setJoined] = useState(daily ? daily.meetingState() === 'joined-meeting' : false);
+ const joinedRef = useRef(joined);
+ useEffect(() => { joinedRef.current = joined; }, [joined]);
+
  const isMuted = localAudioTrack?.state !== 'playable';
  const isVideoOff = localVideoTrack?.state !== 'playable';
  const { toast} = useToast();
  const [isAiLoading, setIsAiLoading] = useState(false);
  const [aiResponse, setAiResponse] = useState(null);
  const [transcriptData, setTranscriptData] = useState([]);
+ const transcriptDataRef = useRef([]);
  const [showSettings, setShowSettings] = useState(false);
  const [showInvite, setShowInvite] = useState(false);
  const [inviteEmail, setInviteEmail] = useState("");
@@ -87,7 +95,12 @@ export const VIRTUAL_BACKGROUNDS = [
  const { theme, changeTheme } = useTheme();
  const [showEmojis, setShowEmojis] = useState(false);
  const [floatingEmojis, setFloatingEmojis] = useState([]);
-  const EMOJIS = ['👍', '❤️', '👏', '😂', '🎉', '🔥'];
+  // Fix #3: Network reconnection state
+  const [isReconnecting, setIsReconnecting] = useState(false);
+  // Add: Connection quality indicator ('good' | 'low' | 'very-low')
+  const [networkQuality, setNetworkQuality] = useState('good');
+  // Fix #18: Single AudioContext ref — reuse across join/leave sounds
+  const audioCtxRef = useRef(null);
   const [activeBg, setActiveBg] = useState(initialBackground?.id || 'none');
   const [isApplyingBg, setIsApplyingBg] = useState(false);
   const [showWhiteboard, setShowWhiteboard] = useState(false);
@@ -225,20 +238,35 @@ export const VIRTUAL_BACKGROUNDS = [
 
   useDailyEvent('joined-meeting', useCallback(() => {
    setJoined(true);
-   if (daily) {
-     daily.startTranscription().catch(e => console.warn("Transcription couldn't start", e));
-   }
+   setIsReconnecting(false);
+   if (!daily) return;
+   // Fix #8/#9: Apply adaptive send settings AFTER joining (not before)
+   // This ensures simulcast layers actually work for low-bandwidth users
+   daily.updateSendSettings({
+     video: {
+       encodings: {
+         high:   { maxBitrate: 1_200_000, maxFramerate: 30, scaleResolutionDownBy: 1 },
+         medium: { maxBitrate:   600_000, maxFramerate: 24, scaleResolutionDownBy: 2 },
+         low:    { maxBitrate:   200_000, maxFramerate: 15, scaleResolutionDownBy: 4 },
+       }
+     }
+   }).catch(e => console.warn('updateSendSettings failed:', e));
+   // Only attempt cloud transcription — silent failure is fine if not enabled
+   daily.startTranscription().catch(() => {});
   }, [daily]));
 
+  // Fix #18: Reuse a single AudioContext instead of creating one per sound
   const playSound = (type) => {
     try {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (!audioCtxRef.current || audioCtxRef.current.state === 'closed') {
+        audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      const audioCtx = audioCtxRef.current;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
       const oscillator = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
-      
       oscillator.connect(gainNode);
       gainNode.connect(audioCtx.destination);
-      
       if (type === 'join') {
         oscillator.type = 'sine';
         oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
@@ -259,7 +287,7 @@ export const VIRTUAL_BACKGROUNDS = [
         oscillator.stop(audioCtx.currentTime + 0.5);
       }
     } catch (e) {
-      console.warn("Audio Playback failed", e);
+      console.warn('Audio playback failed:', e);
     }
   };
 
@@ -309,20 +337,42 @@ export const VIRTUAL_BACKGROUNDS = [
   }, [toast]));
 
  useDailyEvent('error', useCallback((ev) => {
- console.error('Daily error:', ev);
- toast({
- title: 'Video connection error',
- description: ev?.errorMsg || 'Could not connect to the meeting room.',
- variant: 'destructive'});
-}, [toast]));
+  console.error('Daily error:', ev);
+  toast({
+    title: 'Video connection error',
+    description: ev?.errorMsg || 'Could not connect to the meeting room.',
+    variant: 'destructive'
+  });
+ }, [toast]));
 
+ // Fix #3: Listen for network interruptions and show a reconnecting overlay
+ useDailyEvent('network-connection', useCallback((ev) => {
+   if (ev.event === 'interrupted') {
+     setIsReconnecting(true);
+     toast({ title: '⚠️ Connection Lost', description: 'Attempting to reconnect…', variant: 'destructive' });
+   } else if (ev.event === 'connected') {
+     setIsReconnecting(false);
+     toast({ title: '✅ Reconnected', description: 'Your connection has been restored.' });
+   }
+ }, [toast]));
+
+ // Add: Track network quality for the connection indicator
+ useDailyEvent('network-quality-change', useCallback((ev) => {
+   const threshold = ev?.threshold;
+   if (threshold === 'very-low') setNetworkQuality('very-low');
+   else if (threshold === 'low') setNetworkQuality('low');
+   else setNetworkQuality('good');
+ }, []));
+
+ // Fix #4: Use both the joinedRef (no stale closure) AND Daily's live meetingState()
  const ensureJoined = () => {
- if (joined || (daily && daily.meetingState() === 'joined-meeting')) return true;
- toast({
- title: 'Connecting…',
- description: 'Wait until the call has connected before using camera or mic.'});
- return false;
-};
+   if (joinedRef.current || (daily && daily.meetingState() === 'joined-meeting')) return true;
+   toast({
+     title: 'Connecting…',
+     description: 'Wait until the call has connected before using camera or mic.'
+   });
+   return false;
+ };
 
   const toggleAudio = async () => {
     if (!ensureJoined()) return;
@@ -511,49 +561,52 @@ export const VIRTUAL_BACKGROUNDS = [
     if (onLeave) onLeave();
   };
 
- // --- REAL-TIME AI TRANSCRIPTION ---
- useEffect(() => {
- if (!joined || isMuted || !window.webkitSpeechRecognition) return;
- 
- let recognition;
- try {
- const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
- recognition = new SpeechRecognition();
- recognition.continuous = true;
- recognition.interimResults = false;
- 
- recognition.onresult = (event) => {
- const lastResult = event.results[event.results.length - 1];
- if (lastResult.isFinal) {
-  const text = lastResult[0].transcript;
-  const msg = { type: 'transcription', text, name: 'Me'};
-  if (daily && daily.meetingState() === 'joined-meeting') {
-    daily.sendAppMessage(msg, '*');
-  }
-  setTranscriptData(prev => [...prev, { name: 'Me', text}]);
- }
- };
-
- recognition.onend = () => {
-   if (joined && !isMuted) {
-     try { recognition.start(); } catch (e) {}
+ // Fix #7: Real-time transcription — cross-browser (Chrome + Firefox fallback)
+ // Uses both Daily's built-in transcription-message event AND Web Speech API
+ useDailyEvent('transcription-message', useCallback((ev) => {
+   if (ev?.text) {
+     const entry = { name: ev.userName || 'Participant', text: ev.text };
+     transcriptDataRef.current = [...transcriptDataRef.current, entry];
+     setTranscriptData(prev => [...prev, entry]);
    }
- };
- 
- recognition.start();
-} catch (e) {
- console.warn("Speech recognition error:", e);
-}
- 
- return () => {
- if (recognition) {
- try { recognition.stop();} catch (e) {}
-}
-};
-}, [joined, isMuted, daily]);
+ }, []));
+
+ useEffect(() => {
+   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+   if (!joined || isMuted || !SpeechRecognition) return;
+   let recognition;
+   try {
+     recognition = new SpeechRecognition();
+     recognition.continuous = true;
+     recognition.interimResults = false;
+     recognition.onresult = (event) => {
+       const lastResult = event.results[event.results.length - 1];
+       if (lastResult.isFinal) {
+         const text = lastResult[0].transcript;
+         const entry = { name: 'Me', text };
+         transcriptDataRef.current = [...transcriptDataRef.current, entry];
+         setTranscriptData(prev => [...prev, entry]);
+         if (daily && daily.meetingState() === 'joined-meeting') {
+           daily.sendAppMessage({ type: 'transcription', text, name: 'Me' }, '*');
+         }
+       }
+     };
+     recognition.onend = () => {
+       if (joinedRef.current && !isMuted) {
+         try { recognition.start(); } catch (_) {}
+       }
+     };
+     recognition.start();
+   } catch (e) {
+     console.warn('Speech recognition error:', e);
+   }
+   return () => {
+     try { recognition?.stop(); } catch (_) {}
+   };
+ }, [joined, isMuted, daily]);
 
   const handleAiAssist = async () => {
-    if (transcriptData.length === 0) {
+    if (transcriptDataRef.current.length === 0) {
       setAiResponse("No meaningful conversation detected yet. Please make sure your microphone is unmuted and speak clearly to generate a meeting transcript.");
       return;
     }
@@ -562,10 +615,12 @@ export const VIRTUAL_BACKGROUNDS = [
     setAiResponse(null);
     toast({ title: "CliPad AI", description: "Generating meeting summary and action items..."});
     try {
-      const meetingContext = transcriptData.map(t => `${t.name}: ${t.text}`).join('\n');
+      // Fix #7: Use the ref (always up to date) and pass the real room name
+      const meetingContext = transcriptDataRef.current.map(t => `${t.name}: ${t.text}`).join('\n');
+      const realRoomId = roomUrl.split('/').pop().split('?')[0];
 
       const { data, error } = await supabase.functions.invoke('clipad-ai-processor', {
-        body: { type: 'meeting', transcript: meetingContext, roomId: 'dummy-room', spaceId: null }
+        body: { type: 'meeting', transcript: meetingContext, roomId: realRoomId, spaceId: spaceId || null }
       });
 
       if (error) throw error;
@@ -588,7 +643,7 @@ export const VIRTUAL_BACKGROUNDS = [
   };
 
   const handleAiFollowUp = async () => {
-    if (transcriptData.length === 0) {
+    if (transcriptDataRef.current.length === 0) {
       setAiResponse("Not enough transcript data to draft a follow-up email.");
       return;
     }
@@ -692,7 +747,11 @@ export const VIRTUAL_BACKGROUNDS = [
    {/* Video Grid */}
   {(() => {
     const allParticipants = [localSessionId, ...participantIds.filter(id => id !== localSessionId)].filter(Boolean);
-    const mainSpeakerId = activeSpeakerId || (allParticipants.length > 1 ? allParticipants.find(id => id !== localSessionId) : localSessionId);
+    const totalCount = allParticipants.length;
+    // Fix #6: mainSpeaker is the active speaker or first remote; always keep local in sidebar
+    const mainSpeakerId = activeSpeakerId || (totalCount > 1 ? allParticipants.find(id => id !== localSessionId) : localSessionId);
+    // Always include everyone except the main stage speaker in the sidebar strip
+    // For 2-person calls: local always appears in sidebar even though remote is main stage
     const sidebarParticipants = allParticipants.filter(id => id !== mainSpeakerId);
 
     return (
@@ -707,6 +766,14 @@ export const VIRTUAL_BACKGROUNDS = [
               <CliPadLogo size={18} className="text-white drop-shadow-md" />
             </div>
           )}
+          {/* Reconnecting overlay */}
+          {isReconnecting && (
+            <div className="absolute inset-0 z-50 bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
+              <OrbitLoader size="lg" />
+              <p className="text-white font-semibold text-lg">Reconnecting…</p>
+              <p className="text-white/60 text-sm">Your connection was interrupted. Hang tight.</p>
+            </div>
+          )}
           {screens.length > 0 ? (
             screens.map(screen => (
               <ScreenShareTile key={screen.screenId} screen={screen} className="w-full h-full absolute inset-0" />
@@ -715,11 +782,18 @@ export const VIRTUAL_BACKGROUNDS = [
             <ParticipantTile id={mainSpeakerId} isLocal={mainSpeakerId === localSessionId} className="w-full h-full absolute inset-0 !m-0 !border-0 !rounded-none" />
           ) : null}
         </div>
-        {/* Participant Sidebar */}
+        {/* Participant Sidebar — always visible, even in 2-person calls */}
         <div className="flex-1 lg:max-w-[320px] flex lg:flex-col gap-4 overflow-x-auto lg:overflow-y-auto min-h-[140px] lg:min-h-0 items-center lg:items-stretch content-start">
           {sidebarParticipants.map(id => (
             <ParticipantTile key={id} id={id} isLocal={id === localSessionId} className="w-64 min-w-[16rem] lg:w-full lg:min-w-0 shrink-0 m-0" />
           ))}
+          {/* Always show local self-view when we're the only person on screen */}
+          {totalCount === 1 && mainSpeakerId === localSessionId && (
+            <div className="flex flex-col items-center justify-center gap-2 p-4 text-slate-400 text-sm">
+              <Users className="w-8 h-8 opacity-40" />
+              <p className="text-center opacity-60">Waiting for others to join…</p>
+            </div>
+          )}
           {allParticipants.length === 0 && (
             <div key="loader" className="flex items-center justify-center w-full h-full text-slate-400">
               <OrbitLoader size="md" />
@@ -821,8 +895,9 @@ export const VIRTUAL_BACKGROUNDS = [
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium">Copy Link</label>
           <div className="flex gap-2">
-            <Input readOnly value={window.location.origin + '/join/' + roomUrl.split('/').pop()} className="bg-muted" />
-            <Button variant="secondary" onClick={() => navigator.clipboard.writeText(window.location.origin + '/join/' + roomUrl.split('/').pop())} className="w-24">
+            {/* Fix #14: Strip ?t= token from the invite link so it's shareable */}
+            <Input readOnly value={window.location.origin + '/join/' + roomUrl.split('/').pop().split('?')[0]} className="bg-muted" />
+            <Button variant="secondary" onClick={() => navigator.clipboard.writeText(window.location.origin + '/join/' + roomUrl.split('/').pop().split('?')[0])} className="w-24">
               Copy
             </Button>
           </div>
@@ -932,6 +1007,27 @@ export const VIRTUAL_BACKGROUNDS = [
 
  {/* Control Bar */}
  <div className={`relative z-10 w-full max-w-full px-2 sm:px-0 sm:max-w-fit mx-auto mb-4 sm:mb-6`}>
+   {/* Network quality + participant count bar */}
+   {!isPipMode && (
+     <div className="flex items-center justify-between px-4 mb-1 text-xs text-slate-500 dark:text-slate-400">
+       <div className="flex items-center gap-1.5">
+         {networkQuality === 'very-low' ? (
+           <WifiOff className="w-3.5 h-3.5 text-red-500" />
+         ) : networkQuality === 'low' ? (
+           <Wifi className="w-3.5 h-3.5 text-yellow-500" />
+         ) : (
+           <Wifi className="w-3.5 h-3.5 text-green-500" />
+         )}
+         <span className={networkQuality === 'very-low' ? 'text-red-500' : networkQuality === 'low' ? 'text-yellow-500' : 'text-green-500'}>
+           {networkQuality === 'very-low' ? 'Poor connection' : networkQuality === 'low' ? 'Weak signal' : 'Connected'}
+         </span>
+       </div>
+       <div className="flex items-center gap-1">
+         <Users className="w-3.5 h-3.5" />
+         <span>{participantIds.length + 1} in call</span>
+       </div>
+     </div>
+   )}
    <div className={`bg-white/80 dark:bg-card/80 backdrop-blur-3xl border border-white/60 dark:border-white/10 flex items-center justify-start sm:justify-center transition-all shadow-2xl rounded-3xl sm:rounded-full overflow-x-auto no-scrollbar ${isPipMode ? 'h-14 px-3 gap-2' : 'h-[72px] sm:h-[80px] px-4 sm:px-6 gap-2 sm:gap-4'}`}>
  <div className="relative">
    {showEmojis && (
@@ -1429,22 +1525,37 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
    const startMic = initialAudio;
    const startCam = initialVideo;
    
-   const joinOpts = { url: roomUrl, startAudioOff: !startMic, startVideoOff: !startCam };
-   if (typeof token === 'string' && token.length > 0) {
-    joinOpts.token = token;
+   let parsedUrl;
+   let finalToken = token;
+   let cleanUrl = roomUrl;
+   try {
+     parsedUrl = new URL(roomUrl);
+     const urlToken = parsedUrl.searchParams.get('t');
+     if (urlToken) {
+       finalToken = finalToken || urlToken;
+       // Daily usually wants the clean URL without the token in the 'url' option
+       parsedUrl.searchParams.delete('t');
+       cleanUrl = parsedUrl.toString();
+     }
+   } catch (e) {
+     console.warn("Invalid room URL", e);
+   }
+
+   const joinOpts = { url: cleanUrl, startAudioOff: !startMic, startVideoOff: !startCam };
+   if (typeof finalToken === 'string' && finalToken.length > 0) {
+    joinOpts.token = finalToken;
    }
    if (typeof userName === 'string' && userName.trim().length > 0) {
     joinOpts.userName = userName.trim();
    }
 
    try {
-    try {
-      await callObject.startCamera();
-    } catch(camErr) {
-      console.warn("No camera or mic found:", camErr);
-    }
-    if (cancelled) return;
+    // Fix #2: Do NOT call startCamera() before join() in call-object mode.
+    // Daily.co will request camera/mic automatically during join().
+    // Calling startCamera() first causes NotAllowedError on many browsers
+    // which aborts the whole join flow.
 
+    // Apply noise cancellation as an input setting — this is supported pre-join
     try {
       await callObject.updateInputSettings({
         audio: {
@@ -1458,19 +1569,7 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
       });
     } catch (e) { console.warn("Noise cancellation not supported:", e); }
     
-    try {
-      await callObject.updateSendSettings({
-        video: {
-          encodings: {
-            high: { maxBitrate: 1200000, maxFramerate: 30, scaleResolutionDownBy: 1 },
-            medium: { maxBitrate: 600000, maxFramerate: 24, scaleResolutionDownBy: 2 },
-            low: { maxBitrate: 200000, maxFramerate: 15, scaleResolutionDownBy: 4 },
-          }
-        }
-      });
-    } catch (e) { console.warn("Send settings not supported:", e); }
-    
-    // Apply background instantly before joining
+    // Apply background before joining (supported pre-join)
     if (initialBackground && initialBackground.type !== 'none') {
         try {
            if (initialBackground.type === 'background-blur') {
@@ -1481,16 +1580,24 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
         } catch(e) { console.error("Initial bg fail", e); }
     }
 
-    await callObject.join(joinOpts);
-   } catch (camErr) {
-    console.warn('Camera/Mic permission denied or joining error.', camErr);
     if (cancelled) return;
-    try { 
-      const joinPayload = { url: roomUrl, userName: joinOpts.userName };
+
+    // Join the room — camera/mic are activated here
+    await callObject.join(joinOpts);
+
+    // Fix #8: updateSendSettings is now applied in the joined-meeting event
+    // inside VideoRoomInner (after join succeeds) — see the useDailyEvent listener
+
+   } catch (joinErr) {
+    console.warn('Joining error — attempting fallback join without media settings.', joinErr);
+    if (cancelled) return;
+    try {
+      const joinPayload = { url: cleanUrl, userName: joinOpts.userName, startAudioOff: true, startVideoOff: true };
       if (joinOpts.token) joinPayload.token = joinOpts.token;
-      await callObject.join(joinPayload); 
-    } catch (e) { console.error(e); }
+      await callObject.join(joinPayload);
+    } catch (e) { console.error('Fallback join also failed:', e); }
    }
+
 
    if (cancelled) return;
    setDaily(callObject);

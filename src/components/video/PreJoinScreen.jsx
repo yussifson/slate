@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Mic, MicOff, Video as VideoIcon, VideoOff, AlertCircle, Activity, Sparkles, Copy, ChevronLeft } from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, AlertCircle, Copy, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -10,77 +10,110 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [error, setError] = useState(null);
   const [localStream, setLocalStream] = useState(null);
-  const [volume, setVolume] = useState(0);
   const [selectedBg, setSelectedBg] = useState(VIRTUAL_BACKGROUNDS[0]);
-  
+
+  // Device selection
+  const [cameras, setCameras] = useState([]);
+  const [microphones, setMicrophones] = useState([]);
+  const [selectedCamera, setSelectedCamera] = useState('');
+  const [selectedMic, setSelectedMic] = useState('');
+  const [showDevices, setShowDevices] = useState(false);
+
+  // Fix #15: bar heights stored in a ref, updated by RAF — no Math.random() in render
+  const barHeightsRef = useRef([20, 20, 20, 20, 20]);
+  const [barHeights, setBarHeights] = useState([20, 20, 20, 20, 20]);
+
   const navigate = useNavigate();
-  
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const { toast } = useToast();
 
+  // Enumerate available devices once permission is granted
+  const enumerateDevices = async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const cams = devices.filter(d => d.kind === 'videoinput');
+      const mics = devices.filter(d => d.kind === 'audioinput');
+      setCameras(cams);
+      setMicrophones(mics);
+      if (cams.length > 0 && !selectedCamera) setSelectedCamera(cams[0].deviceId);
+      if (mics.length > 0 && !selectedMic) setSelectedMic(mics[0].deviceId);
+    } catch (_) {}
+  };
+
+  const startMedia = async (cameraId, micId) => {
+    // Stop existing stream first
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+    }
+    try {
+      const videoConstraints = cameraId
+        ? { deviceId: { exact: cameraId }, width: { ideal: 1280 }, height: { ideal: 720 } }
+        : { width: { ideal: 1280 }, height: { ideal: 720 } };
+      const audioConstraints = micId
+        ? { deviceId: { exact: micId }, echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+        : { echoCancellation: true, noiseSuppression: true, autoGainControl: true };
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: videoConstraints,
+        audio: audioConstraints
+      });
+
+      streamRef.current = stream;
+      setLocalStream(stream);
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+
+      // Apply current toggle states
+      stream.getAudioTracks().forEach(t => { t.enabled = isMicOn; });
+      stream.getVideoTracks().forEach(t => { t.enabled = isVideoOn; });
+
+      setError(null);
+      // Now enumerate devices (labels only available after permission granted)
+      await enumerateDevices();
+    } catch (err) {
+      if (err.name !== 'NotFoundError') {
+        console.warn("Could not access camera/mic for pre-join preview", err);
+      }
+      setError("Camera or microphone access denied. You can still join without them.");
+      setIsMicOn(false);
+      setIsVideoOn(false);
+    }
+  };
+
   useEffect(() => {
     let mounted = true;
-
-    const startMedia = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { width: { ideal: 1280 }, height: { ideal: 720 } }, 
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true
-          } 
-        });
-        
-        if (!mounted) {
-          stream.getTracks().forEach(track => track.stop());
-          return;
-        }
-
-        streamRef.current = stream;
-        setLocalStream(stream);
-        
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-
-        // Apply initial toggle states
-        stream.getAudioTracks().forEach(track => {
-          track.enabled = isMicOn;
-        });
-        stream.getVideoTracks().forEach(track => {
-          track.enabled = isVideoOn;
-        });
-
-        setError(null);
-      } catch (err) {
-        if (err.name !== 'NotFoundError') {
-          console.warn("Could not access camera/mic for pre-join preview", err);
-        }
-        if (mounted) {
-          // If they explicitly denied, or no device found
-          setError("Camera or microphone access denied. You can still join without them.");
-          setIsMicOn(false);
-          setIsVideoOn(false);
-        }
-      }
+    const init = async () => {
+      if (!mounted) return;
+      await startMedia(selectedCamera, selectedMic);
     };
-
-    startMedia();
-
+    init();
     return () => {
       mounted = false;
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current.getTracks().forEach(t => t.stop());
       }
     };
-  }, []); // Run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only on mount
 
-  // Audio Visualizer Effect
+  // Re-start media when device selection changes
+  const handleDeviceChange = async (type, deviceId) => {
+    if (type === 'camera') {
+      setSelectedCamera(deviceId);
+      await startMedia(deviceId, selectedMic);
+    } else {
+      setSelectedMic(deviceId);
+      await startMedia(selectedCamera, deviceId);
+    }
+  };
+
+  // Fix #15: Audio Visualizer — deterministic heights, no Math.random() in render loop
   useEffect(() => {
     if (!localStream || !isMicOn) {
-      setVolume(0);
+      setBarHeights([20, 20, 20, 20, 20]);
       return;
     }
 
@@ -94,20 +127,21 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
       analyser = audioContext.createAnalyser();
       analyser.smoothingTimeConstant = 0.8;
       analyser.fftSize = 256;
-
       microphone = audioContext.createMediaStreamSource(localStream);
       microphone.connect(analyser);
 
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      // Use fixed frequency bands for each bar — no randomness
+      const bandIndices = [4, 8, 12, 16, 22];
+
       const checkVolume = () => {
-        const array = new Uint8Array(analyser.frequencyBinCount);
-        analyser.getByteFrequencyData(array);
-        let values = 0;
-        for (let i = 0; i < array.length; i++) {
-          values += array[i];
-        }
-        const average = values / array.length;
-        // Amplify average for visual effect (0 to 100)
-        setVolume(Math.min(100, Math.round((average / 256) * 100 * 3)));
+        analyser.getByteFrequencyData(dataArray);
+        const heights = bandIndices.map(idx => {
+          const val = dataArray[idx] || 0;
+          return Math.max(20, Math.round((val / 255) * 100));
+        });
+        barHeightsRef.current = heights;
+        setBarHeights([...heights]);
         animationFrame = requestAnimationFrame(checkVolume);
       };
 
@@ -124,25 +158,13 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
     };
   }, [localStream, isMicOn]);
 
-  // Toggle handlers for the preview tracks
   const toggleMic = async () => {
     const newState = !isMicOn;
     setIsMicOn(newState);
     if (streamRef.current) {
-      streamRef.current.getAudioTracks().forEach(track => {
-        track.enabled = newState;
-      });
+      streamRef.current.getAudioTracks().forEach(t => { t.enabled = newState; });
     } else if (newState) {
-      // Re-request if missing
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: isVideoOn });
-        streamRef.current = stream;
-        setLocalStream(stream);
-        if (videoRef.current) videoRef.current.srcObject = stream;
-        setError(null);
-      } catch (err) {
-        setIsMicOn(false);
-      }
+      await startMedia(selectedCamera, selectedMic);
     }
   };
 
@@ -150,27 +172,16 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
     const newState = !isVideoOn;
     setIsVideoOn(newState);
     if (streamRef.current) {
-      streamRef.current.getVideoTracks().forEach(track => {
-        track.enabled = newState;
-      });
+      streamRef.current.getVideoTracks().forEach(t => { t.enabled = newState; });
     } else if (newState) {
-      // Re-request if missing
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: isMicOn, video: true });
-        streamRef.current = stream;
-        setLocalStream(stream);
-        if (videoRef.current) videoRef.current.srcObject = stream;
-        setError(null);
-      } catch (err) {
-        setIsVideoOn(false);
-      }
+      await startMedia(selectedCamera, selectedMic);
     }
   };
 
   const handleJoinClick = () => {
     // Stop local preview tracks before passing control to Daily
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current.getTracks().forEach(t => t.stop());
       streamRef.current = null;
     }
 
@@ -178,7 +189,9 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
       name: defaultName || 'Guest',
       micOn: isMicOn,
       videoOn: isVideoOn,
-      backgroundConfig: selectedBg
+      backgroundConfig: selectedBg,
+      cameraDeviceId: selectedCamera || undefined,
+      micDeviceId: selectedMic || undefined,
     });
   };
 
@@ -221,13 +234,13 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
 
           {/* Overlay Controls */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20">
-            {/* Audio Visualizer */}
+            {/* Fix #15: Audio Visualizer with deterministic bar heights */}
             <div className={`flex items-center gap-1.5 h-6 transition-opacity duration-300 ${isMicOn ? 'opacity-100' : 'opacity-0'}`}>
-              {[1, 2, 3, 4, 5].map((i) => (
+              {barHeights.map((h, i) => (
                 <div 
                   key={i}
                   className="w-1.5 bg-green-500 rounded-full transition-all duration-75"
-                  style={{ height: `${Math.max(20, volume * (Math.random() * 0.5 + 0.5))}%` }}
+                  style={{ height: `${h}%` }}
                 />
               ))}
             </div>
@@ -252,6 +265,55 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
             </div>
           </div>
         </div>
+
+        {/* Device Selector (shown when multiple devices available) */}
+        {(cameras.length > 1 || microphones.length > 1) && (
+          <div className="mt-3 w-full max-w-sm md:max-w-none">
+            <button
+              onClick={() => setShowDevices(!showDevices)}
+              className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+            >
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showDevices ? 'rotate-180' : ''}`} />
+              Change camera / microphone
+            </button>
+            {showDevices && (
+              <div className="mt-2 space-y-2 bg-white/80 dark:bg-card/80 backdrop-blur-xl border border-slate-200 dark:border-border rounded-2xl p-4">
+                {cameras.length > 1 && (
+                  <div>
+                    <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 block">Camera</label>
+                    <select
+                      value={selectedCamera}
+                      onChange={e => handleDeviceChange('camera', e.target.value)}
+                      className="w-full text-sm bg-slate-50 dark:bg-secondary border border-slate-200 dark:border-border rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    >
+                      {cameras.map(cam => (
+                        <option key={cam.deviceId} value={cam.deviceId}>
+                          {cam.label || `Camera ${cameras.indexOf(cam) + 1}`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                {microphones.length > 1 && (
+                  <div>
+                    <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 block">Microphone</label>
+                    <select
+                      value={selectedMic}
+                      onChange={e => handleDeviceChange('mic', e.target.value)}
+                      className="w-full text-sm bg-slate-50 dark:bg-secondary border border-slate-200 dark:border-border rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    >
+                      {microphones.map(mic => (
+                        <option key={mic.deviceId} value={mic.deviceId}>
+                          {mic.label || `Microphone ${microphones.indexOf(mic) + 1}`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Right Side: Join Form */}
@@ -286,8 +348,6 @@ export default function PreJoinScreen({ roomName, onJoin, defaultName = 'Guest' 
             Copy meeting link
           </Button>
         </div>
-
-
       </div>
     </div>
   );

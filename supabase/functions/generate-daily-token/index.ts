@@ -19,6 +19,9 @@ serve(async (req) => {
       throw new Error('DAILY_API_KEY is missing')
     }
 
+    // Tokens expire in 2 hours — prevents replay attacks and ensures fresh auth
+    const tokenExp = Math.round(Date.now() / 1000) + 60 * 120
+
     const response = await fetch('https://api.daily.co/v1/meeting-tokens', {
       method: 'POST',
       headers: {
@@ -31,6 +34,11 @@ serve(async (req) => {
           user_name: userName || 'Guest',
           user_id: userId || 'guest',
           is_owner: isOwner === true,
+          exp: tokenExp,
+          // Owners can record the meeting server-side as a backup
+          enable_recording: isOwner === true ? 'cloud' : undefined,
+          // Allow screen-sharing for all participants
+          enable_screenshare: true,
         },
       }),
     })
