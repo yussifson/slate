@@ -181,6 +181,50 @@ serve(async (req) => {
           accessToken = data.access_token
           refreshToken = data.refresh_token || ''
           expiresIn = data.expires_in || 3600
+        } else if (provider === 'github') {
+          const clientId = Deno.env.get('GITHUB_CLIENT_ID')
+          const clientSecret = Deno.env.get('GITHUB_CLIENT_SECRET')
+          if (!clientId || !clientSecret) throw new Error("Missing GitHub Client ID/Secret")
+
+          const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              client_id: clientId,
+              client_secret: clientSecret,
+              code,
+              redirect_uri: redirectUri
+            })
+          })
+          const data = await tokenResponse.json()
+          if (data.error) throw new Error(data.error_description || data.error)
+          accessToken = data.access_token
+          refreshToken = data.refresh_token || ''
+          expiresIn = data.expires_in || 31536000 // GitHub tokens may not expire depending on app settings
+        } else if (provider === 'gitlab') {
+          const clientId = Deno.env.get('GITLAB_CLIENT_ID')
+          const clientSecret = Deno.env.get('GITLAB_CLIENT_SECRET')
+          if (!clientId || !clientSecret) throw new Error("Missing GitLab Client ID/Secret")
+
+          const tokenResponse = await fetch('https://gitlab.com/oauth/token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+              client_id: clientId,
+              client_secret: clientSecret,
+              code,
+              grant_type: 'authorization_code',
+              redirect_uri: redirectUri
+            })
+          })
+          const data = await tokenResponse.json()
+          if (data.error) throw new Error(data.error_description || data.error)
+          accessToken = data.access_token
+          refreshToken = data.refresh_token || ''
+          expiresIn = data.expires_in || 3600
         } else {
           throw new Error(`Unsupported provider: ${provider}`)
         }
