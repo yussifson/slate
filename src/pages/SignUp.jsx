@@ -303,7 +303,7 @@ export default function SignUp() {
   </p>
   </div>
  
-  {!isAuthenticated ? (
+  {!isAuthenticated && (
   <div className="flex flex-col gap-3 mb-6">
     <button
       onClick={handleOptavelSSO}
