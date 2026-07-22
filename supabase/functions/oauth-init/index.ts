@@ -349,11 +349,18 @@ serve(async (req) => {
       }
 
       case 'google_cloud': {
-        // GCP uses service account JSON key
-        const returnWithInfo = new URL(return_url)
-        returnWithInfo.searchParams.set('status', 'needs_api_key')
-        returnWithInfo.searchParams.set('provider', 'google_cloud')
-        return Response.redirect(returnWithInfo.toString(), 302)
+        const googleClientId = Deno.env.get('GOOGLE_CLIENT_ID')
+        if (googleClientId) {
+          const scopes = 'email profile https://www.googleapis.com/auth/cloud-platform.read-only'
+          authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${encodeURIComponent(scopes)}&access_type=offline&prompt=consent&state=${state}`
+        } else {
+          // Fallback to API Key modal for service account JSON
+          const returnWithInfo = new URL(return_url)
+          returnWithInfo.searchParams.set('status', 'needs_api_key')
+          returnWithInfo.searchParams.set('provider', 'google_cloud')
+          return Response.redirect(returnWithInfo.toString(), 302)
+        }
+        break;
       }
 
       case 'sap': {
