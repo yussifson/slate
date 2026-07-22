@@ -1093,7 +1093,6 @@ export default function RecordVideo() {
       
       recorder.onstop = async () => {
         stopEverything();
-        setIsRecording(false);
         // If no data was captured at all (e.g. stopped before first chunk), bail out
         if (chunksRef.current.length === 0) {
           setPhase('setup');
