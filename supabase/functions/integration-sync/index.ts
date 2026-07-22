@@ -260,12 +260,15 @@ serve(async (req) => {
       }).catch(() => {});
     }
 
-    return new Response(JSON.stringify({ success: true, imported, error: syncError }), {
+    return new Response(JSON.stringify({ success: !syncError, imported, error: syncError }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (e: any) {
-    return new Response(JSON.stringify({ error: e?.message || String(e) }), { status: 500, headers: corsHeaders });
+    return new Response(JSON.stringify({ success: false, imported: 0, error: e?.message || String(e) }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
   }
 });
 
