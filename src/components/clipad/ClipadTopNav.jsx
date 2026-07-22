@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { Sparkles, Settings, Shield, LogOut, MessageSquare, Search, Plus, User, Plug, Network, ChevronDown, Layout, Video, Calendar, BarChart2 } from 'lucide-react';
+import { Sparkles, Settings, Shield, LogOut, MessageSquare, Search, Plus, User, Plug, Network, ChevronDown, Layout, Video, Calendar, BarChart2, Brain } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
@@ -36,6 +36,7 @@ export default function ClipadTopNav({ forceMobile = false }) {
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
   const navItems = [
+    { label: 'Intelligence', path: window.location.pathname.startsWith('/clipad') ? '/clipad/intelligence' : '/intelligence', icon: Brain },
     { label: 'Spaces', path: '/spaces', icon: Layout },
     { label: 'Recordings', path: '/videos', icon: Video },
     { label: 'Meetings', path: '/meetings', icon: Calendar },
