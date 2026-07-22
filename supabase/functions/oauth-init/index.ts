@@ -351,7 +351,7 @@ serve(async (req) => {
       case 'google_cloud': {
         const googleClientId = Deno.env.get('GOOGLE_CLIENT_ID')
         if (googleClientId) {
-          const scopes = 'email profile https://www.googleapis.com/auth/cloud-platform.read-only'
+          const scopes = 'email profile https://www.googleapis.com/auth/cloud-platform.read-only https://www.googleapis.com/auth/cloudplatformprojects.readonly'
           authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${encodeURIComponent(scopes)}&access_type=offline&prompt=consent&state=${state}`
         } else {
           // Fallback to API Key modal for service account JSON
