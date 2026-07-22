@@ -11,7 +11,6 @@ import { buildOrgContext } from '@/lib/clipadIntelligence';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { isAdmin, isSpaceman } from '@/lib/constants';
-import { OrbitIcon } from '@/components/ui/OrbitIcon';
 import { useToast } from '@/components/ui/use-toast';
 
 const TYPE_META = {
@@ -364,21 +363,19 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
         }
       `}</style>
       
-      {/* Crisp, clean, enterprise modal container — no messy top colors, no input clipping */}
+      {/* Crisp, clean, enterprise modal container — no logo, center-aligned input */}
       <div
         className="w-full max-w-[720px] flex flex-col rounded-xl overflow-hidden shadow-2xl shadow-slate-900/20 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1117] relative"
         style={{ animation: 'spotlightFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1)' }}
       >
-        {/* Search Header Row — Generous padding & crisp typography */}
-        <div className="flex items-center gap-3.5 px-6 py-4.5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0D1117]">
+        {/* Search Header Row — Center aligned placeholder & input */}
+        <div className="flex items-center justify-between gap-3 px-6 py-4.5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0D1117] relative">
           {isSearching || isSynthesizing ? (
-            <div className="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
-              <Loader2 className="w-5 h-5 animate-spin text-emerald-600 dark:text-emerald-400" />
+            <div className="w-7 h-7 flex items-center justify-center shrink-0">
+              <Loader2 className="w-4.5 h-4.5 animate-spin text-emerald-600 dark:text-emerald-400" />
             </div>
           ) : (
-            <div className="w-9 h-9 rounded-lg bg-emerald-600 flex items-center justify-center shadow-sm shadow-emerald-600/30 shrink-0">
-              <OrbitIcon className="w-5 h-5 text-white" />
-            </div>
+            <div className="w-7 h-7 shrink-0" />
           )}
           
           <input
@@ -387,12 +384,12 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask OrbitFlow AI or search docs, tasks, meetings..."
-            className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-slate-100 text-base font-semibold placeholder:text-slate-400 placeholder:font-normal min-w-0 tracking-tight"
+            className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-slate-100 text-base font-semibold placeholder:text-slate-400 placeholder:font-normal min-w-0 tracking-tight text-center placeholder:text-center"
             style={{ caretColor: '#10b981' }}
           />
           
-          <div className="flex items-center gap-2 shrink-0">
-            {query && (
+          <div className="flex items-center gap-2 shrink-0 min-w-[50px] justify-end">
+            {query ? (
               <button
                 onClick={() => { setQuery(''); setResults([]); setAiAnswer(''); setHasSearched(false); inputRef.current?.focus(); }}
                 className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
@@ -400,11 +397,11 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
               >
                 <X className="w-4 h-4" />
               </button>
+            ) : (
+              <span className="hidden sm:inline-flex items-center text-[10px] font-mono font-bold px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                ESC
+              </span>
             )}
-            
-            <span className="hidden sm:inline-flex items-center text-[11px] font-mono font-bold px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              ESC
-            </span>
           </div>
         </div>
 
