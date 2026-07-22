@@ -992,8 +992,7 @@ export default function RecordVideo() {
           const { data: { session } } = await supabase.auth.getSession();
           ws.send(JSON.stringify({ type: 'START', userId: user.id, token: session?.access_token }));
           if (!isReconnect) {
-            // First connection — start recording
-            recorder.start(1000); // 1-second chunks
+            // First connection — recorder already started below
           } else {
             // Reconnected — replay buffered chunks first
             toast({ title: '🔄 Reconnected', description: 'Uploading buffered recording data...' });
@@ -1164,6 +1163,7 @@ export default function RecordVideo() {
 
       // Initial connection
       connectWS(false);
+      recorder.start(1000); // 1-second chunks
 
       setPhase('recording');
       isRecordingRef.current = true;
