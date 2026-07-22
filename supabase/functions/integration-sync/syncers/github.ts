@@ -3,13 +3,11 @@ import { upsertKnowledge } from '../utils.ts';
 export async function syncGitHub(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token || integration.metadata?.api_key || integration.metadata?.personal_access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   if (!token) throw new Error("GitHub token missing. Please reconnect or provide a Personal Access Token.");
 
-  const sinceParam = lastSynced ? `&since=${lastSynced.toISOString()}` : '';
-
-  const repoRes = await fetch('https://api.github.com/user/repos?per_page=100&sort=updated', {
+  const repoRes = await fetch('https://api.github.com/user/repos?per_page=100&sort=updated&type=all', {
     headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'CliPad-Integration' }
   });
   if (!repoRes.ok) {
@@ -20,6 +18,26 @@ export async function syncGitHub(integration: any, supabase: any, lastSynced: Da
     throw new Error(`GitHub API error: ${repoRes.status} — ${errBody?.message || 'Failed to fetch repositories'}`);
   }
   const repos = await repoRes.json();
+
+  // 1. Sync all Repositories as Knowledge Items first
+  for (const repo of repos) {
+    if (imported >= limit) break;
+    const okRepo = await upsertKnowledge(supabase, {
+      provider: 'github',
+      external_id: `repo_${repo.id}`,
+      content_type: 'repository',
+      title: repo.full_name,
+      content: [repo.description, repo.language ? `Language: ${repo.language}` : '', `Stars: ${repo.stargazers_count}`, `Forks: ${repo.forks_count}`].filter(Boolean).join('\n'),
+      url: repo.html_url,
+      author: repo.owner?.login || null,
+      tags: [repo.language, repo.visibility, 'repository'].filter(Boolean),
+      metadata: { full_name: repo.full_name, stars: repo.stargazers_count, default_branch: repo.default_branch },
+    }, integration);
+    if (okRepo) imported++;
+  }
+
+  // 2. Sync Issues and Pull Requests per Repository
+  const sinceParam = lastSynced ? `&since=${lastSynced.toISOString()}` : '';
 
   for (const repo of repos) {
     if (imported >= limit) break;
@@ -46,15 +64,16 @@ export async function syncGitHub(integration: any, supabase: any, lastSynced: Da
           external_id: String(issue.id),
           content_type: isPR ? 'pull_request' : 'issue',
           title: `[${repo.name}] ${issue.title}`,
-          content: issue.body?.substring(0, 3000) || '',
+          content: issue.body?.substring(0, 5000) || '',
           url: issue.html_url,
           author: issue.user?.login || null,
-          tags: [...(issue.labels?.map((l: any) => l.name) || []), issue.state],
+          tags: [...(issue.labels?.map((l: any) => l.name) || []), issue.state, isPR ? 'pull_request' : 'issue'],
           metadata: { repository: repo.full_name, state: issue.state, comments: issue.comments },
         }, integration);
         if (ok) imported++;
       }
       page++;
+      if (issues.length < 100) hasMore = false;
     }
   }
 
