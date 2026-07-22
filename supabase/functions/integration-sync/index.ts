@@ -441,7 +441,45 @@ async function syncSlack(integration: any, supabase: any, lastSynced: Date | nul
 
 // ─── Zoom Sync ────────────────────────────────────────────────────────────────
 async function syncZoom(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
+  // Auto-refresh Zoom token if expired or expiring within 5 minutes
+  let token = integration.access_token;
+  const tokenExpiry = integration.token_expires_at ? new Date(integration.token_expires_at) : null;
+  const needsRefresh = tokenExpiry && tokenExpiry < new Date(Date.now() + 5 * 60 * 1000);
+
+  if (needsRefresh && integration.refresh_token) {
+    try {
+      const zoomClientId = Deno.env.get('ZOOM_CLIENT_ID');
+      const zoomClientSecret = Deno.env.get('ZOOM_CLIENT_SECRET');
+      if (zoomClientId && zoomClientSecret) {
+        const basicAuth = btoa(`${zoomClientId}:${zoomClientSecret}`);
+        const refreshRes = await fetch('https://zoom.us/oauth/token', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Basic ${basicAuth}`,
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams({
+            grant_type: 'refresh_token',
+            refresh_token: integration.refresh_token
+          })
+        });
+        if (refreshRes.ok) {
+          const refreshData = await refreshRes.json();
+          if (refreshData.access_token) {
+            token = refreshData.access_token;
+            await supabase.from('clipad_integrations').update({
+              access_token: token,
+              refresh_token: refreshData.refresh_token || integration.refresh_token,
+              token_expires_at: new Date(Date.now() + (refreshData.expires_in || 3600) * 1000).toISOString()
+            }).eq('id', integration.id);
+          }
+        }
+      }
+    } catch (refreshErr: any) {
+      console.warn('Zoom token refresh failed:', refreshErr?.message);
+    }
+  }
+
   let imported = 0;
   const limit = integration.settings?.sync_limit || 1000;
 
@@ -458,7 +496,10 @@ async function syncZoom(integration: any, supabase: any, lastSynced: Date | null
     const res = await fetch(`https://api.zoom.us/v2/users/me/recordings?page_size=100${fromParam}${tokenParam}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    if (!res.ok) throw new Error(`Zoom API error: ${res.status}`);
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(`Zoom API error: ${res.status} — ${errBody?.message || errBody?.code || 'Ensure recording:read scope is granted. Reconnect Zoom to refresh permissions.'}`);
+    }
     
     const data = await res.json();
 
@@ -543,7 +584,14 @@ async function syncMSTeams(integration: any, supabase: any, lastSynced: Date | n
   const teamsRes = await fetch('https://graph.microsoft.com/v1.0/me/joinedTeams', {
     headers: { Authorization: `Bearer ${token}` }
   });
-  if (!teamsRes.ok) throw new Error(`Teams API error: ${teamsRes.status}`);
+  if (!teamsRes.ok) {
+    const teamsErrBody = await teamsRes.json().catch(() => ({}));
+    const teamsErrMsg = teamsErrBody?.error?.message || teamsErrBody?.error?.code || '';
+    if (teamsRes.status === 403) {
+      throw new Error(`Teams API error: 403 — The Microsoft Teams integration requires Admin Consent for ChannelMessage.Read.All in your Azure AD app. Please ask your IT admin to grant this permission at https://portal.azure.com → App Registrations → API Permissions. ${teamsErrMsg}`);
+    }
+    throw new Error(`Teams API error: ${teamsRes.status} — ${teamsErrMsg}`);
+  }
   const teamsData = await teamsRes.json();
 
   for (const team of (teamsData.value || [])) {
@@ -1647,20 +1695,59 @@ async function syncSharePoint(integration: any, supabase: any, lastSynced: Date 
   let imported = 0;
   const limit = integration.settings?.sync_limit || 1000;
 
-  const filterParam = '';
-
-  // Get all sites the user has access to
-  const sitesRes = await fetch(`https://graph.microsoft.com/v1.0/sites?search=*&$top=500`, {
+  // Strategy: Use /me/drives (no admin consent required) and also try /sites?search=*
+  // /me/drives gives user's accessible SharePoint drives via their personal OneDrive + SharePoint
+  // This avoids the 400/403 from sites?search=* which needs Sites.Read.All (admin-consented)
+  const drivesRes = await fetch(`https://graph.microsoft.com/v1.0/me/drives`, {
     headers: { Authorization: `Bearer ${token}` }
   });
-  if (!sitesRes.ok) throw new Error(`SharePoint API error: ${sitesRes.status}`);
-  const sitesData = await sitesRes.json();
 
-  for (const site of (sitesData.value || [])) {
+  const driveSources: any[] = [];
+
+  if (drivesRes.ok) {
+    const drivesData = await drivesRes.json();
+    for (const drive of (drivesData.value || [])) {
+      if (drive.driveType === 'documentLibrary' || drive.driveType === 'business') {
+        driveSources.push({ id: drive.id, name: drive.name, type: 'drive' });
+      }
+    }
+  }
+
+  // Also try to get followed sites (requires Sites.Read.All but gracefully degrades)
+  const followedRes = await fetch(`https://graph.microsoft.com/v1.0/me/followedSites?$top=20`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (followedRes.ok) {
+    const followedData = await followedRes.json();
+    for (const site of (followedData.value || [])) {
+      driveSources.push({ id: site.id, name: site.displayName || site.name, type: 'site' });
+    }
+  }
+
+  // If no sources found via user methods, try the admin API (may 400 if not consented)
+  if (driveSources.length === 0) {
+    const sitesRes = await fetch(`https://graph.microsoft.com/v1.0/sites?search=*&$top=10`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!sitesRes.ok) {
+      const errBody = await sitesRes.json().catch(() => ({}));
+      throw new Error(`SharePoint API error: ${sitesRes.status} — ${errBody?.error?.message || 'Sites.Read.All permission may require Admin Consent. To fix: In Azure AD App Registration, grant and consent to Sites.Read.All.'}`);
+    }
+    const sitesData = await sitesRes.json();
+    for (const site of (sitesData.value || [])) {
+      driveSources.push({ id: site.id, name: site.displayName, type: 'site' });
+    }
+  }
+
+  for (const source of driveSources) {
     if (imported >= limit) break;
-    
-    let nextLink = `https://graph.microsoft.com/v1.0/sites/${site.id}/drive/root/children?$top=100&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy${filterParam}`;
-    
+
+    const baseUrl = source.type === 'site'
+      ? `https://graph.microsoft.com/v1.0/sites/${source.id}/drive/root/children`
+      : `https://graph.microsoft.com/v1.0/drives/${source.id}/root/children`;
+
+    let nextLink = `${baseUrl}?$top=100&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy`;
+
     while (nextLink && imported < limit) {
       const docsRes = await fetch(nextLink, {
         headers: { Authorization: `Bearer ${token}` }
@@ -1675,18 +1762,21 @@ async function syncSharePoint(integration: any, supabase: any, lastSynced: Date 
         const SUPPORTED_EXT = ['docx', 'xlsx', 'pptx', 'pdf', 'txt', 'md'];
         if (!SUPPORTED_EXT.includes(ext)) continue;
 
+        // Incremental sync: skip if not modified since last sync
+        if (lastSynced && item.lastModifiedDateTime && new Date(item.lastModifiedDateTime) <= lastSynced) continue;
+
         const ok = await upsertKnowledge(supabase, {
           provider: 'sharepoint',
           external_id: item.id,
           content_type: ext === 'pdf' ? 'pdf' : ext === 'xlsx' ? 'spreadsheet' : 'document',
-          title: `[${site.displayName}] ${item.name}`,
+          title: `[${source.name}] ${item.name}`,
           url: item.webUrl,
           author: item.createdBy?.user?.displayName || null,
-          metadata: { siteId: site.id, siteName: site.displayName, lastModified: item.lastModifiedDateTime },
+          metadata: { sourceId: source.id, sourceName: source.name, lastModified: item.lastModifiedDateTime },
         }, integration);
         if (ok) imported++;
       }
-      
+
       nextLink = docsData['@odata.nextLink'] || '';
     }
   }
@@ -1767,31 +1857,71 @@ async function syncGoogleWorkspace(integration: any, supabase: any, lastSynced: 
 
 // ─── syncGoogleCloud ─────────────────────────────────────────────────────────────
 async function syncGoogleCloud(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
   let imported = 0;
-  
-  // Real implementation using Cloud Resource Manager API
-  const res = await fetch(`https://cloudresourcemanager.googleapis.com/v1/projects`, {
-    headers: { Authorization: `Bearer ${token}` }
+
+  // Google Cloud integration stores either:
+  // 1. A raw OAuth Bearer token (from Google OAuth flow via google_cloud provider)
+  // 2. A service account JSON key (from API key modal)
+  let bearerToken = integration.access_token;
+
+  // Detect if access_token is a service account JSON (starts with '{' or 'eyJ' for base64 encoded)
+  const rawToken = integration.access_token || '';
+  const isServiceAccountJson = rawToken.trim().startsWith('{');
+
+  if (isServiceAccountJson) {
+    // Service account JSON key — we cannot sign JWTs without native crypto in Deno easily
+    // Parse the JSON to extract project info and list it as a connected resource
+    let saJson: any;
+    try {
+      saJson = JSON.parse(rawToken);
+    } catch {
+      throw new Error('Google Cloud API error: 400 — Invalid service account JSON key. Please provide a valid JSON key from Google Cloud Console → IAM & Admin → Service Accounts → Keys.');
+    }
+
+    if (!saJson.project_id) {
+      throw new Error('Google Cloud API error: 400 — Service account JSON is missing project_id. Please use a complete JSON key file downloaded from Google Cloud Console.');
+    }
+
+    // Store the project as a knowledge record (without API calls since we cannot authenticate with SA JSON without JWT)
+    const ok = await upsertKnowledge(supabase, {
+      provider: 'google_cloud',
+      external_id: saJson.project_id,
+      content_type: 'record',
+      title: `GCP Project: ${saJson.project_id}`,
+      content: `Connected via service account: ${saJson.client_email || 'unknown'}. Project: ${saJson.project_id}.`,
+      url: `https://console.cloud.google.com/home/dashboard?project=${saJson.project_id}`,
+      author: saJson.client_email || null,
+      metadata: { project_id: saJson.project_id, client_email: saJson.client_email, auth_type: 'service_account' },
+    }, integration);
+    if (ok) imported++;
+
+    return imported;
+  }
+
+  // OAuth Bearer token path — use Cloud Resource Manager v3
+  const res = await fetch(`https://cloudresourcemanager.googleapis.com/v3/projects?pageSize=50`, {
+    headers: { Authorization: `Bearer ${bearerToken}` }
   });
-  if (!res.ok) throw new Error(`Google Cloud API error: ${res.status}`);
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(`Google Cloud API error: ${res.status} — ${errBody?.error?.message || 'Ensure your Google Cloud OAuth app has the Cloud Resource Manager API enabled and cloudresourcemanager.projects.list permission.'}`);
+  }
   const data = await res.json();
-  
+
   for (const proj of (data.projects || [])) {
     const ok = await upsertKnowledge(supabase, {
       provider: 'google_cloud',
       external_id: proj.projectId,
       content_type: 'record',
-      title: `GCP Project: ${proj.name}`,
-      content: `Project ID: ${proj.projectId}, Status: ${proj.lifecycleState}`,
+      title: `GCP Project: ${proj.displayName || proj.projectId}`,
+      content: `Project ID: ${proj.projectId}, State: ${proj.state}`,
       url: `https://console.cloud.google.com/home/dashboard?project=${proj.projectId}`,
       author: null,
+      metadata: { projectId: proj.projectId, state: proj.state, parent: proj.parent },
     }, integration);
     if (ok) imported++;
   }
-  
-  
-  
+
   return imported;
 }
 

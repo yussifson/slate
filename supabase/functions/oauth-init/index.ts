@@ -58,7 +58,9 @@ serve(async (req) => {
       case 'zoom': {
         const zoomClientId = Deno.env.get('ZOOM_CLIENT_ID')
         if (!zoomClientId) throw new Error("Missing ZOOM_CLIENT_ID")
-        authUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${zoomClientId}&redirect_uri=${redirectUri}&state=${state}`
+        // recording:read and meeting:read are required for the sync function to fetch recordings and meetings
+        const zoomScopes = 'recording:read meeting:read user:read'
+        authUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${zoomClientId}&redirect_uri=${redirectUri}&scope=${encodeURIComponent(zoomScopes)}&state=${state}`
         break;
       }
 
