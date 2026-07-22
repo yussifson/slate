@@ -196,14 +196,31 @@ export default function IntegrationsHub() {
   const handleSaveApiKey = async (provider, keyData) => {
     if (!companyId) return;
     try {
-      const { error } = await supabase.from('clipad_integrations').upsert({
+      // Avoid upsert onConflict errors by doing a select first
+      const { data: existing } = await supabase
+        .from('clipad_integrations')
+        .select('id')
+        .eq('company_id', companyId)
+        .eq('provider', provider)
+        .maybeSingle();
+
+      const payload = {
         company_id: companyId,
         provider: provider,
         status: 'active',
         access_token: keyData.api_key || keyData.token || '',
         metadata: keyData,
         connected_at: new Date().toISOString(),
-      }, { onConflict: 'company_id,provider' });
+      };
+
+      let error;
+      if (existing) {
+        const { error: err } = await supabase.from('clipad_integrations').update(payload).eq('id', existing.id);
+        error = err;
+      } else {
+        const { error: err } = await supabase.from('clipad_integrations').insert([payload]);
+        error = err;
+      }
 
       if (error) throw error;
       toast({ title: '✅ Connected!', description: `${provider.replace(/_/g, ' ')} connected successfully.` });
@@ -686,7 +703,18 @@ export default function IntegrationsHub() {
 const API_KEY_CONFIGS = {
   freshdesk:        { label: 'Freshdesk',             fields: [{ key: 'api_key', label: 'API Key', secret: true }, { key: 'subdomain', label: 'Subdomain (e.g. yourcompany)', secret: false }] },
   guru:             { label: 'Guru',                   fields: [{ key: 'api_key', label: 'API Key', secret: true }, { key: 'username', label: 'Username / Email', secret: false }] },
-  trello:           { label: 'Trello',                 fields: [{ key: 'api_key', label: 'API Key', secret: false }, { key: 'token', label: 'Personal Access Token', secret: true }] },
+  trello:           { 
+    label: 'Trello',                 
+    fields: [{ key: 'api_key', label: 'API Key', secret: false }, { key: 'token', label: 'Personal Access Token', secret: true }],
+    instructions: (
+      <div className="text-xs text-muted-foreground bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-xl mb-4 leading-relaxed">
+        <strong>1.</strong> Get your API Key from <a href="https://trello.com/app-key" target="_blank" rel="noreferrer" className="text-indigo-600 dark:text-indigo-400 underline font-semibold">Trello Developer</a>.<br />
+        <strong>2.</strong> Replace <code>YOUR_API_KEY</code> in the URL below and visit it in a new tab to authorize:<br />
+        <code className="block mt-1 p-1 bg-white dark:bg-black rounded border overflow-hidden whitespace-nowrap text-ellipsis">https://trello.com/1/authorize?expiration=never&name=CliPad&scope=read&response_type=token&key=YOUR_API_KEY</code><br />
+        <strong>3.</strong> Paste your API Key and the generated Token below.
+      </div>
+    )
+  },
   stripe:           { label: 'Stripe',                 fields: [{ key: 'api_key', label: 'Secret Key (sk_live_...)', secret: true }] },
   datadog:          { label: 'Datadog',                fields: [{ key: 'api_key', label: 'API Key', secret: true }, { key: 'app_key', label: 'Application Key', secret: true }] },
   jenkins:          { label: 'Jenkins',                fields: [{ key: 'url', label: 'Jenkins URL', secret: false }, { key: 'username', label: 'Username', secret: false }, { key: 'api_key', label: 'API Token', secret: true }] },
@@ -738,6 +766,8 @@ function ApiKeyModal({ integration, provider, onSave, onClose }) {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {config.instructions && config.instructions}
+
           {config.fields.map(field => (
             <div key={field.key}>
               <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">{field.label}</label>
