@@ -1341,15 +1341,17 @@ function ScreenShareTile({ screen, className }) {
 
  useEffect(() => {
  if (screen.screenVideo?.track && videoRef.current) {
- videoRef.current.srcObject = new MediaStream([screen.screenVideo.track]);
-}
-}, [screen.screenVideo?.track]);
+  videoRef.current.srcObject = new MediaStream([screen.screenVideo.track]);
+  videoRef.current.play().catch(() => {});
+ }
+ }, [screen.screenVideo?.track]);
 
  useEffect(() => {
  if (!screen.local && screen.screenAudio?.track && audioRef.current) {
- audioRef.current.srcObject = new MediaStream([screen.screenAudio.track]);
-}
-}, [screen.screenAudio?.track, screen.local]);
+  audioRef.current.srcObject = new MediaStream([screen.screenAudio.track]);
+  audioRef.current.play().catch(() => {});
+ }
+ }, [screen.screenAudio?.track, screen.local]);
 
  return (
  <div className={`relative bg-slate-800 rounded-xl overflow-hidden group flex items-center justify-center ${className || ''}`}>
@@ -1424,15 +1426,17 @@ function ParticipantTile({ id, isLocal, className }) {
 
  useEffect(() => {
  if (videoState?.track && videoRef.current) {
- videoRef.current.srcObject = new MediaStream([videoState.track]);
-}
-}, [videoState?.track]);
+  videoRef.current.srcObject = new MediaStream([videoState.track]);
+  videoRef.current.play().catch(() => {});
+ }
+ }, [videoState?.track]);
 
  useEffect(() => {
  if (!isLocal && audioState?.track && audioRef.current) {
- audioRef.current.srcObject = new MediaStream([audioState.track]);
-}
-}, [audioState?.track, isLocal]);
+  audioRef.current.srcObject = new MediaStream([audioState.track]);
+  audioRef.current.play().catch(() => {});
+ }
+ }, [audioState?.track, isLocal]);
 
  const togglePip = async () => {
   if (videoRef.current && document.pictureInPictureEnabled) {
@@ -1592,7 +1596,7 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
     console.warn('Joining error — attempting fallback join without media settings.', joinErr);
     if (cancelled) return;
     try {
-      const joinPayload = { url: cleanUrl, userName: joinOpts.userName, startAudioOff: true, startVideoOff: true };
+      const joinPayload = { url: cleanUrl, userName: joinOpts.userName, startAudioOff: !startMic, startVideoOff: !startCam };
       if (joinOpts.token) joinPayload.token = joinOpts.token;
       await callObject.join(joinPayload);
     } catch (e) { console.error('Fallback join also failed:', e); }

@@ -394,14 +394,17 @@ export default function RecordVideo() {
       mediaRecorderRef.current.resume();
       setIsPaused(false);
       
-      const startTimeOffset = recordingSeconds * 1000;
-      const newStartTime = Date.now() - startTimeOffset;
+      // Use ref (not state) to avoid stale closure — ref is always kept in sync by the interval
+      const resumedAtSeconds = recordingSecondsRef.current;
+      const resumeWallTime = Date.now();
       const planLimits = getPlanLimits(user);
       const maxSeconds = planLimits.maxAsyncVideoDurationSeconds;
 
       timerRef.current = setInterval(() => {
-        const seconds = Math.floor((Date.now() - newStartTime) / 1000);
+        const elapsed = Math.floor((Date.now() - resumeWallTime) / 1000);
+        const seconds = resumedAtSeconds + elapsed;
         setRecordingSeconds(seconds);
+        recordingSecondsRef.current = seconds;
         
         if (seconds >= maxSeconds) {
           playAlertSound();
@@ -411,6 +414,7 @@ export default function RecordVideo() {
       }, 1000);
     }
   };
+
 
   const toggleWebcam = () => {
     const track = streamsRef.current.camera?.getVideoTracks()[0];
@@ -1090,6 +1094,7 @@ export default function RecordVideo() {
       
       recorder.onstop = async () => {
         stopEverything();
+        setIsRecording(false);
         // If no data was captured at all (e.g. stopped before first chunk), bail out
         if (chunksRef.current.length === 0) {
           setPhase('setup');
@@ -1098,6 +1103,18 @@ export default function RecordVideo() {
         setPhase('uploading');
         setUploadProgress(10);
         wsEndRequestedRef.current = true;
+
+        // Hard absolute deadline — if upload hasn't resolved in 60s, always escape to review
+        const uploadDeadline = setTimeout(() => {
+          console.warn('Upload deadline exceeded — forcing review phase');
+          toast({ title: 'Upload Timeout', description: 'Cloud upload took too long. Your recording is saved locally — please re-upload.', variant: 'destructive' });
+          const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+          const url = URL.createObjectURL(blob);
+          setVideoBlob(blob);
+          setRecordingUrl(url);
+          setPhase('review');
+        }, 60000);
+
         // Flush any remaining buffered chunks before signalling END
         let endAttempts = 0;
         const waitAndEnd = () => {
@@ -1108,24 +1125,42 @@ export default function RecordVideo() {
           }
           if (wsRef.current?.readyState === WebSocket.OPEN) {
             wsRef.current.send(JSON.stringify({ type: 'END' }));
+            // uploadDeadline will be cleared in ws.onmessage SUCCESS/ERROR handlers
           } else if (wsIsReconnectingRef.current && endAttempts < 30) {
             // Still reconnecting — END will be sent after reconnect (handled in onopen)
             setTimeout(waitAndEnd, 500);
           } else {
-             // Permanent failure or timeout
-             toast({ title: 'Upload Failed', description: 'Could not reach cloud storage. Downloading your recording locally instead.', variant: 'destructive' });
-             const blob = new Blob(chunksRef.current, { type: 'video/webm' });
-             const url = URL.createObjectURL(blob);
-             const a = document.createElement('a');
-             a.href = url;
-             a.download = `recording-fallback-${Date.now()}.webm`;
-             a.click();
-             URL.revokeObjectURL(url);
-             setPhase('review');
+            // Permanent WS failure — download locally and show review screen
+            clearTimeout(uploadDeadline);
+            toast({ title: 'Upload Failed', description: 'Could not reach cloud storage. Downloading your recording locally instead.', variant: 'destructive' });
+            const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `recording-fallback-${Date.now()}.webm`;
+            a.click();
+            // Also set blob/url so the review player works
+            setVideoBlob(blob);
+            setRecordingUrl(url);
+            URL.revokeObjectURL(url);
+            setPhase('review');
           }
         };
         waitAndEnd();
+
+        // Patch ws.onmessage to clear the deadline when upload succeeds or errors
+        const originalOnMessage = wsRef.current?.onmessage;
+        if (wsRef.current) {
+          wsRef.current.onmessage = (event) => {
+            const msg = JSON.parse(event.data);
+            if (msg.type === 'SUCCESS' || msg.type === 'ERROR') {
+              clearTimeout(uploadDeadline);
+            }
+            if (originalOnMessage) originalOnMessage(event);
+          };
+        }
       };
+
 
       // Initial connection
       connectWS(false);
@@ -1924,6 +1959,7 @@ export default function RecordVideo() {
               <Upload className="w-8 h-8 text-primary animate-bounce" />
             </div>
             <h2 className="text-xl font-bold text-foreground">Uploading your video…</h2>
+            <p className="text-sm text-muted-foreground">This may take a moment depending on your connection speed.</p>
             <div className="w-80">
               <div className="flex justify-between text-xs text-muted-foreground mb-2">
                 <span>Uploading</span><span>{uploadProgress}%</span>
@@ -1932,8 +1968,28 @@ export default function RecordVideo() {
                 <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-all duration-500" style={{ width: `${uploadProgress}%` }} />
               </div>
             </div>
+            <button
+              onClick={() => {
+                if (window.confirm('Cancel upload? Your recording will be available for local review but not saved to CliPad.')) {
+                  if (wsRef.current) {
+                    try { wsRef.current.close(1000); } catch (_) {}
+                  }
+                  const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+                  if (blob.size > 0) {
+                    const url = URL.createObjectURL(blob);
+                    setVideoBlob(blob);
+                    setRecordingUrl(url);
+                  }
+                  setPhase(chunksRef.current.length > 0 ? 'review' : 'setup');
+                }
+              }}
+              className="text-xs text-muted-foreground hover:text-rose-500 underline transition-colors mt-2"
+            >
+              Taking too long? Cancel upload
+            </button>
           </div>
         )}
+
 
         {/* DONE PHASE */}
         {phase === 'done' && (
