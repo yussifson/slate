@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import {
   Search, Sparkles, FileText, CheckCircle, MessageSquare, Calendar, Video,
   Loader2, X, ShieldAlert, AlertTriangle, ArrowRight, ExternalLink, Zap, Lock,
-  Command, CommandIcon, Bot, CornerDownLeft
+  Command, Bot, CornerDownLeft, Filter, Check, Layers, ChevronRight
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { generateText } from '@/lib/cloudflareAI';
@@ -14,23 +14,33 @@ import { isAdmin, isSpaceman } from '@/lib/constants';
 import { OrbitIcon } from '@/components/ui/OrbitIcon';
 
 const TYPE_META = {
-  meeting:  { icon: Calendar,      label: 'Meeting',   color: 'text-blue-500',   bg: 'bg-blue-500/10',    route: (id) => `/meetings/${id}` },
-  video:    { icon: Video,         label: 'Video',     color: 'text-purple-500', bg: 'bg-purple-500/10',  route: (id) => `/watch/${id}` },
-  doc:      { icon: FileText,      label: 'Doc',       color: 'text-emerald-500',bg: 'bg-emerald-500/10', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=docs&docId=${id}` : null },
-  task:     { icon: CheckCircle,   label: 'Task',      color: 'text-amber-500',  bg: 'bg-amber-500/10',   route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
-  message:  { icon: MessageSquare, label: 'Chat',      color: 'text-indigo-500', bg: 'bg-indigo-500/10',  route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=chat` : null },
-  decision: { icon: ShieldAlert,   label: 'Decision',  color: 'text-rose-500',   bg: 'bg-rose-500/10',    route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=decisions` : null },
-  blocker:  { icon: AlertTriangle, label: 'Blocker',   color: 'text-orange-500', bg: 'bg-orange-500/10',  route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=overview` : null },
-  standup:  { icon: Zap,           label: 'Standup',   color: 'text-teal-500',   bg: 'bg-teal-500/10',    route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=standup` : null },
-  integration:{ icon: ExternalLink,label: 'Imported',  color: 'text-slate-500',  bg: 'bg-slate-500/10',   route: (id) => `/integrations` },
+  meeting:     { icon: Calendar,      label: 'Meeting',   color: 'text-blue-500 dark:text-blue-400',       bg: 'bg-blue-500/10 dark:bg-blue-500/20 border-blue-500/20',     route: (id) => `/meetings/${id}` },
+  video:       { icon: Video,         label: 'Video',     color: 'text-purple-500 dark:text-purple-400',   bg: 'bg-purple-500/10 dark:bg-purple-500/20 border-purple-500/20', route: (id) => `/watch/${id}` },
+  doc:         { icon: FileText,      label: 'Doc',       color: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-500/10 dark:bg-emerald-500/20 border-emerald-500/20',route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=docs&docId=${id}` : null },
+  task:        { icon: CheckCircle,   label: 'Task',      color: 'text-amber-500 dark:text-amber-400',     bg: 'bg-amber-500/10 dark:bg-amber-500/20 border-amber-500/20',   route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
+  message:     { icon: MessageSquare, label: 'Chat',      color: 'text-indigo-500 dark:text-indigo-400',   bg: 'bg-indigo-500/10 dark:bg-indigo-500/20 border-indigo-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=chat` : null },
+  decision:    { icon: ShieldAlert,   label: 'Decision',  color: 'text-rose-500 dark:text-rose-400',       bg: 'bg-rose-500/10 dark:bg-rose-500/20 border-rose-500/20',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=decisions` : null },
+  blocker:     { icon: AlertTriangle, label: 'Blocker',   color: 'text-orange-500 dark:text-orange-400',   bg: 'bg-orange-500/10 dark:bg-orange-500/20 border-orange-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=overview` : null },
+  standup:     { icon: Zap,           label: 'Standup',   color: 'text-teal-500 dark:text-teal-400',       bg: 'bg-teal-500/10 dark:bg-teal-500/20 border-teal-500/20',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=standup` : null },
+  integration: { icon: ExternalLink,  label: 'Imported',  color: 'text-slate-500 dark:text-slate-400',     bg: 'bg-slate-500/10 dark:bg-slate-500/20 border-slate-500/20',   route: (id) => `/integrations` },
 };
 
 const SUGGESTIONS = [
-  'What decisions were made last week?',
-  'Show me overdue tasks',
-  'Find recent meetings about pricing',
-  'Any blockers in engineering?',
-  'What videos were recorded this month?',
+  { text: 'What decisions were made last week?', type: 'decision', icon: ShieldAlert, color: 'text-rose-500', bg: 'bg-rose-500/10' },
+  { text: 'Show me overdue tasks across spaces', type: 'task', icon: CheckCircle, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+  { text: 'Find recent meetings about pricing', type: 'meeting', icon: Calendar, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+  { text: 'Any active blockers in engineering?', type: 'blocker', icon: AlertTriangle, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+  { text: 'What videos were recorded this month?', type: 'video', icon: Video, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+  { text: 'Summarize key updates from standups', type: 'standup', icon: Zap, color: 'text-teal-500', bg: 'bg-teal-500/10' },
+];
+
+const FILTER_TABS = [
+  { id: 'all', label: 'All' },
+  { id: 'doc', label: 'Docs' },
+  { id: 'task', label: 'Tasks' },
+  { id: 'meeting', label: 'Meetings' },
+  { id: 'decision', label: 'Decisions' },
+  { id: 'message', label: 'Chats' },
 ];
 
 function TypewriterText({ text }) {
@@ -43,16 +53,14 @@ function TypewriterText({ text }) {
       setDisplayed(text.slice(0, i + 1));
       i++;
       if (i >= text.length) clearInterval(id);
-    }, 15);
+    }, 12);
     return () => clearInterval(id);
   }, [text]);
   return <span>{displayed}</span>;
 }
 
 /**
- * Fetches the set of space IDs the current user can access.
- * - Admins: all spaces in company.
- * - Spacemans & members: public spaces + private spaces they're explicitly in.
+ * Fetches accessible space IDs for security scoping
  */
 async function fetchAccessibleSpaceIds(user) {
   if (!user?.company_id) return new Set();
@@ -72,6 +80,7 @@ export default function GlobalSearch() {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState('all');
   const [results, setResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [aiAnswer, setAiAnswer] = useState('');
@@ -79,10 +88,12 @@ export default function GlobalSearch() {
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
+  const [lastQuery, setLastQuery] = useState('');
+
   const inputRef = useRef(null);
   const overlayRef = useRef(null);
 
-  // Global Ctrl+K shortcut
+  // Keyboard listener (⌘K / Ctrl+K)
   useEffect(() => {
     const onKey = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
@@ -93,7 +104,6 @@ export default function GlobalSearch() {
       if (e.key === 'Escape' && isOpen) setIsOpen(false);
     };
     const handleCustomOpen = () => setIsOpen(true);
-    // Use capture phase to intercept before other handlers
     document.addEventListener('keydown', onKey, true);
     window.addEventListener('open-global-search', handleCustomOpen);
     return () => {
@@ -104,9 +114,9 @@ export default function GlobalSearch() {
 
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 150);
+      setTimeout(() => inputRef.current?.focus(), 100);
     } else {
-      setQuery(''); setResults([]); setAiAnswer(''); setAiSources([]); setHasSearched(false); setFocusedIndex(-1);
+      setQuery(''); setResults([]); setAiAnswer(''); setAiSources([]); setHasSearched(false); setFocusedIndex(-1); setSelectedFilter('all');
     }
   }, [isOpen]);
 
@@ -116,13 +126,10 @@ export default function GlobalSearch() {
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  const [lastQuery, setLastQuery] = useState('');
-
   const handleSearch = useCallback(async (searchQuery) => {
     const q = (searchQuery || query).trim();
     if (!q) return;
 
-    // Prevent rewriting if the user clicks Ask AI again with the exact same query
     if (q === lastQuery && hasSearched && (aiAnswer || isSynthesizing)) return;
     setLastQuery(q);
 
@@ -134,7 +141,6 @@ export default function GlobalSearch() {
     setFocusedIndex(-1);
 
     try {
-      // === CONTEXT-AWARE SECURITY ===
       const accessibleSpaceIds = await fetchAccessibleSpaceIds(user);
       const spaceIdArr = Array.from(accessibleSpaceIds);
       const term = `%${q}%`;
@@ -166,22 +172,22 @@ export default function GlobalSearch() {
         ]);
 
         formatted = [
-          ...(docs.data || []).map(d => ({ type: 'doc', id: d.id, space_id: d.space_id, label: d.title, snippet: d.content?.substring(0, 120) })),
-          ...(tasks.data || []).map(t => ({ type: 'task', id: t.id, space_id: t.space_id, label: t.title, snippet: t.context?.substring(0, 120) })),
-          ...(messages.data || []).map(m => ({ type: 'message', id: m.id, space_id: m.space_id, label: 'Chat Message', snippet: m.content?.substring(0, 120) })),
-          ...(meetings.data || []).map(m => ({ type: 'meeting', id: m.id, space_id: m.space_id, label: m.title || 'Team Meeting', snippet: m.ai_summary?.substring(0, 120) })),
-          ...(decisions.data || []).map(d => ({ type: 'decision', id: d.id, space_id: d.team_space_id, label: 'Decision', snippet: d.decision_text?.substring(0, 120) })),
-          ...(videos.data || []).map(v => ({ type: 'video', id: v.id, space_id: v.space_id, label: v.title || 'Video', snippet: v.ai_summary?.substring(0, 120) })),
-          ...(blockers.data || []).map(b => ({ type: 'blocker', id: b.id, space_id: b.team_space_id, label: 'Blocker', snippet: b.description?.substring(0, 120) })),
-          ...(standups.data || []).map(s => ({ type: 'standup', id: s.id, space_id: s.space_id, label: `Standup \u2014 ${s.user_name || 'Team member'} (${s.created_at?.slice(0,10)})`, snippet: s.today?.substring(0, 120) })),
-          ...(integrations.data || []).map(i => ({ type: 'integration', id: i.id, space_id: null, label: `[${i.provider}] ${i.title}`, snippet: i.content?.substring(0, 120) })),
+          ...(docs.data || []).map(d => ({ type: 'doc', id: d.id, space_id: d.space_id, label: d.title, snippet: d.content?.substring(0, 140) })),
+          ...(tasks.data || []).map(t => ({ type: 'task', id: t.id, space_id: t.space_id, label: t.title, snippet: t.context?.substring(0, 140) })),
+          ...(messages.data || []).map(m => ({ type: 'message', id: m.id, space_id: m.space_id, label: 'Chat Message', snippet: m.content?.substring(0, 140) })),
+          ...(meetings.data || []).map(m => ({ type: 'meeting', id: m.id, space_id: m.space_id, label: m.title || 'Team Meeting', snippet: m.ai_summary?.substring(0, 140) })),
+          ...(decisions.data || []).map(d => ({ type: 'decision', id: d.id, space_id: d.team_space_id, label: 'Decision', snippet: d.decision_text?.substring(0, 140) })),
+          ...(videos.data || []).map(v => ({ type: 'video', id: v.id, space_id: v.space_id, label: v.title || 'Video', snippet: v.ai_summary?.substring(0, 140) })),
+          ...(blockers.data || []).map(b => ({ type: 'blocker', id: b.id, space_id: b.team_space_id, label: 'Blocker', snippet: b.description?.substring(0, 140) })),
+          ...(standups.data || []).map(s => ({ type: 'standup', id: s.id, space_id: s.space_id, label: `Standup \u2014 ${s.user_name || 'Team member'} (${s.created_at?.slice(0,10)})`, snippet: s.today?.substring(0, 140) })),
+          ...(integrations.data || []).map(i => ({ type: 'integration', id: i.id, space_id: null, label: `[${i.provider}] ${i.title}`, snippet: i.content?.substring(0, 140) })),
         ];
       }
 
       setResults(formatted);
       setIsSearching(false);
 
-      // === AI synthesis ===
+      // AI Synthesis
       setIsSynthesizing(true);
       const userRole = isAdmin(user) ? 'Company Admin' : isSpaceman(user) ? 'Spaceman (Space Admin)' : 'Member';
 
@@ -196,7 +202,7 @@ export default function GlobalSearch() {
       const keywordResultsContext = formatted.length > 0
         ? `\\n\\nKEYWORD SEARCH RESULTS (${formatted.length} records matched "${q}"):\\n` +
           formatted.map(r => `[${r.type.toUpperCase()} ID:${r.id}] ${r.label}: ${r.snippet || ''}`).join('\\n')
-        : `\\n\\nKEYWORD SEARCH: No records matched "${q}" directly \u2014 but check the org context above.`;
+        : `\\n\\nKEYWORD SEARCH: No records matched "${q}" directly \u2014 check org context.`;
 
       const now = new Date();
       const timeContext = `CURRENT DATE & TIME: ${now.toLocaleDateString()} ${now.toLocaleTimeString()} (${Intl.DateTimeFormat().resolvedOptions().timeZone})`;
@@ -206,28 +212,22 @@ export default function GlobalSearch() {
       const raw = await generateText([
         {
           role: 'system',
-          content: `You are OrbitFlow, the AI intelligence assistant with deep knowledge of this organization.
+          content: `You are OrbitFlow AI, an enterprise intelligence assistant.
 
 CRITICAL CONTEXT: 
-- ${timeContext}. Use this to understand relative times like "today", "yesterday", or "last week".
-- You are responding directly to "${user?.full_name || 'a user'}". 
-- Their role is "${userRole}"${userDepartment}${userIndustry}. 
-- You ONLY have access to data from the ${spaceIdArr.length} spaces this user is authorized to see.
-- NEVER reveal data from spaces this user is NOT in. Do not mention the limitations unless asked.
+- ${timeContext}.
+- Responding to "${user?.full_name || 'a user'}".
+- Role: "${userRole}"${userDepartment}${userIndustry}. 
+- Access scoped strictly to ${spaceIdArr.length} authorized spaces.
 
-You have access to the FULL LIVE organizational memory below. Use it to answer the user's question thoroughly.
-If the answer exists in the data, say so clearly with specifics (names, dates, details).
-If it does NOT exist, say "I don't see any [X] in your accessible spaces right now."
-NEVER say something doesn't exist if the data shows it does.
-
-PERSONAL GRAPH BOOST:
-You must prioritize and boost any data or nodes connected directly to ${user?.full_name || 'this user'}. If a document was authored by them, a decision made in their space, or a task assigned to them, treat it as highly relevant to their query.
-
+ORGANIZATIONAL CONTEXT:
 ${fullOrgContext ? `FULL ORG CONTEXT:\n${fullOrgContext}` : ''}
 ${keywordResultsContext}
 
-Be concise but informative (2-4 sentences). Focus on actionable insights.
-After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{"id":"<id>","type":"<type>"}].`,
+Instructions:
+Be clear, direct, and concise (2-4 sentences). Focus on actionable enterprise answers.
+If the requested data is found, state exact details, assignees, or dates.
+After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>"}].`,
         },
         { role: 'user', content: `Query: "${q}"` },
       ]);
@@ -246,7 +246,7 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
     } finally {
       setIsSynthesizing(false);
     }
-  }, [query, user]);
+  }, [query, user, lastQuery, hasSearched, aiAnswer, isSynthesizing]);
 
   const handleResultClick = (res) => {
     const meta = TYPE_META[res.type];
@@ -254,9 +254,18 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
     if (route) { navigate(route); setIsOpen(false); }
   };
 
+  const filteredResults = results.filter(r => selectedFilter === 'all' || r.type === selectedFilter);
+
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); handleSearch(); }
-    if (e.key === 'ArrowDown') { e.preventDefault(); setFocusedIndex(i => Math.min(i + 1, results.length - 1)); }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (focusedIndex >= 0 && filteredResults[focusedIndex]) {
+        handleResultClick(filteredResults[focusedIndex]);
+      } else {
+        handleSearch();
+      }
+    }
+    if (e.key === 'ArrowDown') { e.preventDefault(); setFocusedIndex(i => Math.min(i + 1, filteredResults.length - 1)); }
     if (e.key === 'ArrowUp') { e.preventDefault(); setFocusedIndex(i => Math.max(i - 1, -1)); }
   };
 
@@ -265,13 +274,19 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
       <>
         <button
           onClick={() => setIsOpen(true)}
-          className="hidden md:flex items-center gap-2 px-3 h-9 bg-slate-100 dark:bg-secondary/60 hover:bg-slate-200 dark:hover:bg-secondary text-slate-500 dark:text-muted-foreground rounded-xl transition-all border border-slate-200 dark:border-border/60 w-full max-w-xs min-w-[120px] active:scale-[0.98]"
+          className="hidden md:flex items-center gap-2.5 px-3.5 h-9 bg-slate-100/80 dark:bg-slate-900/80 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 text-slate-500 dark:text-slate-400 rounded-xl transition-all border border-slate-200/80 dark:border-slate-800/80 w-full max-w-xs min-w-[140px] shadow-sm hover:shadow active:scale-[0.99] group"
         >
-          <Search className="w-4 h-4 shrink-0 text-emerald-500" />
-          <span className="text-sm flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis">Search or ask...</span>
-          <kbd className="text-[10px] font-mono bg-white dark:bg-card px-1.5 py-0.5 rounded-md text-slate-400 border border-slate-200 dark:border-border shrink-0 hidden lg:block tracking-widest font-semibold shadow-sm">⌘K</kbd>
+          <Search className="w-4 h-4 shrink-0 text-emerald-500 group-hover:scale-110 transition-transform" />
+          <span className="text-xs font-medium flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis tracking-tight">Search or ask OrbitFlow...</span>
+          <kbd className="text-[10px] font-mono bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded-md text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 shrink-0 hidden lg:flex items-center gap-0.5 tracking-wider font-semibold shadow-2xs">
+            ⌘K
+          </kbd>
         </button>
-        <button onClick={() => setIsOpen(true)} className="md:hidden p-2 text-slate-500 hover:text-foreground transition-colors active:scale-90">
+        <button 
+          onClick={() => setIsOpen(true)} 
+          className="md:hidden p-2 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors active:scale-95 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+          title="Search"
+        >
           <Search className="w-5 h-5" />
         </button>
       </>
@@ -281,37 +296,41 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
   return createPortal(
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[9999] flex items-start justify-center pt-[8vh] px-4 pb-4"
-      style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
+      className="fixed inset-0 z-[9999] flex items-start justify-center pt-[7vh] sm:pt-[10vh] px-3 sm:px-4 pb-6"
+      style={{ background: 'rgba(5, 8, 15, 0.65)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}
       onMouseDown={(e) => { if (e.target === overlayRef.current) setIsOpen(false); }}
     >
       <style>{`
-        @keyframes spotlightIn {
-          0% { opacity: 0; transform: scale(0.96) translateY(-8px); }
+        @keyframes spotlightScale {
+          0% { opacity: 0; transform: scale(0.97) translateY(-10px); }
           100% { opacity: 1; transform: scale(1) translateY(0); }
         }
-        @keyframes glowPulse {
-          0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-          70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+        @keyframes aiGlowPulse {
+          0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.35); }
+          70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
           100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
       `}</style>
+      
       <div
-        className="w-full max-w-[720px] flex flex-col rounded-3xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.25)] border border-white/20 dark:border-white/10 bg-white/95 dark:bg-[#0F1420]/95 backdrop-blur-2xl relative"
-        style={{ animation: 'spotlightIn 0.25s cubic-bezier(0.16, 1, 0.3, 1)' }}
+        className="w-full max-w-[700px] flex flex-col rounded-2xl overflow-hidden shadow-[0_24px_80px_-15px_rgba(0,0,0,0.4)] border border-slate-200/90 dark:border-white/[0.08] bg-white dark:bg-[#0C1017] backdrop-blur-2xl relative"
+        style={{ animation: 'spotlightScale 0.22s cubic-bezier(0.16, 1, 0.3, 1)' }}
       >
-        {/* Animated Gradient Header Bar */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-emerald-500 to-indigo-500 opacity-80"></div>
+        {/* Top Radiant Shimmer Accent */}
+        <div className="h-[2px] w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-indigo-500 shrink-0" />
 
-        {/* Search Input Row */}
-        <div className="flex items-center gap-4 px-6 py-5 border-b border-black/[0.04] dark:border-white/[0.06] relative">
+        {/* Search Header Row */}
+        <div className="flex items-center gap-3.5 px-5 py-4 border-b border-slate-100 dark:border-white/[0.06] relative bg-slate-50/50 dark:bg-white/[0.01]">
           {isSearching || isSynthesizing ? (
-            <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
               <Loader2 className="w-5 h-5 animate-spin text-emerald-500" />
             </div>
           ) : (
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-md shadow-emerald-500/30 shrink-0 relative" style={{ animation: aiAnswer ? 'glowPulse 2s infinite' : 'none' }}>
-              <OrbitIcon className="w-4 h-4 text-white fill-white" />
+            <div 
+              className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0 relative transition-transform hover:scale-105"
+              style={{ animation: aiAnswer ? 'aiGlowPulse 2.5s infinite' : 'none' }}
+            >
+              <OrbitIcon className="w-5 h-5 text-white" />
             </div>
           )}
           
@@ -320,64 +339,104 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask OrbitFlow or search your workspace..."
-            className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-white text-[18px] font-medium placeholder-slate-400 min-w-0"
-            style={{ paddingLeft: 0, paddingRight: 0, caretColor: '#10b981' }}
+            placeholder="Ask OrbitFlow AI or search docs, tasks, meetings..."
+            className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-slate-100 text-[17px] font-medium placeholder-slate-400/80 min-w-0 tracking-tight"
+            style={{ caretColor: '#10b981' }}
           />
           
           <div className="flex items-center gap-2 shrink-0">
             {query && (
               <button
                 onClick={() => { setQuery(''); setResults([]); setAiAnswer(''); setHasSearched(false); inputRef.current?.focus(); }}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-white/10 transition-colors text-slate-400 hover:text-slate-600 dark:hover:text-white active:scale-90"
+                className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-200/60 dark:hover:bg-white/10 transition-colors text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                title="Clear query"
               >
                 <X className="w-4 h-4" />
               </button>
             )}
+            
+            <span className="hidden sm:inline-flex items-center text-[10px] font-mono font-semibold px-2 py-1 rounded-md bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+              ESC
+            </span>
           </div>
         </div>
 
-        {/* Scrollable Body */}
-        <div className="max-h-[60vh] overflow-y-auto overflow-x-hidden scrollbar-none pb-2">
+        {/* Filter Bar (Only visible when user starts typing or has results) */}
+        {hasSearched && (
+          <div className="flex items-center gap-1.5 px-5 py-2.5 border-b border-slate-100 dark:border-white/[0.04] bg-slate-50/80 dark:bg-white/[0.02] overflow-x-auto no-scrollbar">
+            <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mr-1 flex items-center gap-1 shrink-0 uppercase tracking-wider">
+              <Filter className="w-3 h-3" /> Scope
+            </span>
+            {FILTER_TABS.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setSelectedFilter(tab.id)}
+                className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-1 ${
+                  selectedFilter === tab.id
+                    ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/20'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-200'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Scrollable Modal Body */}
+        <div className="max-h-[58vh] overflow-y-auto overflow-x-hidden custom-scrollbar">
           
-          {/* Initial Suggestion State */}
+          {/* Zero State Suggestions Grid */}
           {!hasSearched && !isSearching && (
-            <div className="p-6">
-              <h3 className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
-                <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
-                Ask OrbitFlow
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {SUGGESTIONS.map((s, i) => (
-                  <button
-                    key={i}
-                    onClick={() => { setQuery(s); handleSearch(s); }}
-                    className="flex items-center gap-3 p-4 rounded-2xl bg-slate-50/50 dark:bg-white/[0.02] hover:bg-emerald-50 dark:hover:bg-emerald-500/10 border border-transparent hover:border-emerald-100 dark:hover:border-emerald-500/20 transition-all group text-left active:scale-[0.98]"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-white dark:bg-white/10 shadow-sm flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                      <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-500" />
-                    </div>
-                    <span className="text-[14px] text-slate-600 dark:text-slate-300 font-medium group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{s}</span>
-                  </button>
-                ))}
+            <div className="p-5 sm:p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
+                  Suggested AI Queries
+                </h3>
+                <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Click to run query</span>
               </div>
-              <div className="mt-6 pt-4 border-t border-black/[0.04] dark:border-white/[0.04] flex items-center gap-2 justify-center">
-                <Lock className="w-3 h-3 text-slate-400" />
-                <span className="text-[12px] text-slate-400 font-medium">
-                  Secure context: <span className="text-slate-700 dark:text-slate-200">{isAdmin(user) ? 'Entire Organization' : 'Your Accessible Spaces'}</span>
-                </span>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {SUGGESTIONS.map((item, idx) => {
+                  const Icon = item.icon;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => { setQuery(item.text); handleSearch(item.text); }}
+                      className="group flex items-center justify-between p-3.5 rounded-xl bg-slate-50/70 dark:bg-white/[0.02] hover:bg-emerald-500/[0.04] dark:hover:bg-emerald-500/[0.06] border border-slate-200/60 dark:border-white/[0.05] hover:border-emerald-500/30 dark:hover:border-emerald-500/30 transition-all text-left active:scale-[0.99] shadow-2xs hover:shadow-sm"
+                    >
+                      <div className="flex items-center gap-3 min-w-0 pr-2">
+                        <div className={`w-8 h-8 rounded-lg ${item.bg} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
+                          <Icon className={`w-4 h-4 ${item.color}`} />
+                        </div>
+                        <span className="text-xs font-medium text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white transition-colors truncate">
+                          {item.text}
+                        </span>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all shrink-0" />
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
 
-          {/* AI Response Card (Premium Glassmorphic) */}
+          {/* AI Response Card (Enterprise Glass Box) */}
           {(aiAnswer || isSynthesizing) && !isSearching && (
-            <div className="mx-4 mt-4 mb-2 p-[1px] rounded-3xl bg-gradient-to-br from-emerald-400/30 via-teal-500/10 to-transparent">
-              <div className="rounded-[23px] bg-white dark:bg-[#151B28] p-5 shadow-inner">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-[15px] font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">OrbitFlow Analysis</span>
+            <div className="mx-4 sm:mx-5 mt-4 mb-3 p-[1px] rounded-2xl bg-gradient-to-br from-emerald-500/30 via-teal-500/15 to-indigo-500/30">
+              <div className="rounded-[15px] bg-slate-50/90 dark:bg-[#111622] p-4 sm:p-5 backdrop-blur-md">
+                <div className="flex items-center justify-between mb-3.5 pb-2.5 border-b border-slate-200/50 dark:border-white/[0.06]">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300 bg-clip-text text-transparent">
+                      OrbitFlow Intelligence
+                    </span>
+                  </div>
+                  
                   {isSynthesizing && (
-                    <div className="flex items-center gap-1.5 ml-auto bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1 rounded-full">
+                    <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+                      <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">Synthesizing</span>
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0s' }} />
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0.15s' }} />
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0.3s' }} />
@@ -385,24 +444,26 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
                   )}
                 </div>
                 
-                <div className="pl-1">
+                <div>
                   {isSynthesizing ? (
-                    <div className="space-y-3 animate-pulse">
-                      <div className="h-4 bg-emerald-100 dark:bg-emerald-500/20 rounded-full w-full" />
-                      <div className="h-4 bg-emerald-100 dark:bg-emerald-500/20 rounded-full w-5/6" />
-                      <div className="h-4 bg-emerald-100 dark:bg-emerald-500/20 rounded-full w-3/4" />
+                    <div className="space-y-2.5 py-1 animate-pulse">
+                      <div className="h-3.5 bg-emerald-500/15 dark:bg-emerald-500/20 rounded-md w-full" />
+                      <div className="h-3.5 bg-emerald-500/15 dark:bg-emerald-500/20 rounded-md w-11/12" />
+                      <div className="h-3.5 bg-emerald-500/15 dark:bg-emerald-500/20 rounded-md w-4/5" />
                     </div>
                   ) : (
-                    <div className="text-[16px] leading-relaxed text-slate-800 dark:text-slate-200 font-medium whitespace-pre-wrap">
+                    <div className="text-sm leading-relaxed text-slate-800 dark:text-slate-200 font-medium whitespace-pre-wrap">
                       <TypewriterText text={aiAnswer} />
                     </div>
                   )}
                 </div>
 
-                {/* Sources Chips */}
+                {/* Sources Section */}
                 {aiSources.length > 0 && !isSynthesizing && (
-                  <div className="mt-5 pt-4 border-t border-slate-100 dark:border-white/5 flex flex-wrap gap-2 items-center">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mr-1">Sources</span>
+                  <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/[0.06] flex flex-wrap gap-2 items-center">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mr-1">
+                      Verified Sources ({aiSources.length})
+                    </span>
                     {aiSources.map((src, i) => {
                       const meta = TYPE_META[src.type];
                       const Icon = meta?.icon || FileText;
@@ -410,11 +471,11 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
                         <button
                           key={i}
                           onClick={() => handleResultClick(src)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 border border-slate-200/50 dark:border-white/10 transition-all hover:scale-105 active:scale-95 group"
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white dark:bg-white/[0.05] hover:bg-emerald-500/10 dark:hover:bg-emerald-500/20 border border-slate-200/80 dark:border-white/[0.08] hover:border-emerald-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] group"
                         >
                           <Icon className={`w-3.5 h-3.5 ${meta?.color || 'text-slate-500'}`} />
-                          <span className="text-[12px] font-semibold text-slate-700 dark:text-slate-300 max-w-[150px] truncate">{src.label}</span>
-                          <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-emerald-500 transition-colors" />
+                          <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 max-w-[160px] truncate">{src.label}</span>
+                          <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-emerald-500 transition-colors ml-0.5" />
                         </button>
                       );
                     })}
@@ -424,12 +485,16 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
             </div>
           )}
 
-          {/* Regular Search Results List */}
-          {results.length > 0 && !isSearching && (
-            <div className="px-4 py-3">
-              <h4 className="px-3 text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-2">Direct Matches</h4>
+          {/* Search Results List */}
+          {filteredResults.length > 0 && !isSearching && (
+            <div className="px-4 sm:px-5 py-3">
+              <div className="flex items-center justify-between px-2 mb-2">
+                <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                  {selectedFilter === 'all' ? 'All Matches' : `${TYPE_META[selectedFilter]?.label || selectedFilter} Matches`} ({filteredResults.length})
+                </h4>
+              </div>
               <div className="space-y-1">
-                {results.map((res, i) => {
+                {filteredResults.map((res, i) => {
                   const meta = TYPE_META[res.type] || {};
                   const Icon = meta.icon || Search;
                   const isFocused = focusedIndex === i;
@@ -437,19 +502,34 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
                     <button
                       key={`${res.type}-${res.id}-${i}`}
                       onClick={() => handleResultClick(res)}
-                      className={`w-full text-left px-4 py-3.5 rounded-2xl cursor-pointer transition-all flex items-center gap-4 group border ${isFocused ? 'bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 shadow-sm' : 'border-transparent hover:bg-slate-50 dark:hover:bg-white/5'}`}
+                      className={`w-full text-left px-3.5 py-3 rounded-xl cursor-pointer transition-all flex items-center gap-3.5 group border ${
+                        isFocused
+                          ? 'bg-emerald-500/10 dark:bg-emerald-500/15 border-emerald-500/40 text-emerald-900 dark:text-emerald-100 shadow-2xs'
+                          : 'border-transparent hover:bg-slate-100/80 dark:hover:bg-white/[0.04]'
+                      }`}
                     >
-                      <div className={`w-10 h-10 rounded-xl ${meta.bg || 'bg-slate-100'} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
-                        <Icon className={`w-4.5 h-4.5 ${meta.color || 'text-slate-500'}`} />
+                      <div className={`w-9 h-9 rounded-xl ${meta.bg || 'bg-slate-100'} border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
+                        <Icon className={`w-4 h-4 ${meta.color || 'text-slate-500'}`} />
                       </div>
+                      
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-[15px] font-semibold text-slate-900 dark:text-white truncate">{res.label}</span>
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${meta.bg} ${meta.color} tracking-wide uppercase`}>{meta.label}</span>
+                          <span className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{res.label}</span>
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${meta.bg} ${meta.color} tracking-wider uppercase border border-current/20 shrink-0`}>
+                            {meta.label}
+                          </span>
                         </div>
-                        {res.snippet && <p className="text-[13px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-1 truncate pr-4">{res.snippet}</p>}
+                        {res.snippet && (
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1 truncate pr-2">
+                            {res.snippet}
+                          </p>
+                        )}
                       </div>
-                      <ArrowRight className="w-5 h-5 text-slate-300 dark:text-slate-600 group-hover:text-emerald-500 transition-colors" />
+
+                      <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                        <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500">Jump</span>
+                        <CornerDownLeft className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-500 transition-colors" />
+                      </div>
                     </button>
                   );
                 })}
@@ -457,35 +537,49 @@ After your answer, list the IDs of the most relevant sources as JSON: SOURCES:[{
             </div>
           )}
 
-          {/* No Results State */}
-          {hasSearched && !isSearching && !isSynthesizing && results.length === 0 && !aiAnswer && (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="w-16 h-16 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 flex items-center justify-center mb-5">
-                <Search className="w-8 h-8 text-slate-300 dark:text-slate-600" />
+          {/* No Results Empty State */}
+          {hasSearched && !isSearching && !isSynthesizing && filteredResults.length === 0 && !aiAnswer && (
+            <div className="flex flex-col items-center justify-center py-14 px-4 text-center">
+              <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center mb-4 text-slate-400">
+                <Search className="w-7 h-7 stroke-[1.5]" />
               </div>
-              <p className="text-[17px] font-bold text-slate-900 dark:text-white">No matches found</p>
-              <p className="text-[14px] mt-1 text-slate-500 dark:text-slate-400 max-w-sm">
-                OrbitFlow couldn't find any direct matches in your accessible spaces.
+              <p className="text-base font-bold text-slate-900 dark:text-white">No matches found</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs leading-relaxed">
+                No direct records matched "{query}". Try adjusting keywords or filtering by a different space.
               </p>
             </div>
           )}
         </div>
 
-        {/* Premium Footer */}
-        <div className="px-6 py-3 border-t border-black/[0.04] dark:border-white/[0.06] bg-slate-50/50 dark:bg-[#0B0F19]/50 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400">
-              <kbd className="px-1.5 py-0.5 bg-white dark:bg-white/10 rounded-md border border-slate-200 dark:border-white/10 shadow-sm font-sans">↑↓</kbd> navigate
+        {/* Enterprise Footer Status Bar */}
+        <div className="px-5 py-3 border-t border-slate-100 dark:border-white/[0.06] bg-slate-50/90 dark:bg-[#090C13] flex flex-wrap items-center justify-between gap-3 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+              <kbd className="px-1.5 py-0.5 bg-white dark:bg-white/10 rounded border border-slate-200 dark:border-white/10 font-mono text-[10px] font-semibold shadow-2xs">↑↓</kbd>
+              <span>Navigate</span>
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400">
-              <kbd className="px-1.5 py-0.5 bg-white dark:bg-white/10 rounded-md border border-slate-200 dark:border-white/10 shadow-sm font-sans">↵</kbd> open
+            <div className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+              <kbd className="px-1.5 py-0.5 bg-white dark:bg-white/10 rounded border border-slate-200 dark:border-white/10 font-mono text-[10px] font-semibold shadow-2xs">↵</kbd>
+              <span>Select</span>
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400">
-              <kbd className="px-1.5 py-0.5 bg-white dark:bg-white/10 rounded-md border border-slate-200 dark:border-white/10 shadow-sm font-sans">esc</kbd> close
+            <div className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+              <kbd className="px-1.5 py-0.5 bg-white dark:bg-white/10 rounded border border-slate-200 dark:border-white/10 font-mono text-[10px] font-semibold shadow-2xs">esc</kbd>
+              <span>Dismiss</span>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase text-emerald-600 dark:text-emerald-500">
-            Powered by Orbit
+
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-medium border-r border-slate-200 dark:border-white/10 pr-3">
+              <Lock className="w-3 h-3 text-emerald-500" />
+              <span>Context: <strong className="text-slate-700 dark:text-slate-200 font-semibold">{isAdmin(user) ? 'Entire Organization' : 'Authorized Spaces'}</strong></span>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[11px] font-bold tracking-wider uppercase text-emerald-600 dark:text-emerald-400">
+                OrbitFlow AI
+              </span>
+            </div>
           </div>
         </div>
       </div>
