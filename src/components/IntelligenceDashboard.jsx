@@ -9,7 +9,6 @@ import { useCompany } from '@/hooks/useCompanyId';
 import DataOracle from '@/components/intelligence/DataOracle';
 import ReportGenerator from '@/components/intelligence/ReportGenerator';
 import AnomalyScanner from '@/components/intelligence/AnomalyScanner';
-import ExecutiveTelemetry from '@/components/intelligence/ExecutiveTelemetry';
 
 const SEVERITY_FILTERS = [
   { key: 'all', label: 'All', icon: null },
@@ -122,7 +121,6 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
       <Tabs defaultValue="insights" className="w-full">
         <TabsList className="mb-8 w-full flex justify-start gap-6 bg-transparent p-0 border-b border-slate-200 dark:border-border rounded-none h-auto overflow-x-auto hide-scrollbar">
           <TabsTrigger value="insights" className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-primary pb-3 px-1 transition-all font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"><Sparkles className="w-4 h-4"/> Insights Engine</TabsTrigger>
-          <TabsTrigger value="telemetry" className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-emerald-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-emerald-500 pb-3 px-1 transition-all font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"><Activity className="w-4 h-4"/> Executive Telemetry</TabsTrigger>
           <TabsTrigger value="oracle" className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-blue-500 pb-3 px-1 transition-all font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"><Bot className="w-4 h-4"/> Data Oracle</TabsTrigger>
           <TabsTrigger value="report" className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-purple-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-purple-500 pb-3 px-1 transition-all font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"><FileText className="w-4 h-4"/> Report Generator</TabsTrigger>
           <TabsTrigger value="anomaly" className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-red-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-red-500 pb-3 px-1 transition-all font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"><Activity className="w-4 h-4"/> Anomaly Scanner</TabsTrigger>
@@ -270,10 +268,6 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
               ))}
             </div>
           )}
-        </TabsContent>
-
-        <TabsContent value="telemetry">
-          <ExecutiveTelemetry />
         </TabsContent>
 
         <TabsContent value="oracle">
