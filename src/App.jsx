@@ -1399,6 +1399,7 @@ function App() {
                       <Route path="/auth/google-callback" element={<GoogleCallback />} />
                       <Route element={<ClipadLayout />}>
                         <Route path="/join/:roomId" element={<StandaloneMeeting />} />
+                        <Route path="/watch/:videoId" element={<WatchVideo />} />
                       </Route>
                       <Route path="/analytics" element={<VideoAnalytics />} />
                       <Route element={<ProtectedRoute />}>
@@ -1433,7 +1434,6 @@ function App() {
                           <Route path="/support" element={<CliPadSupport />} />
                           <Route path="/chat" element={<ClipadChat />} />
                           <Route path="/chat/:roomId" element={<ClipadChat />} />
-                          <Route path="/watch/:videoId" element={<WatchVideo />} />
                         </Route>
                       </Route>
                       <Route path="*" element={<Navigate to="/" replace />} />

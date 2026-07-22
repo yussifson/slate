@@ -169,7 +169,7 @@ export default function WatchVideo() {
           }
         }
 
-        const isExternal = v.visibility === 'external';
+        const isExternal = v.visibility === 'external' || v.visibility === 'public';
 
         if (!isExternal) {
           // 0. Ensure user is logged in and belongs to the same company
