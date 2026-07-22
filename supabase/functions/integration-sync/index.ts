@@ -27,7 +27,9 @@ import { syncAirtable } from './syncers/airtable.ts';
 import { syncGitHub } from './syncers/github.ts';
 import { syncGitLab } from './syncers/gitlab.ts';
 import { syncAsana } from './syncers/asana.ts';
+import { syncTrello } from './syncers/trello.ts';
 import { syncLinear } from './syncers/linear.ts';
+import { syncMonday } from './syncers/monday.ts';
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -875,46 +877,6 @@ async function syncClickUp(integration: any, supabase: any, lastSynced: Date | n
   return imported;
 }
 
-// ─── Trello Sync ──────────────────────────────────────────────────────────────
-async function syncTrello(integration: any, supabase: any, _lastSynced: Date | null) {
-  const token = integration.access_token;
-  const apiKey = integration.metadata?.api_key || Deno.env.get('TRELLO_API_KEY');
-  if (!apiKey) throw new Error('Trello API key not configured.');
-  let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-
-  const boardsRes = await fetch(`https://api.trello.com/1/members/me/boards?key=${apiKey}&token=${token}&fields=id,name,url`, {
-    headers: { 'Accept': 'application/json' }
-  });
-  if (!boardsRes.ok) throw new Error(`Trello API error: ${boardsRes.status}`);
-  const boards = await boardsRes.json();
-
-  for (const board of (boards || [])) {
-    if (imported >= limit) break;
-    const cardsRes = await fetch(`https://api.trello.com/1/boards/${board.id}/cards?key=${apiKey}&token=${token}&fields=id,name,desc,url,labels,due,idList`, {
-      headers: { 'Accept': 'application/json' }
-    });
-    if (!cardsRes.ok) continue;
-    const cards = await cardsRes.json();
-
-    for (const card of (cards || [])) {
-      if (imported >= limit) break;
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'trello',
-        external_id: card.id,
-        content_type: 'card',
-        title: `[${board.name}] ${card.name}`,
-        content: card.desc?.substring(0, 2000) || '',
-        url: card.url,
-        tags: (card.labels || []).map((l: any) => l.name).filter(Boolean),
-        metadata: { board: board.name, due: card.due },
-      }, integration);
-      if (ok) imported++;
-    }
-  }
-  return imported;
-}
-
 // ─── Dropbox Sync ─────────────────────────────────────────────────────────────
 async function syncDropbox(integration: any, supabase: any, _lastSynced: Date | null) {
   const token = integration.access_token;
@@ -1249,41 +1211,6 @@ async function syncDiscord(integration: any, supabase: any, lastSynced: Date | n
         
         if (messages.length < 100) hasMore = false;
       }
-    }
-  }
-  return imported;
-}
-
-// ─── Monday.com Sync ─────────────────────────────────────────────────────────
-async function syncMonday(integration: any, supabase: any, _lastSynced: Date | null) {
-  const token = integration.access_token;
-  let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-
-  const query = `{ boards(limit: 50) { id name items_page(limit: 100) { items { id name state column_values { text } } } } }`;
-  const res = await fetch('https://api.monday.com/v2', {
-    method: 'POST',
-    headers: { Authorization: token, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query })
-  });
-  if (!res.ok) throw new Error(`Monday API error: ${res.status}`);
-  const data = await res.json();
-
-  for (const board of (data.data?.boards || [])) {
-    if (imported >= limit) break;
-    for (const item of (board.items_page?.items || [])) {
-      if (imported >= limit) break;
-      const details = (item.column_values || []).map((c: any) => c.text).filter(Boolean).join(' | ');
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'monday',
-        external_id: item.id,
-        content_type: 'task',
-        title: `[${board.name}] ${item.name}`,
-        content: details.substring(0, 2000),
-        tags: [item.state].filter(Boolean),
-        metadata: { board: board.name, state: item.state },
-      }, integration);
-      if (ok) imported++;
     }
   }
   return imported;
