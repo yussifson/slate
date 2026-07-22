@@ -118,10 +118,10 @@ serve(async (req) => {
       }
 
       case 'monday': {
-        const mondayClientId = Deno.env.get('MONDAY_CLIENT_ID')
-        if (!mondayClientId) throw new Error("Missing MONDAY_CLIENT_ID")
-        authUrl = `https://auth.monday.com/oauth2/authorize?client_id=${mondayClientId}&redirect_uri=${redirectUri}&state=${state}&scope=boards:read`
-        break;
+        const returnWithInfo = new URL(return_url)
+        returnWithInfo.searchParams.set('status', 'needs_api_key')
+        returnWithInfo.searchParams.set('provider', 'monday')
+        return Response.redirect(returnWithInfo.toString(), 302)
       }
 
       case 'gitlab': {

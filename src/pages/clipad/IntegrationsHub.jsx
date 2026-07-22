@@ -736,7 +736,7 @@ const API_KEY_CONFIGS = {
   notion_integration:{ label: 'Notion (Integration)', fields: [{ key: 'api_key', label: 'Internal Integration Token', secret: true }] },
   openai:           { label: 'OpenAI',                 fields: [{ key: 'api_key', label: 'API Key (sk-...)', secret: true }] },
   pagerduty:        { label: 'PagerDuty',              fields: [{ key: 'api_key', label: 'API Key', secret: true }] },
-  monday_api:       { label: 'Monday.com',             fields: [{ key: 'api_key', label: 'API Token', secret: true }] },
+  monday:           { label: 'Monday.com',             fields: [{ key: 'api_key', label: 'API Token', secret: true }] },
 };
 
 function ApiKeyModal({ integration, provider, onSave, onClose }) {
