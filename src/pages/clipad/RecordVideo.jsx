@@ -1063,14 +1063,10 @@ export default function RecordVideo() {
             wsReconnectAttemptsRef.current++;
             const delay = Math.min(1000 * Math.pow(2, wsReconnectAttemptsRef.current - 1), 15000);
             console.warn(`WebSocket closed (code ${evt.code}), reconnecting in ${delay}ms (attempt ${wsReconnectAttemptsRef.current}/${wsMaxReconnects})`);
-            toast({ title: '⚠️ Connection lost', description: `Reconnecting... (${wsReconnectAttemptsRef.current}/${wsMaxReconnects})` });
             setTimeout(() => connectWS(true), delay);
           } else {
             console.error('WebSocket permanently failed after max reconnect attempts.');
-            toast({ title: '❌ Connection Lost', description: 'Upload connection failed. Recording paused. You can wait for network or stop to save locally.', variant: 'destructive' });
-            if (isRecordingRef.current && mediaRecorderRef.current?.state === 'recording') {
-              handlersRef.current.togglePause();
-            }
+            // Do not pause the recording. The IndexedDB fallback handles offline recording perfectly.
           }
         };
       };
