@@ -909,7 +909,13 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <p className="text-[11px] font-medium text-foreground truncate leading-tight">{s.title}</p>
  <p className="text-[10px] text-[#71717a] dark:text-gray-400 mt-0.5">
  {new Date(s.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric'})}
-<Trash2 className="w-3 h-3" />
+ </p>
+ </div>
+ <button
+ onClick={e => deleteSession(s.id, e)}
+ className="opacity-0 group-hover:opacity-100 p-0.5 text-[#71717a] dark:text-gray-400 hover:text-red-500 transition-all shrink-0"
+ >
+ <Trash2 className="w-3 h-3" />
  </button>
  </div>
  );
