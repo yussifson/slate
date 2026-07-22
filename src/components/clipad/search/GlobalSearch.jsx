@@ -116,10 +116,10 @@ export default function GlobalSearch() {
   // Load space names map for context chips
   useEffect(() => {
     if (!user?.company_id) return;
-    supabase.from('clipad_spaces').select('id, title').eq('company_id', user.company_id).then(({ data }) => {
+    supabase.from('clipad_spaces').select('id, name').eq('company_id', user.company_id).then(({ data }) => {
       if (data) {
         const map = {};
-        data.forEach(s => { map[s.id] = s.title; });
+        data.forEach(s => { map[s.id] = s.name; });
         setSpacesMap(map);
       }
     });
