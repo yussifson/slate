@@ -36,7 +36,6 @@ export default function ClipadTopNav({ forceMobile = false }) {
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
   const navItems = [
-    { label: 'Intelligence', path: window.location.pathname.startsWith('/clipad') ? '/clipad/intelligence' : '/intelligence', icon: Brain },
     { label: 'Spaces', path: '/spaces', icon: Layout },
     { label: 'Recordings', path: '/videos', icon: Video },
     { label: 'Meetings', path: '/meetings', icon: Calendar },
@@ -158,6 +157,10 @@ export default function ClipadTopNav({ forceMobile = false }) {
               <DropdownMenuItem onClick={() => navigate('/integrations')} className="cursor-pointer py-2">
                 <Plug className="mr-3 h-4 w-4 text-muted-foreground" />
                 <span>Integrations</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/intelligence' : '/intelligence')} className="cursor-pointer py-2">
+                <Brain className="mr-3 h-4 w-4 text-indigo-500" />
+                <span className="font-semibold text-indigo-600 dark:text-indigo-400">Intelligence Hub</span>
               </DropdownMenuItem>
               {user?.role === 'super_admin' && (
                 <DropdownMenuItem onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin')} className="cursor-pointer bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 py-2">
