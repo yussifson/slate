@@ -368,15 +368,15 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
         className="w-full max-w-[720px] flex flex-col rounded-xl overflow-hidden shadow-2xl shadow-slate-900/20 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1117] relative"
         style={{ animation: 'spotlightFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1)' }}
       >
-        {/* Search Header Row — Center aligned placeholder & input */}
-        <div className="flex items-center justify-between gap-3 px-6 py-4.5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0D1117] relative">
-          {isSearching || isSynthesizing ? (
-            <div className="w-7 h-7 flex items-center justify-center shrink-0">
-              <Loader2 className="w-4.5 h-4.5 animate-spin text-emerald-600 dark:text-emerald-400" />
-            </div>
-          ) : (
-            <div className="w-7 h-7 shrink-0" />
-          )}
+        {/* Search Header Row — Spacious, 20px font, premium Spotlight input */}
+        <div className="flex items-center justify-between gap-4 px-7 py-6 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0D1117] relative">
+          <div className="w-8 h-8 flex items-center justify-center shrink-0">
+            {isSearching || isSynthesizing ? (
+              <Loader2 className="w-5 h-5 animate-spin text-emerald-600 dark:text-emerald-400" />
+            ) : (
+              <Search className="w-5 h-5 text-slate-400 dark:text-slate-500 stroke-[2]" />
+            )}
+          </div>
           
           <input
             ref={inputRef}
@@ -384,21 +384,21 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask OrbitFlow AI or search docs, tasks, meetings..."
-            className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-slate-100 text-base font-semibold placeholder:text-slate-400 placeholder:font-normal min-w-0 tracking-tight text-center placeholder:text-center"
+            className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-slate-50 text-[19px] sm:text-[20px] font-semibold placeholder:text-slate-400/90 dark:placeholder:text-slate-500 placeholder:font-normal min-w-0 tracking-tight text-center placeholder:text-center h-9"
             style={{ caretColor: '#10b981' }}
           />
           
-          <div className="flex items-center gap-2 shrink-0 min-w-[50px] justify-end">
+          <div className="flex items-center gap-2 shrink-0 min-w-[56px] justify-end">
             {query ? (
               <button
                 onClick={() => { setQuery(''); setResults([]); setAiAnswer(''); setHasSearched(false); inputRef.current?.focus(); }}
-                className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                className="w-8 h-8 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                 title="Clear query"
               >
                 <X className="w-4 h-4" />
               </button>
             ) : (
-              <span className="hidden sm:inline-flex items-center text-[10px] font-mono font-bold px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              <span className="hidden sm:inline-flex items-center text-[10px] font-mono font-extrabold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 uppercase tracking-widest shadow-2xs">
                 ESC
               </span>
             )}

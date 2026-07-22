@@ -3,7 +3,7 @@ import { useTranslation} from "react-i18next";
 import React, { useState, useRef, useEffect, useCallback} from 'react';
 
 import { useLocation, useNavigate} from 'react-router-dom';
-import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square} from 'lucide-react';
+import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square, MoreHorizontal } from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { generateText, analyzeImage} from '@/lib/cloudflareAI';
@@ -906,38 +906,49 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  </div>
  )}
  {/* Main Panel */}
- <div className="flex-1 flex flex-col min-w-0">
+ <div className="flex-1 flex flex-col min-w-0 relative">
 
- {/* Header */}
- <div className="flex items-center justify-between px-5 py-4 max-md:pt-[max(16px,env(safe-area-inset-top))] shrink-0 bg-white/95 dark:bg-[#0A0F1C]/95 backdrop-blur-2xl border-b border-black/[0.04] dark:border-white/[0.04] relative z-10">
-  <div className="flex items-center gap-3">
-  <div className="flex flex-col mt-0.5">
-   <div className="flex items-center gap-2">
-    <h2 className="text-[20px] font-black bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300 bg-clip-text text-transparent leading-none tracking-tight">{t("orbit", "OrbitFlow")}</h2>
-    {chatMode !== 'chat' && <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider border border-emerald-100 dark:border-emerald-500/20">{chatMode}</span>}
-   </div>
-   <p className="text-[12px] text-slate-500 dark:text-muted-foreground mt-1.5 font-medium tracking-wide">{t("your_intelligent_copilot", "Your intelligent copilot")}</p>
-  </div>
-  </div>
-  <div className="flex items-center shrink-0 bg-slate-50 dark:bg-white/5 rounded-full p-1 border border-slate-200 dark:border-white/10 shadow-sm">
-  <button
-  onClick={() => setShowHistory(prev => !prev)}
-  className={`p-2 rounded-full transition-all duration-300 ${showHistory ? 'bg-white dark:bg-white/10 shadow-sm text-emerald-600 dark:text-emerald-400' : 'text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-white/5'}`}
-  title="Chat history"
-  >
-  <Clock className="w-4 h-4" />
-  </button>
-  <div className="w-px h-4 bg-slate-200 dark:bg-white/10 mx-0.5" />
-  <button onClick={startNewChat} className="p-2 rounded-full text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-300 transition-all duration-300 hover:bg-slate-200/50 dark:hover:bg-white/5" title="New chat">
-  <Plus className="w-4 h-4" />
-  </button>
-  <button onClick={() => setIsExpanded(!isExpanded)} className="hidden md:block p-2 rounded-full text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-300 transition-all duration-300 hover:bg-slate-200/50 dark:hover:bg-white/5" title={isExpanded ? "Collapse" : "Expand"}>
-  {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-  </button>
-  <button onClick={onClose} className="p-2 rounded-full text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 transition-all duration-300 hover:bg-red-50 dark:hover:bg-red-500/10" title="Close">
-  <X className="w-4 h-4" />
-  </button>
-  </div>
+  {/* Header — Floating Top-Right Controls Dropdown (Removes bulky top card) */}
+  <div className="absolute top-4 right-4 z-30 flex items-center gap-1.5">
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button 
+          className="w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 shadow-md flex items-center justify-center transition-all hover:scale-105 active:scale-95 backdrop-blur-md"
+          title="OrbitFlow Options"
+        >
+          <MoreHorizontal className="w-4 h-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-52 z-[100] shadow-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1117] p-1.5">
+        <DropdownMenuItem onClick={() => setShowHistory(prev => !prev)} className="cursor-pointer font-semibold text-xs py-2.5 rounded-lg">
+          <Clock className="w-4 h-4 mr-2 text-emerald-600 dark:text-emerald-400" /> 
+          {showHistory ? t("hide_history", "Hide History") : t("chat_history", "Chat History")}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={startNewChat} className="cursor-pointer font-semibold text-xs py-2.5 rounded-lg">
+          <Plus className="w-4 h-4 mr-2 text-emerald-600 dark:text-emerald-400" /> 
+          {t("new_chat", "New Chat")}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setIsExpanded(!isExpanded)} className="cursor-pointer font-semibold text-xs py-2.5 rounded-lg hidden md:flex">
+          {isExpanded ? (
+            <><Minimize2 className="w-4 h-4 mr-2 text-slate-500" /> {t("collapse", "Collapse Panel")}</>
+          ) : (
+            <><Maximize2 className="w-4 h-4 mr-2 text-slate-500" /> {t("expand", "Expand Panel")}</>
+          )}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={onClose} className="cursor-pointer font-semibold text-xs py-2.5 rounded-lg text-red-600 dark:text-red-400 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/30">
+          <X className="w-4 h-4 mr-2" /> 
+          {t("close_orbitflow", "Close OrbitFlow")}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+
+    <button
+      onClick={onClose}
+      className="w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 text-slate-400 border border-slate-200/80 dark:border-slate-700/80 shadow-md flex items-center justify-center transition-all hover:scale-105 active:scale-95 backdrop-blur-md"
+      title="Close chat"
+    >
+      <X className="w-4 h-4" />
+    </button>
   </div>
 
  {/* Messages */}
