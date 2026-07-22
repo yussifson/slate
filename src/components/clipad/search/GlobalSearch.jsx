@@ -15,24 +15,24 @@ import { OrbitIcon } from '@/components/ui/OrbitIcon';
 import { useToast } from '@/components/ui/use-toast';
 
 const TYPE_META = {
-  meeting:     { icon: Calendar,      label: 'Meeting',   color: 'text-blue-500 dark:text-blue-400',       bg: 'bg-blue-500/10 dark:bg-blue-500/20 border-blue-500/20',     route: (id) => `/meetings/${id}` },
-  video:       { icon: Video,         label: 'Video',     color: 'text-purple-500 dark:text-purple-400',   bg: 'bg-purple-500/10 dark:bg-purple-500/20 border-purple-500/20', route: (id) => `/watch/${id}` },
-  doc:         { icon: FileText,      label: 'Doc',       color: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-500/10 dark:bg-emerald-500/20 border-emerald-500/20',route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=docs&docId=${id}` : null },
-  task:        { icon: CheckCircle,   label: 'Task',      color: 'text-amber-500 dark:text-amber-400',     bg: 'bg-amber-500/10 dark:bg-amber-500/20 border-amber-500/20',   route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
-  message:     { icon: MessageSquare, label: 'Chat',      color: 'text-indigo-500 dark:text-indigo-400',   bg: 'bg-indigo-500/10 dark:bg-indigo-500/20 border-indigo-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=chat` : null },
-  decision:    { icon: ShieldAlert,   label: 'Decision',  color: 'text-rose-500 dark:text-rose-400',       bg: 'bg-rose-500/10 dark:bg-rose-500/20 border-rose-500/20',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=decisions` : null },
-  blocker:     { icon: AlertTriangle, label: 'Blocker',   color: 'text-orange-500 dark:text-orange-400',   bg: 'bg-orange-500/10 dark:bg-orange-500/20 border-orange-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=overview` : null },
-  standup:     { icon: Zap,           label: 'Standup',   color: 'text-teal-500 dark:text-teal-400',       bg: 'bg-teal-500/10 dark:bg-teal-500/20 border-teal-500/20',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=standup` : null },
-  integration: { icon: ExternalLink,  label: 'Imported',  color: 'text-slate-500 dark:text-slate-400',     bg: 'bg-slate-500/10 dark:bg-slate-500/20 border-slate-500/20',   route: (id) => `/integrations` },
+  meeting:     { icon: Calendar,      label: 'Meeting',   color: 'text-blue-700 dark:text-blue-400',       bg: 'bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700/50',     route: (id) => `/meetings/${id}` },
+  video:       { icon: Video,         label: 'Video',     color: 'text-purple-700 dark:text-purple-400',   bg: 'bg-purple-100 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700/50', route: (id) => `/watch/${id}` },
+  doc:         { icon: FileText,      label: 'Doc',       color: 'text-emerald-700 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700/50',route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=docs&docId=${id}` : null },
+  task:        { icon: CheckCircle,   label: 'Task',      color: 'text-amber-700 dark:text-amber-400',     bg: 'bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50',   route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
+  message:     { icon: MessageSquare, label: 'Chat',      color: 'text-indigo-700 dark:text-indigo-400',   bg: 'bg-indigo-100 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700/50', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=chat` : null },
+  decision:    { icon: ShieldAlert,   label: 'Decision',  color: 'text-rose-700 dark:text-rose-400',       bg: 'bg-rose-100 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-700/50',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=decisions` : null },
+  blocker:     { icon: AlertTriangle, label: 'Blocker',   color: 'text-orange-700 dark:text-orange-400',   bg: 'bg-orange-100 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-700/50', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=overview` : null },
+  standup:     { icon: Zap,           label: 'Standup',   color: 'text-teal-700 dark:text-teal-400',       bg: 'bg-teal-100 dark:bg-teal-900/30 border border-teal-200 dark:border-teal-700/50',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=standup` : null },
+  integration: { icon: ExternalLink,  label: 'Imported',  color: 'text-slate-700 dark:text-slate-400',     bg: 'bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700',   route: (id) => `/integrations` },
 };
 
 const SUGGESTIONS = [
-  { key: '1', text: 'What decisions were made last week?', type: 'decision', icon: ShieldAlert, color: 'text-rose-500', bg: 'bg-rose-500/10' },
-  { key: '2', text: 'Show me overdue tasks across spaces', type: 'task', icon: CheckCircle, color: 'text-amber-500', bg: 'bg-amber-500/10' },
-  { key: '3', text: 'Find recent meetings about pricing', type: 'meeting', icon: Calendar, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-  { key: '4', text: 'Any active blockers in engineering?', type: 'blocker', icon: AlertTriangle, color: 'text-orange-500', bg: 'bg-orange-500/10' },
-  { key: '5', text: 'What videos were recorded this month?', type: 'video', icon: Video, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-  { key: '6', text: 'Summarize key updates from standups', type: 'standup', icon: Zap, color: 'text-teal-500', bg: 'bg-teal-500/10' },
+  { key: '1', text: 'What decisions were made last week?', type: 'decision', icon: ShieldAlert, color: 'text-rose-700 dark:text-rose-400', bg: 'bg-rose-100 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60' },
+  { key: '2', text: 'Show me overdue tasks across spaces', type: 'task', icon: CheckCircle, color: 'text-amber-700 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60' },
+  { key: '3', text: 'Find recent meetings about pricing', type: 'meeting', icon: Calendar, color: 'text-blue-700 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/60' },
+  { key: '4', text: 'Any active blockers in engineering?', type: 'blocker', icon: AlertTriangle, color: 'text-orange-700 dark:text-orange-400', bg: 'bg-orange-100 dark:bg-orange-950/60 border border-orange-200 dark:border-orange-800/60' },
+  { key: '5', text: 'What videos were recorded this month?', type: 'video', icon: Video, color: 'text-purple-700 dark:text-purple-400', bg: 'bg-purple-100 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800/60' },
+  { key: '6', text: 'Summarize key updates from standups', type: 'standup', icon: Zap, color: 'text-teal-700 dark:text-teal-400', bg: 'bg-teal-100 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800/60' },
 ];
 
 const FILTER_TABS = [
@@ -321,7 +321,6 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
     setTimeout(() => setCopiedAnswer(false), 2000);
   };
 
-  // Calculate scope counts correctly with type mapping
   const getScopeCount = (filterId) => {
     if (filterId === 'all') return results.length;
     return results.filter(r => matchesFilter(r.type, filterId)).length;
@@ -332,17 +331,17 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
       <>
         <button
           onClick={() => setIsOpen(true)}
-          className="hidden md:flex items-center gap-2.5 px-3.5 h-9 bg-slate-100/80 dark:bg-slate-900/80 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 text-slate-500 dark:text-slate-400 rounded-xl transition-all border border-slate-200/80 dark:border-slate-800/80 w-full max-w-xs min-w-[140px] shadow-2xs hover:shadow-xs active:scale-[0.99] group"
+          className="hidden md:flex items-center gap-2.5 px-3.5 h-9 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200/80 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-xl transition-all border border-slate-200 dark:border-slate-800 w-full max-w-xs min-w-[140px] shadow-2xs hover:shadow-xs active:scale-[0.99] group"
         >
-          <Search className="w-4 h-4 shrink-0 text-emerald-500 group-hover:scale-110 transition-transform" />
-          <span className="text-xs font-medium flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis tracking-tight">Search or ask OrbitFlow...</span>
-          <kbd className="text-[10px] font-mono bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded-md text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 shrink-0 hidden lg:flex items-center gap-0.5 tracking-wider font-semibold shadow-2xs">
+          <Search className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-500 group-hover:scale-110 transition-transform" />
+          <span className="text-xs font-semibold flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis tracking-tight">Search or ask OrbitFlow...</span>
+          <kbd className="text-[10px] font-mono bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded-md text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700 shrink-0 hidden lg:flex items-center gap-0.5 tracking-wider font-bold shadow-2xs">
             ⌘K
           </kbd>
         </button>
         <button 
           onClick={() => setIsOpen(true)} 
-          className="md:hidden p-2 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors active:scale-95 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+          className="md:hidden p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors active:scale-95 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
           title="Search"
         >
           <Search className="w-5 h-5" />
@@ -354,41 +353,31 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
   return createPortal(
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[9999] flex items-start justify-center pt-[7vh] sm:pt-[10vh] px-3 sm:px-4 pb-6"
-      style={{ background: 'rgba(5, 8, 15, 0.7)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+      className="fixed inset-0 z-[9999] flex items-start justify-center pt-[6vh] sm:pt-[9vh] px-3 sm:px-4 pb-6"
+      style={{ background: 'rgba(15, 23, 42, 0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
       onMouseDown={(e) => { if (e.target === overlayRef.current) setIsOpen(false); }}
     >
       <style>{`
-        @keyframes spotlightScale {
-          0% { opacity: 0; transform: scale(0.97) translateY(-10px); }
+        @keyframes spotlightFadeIn {
+          0% { opacity: 0; transform: scale(0.98) translateY(-8px); }
           100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        @keyframes aiGlowPulse {
-          0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-          70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
       `}</style>
       
+      {/* Crisp, clean, enterprise modal container — no messy top colors, no input clipping */}
       <div
-        className="w-full max-w-[720px] flex flex-col rounded-2xl overflow-hidden shadow-[0_32px_100px_-15px_rgba(0,0,0,0.5)] border border-slate-200/90 dark:border-white/[0.08] bg-white dark:bg-[#0C1017] backdrop-blur-2xl relative"
-        style={{ animation: 'spotlightScale 0.22s cubic-bezier(0.16, 1, 0.3, 1)' }}
+        className="w-full max-w-[720px] flex flex-col rounded-xl overflow-hidden shadow-2xl shadow-slate-900/20 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1117] relative"
+        style={{ animation: 'spotlightFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1)' }}
       >
-        {/* Top Shimmer Gradient Line */}
-        <div className="h-[2px] w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-indigo-500 shrink-0" />
-
-        {/* Search Header Bar */}
-        <div className="flex items-center gap-3.5 px-5 py-4 border-b border-slate-100 dark:border-white/[0.06] relative bg-slate-50/60 dark:bg-white/[0.01]">
+        {/* Search Header Row — Generous padding & crisp typography */}
+        <div className="flex items-center gap-3.5 px-6 py-4.5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0D1117]">
           {isSearching || isSynthesizing ? (
-            <div className="w-9.5 h-9.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
-              <Loader2 className="w-5 h-5 animate-spin text-emerald-500" />
+            <div className="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+              <Loader2 className="w-5 h-5 animate-spin text-emerald-600 dark:text-emerald-400" />
             </div>
           ) : (
-            <div 
-              className="w-9.5 h-9.5 rounded-xl bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0 relative transition-transform hover:scale-105"
-              style={{ animation: aiAnswer ? 'aiGlowPulse 2.5s infinite' : 'none' }}
-            >
-              <OrbitIcon className="w-5.5 h-5.5 text-white" />
+            <div className="w-9 h-9 rounded-lg bg-emerald-600 flex items-center justify-center shadow-sm shadow-emerald-600/30 shrink-0">
+              <OrbitIcon className="w-5 h-5 text-white" />
             </div>
           )}
           
@@ -398,7 +387,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask OrbitFlow AI or search docs, tasks, meetings..."
-            className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-slate-100 text-[17px] font-medium placeholder-slate-400/80 min-w-0 tracking-tight"
+            className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-slate-100 text-base font-semibold placeholder:text-slate-400 placeholder:font-normal min-w-0 tracking-tight"
             style={{ caretColor: '#10b981' }}
           />
           
@@ -406,24 +395,24 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
             {query && (
               <button
                 onClick={() => { setQuery(''); setResults([]); setAiAnswer(''); setHasSearched(false); inputRef.current?.focus(); }}
-                className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-200/60 dark:hover:bg-white/10 transition-colors text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
                 title="Clear query"
               >
                 <X className="w-4 h-4" />
               </button>
             )}
             
-            <span className="hidden sm:inline-flex items-center text-[10px] font-mono font-semibold px-2 py-1 rounded-md bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+            <span className="hidden sm:inline-flex items-center text-[11px] font-mono font-bold px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               ESC
             </span>
           </div>
         </div>
 
-        {/* Scope Filter Tabs Bar (Always shown when typing or after searching) */}
+        {/* Scope Filter Tabs Bar (Shown when typing or after search) */}
         {(hasSearched || query.length > 0) && (
-          <div className="flex items-center gap-1.5 px-5 py-2.5 border-b border-slate-100 dark:border-white/[0.04] bg-slate-50/80 dark:bg-white/[0.02] overflow-x-auto no-scrollbar">
-            <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mr-1.5 flex items-center gap-1 shrink-0 uppercase tracking-wider">
-              <Filter className="w-3 h-3 text-emerald-500" /> Scope
+          <div className="flex items-center gap-1.5 px-6 py-2.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/40 overflow-x-auto no-scrollbar">
+            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 mr-2 flex items-center gap-1 shrink-0 uppercase tracking-wider">
+              <Filter className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /> Scope
             </span>
             {FILTER_TABS.map(tab => {
               const count = getScopeCount(tab.id);
@@ -431,16 +420,16 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
                 <button
                   key={tab.id}
                   onClick={() => { setSelectedFilter(tab.id); setFocusedIndex(-1); }}
-                  className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                     selectedFilter === tab.id
-                      ? 'bg-emerald-500 text-white shadow-xs shadow-emerald-500/20'
-                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-200'
+                      ? 'bg-emerald-600 text-white shadow-xs shadow-emerald-600/30'
+                      : 'bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   <span>{tab.label}</span>
                   {count > 0 && (
-                    <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-mono ${
-                      selectedFilter === tab.id ? 'bg-white/20 text-white' : 'bg-slate-200/80 dark:bg-white/10 text-slate-500 dark:text-slate-400'
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
+                      selectedFilter === tab.id ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
                     }`}>
                       {count}
                     </span>
@@ -451,42 +440,42 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
           </div>
         )}
 
-        {/* Scrollable Modal Body */}
-        <div className="max-h-[58vh] overflow-y-auto overflow-x-hidden custom-scrollbar">
+        {/* Scrollable Body */}
+        <div className="max-h-[58vh] overflow-y-auto overflow-x-hidden custom-scrollbar bg-white dark:bg-[#0D1117]">
           
-          {/* Zero State Suggestions Grid with Hotkey Badges */}
+          {/* Zero State Suggestions Grid (Clean rectangular cards with high-contrast colors) */}
           {!hasSearched && !isSearching && query.length === 0 && (
-            <div className="p-5 sm:p-6 space-y-4">
+            <div className="p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                   Suggested AI Queries
                 </h3>
-                <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium hidden sm:inline">Press 1-6 or click</span>
+                <span className="text-xs text-slate-400 dark:text-slate-500 font-medium hidden sm:inline">Press 1-6 or click</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {SUGGESTIONS.map((item) => {
                   const Icon = item.icon;
                   return (
                     <button
                       key={item.key}
                       onClick={() => { setQuery(item.text); handleSearch(item.text); }}
-                      className="group flex items-center justify-between p-3.5 rounded-xl bg-slate-50/70 dark:bg-white/[0.02] hover:bg-emerald-500/[0.04] dark:hover:bg-emerald-500/[0.06] border border-slate-200/60 dark:border-white/[0.05] hover:border-emerald-500/30 dark:hover:border-emerald-500/30 transition-all text-left active:scale-[0.99] shadow-2xs hover:shadow-xs"
+                      className="group flex items-center justify-between p-3.5 rounded-xl bg-slate-50 hover:bg-emerald-50/60 dark:bg-slate-900/60 dark:hover:bg-emerald-950/30 border border-slate-200/90 hover:border-emerald-300 dark:border-slate-800 dark:hover:border-emerald-700/60 transition-all text-left active:scale-[0.99] shadow-2xs hover:shadow-xs"
                     >
                       <div className="flex items-center gap-3 min-w-0 pr-2">
-                        <div className={`w-8 h-8 rounded-lg ${item.bg} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
+                        <div className={`w-8.5 h-8.5 rounded-lg ${item.bg} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
                           <Icon className={`w-4 h-4 ${item.color}`} />
                         </div>
-                        <span className="text-xs font-medium text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white transition-colors truncate">
+                        <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors truncate">
                           {item.text}
                         </span>
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0">
-                        <kbd className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-white dark:bg-white/10 border border-slate-200/80 dark:border-white/10 text-slate-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                        <kbd className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors shadow-2xs">
                           {item.key}
                         </kbd>
-                        <ChevronRight className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all" />
+                        <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-600 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all" />
                       </div>
                     </button>
                   );
@@ -495,94 +484,92 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
             </div>
           )}
 
-          {/* OrbitFlow AI Response Box */}
+          {/* OrbitFlow AI Answer Box */}
           {(aiAnswer || isSynthesizing) && !isSearching && (
-            <div className="mx-4 sm:mx-5 mt-4 mb-3 p-[1px] rounded-2xl bg-gradient-to-br from-emerald-500/30 via-teal-500/15 to-indigo-500/30">
-              <div className="rounded-[15px] bg-slate-50/90 dark:bg-[#111622] p-4 sm:p-5 backdrop-blur-md">
-                <div className="flex items-center justify-between mb-3.5 pb-2.5 border-b border-slate-200/50 dark:border-white/[0.06]">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300 bg-clip-text text-transparent">
-                      OrbitFlow Intelligence {selectedFilter !== 'all' ? `\u2022 ${FILTER_TABS.find(t => t.id === selectedFilter)?.label}` : ''}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    {isSynthesizing ? (
-                      <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
-                        <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">Synthesizing</span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0s' }} />
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0.15s' }} />
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0.3s' }} />
-                      </div>
-                    ) : (
-                      aiAnswer && (
-                        <button
-                          onClick={handleCopyAnswer}
-                          className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors px-2 py-1 rounded-md hover:bg-slate-200/50 dark:hover:bg-white/5"
-                          title="Copy answer"
-                        >
-                          {copiedAnswer ? <CheckCheck className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                          <span className="text-[11px] font-medium">{copiedAnswer ? 'Copied' : 'Copy'}</span>
-                        </button>
-                      )
-                    )}
-                  </div>
+            <div className="mx-6 mt-5 mb-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-emerald-500/30 p-5 shadow-xs">
+              <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-200/80 dark:border-slate-800">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
+                    OrbitFlow Intelligence {selectedFilter !== 'all' ? `\u2022 ${FILTER_TABS.find(t => t.id === selectedFilter)?.label}` : ''}
+                  </span>
                 </div>
                 
-                <div>
+                <div className="flex items-center gap-2">
                   {isSynthesizing ? (
-                    <div className="space-y-2.5 py-1 animate-pulse">
-                      <div className="h-3.5 bg-emerald-500/15 dark:bg-emerald-500/20 rounded-md w-full" />
-                      <div className="h-3.5 bg-emerald-500/15 dark:bg-emerald-500/20 rounded-md w-11/12" />
-                      <div className="h-3.5 bg-emerald-500/15 dark:bg-emerald-500/20 rounded-md w-4/5" />
+                    <div className="flex items-center gap-1.5 bg-emerald-100 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-700 px-2.5 py-0.5 rounded-full">
+                      <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300">Synthesizing</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" style={{ animationDelay: '0s' }} />
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" style={{ animationDelay: '0.15s' }} />
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" style={{ animationDelay: '0.3s' }} />
                     </div>
                   ) : (
-                    <div className="text-sm leading-relaxed text-slate-800 dark:text-slate-200 font-medium whitespace-pre-wrap">
-                      <TypewriterText text={aiAnswer} />
-                    </div>
+                    aiAnswer && (
+                      <button
+                        onClick={handleCopyAnswer}
+                        className="flex items-center gap-1 text-xs text-slate-600 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors px-2 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs"
+                        title="Copy answer"
+                      >
+                        {copiedAnswer ? <CheckCheck className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                        <span className="text-[11px] font-semibold">{copiedAnswer ? 'Copied' : 'Copy'}</span>
+                      </button>
+                    )
                   )}
                 </div>
-
-                {/* Verified Sources Chips */}
-                {aiSources.length > 0 && !isSynthesizing && (
-                  <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/[0.06] flex flex-wrap gap-2 items-center">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mr-1">
-                      Verified Sources ({aiSources.length})
-                    </span>
-                    {aiSources.map((src, i) => {
-                      const meta = TYPE_META[src.type];
-                      const Icon = meta?.icon || FileText;
-                      return (
-                        <button
-                          key={i}
-                          onClick={() => handleResultClick(src)}
-                          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white dark:bg-white/[0.05] hover:bg-emerald-500/10 dark:hover:bg-emerald-500/20 border border-slate-200/80 dark:border-white/[0.08] hover:border-emerald-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] group"
-                        >
-                          <Icon className={`w-3.5 h-3.5 ${meta?.color || 'text-slate-500'}`} />
-                          <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 max-w-[160px] truncate">{src.label}</span>
-                          <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-emerald-500 transition-colors ml-0.5" />
-                        </button>
-                      );
-                    })}
+              </div>
+              
+              <div>
+                {isSynthesizing ? (
+                  <div className="space-y-2.5 py-1 animate-pulse">
+                    <div className="h-3.5 bg-emerald-200/60 dark:bg-emerald-900/40 rounded-md w-full" />
+                    <div className="h-3.5 bg-emerald-200/60 dark:bg-emerald-900/40 rounded-md w-11/12" />
+                    <div className="h-3.5 bg-emerald-200/60 dark:bg-emerald-900/40 rounded-md w-4/5" />
+                  </div>
+                ) : (
+                  <div className="text-sm leading-relaxed text-slate-900 dark:text-slate-100 font-medium whitespace-pre-wrap">
+                    <TypewriterText text={aiAnswer} />
                   </div>
                 )}
               </div>
+
+              {/* Verified Sources Chips */}
+              {aiSources.length > 0 && !isSynthesizing && (
+                <div className="mt-4 pt-3 border-t border-slate-200/80 dark:border-slate-800 flex flex-wrap gap-2 items-center">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mr-1">
+                    Verified Sources ({aiSources.length})
+                  </span>
+                  {aiSources.map((src, i) => {
+                    const meta = TYPE_META[src.type];
+                    const Icon = meta?.icon || FileText;
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => handleResultClick(src)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-slate-200 dark:border-slate-700 hover:border-emerald-300 transition-all hover:scale-[1.01] active:scale-[0.99] group shadow-2xs"
+                      >
+                        <Icon className={`w-3.5 h-3.5 ${meta?.color || 'text-slate-600'}`} />
+                        <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 max-w-[160px] truncate">{src.label}</span>
+                        <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors ml-0.5" />
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
 
-          {/* Scope Tab Specific Empty Notice (If filter has 0 matches, but other categories do) */}
+          {/* Filter Empty Notice */}
           {selectedFilter !== 'all' && filteredResults.length === 0 && results.length > 0 && !isSearching && (
-            <div className="mx-4 sm:mx-5 my-4 p-4 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/60 dark:border-white/[0.06] text-center">
-              <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <div className="mx-6 my-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-center">
+              <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
                 No {FILTER_TABS.find(t => t.id === selectedFilter)?.label} matched "{query}"
               </p>
-              <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                 There are {results.length} result{results.length > 1 ? 's' : ''} in other categories.
               </p>
               <button
                 onClick={() => setSelectedFilter('all')}
-                className="mt-2.5 px-3 py-1 bg-emerald-500 text-white rounded-lg text-xs font-semibold hover:bg-emerald-600 transition-colors shadow-2xs"
+                className="mt-2.5 px-3.5 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold hover:bg-emerald-700 transition-colors shadow-2xs"
               >
                 Show All ({results.length}) Results
               </button>
@@ -591,13 +578,13 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
 
           {/* Search Results List */}
           {filteredResults.length > 0 && !isSearching && (
-            <div className="px-4 sm:px-5 py-3">
-              <div className="flex items-center justify-between px-2 mb-2">
-                <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            <div className="px-6 py-4">
+              <div className="flex items-center justify-between mb-2.5">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   {selectedFilter === 'all' ? 'All Matches' : `${FILTER_TABS.find(t => t.id === selectedFilter)?.label || selectedFilter} Matches`} ({filteredResults.length})
                 </h4>
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 {filteredResults.map((res, i) => {
                   const meta = TYPE_META[res.type] || {};
                   const Icon = meta.icon || Search;
@@ -608,39 +595,39 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
                     <button
                       key={`${res.type}-${res.id}-${i}`}
                       onClick={() => handleResultClick(res)}
-                      className={`w-full text-left px-3.5 py-3 rounded-xl cursor-pointer transition-all flex items-center gap-3.5 group border ${
+                      className={`w-full text-left px-4 py-3 rounded-xl cursor-pointer transition-all flex items-center gap-3.5 group border ${
                         isFocused
-                          ? 'bg-emerald-500/10 dark:bg-emerald-500/15 border-emerald-500/40 text-emerald-900 dark:text-emerald-100 shadow-2xs'
-                          : 'border-transparent hover:bg-slate-100/80 dark:hover:bg-white/[0.04]'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-400 dark:border-emerald-600 text-emerald-950 dark:text-emerald-100 shadow-2xs'
+                          : 'bg-white dark:bg-[#0D1117] border-slate-100 dark:border-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-900/60 hover:border-slate-200'
                       }`}
                     >
-                      <div className={`w-9 h-9 rounded-xl ${meta.bg || 'bg-slate-100'} border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
-                        <Icon className={`w-4 h-4 ${meta.color || 'text-slate-500'}`} />
+                      <div className={`w-9 h-9 rounded-lg ${meta.bg || 'bg-slate-100'} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
+                        <Icon className={`w-4 h-4 ${meta.color || 'text-slate-600'}`} />
                       </div>
                       
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{res.label}</span>
-                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${meta.bg} ${meta.color} tracking-wider uppercase border border-current/20 shrink-0`}>
+                          <span className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">{res.label}</span>
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${meta.bg} ${meta.color} tracking-wider uppercase shrink-0`}>
                             {meta.label}
                           </span>
                           {spaceName && (
-                            <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 flex items-center gap-1 truncate max-w-[120px]">
-                              <Folder className="w-2.5 h-2.5 shrink-0" />
+                            <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1 truncate max-w-[140px]">
+                              <Folder className="w-3 h-3 shrink-0 text-slate-400" />
                               {spaceName}
                             </span>
                           )}
                         </div>
                         {res.snippet && (
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1 truncate pr-2">
+                          <p className="text-xs font-medium text-slate-600 dark:text-slate-400 mt-0.5 line-clamp-1 truncate pr-2">
                             {res.snippet}
                           </p>
                         )}
                       </div>
 
-                      <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                        <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500">Jump</span>
-                        <CornerDownLeft className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-500 transition-colors" />
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                        <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">Jump</span>
+                        <CornerDownLeft className="w-3.5 h-3.5 text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors" />
                       </div>
                     </button>
                   );
@@ -652,7 +639,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
           {/* Empty Results State */}
           {hasSearched && !isSearching && !isSynthesizing && results.length === 0 && !aiAnswer && (
             <div className="flex flex-col items-center justify-center py-14 px-4 text-center">
-              <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center mb-4 text-slate-400">
+              <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center mb-4 text-slate-400">
                 <Search className="w-7 h-7 stroke-[1.5]" />
               </div>
               <p className="text-base font-bold text-slate-900 dark:text-white">No matches found</p>
@@ -664,31 +651,31 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
         </div>
 
         {/* Enterprise Status Footer */}
-        <div className="px-5 py-3 border-t border-slate-100 dark:border-white/[0.06] bg-slate-50/90 dark:bg-[#090C13] flex flex-wrap items-center justify-between gap-3 shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              <kbd className="px-1.5 py-0.5 bg-white dark:bg-white/10 rounded border border-slate-200 dark:border-white/10 font-mono text-[10px] font-semibold shadow-2xs">↑↓</kbd>
+        <div className="px-6 py-3.5 border-t border-slate-200/90 dark:border-slate-800 bg-slate-50 dark:bg-[#080B10] flex flex-wrap items-center justify-between gap-3 shrink-0">
+          <div className="flex items-center gap-3.5">
+            <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 font-semibold">
+              <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 rounded border border-slate-300 dark:border-slate-700 font-mono text-[11px] font-bold text-slate-800 dark:text-slate-200 shadow-2xs">↑↓</kbd>
               <span>Navigate</span>
             </div>
-            <div className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              <kbd className="px-1.5 py-0.5 bg-white dark:bg-white/10 rounded border border-slate-200 dark:border-white/10 font-mono text-[10px] font-semibold shadow-2xs">↵</kbd>
+            <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 font-semibold">
+              <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 rounded border border-slate-300 dark:border-slate-700 font-mono text-[11px] font-bold text-slate-800 dark:text-slate-200 shadow-2xs">↵</kbd>
               <span>Select</span>
             </div>
-            <div className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              <kbd className="px-1.5 py-0.5 bg-white dark:bg-white/10 rounded border border-slate-200 dark:border-white/10 font-mono text-[10px] font-semibold shadow-2xs">esc</kbd>
+            <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 font-semibold">
+              <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 rounded border border-slate-300 dark:border-slate-700 font-mono text-[11px] font-bold text-slate-800 dark:text-slate-200 shadow-2xs">esc</kbd>
               <span>Dismiss</span>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-medium border-r border-slate-200 dark:border-white/10 pr-3">
-              <Lock className="w-3 h-3 text-emerald-500" />
-              <span>Context: <strong className="text-slate-700 dark:text-slate-200 font-semibold">{isAdmin(user) ? 'Entire Organization' : `${accessibleCount || 'Authorized'} Spaces`}</strong></span>
+            <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 font-semibold border-r border-slate-200 dark:border-slate-800 pr-3.5">
+              <Lock className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <span>Context: <strong className="text-slate-900 dark:text-slate-100 font-bold">{isAdmin(user) ? 'Entire Organization' : `${accessibleCount || 'Authorized'} Spaces`}</strong></span>
             </div>
 
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-bold tracking-wider uppercase text-emerald-600 dark:text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+              <span className="text-[11px] font-extrabold tracking-wider uppercase text-emerald-700 dark:text-emerald-400">
                 OrbitFlow AI
               </span>
             </div>
