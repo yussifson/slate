@@ -48,7 +48,11 @@ export async function syncSharePoint(integration: any, supabase: any, lastSynced
   });
   if (!sitesRes.ok) {
     const errorBody = await sitesRes.json().catch(() => ({}));
-    throw new Error(`SharePoint API error: ${sitesRes.status} — ${errorBody?.error?.message || 'Ensure Sites.Read.All and Files.Read.All scopes are granted.'}`);
+    const errMsg = errorBody?.error?.message || '';
+    if (errMsg.includes('MSA accounts') || errMsg.includes('No authorization information present')) {
+      throw new Error(`SharePoint API error: ${sitesRes.status} — The SharePoint integration requires a Microsoft 365 Business or Enterprise account. Personal Microsoft accounts (like @outlook.com) are not supported.`);
+    }
+    throw new Error(`SharePoint API error: ${sitesRes.status} — ${errMsg || 'Ensure Sites.Read.All and Files.Read.All scopes are granted.'}`);
   }
   
   const sitesData = await sitesRes.json();

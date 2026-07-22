@@ -58,9 +58,8 @@ serve(async (req) => {
       case 'zoom': {
         const zoomClientId = Deno.env.get('ZOOM_CLIENT_ID')
         if (!zoomClientId) throw new Error("Missing ZOOM_CLIENT_ID")
-        // recording:read and meeting:read are required for the sync function to fetch recordings and meetings
-        const zoomScopes = 'recording:read meeting:read user:read'
-        authUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${zoomClientId}&redirect_uri=${redirectUri}&scope=${encodeURIComponent(zoomScopes)}&state=${state}`
+        // Note: Zoom scopes are strictly defined in the Marketplace App configuration. Do not pass scope in URL to avoid "invalid scope" mismatch errors.
+        authUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${zoomClientId}&redirect_uri=${redirectUri}&state=${state}`
         break;
       }
 
@@ -341,6 +340,8 @@ serve(async (req) => {
         return Response.redirect(returnWithInfo.toString(), 302)
       }
 
+
+
       case 'azure': {
         const azClientId = Deno.env.get('AZURE_CLIENT_ID')
         if (!azClientId) throw new Error("Missing AZURE_CLIENT_ID")
@@ -351,7 +352,8 @@ serve(async (req) => {
       case 'google_cloud': {
         const googleClientId = Deno.env.get('GOOGLE_CLIENT_ID')
         if (googleClientId) {
-          const scopes = 'email profile https://www.googleapis.com/auth/cloud-platform.read-only https://www.googleapis.com/auth/cloudplatformprojects.readonly'
+          // Cloud Resource Manager API v3 requires the broad cloud-platform scope.
+          const scopes = 'email profile https://www.googleapis.com/auth/cloud-platform'
           authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${encodeURIComponent(scopes)}&access_type=offline&prompt=consent&state=${state}`
         } else {
           // Fallback to API Key modal for service account JSON

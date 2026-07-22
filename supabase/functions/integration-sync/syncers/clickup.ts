@@ -7,7 +7,7 @@ export async function syncClickUp(integration: any, supabase: any, lastSynced: D
 
   // ClickUp uses raw token for Authorization (no Bearer)
   const teamsRes = await fetch('https://api.clickup.com/api/v2/team', {
-    headers: { Authorization: token, 'Content-Type': 'application/json' }
+    headers: { Authorization: token }
   });
   if (!teamsRes.ok) {
     const errBody = await teamsRes.json().catch(() => ({}));
@@ -26,7 +26,7 @@ export async function syncClickUp(integration: any, supabase: any, lastSynced: D
 
     while (hasMoreTasks && imported < limit) {
       const tasksRes = await fetch(`https://api.clickup.com/api/v2/team/${team.id}/task?page=${page}&order_by=updated&subtasks=true&include_closed=true${dateUpdatedParam}`, {
-        headers: { Authorization: token, 'Content-Type': 'application/json' }
+        headers: { Authorization: token }
       });
       if (!tasksRes.ok) {
         console.warn(`Failed to fetch tasks for team ${team.id}: ${tasksRes.status}`);

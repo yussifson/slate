@@ -49,7 +49,10 @@ export async function syncMSTeams(integration: any, supabase: any, lastSynced: D
   if (!teamsRes.ok) {
     const teamsErrBody = await teamsRes.json().catch(() => ({}));
     const teamsErrMsg = teamsErrBody?.error?.message || teamsErrBody?.error?.code || '';
-    if (teamsRes.status === 403 || teamsRes.status === 401) {
+    if (teamsRes.status === 403 || teamsRes.status === 401 || teamsRes.status === 400) {
+      if (teamsErrMsg.includes('No authorization information present') || teamsErrMsg.includes('MSA accounts')) {
+        throw new Error(`Teams API error: ${teamsRes.status} — The Microsoft Teams integration requires a Microsoft 365 Business or Enterprise account. Personal Microsoft accounts (like @outlook.com or @hotmail.com) are not supported.`);
+      }
       throw new Error(`Teams API error: ${teamsRes.status} — The Microsoft Teams integration requires specific scopes. Ensure Admin Consent is granted for Team.ReadBasic.All and ChannelMessage.Read.All. ${teamsErrMsg}`);
     }
     throw new Error(`Teams API error: ${teamsRes.status} — ${teamsErrMsg}`);
