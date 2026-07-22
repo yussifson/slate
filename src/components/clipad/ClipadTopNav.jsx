@@ -158,10 +158,6 @@ export default function ClipadTopNav({ forceMobile = false }) {
                 <Plug className="mr-3 h-4 w-4 text-muted-foreground" />
                 <span>Integrations</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/intelligence' : '/intelligence')} className="cursor-pointer py-2">
-                <Brain className="mr-3 h-4 w-4 text-indigo-500" />
-                <span className="font-semibold text-indigo-600 dark:text-indigo-400">Intelligence</span>
-              </DropdownMenuItem>
               {user?.role === 'super_admin' && (
                 <DropdownMenuItem onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin')} className="cursor-pointer bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 py-2">
                   <Shield className="mr-3 h-4 w-4" />

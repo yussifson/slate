@@ -903,7 +903,6 @@ function PlatformRoutes() {
         <Route path="/clipad/integrations" element={<IntegrationsHub />} />
         <Route path="/clipad/analytics" element={<VideoAnalytics />} />
         <Route path="/clipad/enterprise" element={<CliPadEnterpriseDashboard />} />
-        <Route path="/clipad/intelligence" element={<Intelligence />} />
         <Route path="/clipad/health" element={<KnowledgeHealth />} />
         <Route path="/clipad/integration-analytics" element={<IntegrationAnalytics />} />
         <Route path="/clipad/timeline" element={<KnowledgeTimeline />} />
@@ -1416,8 +1415,6 @@ function App() {
                           <Route path="/enterprise" element={<CliPadEnterpriseDashboard />} />
                           <Route path="/spaces" element={<SpacesList />} />
                           <Route path="/spaces/:spaceId" element={<SpaceDashboard />} />
-                          <Route path="/intelligence" element={<Intelligence />} />
-                          <Route path="/clipad/intelligence" element={<Intelligence />} />
                           <Route path="/health" element={<KnowledgeHealth />} />
                           <Route path="/timeline" element={<KnowledgeTimeline />} />
                           <Route path="/decisions" element={<DecisionLedger />} />

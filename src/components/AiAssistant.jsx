@@ -7,7 +7,6 @@ import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus
 import { Button} from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { generateText, analyzeImage} from '@/lib/cloudflareAI';
-import { sanitizePII } from '@/lib/enterpriseSecurity';
 import { toast} from 'react-hot-toast';
 import { useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
 import { useCompanyId} from '@/hooks/useCompanyId';
@@ -503,11 +502,8 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  try {
  let responseText;
 
- // Zero-Trust Security: Sanitize PII before processing
- const safeText = sanitizePII(text || '');
-
  if (fileSnap?.type === 'image') {
- const promptText = `You are an AI agent embedded in Slate enterprise SaaS. ${getPageContext()}\n\nUser says: ${safeText || 'Please analyze this image.'}\n\nDescribe the image and provide relevant business insights.`;
+ const promptText = `You are an AI agent embedded in Slate enterprise SaaS. ${getPageContext()}\n\nUser says: ${text || 'Please analyze this image.'}\n\nDescribe the image and provide relevant business insights.`;
  responseText = await analyzeImage(fileSnap.bytes, promptText);
 } else {
  const ctx = PAGE_CONTEXT[location.pathname] || { title: 'Unknown', suite: 'Unknown'};
