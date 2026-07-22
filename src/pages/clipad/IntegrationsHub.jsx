@@ -659,7 +659,13 @@ export default function IntegrationsHub() {
             try {
               const { error } = await supabase
                 .from('clipad_integrations')
-                .update({ settings: { ...(configModal.conn.settings || {}), ...updates } })
+                .update({ 
+                  settings: { 
+                    ...(configModal.conn.settings || {}), 
+                    ...updates,
+                    sync_limit: updates.import_limit,
+                  } 
+                })
                 .eq('id', configModal.conn.id);
               if (error) throw error;
               toast({ title: '✅ Settings saved', description: 'Import configuration updated.' });

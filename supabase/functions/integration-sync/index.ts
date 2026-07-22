@@ -274,7 +274,7 @@ serve(async (req) => {
 async function syncGoogleDrive(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const modifiedQuery = lastSynced
     ? `&q=trashed=false and modifiedTime>'${lastSynced.toISOString()}'`
@@ -334,7 +334,7 @@ async function syncGoogleDrive(integration: any, supabase: any, lastSynced: Date
 async function syncNotion(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const filterBody: any = { filter: { value: 'page', property: 'object' }, page_size: 50 };
   if (lastSynced) {
@@ -388,7 +388,7 @@ async function syncNotion(integration: any, supabase: any, lastSynced: Date | nu
 async function syncSlack(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   let chCursor = undefined;
   let channels = [];
@@ -481,7 +481,7 @@ async function syncZoom(integration: any, supabase: any, lastSynced: Date | null
   }
 
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   let fromDate = lastSynced;
   if (fromDate) {
@@ -577,7 +577,7 @@ async function refreshMicrosoftToken(integration: any, supabase: any): Promise<s
 async function syncOneDrive(integration: any, supabase: any, lastSynced: Date | null) {
   const token = await refreshMicrosoftToken(integration, supabase);
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const filterParam = '';
 
@@ -619,7 +619,7 @@ async function syncOneDrive(integration: any, supabase: any, lastSynced: Date | 
 async function syncMSTeams(integration: any, supabase: any, lastSynced: Date | null) {
   const token = await refreshMicrosoftToken(integration, supabase);
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const teamsRes = await fetch('https://graph.microsoft.com/v1.0/me/joinedTeams', {
     headers: { Authorization: `Bearer ${token}` }
@@ -683,7 +683,7 @@ async function syncMSTeams(integration: any, supabase: any, lastSynced: Date | n
 async function syncGmail(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const afterParam = lastSynced
     ? `after:${Math.floor(lastSynced.getTime() / 1000)} `
@@ -733,7 +733,7 @@ async function syncJira(integration: any, supabase: any, lastSynced: Date | null
   const baseUrl = integration.metadata?.base_url || integration.config?.base_url;
   if (!baseUrl) throw new Error('Jira base URL not configured.');
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const jql = lastSynced
     ? `updated >= "${lastSynced.toISOString().split('T')[0]}"`
@@ -779,7 +779,7 @@ async function syncConfluence(integration: any, supabase: any, lastSynced: Date 
   const baseUrl = integration.metadata?.base_url || integration.config?.base_url;
   if (!baseUrl) throw new Error('Confluence base URL not configured.');
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const lastModParam = lastSynced
     ? `&lastModified>${lastSynced.toISOString().replace('T', '+').split('.')[0]}`
@@ -819,7 +819,7 @@ async function syncConfluence(integration: any, supabase: any, lastSynced: Date 
 async function syncClickUp(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const teamsRes = await fetch('https://api.clickup.com/api/v2/team', {
     headers: { Authorization: token }
@@ -874,7 +874,7 @@ async function syncClickUp(integration: any, supabase: any, lastSynced: Date | n
 async function syncAsana(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const modifiedSinceParam = lastSynced
     ? `&modified_since=${lastSynced.toISOString()}`
@@ -924,7 +924,7 @@ async function syncAsana(integration: any, supabase: any, lastSynced: Date | nul
 async function syncLinear(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const updatedAtFilter = lastSynced
     ? `, filter: { updatedAt: { gte: "${lastSynced.toISOString()}" } }`
@@ -983,7 +983,7 @@ async function syncTrello(integration: any, supabase: any, _lastSynced: Date | n
   const apiKey = integration.metadata?.api_key || Deno.env.get('TRELLO_API_KEY');
   if (!apiKey) throw new Error('Trello API key not configured.');
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const boardsRes = await fetch(`https://api.trello.com/1/members/me/boards?key=${apiKey}&token=${token}&fields=id,name,url`, {
     headers: { 'Accept': 'application/json' }
@@ -1021,7 +1021,7 @@ async function syncTrello(integration: any, supabase: any, _lastSynced: Date | n
 async function syncDropbox(integration: any, supabase: any, _lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   let url = 'https://api.dropboxapi.com/2/files/list_folder';
   let body: any = { path: '', recursive: true, limit: 100 };
@@ -1067,7 +1067,7 @@ async function syncDropbox(integration: any, supabase: any, _lastSynced: Date | 
 async function syncBox(integration: any, supabase: any, _lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
   let offset = 0;
   let totalCount = 1; // dummy initial
   const limitPerPage = 100;
@@ -1110,7 +1110,7 @@ async function syncSalesforce(integration: any, supabase: any, lastSynced: Date 
   const instanceUrl = integration.metadata?.instance_url || integration.config?.instance_url;
   if (!instanceUrl) throw new Error('Salesforce instance URL not configured.');
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const dateFilter = lastSynced
     ? `WHERE CreatedDate > ${lastSynced.toISOString()}`
@@ -1148,7 +1148,7 @@ async function syncSalesforce(integration: any, supabase: any, lastSynced: Date 
 async function syncHubSpot(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const afterParam = lastSynced ? `&after=${lastSynced.getTime()}` : '';
 
@@ -1209,7 +1209,7 @@ async function syncHubSpot(integration: any, supabase: any, lastSynced: Date | n
 async function syncGoogleMeet(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const timeMin = lastSynced ? lastSynced.toISOString() : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
   
@@ -1250,7 +1250,7 @@ async function syncGoogleMeet(integration: any, supabase: any, lastSynced: Date 
 async function syncOutlook(integration: any, supabase: any, lastSynced: Date | null) {
   const token = await refreshMicrosoftToken(integration, supabase);
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const filterParam = lastSynced
     ? `&$filter=receivedDateTime ge ${lastSynced.toISOString()}`
@@ -1291,7 +1291,7 @@ async function syncOutlook(integration: any, supabase: any, lastSynced: Date | n
 async function syncDiscord(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const guildsRes = await fetch('https://discord.com/api/v10/users/@me/guilds', {
     headers: { Authorization: `Bearer ${token}` }
@@ -1360,7 +1360,7 @@ async function syncDiscord(integration: any, supabase: any, lastSynced: Date | n
 async function syncMonday(integration: any, supabase: any, _lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const query = `{ boards(limit: 50) { id name items_page(limit: 100) { items { id name state column_values { text } } } } }`;
   const res = await fetch('https://api.monday.com/v2', {
@@ -1398,7 +1398,7 @@ async function syncMonday(integration: any, supabase: any, _lastSynced: Date | n
 async function syncBitbucket(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   let wsUrl = 'https://api.bitbucket.org/2.0/repositories?role=member&pagelen=100';
 
@@ -1448,7 +1448,7 @@ async function syncBitbucket(integration: any, supabase: any, lastSynced: Date |
 async function syncZohoCRM(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const lastModParam = lastSynced ? `&Last_Modified_Time=${lastSynced.toISOString()}` : '';
 
@@ -1495,7 +1495,7 @@ async function syncZendesk(integration: any, supabase: any, lastSynced: Date | n
   const subdomain = integration.metadata?.subdomain;
   if (!subdomain) throw new Error('Zendesk subdomain not configured.');
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const updatedParam = lastSynced ? `&updated_since=${lastSynced.toISOString()}` : '';
 
@@ -1531,7 +1531,7 @@ async function syncZendesk(integration: any, supabase: any, lastSynced: Date | n
 async function syncIntercom(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const updatedSince = lastSynced ? Math.floor(lastSynced.getTime() / 1000) : Math.floor((Date.now() - 30 * 24 * 60 * 60 * 1000) / 1000);
   let startingAfter = '';
@@ -1577,7 +1577,7 @@ async function syncFreshdesk(integration: any, supabase: any, lastSynced: Date |
   const subdomain = integration.metadata?.subdomain;
   if (!subdomain) throw new Error('Freshdesk subdomain not configured.');
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const auth = btoa(`${apiKey}:X`);
   const updatedParam = lastSynced ? `&updated_since=${lastSynced.toISOString()}` : '';
@@ -1622,7 +1622,7 @@ async function syncFreshdesk(integration: any, supabase: any, lastSynced: Date |
 async function syncFigma(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const res = await fetch('https://api.figma.com/v1/me/files', {
     headers: { Authorization: `Bearer ${token}` }
@@ -1651,7 +1651,7 @@ async function syncFigma(integration: any, supabase: any, lastSynced: Date | nul
 async function syncMiro(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   let offset = 0;
   let hasMore = true;
@@ -1693,7 +1693,7 @@ async function syncMiro(integration: any, supabase: any, lastSynced: Date | null
 async function syncGoogleCalendar(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const timeMin = lastSynced ? lastSynced.toISOString() : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const timeMax = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
@@ -1733,7 +1733,7 @@ async function syncGoogleCalendar(integration: any, supabase: any, lastSynced: D
 async function syncSharePoint(integration: any, supabase: any, lastSynced: Date | null) {
   const token = await refreshMicrosoftToken(integration, supabase);
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   // Strategy: Use /me/drives (no admin consent required) and also try /sites?search=*
   // /me/drives gives user's accessible SharePoint drives via their personal OneDrive + SharePoint
@@ -1829,7 +1829,7 @@ async function syncGuru(integration: any, supabase: any, lastSynced: Date | null
   const username = integration.metadata?.username || integration.metadata?.email;
   if (!username) throw new Error('Guru username not configured.');
   let imported = 0;
-  const limit = integration.settings?.sync_limit || 1000;
+  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
   const auth = btoa(`${username}:${token}`);
   const updatedParam = lastSynced ? `?dateUpdated=${lastSynced.toISOString()}` : '';
