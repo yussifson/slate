@@ -186,7 +186,7 @@ serve(async (req) => {
       case 'asana': {
         const asanaClientId = Deno.env.get('ASANA_CLIENT_ID')
         if (!asanaClientId) throw new Error("Missing ASANA_CLIENT_ID")
-        authUrl = `https://app.asana.com/-/oauth_authorize?response_type=code&client_id=${asanaClientId}&redirect_uri=${redirectUri}&scope=default&state=${state}`
+        authUrl = `https://app.asana.com/-/oauth_authorize?response_type=code&client_id=${asanaClientId}&redirect_uri=${redirectUri}&scope=workspaces:read%20projects:read%20tasks:read%20users:read&state=${state}`
         break;
       }
 
