@@ -533,9 +533,49 @@ async function syncZoom(integration: any, supabase: any, lastSynced: Date | null
 // ─── GitHub Sync ──────────────────────────────────────────────────────────────
 // syncGitHub has been moved to ./syncers/github.ts
 
+// ── Microsoft Token Refresh Helper ─────────────────────────────────────────────
+async function refreshMicrosoftToken(integration: any, supabase: any): Promise<string> {
+  let token = integration.access_token;
+  const tokenExpiry = integration.token_expires_at ? new Date(integration.token_expires_at) : null;
+  const isExpiring = !tokenExpiry || tokenExpiry < new Date(Date.now() + 5 * 60 * 1000);
+
+  if (isExpiring && integration.refresh_token) {
+    try {
+      const clientId = Deno.env.get('MICROSOFT_CLIENT_ID');
+      const clientSecret = Deno.env.get('MICROSOFT_CLIENT_SECRET');
+      if (clientId && clientSecret) {
+        const res = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            client_id: clientId,
+            client_secret: clientSecret,
+            grant_type: 'refresh_token',
+            refresh_token: integration.refresh_token,
+          }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.access_token) {
+            token = data.access_token;
+            await supabase.from('clipad_integrations').update({
+              access_token: token,
+              refresh_token: data.refresh_token || integration.refresh_token,
+              token_expires_at: new Date(Date.now() + (data.expires_in || 3600) * 1000).toISOString(),
+            }).eq('id', integration.id);
+          }
+        }
+      }
+    } catch (e: any) {
+      console.warn('Microsoft token refresh failed:', e?.message);
+    }
+  }
+  return token;
+}
+
 // ─── Microsoft OneDrive Sync ──────────────────────────────────────────────────
 async function syncOneDrive(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
+  const token = await refreshMicrosoftToken(integration, supabase);
   let imported = 0;
   const limit = integration.settings?.sync_limit || 1000;
 
@@ -577,7 +617,7 @@ async function syncOneDrive(integration: any, supabase: any, lastSynced: Date | 
 
 // ─── Microsoft Teams Sync ─────────────────────────────────────────────────────
 async function syncMSTeams(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
+  const token = await refreshMicrosoftToken(integration, supabase);
   let imported = 0;
   const limit = integration.settings?.sync_limit || 1000;
 
@@ -1208,7 +1248,7 @@ async function syncGoogleMeet(integration: any, supabase: any, lastSynced: Date 
 
 // ─── Microsoft Outlook Sync ───────────────────────────────────────────────────
 async function syncOutlook(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
+  const token = await refreshMicrosoftToken(integration, supabase);
   let imported = 0;
   const limit = integration.settings?.sync_limit || 1000;
 
@@ -1691,7 +1731,7 @@ async function syncGoogleCalendar(integration: any, supabase: any, lastSynced: D
 
 // ─── SharePoint Sync ──────────────────────────────────────────────────────────
 async function syncSharePoint(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
+  const token = await refreshMicrosoftToken(integration, supabase);
   let imported = 0;
   const limit = integration.settings?.sync_limit || 1000;
 

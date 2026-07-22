@@ -1,16 +1,24 @@
 import { upsertKnowledge } from '../utils.ts';
 
 export async function syncGitHub(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
+  const token = integration.access_token || integration.metadata?.api_key || integration.metadata?.personal_access_token;
   let imported = 0;
   const limit = integration.settings?.sync_limit || 1000;
+
+  if (!token) throw new Error("GitHub token missing. Please reconnect or provide a Personal Access Token.");
 
   const sinceParam = lastSynced ? `&since=${lastSynced.toISOString()}` : '';
 
   const repoRes = await fetch('https://api.github.com/user/repos?per_page=100&sort=updated', {
     headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'CliPad-Integration' }
   });
-  if (!repoRes.ok) throw new Error(`GitHub API error: ${repoRes.status}`);
+  if (!repoRes.ok) {
+    const errBody = await repoRes.json().catch(() => ({}));
+    if (repoRes.status === 401) {
+      throw new Error(`GitHub API error: 401 — Authentication token is invalid or expired. Please reconnect GitHub in the Integrations Hub to issue a fresh access token.`);
+    }
+    throw new Error(`GitHub API error: ${repoRes.status} — ${errBody?.message || 'Failed to fetch repositories'}`);
+  }
   const repos = await repoRes.json();
 
   for (const repo of repos) {
