@@ -690,7 +690,7 @@ return (
  {/* Dashboard mockup */}
  <FadeIn delay="delay-500">
  <div className="relative w-full max-w-6xl mx-auto rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-slate-50 overflow-hidden flex items-center justify-center">
- <img src={!isSlate ? "/images/clipad_hero_dashboard.png" : "/images/hero_dashboard_ui.png"} alt="Dashboard Mockup" className="w-full h-auto object-contain" />
+ <img src="/images/hero_dashboard_ui.png" alt="Slate Dashboard Mockup" className="w-full h-auto object-contain" />
  </div>
  </FadeIn>
  </div>
