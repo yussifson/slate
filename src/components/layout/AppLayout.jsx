@@ -129,7 +129,7 @@ export default function AppLayout() {
       if (currentCompany.name) {
         let suffix = "Workspace";
         if (currentCompany.industry_type === 'law') suffix = "Law Management";
-        else if (currentCompany.industry_type === 'school' || currentCompany.industry_type === 'highschool') suffix = "Education Layer";
+        else if (currentCompany.industry_type === 'school' || currentCompany.industry_type === 'highschool') suffix = "Education Platform";
         else if (currentCompany.industry_type === 'hospital') suffix = "Hospital System";
         else if (currentCompany.industry_type === 'hotel') suffix = "Property Management";
         else if (currentCompany.industry_type === 'orbit_build') suffix = "Digital Workspace";

@@ -247,7 +247,7 @@ const suites = [
  id: 'hospital',
  name: 'Healthcare WorkSlate',
  tagline: 'Clinic & Hospital Management',
- description: 'Streamline patient onboarding, appointment scheduling, and staff rostering with our secure health-compliant layer.',
+ description: 'Streamline patient onboarding, appointment scheduling, and staff rostering with our secure health-compliant platform.',
  features: ['Patient Records & History', 'Appointment Scheduling', 'Medical Billing', 'Staff Rostering']
 },
  {
@@ -641,7 +641,7 @@ return (
  <div className="h-full bg-gradient-to-r from-emerald-500 to-orange-400 rounded-full animate-progress" style={{width: '60%', animation: 'progress 6s ease-in-out forwards'}}></div>
  </div>
  <h3 className="font-semibold text-slate-800 text-xl">{progressMsg}</h3>
- <p className="text-sm text-slate-500 font-medium mt-2">Please wait while Orbit constructs your layer...</p>
+ <p className="text-sm text-slate-500 font-medium mt-2">Please wait while Orbit constructs your platform...</p>
  </div>
  </div>
  )}

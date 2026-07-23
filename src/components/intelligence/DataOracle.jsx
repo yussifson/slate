@@ -29,7 +29,7 @@ export default function DataOracle() {
   const [messages, setMessages] = useState([
     {
       role: 'ai',
-      content: "Hello! I'm the **Data Oracle** — your AI-powered database analyst. I can query your live data and answer questions about your operations, team, clients, or any module within your layer.\n\nWhat would you like to know?"
+      content: "Hello! I'm the **Data Oracle** — your AI-powered database analyst. I can query your live data and answer questions about your operations, team, clients, or any module within your platform.\n\nWhat would you like to know?"
     }
   ]);
   const bottomRef = useRef(null);
@@ -60,7 +60,7 @@ export default function DataOracle() {
 
       let answer;
       try {
-        const systemPrompt = `You are the Data Oracle, a precise and intelligent AI analyst embedded in an enterprise layer called Slate. Answer the user's question directly, professionally, and concisely based on this live data context: ${JSON.stringify(dataContext)}. If data for a specific question is missing, explain what data you do have and offer to help in another way.`;
+        const systemPrompt = `You are the Data Oracle, a precise and intelligent AI analyst embedded in an enterprise platform called Slate. Answer the user's question directly, professionally, and concisely based on this live data context: ${JSON.stringify(dataContext)}. If data for a specific question is missing, explain what data you do have and offer to help in another way.`;
         const response = await invokeCloudflareAi(userQ, systemPrompt);
         answer = typeof response === 'string' ? response : (response?.response || response?.text || JSON.stringify(response));
       } catch {
