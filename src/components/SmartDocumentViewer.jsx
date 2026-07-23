@@ -55,7 +55,31 @@ function ChatMessage({ msg }) {
     return (
       <div className="flex justify-end mb-3">
         <div className="max-w-[85%] bg-primary text-white px-4 py-2.5 rounded-2xl rounded-tr-md text-sm leading-relaxed">
-          <ReactMarkdown className="prose prose-sm prose-invert break-words max-w-none">{msg.content}</ReactMarkdown>
+          <ReactMarkdown 
+            className="prose prose-sm prose-invert break-words max-w-none"
+            components={{
+              a: ({ href, children, ...props }) => {
+                let safeHref = href;
+                if (safeHref && !safeHref.startsWith('http') && !safeHref.startsWith('/') && !safeHref.startsWith('mailto:')) {
+                  safeHref = 'https://' + safeHref;
+                }
+                return (
+                  <a 
+                    href={safeHref} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    onClick={(e) => e.stopPropagation()} 
+                    className="text-primary-foreground hover:underline font-semibold underline-offset-2 break-all"
+                    {...props}
+                  >
+                    {children}
+                  </a>
+                );
+              }
+            }}
+          >
+            {msg.content}
+          </ReactMarkdown>
         </div>
       </div>
     );
@@ -68,7 +92,31 @@ function ChatMessage({ msg }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="bg-muted/60 border border-border rounded-2xl rounded-tl-md px-4 py-3 text-sm text-foreground leading-relaxed">
-          <ReactMarkdown className="prose prose-sm dark:prose-invert break-words max-w-none">{msg.content}</ReactMarkdown>
+          <ReactMarkdown 
+            className="prose prose-sm dark:prose-invert break-words max-w-none"
+            components={{
+              a: ({ href, children, ...props }) => {
+                let safeHref = href;
+                if (safeHref && !safeHref.startsWith('http') && !safeHref.startsWith('/') && !safeHref.startsWith('mailto:')) {
+                  safeHref = 'https://' + safeHref;
+                }
+                return (
+                  <a 
+                    href={safeHref} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    onClick={(e) => e.stopPropagation()} 
+                    className="text-primary hover:underline font-semibold underline-offset-2 break-all"
+                    {...props}
+                  >
+                    {children}
+                  </a>
+                );
+              }
+            }}
+          >
+            {msg.content}
+          </ReactMarkdown>
         </div>
         <button
           onClick={copy}

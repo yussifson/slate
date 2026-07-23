@@ -170,9 +170,31 @@ function parseAgentActions(text) {
 function FormatMessage({ content}) {
  return (
  <div className="prose prose-sm dark:prose-invert max-w-none break-words [&>p]:mb-2 [&>p:last-child]:mb-0 [&>ul]:mt-1 [&>ul]:mb-2 [&>ol]:mt-1 [&>ol]:mb-2 [&>ul]:pl-4 [&>ol]:pl-4">
- <ReactMarkdown remarkPlugins={[remarkGfm]}>
- {content}
- </ReactMarkdown>
+  <ReactMarkdown 
+    remarkPlugins={[remarkGfm]}
+    components={{
+      a: ({ href, children, ...props }) => {
+        let safeHref = href;
+        if (safeHref && !safeHref.startsWith('http') && !safeHref.startsWith('/') && !safeHref.startsWith('mailto:')) {
+          safeHref = 'https://' + safeHref;
+        }
+        return (
+          <a 
+            href={safeHref} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            onClick={(e) => e.stopPropagation()} 
+            className="text-primary hover:underline font-semibold underline-offset-2 break-all"
+            {...props}
+          >
+            {children}
+          </a>
+        );
+      }
+    }}
+  >
+  {content}
+  </ReactMarkdown>
  </div>
  );
 }

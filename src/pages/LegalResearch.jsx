@@ -238,7 +238,28 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               <div className="bg-slate-50 dark:bg-secondary/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2"><Scale className="w-4 h-4 text-primary" /><span className="text-sm font-semibold">{t("answer", "Answer")}</span></div>
                 <div className="text-sm text-foreground leading-relaxed prose prose-sm max-w-none">
-                  <ReactMarkdown>{result.answer}</ReactMarkdown>
+                  <ReactMarkdown
+                    components={{
+                      a: ({ href, children, ...props }) => {
+                        let safeHref = href;
+                        if (safeHref && !safeHref.startsWith('http') && !safeHref.startsWith('/') && !safeHref.startsWith('mailto:')) {
+                          safeHref = 'https://' + safeHref;
+                        }
+                        return (
+                          <a 
+                            href={safeHref} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            onClick={(e) => e.stopPropagation()} 
+                            className="text-primary hover:underline font-semibold underline-offset-2 break-all"
+                            {...props}
+                          >
+                            {children}
+                          </a>
+                        );
+                      }
+                    }}
+                  >{result.answer}</ReactMarkdown>
                 </div>
               </div>
 
@@ -294,7 +315,26 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               {(result.practical_notes || result.caveats) && (
                 <Section icon={AlertTriangle} title="Practical Notes & Caveats" defaultOpen={false}>
                   <div className="space-y-2 pt-1">
-                    {result.practical_notes && <div className="text-sm text-foreground"><ReactMarkdown>{result.practical_notes}</ReactMarkdown></div>}
+                    {result.practical_notes && <div className="text-sm text-foreground"><ReactMarkdown components={{
+                      a: ({ href, children, ...props }) => {
+                        let safeHref = href;
+                        if (safeHref && !safeHref.startsWith('http') && !safeHref.startsWith('/') && !safeHref.startsWith('mailto:')) {
+                          safeHref = 'https://' + safeHref;
+                        }
+                        return (
+                          <a 
+                            href={safeHref} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            onClick={(e) => e.stopPropagation()} 
+                            className="text-primary hover:underline font-semibold underline-offset-2 break-all"
+                            {...props}
+                          >
+                            {children}
+                          </a>
+                        );
+                      }
+                    }}>{result.practical_notes}</ReactMarkdown></div>}
                     {result.caveats && <div className="p-3 bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 rounded-xl text-sm text-amber-800"><AlertTriangle className="w-3.5 h-3.5 inline mr-1.5" />{result.caveats}</div>}
                   </div>
                 </Section>

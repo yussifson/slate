@@ -51,13 +51,10 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
           .eq('company_id', workspaceId)
           .order('created_at', { ascending: false })
           .limit(15),
-        // Include full content so AI can answer questions about document contents
-        supabase
-          .from('clipad_imported_knowledge')
-          .select('id, title, content, ai_summary, provider, content_type, imported_at, url, ai_entities')
-          .eq('company_id', workspaceId)
-          .order('imported_at', { ascending: false })
-          .limit(30),
+        // Include semantically relevant external knowledge based on the user's query
+        supabase.functions.invoke('knowledge-search', {
+          body: { query: query, company_id: workspaceId, match_count: 20 }
+        }).then(res => ({ data: res.data?.results || [] })),
       ]);
 
       // 2. Build a rich context document from real data

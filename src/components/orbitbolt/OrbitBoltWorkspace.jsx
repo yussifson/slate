@@ -433,7 +433,31 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
   ? 'rounded-2xl rounded-tr-sm px-4 py-3 bg-primary text-primary-foreground shadow-md shadow-primary/20'
   : 'rounded-2xl rounded-tl-sm px-4.5 py-3.5 bg-white dark:bg-[#131A2B] border border-slate-200/60 dark:border-white/5 text-slate-700 dark:text-foreground prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-slate-50 dark:prose-pre:bg-[#0A0F1C] prose-pre:border prose-pre:border-slate-200 dark:prose-pre:border-white/5 prose-pre:rounded-xl prose-code:text-emerald-600 dark:prose-code:text-emerald-400 prose-code:before:content-none prose-code:after:content-none prose-headings:font-semibold hover:shadow-md'
   )}>
-  <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+  <ReactMarkdown 
+    remarkPlugins={[remarkGfm]}
+    components={{
+      a: ({ href, children, ...props }) => {
+        let safeHref = href;
+        if (safeHref && !safeHref.startsWith('http') && !safeHref.startsWith('/') && !safeHref.startsWith('mailto:')) {
+          safeHref = 'https://' + safeHref;
+        }
+        return (
+          <a 
+            href={safeHref} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            onClick={(e) => e.stopPropagation()} 
+            className="text-primary hover:underline font-semibold underline-offset-2 break-all"
+            {...props}
+          >
+            {children}
+          </a>
+        );
+      }
+    }}
+  >
+    {m.content}
+  </ReactMarkdown>
   </div>
  </motion.div>
  ))}

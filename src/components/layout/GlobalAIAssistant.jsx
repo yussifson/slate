@@ -128,16 +128,23 @@ function FormatMessage({ content }) {
  <ReactMarkdown
    remarkPlugins={[remarkGfm]}
    components={{
-     a: ({ href, children }) => (
-       <a
-         href={href}
-         target="_blank"
-         rel="noopener noreferrer"
-         className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors no-underline border border-primary/20 mx-0.5"
-       >
-         🔗 {children}
-       </a>
-     ),
+     a: ({ href, children }) => {
+        let safeHref = href;
+        if (safeHref && !safeHref.startsWith('http') && !safeHref.startsWith('/') && !safeHref.startsWith('mailto:')) {
+          safeHref = 'https://' + safeHref;
+        }
+        return (
+          <a
+            href={safeHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors no-underline border border-primary/20 mx-0.5"
+          >
+            🔗 {children}
+          </a>
+        );
+      },
    }}
  >
  {content}
