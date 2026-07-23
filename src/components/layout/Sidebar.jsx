@@ -85,7 +85,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
   const toggleCat = (cat) => {
     setExpandedCats(prev => {
-      const isCurrentlyExpanded = prev[cat] !== undefined ? prev[cat] : (cat === 'Platform' || cat === 'Operations');
+      const isCurrentlyExpanded = prev[cat] !== undefined ? prev[cat] : (cat === 'Layer' || cat === 'Operations');
       const next = { ...prev, [cat]: !isCurrentlyExpanded };
       localStorage.setItem('sidebar_expanded_cats', JSON.stringify(next));
       return next;
@@ -780,9 +780,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     const p = item.path || '';
     if (item.isDynamic) return "Workspace";
     
-    // 1. Platform should ONLY have dashboard and intelligence
+    // 1. Layer should ONLY have dashboard and intelligence
     if (['/', '/my-dashboard', '/intelligence'].includes(p) || item.label === 'Dashboard' || item.label === 'My Dashboard') {
-      return "Platform";
+      return "Layer";
     }
     
     // 2. Notification system added to Communications
@@ -814,7 +814,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     return acc;
   }, {});
 
-  const categoryOrder = ["Platform", "Operations", "Communications", "Finance", "Team & HR", "Workspace", "System Administration"];
+  const categoryOrder = ["Layer", "Operations", "Communications", "Finance", "Team & HR", "Workspace", "System Administration"];
 
  const handleDeleteModule = (id, name) => {
  setDeleteData({ id, name});
@@ -1033,7 +1033,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
    return categoryOrder.map(cat => {
      const items = groupedNav[cat];
      if (!items || items.length === 0) return null;
-     const isExpanded = expandedCats[cat] !== undefined ? expandedCats[cat] : (cat === 'Platform' || cat === 'Operations');
+     const isExpanded = expandedCats[cat] !== undefined ? expandedCats[cat] : (cat === 'Layer' || cat === 'Operations');
      
      return (
        <div key={cat} className="space-y-0.5">

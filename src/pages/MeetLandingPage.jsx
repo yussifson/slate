@@ -364,7 +364,7 @@ export default function MeetLandingPage() {
         <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-orange-500/5 blur-[120px]" />
       </div>
       <SEO 
-        title="CliPad - #1 Enterprise AI-Powered Organizational Memory Platform" 
+        title="CliPad - #1 Enterprise AI-Powered Organizational Memory Layer" 
         description="CliPad is a free, secure, enterprise-grade collaborative productivity workspace. Connect your team with chat, spaces, and HD video meetings instantly. Trusted by teams worldwide." 
         type="website"
       />
@@ -410,7 +410,7 @@ export default function MeetLandingPage() {
       <main className="relative z-10 flex-1 flex flex-col md:flex-row items-center justify-center p-6 md:p-12 gap-12 md:gap-16 max-w-7xl mx-auto w-full">
         <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-8 max-w-xl">
           <h1 className="text-4xl md:text-5xl font-normal text-slate-800 leading-tight tracking-tight">
-            #1 Enterprise AI-powered organizational memory platform.<br />Now free for everyone.
+            #1 Enterprise AI-powered organizational memory layer.<br />Now free for everyone.
           </h1>
           <p className="text-lg text-slate-500 leading-relaxed">
             CliPad captures, connects, and preserves your company's knowledge—through meetings, async video, collaboration, and intelligent context.

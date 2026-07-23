@@ -100,7 +100,7 @@ export default function AppLayout() {
         document.head.appendChild(link);
       }
       link.href = '/clipad-logo.svg';
-      document.title = 'CliPad - #1 Enterprise AI-Powered Organizational Memory Platform';
+      document.title = 'CliPad - #1 Enterprise AI-Powered Organizational Memory Layer';
       return; // Do not apply company branding on Clipad
     }
 
@@ -129,7 +129,7 @@ export default function AppLayout() {
       if (currentCompany.name) {
         let suffix = "Workspace";
         if (currentCompany.industry_type === 'law') suffix = "Law Management";
-        else if (currentCompany.industry_type === 'school' || currentCompany.industry_type === 'highschool') suffix = "Education Platform";
+        else if (currentCompany.industry_type === 'school' || currentCompany.industry_type === 'highschool') suffix = "Education Layer";
         else if (currentCompany.industry_type === 'hospital') suffix = "Hospital System";
         else if (currentCompany.industry_type === 'hotel') suffix = "Property Management";
         else if (currentCompany.industry_type === 'orbit_build') suffix = "Digital Workspace";

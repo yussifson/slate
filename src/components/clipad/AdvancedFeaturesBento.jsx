@@ -132,7 +132,7 @@ export default function AdvancedFeaturesBento() {
             <span className="text-primary">modern teams.</span>
           </h3>
           <p className="text-slate-500 text-lg md:text-xl leading-relaxed">
-            Everything you need to communicate, organize, and compound knowledge. Built seamlessly into one powerful platform.
+            Everything you need to communicate, organize, and compound knowledge. Built seamlessly into one powerful layer.
           </p>
         </div>
 
