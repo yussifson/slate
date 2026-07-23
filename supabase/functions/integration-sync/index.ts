@@ -451,25 +451,6 @@ async function syncSlack(integration: any, supabase: any, lastSynced: Date | nul
   return imported;
 }
 
-        url: meeting.share_url,
-        author: meeting.host_email,
-        metadata: {
-          duration: meeting.duration,
-          start_time: meeting.start_time,
-          participants: meeting.participant_count,
-          transcript_url: transcript?.download_url
-        },
-      }, integration);
-      if (ok) imported++;
-    }
-    nextPageToken = data.next_page_token || '';
-  } while (nextPageToken && imported < limit);
-
-  
-
-  return imported;
-}
-
 // ─── GitHub Sync ──────────────────────────────────────────────────────────────
 // syncGitHub has been moved to ./syncers/github.ts
 
@@ -577,29 +558,45 @@ async function syncGmail(integration: any, supabase: any, lastSynced: Date | nul
     if (!listRes.ok) throw new Error(`Gmail API error: ${listRes.status}`);
     const listData = await listRes.json();
 
-    for (const msgRef of (listData.messages || [])) {
+    const messages = listData.messages || [];
+    
+    // Process messages in batches of 20 to prevent Edge Function timeout
+    const batchSize = 20;
+    for (let i = 0; i < messages.length; i += batchSize) {
       if (imported >= limit) break;
-      const msgRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msgRef.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!msgRes.ok) continue;
-      const msg = await msgRes.json();
+      const batch = messages.slice(i, i + batchSize);
+      
+      const batchResults = await Promise.all(batch.map(async (msgRef: any) => {
+        try {
+          const msgRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msgRef.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (!msgRes.ok) return null;
+          return await msgRes.json();
+        } catch {
+          return null;
+        }
+      }));
 
-      const headers = msg.payload?.headers || [];
-      const subject = headers.find((h: any) => h.name === 'Subject')?.value || '(No Subject)';
-      const from = headers.find((h: any) => h.name === 'From')?.value || '';
-      const date = headers.find((h: any) => h.name === 'Date')?.value || '';
+      for (const msg of batchResults) {
+        if (!msg) continue;
+        if (imported >= limit) break;
+        const headers = msg.payload?.headers || [];
+        const subject = headers.find((h: any) => h.name === 'Subject')?.value || '(No Subject)';
+        const from = headers.find((h: any) => h.name === 'From')?.value || '';
+        const date = headers.find((h: any) => h.name === 'Date')?.value || '';
 
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'gmail',
-        external_id: msg.id,
-        content_type: 'email',
-        title: subject,
-        content: (msg.snippet || '').substring(0, 2000),
-        author: from,
-        metadata: { date, threadId: msg.threadId },
-      }, integration);
-      if (ok) imported++;
+        const ok = await upsertKnowledge(supabase, {
+          provider: 'gmail',
+          external_id: msg.id,
+          content_type: 'email',
+          title: subject,
+          content: (msg.snippet || '').substring(0, 2000),
+          author: from,
+          metadata: { date, threadId: msg.threadId },
+        }, integration);
+        if (ok) imported++;
+      }
     }
     pageToken = listData.nextPageToken || '';
   } while (pageToken && imported < limit);
