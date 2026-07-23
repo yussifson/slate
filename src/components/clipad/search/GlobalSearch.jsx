@@ -366,11 +366,11 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
       
       {/* Crisp, clean, enterprise modal container — no logo, center-aligned input */}
       <div
-        className="w-full max-w-[720px] flex flex-col rounded-xl overflow-hidden shadow-2xl shadow-slate-900/20 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1117] relative"
+        className="w-full max-w-[840px] min-h-[420px] flex flex-col rounded-2xl overflow-hidden shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] border border-slate-200/80 dark:border-slate-700/60 bg-white/95 dark:bg-[#0a0d14]/95 backdrop-blur-3xl relative"
         style={{ animation: 'spotlightFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1)' }}
       >
-        {/* Search Header Row — Spacious, 20px font, premium Spotlight input */}
-        <div className="flex items-center justify-between gap-4 px-7 py-6 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0D1117] relative">
+        {/* Search Header Row — Spacious, premium Spotlight input */}
+        <div className="flex items-center justify-between gap-4 px-8 py-7 border-b border-slate-100/60 dark:border-slate-800/60 bg-transparent relative">
           <div className="w-8 h-8 flex items-center justify-center shrink-0">
             {isSearching || isSynthesizing ? (
               <Loader2 className="w-5 h-5 animate-spin text-emerald-600 dark:text-emerald-400" />
@@ -385,7 +385,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask OrbitFlow AI or search docs, tasks, meetings..."
-            className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-slate-50 text-[19px] sm:text-[20px] font-semibold placeholder:text-slate-400/90 dark:placeholder:text-slate-500 placeholder:font-normal min-w-0 tracking-tight text-center placeholder:text-center h-9"
+            className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-slate-50 text-[22px] sm:text-[24px] font-semibold placeholder:text-slate-400/80 dark:placeholder:text-slate-500 placeholder:font-normal min-w-0 tracking-tight text-center placeholder:text-center h-10"
             style={{ caretColor: '#10b981' }}
           />
           
@@ -439,11 +439,11 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
         )}
 
         {/* Scrollable Body */}
-        <div className="max-h-[58vh] overflow-y-auto overflow-x-hidden custom-scrollbar bg-white dark:bg-[#0D1117]">
+        <div className="max-h-[62vh] overflow-y-auto overflow-x-hidden custom-scrollbar bg-transparent">
           
           {/* Zero State Suggestions Grid (Clean rectangular cards with high-contrast colors) */}
           {!hasSearched && !isSearching && query.length === 0 && (
-            <div className="p-6 space-y-4">
+            <div className="p-8 space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
@@ -459,7 +459,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
                     <button
                       key={item.key}
                       onClick={() => { setQuery(item.text); handleSearch(item.text); }}
-                      className="group flex items-center justify-between p-3.5 rounded-xl bg-slate-50 hover:bg-emerald-50/60 dark:bg-slate-900/60 dark:hover:bg-emerald-950/30 border border-slate-200/90 hover:border-emerald-300 dark:border-slate-800 dark:hover:border-emerald-700/60 transition-all text-left active:scale-[0.99] shadow-2xs hover:shadow-xs"
+                      className="group flex items-center justify-between p-4 rounded-xl bg-slate-50/80 hover:bg-emerald-50/80 dark:bg-slate-900/40 dark:hover:bg-emerald-950/40 border border-slate-200/80 hover:border-emerald-300 dark:border-slate-800/80 dark:hover:border-emerald-700/60 transition-all text-left active:scale-[0.99] shadow-sm hover:shadow-md"
                     >
                       <div className="flex items-center gap-3 min-w-0 pr-2">
                         <div className={`w-8.5 h-8.5 rounded-lg ${item.bg} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
@@ -649,7 +649,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
         </div>
 
         {/* Enterprise Status Footer */}
-        <div className="px-6 py-3.5 border-t border-slate-200/90 dark:border-slate-800 bg-slate-50 dark:bg-[#080B10] flex flex-wrap items-center justify-between gap-3 shrink-0">
+        <div className="px-8 py-4 border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-[#080b10]/30 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 shrink-0 rounded-b-2xl">
           <div className="flex items-center gap-3.5">
             <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 font-semibold">
               <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 rounded border border-slate-300 dark:border-slate-700 font-mono text-[11px] font-bold text-slate-800 dark:text-slate-200 shadow-2xs">↑↓</kbd>
