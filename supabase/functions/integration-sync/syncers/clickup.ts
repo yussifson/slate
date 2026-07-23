@@ -25,7 +25,7 @@ export async function syncClickUp(integration: any, supabase: any, lastSynced: D
     let hasMoreTasks = true;
 
     while (hasMoreTasks && imported < limit) {
-      const tasksRes = await fetch(`https://api.clickup.com/api/v2/team/${team.id}/task?page=${page}&order_by=updated&subtasks=true&include_closed=true${dateUpdatedParam}`, {
+      const tasksRes = await fetch(`https://api.clickup.com/api/v2/team/${team.id}/task?page=${page}${dateUpdatedParam}`, {
         headers: { Authorization: token }
       });
       if (!tasksRes.ok) {

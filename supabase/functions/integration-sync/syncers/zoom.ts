@@ -45,7 +45,7 @@ export async function syncZoom(integration: any, supabase: any, lastSynced: Date
   // Zoom API requires both `from` and `to` to be specified and within a 1-month range.
   // We'll restrict to the last 30 days to avoid 400 Bad Request.
   const toDate = new Date();
-  let fromDate = new Date(toDate.getTime() - 30 * 24 * 60 * 60 * 1000); // exactly 30 days ago
+  let fromDate = new Date(toDate.getTime() - 29 * 24 * 60 * 60 * 1000); // strictly under 1 month
   
   if (lastSynced && lastSynced > fromDate) {
     fromDate = lastSynced;
