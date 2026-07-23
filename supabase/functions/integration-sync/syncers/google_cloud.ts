@@ -69,7 +69,7 @@ export async function syncGoogleCloud(integration: any, supabase: any, lastSynce
     }
   }
 
-  const res = await fetch(`https://cloudresourcemanager.googleapis.com/v3/projects?pageSize=50`, {
+  const res = await fetch(`https://cloudresourcemanager.googleapis.com/v3/projects:search?pageSize=50`, {
     headers: { Authorization: `Bearer ${bearerToken}` }
   });
   if (!res.ok) {
