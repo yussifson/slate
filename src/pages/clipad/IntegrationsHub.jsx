@@ -234,9 +234,6 @@ export default function IntegrationsHub() {
   const ALLOWED_FOR_EVERYONE = ['slack', 'ms_teams', 'outlook', 'google_workspace', 'gmail', 'google_drive', 'sharepoint', 'microsoft_onedrive', 'zoom', 'google_meet', 'github', 'gitlab', 'linear', 'asana', 'trello', 'clickup', 'monday', 'google_cloud'];
 
   const filteredIntegrations = INTEGRATIONS.filter(i => {
-    const isAllowedForRole = isSuperAdmin(user) || ALLOWED_FOR_EVERYONE.includes(i.id);
-    if (!isAllowedForRole) return false;
-
     const matchesCategory = activeCategory === 'All' || i.category === activeCategory;
     const matchesSearch = !searchQuery || i.name.toLowerCase().includes(searchQuery.toLowerCase()) || i.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
@@ -399,12 +396,12 @@ export default function IntegrationsHub() {
               const isConnected = !!conn;
               const isSyncing = syncing[integration.id];
               const isDisconnecting = disconnecting[integration.id];
-              const isPhase1 = integration.phase === 1;
+              const isAllowedToConnect = isSuperAdmin(user) || ALLOWED_FOR_EVERYONE.includes(integration.id);
 
               return (
                 <div
                   key={integration.id}
-                  className={`group relative bg-card border ${integration.border} rounded-2xl p-5 flex flex-col gap-4 hover:shadow-md transition-all duration-200 ${!isPhase1 ? 'opacity-75' : ''}`}
+                  className={`group relative bg-card border ${integration.border} rounded-2xl p-5 flex flex-col gap-4 hover:shadow-md transition-all duration-200 ${!isAllowedToConnect ? 'opacity-75' : ''}`}
                 >
                   {/* Header */}
                   <div className="flex items-start justify-between gap-3">
@@ -421,7 +418,7 @@ export default function IntegrationsHub() {
                               Connected
                             </span>
                           )}
-                          {!isPhase1 && (
+                          {!isAllowedToConnect && (
                             <span className="px-1.5 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-[10px] font-bold">
                               Coming Soon
                             </span>
@@ -471,7 +468,7 @@ export default function IntegrationsHub() {
 
                   {/* Actions */}
                   <div className="flex items-center gap-2 mt-auto pt-2 border-t border-border">
-                    {isPhase1 ? (
+                    {isAllowedToConnect ? (
                       isConnected ? (
                         <>
                           <button
