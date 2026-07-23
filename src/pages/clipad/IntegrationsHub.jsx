@@ -210,7 +210,7 @@ export default function IntegrationsHub() {
         status: 'active',
         access_token: keyData.api_key || keyData.token || '',
         metadata: keyData,
-        connected_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       };
 
       let error;
