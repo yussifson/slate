@@ -692,10 +692,25 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 10. Sound friendly and entertaining in your text response!`;
 
 
+  let externalContext = "";
+  if (userContent.length > 5 && companyId) {
+    try {
+      const { data: knowRes } = await supabase.functions.invoke('knowledge-search', {
+        body: { query: userContent, company_id: companyId, match_count: 5 }
+      });
+      if (knowRes?.results?.length > 0) {
+        externalContext = `\n\nRELEVANT EXTERNAL KNOWLEDGE BASE RESULTS (Use these to answer questions about external files):\n` + 
+          knowRes.results.map(r => `[${r.provider} - ${r.title}] (ID: ${r.id}, URL: ${r.url || ''})\n${r.content?.substring(0, 500)}`).join('\n\n');
+      }
+    } catch (e) {
+      console.error("Orbit external knowledge error", e);
+    }
+  }
+
  const sessionMessages = currentSessions.find(s => s.id === sid)?.messages || [];
  const allMessages = [...sessionMessages, { role: 'user', content: userContent}];
  let apiMessages = [
- { role: 'system', content: systemPrompt},
+ { role: 'system', content: systemPrompt + externalContext},
  ...allMessages.slice(-20).map(m => ({ 
  role: m.role, 
  content: m.hiddenContext ? `${m.content}\n\nSystem Context:\n\`\`\`json\n${m.hiddenContext}\n\`\`\`` : m.content 

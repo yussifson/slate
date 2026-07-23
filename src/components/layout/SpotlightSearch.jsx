@@ -7,6 +7,7 @@ import {
   ShieldAlert, ArrowRight, Sparkles, Bot, Zap, ChevronRight
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { supabase } from "@/api/supabaseClient";
 import { useAuth } from "@/lib/AuthContext";
 
 const SUGGESTIONS = [
@@ -75,11 +76,14 @@ export default function SpotlightSearch() {
       setLoading(true);
       try {
         const q = query.toLowerCase();
-        const [allCases, allClients, allStaff, allTasks] = await Promise.all([
+        const [allCases, allClients, allStaff, allTasks, externalRes] = await Promise.all([
           base44.entities.LegalCase.list().catch(() => []),
           base44.entities.Client.list().catch(() => []),
           base44.entities.StaffRecord.list().catch(() => []),
           base44.entities.Task.list().catch(() => []),
+          supabase.functions.invoke('knowledge-search', {
+            body: { query: q, company_id: companyId, match_count: 5 }
+          }).catch(() => ({ data: { results: [] } }))
         ]);
         setResults({
           cases: allCases.filter(c =>
@@ -97,6 +101,7 @@ export default function SpotlightSearch() {
           other: allTasks.filter(item =>
             item.company_id === companyId && item.title?.toLowerCase().includes(q)
           ).slice(0, 4),
+          external: (externalRes?.data?.results || []).slice(0, 4),
         });
       } catch (err) {
         console.error("Spotlight search failed", err);
@@ -112,6 +117,7 @@ export default function SpotlightSearch() {
     ...results.clients.map(item => ({ ...item, category: "Contacts", route: `/clients/${item.id}`, icon: User,     entityType: "Client"       })),
     ...results.staff.map(item   => ({ ...item, category: "Team",     route: `/team/${item.id}`,    icon: Users,    entityType: "Staff Member" })),
     ...results.other.map(item   => ({ ...item, category: "Tasks",    route: `/tasks/${item.id}`,   icon: Calendar, entityType: "Task"         })),
+    ...(results.external || []).map(item => ({ ...item, category: "External", route: item.url || '#', icon: FileText, entityType: "Document", isExternal: true, name: item.title })),
   ];
 
   const handleAskAI = (label, record) => {
@@ -125,7 +131,15 @@ export default function SpotlightSearch() {
     if (!flatResults.length) return;
     if (e.key === "ArrowDown")  { e.preventDefault(); setSelectedIndex(p => (p + 1) % flatResults.length); }
     if (e.key === "ArrowUp")    { e.preventDefault(); setSelectedIndex(p => (p - 1 + flatResults.length) % flatResults.length); }
-    if (e.key === "Enter")      { e.preventDefault(); const s = flatResults[selectedIndex]; if (s) { navigate(s.route); setIsOpen(false); } }
+    if (e.key === "Enter")      { 
+      e.preventDefault(); 
+      const s = flatResults[selectedIndex]; 
+      if (s) { 
+        if (s.isExternal) window.open(s.route, "_blank"); 
+        else navigate(s.route); 
+        setIsOpen(false); 
+      } 
+    }
   };
 
   if (!isOpen) return null;
@@ -180,7 +194,7 @@ export default function SpotlightSearch() {
         </div>
       ) : (
         <div className="space-y-4 p-1">
-          {["Cases", "Contacts", "Team", "Tasks"].map(cat => {
+          {["Cases", "Contacts", "Team", "Tasks", "External"].map(cat => {
             const catItems = flatResults.filter(item => item.category === cat);
             if (!catItems.length) return null;
             return (
@@ -203,7 +217,7 @@ export default function SpotlightSearch() {
                       >
                         <div
                           className="flex items-center gap-3 min-w-0 flex-1"
-                          onClick={() => { navigate(item.route); setIsOpen(false); }}
+                          onClick={() => { if (item.isExternal) window.open(item.route, "_blank"); else navigate(item.route); setIsOpen(false); }}
                         >
                           <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isSel ? "bg-emerald-100 dark:bg-emerald-500/20" : "bg-slate-100 dark:bg-white/10"}`}>
                             <Icon className={`w-4 h-4 ${isSel ? "text-emerald-600" : "text-slate-500 dark:text-slate-400"}`} />
