@@ -90,7 +90,7 @@ serve(async (req) => {
       case 'jira': {
         const jiraClientId = Deno.env.get('JIRA_CLIENT_ID')
         if (!jiraClientId) throw new Error("Missing JIRA_CLIENT_ID")
-        const jiraScopes = 'read:jira-user read:jira-work'
+        const jiraScopes = 'read:jira-user read:jira-work offline_access'
         authUrl = `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${jiraClientId}&scope=${encodeURIComponent(jiraScopes)}&redirect_uri=${redirectUri}&state=${state}&response_type=code&prompt=consent`
         break;
       }
@@ -216,7 +216,7 @@ serve(async (req) => {
         // Confluence uses Atlassian OAuth (same as Jira)
         const atlClientId = Deno.env.get('JIRA_CLIENT_ID')
         if (!atlClientId) throw new Error("Missing JIRA_CLIENT_ID (shared Atlassian OAuth)")
-        const atlScopes = 'read:confluence-content.all read:confluence-user read:confluence-space.summary'
+        const atlScopes = 'read:confluence-content.all read:confluence-user read:confluence-space.summary offline_access'
         authUrl = `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${atlClientId}&scope=${encodeURIComponent(atlScopes)}&redirect_uri=${redirectUri}&state=${state}&response_type=code&prompt=consent`
         break;
       }
