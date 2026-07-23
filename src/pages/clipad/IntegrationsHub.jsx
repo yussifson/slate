@@ -231,7 +231,12 @@ export default function IntegrationsHub() {
     }
   };
 
+  const ALLOWED_FOR_EVERYONE = ['slack', 'ms_teams', 'outlook', 'google_workspace', 'gmail', 'google_drive', 'sharepoint', 'microsoft_onedrive', 'zoom', 'google_meet', 'github', 'gitlab', 'linear', 'asana', 'trello', 'clickup', 'monday', 'google_cloud'];
+
   const filteredIntegrations = INTEGRATIONS.filter(i => {
+    const isAllowedForRole = isSuperAdmin(user) || ALLOWED_FOR_EVERYONE.includes(i.id);
+    if (!isAllowedForRole) return false;
+
     const matchesCategory = activeCategory === 'All' || i.category === activeCategory;
     const matchesSearch = !searchQuery || i.name.toLowerCase().includes(searchQuery.toLowerCase()) || i.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
@@ -240,52 +245,7 @@ export default function IntegrationsHub() {
   const connectedCount = Object.keys(connected).length;
   const knowledgeCount = totalKnowledge || knowledge.length;
 
-  if (!isSuperAdmin(user)) {
-    return (
-      <div className="min-h-full bg-background text-foreground pb-16 page-enter" style={{ fontFamily: "'Inter', sans-serif" }}>
-        {/* Hero */}
-        <div className="relative overflow-hidden border-b border-border bg-gradient-to-br from-primary/5 via-background to-background px-6 py-12">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(var(--primary-rgb),0.08),transparent_60%)] pointer-events-none" />
-          <div className="max-w-4xl mx-auto relative z-10 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 text-primary text-xs font-bold rounded-full mb-5 border border-primary/20">
-              <Zap className="w-3.5 h-3.5" /> Coming Soon to Your Workspace
-            </div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">
-              Knowledge Integrations
-            </h1>
-            <p className="text-muted-foreground text-base max-w-xl mx-auto leading-relaxed">
-              Connect every tool your team uses — Slack, Notion, Google Drive, GitHub, Jira and more — into one unified organizational memory powered by AI.
-            </p>
-          </div>
-        </div>
-
-        {/* Preview cards */}
-        <div className="max-w-5xl mx-auto px-4 md:px-6 mt-10">
-          <h2 className="text-lg font-bold text-foreground mb-6">50+ Integrations Coming Soon</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {INTEGRATIONS.slice(0, 16).map(intg => (
-              <div key={intg.id} className="relative bg-card border border-border rounded-2xl p-5 flex flex-col items-center gap-3 text-center opacity-75 select-none overflow-hidden group">
-                <div className="absolute inset-0 bg-background/60 backdrop-blur-[1px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl z-10">
-                  <span className="text-xs font-bold text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20">Coming Soon</span>
-                </div>
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-secondary text-2xl">
-                  {typeof intg.icon === 'string' ? intg.icon : <Plug className="w-6 h-6 text-muted-foreground" />}
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">{intg.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{intg.category}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="text-center text-sm text-muted-foreground mt-8">
-            Your workspace admin will be able to activate integrations soon. Stay tuned! 🚀
-          </p>
-        </div>
-      </div>
-    );
-  }
-
+  // Non-super admins will now see the main UI with filtered integrations
   return (
     <div className="min-h-full bg-background text-foreground pb-12" style={{ fontFamily: "'Inter', sans-serif" }}>
       {/* Hero Header */}

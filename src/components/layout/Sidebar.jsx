@@ -395,6 +395,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  { label: "Board", path: "/board", icon: "LayoutGrid"},
  { label: "Feature Insider", path: "/feature-insider", icon: "FlaskConical"},
  { label: "Feature Vault", path: "/feature-vault", icon: "Archive"},
+ { label: "Integrations", path: "/integrations", icon: "Plug"},
  { label: "Settings", path: "/settings", icon: "Settings"}
  ];
 
@@ -418,7 +419,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
   let filteredCompanyNav = (isSuiteAdmin && location.pathname.startsWith('/admin')) ? adminNav : (isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
  // Core features everyone gets
- const corePaths = ['/', '/my-dashboard', '/email-inbox', '/chat', '/board', '/settings', '/time-tracking'];
+ const corePaths = ['/', '/my-dashboard', '/email-inbox', '/chat', '/board', '/settings', '/time-tracking', '/integrations'];
  
  // If activeModules is explicitly set (Custom Selection mode)
  if (activeModules && !['/', '/settings', '/integrations', '/admin', '/email-inbox', '/chat', '/board', '/hr', '/roles', '/departments'].includes(item.path)) {
