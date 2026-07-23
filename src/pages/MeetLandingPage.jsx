@@ -211,12 +211,6 @@ export default function MeetLandingPage() {
   const { toast } = useToast();
   const now = useLiveClock();
 
-  // Redirect to dashboard if already logged in (simulating native app behavior)
-  useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
-    }
-  }, [user, navigate]);
 
   useEffect(() => {
     const script = document.createElement('script');
