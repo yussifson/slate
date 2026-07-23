@@ -700,7 +700,8 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
       });
       if (knowRes?.results?.length > 0) {
         externalContext = `\n\nRELEVANT EXTERNAL KNOWLEDGE BASE RESULTS (Use these to answer questions about external files):\n` + 
-          knowRes.results.map(r => `[${r.provider} - ${r.title}] (ID: ${r.id}, URL: ${r.url || ''})\n${r.content?.substring(0, 500)}`).join('\n\n');
+          knowRes.results.map(r => `[${r.provider} - ${r.title}] (ID: ${r.id}, URL: ${r.url || ''})\n${r.content?.substring(0, 500)}`).join('\n\n') +
+          `\n\nCRITICAL INSTRUCTION: When answering, DO NOT output the internal IDs (e.g., UUIDs) in your natural text response. Refer to items by their title or context instead.`;
       }
     } catch (e) {
       console.error("Orbit external knowledge error", e);
