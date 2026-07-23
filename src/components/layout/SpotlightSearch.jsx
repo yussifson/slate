@@ -55,6 +55,8 @@ export default function SpotlightSearch() {
     };
   }, []);
 
+  // Focus & reset on open/close
+  useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 120);
       setSelectedIndex(0);
