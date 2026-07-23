@@ -25,7 +25,7 @@ const TYPE_META = {
   integration: { icon: ExternalLink,  label: 'Imported',  color: 'text-slate-700 dark:text-slate-400',     bg: 'bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700',   route: (id) => `/integrations` },
 };
 
-const SUGGESTIONS = [
+const DEFAULT_SUGGESTIONS = [
   { key: '1', text: 'What decisions were made last week?', type: 'decision', icon: ShieldAlert, color: 'text-rose-700 dark:text-rose-400', bg: 'bg-rose-100 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60' },
   { key: '2', text: 'Show me overdue tasks across spaces', type: 'task', icon: CheckCircle, color: 'text-amber-700 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60' },
   { key: '3', text: 'Find recent meetings about pricing', type: 'meeting', icon: Calendar, color: 'text-blue-700 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/60' },
@@ -108,6 +108,7 @@ export default function GlobalSearch() {
   const [lastQuery, setLastQuery] = useState('');
   const [copiedAnswer, setCopiedAnswer] = useState(false);
   const [spacesMap, setSpacesMap] = useState({});
+  const [dynamicSuggestions, setDynamicSuggestions] = useState(DEFAULT_SUGGESTIONS);
   const [accessibleCount, setAccessibleCount] = useState(0);
 
   const inputRef = useRef(null);
@@ -116,6 +117,8 @@ export default function GlobalSearch() {
   // Load space names map for context chips
   useEffect(() => {
     if (!user?.company_id) return;
+    
+    // Fetch spaces
     supabase.from('clipad_spaces').select('id, name').eq('company_id', user.company_id).then(({ data }) => {
       if (data) {
         const map = {};
@@ -123,6 +126,42 @@ export default function GlobalSearch() {
         setSpacesMap(map);
       }
     });
+
+    // Fetch integrations for dynamic suggestions
+    supabase.from('clipad_integrations')
+      .select('provider')
+      .eq('company_id', user.company_id)
+      .eq('status', 'active')
+      .then(({ data }) => {
+        if (!data || data.length === 0) return;
+        
+        const activeProviders = data.map(d => d.provider);
+        const newSuggestions = [...DEFAULT_SUGGESTIONS];
+        
+        if (activeProviders.includes('gmail') || activeProviders.includes('google_workspace') || activeProviders.includes('outlook')) {
+          newSuggestions.unshift({ key: 'dyn1', text: 'Find recent emails about invoices', type: 'integration', icon: FileText, color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-100 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60' });
+        }
+        if (activeProviders.includes('jira') || activeProviders.includes('linear')) {
+          newSuggestions.unshift({ key: 'dyn2', text: 'Show me my active Jira tickets', type: 'integration', icon: CheckCircle, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/60' });
+        }
+        if (activeProviders.includes('slack') || activeProviders.includes('ms_teams')) {
+          newSuggestions.unshift({ key: 'dyn3', text: 'Summarize recent Slack messages', type: 'message', icon: MessageSquare, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60' });
+        }
+        if (activeProviders.includes('zoom')) {
+          newSuggestions.unshift({ key: 'dyn4', text: 'What was discussed in the last Zoom meeting?', type: 'video', icon: Video, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-100 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800/60' });
+        }
+        if (activeProviders.includes('confluence') || activeProviders.includes('sharepoint')) {
+          newSuggestions.unshift({ key: 'dyn5', text: 'Search Confluence for architecture docs', type: 'doc', icon: FileText, color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-100 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800/60' });
+        }
+        
+        // Ensure keys are correctly mapped 1-6
+        const finalSuggestions = newSuggestions.slice(0, 6).map((item, index) => ({
+          ...item,
+          key: (index + 1).toString()
+        }));
+        
+        setDynamicSuggestions(finalSuggestions);
+      });
   }, [user]);
 
   // Global Keyboard listener (⌘K / Ctrl+K)
@@ -453,7 +492,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {SUGGESTIONS.map((item) => {
+                {dynamicSuggestions.map((item) => {
                   const Icon = item.icon;
                   return (
                     <button

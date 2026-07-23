@@ -10,7 +10,7 @@ import { base44 } from "@/api/base44Client";
 import { supabase } from "@/api/supabaseClient";
 import { useAuth } from "@/lib/AuthContext";
 
-const SUGGESTIONS = [
+const DEFAULT_SUGGESTIONS = [
   { icon: Sparkles, label: "What decisions were made last week?" },
   { icon: Calendar,  label: "Show me overdue tasks" },
   { icon: FileText,  label: "Find recent meetings about pricing" },
@@ -30,6 +30,7 @@ export default function SpotlightSearch() {
   const inputRef = useRef(null);
   const { user } = useAuth();
   const companyId = user?.company_id;
+  const [dynamicSuggestions, setDynamicSuggestions] = useState(DEFAULT_SUGGESTIONS);
 
   const isMobile =
     typeof navigator !== "undefined" &&
@@ -54,17 +55,48 @@ export default function SpotlightSearch() {
     };
   }, []);
 
-  // Focus & reset on open/close
-  useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 120);
       setSelectedIndex(0);
       setHoveredId(null);
+      
+      // Fetch active integrations to build dynamic suggestions
+      if (companyId) {
+        supabase.from('clipad_integrations')
+          .select('provider')
+          .eq('company_id', companyId)
+          .eq('status', 'active')
+          .then(({ data }) => {
+            if (!data || data.length === 0) return;
+            
+            const activeProviders = data.map(d => d.provider);
+            const newSuggestions = [...DEFAULT_SUGGESTIONS];
+            
+            if (activeProviders.includes('gmail') || activeProviders.includes('google_workspace') || activeProviders.includes('outlook')) {
+              newSuggestions.unshift({ icon: FileText, label: "Find recent emails about invoices" });
+            }
+            if (activeProviders.includes('jira') || activeProviders.includes('linear')) {
+              newSuggestions.unshift({ icon: Zap, label: "Show me my active Jira tickets" });
+            }
+            if (activeProviders.includes('slack') || activeProviders.includes('ms_teams')) {
+              newSuggestions.unshift({ icon: Users, label: "Summarize recent Slack messages" });
+            }
+            if (activeProviders.includes('zoom')) {
+              newSuggestions.unshift({ icon: Calendar, label: "What was discussed in the last Zoom meeting?" });
+            }
+            if (activeProviders.includes('confluence') || activeProviders.includes('sharepoint')) {
+              newSuggestions.unshift({ icon: FileText, label: "Search Confluence for architecture docs" });
+            }
+            
+            // Keep it to 5 items to match UI layout
+            setDynamicSuggestions(newSuggestions.slice(0, 5));
+          });
+      }
     } else {
       setQuery("");
       setResults({ cases: [], clients: [], staff: [], other: [] });
     }
-  }, [isOpen]);
+  }, [isOpen, companyId]);
 
   // Debounced search
   useEffect(() => {
@@ -173,7 +205,7 @@ export default function SpotlightSearch() {
             <div className="w-full pt-1 pb-2">
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3 text-left px-1">Try asking…</p>
               <div className="space-y-1">
-                {SUGGESTIONS.map((s, i) => (
+                {dynamicSuggestions.map((s, i) => (
                   <button
                     key={i}
                     onClick={() => { handleAskAI(s.label, null); }}
