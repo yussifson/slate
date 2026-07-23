@@ -7,9 +7,6 @@ export async function upsertKnowledge(supabase: any, item: Record<string, any>, 
   }, { onConflict: 'integration_id,external_id' });
 
   if (!error) {
-    supabase.functions.invoke('integration-ai-processor', {
-      body: { integrationId: integration.id, provider: item.provider, externalId: item.external_id }
-    }).catch(() => {});
     return true;
   }
   return false;

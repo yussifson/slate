@@ -267,6 +267,17 @@ serve(async (req) => {
         description: `Automatic knowledge import from ${provider}`,
         importance: 3,
       }).catch(() => {});
+      
+      // Trigger the AI processor queue for the newly imported items
+      try {
+        const { inngest } = await import('../inngest/client.ts');
+        await inngest.send({
+          name: 'ai/process.batch',
+          data: { integration_id: integrationId }
+        });
+      } catch (err) {
+        console.error("Failed to trigger Inngest AI queue:", err);
+      }
     }
 
     return new Response(JSON.stringify({ success: !syncError, imported, error: syncError }), {

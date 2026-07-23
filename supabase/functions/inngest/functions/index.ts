@@ -4,6 +4,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { checkOverdueInvoices, processIncomingEmail, sendWelcomeNotification } from "./core.ts";
 import { shiftReminderCron } from "./hospital.ts";
 import { attendanceReportCron } from "./school.ts";
+import { processIntegrationKnowledge } from "./ai_processor.ts";
 
 // Initialize Supabase Client
 const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
@@ -123,6 +124,7 @@ export const functions = [
   checkOverdueInvoices,
   processIncomingEmail,
   shiftReminderCron,
-  attendanceReportCron
+  attendanceReportCron,
+  processIntegrationKnowledge
 ];
 

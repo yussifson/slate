@@ -44,7 +44,8 @@ export default function IntegrationAnalytics() {
         const { data: knowledge } = await supabase
           .from('clipad_imported_knowledge')
           .select('id, provider, content_type, ai_summary, imported_at, embedding')
-          .eq('company_id', user?.company_id);
+          .eq('company_id', user?.company_id)
+          .limit(100000);
 
         // Fetch Relationships (Vector Graph edges)
         const { data: relationships } = await supabase
