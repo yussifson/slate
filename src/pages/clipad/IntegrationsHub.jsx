@@ -209,7 +209,6 @@ export default function IntegrationsHub() {
         provider: provider,
         status: 'active',
         access_token: keyData.api_key || keyData.token || '',
-        metadata: keyData,
         updated_at: new Date().toISOString(),
       };
 
