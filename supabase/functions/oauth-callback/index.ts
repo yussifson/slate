@@ -136,7 +136,7 @@ serve(async (req) => {
     }
 
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
-    const redirectUri = Deno.env.get('OAUTH_REDIRECT_URI') || `${url.origin}/functions/v1/oauth-callback`
+    const redirectUri = Deno.env.get('OAUTH_REDIRECT_URI') || `${supabaseUrl}/functions/v1/oauth-callback`
 
     let accessToken = ''
     let refreshToken = ''

@@ -14,7 +14,8 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Missing provider or company_id' }), { status: 400, headers: { 'Content-Type': 'application/json' } })
     }
 
-    const redirectUri = Deno.env.get('OAUTH_REDIRECT_URI') || `${url.origin}/functions/v1/oauth-callback`
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || url.origin
+    const redirectUri = Deno.env.get('OAUTH_REDIRECT_URI') || `${supabaseUrl}/functions/v1/oauth-callback`
     const state = btoa(JSON.stringify({ company_id, provider, integration_id, return_url }))
 
     let authUrl = ''
