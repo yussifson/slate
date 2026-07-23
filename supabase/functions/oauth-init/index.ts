@@ -30,6 +30,7 @@ serve(async (req) => {
         if (integration_id === 'gmail') scopes += ' https://www.googleapis.com/auth/gmail.readonly'
         if (integration_id === 'google_meet') scopes += ' https://www.googleapis.com/auth/calendar.readonly'
         if (integration_id === 'google_calendar') scopes += ' https://www.googleapis.com/auth/calendar.readonly'
+        if (integration_id === 'google_cloud') scopes += ' https://www.googleapis.com/auth/cloud-platform.read-only'
         if (!integration_id) scopes += ' https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/calendar'
         authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${encodeURIComponent(scopes)}&access_type=offline&prompt=consent&state=${state}`
         break;
