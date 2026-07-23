@@ -628,14 +628,28 @@ async function syncJira(integration: any, supabase: any, lastSynced: Date | null
     ? `updated >= "${lastSynced.toISOString().split('T')[0]}"`
     : 'updated >= -30d';
 
-  let startAt = 0;
+  let nextPageToken = '';
   let hasMore = true;
 
   while (hasMore && imported < limit) {
-    const res = await fetch(`${baseUrl}/rest/api/3/search?jql=${encodeURIComponent(jql)}&maxResults=100&startAt=${startAt}&fields=summary,description,status,assignee,priority,issuetype,project,updated`, {
-      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
+    const body: any = {
+      jql: jql,
+      maxResults: 100,
+      fields: ['summary', 'description', 'status', 'assignee', 'priority', 'issuetype', 'project', 'updated']
+    };
+    if (nextPageToken) body.nextPageToken = nextPageToken;
+
+    const res = await fetch(`${baseUrl}/rest/api/3/search/jql`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
     });
-    if (!res.ok) throw new Error(`Jira API error: ${res.status}`);
+    
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(`Jira API error: ${res.status} — ${JSON.stringify(errBody)}`);
+    }
+    
     const data = await res.json();
 
     for (const issue of (data.issues || [])) {
