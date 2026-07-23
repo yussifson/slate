@@ -116,7 +116,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
           contextParts.push(`\n[${i.provider?.toUpperCase()} - ${i.content_type || 'file'}] "${i.title}" (ID: I-${i.id})`);
           if (i.ai_summary) contextParts.push(`  AI Summary: ${i.ai_summary}`);
           // Include actual document content so AI can answer questions about what is IN the file
-          if (i.content && !i.ai_summary) contextParts.push(`  Content: ${i.content.substring(0, 1500)}`);
+          if (i.content) contextParts.push(`  Content: ${i.content.substring(0, 1500)}`);
           if (i.ai_entities) {
             try {
               const ent = typeof i.ai_entities === 'string' ? JSON.parse(i.ai_entities) : i.ai_entities;
@@ -145,7 +145,7 @@ export default function InstitutionalMemoryVault({ workspaceId }) {
 Answer questions based ONLY on the real data provided. Do NOT make up facts. If the data doesn't contain the answer, say "I don't have enough recorded data to answer that yet."
 
 When you use data, ALWAYS append source details at the very end in strictly valid JSON format:
-SOURCES: [{"id": "uuid", "type": "meeting/decision/task/imported", "title": "Contextual Title", "source": "Where it came from"}]
+SOURCES: [{"id": "uuid", "type": "meeting/decision/task/imported", "title": "Contextual Title", "source": "Where it came from", "url": "The link URL if provided"}]
 
 ORGANIZATIONAL KNOWLEDGE BASE:
 ${knowledgeContext}`
@@ -263,12 +263,13 @@ ${knowledgeContext}`
                       let id = '';
                       let title = '';
                       let source = '';
-                      
+                      let url = '';
                       if (typeof cite === 'object') {
                         type = cite.type;
                         id = cite.id;
                         title = cite.title || cite.id;
                         source = cite.source || '';
+                        url = cite.url || '';
                       } else {
                         // Fallback for old simple citations like "M:123" or just "123"
                         type = typeof cite === 'string' && cite.includes(':') ? cite.charAt(0) : 'U';
@@ -285,12 +286,17 @@ ${knowledgeContext}`
                       if (type === 'D' || type === 'decision') { title = title !== `Node ${id}` ? title : 'Recorded Decision'; colorClass = "bg-emerald-50 border-emerald-100 text-emerald-700 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400"; }
                       if (type === 'B' || type === 'blocker') { title = title !== `Node ${id}` ? title : 'Blocker'; colorClass = "bg-amber-50 border-amber-100 text-amber-700 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-400"; }
                       if (type === 'T' || type === 'task') { title = title !== `Node ${id}` ? title : 'Action Item'; colorClass = "bg-blue-50 border-blue-100 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400"; }
-                      if (type === 'I' || type === 'imported') { title = title !== `Node ${id}` ? title : 'External Knowledge'; colorClass = "bg-sky-50 border-sky-100 text-sky-700 dark:bg-sky-900/20 dark:border-sky-800 dark:text-sky-400"; }
+                      if (type === 'I' || type === 'imported') { route = url || '#'; title = title !== `Node ${id}` ? title : 'External Knowledge'; colorClass = "bg-sky-50 border-sky-100 text-sky-700 dark:bg-sky-900/20 dark:border-sky-800 dark:text-sky-400"; }
                       
                       return (
                         <div
                           key={i}
-                          onClick={() => route !== '#' && navigate(route)}
+                          onClick={() => {
+                            if (route !== '#') {
+                              if (route.startsWith('http')) window.open(route, '_blank');
+                              else navigate(route);
+                            }
+                          }}
                           className={`p-3 rounded-xl border flex flex-col gap-1 transition-all ${colorClass} ${route !== '#' ? 'hover:shadow-md cursor-pointer hover:-translate-y-0.5' : 'cursor-default'}`}
                         >
                           <div className="flex items-center gap-2 font-semibold text-sm">
