@@ -88,6 +88,22 @@ serve(async (req) => {
             if (combined.length > 0) {
               combined.sort((a, b) => b.similarity - a.similarity);
               results = combined.slice(0, match_count);
+              
+              // Fetch missing URLs since RPC might not return them
+              const idsWithMissingUrls = results.filter(r => !r.url).map(r => r.id);
+              if (idsWithMissingUrls.length > 0) {
+                const { data: dbRows } = await supabase
+                  .from('clipad_imported_knowledge')
+                  .select('id, url')
+                  .in('id', idsWithMissingUrls);
+                if (dbRows) {
+                  results = results.map(r => {
+                    const row = dbRows.find(d => d.id === r.id);
+                    return row && row.url ? { ...r, url: row.url } : r;
+                  });
+                }
+              }
+
               console.log(`Vector search found ${results.length} results (chunks + main)`);
             }
           }

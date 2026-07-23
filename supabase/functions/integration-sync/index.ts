@@ -593,6 +593,7 @@ async function syncGmail(integration: any, supabase: any, lastSynced: Date | nul
           title: subject,
           content: (msg.snippet || '').substring(0, 2000),
           author: from,
+          url: `https://mail.google.com/mail/u/0/#all/${msg.threadId}`,
           metadata: { date, threadId: msg.threadId },
         }, integration);
         if (ok) imported++;
