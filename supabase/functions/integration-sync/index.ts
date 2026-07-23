@@ -607,8 +607,20 @@ async function syncGmail(integration: any, supabase: any, lastSynced: Date | nul
 // ─── Jira Sync ────────────────────────────────────────────────────────────────
 async function syncJira(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
-  const baseUrl = integration.metadata?.base_url || integration.config?.base_url;
-  if (!baseUrl) throw new Error('Jira base URL not configured.');
+  let baseUrl = integration.metadata?.base_url || integration.config?.base_url;
+
+  if (!baseUrl && token) {
+    const res = await fetch('https://api.atlassian.com/oauth/token/accessible-resources', {
+      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      const resources = await res.json();
+      const site = resources.find((r: any) => r.scopes?.some((s: string) => s.includes('jira'))) || resources[0];
+      if (site) baseUrl = `https://api.atlassian.com/ex/jira/${site.id}`;
+    }
+  }
+
+  if (!baseUrl) throw new Error('Jira base URL not configured and could not determine cloud ID.');
   let imported = 0;
   const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
@@ -653,8 +665,20 @@ async function syncJira(integration: any, supabase: any, lastSynced: Date | null
 // ─── Confluence Sync ──────────────────────────────────────────────────────────
 async function syncConfluence(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
-  const baseUrl = integration.metadata?.base_url || integration.config?.base_url;
-  if (!baseUrl) throw new Error('Confluence base URL not configured.');
+  let baseUrl = integration.metadata?.base_url || integration.config?.base_url;
+
+  if (!baseUrl && token) {
+    const res = await fetch('https://api.atlassian.com/oauth/token/accessible-resources', {
+      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      const resources = await res.json();
+      const site = resources.find((r: any) => r.scopes?.some((s: string) => s.includes('confluence'))) || resources[0];
+      if (site) baseUrl = `https://api.atlassian.com/ex/confluence/${site.id}`;
+    }
+  }
+
+  if (!baseUrl) throw new Error('Confluence base URL not configured and could not determine cloud ID.');
   let imported = 0;
   const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
