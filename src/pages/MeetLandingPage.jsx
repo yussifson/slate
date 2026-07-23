@@ -356,10 +356,6 @@ export default function MeetLandingPage() {
     return <PageLoader label="" />;
   }
 
-  // Prevent marketing page from blinking before redirect if user is logged in
-  if (user) {
-    return null;
-  }
 
   return (
     <div className={`light min-h-screen bg-white text-slate-900 flex flex-col font-sans relative transition-all duration-500 ease-in-out overflow-x-hidden ${supportPanel ? 'lg:pr-[400px]' : ''}`}>

@@ -50,6 +50,18 @@ export const INTEGRATIONS = [
     importTypes: ["Docs","Sheets","Slides"]
   },
   {
+    id: 'gmail',
+    name: 'Gmail',
+    description: 'Sync your Gmail emails and attachments.',
+    icon: <svg viewBox="0 0 24 24" fill="#EA4335" className="w-6 h-6"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L12 10.828l8.073-7.335c1.618-1.214 3.927-.059 3.927 1.964Z"/></svg>,
+    color: 'from-slate-500/10 to-slate-600/5',
+    border: 'border-slate-500/20',
+    category: 'Messaging',
+    provider: 'google',
+    phase: 1,
+    importTypes: ["Emails","Attachments"]
+  },
+  {
     id: 'google_drive',
     name: 'Google Drive',
     description: 'Import Docs, Sheets, Slides and PDFs.',
