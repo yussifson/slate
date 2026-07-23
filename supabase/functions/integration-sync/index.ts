@@ -669,9 +669,8 @@ async function syncJira(integration: any, supabase: any, lastSynced: Date | null
       }, integration);
       if (ok) imported++;
     }
-
-    startAt += data.maxResults;
-    hasMore = startAt < data.total;
+    nextPageToken = data.nextPageToken;
+    hasMore = !!nextPageToken;
   }
   return imported;
 }
