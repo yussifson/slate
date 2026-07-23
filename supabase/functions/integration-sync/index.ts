@@ -1130,14 +1130,17 @@ async function syncZohoCRM(integration: any, supabase: any, lastSynced: Date | n
   let imported = 0;
   const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
 
-  const lastModParam = lastSynced ? `&Last_Modified_Time=${lastSynced.toISOString()}` : '';
-
   let page = 1;
   let hasMore = true;
 
   while (hasMore && imported < limit) {
-    const notesRes = await fetch(`https://www.zohoapis.com/crm/v2/Notes?sort_by=Modified_Time&sort_order=desc&per_page=100&page=${page}${lastModParam}`, {
-      headers: { Authorization: `Zoho-oauthtoken ${token}` }
+    const headers: Record<string, string> = { Authorization: `Zoho-oauthtoken ${token}` };
+    if (lastSynced) {
+      headers['If-Modified-Since'] = lastSynced.toISOString();
+    }
+
+    const notesRes = await fetch(`https://www.zohoapis.com/crm/v2/Notes?sort_by=Modified_Time&sort_order=desc&per_page=100&page=${page}`, {
+      headers
     });
     if (!notesRes.ok) throw new Error(`Zoho CRM API error: ${notesRes.status}`);
     const notesData = await notesRes.json();
