@@ -1143,7 +1143,19 @@ async function syncZohoCRM(integration: any, supabase: any, lastSynced: Date | n
       headers
     });
     if (!notesRes.ok) throw new Error(`Zoho CRM API error: ${notesRes.status}`);
-    const notesData = await notesRes.json();
+    
+    if (notesRes.status === 204) {
+      hasMore = false;
+      break;
+    }
+
+    const text = await notesRes.text();
+    if (!text) {
+      hasMore = false;
+      break;
+    }
+
+    const notesData = JSON.parse(text);
     
     if (!notesData.data || notesData.data.length === 0) {
       hasMore = false;
