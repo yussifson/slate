@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   Camera, Monitor, Mic, MicOff, CheckCircle,
   Play, Pause, AlertCircle, RefreshCw, XCircle, ArrowLeft,
-  Wand2, AlignLeft, Clock, Upload, RotateCcw, Sparkles, Lock, Unlock, ChevronDown
+  Wand2, AlignLeft, Clock, Upload, RotateCcw, Sparkles, Lock, Unlock, ChevronDown, Download
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
@@ -1046,7 +1046,7 @@ export default function RecordVideo() {
         };
 
         ws.onerror = (err) => {
-          console.error('WebSocket error:', err);
+          // Silently ignore websocket errors as local fallback handles it seamlessly
           stopPingInterval();
         };
 
@@ -1062,10 +1062,10 @@ export default function RecordVideo() {
             wsIsReconnectingRef.current = true;
             wsReconnectAttemptsRef.current++;
             const delay = Math.min(1000 * Math.pow(2, wsReconnectAttemptsRef.current - 1), 15000);
-            console.warn(`WebSocket closed (code ${evt.code}), reconnecting in ${delay}ms (attempt ${wsReconnectAttemptsRef.current}/${wsMaxReconnects})`);
+            // Reconnecting silently
             setTimeout(() => connectWS(true), delay);
           } else {
-            console.error('WebSocket permanently failed after max reconnect attempts.');
+            // WebSocket permanently failed after max reconnect attempts.
             // Do not pause the recording. The IndexedDB fallback handles offline recording perfectly.
           }
         };
@@ -1124,19 +1124,15 @@ export default function RecordVideo() {
             // Still reconnecting — END will be sent after reconnect (handled in onopen)
             setTimeout(waitAndEnd, 500);
           } else {
-            // Permanent WS failure — download locally and show review screen
+            // Permanent WS failure — show review screen (do not force download, user can download manually)
             clearTimeout(uploadDeadline);
-            toast({ title: 'Upload Failed', description: 'Could not reach cloud storage. Downloading your recording locally instead.', variant: 'destructive' });
+            toast({ title: 'Upload Server Offline', description: 'Your recording was saved locally. You can preview it now and save/download it manually.', variant: 'default' });
             const blob = new Blob(chunksRef.current, { type: 'video/webm' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `recording-fallback-${Date.now()}.webm`;
-            a.click();
-            // Also set blob/url so the review player works
+            
+            // Set blob/url so the review player works
             setVideoBlob(blob);
             setRecordingUrl(url);
-            URL.revokeObjectURL(url);
             setPhase('review');
           }
         };
@@ -1923,6 +1919,16 @@ export default function RecordVideo() {
               </div>
 
               <div className="flex items-center gap-4">
+                {!activeVideoId && recordingUrl && (
+                  <button onClick={() => {
+                    const a = document.createElement('a');
+                    a.href = recordingUrl;
+                    a.download = `recording-${Date.now()}.webm`;
+                    a.click();
+                  }} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#202c33] dark:hover:bg-[#2a3840] border border-black/5 dark:border-white/5 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all shadow-sm">
+                    <Download className="w-4 h-4" /> Download
+                  </button>
+                )}
                 <button onClick={discard} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 border border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 font-semibold text-sm transition-all shadow-sm">
                   <RotateCcw className="w-4 h-4" /> Discard
                 </button>
