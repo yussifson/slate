@@ -40,12 +40,25 @@ export default function IntegrationAnalytics() {
           .select('id, provider, status, last_synced_at, sync_frequency, sync_error')
           .eq('company_id', user?.company_id);
 
-        // Fetch Imported Knowledge
+        // Fetch Imported Knowledge (Data for charts, limited to latest 1000)
         const { data: knowledge } = await supabase
           .from('clipad_imported_knowledge')
           .select('id, provider, content_type, ai_summary, imported_at, embedding')
           .eq('company_id', user?.company_id)
-          .limit(100000);
+          .order('imported_at', { ascending: false })
+          .limit(1000);
+
+        // Fetch Exact Counts bypassing the 1000 max-rows limit
+        const { count: exactTotalItems } = await supabase
+          .from('clipad_imported_knowledge')
+          .select('id', { count: 'exact', head: true })
+          .eq('company_id', user?.company_id);
+          
+        const { count: exactVectorizedItems } = await supabase
+          .from('clipad_imported_knowledge')
+          .select('id', { count: 'exact', head: true })
+          .eq('company_id', user?.company_id)
+          .not('embedding', 'is', null);
 
         // Fetch Relationships (Vector Graph edges)
         const { data: relationships } = await supabase
@@ -53,18 +66,15 @@ export default function IntegrationAnalytics() {
           .select('id, relationship_type, confidence_score')
           .eq('company_id', user?.company_id);
 
-        const totalItems = knowledge?.length || 0;
-        const processedItems = knowledge?.filter(k => k.ai_summary !== null).length || 0;
-        const vectorizedItems = knowledge?.filter(k => k.embedding !== null).length || 0;
         const errorCount = integrations?.filter(i => i.status === 'error').length || 0;
         const totalRelationships = relationships?.length || 0;
 
         setMetrics({
           activeConnections: integrations?.filter(i => i.status === 'active').length || 0,
           totalConnections: integrations?.length || 0,
-          totalItems,
-          processedItems,
-          vectorizedItems,
+          totalItems: exactTotalItems || 0,
+          processedItems: exactVectorizedItems || 0,
+          vectorizedItems: exactVectorizedItems || 0,
           errorCount,
           totalRelationships
         });
