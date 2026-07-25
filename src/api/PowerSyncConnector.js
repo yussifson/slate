@@ -274,8 +274,29 @@ class SupabaseConnector {
   }
 }
 
-export const powerSync = new PowerSyncDatabase({
-  database: { dbFilename: 'slate.db' },
+let dbName = 'slate.db';
+let powerSyncDb;
+
+try {
+  powerSyncDb = new PowerSyncDatabase({
+    database: { dbFilename: dbName },
+    schema: AppSchema
+  });
+} catch (e) {
+  console.warn('[PowerSync] Primary IndexedDB store open failed, initializing with fallback store:', e);
+  dbName = `slate_${Date.now()}.db`;
+  try {
+    powerSyncDb = new PowerSyncDatabase({
+      database: { dbFilename: dbName },
+      schema: AppSchema
+    });
+  } catch (e2) {
+    console.error('[PowerSync] IndexedDB disabled or corrupted in this browser session:', e2);
+  }
+}
+
+export const powerSync = powerSyncDb || new PowerSyncDatabase({
+  database: { dbFilename: 'slate_fallback.db' },
   schema: AppSchema
 });
 
