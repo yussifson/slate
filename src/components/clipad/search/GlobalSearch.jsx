@@ -35,21 +35,17 @@ const DEFAULT_SUGGESTIONS = [
 ];
 
 const FILTER_TABS = [
-  { id: 'all', label: 'All' },
-  { id: 'doc', label: 'Docs' },
-  { id: 'task', label: 'Tasks' },
-  { id: 'meeting', label: 'Meetings' },
-  { id: 'decision', label: 'Decisions' },
-  { id: 'message', label: 'Chats' },
+  { id: 'all', label: 'All', icon: Layers },
+  { id: 'assistant', label: 'Assistant', icon: Sparkles },
+  { id: 'library', label: 'Library', icon: FileText },
+  { id: 'workspaces', label: 'Workspaces', icon: Folder },
 ];
 
 const FILTER_TYPE_MAP = {
   all: null,
-  doc: ['doc', 'integration'],
-  task: ['task', 'blocker', 'standup'],
-  meeting: ['meeting', 'video'],
-  decision: ['decision', 'blocker'],
-  message: ['message'],
+  assistant: ['message'],
+  library: ['doc', 'video', 'meeting', 'integration'],
+  workspaces: ['task', 'decision', 'blocker', 'standup'],
 };
 
 const matchesFilter = (itemType, filterId) => {
@@ -421,7 +417,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Tap to start search..."
-              className="flex-1 bg-transparent border-none outline-none text-slate-800 dark:text-slate-100 text-[16px] font-medium placeholder:text-slate-400 min-w-0"
+              className="flex-1 bg-transparent border-none outline-none text-slate-800 dark:text-slate-100 text-[16px] font-medium placeholder:text-slate-400 min-w-0 focus:ring-0 focus:outline-none focus:border-transparent"
             />
             {query || isSearching ? (
               <button onClick={() => { setQuery(''); setResults([]); setAiAnswer(''); setHasSearched(false); inputRef.current?.focus(); }} className="text-slate-400 hover:text-slate-600 ml-2">
@@ -452,36 +448,19 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
               >
                 <Layers className="w-3.5 h-3.5" /> All
               </button>
-              <button
-                onClick={() => setSelectedFilter('assistant')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  selectedFilter === 'assistant'
-                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
-                    : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
-                }`}
-              >
-                <Sparkles className="w-3.5 h-3.5" /> Assistant
-              </button>
-              <button
-                onClick={() => setSelectedFilter('library')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  selectedFilter === 'library'
-                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
-                    : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
-                }`}
-              >
-                <FileText className="w-3.5 h-3.5" /> Library
-              </button>
-              <button
-                onClick={() => setSelectedFilter('workspaces')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  selectedFilter === 'workspaces'
-                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
-                    : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
-                }`}
-              >
-                <Folder className="w-3.5 h-3.5" /> Workspaces
-              </button>
+              {FILTER_TABS.slice(1).map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setSelectedFilter(tab.id)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    selectedFilter === tab.id
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                      : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
+                  }`}
+                >
+                  <tab.icon className="w-3.5 h-3.5" /> {tab.label}
+                </button>
+              ))}
             </div>
           </div>
 
