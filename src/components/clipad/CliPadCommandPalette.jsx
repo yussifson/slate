@@ -9,7 +9,7 @@ import { DialogTitle } from "@/components/ui/dialog";
 export default function CliPadCommandPalette() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState({ spaces: [], docs: [], channels: [], videos: [] });
+  const [results, setResults] = useState({ spaces: [], docs: [], channels: [], videos: [], meetings: [] });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -38,12 +38,13 @@ export default function CliPadCommandPalette() {
       try {
         const q = query.toLowerCase();
         
-        // Fetch all relevant clipad tables safely
-        const [spacesRes, docsRes, channelsRes, videosRes] = await Promise.all([
-          Promise.resolve(supabase.from('clipad_spaces').select('id, name').ilike('name', `%${q}%`).limit(5)).catch(() => ({ data: [] })),
-          Promise.resolve(supabase.from('clipad_docs').select('id, space_id, title').ilike('title', `%${q}%`).limit(5)).catch(() => ({ data: [] })),
+        // Fetch all relevant clipad tables — scoped to company to prevent cross-tenant leaks
+        const [spacesRes, docsRes, channelsRes, videosRes, meetingsRes] = await Promise.all([
+          Promise.resolve(supabase.from('clipad_spaces').select('id, name').eq('company_id', companyId).ilike('name', `%${q}%`).limit(5)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_docs').select('id, space_id, title').eq('company_id', companyId).ilike('title', `%${q}%`).limit(5)).catch(() => ({ data: [] })),
           Promise.resolve(supabase.from('clipad_channels').select('id, space_id, name').ilike('name', `%${q}%`).limit(5)).catch(() => ({ data: [] })),
-          Promise.resolve(supabase.from('clipad_videos').select('id, space_id, title').ilike('title', `%${q}%`).limit(5)).catch(() => ({ data: [] }))
+          Promise.resolve(supabase.from('clipad_videos').select('id, space_id, title').ilike('title', `%${q}%`).limit(5)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_meeting_records').select('id, title').eq('company_id', companyId).ilike('title', `%${q}%`).limit(5)).catch(() => ({ data: [] })),
         ]);
 
         setResults({
@@ -51,6 +52,7 @@ export default function CliPadCommandPalette() {
           docs: docsRes.data || [],
           channels: channelsRes.data || [],
           videos: videosRes.data || [],
+          meetings: meetingsRes.data || [],
         });
       } catch (err) {
         console.error("CliPad search failed", err);
@@ -133,6 +135,17 @@ export default function CliPadCommandPalette() {
               <CommandItem key={`video-${video.id}`} onSelect={() => handleSelect(`/clipad/watch/${video.id}`)}>
                 <Video className="mr-2 h-4 w-4" />
                 <span>{video.title || 'Untitled Video'}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        )}
+
+        {results.meetings?.length > 0 && (
+          <CommandGroup heading="Meetings">
+            {results.meetings.map(meeting => (
+              <CommandItem key={`meeting-${meeting.id}`} onSelect={() => handleSelect(`/clipad/meeting/${meeting.id}`)}>
+                <Calendar className="mr-2 h-4 w-4 text-blue-500" />
+                <span>{meeting.title || 'Untitled Meeting'}</span>
               </CommandItem>
             ))}
           </CommandGroup>

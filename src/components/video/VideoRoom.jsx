@@ -478,72 +478,81 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
           const { data: insertedMeeting, error } = await db.from('clipad_meeting_records').insert(meetingData).select().single();
           
           if (!error && insertedMeeting && rawTranscript.trim().length > 10) {
-            import('@/lib/cloudflareAI').then(({ generateText }) => {
-              generateText([
-                { role: 'system', content: 'You are an AI assistant. Summarize the following meeting transcript. Return ONLY valid JSON with two keys: "summary" (a string summarizing the video concisely) and "action_items" (an array of objects, each with "title", "owner", and "context"). Do not wrap the JSON in markdown blocks.' },
-                { role: 'user', content: rawTranscript.trim().substring(0, 4000) } // keep within limits
-              ]).then(async (aiResult) => {
-                try {
-                  let text = typeof aiResult === 'string' ? aiResult : aiResult?.response;
-                  if (!text) return;
-                  if (text.startsWith('```json')) text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-                  const parsed = JSON.parse(text);
+            // Run AI summary in background — always update the record, even on failure
+            (async () => {
+              try {
+                const { generateText } = await import('@/lib/cloudflareAI');
+                const aiResult = await generateText([
+                  { role: 'system', content: 'You are an AI assistant. Summarize the following meeting transcript. Return ONLY valid JSON with two keys: "summary" (a string summarizing the meeting concisely) and "action_items" (an array of objects, each with "title", "owner", and "context"). Do not wrap the JSON in markdown blocks.' },
+                  { role: 'user', content: rawTranscript.trim().substring(0, 4000) }
+                ]);
 
-                  if (parsed.summary) {
-                    await db.from('clipad_meeting_records').update({ ai_summary: parsed.summary }).eq('id', insertedMeeting.id);
-                  }
-                  if (parsed.action_items && Array.isArray(parsed.action_items) && parsed.action_items.length > 0) {
-                    const inserts = parsed.action_items.map(ai => ({
+                let text = typeof aiResult === 'string' ? aiResult : aiResult?.response || '';
+                text = text.replace(/```json/gi, '').replace(/```/gi, '').trim();
+                
+                let parsed = null;
+                try { parsed = JSON.parse(text); } catch { /* will use text as summary */ }
+
+                const summary = parsed?.summary || text.substring(0, 500) || 'Summary generation failed.';
+                await db.from('clipad_meeting_records').update({ ai_summary: summary }).eq('id', insertedMeeting.id);
+
+                if (parsed?.action_items && Array.isArray(parsed.action_items) && parsed.action_items.length > 0) {
+                  const inserts = parsed.action_items.map(ai => ({
+                    space_id: spaceId || null,
+                    title: ai.title,
+                    assigned_to: ai.owner || null,
+                    context: ai.context || null,
+                    is_complete: false,
+                  }));
+                  await db.from('clipad_action_items').insert(inserts);
+                }
+
+                // --- ORG MEMORY ENGINE: Decisions & Commitments ---
+                const [foundDecisions, foundCommitments] = await Promise.all([
+                  detectDecisions(rawTranscript.trim(), { team_space_id: spaceId || null, related_meeting_id: insertedMeeting.id }),
+                  detectCommitments(rawTranscript.trim(), { team_space_id: spaceId || null, meeting_id: insertedMeeting.id })
+                ]);
+                
+                for (const d of foundDecisions) {
+                  const { error: de } = await db.from('clipad_decisions').insert({ ...d, reasoning_text: d.rationale || null });
+                  if (!de) {
+                    await writeOrgEvent({
                       space_id: spaceId || null,
-                      title: ai.title,
-                      assigned_to: ai.owner || null,
-                      context: ai.context || null,
-                      is_complete: false,
-                    }));
-                    await db.from('clipad_action_items').insert(inserts);
+                      event_type: 'decision_logged',
+                      title: d.decision_text.substring(0, 80),
+                      actor_id: user?.id,
+                      source_id: insertedMeeting.id,
+                      source_table: 'clipad_meeting_records',
+                      importance: d.importance_score || 5,
+                    });
                   }
-
-                  // --- ADDED FOR ORG MEMORY ENGINE: Decisions & Commitments ---
-                  const [foundDecisions, foundCommitments] = await Promise.all([
-                    detectDecisions(rawTranscript.trim(), { team_space_id: spaceId || null, related_meeting_id: insertedMeeting.id }),
-                    detectCommitments(rawTranscript.trim(), { team_space_id: spaceId || null, meeting_id: insertedMeeting.id })
-                  ]);
-                  
-                  for (const d of foundDecisions) {
-                    const { error } = await db.from('clipad_decisions').insert({ ...d, reasoning_text: d.rationale || null });
-                    if (!error) {
-                      await writeOrgEvent({
-                        space_id: spaceId || null,
-                        event_type: 'decision_logged',
-                        title: d.decision_text.substring(0, 80),
-                        actor_id: user?.id,
-                        source_id: insertedMeeting.id,
-                        source_table: 'clipad_meeting_records',
-                        importance: d.importance_score || 5,
-                      });
-                    }
+                }
+                
+                for (const c of foundCommitments) {
+                  const { error: ce } = await db.from('clipad_commitments').insert(c);
+                  if (!ce) {
+                    await writeOrgEvent({
+                      space_id: spaceId || null,
+                      event_type: 'commitment_detected',
+                      title: c.commitment_text.substring(0, 80),
+                      actor_id: user?.id,
+                      source_id: insertedMeeting.id,
+                      source_table: 'clipad_meeting_records',
+                      importance: 4,
+                    });
                   }
-                  
-                  for (const c of foundCommitments) {
-                    const { error } = await db.from('clipad_commitments').insert(c);
-                    if (!error) {
-                      await writeOrgEvent({
-                        space_id: spaceId || null,
-                        event_type: 'commitment_detected',
-                        title: c.commitment_text.substring(0, 80),
-                        actor_id: user?.id,
-                        source_id: insertedMeeting.id,
-                        source_table: 'clipad_meeting_records',
-                        importance: 4,
-                      });
-                    }
-                  }
-                  // -----------------------------------------------------------
-
-                } catch(e) { console.warn("Failed to update AI summary", e); }
-              }).catch(()=>{});
-            });
+                }
+                // ------------------------------------------------
+              } catch(e) {
+                console.warn('AI summary generation failed:', e);
+                // Always resolve the stuck 'Generating summary...' state
+                await db.from('clipad_meeting_records')
+                  .update({ ai_summary: 'AI summary unavailable. Transcript saved.' })
+                  .eq('id', insertedMeeting.id);
+              }
+            })();
           }
+
           
           daily.leave();
           if (insertedMeeting) {

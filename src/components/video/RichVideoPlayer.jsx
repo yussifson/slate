@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Play, Pause, RotateCcw, RotateCw, Volume2, VolumeX, Maximize2, PictureInPicture as PipIcon, Send, MessageSquare, PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { supabase as db } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
@@ -70,6 +70,10 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [chapters, setChapters] = useState([]);
   const [isGeneratingChapters, setIsGeneratingChapters] = useState(false);
+  // ── Missing refs and state declarations (critical fix) ──────────────────
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const videoRef = useRef(null);
+  const playerRef = useRef(null);
 
   const handleGenerateAiChapters = async () => {
     setIsGeneratingChapters(true);
