@@ -36,16 +36,20 @@ const DEFAULT_SUGGESTIONS = [
 
 const FILTER_TABS = [
   { id: 'all', label: 'All', icon: Layers },
-  { id: 'assistant', label: 'Assistant', icon: Sparkles },
-  { id: 'library', label: 'Library', icon: FileText },
-  { id: 'workspaces', label: 'Workspaces', icon: Folder },
+  { id: 'doc', label: 'Docs', icon: FileText },
+  { id: 'task', label: 'Tasks', icon: CheckCircle },
+  { id: 'meeting', label: 'Meetings', icon: Calendar },
+  { id: 'decision', label: 'Decisions', icon: ShieldAlert },
+  { id: 'message', label: 'Chats', icon: MessageSquare },
 ];
 
 const FILTER_TYPE_MAP = {
   all: null,
-  assistant: ['message'],
-  library: ['doc', 'video', 'meeting', 'integration'],
-  workspaces: ['task', 'decision', 'blocker', 'standup'],
+  doc: ['doc', 'integration'],
+  task: ['task', 'blocker', 'standup'],
+  meeting: ['meeting', 'video'],
+  decision: ['decision', 'blocker'],
+  message: ['message'],
 };
 
 const matchesFilter = (itemType, filterId) => {
@@ -93,6 +97,9 @@ export default function GlobalSearch() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const [recentSearches, setRecentSearches] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('clipad_recent_searches')) || []; } catch { return []; }
+  });
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [results, setResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -193,9 +200,17 @@ export default function GlobalSearch() {
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  const handleSearch = useCallback(async (searchQuery) => {
-    const q = (searchQuery || query).trim();
+  const handleSearch = useCallback(async (forcedQuery) => {
+    const q = (forcedQuery || query).trim();
     if (!q) return;
+
+    if (q) {
+      setRecentSearches(prev => {
+        const newSearches = [q, ...prev.filter(s => s !== q)].slice(0, 3);
+        localStorage.setItem('clipad_recent_searches', JSON.stringify(newSearches));
+        return newSearches;
+      });
+    }
 
     if (q === lastQuery && hasSearched && (aiAnswer || isSynthesizing)) return;
     setLastQuery(q);
@@ -417,7 +432,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Tap to start search..."
-              className="flex-1 bg-transparent border-none outline-none text-slate-800 dark:text-slate-100 text-[16px] font-medium placeholder:text-slate-400 min-w-0 focus:ring-0 focus:outline-none focus:border-transparent"
+              className="flex-1 bg-transparent !border-none !outline-none !ring-0 !shadow-none text-slate-800 dark:text-slate-100 text-[16px] font-medium placeholder:text-slate-400 min-w-0"
             />
             {query || isSearching ? (
               <button onClick={() => { setQuery(''); setResults([]); setAiAnswer(''); setHasSearched(false); inputRef.current?.focus(); }} className="text-slate-400 hover:text-slate-600 ml-2">
@@ -469,6 +484,29 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
             {!hasSearched && query.length === 0 && (
               <div className="pb-4">
                 <div className="px-6 py-4">
+                  {recentSearches.length > 0 && (
+                    <div className="mb-6">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Recent</h4>
+                      </div>
+                      <div className="space-y-2">
+                        {recentSearches.map((search, idx) => (
+                          <button 
+                            key={`recent-${idx}`}
+                            onClick={() => { setQuery(search); handleSearch(search); }}
+                            className="w-full text-left flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group"
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+                              <Clock className="w-4 h-4 text-slate-500" />
+                            </div>
+                            <div className="flex-1 flex items-center justify-between">
+                              <span className="text-[13px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-black dark:group-hover:text-white leading-relaxed">{search}</span>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Suggested AI Queries</h4>
                     <span className="text-[11px] text-slate-400 hidden sm:inline">Press 1-6 or click</span>
