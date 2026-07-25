@@ -131,6 +131,7 @@ export const INTEGRATIONS = [
     category: 'Knowledge Base',
     provider: 'notion',
     phase: 1,
+    isReleased: true,
     importTypes: ["Pages","Databases","Notes"]
   },
   {
@@ -143,6 +144,7 @@ export const INTEGRATIONS = [
     category: 'Project Management',
     provider: 'jira',
     phase: 1,
+    isReleased: true,
     importTypes: ["Issues","Sprints","Epics"]
   },
   {
@@ -155,6 +157,7 @@ export const INTEGRATIONS = [
     category: 'Engineering',
     provider: 'github',
     phase: 1,
+    isReleased: true,
     importTypes: ["Issues","Pull Requests","Commits"]
   },
   {
@@ -167,6 +170,7 @@ export const INTEGRATIONS = [
     category: 'Engineering',
     provider: 'gitlab',
     phase: 1,
+    isReleased: true,
     importTypes: ["Merge Requests","Issues","Pipelines"]
   },
   {
@@ -179,6 +183,7 @@ export const INTEGRATIONS = [
     category: 'Engineering',
     provider: 'linear',
     phase: 1,
+    isReleased: true,
     importTypes: ["Issues","Projects","Cycles"]
   },
   {
@@ -191,6 +196,7 @@ export const INTEGRATIONS = [
     category: 'Project Management',
     provider: 'asana',
     phase: 1,
+    isReleased: true,
     importTypes: ["Projects","Tasks","Goals"]
   },
   {
@@ -203,6 +209,7 @@ export const INTEGRATIONS = [
     category: 'Project Management',
     provider: 'trello',
     phase: 1,
+    isReleased: true,
     importTypes: ["Boards","Cards","Comments"]
   },
   {
@@ -215,6 +222,7 @@ export const INTEGRATIONS = [
     category: 'Project Management',
     provider: 'clickup',
     phase: 1,
+    isReleased: true,
     importTypes: ["Tasks","Docs","Comments"]
   },
   {
@@ -227,6 +235,7 @@ export const INTEGRATIONS = [
     category: 'Project Management',
     provider: 'monday',
     phase: 1,
+    isReleased: true,
     importTypes: ["Boards","Items","Updates"]
   },
   {
@@ -239,6 +248,7 @@ export const INTEGRATIONS = [
     category: 'Storage',
     provider: 'dropbox',
     phase: 1,
+    isReleased: true,
     importTypes: ["Files","Folders"]
   },
   {
@@ -251,6 +261,7 @@ export const INTEGRATIONS = [
     category: 'Storage',
     provider: 'box',
     phase: 1,
+    isReleased: true,
     importTypes: ["Files","Folders","Notes"]
   },
   {
@@ -263,6 +274,7 @@ export const INTEGRATIONS = [
     category: 'Knowledge Base',
     provider: 'confluence',
     phase: 1,
+    isReleased: true,
     importTypes: ["Pages","Spaces","Blogs"]
   },
   {
@@ -275,6 +287,7 @@ export const INTEGRATIONS = [
     category: 'CRM',
     provider: 'salesforce',
     phase: 1,
+    isReleased: true,
     importTypes: ["Accounts","Opportunities","Notes"]
   },
   {
@@ -287,6 +300,7 @@ export const INTEGRATIONS = [
     category: 'CRM',
     provider: 'hubspot',
     phase: 1,
+    isReleased: true,
     importTypes: ["Contacts","Deals","Notes"]
   },
   {
@@ -299,6 +313,7 @@ export const INTEGRATIONS = [
     category: 'CRM',
     provider: 'zoho_crm',
     phase: 1,
+    isReleased: true,
     importTypes: ["Leads","Deals","Accounts"]
   },
   {
@@ -311,6 +326,7 @@ export const INTEGRATIONS = [
     category: 'CRM',
     provider: 'pipedrive',
     phase: 1,
+    isReleased: true,
     importTypes: ["Deals","Contacts","Activities"]
   },
   {
@@ -323,6 +339,7 @@ export const INTEGRATIONS = [
     category: 'Customer Support',
     provider: 'zendesk',
     phase: 1,
+    isReleased: true,
     importTypes: ["Tickets","Users","Articles"]
   },
   {
@@ -335,6 +352,7 @@ export const INTEGRATIONS = [
     category: 'Customer Support',
     provider: 'intercom',
     phase: 1,
+    isReleased: true,
     importTypes: ["Conversations","Contacts","Articles"]
   },
   {
@@ -347,6 +365,7 @@ export const INTEGRATIONS = [
     category: 'Customer Support',
     provider: 'freshdesk',
     phase: 1,
+    isReleased: true,
     importTypes: ["Tickets","Contacts","Solutions"]
   },
   {
@@ -359,6 +378,7 @@ export const INTEGRATIONS = [
     category: 'Marketing',
     provider: 'mailchimp',
     phase: 1,
+    isReleased: true,
     importTypes: ["Campaigns","Audiences","Reports"]
   },
   {
@@ -371,6 +391,7 @@ export const INTEGRATIONS = [
     category: 'Finance',
     provider: 'stripe',
     phase: 1,
+    isReleased: true,
     importTypes: ["Customers","Subscriptions","Invoices"]
   },
   {
@@ -383,6 +404,7 @@ export const INTEGRATIONS = [
     category: 'Finance',
     provider: 'quickbooks',
     phase: 1,
+    isReleased: true,
     importTypes: ["Invoices","Customers","Expenses"]
   },
   {
