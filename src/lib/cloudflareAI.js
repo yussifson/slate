@@ -46,9 +46,7 @@ const MODELS = {
 
 // ── Environment constants for production streaming ──
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-/**
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SU/**
  * Helper to make NON-STREAMING API requests to Cloudflare AI.
  * Used for background tasks (summaries, embeddings, entity extraction).
  */
@@ -91,15 +89,14 @@ async function runAI(model, payload, retryCount = 0) {
     }
     return data.result;
   } else {
-    // Route through Supabase Edge Function in production
+    // Production: try Supabase Edge Function first
     try {
       const { data, error } = await supabase.functions.invoke('clipad-ai-proxy', {
         body: { model, payload }
       });
 
       if (error) {
-        console.error("Supabase Edge Function AI Error:", error);
-        throw new Error(`Cloudflare AI Edge Function error: ${error.message}`);
+        throw new Error(`Edge Function error: ${error.message}`);
       }
 
       if (!data || data.success === false) {
@@ -108,9 +105,31 @@ async function runAI(model, payload, retryCount = 0) {
 
       return data.result || data;
     } catch (e) {
-      console.warn("Edge function proxy fallback triggered:", e.message);
-      // Fallback response object
-      return { response: "Analysis completed. Workspace context loaded successfully." };
+      console.warn("Edge function proxy unavailable/CORS blocked, trying direct Cloudflare fallback:", e.message);
+
+      // Direct fallback to Cloudflare API if token is present in client env
+      if (API_ACCOUNTS.length > 0) {
+        try {
+          const accountConfig = API_ACCOUNTS[0];
+          const directUrl = `https://api.cloudflare.com/client/v4/accounts/${accountConfig.accountId}/ai/run/${model}`;
+          const directRes = await fetch(directUrl, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${accountConfig.token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          });
+          if (directRes.ok) {
+            const directData = await directRes.json();
+            if (directData.success) return directData.result;
+          }
+        } catch (directErr) {
+          console.warn("Direct Cloudflare API fallback also failed:", directErr.message);
+        }
+      }
+
+      throw new Error(`AI Gateway unavailable: ${e.message}`);
     }
   }
 }
@@ -236,10 +255,10 @@ export async function generateText(input, onStream = null) {
       }
     }
     if (!finalText && typeof result === 'string') finalText = result;
-    return finalText || "Context analyzed cleanly. All systems operational.";
+    return finalText || "I am unable to generate a response right now. Please try again.";
   } catch (err) {
     console.error("generateText error:", err);
-    return "Context analyzed cleanly. Workspace state up to date.";
+    return `AI service unreachable: ${err.message || 'Check network connection'}`;
   }
 }
 
