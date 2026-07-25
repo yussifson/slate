@@ -115,15 +115,11 @@ export default function CliPadSettings() {
           
           {/* Sidebar */}
           <div className="md:col-span-1 flex flex-row overflow-x-auto md:flex-col gap-2 md:gap-3 pb-2 md:pb-0 no-scrollbar scrollbar-hide">
-            {[{id: 'profile', icon: User, label: 'Profile'}, {id: 'notifs', icon: Bell, label: 'Notifications'}, {id: 'meeting', icon: Video, label: 'Meeting Defaults'}, ...(isSuperAdmin(user) ? [{id: 'integrations', icon: Plug, label: 'Integrations ⚡'}] : []), ...(isAdmin(user) ? [{id: 'team', icon: Users, label: 'Team Management'}, {id: 'billing', icon: CreditCard, label: 'Billing & Plans'}] : [])].map(tab => (
+            {[{id: 'profile', icon: User, label: 'Profile'}, {id: 'notifs', icon: Bell, label: 'Notifications'}, {id: 'meeting', icon: Video, label: 'Meeting Defaults'}, ...(isAdmin(user) ? [{id: 'team', icon: Users, label: 'Team Management'}, {id: 'billing', icon: CreditCard, label: 'Billing & Plans'}] : [])].map(tab => (
               <button 
                 key={tab.id} 
                 onClick={() => {
-                  if (tab.id === 'integrations') {
-                    navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/settings/integrations' : '/settings/integrations');
-                  } else {
-                    setActiveTab(tab.id);
-                  }
+                  setActiveTab(tab.id);
                 }}
                 className={`whitespace-nowrap flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all border active:scale-95 ${activeTab === tab.id ? 'bg-primary/10 text-primary border-primary/20' : 'bg-secondary text-foreground border-border hover:bg-secondary/80'}`}>
                 <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-primary' : 'text-primary/70'}`} /> {tab.label}
