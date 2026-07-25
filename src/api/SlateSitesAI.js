@@ -1,7 +1,7 @@
 /**
  * SlateSitesAI.js
  * AI-powered generation engine for Slate Sites
- * Uses Cloudflare Workers AI (LLaMA 3.3 70B) via existing cloudflareAI.js
+ * Uses Cloudflare Workers AI (Kimi K2.5: @cf/moonshotai/kimi-k2.5) via existing cloudflareAI.js
  */
 
 import { generateText } from '@/lib/cloudflareAI';

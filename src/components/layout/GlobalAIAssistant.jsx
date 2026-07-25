@@ -3,8 +3,7 @@ import { useTranslation} from "react-i18next";
 import React, { useState, useRef, useEffect, useCallback} from 'react';
 
 import { useLocation, useNavigate} from 'react-router-dom';
-import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square, MoreHorizontal, LayoutGrid, Command, Layers, ListTodo, PenTool, BarChart2, ChevronDown } from 'lucide-react';
-import { Button} from '@/components/ui/button';
+import { Sparkles, X, Send, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, LayoutGrid, Command, ListTodo, PenTool, BarChart2 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { generateText, analyzeImage} from '@/lib/cloudflareAI';
 import { buildOrgContext } from '@/lib/clipadIntelligence';
@@ -14,7 +13,6 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 import { useQueryClient} from '@tanstack/react-query';
 import { base44} from '@/api/base44Client';
 import { powerSync} from "@/api/PowerSyncConnector";
-import { OrbitIcon} from '@/components/ui/OrbitIcon';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
@@ -445,6 +443,77 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
 }
  break;
 }
+ // ── CliPad-native search tools ───────────────────────────────────────────
+ case 'search_meetings': {
+  const q = (action.query || '').toLowerCase();
+  const { data: meetings } = await supabase
+    .from('clipad_meeting_records')
+    .select('id, title, ai_summary, created_at, space_id')
+    .eq('company_id', companyId)
+    .or(`title.ilike.%${q}%,ai_summary.ilike.%${q}%`)
+    .order('created_at', { ascending: false })
+    .limit(8);
+  results.push(`Meeting search for "${q}":\n${JSON.stringify((meetings || []).map(m => ({ id: m.id, title: m.title, summary: m.ai_summary?.substring(0, 200), date: m.created_at?.slice(0, 10) })))}`);
+  break;
+ }
+ case 'search_videos': {
+  const q = (action.query || '').toLowerCase();
+  const { data: videos } = await supabase
+    .from('clipad_videos')
+    .select('id, title, ai_summary, created_at, duration_seconds, space_id')
+    .eq('company_id', companyId)
+    .or(`title.ilike.%${q}%,ai_summary.ilike.%${q}%`)
+    .order('created_at', { ascending: false })
+    .limit(8);
+  results.push(`Video search for "${q}":\n${JSON.stringify((videos || []).map(v => ({ id: v.id, title: v.title, summary: v.ai_summary?.substring(0, 200), date: v.created_at?.slice(0, 10), duration: Math.round((v.duration_seconds || 0) / 60) + 'min' })))}`);
+  break;
+ }
+ case 'search_decisions': {
+  const q = (action.query || '').toLowerCase();
+  const { data: decisions } = await supabase
+    .from('clipad_decisions')
+    .select('id, decision_text, rationale, created_at, importance_score')
+    .ilike('decision_text', `%${q}%`)
+    .order('created_at', { ascending: false })
+    .limit(8);
+  results.push(`Decision search for "${q}":\n${JSON.stringify((decisions || []).map(d => ({ id: d.id, decision: d.decision_text, rationale: d.rationale, date: d.created_at?.slice(0, 10), importance: d.importance_score })))}`);
+  break;
+ }
+ case 'search_action_items': {
+  const q = (action.query || '').toLowerCase();
+  const { data: items } = await supabase
+    .from('clipad_action_items')
+    .select('id, title, is_complete, due_date, assigned_to, space_id')
+    .ilike('title', `%${q}%`)
+    .order('created_at', { ascending: false })
+    .limit(10);
+  results.push(`Action item search for "${q}":\n${JSON.stringify((items || []).map(i => ({ id: i.id, title: i.title, complete: i.is_complete, due: i.due_date, assignee: i.assigned_to })))}`);
+  break;
+ }
+ case 'search_standups': {
+  const q = (action.query || '').toLowerCase();
+  const { data: standups } = await supabase
+    .from('clipad_standups')
+    .select('id, user_name, today, yesterday, blockers, mood, created_at, space_id')
+    .or(`today.ilike.%${q}%,yesterday.ilike.%${q}%,blockers.ilike.%${q}%,user_name.ilike.%${q}%`)
+    .order('created_at', { ascending: false })
+    .limit(10);
+  results.push(`Standup search for "${q}":\n${JSON.stringify((standups || []).map(s => ({ user: s.user_name, today: s.today, blockers: s.blockers, date: s.created_at?.slice(0, 10) })))}`);
+  break;
+ }
+ case 'search_blockers': {
+  const q = (action.query || '').toLowerCase();
+  const { data: blockers } = await supabase
+    .from('clipad_blockers')
+    .select('id, description, severity, status, detected_at, team_space_id')
+    .ilike('description', `%${q}%`)
+    .eq('status', 'open')
+    .order('detected_at', { ascending: false })
+    .limit(8);
+  results.push(`Blocker search for "${q}":\n${JSON.stringify((blockers || []).map(b => ({ id: b.id, description: b.description, severity: b.severity, date: b.detected_at?.slice(0, 10) })))}`);
+  break;
+ }
+ // ─────────────────────────────────────────────────────────────────────────
  default:
  results.push(`Error: unknown tool ${action.tool}`);
  break;
@@ -525,13 +594,20 @@ To create an automation, use the \`create_record\` tool with recordType "automat
 
   let orgContextSection = '';
   // Always load org context — it's the brain of the system
+  // 60-second TTL cache to avoid 14 parallel DB queries on every message send
   try {
     const accessibleIds = await fetchAccessibleSpaceIds(user);
-    const { contextText } = await buildOrgContext({
-      limit: 25,
-      spaceIds: Array.from(accessibleIds),
-      companyId,
-    });
+    const cacheKey = `${companyId}-${Array.from(accessibleIds).sort().join(',')}`;
+    const now = Date.now();
+    const cached = GlobalAIAssistant._orgCtxCache;
+    let contextText;
+    if (cached && cached.key === cacheKey && (now - cached.ts) < 60_000) {
+      contextText = cached.text;
+    } else {
+      const result = await buildOrgContext({ limit: 25, spaceIds: Array.from(accessibleIds), companyId });
+      contextText = result.contextText;
+      GlobalAIAssistant._orgCtxCache = { key: cacheKey, text: contextText, ts: now };
+    }
     if (contextText && contextText.length > 50) {
       orgContextSection = `
 
@@ -642,7 +718,13 @@ CITATION RULES (MANDATORY when using INTEGRATION KNOWLEDGE BASE):
 - Always cite, never omit the source when referencing integrated data.
 
 AGENT POWERS (return EXACTLY this JSON format inline to act):
-- Search: <AGENT_ACTION>{"tool":"search_records","recordType":"patient|case|client|student|staff","query":"John"}</AGENT_ACTION>
+- Search CRM: <AGENT_ACTION>{"tool":"search_records","recordType":"patient|case|client|student|staff","query":"John"}</AGENT_ACTION>
+- Search Meetings: <AGENT_ACTION>{"tool":"search_meetings","query":"pricing discussion"}</AGENT_ACTION>
+- Search Videos: <AGENT_ACTION>{"tool":"search_videos","query":"onboarding"}</AGENT_ACTION>
+- Search Decisions: <AGENT_ACTION>{"tool":"search_decisions","query":"API architecture"}</AGENT_ACTION>
+- Search Action Items: <AGENT_ACTION>{"tool":"search_action_items","query":"deploy backend"}</AGENT_ACTION>
+- Search Standups: <AGENT_ACTION>{"tool":"search_standups","query":"blocker yesterday"}</AGENT_ACTION>
+- Search Blockers: <AGENT_ACTION>{"tool":"search_blockers","query":"auth issue"}</AGENT_ACTION>
 - Navigate: <AGENT_ACTION>{"tool":"navigate_to","route":"/patients"}</AGENT_ACTION>
 - Create: <AGENT_ACTION>{"tool":"create_record","recordType":"patient","payload":{"name":"John Doe","age":30,"status":"active"}}</AGENT_ACTION>
 - Update: <AGENT_ACTION>{"tool":"update_record","recordType":"patient","id":"uuid","payload":{"status":"discharged"}}</AGENT_ACTION>

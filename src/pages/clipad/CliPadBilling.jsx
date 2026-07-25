@@ -235,6 +235,34 @@ export default function CliPadBilling() {
     return `Upgrade to ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)}`;
   };
 
+  const handleDowngrade = (planType) => {
+    toast({
+      title: 'Downgrade Requested',
+      description: `Your request to downgrade to the ${planType.toUpperCase()} plan has been received. Our team will process this before your next billing cycle.`,
+    });
+    if (companyId) {
+      supabase.from('optavel_transactions').insert({
+        id: crypto.randomUUID(),
+        company_id: companyId,
+        amount: 0,
+        type: 'downgrade_request',
+        category: 'clipad_billing',
+        description: JSON.stringify({ message: `Requested downgrade to ${planType}` }),
+        date: new Date().toISOString(),
+        created_at: new Date().toISOString()
+      }).then(() => fetchHistory());
+    }
+  };
+
+  const handlePlanClick = (targetPlan) => {
+    if (currentPlan === targetPlan) return;
+    if ((planRank[currentPlan] || 0) > (planRank[targetPlan] || 0)) {
+      handleDowngrade(targetPlan);
+    } else {
+      handleUpgrade(targetPlan);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div>
@@ -321,7 +349,10 @@ export default function CliPadBilling() {
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Basic AI Summaries</li>
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 2GB Max Cloud Storage</li>
           </ul>
-          <button disabled className="w-full mt-8 py-2 rounded-xl bg-secondary text-foreground font-semibold border border-border">
+          <button 
+            onClick={() => handlePlanClick('free')}
+            disabled={currentPlan === 'free' || loading}
+            className={`w-full mt-8 py-2 rounded-xl font-semibold border ${currentPlan === 'free' ? 'bg-secondary text-foreground border-border' : 'bg-background text-foreground hover:bg-secondary border-border'}`}>
             {getButtonText('free')}
           </button>
         </div>
@@ -344,7 +375,7 @@ export default function CliPadBilling() {
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 15GB Max Cloud Storage</li>
           </ul>
           <button 
-            onClick={() => handleUpgrade('pro')}
+            onClick={() => handlePlanClick('pro')}
             disabled={currentPlan === 'pro' || loading}
             className={`w-full mt-8 py-2 rounded-xl font-semibold transition-all ${currentPlan === 'pro' ? 'bg-secondary text-foreground border border-border' : 'bg-primary text-white hover:bg-primary/90'}`}>
             {getButtonText('pro')}
@@ -365,7 +396,7 @@ export default function CliPadBilling() {
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 50GB Max Cloud Storage</li>
           </ul>
           <button 
-            onClick={() => handleUpgrade('enterprise')}
+            onClick={() => handlePlanClick('enterprise')}
             disabled={currentPlan === 'enterprise' || loading}
             className={`w-full mt-8 py-2 rounded-xl font-semibold border ${currentPlan === 'enterprise' ? 'bg-secondary text-foreground border-border' : 'bg-background text-foreground hover:bg-secondary border-border'}`}>
             {getButtonText('enterprise')}

@@ -40,14 +40,14 @@ Output ONLY a JSON object (no markdown formatting, no backticks, no text outside
 Transcript:
 ${transcript}`;
 
-    // Call Cloudflare AI using Llama 3
+    // Call Cloudflare AI using Kimi K2.5
     const cfToken = Deno.env.get('CLOUDFLARE_API_TOKEN');
     const cfAccountId = Deno.env.get('CLOUDFLARE_ACCOUNT_ID');
 
     let aiResponse;
     if (cfToken && cfAccountId) {
       const resp = await fetch(
-        `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/ai/run/@cf/meta/llama-3.1-8b-instruct`,
+        `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/ai/run/@cf/moonshotai/kimi-k2.5`,
         {
           method: 'POST',
           headers: {

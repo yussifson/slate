@@ -6,7 +6,6 @@ import {
   Search, FileText, User, Users, Calendar, X,
   ShieldAlert, ArrowRight, Sparkles, Bot, Zap, ChevronRight
 } from "lucide-react";
-import { base44 } from "@/api/base44Client";
 import { supabase } from "@/api/supabaseClient";
 import { useAuth } from "@/lib/AuthContext";
 
@@ -22,7 +21,7 @@ export default function SpotlightSearch() {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState({ cases: [], clients: [], staff: [], other: [] });
+  const [results, setResults] = useState({ cases: [], clients: [], staff: [], other: [], meetings: [], videos: [], decisions: [], actionItems: [], spaces: [], external: [] });
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hoveredId, setHoveredId] = useState(null);
@@ -96,46 +95,52 @@ export default function SpotlightSearch() {
       }
     } else {
       setQuery("");
-      setResults({ cases: [], clients: [], staff: [], other: [] });
+      setResults({ cases: [], clients: [], staff: [], other: [], meetings: [], videos: [], decisions: [], actionItems: [], spaces: [], external: [] });
     }
   }, [isOpen, companyId]);
 
-  // Debounced search
+  // Debounced search — expanded to all CliPad data sources via server-side ilike queries
   useEffect(() => {
     if (!query.trim()) {
-      setResults({ cases: [], clients: [], staff: [], other: [] });
+      setResults({ cases: [], clients: [], staff: [], other: [], meetings: [], videos: [], decisions: [], actionItems: [], spaces: [], external: [] });
       return;
     }
     const timer = setTimeout(async () => {
       setLoading(true);
       try {
         const q = query.toLowerCase();
-        const [allCases, allClients, allStaff, allTasks, externalRes] = await Promise.all([
-          base44.entities.LegalCase.list().catch(() => []),
-          base44.entities.Client.list().catch(() => []),
-          base44.entities.StaffRecord.list().catch(() => []),
-          base44.entities.Task.list().catch(() => []),
+        const [
+          casesRes, clientsRes, staffRes, tasksRes,
+          meetingsRes, videosRes, decisionsRes, actionItemsRes, spacesRes,
+          externalRes
+        ] = await Promise.all([
+          // CRM — server-side ilike for scalability (no more full-table fetches)
+          supabase.from('legal_cases').select('id, title, case_number, status').eq('company_id', companyId).or(`title.ilike.%${q}%,case_number.ilike.%${q}%`).limit(3),
+          supabase.from('clients').select('id, name, email, status').eq('company_id', companyId).or(`name.ilike.%${q}%,email.ilike.%${q}%`).limit(3),
+          supabase.from('staff_records').select('id, full_name, user_email, department').eq('company_id', companyId).or(`full_name.ilike.%${q}%,user_email.ilike.%${q}%`).limit(3),
+          supabase.from('tasks').select('id, title, status, due_date').eq('company_id', companyId).ilike('title', `%${q}%`).limit(3),
+          // CliPad-native tables
+          supabase.from('clipad_meeting_records').select('id, title, ai_summary, created_at').eq('company_id', companyId).or(`title.ilike.%${q}%,ai_summary.ilike.%${q}%`).order('created_at', { ascending: false }).limit(3),
+          supabase.from('clipad_videos').select('id, title, ai_summary, created_at').eq('company_id', companyId).or(`title.ilike.%${q}%,ai_summary.ilike.%${q}%`).order('created_at', { ascending: false }).limit(3),
+          supabase.from('clipad_decisions').select('id, decision_text, rationale, created_at').or(`decision_text.ilike.%${q}%,rationale.ilike.%${q}%`).order('created_at', { ascending: false }).limit(3),
+          supabase.from('clipad_action_items').select('id, title, is_complete, due_date, assigned_to').ilike('title', `%${q}%`).eq('is_complete', false).limit(3),
+          supabase.from('clipad_spaces').select('id, name, description, is_private').eq('company_id', companyId).or(`name.ilike.%${q}%,description.ilike.%${q}%`).limit(3),
+          // Vector semantic search for integration knowledge
           supabase.functions.invoke('knowledge-search', {
-            body: { query: q, company_id: companyId, match_count: 5 }
+            body: { query: q, company_id: companyId, match_count: 4, threshold: 0.35 }
           }).catch(() => ({ data: { results: [] } }))
         ]);
         setResults({
-          cases: allCases.filter(c =>
-            c.company_id === companyId &&
-            (c.title?.toLowerCase().includes(q) || c.case_number?.toLowerCase().includes(q))
-          ).slice(0, 4),
-          clients: allClients.filter(c =>
-            c.company_id === companyId &&
-            (c.name?.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q))
-          ).slice(0, 4),
-          staff: allStaff.filter(s =>
-            s.company_id === companyId &&
-            (s.full_name?.toLowerCase().includes(q) || s.user_email?.toLowerCase().includes(q))
-          ).slice(0, 4),
-          other: allTasks.filter(item =>
-            item.company_id === companyId && item.title?.toLowerCase().includes(q)
-          ).slice(0, 4),
-          external: (externalRes?.data?.results || []).slice(0, 4),
+          cases:       casesRes.data || [],
+          clients:     clientsRes.data || [],
+          staff:       staffRes.data || [],
+          other:       tasksRes.data || [],
+          meetings:    meetingsRes.data || [],
+          videos:      videosRes.data || [],
+          decisions:   decisionsRes.data || [],
+          actionItems: actionItemsRes.data || [],
+          spaces:      spacesRes.data || [],
+          external:    (externalRes?.data?.results || []).slice(0, 4),
         });
       } catch (err) {
         console.error("Spotlight search failed", err);
@@ -147,11 +152,16 @@ export default function SpotlightSearch() {
   }, [query, companyId]);
 
   const flatResults = [
-    ...results.cases.map(item   => ({ ...item, category: "Cases",    route: `/cases/${item.id}`,   icon: FileText, entityType: "Case"         })),
-    ...results.clients.map(item => ({ ...item, category: "Contacts", route: `/clients/${item.id}`, icon: User,     entityType: "Client"       })),
-    ...results.staff.map(item   => ({ ...item, category: "Team",     route: `/team/${item.id}`,    icon: Users,    entityType: "Staff Member" })),
-    ...results.other.map(item   => ({ ...item, category: "Tasks",    route: `/tasks/${item.id}`,   icon: Calendar, entityType: "Task"         })),
-    ...(results.external || []).map(item => ({ ...item, category: "External", route: item.url || '#', icon: FileText, entityType: "Document", isExternal: true, name: item.title })),
+    ...results.meetings.map(item    => ({ ...item, category: "Meetings",     name: item.title,                         route: `/meetings/${item.id}`,   icon: Calendar, entityType: "Meeting"     })),
+    ...results.videos.map(item      => ({ ...item, category: "Videos",       name: item.title,                         route: `/videos/${item.id}`,     icon: FileText, entityType: "Video"       })),
+    ...results.decisions.map(item   => ({ ...item, category: "Decisions",    name: item.decision_text?.substring(0,80), route: `/decisions`,            icon: Sparkles, entityType: "Decision"    })),
+    ...results.actionItems.map(item => ({ ...item, category: "Tasks",        name: item.title,                         route: `/action-items`,          icon: Calendar, entityType: "Task"         })),
+    ...results.spaces.map(item      => ({ ...item, category: "Spaces",       name: item.name,                          route: `/spaces/${item.id}`,     icon: Users,    entityType: "Space"        })),
+    ...results.cases.map(item       => ({ ...item, category: "Cases",        name: item.title,                         route: `/cases/${item.id}`,      icon: FileText, entityType: "Case"         })),
+    ...results.clients.map(item     => ({ ...item, category: "Contacts",     name: item.name,                          route: `/clients/${item.id}`,    icon: User,     entityType: "Client"       })),
+    ...results.staff.map(item       => ({ ...item, category: "Team",         name: item.full_name,                     route: `/team/${item.id}`,       icon: Users,    entityType: "Staff Member" })),
+    ...results.other.map(item       => ({ ...item, category: "Tasks",        name: item.title,                         route: `/tasks/${item.id}`,      icon: Calendar, entityType: "Task"         })),
+    ...(results.external || []).map(item => ({ ...item, category: "Knowledge", name: item.title,                       route: item.url || '#',          icon: FileText, entityType: "Document", isExternal: true })),
   ];
 
   const handleAskAI = (label, record) => {
@@ -228,7 +238,7 @@ export default function SpotlightSearch() {
         </div>
       ) : (
         <div className="space-y-4 p-1">
-          {["Cases", "Contacts", "Team", "Tasks", "External"].map(cat => {
+          {["Meetings", "Videos", "Decisions", "Spaces", "Tasks", "Cases", "Contacts", "Team", "Knowledge"].map(cat => {
             const catItems = flatResults.filter(item => item.category === cat);
             if (!catItems.length) return null;
             return (
@@ -259,7 +269,7 @@ export default function SpotlightSearch() {
                           <div className="min-w-0">
                             <p className="text-[14px] font-semibold text-slate-800 dark:text-white truncate">{item.title || item.name || item.full_name}</p>
                             <p className="text-[12px] text-slate-400 truncate mt-0.5">
-                              {item.case_number || item.email || item.user_email || item.description || item.status || "View details"}
+                            {item.case_number || item.email || item.user_email || item.ai_summary?.substring(0, 60) || item.decision_text?.substring(0, 60) || item.description?.substring(0, 60) || item.status || "View details"}
                             </p>
                           </div>
                         </div>
@@ -399,7 +409,7 @@ export default function SpotlightSearch() {
           <input
             ref={inputRef}
             type="text"
-            placeholder="Search cases, clients, tasks, or team members..."
+            placeholder="Search meetings, videos, decisions, or ask AI anything..."
             className="flex-1 bg-transparent border-0 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:ring-0 font-medium min-w-0"
             style={{ fontSize: 16, paddingLeft: 0 }}
             value={query}

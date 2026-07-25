@@ -73,7 +73,7 @@ ${JSON.stringify(otherItems)}`;
 
         try {
           const cfRes = await fetch(
-            `https://api.cloudflare.com/client/v4/accounts/${cloudflareAccountId}/ai/run/@cf/meta/llama-3.1-8b-instruct`,
+            `https://api.cloudflare.com/client/v4/accounts/${cloudflareAccountId}/ai/run/@cf/moonshotai/kimi-k2.5`,
             {
               method: 'POST',
               headers: { Authorization: `Bearer ${cloudflareApiToken}`, 'Content-Type': 'application/json' },

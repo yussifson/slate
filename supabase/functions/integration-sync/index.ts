@@ -354,6 +354,27 @@ async function syncGoogleDrive(integration: any, supabase: any, lastSynced: Date
 }
 
 // ─── Notion Sync ─────────────────────────────────────────────────────────────
+async function fetchNotionPageContent(pageId: string, token: string): Promise<string> {
+  try {
+    const res = await fetch(`https://api.notion.com/v1/blocks/${pageId}/children?page_size=100`, {
+      headers: { Authorization: `Bearer ${token}`, 'Notion-Version': '2022-06-28' }
+    });
+    if (!res.ok) return '';
+    const data = await res.json();
+    let content = '';
+    for (const block of (data.results || [])) {
+      const type = block.type;
+      if (block[type] && block[type].rich_text) {
+        const text = block[type].rich_text.map((t: any) => t.plain_text).join('');
+        if (text) content += text + '\n';
+      }
+    }
+    return content;
+  } catch (e) {
+    return '';
+  }
+}
+
 async function syncNotion(integration: any, supabase: any, lastSynced: Date | null) {
   const token = integration.access_token;
   let imported = 0;
@@ -391,11 +412,15 @@ async function syncNotion(integration: any, supabase: any, lastSynced: Date | nu
       if (imported >= limit) break;
       const title = page.properties?.title?.title?.[0]?.plain_text ||
                     page.properties?.Name?.title?.[0]?.plain_text || 'Untitled';
+      
+      const content = await fetchNotionPageContent(page.id, token);
+
       const ok = await upsertKnowledge(supabase, {
         provider: 'notion',
         external_id: page.id,
         content_type: 'page',
         title,
+        content,
         url: page.url,
       }, integration);
       if (ok) imported++;

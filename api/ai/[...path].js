@@ -47,7 +47,7 @@ export default async function handler(req) {
     // 2. Extract path params from Vercel rewritten URL
     const url = new URL(req.url);
     // Vercel routes `/api/ai/[...path]` automatically.
-    // url.pathname will be /api/ai/bf512651.../@cf/meta/llama...
+    // url.pathname will be /api/ai/bf512651.../@cf/moonshotai/kimi-k2.5
     const pathParts = url.pathname.replace('/api/ai/', '').split('/');
     const accountId = pathParts[0];
     const model = pathParts.slice(1).join('/');

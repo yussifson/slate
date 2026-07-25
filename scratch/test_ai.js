@@ -20,7 +20,7 @@ async function test() {
   ];
 
   const cfResponse = await fetch(
-    `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/meta/llama-3.1-8b-instruct`,
+    `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/moonshotai/kimi-k2.5`,
     {
       method: 'POST',
       headers: {
