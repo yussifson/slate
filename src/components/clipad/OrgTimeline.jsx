@@ -163,7 +163,6 @@ export default function OrgTimeline({ workspaceId, spaceId }) {
             </button>
           ))}
         </div>
-      </div>
 
       {loading ? (
         <div className="flex justify-center py-12">
