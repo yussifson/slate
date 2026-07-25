@@ -61,7 +61,7 @@ export default function ClipadLayout() {
   const isImmersive = false;
 
   return (
-    <div className="flex flex-row h-[100dvh] w-full overflow-hidden bg-slate-50 dark:bg-[#0a0a0a] text-slate-900 dark:text-slate-100 pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
+    <div className="flex flex-row h-[100dvh] w-full overflow-hidden bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
       
       {/* Premium Sidebar Component */}
       <ClipadSidebar forceMobile={forceMobile} />
