@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { Settings, Shield, LogOut, MessageSquare, Search, Plus, User, Plug, Network, ChevronDown } from 'lucide-react';
+import { Settings, Shield, LogOut, MessageSquare, Search, Plus, User, Plug, Network, ChevronDown, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
 import ThemeToggle from '@/components/layout/ThemeToggle';
@@ -52,9 +52,20 @@ export default function ClipadTopNav({ forceMobile = false }) {
         </h1>
       </div>
       
-      {/* Search — tablet and up */}
-      <div className={cn("flex-1 min-w-0 max-w-sm lg:max-w-md justify-center", forceMobile ? "hidden" : "hidden md:flex")}>
+      {/* Search & AI Bar — tablet and up */}
+      <div className={cn("flex-1 flex items-center min-w-0 max-w-[500px] gap-3 justify-center", forceMobile ? "hidden" : "hidden md:flex")}>
         <GlobalSearch />
+        
+        {/* New Top Bar AI Pill Button */}
+        <button 
+          onClick={() => window.dispatchEvent(new CustomEvent("toggle-clipad-orbit"))}
+          className="flex-shrink-0 group relative p-[1.5px] rounded-full bg-gradient-to-r from-cyan-500 via-emerald-400 to-yellow-400 hover:shadow-md transition-shadow active:scale-95"
+        >
+          <div className="flex items-center h-10 bg-slate-100 dark:bg-slate-900 rounded-full px-4 gap-2">
+            <Sparkles className="w-[18px] h-[18px] text-emerald-600 dark:text-emerald-400 group-hover:rotate-12 transition-transform" />
+            <span className="text-[14px] font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wide">AI</span>
+          </div>
+        </button>
       </div>
 
       <div className="flex items-center gap-1.5 md:gap-2 shrink-0">

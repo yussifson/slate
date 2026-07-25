@@ -108,15 +108,7 @@ export default function ClipadLayout() {
         onContextConsumed={() => setInjectedContext(null)} 
       />
 
-      {/* Global OrbitFlow FAB */}
-      {!isAIOpen && !isImmersive && (
-        <button 
-          onClick={() => window.dispatchEvent(new CustomEvent("toggle-clipad-orbit"))}
-          className="fixed bottom-[90px] md:bottom-8 right-4 md:right-8 z-50 w-12 h-12 md:w-14 md:h-14 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 flex items-center justify-center transition-all hover:-translate-y-1 active:scale-95 group"
-        >
-          <Sparkles className="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-12 transition-transform" />
-        </button>
-      )}
+      {/* Global OrbitFlow Button moved to ClipadTopNav */}
 
 
       <ClipadMobileNav forceMobile={forceMobile} />
