@@ -224,6 +224,17 @@ export default function CliPadBilling() {
     return <div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
   }
 
+  const planRank = { free: 0, pro: 1, enterprise: 2 };
+  const getButtonText = (targetPlan) => {
+    if (currentPlan === targetPlan) return 'Current Plan';
+    if ((planRank[currentPlan] || 0) > (planRank[targetPlan] || 0)) {
+      if (targetPlan === 'free') return 'Downgrade to Free';
+      return `Downgrade to ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)}`;
+    }
+    if (targetPlan === 'free') return 'Upgrade to Free';
+    return `Upgrade to ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)}`;
+  };
+
   return (
     <div className="space-y-8">
       <div>
@@ -311,7 +322,7 @@ export default function CliPadBilling() {
             <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> 2GB Max Cloud Storage</li>
           </ul>
           <button disabled className="w-full mt-8 py-2 rounded-xl bg-secondary text-foreground font-semibold border border-border">
-            {currentPlan === 'free' ? 'Current Plan' : 'Downgrade'}
+            {getButtonText('free')}
           </button>
         </div>
 
@@ -336,7 +347,7 @@ export default function CliPadBilling() {
             onClick={() => handleUpgrade('pro')}
             disabled={currentPlan === 'pro' || loading}
             className={`w-full mt-8 py-2 rounded-xl font-semibold transition-all ${currentPlan === 'pro' ? 'bg-secondary text-foreground border border-border' : 'bg-primary text-white hover:bg-primary/90'}`}>
-            {currentPlan === 'pro' ? 'Current Plan' : 'Upgrade to Pro'}
+            {getButtonText('pro')}
           </button>
         </div>
 
@@ -357,7 +368,7 @@ export default function CliPadBilling() {
             onClick={() => handleUpgrade('enterprise')}
             disabled={currentPlan === 'enterprise' || loading}
             className={`w-full mt-8 py-2 rounded-xl font-semibold border ${currentPlan === 'enterprise' ? 'bg-secondary text-foreground border-border' : 'bg-background text-foreground hover:bg-secondary border-border'}`}>
-            {currentPlan === 'enterprise' ? 'Current Plan' : 'Upgrade to Enterprise'}
+            {getButtonText('enterprise')}
           </button>
         </div>
       </div>
