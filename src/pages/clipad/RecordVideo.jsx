@@ -43,13 +43,24 @@ const openDB = () => new Promise((resolve, reject) => {
   request.onerror = () => reject(request.error);
 });
 
-const saveRecordingState = async (id, chunks) => {
+let lastIDBSaveMap = new Map();
+
+const saveRecordingState = async (id, chunks, force = false) => {
+  const now = Date.now();
+  const lastSave = lastIDBSaveMap.get(id) || 0;
+  if (!force && (now - lastSave < 10000)) return; // Throttle to once per 10s during recording
+  lastIDBSaveMap.set(id, now);
+
   try {
     const db = await openDB();
     const tx = db.transaction(STORE_NAME, 'readwrite');
-    tx.objectStore(STORE_NAME).put({ id, chunks, timestamp: Date.now() });
+    tx.objectStore(STORE_NAME).put({ id, chunks, timestamp: now });
     return new Promise(resolve => tx.oncomplete = resolve);
-  } catch (err) { console.error('IDB Save Error:', err); }
+  } catch (err) {
+    if (err?.name !== 'QuotaExceededError' && err?.name !== 'UnknownError') {
+      console.warn('IDB Save Warning:', err?.message || err);
+    }
+  }
 };
 
 const getRecordingState = async (id) => {
@@ -1089,8 +1100,10 @@ export default function RecordVideo() {
       
       recorder.onstop = async () => {
         stopEverything();
-        // If no data was captured at all (e.g. stopped before first chunk), bail out
-        if (chunksRef.current.length === 0) {
+        // Force save final recording state to IDB for recovery
+        if (chunksRef.current.length > 0) {
+          saveRecordingState(id, chunksRef.current, true);
+        } else {
           setPhase('setup');
           return;
         }
@@ -1338,15 +1351,15 @@ export default function RecordVideo() {
 
       const { data: { session } } = await supabase.auth.getSession();
       
-      await new Promise((resolve, reject) => {
+      const tryTusUpload = () => new Promise((resolve, reject) => {
         const upload = new tus.Upload(videoBlob, {
           endpoint: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/upload/resumable`,
-          retryDelays: [0, 3000, 5000, 10000, 20000],
+          retryDelays: [0, 2000, 5000, 10000],
           headers: {
             authorization: `Bearer ${session?.access_token}`,
             'x-upsert': 'true', 
           },
-          uploadDataDuringCreation: true,
+          uploadDataDuringCreation: false, // CRITICAL FIX: Must be false to prevent 413 POST payload limit
           removeFingerprintOnSuccess: true,
           metadata: {
             bucketName: 'clipad_videos',
@@ -1354,7 +1367,7 @@ export default function RecordVideo() {
             contentType: 'video/webm',
             cacheControl: '3600',
           },
-          chunkSize: 6 * 1024 * 1024,
+          chunkSize: 4 * 1024 * 1024, // 4MB per chunk payload
           onError: function (error) {
              reject(error);
           },
@@ -1368,6 +1381,26 @@ export default function RecordVideo() {
         });
         upload.start();
       });
+
+      try {
+        await tryTusUpload();
+      } catch (tusErr) {
+        console.warn('TUS Resumable upload notice, using direct storage upload fallback:', tusErr);
+        setUploadProgress(40);
+        
+        // Direct upload fallback (handles Blobs up to Enterprise plan limits without TUS overhead)
+        const { error: directUploadError } = await supabase.storage
+          .from('clipad_videos')
+          .upload(fileName, videoBlob, {
+            contentType: 'video/webm',
+            cacheControl: '3600',
+            upsert: true
+          });
+
+        if (directUploadError) {
+          throw new Error(`Cloud upload failed: ${directUploadError.message}`);
+        }
+      }
 
       setUploadProgress(95);
       const publicUrl = supabase.storage.from('clipad_videos').getPublicUrl(fileName).data.publicUrl;
