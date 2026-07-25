@@ -61,18 +61,7 @@ export default function CliPadSupport() {
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 pb-16">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 h-16 bg-white/70 dark:bg-background/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-border/50">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-secondary border border-slate-200 dark:border-border shadow-sm flex items-center justify-center text-primary">
-            <CliPadLogo size={20} />
-          </div>
-          <span className="text-lg font-bold tracking-tight">Support</span>
-        </div>
-        <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm hover:shadow-md text-sm font-semibold text-slate-700 dark:text-foreground transition-all hover:-translate-y-0.5">
-          <ArrowLeft className="w-4 h-4 text-slate-500" /> Dashboard
-        </button>
-      </nav>
+      {/* Internal Navbar removed per user request */}
 
       {/* Form Container */}
       <div className="max-w-2xl mx-auto px-6 mt-12">

@@ -60,13 +60,11 @@ export default function SuperAdminDashboard() {
 
       // Fetch clipad support requests
       try {
-        const supportRes = await supabase.from('clipad_support_requests').select('*').order('created_at', { ascending: false });
+        const supportRes = await supabase.from('clipad_support_requests').select('*, profiles:user_id(full_name, email)').order('created_at', { ascending: false });
         if (supportRes.data) setClipadSupport(supportRes.data);
-      } catch (e) { }
-
-    } catch (e) {
-      console.error(e);
-    } finally {
+      } catch (err) {
+        console.warn('Could not fetch support requests', err);
+      } finally {
       setLoading(false);
     }
   };
@@ -261,7 +259,12 @@ export default function SuperAdminDashboard() {
                   <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                     {clipadSupport.length > 0 ? clipadSupport.map((req, i) => (
                       <tr key={i} className="hover:bg-gray-50 dark:hover:bg-gray-800/30">
-                        <td className="px-6 py-4 text-sm font-medium">{req.user_email || 'Anonymous'}</td>
+                        <td className="px-6 py-4 text-sm font-medium">
+                          <div className="flex flex-col">
+                            <span>{req.profiles?.full_name || 'Anonymous User'}</span>
+                            <span className="text-xs text-gray-400">{req.profiles?.email || req.user_email || 'No Email'}</span>
+                          </div>
+                        </td>
                         <td className="px-6 py-4 text-sm font-semibold">{req.subject}</td>
                         <td className="px-6 py-4 text-sm text-gray-500 max-w-[250px] truncate" title={req.message}>{req.message}</td>
                         <td className="px-6 py-4 text-sm">{new Date(req.created_at).toLocaleDateString()}</td>
