@@ -44,15 +44,20 @@ serve(async (req) => {
 
     for (let i = 0; i < credentials.length; i++) {
       const { token, accountId } = credentials[i];
-      const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
+      const isChatModel = model.includes('kimi') || model.includes('llama');
+      const url = isChatModel
+        ? `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/v1/chat/completions`
+        : `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
       
+      const requestPayload = isChatModel ? { ...cfPayload, model } : cfPayload;
+
       const resp = await fetch(url, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(cfPayload),
+        body: JSON.stringify(requestPayload),
       });
 
       if (!resp.ok) {
