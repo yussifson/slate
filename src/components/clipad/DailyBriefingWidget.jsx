@@ -19,8 +19,8 @@ export default function DailyBriefingWidget() {
 
       const [meetingsRes, commitmentsRes, blockersRes] = await Promise.all([
         Promise.resolve(supabase.from('clipad_meeting_records').select('title, ai_summary').eq('company_id', user.company_id).gte('created_at', yesterday).limit(5)).catch(() => ({ data: [] })),
-        Promise.resolve(supabase.from('clipad_commitments').select('id, commitment_text, due_date').order('created_at', { ascending: false }).limit(5)).catch(() => ({ data: [] })),
-        Promise.resolve(supabase.from('clipad_blockers').select('id, description, severity').order('created_at', { ascending: false }).limit(5)).catch(() => ({ data: [] })),
+        Promise.resolve(supabase.from('clipad_commitments').select('id, commitment_text, due_date').limit(5)).catch(() => ({ data: [] })),
+        Promise.resolve(supabase.from('clipad_blockers').select('id, description, severity').limit(5)).catch(() => ({ data: [] })),
       ]);
 
       const meetings = meetingsRes.data || [];

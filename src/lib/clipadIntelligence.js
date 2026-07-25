@@ -243,13 +243,11 @@ export async function buildOrgContext(options = {}) {
     // Blockers
     Promise.resolve(companyId
       ? supabase.from('clipad_blockers')
-          .select('id, description, severity, created_at')
+          .select('id, description, severity')
           .eq('workspace_id', companyId)
-          .order('created_at', { ascending: false })
           .limit(10)
       : supabase.from('clipad_blockers')
-          .select('id, description, severity, created_at')
-          .order('created_at', { ascending: false })
+          .select('id, description, severity')
           .limit(10)).catch(() => ({ data: [] })),
 
     // Videos
