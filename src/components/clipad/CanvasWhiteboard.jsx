@@ -1,4 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { Sparkles, Brain, Loader2, X } from 'lucide-react';
+import { generateText } from '@/lib/cloudflareAI';
 
 // ── Tool definitions ──────────────────────────────────────────────────────────
 const TOOLS = [
@@ -89,6 +91,73 @@ export default function CanvasWhiteboard({ onClose }) {
   const [stickyColor,  setStickyColor]  = useState(STICKY_COLORS[0]);
   const [showPalette,  setShowPalette]  = useState(false);
   const [showMobileTools, setShowMobileTools] = useState(false);
+
+  const [showAiModal, setShowAiModal] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [isAiGenerating, setIsAiGenerating] = useState(false);
+  const [aiSummary, setAiSummary] = useState(null);
+
+  const handleAiGenerateDiagram = async () => {
+    if (!aiPrompt.trim()) return;
+    setIsAiGenerating(true);
+    try {
+      const response = await generateText([
+        {
+          role: 'system',
+          content: `You are an expert software architect & UX designer AI. The user will ask for a diagram, flowchart, mindmap, or architectural diagram.
+Return ONLY valid JSON with a "stickies" array. Each sticky object must have:
+- "text": string description or step title
+- "x": number coordinate (e.g. 100, 320, 540)
+- "y": number coordinate (e.g. 100, 100, 300)
+- "bg": hex color string from ['#bfdbfe', '#bbf7d0', '#fef08a', '#e9d5ff', '#fed7aa']
+Layout the stickies in a clear grid or workflow sequence. Return ONLY raw JSON without markdown blocks.`
+        },
+        { role: 'user', content: aiPrompt.trim() }
+      ]);
+
+      let text = typeof response === 'string' ? response : response?.response || '';
+      text = text.replace(/```json/gi, '').replace(/```/gi, '').trim();
+      const parsed = JSON.parse(text);
+
+      if (parsed.stickies && Array.isArray(parsed.stickies)) {
+        const newNotes = parsed.stickies.map((s, idx) => ({
+          id: `ai-sticky-${Date.now()}-${idx}`,
+          x: s.x || (100 + (idx % 3) * 220),
+          y: s.y || (100 + Math.floor(idx / 3) * 160),
+          text: s.text || 'Step',
+          bg: s.bg || STICKY_COLORS[idx % STICKY_COLORS.length]
+        }));
+        setStickies(prev => [...prev, ...newNotes]);
+      }
+      setShowAiModal(false);
+      setAiPrompt('');
+    } catch (err) {
+      console.error('AI Diagram generation error:', err);
+    } finally {
+      setIsAiGenerating(false);
+    }
+  };
+
+  const handleAiSynthesizeBoard = async () => {
+    const allText = stickies.map(s => s.text).filter(Boolean).join('\n---\n');
+    if (!allText) return;
+    setIsAiGenerating(true);
+    try {
+      const response = await generateText([
+        {
+          role: 'system',
+          content: 'You are an executive assistant. Synthesize the contents of the whiteboard into a structured briefing with 3 sections: 1. Executive Overview, 2. Key Decisions & Nodes, 3. Proposed Action Items.'
+        },
+        { role: 'user', content: allText }
+      ]);
+      const summaryText = typeof response === 'string' ? response : response?.response || '';
+      setAiSummary(summaryText);
+    } catch (err) {
+      console.error('AI Board synthesis error:', err);
+    } finally {
+      setIsAiGenerating(false);
+    }
+  };
 
   // ── Canvas init / resize ────────────────────────────────────────────────────
   useEffect(() => {
@@ -455,6 +524,21 @@ export default function CanvasWhiteboard({ onClose }) {
           <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="ml-1 text-emerald-500 hover:text-emerald-700" title="Reset view">⊙</button>
         </div>
 
+        {/* AI Diagram & Synthesize */}
+        <div className="flex items-center gap-1.5 ml-2">
+          <button onClick={() => setShowAiModal(true)} title="AI Generate Diagram"
+            className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all">
+            <Sparkles className="w-3.5 h-3.5" /> AI Diagram
+          </button>
+          {stickies.length > 0 && (
+            <button onClick={handleAiSynthesizeBoard} disabled={isAiGenerating} title="AI Synthesize Canvas"
+              className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all disabled:opacity-50">
+              {isAiGenerating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Brain className="w-3.5 h-3.5 text-cyan-400" />}
+              Synthesize
+            </button>
+          )}
+        </div>
+
         {/* Close */}
         <button onClick={onClose}
           className="ml-auto px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-all hidden md:flex items-center gap-1.5">
@@ -537,6 +621,49 @@ export default function CanvasWhiteboard({ onClose }) {
 
       {/* Hidden file input for image import */}
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFileChange} />
+
+      {/* AI Generate Diagram Modal */}
+      {showAiModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-purple-600" /> Generate AI Diagram
+              </h3>
+              <button onClick={() => setShowAiModal(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+            </div>
+            <p className="text-xs text-slate-500">Describe the architecture diagram, flowchart, sequence map, or mind map you want OrbitFlow AI to render onto your canvas.</p>
+            <textarea
+              value={aiPrompt}
+              onChange={e => setAiPrompt(e.target.value)}
+              placeholder="e.g., Create a 4-step user authentication & token refresh architecture diagram"
+              className="w-full h-24 p-3 rounded-xl border border-slate-200 text-sm outline-none focus:border-purple-600 resize-none"
+            />
+            <div className="flex justify-end gap-2">
+              <button onClick={() => setShowAiModal(false)} className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100">Cancel</button>
+              <button onClick={handleAiGenerateDiagram} disabled={isAiGenerating || !aiPrompt.trim()}
+                className="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2">
+                {isAiGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Generate Diagram'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI Board Synthesis Drawer */}
+      {aiSummary && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white rounded-2xl p-6 max-w-lg w-full shadow-2xl border border-slate-800 space-y-3 animate-in slide-in-from-bottom-5">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h4 className="font-bold text-sm text-cyan-400 flex items-center gap-2">
+              <Brain className="w-4 h-4" /> Board AI Briefing
+            </h4>
+            <button onClick={() => setAiSummary(null)} className="text-slate-400 hover:text-white"><X className="w-4 h-4" /></button>
+          </div>
+          <div className="text-xs text-slate-300 whitespace-pre-wrap leading-relaxed max-h-60 overflow-y-auto pr-2">
+            {aiSummary}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

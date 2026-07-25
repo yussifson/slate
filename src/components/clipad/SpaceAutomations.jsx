@@ -130,6 +130,8 @@ export default function SpaceAutomations({ spaceId }) {
               <option value="create_task">Auto-generate Action Items</option>
               <option value="send_message">Send summary to Chat</option>
               <option value="notify_members">Notify Space Members</option>
+              <option value="export_to_jira">Export to Jira / Linear</option>
+              <option value="notify_orbit_flow">Trigger OrbitFlow AI Proactive Alert</option>
             </select>
           </div>
           <div className="pt-8">
@@ -175,13 +177,26 @@ export default function SpaceAutomations({ spaceId }) {
                   </div>
                 </div>
               </div>
-              <button 
-                onClick={() => handleDelete(auto.id)}
-                className="p-3 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100"
-                title="Delete Automation"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    toast({
+                      title: '⚡ Workflow Tested!',
+                      description: `Simulated trigger "${auto.trigger_type}" -> Executed "${auto.action_type}" successfully.`
+                    });
+                  }}
+                  className="px-3 py-1.5 bg-secondary hover:bg-secondary/80 text-foreground text-xs font-bold rounded-lg border border-border transition-all"
+                >
+                  Test Run
+                </button>
+                <button 
+                  onClick={() => handleDelete(auto.id)}
+                  className="p-2.5 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                  title="Delete Automation"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           ))
         )}

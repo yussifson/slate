@@ -142,8 +142,8 @@ export default function MeetingInsights({ spaceId }) {
                     const meetingsData = (await supabase.from('clipad_meeting_records').select('title, ai_summary').eq('space_id', spaceId).limit(5)).data;
                     const context = meetingsData.map(m => `Meeting: ${m.title}\nSummary: ${m.ai_summary}`).join('\n\n');
                     const prompt = `Based on these recent meetings, identify 3 cross-meeting themes, overarching sentiment, and any recurring unresolved topics:\n\n${context}`;
-                    const res = await generateText(prompt);
-                    setTrends(res.result?.response || 'Could not identify trends.');
+                    const res = await generateText([{ role: 'user', content: prompt }]);
+                    setTrends(typeof res === 'string' ? res : res?.response || 'Could not identify trends.');
                   } catch (e) {
                     setTrends('Failed to analyze trends.');
                   } finally {
