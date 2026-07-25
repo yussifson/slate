@@ -217,7 +217,7 @@ export async function buildOrgContext(options = {}) {
     actionItemsRes,
   ] = await Promise.all([
     // Meetings
-    spaceIds.length > 0
+    Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_meeting_records')
           .select('id, title, ai_summary, created_at, ended_at, space_id')
           .in('space_id', spaceIds)
@@ -226,10 +226,10 @@ export async function buildOrgContext(options = {}) {
       : supabase.from('clipad_meeting_records')
           .select('id, title, ai_summary, created_at, ended_at, space_id')
           .order('created_at', { ascending: false })
-          .limit(limit),
+          .limit(limit)).catch(() => ({ data: [] })),
 
     // Decisions
-    (companyId
+    Promise.resolve(companyId
       ? supabase.from('clipad_decisions')
           .select('id, decision_text, rationale, created_at')
           .eq('workspace_id', companyId)
@@ -241,7 +241,7 @@ export async function buildOrgContext(options = {}) {
           .limit(15)).catch(() => ({ data: [] })),
 
     // Blockers
-    (companyId
+    Promise.resolve(companyId
       ? supabase.from('clipad_blockers')
           .select('id, description, severity, created_at')
           .eq('workspace_id', companyId)
@@ -253,7 +253,7 @@ export async function buildOrgContext(options = {}) {
           .limit(10)).catch(() => ({ data: [] })),
 
     // Videos
-    spaceIds.length > 0
+    Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_videos')
           .select('id, title, ai_summary, created_at, duration_seconds, space_id')
           .in('space_id', spaceIds)
@@ -262,10 +262,10 @@ export async function buildOrgContext(options = {}) {
       : supabase.from('clipad_videos')
           .select('id, title, ai_summary, created_at, duration_seconds, space_id')
           .order('created_at', { ascending: false })
-          .limit(limit),
+          .limit(limit)).catch(() => ({ data: [] })),
 
     // Tasks / Action items (clipad_action_items)
-    spaceIds.length > 0
+    Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_action_items')
           .select('id, title, is_complete, due_date, assigned_to, space_id')
           .eq('is_complete', false)
@@ -276,26 +276,25 @@ export async function buildOrgContext(options = {}) {
           .select('id, title, is_complete, due_date, assigned_to, space_id')
           .eq('is_complete', false)
           .order('created_at', { ascending: false })
-          .limit(20),
+          .limit(20)).catch(() => ({ data: [] })),
 
     // Imported Knowledge (Integrations)
-    companyId
+    Promise.resolve(companyId
       ? supabase.from('clipad_imported_knowledge')
           .select('id, provider, content_type, title, content, ai_summary, ai_action_items, metadata, updated_at')
           .eq('company_id', companyId)
           .order('updated_at', { ascending: false })
           .limit(30)
-      : { data: [] },
+      : { data: [] }).catch(() => ({ data: [] })),
 
     // Commitments (global)
-    supabase.from('clipad_commitments')
+    Promise.resolve(supabase.from('clipad_commitments')
       .select('id, commitment_text, due_date')
       .order('created_at', { ascending: false })
-      .limit(15)
-      .catch(() => ({ data: [] })),
+      .limit(15)).catch(() => ({ data: [] })),
 
     // Spaces
-    spaceIds.length > 0
+    Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_spaces')
           .select('id, name, description, created_at, is_private')
           .in('id', spaceIds)
@@ -304,10 +303,10 @@ export async function buildOrgContext(options = {}) {
       : supabase.from('clipad_spaces')
           .select('id, name, description, created_at, is_private')
           .order('created_at', { ascending: false })
-          .limit(20),
+          .limit(20)).catch(() => ({ data: [] })),
 
     // ── Standups ──
-    spaceIds.length > 0
+    Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_standups')
           .select('id, user_name, today, yesterday, blockers, mood, created_at, space_id')
           .in('space_id', spaceIds)
@@ -316,10 +315,10 @@ export async function buildOrgContext(options = {}) {
       : supabase.from('clipad_standups')
           .select('id, user_name, today, yesterday, blockers, mood, created_at, space_id')
           .order('created_at', { ascending: false })
-          .limit(30),
+          .limit(30)).catch(() => ({ data: [] })),
 
     // ── Org Events timeline ──
-    spaceIds.length > 0
+    Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_org_events')
           .select('id, event_type, title, description, created_at, space_id, actor_id, importance')
           .in('space_id', spaceIds)
@@ -328,10 +327,10 @@ export async function buildOrgContext(options = {}) {
       : supabase.from('clipad_org_events')
           .select('id, event_type, title, description, created_at, space_id, actor_id, importance')
           .order('created_at', { ascending: false })
-          .limit(20),
+          .limit(20)).catch(() => ({ data: [] })),
 
     // ── Space members ──
-    (spaceIds.length > 0
+    Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_space_members')
           .select('id, space_id, user_id')
           .in('space_id', spaceIds)
@@ -342,16 +341,14 @@ export async function buildOrgContext(options = {}) {
     Promise.resolve({ data: [] }),
 
     // ── NEW: Follow-ups ──
-    supabase.from('clipad_follow_ups')
+    Promise.resolve(supabase.from('clipad_follow_ups')
       .select('id, commitment_text, due_date, status, detected_from')
       .eq('status', 'pending')
       .order('created_at', { ascending: false })
-      .limit(15)
-      .then(res => res)
-      .catch(() => ({ data: [] })),
+      .limit(15)).catch(() => ({ data: [] })),
 
     // Completed action items (recent, for history) 
-    spaceIds.length > 0
+    Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_action_items')
           .select('id, title, is_complete, due_date, assigned_to, space_id')
           .eq('is_complete', true)
@@ -362,7 +359,7 @@ export async function buildOrgContext(options = {}) {
           .select('id, title, is_complete, due_date, assigned_to, space_id')
           .eq('is_complete', true)
           .order('created_at', { ascending: false })
-          .limit(10),
+          .limit(10)).catch(() => ({ data: [] })),
   ]);
 
   const meetings     = meetingsRes?.data     || [];
