@@ -107,25 +107,31 @@ async function runAI(model, payload, retryCount = 0) {
     } catch (e) {
       console.warn("Edge function proxy unavailable/CORS blocked, trying direct Cloudflare fallback:", e.message);
 
-      // Direct fallback to Cloudflare API if token is present in client env
+      // Direct fallback to Cloudflare API iterating through all accounts (1, 2, 3... N)
       if (API_ACCOUNTS.length > 0) {
-        try {
-          const accountConfig = API_ACCOUNTS[0];
-          const directUrl = `https://api.cloudflare.com/client/v4/accounts/${accountConfig.accountId}/ai/run/${model}`;
-          const directRes = await fetch(directUrl, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${accountConfig.token}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-          });
-          if (directRes.ok) {
-            const directData = await directRes.json();
-            if (directData.success) return directData.result;
+        for (let i = 0; i < API_ACCOUNTS.length; i++) {
+          const accIdx = (currentAccountIndex + i) % API_ACCOUNTS.length;
+          const accountConfig = API_ACCOUNTS[accIdx];
+          try {
+            const directUrl = `https://api.cloudflare.com/client/v4/accounts/${accountConfig.accountId}/ai/run/${model}`;
+            const directRes = await fetch(directUrl, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${accountConfig.token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(payload),
+            });
+            if (directRes.ok) {
+              const directData = await directRes.json();
+              if (directData.success) {
+                currentAccountIndex = accIdx; // Keep track of active account
+                return directData.result;
+              }
+            }
+          } catch (directErr) {
+            console.warn(`Direct Cloudflare API fallback failed for account index ${accIdx}:`, directErr.message);
           }
-        } catch (directErr) {
-          console.warn("Direct Cloudflare API fallback also failed:", directErr.message);
         }
       }
 
