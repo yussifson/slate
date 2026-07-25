@@ -40,8 +40,8 @@ envKeys.forEach(key => {
 let currentAccountIndex = 0;
 
 const MODELS = {
-  text: "@cf/moonshotai/kimi-k2.5",
-  vision: "@cf/moonshotai/kimi-k2.5"
+  text: "moonshotai/kimi-k3",
+  vision: "moonshotai/kimi-k3"
 };
 
 // ── Environment constants for production streaming ──
@@ -83,6 +83,12 @@ async function runAI(model, payload, retryCount = 0) {
     }
 
     const data = await response.json();
+    
+    // Native OpenAI/Moonshot response format
+    if (data.choices) {
+      return { response: data.choices[0]?.message?.content || "" };
+    }
+
     if (!data.success) {
       const errMsg = data.errors?.map(e => e.message).join(', ') || 'Unknown error';
       throw new Error(`Cloudflare AI error: ${errMsg}`);
@@ -99,42 +105,17 @@ async function runAI(model, payload, retryCount = 0) {
         throw new Error(`Edge Function error: ${error.message}`);
       }
 
-      if (!data || data.success === false) {
+      if (!data || (data.success === false && !data.choices)) {
         throw new Error(`Cloudflare AI error: ${data?.error || 'Unknown error'}`);
+      }
+
+      // If it's a native Moonshot format returning choices array
+      if (data.choices) {
+         return { response: data.choices[0]?.message?.content || "" };
       }
 
       return data.result || data;
     } catch (e) {
-      console.warn("Edge function proxy unavailable/CORS blocked, trying direct Cloudflare fallback:", e.message);
-
-      // Direct fallback to Cloudflare API iterating through all accounts (1, 2, 3... N)
-      if (API_ACCOUNTS.length > 0) {
-        for (let i = 0; i < API_ACCOUNTS.length; i++) {
-          const accIdx = (currentAccountIndex + i) % API_ACCOUNTS.length;
-          const accountConfig = API_ACCOUNTS[accIdx];
-          try {
-            const directUrl = `https://api.cloudflare.com/client/v4/accounts/${accountConfig.accountId}/ai/run/${model}`;
-            const directRes = await fetch(directUrl, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${accountConfig.token}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(payload),
-            });
-            if (directRes.ok) {
-              const directData = await directRes.json();
-              if (directData.success) {
-                currentAccountIndex = accIdx; // Keep track of active account
-                return directData.result;
-              }
-            }
-          } catch (directErr) {
-            console.warn(`Direct Cloudflare API fallback failed for account index ${accIdx}:`, directErr.message);
-          }
-        }
-      }
-
       throw new Error(`AI Gateway unavailable: ${e.message}`);
     }
   }
@@ -166,7 +147,7 @@ async function consumeSSEStream(reader, onToken) {
       if (raw === '[DONE]') return accumulated;
       try {
         const parsed = JSON.parse(raw);
-        const token = parsed?.response ?? '';
+        const token = parsed?.response ?? parsed?.choices?.[0]?.delta?.content ?? '';
         if (token) {
           accumulated += token;
           onToken(accumulated);

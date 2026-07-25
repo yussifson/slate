@@ -152,7 +152,7 @@ async function dbCreateSession(userId, companyId, spaceId, title) {
     company_id: companyId || null,
     space_id: spaceId || null,
     title: title || 'New Chat',
-    model: '@cf/moonshotai/kimi-k2.5',
+    model: 'moonshotai/kimi-k3',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
