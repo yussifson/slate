@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { Link, useLocation, useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
 import ProfileAvatarDialog from "@/components/shared/ProfileAvatarDialog";
+import UnivNotificationCenter from "@/components/universal/UnivNotificationCenter";
 import { cn} from "@/lib/utils";
 import {
  DropdownMenu,
@@ -1090,10 +1091,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  )}
 
  {/* Modern User Profile & Dropdown Section */}
- <div className="mt-auto p-3 border-t border-sidebar-border-[0.5px] border-black/9 dark:border-white/8 bg-sidebar">
+ <div className={cn("mt-auto p-2 border-t border-sidebar-border-[0.5px] border-black/9 dark:border-white/8 bg-sidebar flex items-center gap-1 transition-all", isCollapsed ? "justify-center flex-col" : "justify-between")}>
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <button className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20">
+ <button className={cn("flex items-center gap-3 p-1.5 rounded-xl hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20", isCollapsed ? "w-full justify-center" : "flex-1 overflow-hidden")}>
  <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 overflow-hidden">
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
@@ -1151,6 +1152,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  </DropdownMenuItem>
  </DropdownMenuContent>
  </DropdownMenu>
+ <div className="shrink-0 flex items-center justify-center">
+ <UnivNotificationCenter />
+ </div>
  </div>
 
  </div>
