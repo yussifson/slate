@@ -64,7 +64,11 @@ export default function SuperAdminDashboard() {
         if (supportRes.data) setClipadSupport(supportRes.data);
       } catch (err) {
         console.warn('Could not fetch support requests', err);
-      } finally {
+      }
+
+    } catch (e) {
+      console.error(e);
+    } finally {
       setLoading(false);
     }
   };
