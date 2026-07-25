@@ -457,7 +457,17 @@ export default function ClipadChat({ isDockedMode = false }) {
 
   <div className="flex-1 overflow-y-auto bg-transparent">
  {loadingRooms ? (
- <div className="flex justify-center p-8"><OrbitLoader size="md" /></div>
+ <div className="p-3 space-y-3">
+   {[1,2,3,4,5].map(i => (
+     <div key={i} className="flex items-center gap-3 animate-pulse">
+       <div className="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-800" />
+       <div className="flex-1 space-y-2">
+         <div className="h-4 w-24 bg-slate-200 dark:bg-slate-800 rounded" />
+         <div className="h-3 w-32 bg-slate-200 dark:bg-slate-800 rounded" />
+       </div>
+     </div>
+   ))}
+ </div>
  ) : filteredRooms.map(room => {
    const otherParticipant = room.chat_participants?.find(p => p.user_id !== user.id);
    const otherProfile = otherParticipant ? participantProfiles[otherParticipant.user_id] : null;
@@ -728,7 +738,14 @@ export default function ClipadChat({ isDockedMode = false }) {
  </div>
 
  {loadingMessages ? (
- <div className="flex justify-center p-4"><OrbitLoader size="md" /></div>
+ <div className="flex flex-col gap-4 p-4">
+   {[1,2,3].map(i => (
+     <div key={i} className={`flex items-end gap-2 max-w-[85%] animate-pulse ${i%2===0 ? "ml-auto flex-row-reverse" : "mr-auto"}`}>
+       <div className="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-800 shrink-0" />
+       <div className="h-10 w-48 bg-slate-200 dark:bg-slate-800 rounded-2xl" />
+     </div>
+   ))}
+ </div>
  ) : messages.map((msg, idx) => {
  const isMe = msg.sender_id === user.id;
  const showTail = idx === 0 || messages[idx-1].sender_id !== msg.sender_id;

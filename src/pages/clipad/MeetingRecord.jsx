@@ -334,7 +334,35 @@ export default function MeetingRecord() {
   };
 
   if (loading || isLoadingAuth) {
-    return <ClipadLoader fullScreen text="Loading meeting record..." />;
+    return (
+      <div className="min-h-full bg-slate-50 dark:bg-background page-enter overflow-x-hidden pt-6 pb-24 md:pb-8 animate-pulse">
+        <div className="max-w-4xl mx-auto px-4 w-full">
+          {/* Header Skeleton */}
+          <div className="flex flex-col gap-4 mb-8 pb-6 border-b border-slate-200 dark:border-border">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-16 bg-slate-200 dark:bg-slate-800 rounded-full" />
+              <div className="h-6 w-32 bg-slate-200 dark:bg-slate-800 rounded" />
+            </div>
+            <div className="h-10 w-3/4 bg-slate-200 dark:bg-slate-800 rounded-lg" />
+            <div className="flex items-center gap-4">
+              <div className="h-8 w-8 bg-slate-200 dark:bg-slate-800 rounded-full" />
+              <div className="h-4 w-48 bg-slate-200 dark:bg-slate-800 rounded" />
+            </div>
+          </div>
+          {/* Main content Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-2 space-y-6">
+              <div className="h-64 w-full bg-slate-200 dark:bg-slate-800 rounded-2xl" />
+              <div className="h-40 w-full bg-slate-200 dark:bg-slate-800 rounded-2xl" />
+            </div>
+            <div className="space-y-4">
+              <div className="h-24 w-full bg-slate-200 dark:bg-slate-800 rounded-2xl" />
+              <div className="h-24 w-full bg-slate-200 dark:bg-slate-800 rounded-2xl" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (accessDenied) {
