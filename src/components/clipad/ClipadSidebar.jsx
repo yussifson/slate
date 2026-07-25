@@ -23,14 +23,14 @@ export default function ClipadSidebar({ forceMobile }) {
 
     const currentPlan = user.clipad_plan;
     const isUpgradingToEnterprise = currentPlan === 'pro';
-    const amount = isUpgradingToEnterprise ? 200 : 50; // $200 or $50
+    const amount = isUpgradingToEnterprise ? 300 : 100; // 300 GHS or 100 GHS
 
     try {
       await PaystackAPI.initializePayment(
         {
           email: user.email,
           amount: amount, 
-          currency: 'USD',
+          currency: 'GHS',
         },
         (response) => {
           // onSuccess
