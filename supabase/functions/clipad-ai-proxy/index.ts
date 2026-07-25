@@ -39,17 +39,23 @@ serve(async (req) => {
       throw new Error("Cloudflare credentials not configured");
     }
 
+    console.log(`[AI Proxy] Starting request with model=${model}, accounts available=${credentials.length}`);
+
     const cfPayload = stream ? { ...payload, stream: true } : payload;
     let lastError = "Unknown error";
+    const errors: string[] = [];
 
     for (let i = 0; i < credentials.length; i++) {
       const { token, accountId } = credentials[i];
-      const isChatModel = model.includes('kimi') || model.includes('llama');
+      // kimi and llama models use the OpenAI-compatible chat completions endpoint
+      const isChatModel = model.includes('kimi') || model.includes('llama') || model.includes('mistral');
       const url = isChatModel
         ? `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/v1/chat/completions`
         : `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
       
       const requestPayload = isChatModel ? { ...cfPayload, model } : cfPayload;
+
+      console.log(`[AI Proxy] Trying account ${i + 1}/${credentials.length}, accountId=${accountId.substring(0, 8)}...`);
 
       const resp = await fetch(url, {
         method: "POST",
@@ -62,14 +68,47 @@ serve(async (req) => {
 
       if (!resp.ok) {
         const errText = await resp.text();
-        lastError = `Cloudflare AI Error on Account ${i + 1} (${resp.status}): ${errText}`;
+        lastError = `Account ${i + 1} (${resp.status}): ${errText}`;
+        errors.push(lastError);
+        console.warn(`[AI Proxy] Account ${i + 1} failed: ${resp.status}`);
         
-        // Do not rotate on 400 (Bad payload) or 404 (Model/Account ID Not Found format)
-        if (resp.status === 400 || resp.status === 404) {
+        // 402 = Insufficient balance / not on paid plan — rotate to next account
+        // 429 = Rate limit exceeded — rotate to next account
+        // 403 = Forbidden / out of credits — rotate to next account
+        // 401 = Invalid token — rotate to next account
+        // 5xx = Server error — rotate to next account
+        if (resp.status === 402 || resp.status === 429 || resp.status === 403 ||
+            resp.status === 401 || resp.status >= 500) {
+          continue;
+        }
+
+        // 400 can mean: bad payload (stop) OR account-level model restriction (rotate).
+        // We detect account-restriction by checking the error body.
+        if (resp.status === 400) {
+          let errBody: any = {};
+          try { errBody = JSON.parse(errText); } catch (_) {}
+          const errMsg: string = (errBody?.errors?.[0]?.message || errText).toLowerCase();
+          // If it's clearly a model/account restriction, rotate. Otherwise stop.
+          const isAccountRestriction = errMsg.includes('insufficient') || 
+            errMsg.includes('balance') || errMsg.includes('upgrade') ||
+            errMsg.includes('gateway') || errMsg.includes('byok') ||
+            errMsg.includes('not authorized') || errMsg.includes('unauthorized') ||
+            errMsg.includes('model') || errMsg.includes('access') ||
+            errMsg.includes('quota') || errMsg.includes('limit');
+          if (isAccountRestriction) {
+            console.warn(`[AI Proxy] Account ${i + 1} has model/plan restriction, rotating...`);
+            continue;
+          }
+          // True bad payload — don't rotate, throw immediately
           throw new Error(lastError);
         }
-        
-        // Rotate on 429 (Rate Limit), 403 (Forbidden/Out of credits), 401 (Invalid token), 500+ (Server error)
+
+        // 404 = Model not found on this account — rotate
+        if (resp.status === 404) {
+          continue;
+        }
+
+        // For any other unexpected status, rotate
         continue;
       }
 
@@ -94,8 +133,9 @@ serve(async (req) => {
     }
 
     // If we exhaust all accounts and none succeeded
-    const errorObj = new Error(`All accounts failed. Last error: ${lastError}`);
-    errorObj.status = 503; // Service Unavailable
+    console.error(`[AI Proxy] All ${credentials.length} accounts failed. Errors:`, errors);
+    const errorObj = new Error(`All ${credentials.length} accounts failed. Last error: ${lastError}`);
+    (errorObj as any).status = 503; // Service Unavailable
     throw errorObj;
 
   } catch (err) {
