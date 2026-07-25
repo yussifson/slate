@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
@@ -6,7 +6,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { format } from 'date-fns';
 import {
   Scale, AlertCircle, FileText, Calendar, CheckCircle2, Search,
-  Target, Users, ChevronDown, RefreshCw, Sparkles, ArrowLeft
+  Target, Users, ChevronDown, RefreshCw, Sparkles, ArrowLeft, Filter
 } from 'lucide-react';
 import { INTEGRATIONS } from '@/config/integrationsList';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
@@ -18,6 +18,7 @@ export default function DecisionLedger() {
   const [decisions, setDecisions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterProvider, setFilterProvider] = useState('all');
 
   useEffect(() => {
     if (!companyId) return;
@@ -27,7 +28,6 @@ export default function DecisionLedger() {
   const loadDecisions = async () => {
     setLoading(true);
     try {
-      // Pull items that have ai_entities with decisions detected by the AI processor
       const { data: withDecisions, error: e1 } = await supabase
         .from('clipad_imported_knowledge')
         .select('*')
@@ -36,7 +36,6 @@ export default function DecisionLedger() {
         .order('imported_at', { ascending: false })
         .limit(200);
 
-      // Also pull items where the title/summary mention "decision" as fallback
       const { data: byKeyword, error: e2 } = await supabase
         .from('clipad_imported_knowledge')
         .select('*')
@@ -47,7 +46,6 @@ export default function DecisionLedger() {
 
       if (e1 && e2) throw e1;
 
-      // Deduplicate & merge, prioritising items with actual AI-detected decisions
       const allItems = [...(withDecisions || []), ...(byKeyword || [])];
       const seen = new Set();
       const deduped = allItems.filter(item => {
@@ -56,7 +54,6 @@ export default function DecisionLedger() {
         return true;
       });
 
-      // Filter to items that have decision data in ai_entities OR matched keyword
       const filtered = deduped.filter(item => {
         const hasAiDecision =
           item.ai_entities?.decisions?.length > 0 ||
@@ -83,11 +80,22 @@ export default function DecisionLedger() {
     return null;
   };
 
-  const filteredDecisions = decisions.filter(d =>
-    (d.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (d.ai_summary || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (d.provider || '').toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Extract unique providers for filters
+  const availableProviders = useMemo(() => {
+    const providers = new Set(decisions.map(d => d.provider).filter(Boolean));
+    return Array.from(providers);
+  }, [decisions]);
+
+  const filteredDecisions = decisions.filter(d => {
+    const matchesSearch = 
+      (d.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (d.ai_summary || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (d.provider || '').toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesProvider = filterProvider === 'all' || d.provider === filterProvider;
+
+    return matchesSearch && matchesProvider;
+  });
 
   return (
     <div className="min-h-full bg-background text-foreground pb-12 font-sans page-enter">
@@ -129,6 +137,42 @@ export default function DecisionLedger() {
             </button>
           </div>
         </div>
+        
+        {/* Filters Row */}
+        {!loading && availableProviders.length > 0 && (
+          <div className="max-w-5xl mx-auto relative z-10 mt-6 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1 mr-2 uppercase tracking-wider">
+              <Filter className="w-3 h-3" /> Source
+            </span>
+            <button
+              onClick={() => setFilterProvider('all')}
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                filterProvider === 'all' 
+                  ? 'bg-foreground text-background shadow-sm' 
+                  : 'bg-card border border-border text-muted-foreground hover:bg-secondary'
+              }`}
+            >
+              All Sources
+            </button>
+            {availableProviders.map(provider => {
+              const intg = INTEGRATIONS.find(i => i.id === provider || i.provider === provider);
+              return (
+                <button
+                  key={provider}
+                  onClick={() => setFilterProvider(provider)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                    filterProvider === provider 
+                      ? 'bg-foreground text-background shadow-sm' 
+                      : 'bg-card border border-border text-muted-foreground hover:bg-secondary'
+                  }`}
+                >
+                  {intg?.icon && <span className="w-3.5 h-3.5">{intg.icon}</span>}
+                  <span className="capitalize">{intg?.name || provider}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className="max-w-5xl mx-auto px-4 md:px-6 mt-8">
@@ -137,15 +181,16 @@ export default function DecisionLedger() {
         ) : filteredDecisions.length === 0 ? (
           <div className="text-center p-12 border border-dashed border-border rounded-2xl bg-card max-w-2xl mx-auto mt-10">
             <AlertCircle className="w-8 h-8 text-muted-foreground mx-auto mb-3 opacity-50" />
-            <h3 className="font-semibold text-foreground mb-1">No decisions found yet</h3>
+            <h3 className="font-semibold text-foreground mb-1">No decisions found</h3>
             <p className="text-sm text-muted-foreground">
-              As your connected integrations sync and the AI processes your documents, meetings, and messages,
-              detected decisions will appear here automatically.
+              {searchQuery || filterProvider !== 'all' 
+                ? "No decisions match your current filters. Try adjusting your search or source."
+                : "As your connected integrations sync and the AI processes your data, detected decisions will appear here."}
             </p>
           </div>
         ) : (
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">{filteredDecisions.length} decision record{filteredDecisions.length !== 1 ? 's' : ''} found across your knowledge base.</p>
+            <p className="text-sm text-muted-foreground">{filteredDecisions.length} decision record{filteredDecisions.length !== 1 ? 's' : ''} found.</p>
             {filteredDecisions.map((item) => {
               const intg = INTEGRATIONS.find(i => i.id === item.provider || i.provider === item.provider);
               const aiDecisions = getDecisionText(item);
@@ -176,10 +221,10 @@ export default function DecisionLedger() {
                         {item.title || 'Decision Artifact'}
                       </h3>
 
-                      {/* AI-detected decisions from ai_entities */}
+                      {/* REMOVED ARTIFICIAL SLICE() TO SHOW ALL DECISIONS */}
                       {aiDecisions && (
                         <div className="space-y-2 mb-3">
-                          {aiDecisions.slice(0, 4).map((d, i) => (
+                          {aiDecisions.map((d, i) => (
                             <div key={i} className="flex items-start gap-2.5 bg-amber-500/5 border border-amber-500/15 rounded-xl px-4 py-2.5">
                               <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
                               <p className="text-sm text-foreground leading-relaxed">{d}</p>

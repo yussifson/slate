@@ -387,13 +387,11 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
         </button>
       </>
     );
-  }
-
-  return createPortal(
+  }  return createPortal(
     <div
       ref={overlayRef}
       className="fixed inset-0 z-[9999] flex items-start justify-center pt-[6vh] sm:pt-[9vh] px-3 sm:px-4 pb-6"
-      style={{ background: 'rgba(15, 23, 42, 0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+      style={{ background: 'rgba(248, 250, 252, 0.75)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
       onMouseDown={(e) => { if (e.target === overlayRef.current) setIsOpen(false); }}
     >
       <style>{`
@@ -403,318 +401,209 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
         }
       `}</style>
       
-      {/* Crisp, clean, enterprise modal container — no logo, center-aligned input */}
+      {/* Container */}
       <div
-        className="w-full max-w-[840px] min-h-[420px] flex flex-col rounded-2xl overflow-hidden shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] border border-slate-200/80 dark:border-slate-700/60 bg-white/95 dark:bg-[#0a0d14]/95 backdrop-blur-3xl relative"
+        className="w-full max-w-[640px] flex flex-col relative"
         style={{ animation: 'spotlightFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1)' }}
       >
-        {/* Search Header Row — Spacious, premium Spotlight input */}
-        <div className="flex items-center justify-between gap-4 px-8 py-7 border-b border-slate-100/60 dark:border-slate-800/60 bg-transparent relative">
-          <div className="w-8 h-8 flex items-center justify-center shrink-0">
-            {isSearching || isSynthesizing ? (
-              <Loader2 className="w-5 h-5 animate-spin text-emerald-600 dark:text-emerald-400" />
-            ) : (
-              <Search className="w-5 h-5 text-slate-400 dark:text-slate-500 stroke-[2]" />
-            )}
-          </div>
-          
-          <input
-            ref={inputRef}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask OrbitFlow AI or search docs, tasks, meetings..."
-            className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-slate-50 text-[22px] sm:text-[24px] font-semibold placeholder:text-slate-400/80 dark:placeholder:text-slate-500 placeholder:font-normal min-w-0 tracking-tight text-center placeholder:text-center h-10"
-            style={{ caretColor: '#10b981' }}
-          />
-          
-          <div className="flex items-center gap-2 shrink-0 min-w-[56px] justify-end">
-            {query ? (
-              <button
-                onClick={() => { setQuery(''); setResults([]); setAiAnswer(''); setHasSearched(false); inputRef.current?.focus(); }}
-                className="w-8 h-8 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
-                title="Clear query"
-              >
-                <X className="w-4 h-4" />
+        {/* Gradient Search Input Box */}
+        <div className="bg-gradient-to-r from-purple-500 via-pink-400 to-amber-500 p-[1.5px] rounded-xl shadow-lg relative z-20">
+          <div className="bg-white dark:bg-slate-900 rounded-[10px] flex items-center px-4 py-3 h-[52px]">
+            <Search className="w-5 h-5 text-slate-400 mr-3 shrink-0" />
+            <input
+              ref={inputRef}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Tap to start search..."
+              className="flex-1 bg-transparent border-none outline-none text-slate-800 dark:text-slate-100 text-[16px] font-medium placeholder:text-slate-400 min-w-0"
+            />
+            {query || isSearching ? (
+              <button onClick={() => { setQuery(''); setResults([]); setAiAnswer(''); setHasSearched(false); inputRef.current?.focus(); }} className="text-slate-400 hover:text-slate-600 ml-2">
+                {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
               </button>
             ) : (
-              <span className="hidden sm:inline-flex items-center text-[10px] font-mono font-extrabold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 uppercase tracking-widest shadow-2xs">
-                ESC
-              </span>
+              <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-600 ml-2">
+                <X className="w-4 h-4" />
+              </button>
             )}
           </div>
         </div>
 
-        {/* Scope Filter Tabs Bar (Shown when typing or after search) */}
-        {(hasSearched || query.length > 0) && (
-          <div className="flex items-center gap-1.5 px-6 py-2.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/40 overflow-x-auto no-scrollbar">
-            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 mr-2 flex items-center gap-1 shrink-0 uppercase tracking-wider">
-              <Filter className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /> Scope
-            </span>
-            {FILTER_TABS.map(tab => {
-              const count = getScopeCount(tab.id);
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => { setSelectedFilter(tab.id); setFocusedIndex(-1); }}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
-                    selectedFilter === tab.id
-                      ? 'bg-emerald-600 text-white shadow-xs shadow-emerald-600/30'
-                      : 'bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  <span>{tab.label}</span>
-                  {count > 0 && (
-                    <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
-                      selectedFilter === tab.id ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
-                    }`}>
-                      {count}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Scrollable Body */}
-        <div className="max-h-[62vh] overflow-y-auto overflow-x-hidden custom-scrollbar bg-transparent">
+        {/* Results Panel */}
+        <div className="bg-white dark:bg-slate-900 rounded-b-xl shadow-xl border-x border-b border-slate-200 dark:border-slate-800 mt-[-10px] pt-[10px] relative z-10 flex flex-col min-h-[300px]">
           
-          {/* Zero State Suggestions Grid (Clean rectangular cards with high-contrast colors) */}
-          {!hasSearched && !isSearching && query.length === 0 && (
-            <div className="p-8 space-y-6">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                  Suggested AI Queries
-                </h3>
-                <span className="text-xs text-slate-400 dark:text-slate-500 font-medium hidden sm:inline">Press 1-6 or click</span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {dynamicSuggestions.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <button
-                      key={item.key}
-                      onClick={() => { setQuery(item.text); handleSearch(item.text); }}
-                      className="group flex items-center justify-between p-4 rounded-xl bg-slate-50/80 hover:bg-emerald-50/80 dark:bg-slate-900/40 dark:hover:bg-emerald-950/40 border border-slate-200/80 hover:border-emerald-300 dark:border-slate-800/80 dark:hover:border-emerald-700/60 transition-all text-left active:scale-[0.99] shadow-sm hover:shadow-md"
-                    >
-                      <div className="flex items-center gap-3 min-w-0 pr-2">
-                        <div className={`w-8.5 h-8.5 rounded-lg ${item.bg} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
-                          <Icon className={`w-4 h-4 ${item.color}`} />
-                        </div>
-                        <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors truncate">
-                          {item.text}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <kbd className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors shadow-2xs">
-                          {item.key}
-                        </kbd>
-                        <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-600 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all" />
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
+          {/* Filters Row */}
+          <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800/60">
+            <h4 className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-3">Filter Results</h4>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => setSelectedFilter('all')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  selectedFilter === 'all'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                    : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" /> All
+              </button>
+              <button
+                onClick={() => setSelectedFilter('assistant')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  selectedFilter === 'assistant'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                    : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5" /> Assistant
+              </button>
+              <button
+                onClick={() => setSelectedFilter('library')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  selectedFilter === 'library'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                    : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
+                }`}
+              >
+                <FileText className="w-3.5 h-3.5" /> Library
+              </button>
+              <button
+                onClick={() => setSelectedFilter('workspaces')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  selectedFilter === 'workspaces'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                    : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
+                }`}
+              >
+                <Folder className="w-3.5 h-3.5" /> Workspaces
+              </button>
             </div>
-          )}
+          </div>
 
-          {/* OrbitFlow AI Answer Box */}
-          {(aiAnswer || isSynthesizing) && !isSearching && (
-            <div className="mx-6 mt-5 mb-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-emerald-500/30 p-5 shadow-xs">
-              <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-200/80 dark:border-slate-800">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
-                    OrbitFlow Intelligence {selectedFilter !== 'all' ? `\u2022 ${FILTER_TABS.find(t => t.id === selectedFilter)?.label}` : ''}
-                  </span>
+          <div className="flex-1 max-h-[60vh] overflow-y-auto">
+            {/* Zero State (No Search) */}
+            {!hasSearched && query.length === 0 && (
+              <div className="pb-4">
+                <div className="px-6 py-4">
+                  <h4 className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-3">Recent Chats</h4>
+                  <div className="space-y-1">
+                    {[
+                      "I need help writing social media posts to promote my Web3 project",
+                      "Please generate a 3D plane in the Airbnb style",
+                      "Help me build a simple, long-term investment plan."
+                    ].map((text, i) => (
+                      <button key={i} onClick={() => { setQuery(text); handleSearch(text); }} className="w-full text-left flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+                        <MessageSquare className="w-4 h-4 mt-0.5 text-slate-800 dark:text-slate-200" />
+                        <span className="text-[13px] text-slate-800 dark:text-slate-200 font-medium group-hover:text-black dark:group-hover:text-white leading-relaxed">{text}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 
-                <div className="flex items-center gap-2">
-                  {isSynthesizing ? (
-                    <div className="flex items-center gap-1.5 bg-emerald-100 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-700 px-2.5 py-0.5 rounded-full">
-                      <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300">Synthesizing</span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" style={{ animationDelay: '0s' }} />
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" style={{ animationDelay: '0.15s' }} />
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" style={{ animationDelay: '0.3s' }} />
-                    </div>
-                  ) : (
-                    aiAnswer && (
-                      <button
-                        onClick={handleCopyAnswer}
-                        className="flex items-center gap-1 text-xs text-slate-600 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors px-2 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs"
-                        title="Copy answer"
-                      >
-                        {copiedAnswer ? <CheckCheck className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                        <span className="text-[11px] font-semibold">{copiedAnswer ? 'Copied' : 'Copy'}</span>
+                <div className="px-6 pb-2">
+                  <div className="h-px bg-slate-100 dark:bg-slate-800/60 w-full mb-4" />
+                  <h4 className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-3">Assistant</h4>
+                  <div className="space-y-2">
+                    {[
+                      { name: 'UX Design Buddy', desc: 'Checks UX and gives design tips.', icon: <CheckCircle className="w-4 h-4 text-white" />, bg: 'bg-black dark:bg-white dark:text-black' },
+                      { name: 'Search Boost', desc: 'Adds keywords and improves search.', icon: <Search className="w-4 h-4 text-white" />, bg: 'bg-black dark:bg-white dark:text-black' },
+                      { name: 'TalentFlow', desc: 'Picks candidates and makes interview questions.', icon: <Bot className="w-4 h-4 text-white" />, bg: 'bg-black dark:bg-white dark:text-black' },
+                    ].map((ast, i) => (
+                      <button key={i} className="w-full text-left flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+                        <div className={`w-8 h-8 rounded-lg ${ast.bg} flex items-center justify-center shrink-0`}>
+                          {ast.icon}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[13px] font-bold text-slate-900 dark:text-white">{ast.name}</span>
+                            <span className="text-[11px] text-slate-400 group-hover:text-slate-500">Assistant</span>
+                          </div>
+                          <p className="text-[12px] text-slate-500 dark:text-slate-400 mt-0.5">{ast.desc}</p>
+                        </div>
                       </button>
-                    )
-                  )}
+                    ))}
+                  </div>
                 </div>
               </div>
-              
-              <div>
+            )}
+
+            {/* AI Answer & Results List (when searching) */}
+            {(hasSearched || query.length > 0) && (
+              <div className="px-6 py-4">
                 {isSynthesizing ? (
-                  <div className="space-y-2.5 py-1 animate-pulse">
-                    <div className="h-3.5 bg-emerald-200/60 dark:bg-emerald-900/40 rounded-md w-full" />
-                    <div className="h-3.5 bg-emerald-200/60 dark:bg-emerald-900/40 rounded-md w-11/12" />
-                    <div className="h-3.5 bg-emerald-200/60 dark:bg-emerald-900/40 rounded-md w-4/5" />
+                  <div className="space-y-3 py-4">
+                    <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-full animate-pulse" />
+                    <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-5/6 animate-pulse" />
+                    <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-4/5 animate-pulse" />
                   </div>
-                ) : (
-                  <div className="text-sm leading-relaxed text-slate-900 dark:text-slate-100 font-medium whitespace-pre-wrap">
-                    <TypewriterText text={aiAnswer} />
+                ) : aiAnswer ? (
+                  <div className="mb-6">
+                    <h4 className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-2 uppercase tracking-wider">AI Answer</h4>
+                    <p className="text-[13px] text-slate-800 dark:text-slate-200 leading-relaxed"><TypewriterText text={aiAnswer} /></p>
+                  </div>
+                ) : null}
+
+                {filteredResults.length > 0 && (
+                  <div>
+                    <h4 className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">Results</h4>
+                    <div className="space-y-1">
+                      {filteredResults.map((res, i) => {
+                        const meta = TYPE_META[res.type] || {};
+                        const Icon = meta.icon || FileText;
+                        const isFocused = focusedIndex === i;
+                        return (
+                          <button
+                            key={i}
+                            onClick={() => handleResultClick(res)}
+                            className={`w-full text-left flex items-start gap-3 p-3 rounded-xl transition-colors ${
+                              isFocused ? 'bg-slate-100 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                            }`}
+                          >
+                            <div className={`w-8 h-8 rounded-lg ${meta.bg || 'bg-slate-100'} flex items-center justify-center shrink-0`}>
+                              <Icon className={`w-4 h-4 ${meta.color || 'text-slate-600'}`} />
+                            </div>
+                            <div className="flex-1 min-w-0 pt-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-[13px] font-bold text-slate-900 dark:text-white truncate">{res.label}</span>
+                                <span className="text-[10px] text-slate-400 shrink-0">{meta.label}</span>
+                              </div>
+                              {res.snippet && <p className="text-[12px] text-slate-500 truncate mt-0.5">{res.snippet}</p>}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                
+                {hasSearched && filteredResults.length === 0 && !aiAnswer && !isSynthesizing && (
+                  <div className="text-center py-12 text-slate-500 text-[13px]">
+                    No matches found for "{query}".
                   </div>
                 )}
               </div>
-
-              {/* Verified Sources Chips */}
-              {aiSources.length > 0 && !isSynthesizing && (
-                <div className="mt-4 pt-3 border-t border-slate-200/80 dark:border-slate-800 flex flex-wrap gap-2 items-center">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mr-1">
-                    Verified Sources ({aiSources.length})
-                  </span>
-                  {aiSources.map((src, i) => {
-                    const meta = TYPE_META[src.type];
-                    const Icon = meta?.icon || FileText;
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => handleResultClick(src)}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-slate-200 dark:border-slate-700 hover:border-emerald-300 transition-all hover:scale-[1.01] active:scale-[0.99] group shadow-2xs"
-                      >
-                        <Icon className={`w-3.5 h-3.5 ${meta?.color || 'text-slate-600'}`} />
-                        <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 max-w-[160px] truncate">{src.label}</span>
-                        <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors ml-0.5" />
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Filter Empty Notice */}
-          {selectedFilter !== 'all' && filteredResults.length === 0 && results.length > 0 && !isSearching && (
-            <div className="mx-6 my-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-center">
-              <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                No {FILTER_TABS.find(t => t.id === selectedFilter)?.label} matched "{query}"
-              </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                There are {results.length} result{results.length > 1 ? 's' : ''} in other categories.
-              </p>
-              <button
-                onClick={() => setSelectedFilter('all')}
-                className="mt-2.5 px-3.5 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold hover:bg-emerald-700 transition-colors shadow-2xs"
-              >
-                Show All ({results.length}) Results
-              </button>
-            </div>
-          )}
-
-          {/* Search Results List */}
-          {filteredResults.length > 0 && !isSearching && (
-            <div className="px-6 py-4">
-              <div className="flex items-center justify-between mb-2.5">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                  {selectedFilter === 'all' ? 'All Matches' : `${FILTER_TABS.find(t => t.id === selectedFilter)?.label || selectedFilter} Matches`} ({filteredResults.length})
-                </h4>
-              </div>
-              <div className="space-y-1.5">
-                {filteredResults.map((res, i) => {
-                  const meta = TYPE_META[res.type] || {};
-                  const Icon = meta.icon || Search;
-                  const isFocused = focusedIndex === i;
-                  const spaceName = res.space_id ? spacesMap[res.space_id] : null;
-
-                  return (
-                    <button
-                      key={`${res.type}-${res.id}-${i}`}
-                      onClick={() => handleResultClick(res)}
-                      className={`w-full text-left px-4 py-3 rounded-xl cursor-pointer transition-all flex items-center gap-3.5 group border ${
-                        isFocused
-                          ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-400 dark:border-emerald-600 text-emerald-950 dark:text-emerald-100 shadow-2xs'
-                          : 'bg-white dark:bg-[#0D1117] border-slate-100 dark:border-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-900/60 hover:border-slate-200'
-                      }`}
-                    >
-                      <div className={`w-9 h-9 rounded-lg ${meta.bg || 'bg-slate-100'} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
-                        <Icon className={`w-4 h-4 ${meta.color || 'text-slate-600'}`} />
-                      </div>
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">{res.label}</span>
-                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${meta.bg} ${meta.color} tracking-wider uppercase shrink-0`}>
-                            {meta.label}
-                          </span>
-                          {spaceName && (
-                            <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1 truncate max-w-[140px]">
-                              <Folder className="w-3 h-3 shrink-0 text-slate-400" />
-                              {spaceName}
-                            </span>
-                          )}
-                        </div>
-                        {res.snippet && (
-                          <p className="text-xs font-medium text-slate-600 dark:text-slate-400 mt-0.5 line-clamp-1 truncate pr-2">
-                            {res.snippet}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                        <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">Jump</span>
-                        <CornerDownLeft className="w-3.5 h-3.5 text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors" />
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Empty Results State */}
-          {hasSearched && !isSearching && !isSynthesizing && results.length === 0 && !aiAnswer && (
-            <div className="flex flex-col items-center justify-center py-14 px-4 text-center">
-              <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center mb-4 text-slate-400">
-                <Search className="w-7 h-7 stroke-[1.5]" />
-              </div>
-              <p className="text-base font-bold text-slate-900 dark:text-white">No matches found</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs leading-relaxed">
-                No direct records matched "{query}". Try adjusting keywords or filtering by a different space.
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Enterprise Status Footer */}
-        <div className="px-8 py-4 border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-[#080b10]/30 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 shrink-0 rounded-b-2xl">
-          <div className="flex items-center gap-3.5">
-            <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 font-semibold">
-              <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 rounded border border-slate-300 dark:border-slate-700 font-mono text-[11px] font-bold text-slate-800 dark:text-slate-200 shadow-2xs">↑↓</kbd>
-              <span>Navigate</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 font-semibold">
-              <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 rounded border border-slate-300 dark:border-slate-700 font-mono text-[11px] font-bold text-slate-800 dark:text-slate-200 shadow-2xs">↵</kbd>
-              <span>Select</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 font-semibold">
-              <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 rounded border border-slate-300 dark:border-slate-700 font-mono text-[11px] font-bold text-slate-800 dark:text-slate-200 shadow-2xs">esc</kbd>
-              <span>Dismiss</span>
-            </div>
+            )}
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 font-semibold border-r border-slate-200 dark:border-slate-800 pr-3.5">
-              <Lock className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-              <span>Context: <strong className="text-slate-900 dark:text-slate-100 font-bold">{isAdmin(user) ? 'Entire Organization' : `${accessibleCount || 'Authorized'} Spaces`}</strong></span>
+          {/* Footer Shortcuts */}
+          <div className="bg-slate-50/80 dark:bg-[#0c0f14] border-t border-slate-100 dark:border-slate-800/60 px-6 py-3.5 flex items-center justify-between rounded-b-xl shrink-0 mt-auto">
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
+                  <kbd className="w-5 h-5 flex items-center justify-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-sans font-bold text-slate-600 dark:text-slate-400 shadow-sm">↓</kbd>
+                  <kbd className="w-5 h-5 flex items-center justify-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-sans font-bold text-slate-600 dark:text-slate-400 shadow-sm">↑</kbd>
+                </div>
+                <span className="text-[11px] text-slate-500 font-medium">Navigate</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <kbd className="w-6 h-5 flex items-center justify-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-sans font-bold text-slate-600 dark:text-slate-400 shadow-sm">↵</kbd>
+                <span className="text-[11px] text-slate-500 font-medium">Select</span>
+              </div>
             </div>
-
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-              <span className="text-[11px] font-extrabold tracking-wider uppercase text-emerald-700 dark:text-emerald-400">
-                OrbitFlow AI
-              </span>
+            
+            <div className="flex items-center gap-2">
+              <kbd className="px-1.5 h-5 flex items-center justify-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-sans font-bold text-slate-600 dark:text-slate-400 shadow-sm">Esc</kbd>
+              <span className="text-[11px] text-slate-500 font-medium">Close</span>
             </div>
           </div>
         </div>
