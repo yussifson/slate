@@ -255,47 +255,54 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
     });
   };
 
- useEffect(() => {
- if (!companyId || !user?.email) return;
- 
- // Reset/Re-init when company/user changes
- setIsInitialized(false);
- 
- const loadSessions = async () => {
-   try {
-     const stored = localStorage.getItem(`orbit_sessions_${user.email}_${companyId}`);
-     if (stored) {
-       const parsed = JSON.parse(stored);
-       // Filter out stuck "..." messages or empty artifacts
-       const cleaned = parsed.map(s => ({
-         ...s,
-         messages: (s.messages || []).filter(m => m.content !== '...')
-       }));
-       if (cleaned && cleaned.length > 0) {
-         setSessions(cleaned);
-         setActiveId(cleaned[0].id);
-       } else {
-         throw new Error("Empty array");
-       }
-     } else {
-       throw new Error("No data");
-     }
-   } catch (e) {
-     const s = newSession();
-     setSessions([s]);
-     setActiveId(s.id);
-     localStorage.setItem(`orbit_sessions_${user.email}_${companyId}`, JSON.stringify([s]));
-   }
+  const loadedUserKeyRef = useRef('');
 
- // Pre-load automation registries
- const { data: triggers } = await supabase.from('automation_triggers').select('trigger_key, display_name, data_schema').eq('is_active', true);
- const { data: actions } = await supabase.from('automation_actions').select('action_key, display_name, input_schema').eq('is_active', true);
- if (triggers && actions) setAutomationRegistries({ triggers, actions });
+  useEffect(() => {
+    if (!companyId || !user?.email) return;
+    const currentKey = `${user.email}_${companyId}`;
+    if (loadedUserKeyRef.current === currentKey) return;
+    loadedUserKeyRef.current = currentKey;
 
- setIsInitialized(true);
-};
- loadSessions();
-}, [companyId, user?.email, isInitialized]);
+    const loadSessions = async () => {
+      try {
+        const stored = localStorage.getItem(`orbit_sessions_${user.email}_${companyId}`);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          const cleaned = parsed.map(s => ({
+            ...s,
+            messages: (s.messages || []).filter(m => m.content !== '...')
+          }));
+          if (cleaned && cleaned.length > 0) {
+            setSessions(cleaned);
+            setActiveId(cleaned[0].id);
+          } else {
+            throw new Error("Empty array");
+          }
+        } else {
+          throw new Error("No data");
+        }
+      } catch (e) {
+        const s = newSession();
+        setSessions([s]);
+        setActiveId(s.id);
+        localStorage.setItem(`orbit_sessions_${user.email}_${companyId}`, JSON.stringify([s]));
+      }
+
+      // Pre-load automation registries safely with catch fallbacks
+      try {
+        const [triggersRes, actionsRes] = await Promise.all([
+          Promise.resolve(supabase.from('automation_triggers').select('trigger_key, display_name, data_schema').eq('is_active', true)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('automation_actions').select('action_key, display_name, input_schema').eq('is_active', true)).catch(() => ({ data: [] })),
+        ]);
+        if (triggersRes.data && actionsRes.data) {
+          setAutomationRegistries({ triggers: triggersRes.data, actions: actionsRes.data });
+        }
+      } catch (e) {}
+
+      setIsInitialized(true);
+    };
+    loadSessions();
+  }, [companyId, user?.email]);
 
  const activeSession = sessions.find(s => s.id === activeId) || sessions[0];
  const messages = activeSession?.messages || [];
