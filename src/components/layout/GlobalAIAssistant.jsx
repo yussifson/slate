@@ -636,6 +636,10 @@ ${contextText}
           if (r.url) parts.push(`Source: ${r.url}`);
           if (r.author) parts.push(`Author: ${r.author}`);
           if (r.imported_at) parts.push(`Indexed: ${new Date(r.imported_at).toLocaleDateString()}`);
+          if (r.related_graph_items && r.related_graph_items.length > 0) {
+            const relStr = r.related_graph_items.map(rel => `• ${rel.relationship} → ${rel.provider?.toUpperCase()}: "${rel.title}"`).join('\n');
+            parts.push(`Knowledge Graph Links:\n${relStr}`);
+          }
           return parts.join('\n');
         }).join('\n\n---\n\n');
 

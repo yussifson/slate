@@ -191,6 +191,47 @@ serve(async (req) => {
       }
     }
 
+    // ── ENRICH: Knowledge Graph Relationships (Multi-Hop Search Context) ──────
+    const resultIds = finalResults.map(r => r.id);
+    if (resultIds.length > 0) {
+      try {
+        const { data: rels } = await supabase
+          .from('clipad_knowledge_relationships')
+          .select('source_id, target_id, relationship_type, confidence_score')
+          .in('source_id', resultIds)
+          .gte('confidence_score', 0.6);
+
+        if (rels && rels.length > 0) {
+          const targetIds = Array.from(new Set(rels.map(r => r.target_id)));
+          const { data: targetDocs } = await supabase
+            .from('clipad_imported_knowledge')
+            .select('id, title, provider, content_type')
+            .in('id', targetIds);
+
+          const targetDocMap = new Map((targetDocs || []).map(d => [d.id, d]));
+
+          finalResults = finalResults.map(r => {
+            const itemRels = rels
+              .filter(rel => rel.source_id === r.id)
+              .map(rel => {
+                const target = targetDocMap.get(rel.target_id);
+                return target ? {
+                  title: target.title,
+                  provider: target.provider,
+                  type: target.content_type,
+                  relationship: rel.relationship_type
+                } : null;
+              })
+              .filter(Boolean);
+
+            return itemRels.length > 0 ? { ...r, related_graph_items: itemRels } : r;
+          });
+        }
+      } catch (graphErr) {
+        console.warn('Knowledge graph relationship lookup error:', graphErr);
+      }
+    }
+
     // Report which search strategy was used (useful for debugging)
     const source = vectorResults.length > 0 && fulltextResults.length > 0
       ? 'hybrid'
