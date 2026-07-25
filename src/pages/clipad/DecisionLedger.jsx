@@ -177,7 +177,11 @@ export default function DecisionLedger() {
 
       <div className="max-w-5xl mx-auto px-4 md:px-6 mt-8">
         {loading ? (
-          <div className="flex justify-center p-12"><OrbitLoader size="md" /></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-white dark:bg-[#111111] border border-slate-100 dark:border-white/5 rounded-2xl h-48"></div>
+            ))}
+          </div>
         ) : filteredDecisions.length === 0 ? (
           <div className="text-center p-12 border border-dashed border-border rounded-2xl bg-card max-w-2xl mx-auto mt-10">
             <AlertCircle className="w-8 h-8 text-muted-foreground mx-auto mb-3 opacity-50" />

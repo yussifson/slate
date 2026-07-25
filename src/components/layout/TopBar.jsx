@@ -151,8 +151,9 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
 
 
-      {/* Theme Toggle */}
+      {/* Theme Toggle & Notifications */}
       <ThemeToggle />
+      <UnivNotificationCenter />
     </div>
   );
 
@@ -204,7 +205,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  </div>
 
  {/* ── DESKTOP TOP BAR ── */}
- <div className="hidden md:flex h-12 border-b border-black/5 dark:border-white/5 bg-background/80 backdrop-blur-2xl relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full overflow-x-auto scrollbar-none transition-shadow duration-200">
+ <div className="hidden md:flex h-12 border-t-[3px] border-t-primary border-b border-primary/40 bg-background/80 backdrop-blur-xl relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full overflow-x-auto scrollbar-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Sidebar Toggle & Breadcrumb */}
  <div className="flex items-center gap-2 sm:gap-3 text-sm shrink-0 mr-4">
  <button 
@@ -330,7 +331,16 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
    </>
  )}
 
-  {/* User Profile moved to Sidebar */}
+ {/* User */}
+ <button onClick={() => setShowAvatarDialog(true)} className="flex items-center gap-2 sm:ml-1 hover:bg-muted/50 p-1 rounded-xl transition-colors">
+ <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary flex items-center justify-center hover:ring-2 hover:ring-primary transition-all overflow-hidden border border-black/10 dark:border-white/10">
+ {user?.avatar_url ? (
+ <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+ ) : (
+ <span className="text-[10px] sm:text-[11px] font-semibold text-white">{initials}</span>
+ )}
+ </div>
+ </button>
  </div>
  </div>
  <ProfileAvatarDialog open={showAvatarDialog} onOpenChange={setShowAvatarDialog} />

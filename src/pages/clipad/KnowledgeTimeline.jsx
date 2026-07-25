@@ -140,7 +140,14 @@ export default function KnowledgeTimeline() {
         {/* Right Content: Timeline */}
         <div className="flex-1">
           {loading ? (
-            <div className="flex justify-center p-12"><OrbitLoader size="md" /></div>
+            <div className="space-y-6 animate-pulse p-4">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 shrink-0"></div>
+                  <div className="flex-1 bg-white dark:bg-[#111111] border border-slate-100 dark:border-white/5 rounded-2xl p-4 h-24"></div>
+                </div>
+              ))}
+            </div>
           ) : filteredEvents.length === 0 ? (
             <div className="text-center p-12 border border-dashed border-border rounded-2xl bg-card">
               <Box className="w-8 h-8 text-muted-foreground mx-auto mb-3 opacity-50" />

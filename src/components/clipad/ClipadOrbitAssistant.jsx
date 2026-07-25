@@ -393,31 +393,28 @@ ${orgContext?.contextText || 'Workspace data is still loading. Click the refresh
       {messages.length === 0 && !isTyping && (
         <div className="flex-1 overflow-y-auto px-4 py-8 flex flex-col items-center">
            <div className="flex flex-col items-center text-center mt-6 w-full">
-             <div className="w-12 h-12 text-slate-800 dark:text-slate-200 mb-6">
-               <Layers className="w-full h-full" strokeWidth={2} />
-             </div>
              <h2 className="text-base text-slate-500 dark:text-slate-400 font-medium mb-1">Hi {user?.full_name?.split(' ')[0] || 'there'},</h2>
              <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Welcome back! How can I help?</h1>
              <p className="text-[13.5px] text-slate-500 dark:text-slate-400 mb-8 max-w-[280px] leading-relaxed">
                I'm here to help you tackle your tasks. Choose from the prompts below or just tell me what you need!
              </p>
              <div className="grid grid-cols-2 gap-3 w-full max-w-[340px]">
-                <button onClick={() => handleSend("Create an image")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
+                <button onClick={() => handleSend("Create an image for our project")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
                   <ImageIcon className="w-3.5 h-3.5 text-emerald-500"/> Create image
                 </button>
-                <button onClick={() => handleSend("Analyze this data")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
+                <button onClick={() => handleSend("Analyze my workspace data and give me insights")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
                   <BarChart2 className="w-3.5 h-3.5 text-blue-500"/> Analyze data
                 </button>
-                <button onClick={() => handleSend("Make a plan for")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
+                <button onClick={() => handleSend("Make a plan for my upcoming week based on my tasks")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
                   <ListTodo className="w-3.5 h-3.5 text-purple-500"/> Make a plan
                 </button>
-                <button onClick={() => handleSend("Summarize this text")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
+                <button onClick={() => handleSend("Summarize the recent meeting activity")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
                   <FileText className="w-3.5 h-3.5 text-pink-500"/> Summarize text
                 </button>
-                <button onClick={() => handleSend("Help me write")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
+                <button onClick={() => handleSend("Help me draft an email update for the team")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
                   <PenTool className="w-3.5 h-3.5 text-orange-500"/> Help me write
                 </button>
-                <button onClick={() => handleSend("Show me more options")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
+                <button onClick={() => handleSend("What else can you do? Show me more options.")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
                   <MoreHorizontal className="w-3.5 h-3.5 text-slate-500"/> More
                 </button>
              </div>

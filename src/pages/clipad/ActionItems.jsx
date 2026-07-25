@@ -236,8 +236,10 @@ export default function ActionItems() {
       {/* Items list */}
       <div className="max-w-5xl mx-auto px-4 md:px-6 mt-8">
         {loading ? (
-          <div className="flex justify-center p-12">
-            <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+          <div className="space-y-4 animate-pulse">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="bg-white dark:bg-[#111111] border border-slate-100 dark:border-white/5 rounded-2xl h-20"></div>
+            ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center p-12 border border-dashed border-border rounded-2xl bg-card max-w-2xl mx-auto">

@@ -912,54 +912,54 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  {/* Main Panel */}
  <div className="flex-1 flex flex-col min-w-0 relative">
 
-  {/* Header — Centered Logo & Right Controls */}
-  <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30">
-    <Layers className="w-6 h-6 text-slate-800 dark:text-slate-200" />
-  </div>
-  <div className="absolute top-4 right-4 z-30 flex items-center gap-1.5">
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button 
-          className="w-8 h-8 rounded-full bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 flex items-center justify-center transition-all"
-          title="OrbitFlow Options"
-        >
-          <LayoutGrid className="w-4 h-4" />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-52 z-[100] shadow-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1117] p-1.5">
-        <DropdownMenuItem onClick={() => setShowHistory(prev => !prev)} className="cursor-pointer font-semibold text-xs py-2.5 rounded-lg">
-          <Clock className="w-4 h-4 mr-2 text-emerald-600 dark:text-emerald-400" /> 
-          {showHistory ? t("hide_history", "Hide History") : t("chat_history", "Chat History")}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={startNewChat} className="cursor-pointer font-semibold text-xs py-2.5 rounded-lg">
-          <Plus className="w-4 h-4 mr-2 text-emerald-600 dark:text-emerald-400" /> 
-          {t("new_chat", "New Chat")}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setIsExpanded(!isExpanded)} className="cursor-pointer font-semibold text-xs py-2.5 rounded-lg hidden md:flex">
-          {isExpanded ? (
-            <><Minimize2 className="w-4 h-4 mr-2 text-slate-500" /> {t("collapse", "Collapse Panel")}</>
-          ) : (
-            <><Maximize2 className="w-4 h-4 mr-2 text-slate-500" /> {t("expand", "Expand Panel")}</>
-          )}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={onClose} className="cursor-pointer font-semibold text-xs py-2.5 rounded-lg text-red-600 dark:text-red-400 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/30">
-          <X className="w-4 h-4 mr-2" /> 
-          {t("close_orbitflow", "Close OrbitFlow")}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+  {/* Header — Solid Sticky Controls */}
+  <div className="bg-white/95 dark:bg-[#0A0F1C]/95 md:bg-slate-50/95 md:dark:bg-[#0A0F1C]/95 backdrop-blur-md px-4 py-3 flex justify-between items-center shrink-0 sticky top-0 z-[101] border-b border-slate-100 dark:border-white/5">
+    <div className="flex-1"></div>
+    <div className="flex items-center gap-1.5 justify-end">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button 
+            className="w-8 h-8 rounded-full bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 flex items-center justify-center transition-all"
+            title="OrbitFlow Options"
+          >
+            <LayoutGrid className="w-4 h-4" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-52 z-[100] shadow-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1117] p-1.5">
+          <DropdownMenuItem onClick={() => setShowHistory(prev => !prev)} className="cursor-pointer font-semibold text-xs py-2.5 rounded-lg">
+            <Clock className="w-4 h-4 mr-2 text-emerald-600 dark:text-emerald-400" /> 
+            {showHistory ? t("hide_history", "Hide History") : t("chat_history", "Chat History")}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={startNewChat} className="cursor-pointer font-semibold text-xs py-2.5 rounded-lg">
+            <Plus className="w-4 h-4 mr-2 text-emerald-600 dark:text-emerald-400" /> 
+            {t("new_chat", "New Chat")}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsExpanded(!isExpanded)} className="cursor-pointer font-semibold text-xs py-2.5 rounded-lg hidden md:flex">
+            {isExpanded ? (
+              <><Minimize2 className="w-4 h-4 mr-2 text-slate-500" /> {t("collapse", "Collapse Panel")}</>
+            ) : (
+              <><Maximize2 className="w-4 h-4 mr-2 text-slate-500" /> {t("expand", "Expand Panel")}</>
+            )}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={onClose} className="cursor-pointer font-semibold text-xs py-2.5 rounded-lg text-red-600 dark:text-red-400 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/30">
+            <X className="w-4 h-4 mr-2" /> 
+            {t("close_orbitflow", "Close OrbitFlow")}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
-    <button
-      onClick={onClose}
-      className="w-8 h-8 rounded-full border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 flex items-center justify-center transition-all shadow-sm"
-      title="Close chat"
-    >
-      <X className="w-4 h-4" />
-    </button>
+      <button
+        onClick={onClose}
+        className="w-8 h-8 rounded-full border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 flex items-center justify-center transition-all shadow-sm"
+        title="Close chat"
+      >
+        <X className="w-4 h-4" />
+      </button>
+    </div>
   </div>
 
  {/* Messages */}
- <div className="flex-1 overflow-y-auto px-4 py-6 pt-20 space-y-6 relative bg-white dark:bg-[#0A0F1C] md:bg-slate-50/50 md:dark:bg-transparent md:scrollbar-primary">
+ <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 relative bg-white dark:bg-[#0A0F1C] md:bg-slate-50/50 md:dark:bg-transparent md:scrollbar-primary">
  <div className="relative z-10 space-y-6">
  {messages.filter(m => m.role !== 'system').map((msg, i) => {
  return (
@@ -1017,24 +1017,24 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
      </p>
      
      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 w-full max-w-[360px]">
-       <button onClick={() => handleSend("Create image")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
-         <Image className="w-[14px] h-[14px] text-emerald-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Create image</span>
-       </button>
-       <button onClick={() => handleSend("Analyze data")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
-         <BarChart2 className="w-[14px] h-[14px] text-blue-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Analyze data</span>
-       </button>
-       <button onClick={() => handleSend("Make a plan")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
-         <ListTodo className="w-[14px] h-[14px] text-purple-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Make a plan</span>
-       </button>
-       <button onClick={() => handleSend("Summarize text")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
-         <FileText className="w-[14px] h-[14px] text-pink-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Summarize text</span>
-       </button>
-       <button onClick={() => handleSend("Help me write")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
-         <PenTool className="w-[14px] h-[14px] text-orange-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Help me write</span>
-       </button>
-       <button className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left justify-center">
-         <Sparkles className="w-[14px] h-[14px] text-slate-400 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">More</span>
-       </button>
+        <button onClick={() => handleSend("Create a highly realistic image for my current project")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
+          <Image className="w-[14px] h-[14px] text-emerald-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Create image</span>
+        </button>
+        <button onClick={() => handleSend("Analyze my workspace data and provide insights")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
+          <BarChart2 className="w-[14px] h-[14px] text-blue-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Analyze data</span>
+        </button>
+        <button onClick={() => handleSend("Create a detailed implementation plan for my current task")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
+          <ListTodo className="w-[14px] h-[14px] text-purple-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Make a plan</span>
+        </button>
+        <button onClick={() => handleSend("Summarize the most important points from my recent documents")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
+          <FileText className="w-[14px] h-[14px] text-pink-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Summarize text</span>
+        </button>
+        <button onClick={() => handleSend("Help me draft a professional message for my team")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
+          <PenTool className="w-[14px] h-[14px] text-orange-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Help me write</span>
+        </button>
+        <button onClick={() => handleSend("What else can you do? Show me all your capabilities")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left justify-center">
+          <Sparkles className="w-[14px] h-[14px] text-slate-400 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">More</span>
+        </button>
      </div>
    </div>
  )}

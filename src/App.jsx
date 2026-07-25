@@ -1228,6 +1228,24 @@ function PlatformRoutes() {
   );
 }
 
+const AppPageSkeleton = () => (
+  <div className="flex flex-col h-full bg-slate-50 dark:bg-background p-4 sm:p-6 md:p-8 animate-pulse w-full min-h-screen">
+    <div className="flex justify-between items-start mb-8">
+      <div>
+        <div className="h-8 bg-slate-200 dark:bg-slate-800 rounded w-48 mb-2"></div>
+        <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-32"></div>
+      </div>
+      <div className="h-10 bg-slate-200 dark:bg-slate-800 rounded w-32"></div>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {[...Array(4)].map((_, i) => (
+        <div key={i} className="bg-white dark:bg-[#111111] border border-slate-100 dark:border-white/5 rounded-2xl h-32"></div>
+      ))}
+    </div>
+    <div className="bg-white dark:bg-[#111111] border border-slate-100 dark:border-white/5 rounded-2xl h-64 mb-8"></div>
+  </div>
+);
+
 function GlobalSystemListener() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -1441,7 +1459,7 @@ function App() {
                   </React.Suspense>
                 ) : isAccountDomain ? (
                   /* ── ACCOUNT DOMAIN: Global Identity Portal ── */
-                  <React.Suspense fallback={<PageLoader label="" />}>
+                  <React.Suspense fallback={<AppPageSkeleton />}>
                     <Routes>
                       <Route path="/login" element={<AccountLogin />} />
                       <Route path="/signup" element={<AccountSignUp />} />
@@ -1467,7 +1485,7 @@ function App() {
                   </React.Suspense>
                 ) : (
                   /* ── ALL OTHER DOMAINS: workspace / marketing / app routes ── */
-                  <React.Suspense fallback={<PageLoader label="" />}>
+                  <React.Suspense fallback={<AppPageSkeleton />}>
                     {isBaseDomain ? (
                       /* Storefront Routes for the Base Domain */
                       <Routes>

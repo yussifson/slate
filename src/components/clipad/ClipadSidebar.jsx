@@ -220,12 +220,12 @@ export default function ClipadSidebar({ forceMobile }) {
           </button>
           
           <button 
-            onClick={() => window.location.href = "mailto:support@clipad.com"} 
+            onClick={() => navigate('/support')} 
             className={cn("w-full flex items-center rounded-xl text-[14px] text-slate-600 hover:bg-slate-100 font-medium group", isCollapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2.5")}
-            title={isCollapsed ? "Help" : undefined}
+            title={isCollapsed ? "Help & Support" : undefined}
           >
             <HelpCircle className="w-4 h-4 opacity-70 group-hover:opacity-100" />
-            {!isCollapsed && <span>Help</span>}
+            {!isCollapsed && <span>Help & Support</span>}
           </button>
         </div>
 

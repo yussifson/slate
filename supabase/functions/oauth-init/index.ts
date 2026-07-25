@@ -151,7 +151,7 @@ serve(async (req) => {
         const zdClientId = Deno.env.get('ZENDESK_CLIENT_ID')
         const zdSubdomain = Deno.env.get('ZENDESK_SUBDOMAIN')
         if (!zdClientId || !zdSubdomain) throw new Error("Missing ZENDESK_CLIENT_ID or ZENDESK_SUBDOMAIN")
-        authUrl = `https://${zdSubdomain}.zendesk.com/oauth/authorizations/new?response_type=code&client_id=${zdClientId}&redirect_uri=${redirectUri}&scope=read&state=${state}`
+        authUrl = `https://${zdSubdomain}.zendesk.com/oauth/authorizations/new?response_type=code&client_id=${zdClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=read&state=${state}`
         break;
       }
 

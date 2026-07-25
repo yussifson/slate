@@ -23,14 +23,10 @@ export default function ClipadLayout() {
   const [forceMobile, setForceMobile] = React.useState(false);
 
   React.useEffect(() => {
-    if (!containerRef.current) return;
-    const observer = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        setForceMobile(entry.contentRect.width < 768);
-      }
-    });
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
+    const handleResize = () => setForceMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // Auto-undock if we navigate back to the main chat page
