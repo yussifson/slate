@@ -38,12 +38,12 @@ export default function CliPadCommandPalette() {
       try {
         const q = query.toLowerCase();
         
-        // Fetch all relevant clipad tables
+        // Fetch all relevant clipad tables safely
         const [spacesRes, docsRes, channelsRes, videosRes] = await Promise.all([
-          supabase.from('clipad_spaces').select('id, name').eq('company_id', companyId).ilike('name', `%${q}%`).limit(5),
-          supabase.from('clipad_docs').select('id, space_id, title').eq('company_id', companyId).ilike('title', `%${q}%`).limit(5),
-          supabase.from('clipad_channels').select('id, space_id, name').eq('company_id', companyId).ilike('name', `%${q}%`).limit(5),
-          supabase.from('clipad_videos').select('id, space_id, title').eq('company_id', companyId).ilike('title', `%${q}%`).limit(5)
+          Promise.resolve(supabase.from('clipad_spaces').select('id, name').ilike('name', `%${q}%`).limit(5)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_docs').select('id, space_id, title').ilike('title', `%${q}%`).limit(5)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_channels').select('id, space_id, name').ilike('name', `%${q}%`).limit(5)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_videos').select('id, space_id, title').ilike('title', `%${q}%`).limit(5)).catch(() => ({ data: [] }))
         ]);
 
         setResults({
@@ -78,6 +78,22 @@ export default function CliPadCommandPalette() {
       <CommandList>
         <CommandEmpty>{loading ? "Searching..." : "No results found."}</CommandEmpty>
         
+        <CommandGroup heading="Quick Actions">
+          <CommandItem onSelect={() => handleSelect('/record')}>
+            <Video className="mr-2 h-4 w-4 text-rose-500" />
+            <span>Start Video Recording</span>
+          </CommandItem>
+          <CommandItem onSelect={() => handleSelect('/clipad/dashboard')}>
+            <Calendar className="mr-2 h-4 w-4 text-emerald-500" />
+            <span>Executive Daily Briefing</span>
+          </CommandItem>
+
+          <CommandItem onSelect={() => handleSelect('/timeline')}>
+            <Activity className="mr-2 h-4 w-4 text-cyan-500" />
+            <span>Organizational Timeline</span>
+          </CommandItem>
+        </CommandGroup>
+
         {results.spaces.length > 0 && (
           <CommandGroup heading="Spaces">
             {results.spaces.map(space => (

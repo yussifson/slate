@@ -68,10 +68,148 @@ export default function RichVideoPlayer({ videoUrl, recordType = 'video', entity
   const [transcripts, setTranscripts] = useState([]);
   const [blobUrl, setBlobUrl] = useState(null);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  
-  const videoRef = useRef(null);
-  const playerRef = useRef(null);
+  const [chapters, setChapters] = useState([]);
+  const [isGeneratingChapters, setIsGeneratingChapters] = useState(false);
+
+  const handleGenerateAiChapters = async () => {
+    setIsGeneratingChapters(true);
+    try {
+      const { generateText } = await import('@/lib/cloudflareAI');
+      const textContext = transcripts.length > 0
+        ? transcripts.map(t => `[${formatTime(t.start_time)}] ${t.text}`).join('\n')
+        : (videoRecord?.ai_summary || videoRecord?.title || 'Video meeting content');
+
+      const response = await generateText([
+        {
+          role: 'system',
+          content: `You are an AI video editor. Create 3-5 timestamped chapter markers for this video based on the text.
+Return ONLY raw valid JSON array of objects with keys:
+- "seconds": number (seconds from start, e.g. 0, 45, 120)
+- "title": string chapter title (e.g. "Architecture Overview", "Blocker Discussion")
+Do not wrap in markdown or backticks.`
+        },
+        { role: 'user', content: textContext }
+      ]);
+
+      let raw = typeof response === 'string' ? response : response?.response || '';
+      raw = raw.replace(/```json/gi, '').replace(/```/gi, '').trim();
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        setChapters(parsed);
+      }
+    } catch (e) {
+      console.warn("Chapters generation error:", e);
+    } finally {
+      setIsGeneratingChapters(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Player Wrapper */}
+      <div className={`relative flex flex-col ${sidebarOpen ? 'lg:grid lg:grid-cols-3' : ''} gap-4`}>
+        <div className={`${sidebarOpen ? 'lg:col-span-2' : 'w-full'} relative`}>
+          <div 
+            ref={playerRef}
+            className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl group border border-slate-200/50 dark:border-white/10"
+            style={{ background: getVideoColor(videoRecord?.id) }}
+          >
+            {/* Video element */}
+            <video
+              ref={videoRef}
+              src={blobUrl || videoUrl}
+              className="w-full h-full object-contain cursor-pointer"
+              onClick={togglePlay}
+              onTimeUpdate={() => setCurrentTime(videoRef.current?.currentTime || 0)}
+              onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
+              onEnded={() => setPlaying(false)}
+            />
+
+            {/* Floating Reactions */}
+            {floatingReactions.map(r => (
+              <FloatingReaction key={r.id} emoji={r.emoji} x={r.x} y={r.y} onDone={() => removeFloatingReaction(r.id)} />
+            ))}
+
+            {/* Custom Controls Bar */}
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min={0}
+                  max={duration || 100}
+                  value={currentTime}
+                  onChange={e => seekTo(Number(e.target.value))}
+                  className="w-full h-1.5 rounded-full accent-emerald-500 cursor-pointer"
+                />
+              </div>
+
+              <div className="flex items-center justify-between text-white text-xs">
+                <div className="flex items-center gap-3">
+                  <button onClick={togglePlay} className="hover:text-emerald-400">
+                    {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                  </button>
+                  <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
+                </div>
+                <button onClick={() => setSidebarOpen(s => !s)} className="hover:text-emerald-400 flex items-center gap-1 font-bold">
+                  {sidebarOpen ? <PanelRightClose className="w-4 h-4" /> : <PanelRightOpen className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        {sidebarOpen && (
+          <div className="flex flex-col h-[500px] bg-slate-100/50 dark:bg-card/50 rounded-2xl border border-slate-200 dark:border-border p-4">
+            <div className="flex items-center gap-2 mb-4 bg-slate-200/50 dark:bg-secondary/50 p-1 rounded-xl">
+              <button 
+                onClick={() => setActiveTab('comments')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${activeTab === 'comments' ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500'}`}
+              >
+                Comments
+              </button>
+              <button 
+                onClick={() => setActiveTab('transcript')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${activeTab === 'transcript' ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500'}`}
+              >
+                Transcript
+              </button>
+              <button 
+                onClick={() => setActiveTab('chapters')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${activeTab === 'chapters' ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500'}`}
+              >
+                Chapters
+              </button>
+            </div>
+
+            {activeTab === 'chapters' && (
+              <div className="flex-1 overflow-y-auto space-y-3">
+                <div className="flex items-center justify-between mb-2">
+                  <h5 className="font-bold text-xs uppercase tracking-wider text-slate-500">AI Chapter Markers</h5>
+                  <button
+                    onClick={handleGenerateAiChapters}
+                    disabled={isGeneratingChapters}
+                    className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-[10px] font-bold rounded-lg shadow-sm disabled:opacity-50"
+                  >
+                    {isGeneratingChapters ? 'Generating...' : 'AI Generate'}
+                  </button>
+                </div>
+                {chapters.length === 0 ? (
+                  <p className="text-xs text-slate-400 text-center py-8">No chapters generated yet. Click AI Generate to analyze video markers.</p>
+                ) : (
+                  chapters.map((ch, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => seekTo(ch.seconds)}
+                      className="w-full text-left p-3 rounded-xl bg-white dark:bg-secondary border border-slate-200 dark:border-border hover:border-purple-500 transition-all flex items-center justify-between group"
+                    >
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-purple-600 transition-colors">{ch.title}</span>
+                      <span className="text-[10px] font-mono font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400 px-2 py-0.5 rounded-md">@{formatTime(ch.seconds)}</span>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
 
   // 1. Fetch video record by URL
   useEffect(() => {
