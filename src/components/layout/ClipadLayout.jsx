@@ -3,6 +3,7 @@ import { useLocation, Outlet } from 'react-router-dom';
 import GlobalAIAssistant from '@/components/layout/GlobalAIAssistant';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import ClipadTopNav from '@/components/clipad/ClipadTopNav';
+import ClipadSidebar from '@/components/clipad/ClipadSidebar';
 import { useChatDock } from '@/hooks/useChatDock';
 import ClipadChat from '@/pages/clipad/ClipadChat';
 import { MessageSquare, Sparkles } from 'lucide-react';
@@ -60,13 +61,16 @@ export default function ClipadLayout() {
   const isImmersive = false;
 
   return (
-    <div className="flex flex-row h-[100dvh] w-full overflow-hidden bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
+    <div className="flex flex-row h-[100dvh] w-full overflow-hidden bg-slate-50 dark:bg-[#0a0a0a] text-slate-900 dark:text-slate-100 pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
       
+      {/* Premium Sidebar Component */}
+      <ClipadSidebar forceMobile={forceMobile} />
+
       {/* Main Content Column */}
-      <div ref={containerRef} className="flex flex-col flex-1 w-0 overflow-hidden relative @container">
+      <div ref={containerRef} className="flex flex-col flex-1 w-0 overflow-hidden relative @container bg-white dark:bg-background md:rounded-tl-[24px] md:shadow-[-8px_0_30px_rgba(0,0,0,0.02)] dark:md:shadow-none border-l border-transparent dark:border-white/5 transition-all">
         {!isImmersive && <ClipadTopNav forceMobile={forceMobile} />}
         
-        <PullToRefresh className="relative z-30 page-enter pb-[80px] md:pb-0">
+        <PullToRefresh className="relative z-30 page-enter pb-[80px] md:pb-0 h-full overflow-y-auto overflow-x-hidden">
           {location.pathname === '/chat' && isChatDocked ? (
             <div className="flex items-center justify-center h-full text-slate-500 flex-col gap-3">
               <MessageSquare className="w-8 h-8 opacity-50" />

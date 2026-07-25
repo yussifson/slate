@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { Sparkles, Settings, Shield, LogOut, MessageSquare, Search, Plus, User, Plug, Network, ChevronDown, Layout, Video, Calendar, BarChart2, Brain } from 'lucide-react';
+import { Settings, Shield, LogOut, MessageSquare, Search, Plus, User, Plug, Network, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import NotificationCenter from '@/components/clipad/notifications/NotificationCenter';
@@ -21,7 +20,6 @@ import {
   DropdownMenuSubContent,
   DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu";
-import { isAdmin } from '@/lib/constants';
 
 export default function ClipadTopNav({ forceMobile = false }) {
   const { user, logout, switchAccount } = useAuth();
@@ -35,33 +33,23 @@ export default function ClipadTopNav({ forceMobile = false }) {
 
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
-  const navItems = [
-    { label: 'Spaces', path: '/spaces', icon: Layout },
-    { label: 'Recordings', path: '/videos', icon: Video },
-    { label: 'Meetings', path: '/meetings', icon: Calendar },
-    { label: 'Chat', path: '/chat', icon: MessageSquare }
-  ];
-
-  const knowledgeItems = [
-    { label: '🕸️ Knowledge Graph', path: '/knowledge-graph', desc: 'Visual relationship map' },
-    { label: '⏱️ Timeline', path: '/timeline', desc: 'Chronological knowledge feed' },
-    { label: '⚖️ Decisions', path: '/decisions', desc: 'AI-detected decisions' },
-    { label: '✅ Action Items', path: '/action-items', desc: 'Tasks across all sources' },
-    { label: '🔗 Knowledge Journey', path: '/journey', desc: 'Cross-system knowledge flow' },
-    { label: '🔌 Integrations', path: '/integrations', desc: 'Connect external apps' },
-  ];
-
   const handleAddAccount = () => {
     navigate('/login?prompt=login');
   };
 
+  // Extract page title from route
+  const getPageTitle = () => {
+    const path = location.pathname.split('/')[1];
+    if (!path) return 'Dashboard';
+    return path.charAt(0).toUpperCase() + path.slice(1);
+  };
+
   return (
-    <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-2 md:px-4 lg:px-6 h-14 md:h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5 gap-1 md:gap-3">
-      <div className="flex items-center gap-2 lg:gap-3 cursor-pointer shrink-0" onClick={() => navigate('/dashboard')}>
-        <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center border border-slate-200 dark:border-border shadow-sm text-primary">
-          <CliPadLogo size={20} className="md:w-[22px] md:h-[22px]" />
-        </div>
-        <span className="text-base md:text-lg font-bold tracking-tight hidden sm:block">CliPad</span>
+    <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-4 md:px-6 h-14 md:h-16 bg-white/80 dark:bg-card/80 backdrop-blur-2xl border-b border-black/5 dark:border-white/5 gap-3">
+      <div className="flex items-center gap-3 shrink-0">
+        <h1 className="text-lg md:text-xl font-semibold text-slate-800 dark:text-slate-100 hidden md:block">
+          {getPageTitle()}
+        </h1>
       </div>
       
       {/* Search — tablet and up */}
@@ -69,42 +57,7 @@ export default function ClipadTopNav({ forceMobile = false }) {
         <GlobalSearch />
       </div>
 
-      <div className="flex items-center gap-0.5 md:gap-1.5 lg:gap-2 shrink-0">
-        {/* Nav links — desktop only */}
-        {navItems.map(item => {
-          const isActive = location.pathname.startsWith(item.path);
-          const Icon = item.icon;
-          return (
-            <button 
-              key={item.path}
-              onClick={() => navigate(item.path)} 
-              className={cn(`flex items-center gap-1.5 px-1.5 lg:px-2 xl:px-3 py-1.5 lg:py-2 text-xs xl:text-sm font-medium rounded-lg transition-colors shrink-0`, forceMobile ? "hidden" : "hidden lg:flex", isActive ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white')}
-            >
-              {Icon && <Icon className="w-3.5 h-3.5" />}
-              {item.label}
-            </button>
-          );
-        })}
-
-
-        {isAdmin(user) && (
-            <>
-              {user?.clipad_plan === 'enterprise' ? (
-                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/enterprise' : '/clipad/enterprise')} className={cn(`flex items-center gap-1.5 px-1.5 lg:px-2 xl:px-3 py-1.5 lg:py-2 text-xs xl:text-sm font-medium rounded-lg transition-colors shrink-0`, forceMobile ? "hidden" : "hidden lg:flex", location.pathname.includes('/enterprise') ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white')}>
-                  <Shield className="w-3.5 h-3.5" />
-                  Enterprise
-                </button>
-              ) : (
-                <button onClick={() => navigate(window.location.hostname.includes('clipad') ? '/analytics' : '/clipad/analytics')} className={cn(`flex items-center gap-1.5 px-1.5 lg:px-2 xl:px-3 py-1.5 lg:py-2 text-xs xl:text-sm font-medium rounded-lg transition-colors shrink-0`, forceMobile ? "hidden" : "hidden lg:flex", location.pathname.includes('/analytics') ? 'text-primary bg-primary/10' : 'text-slate-500 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-white')}>
-                  <BarChart2 className="w-3.5 h-3.5" />
-                  Analytics
-                </button>
-              )}
-            </>
-        )}
-        
-        <div className={cn("h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1", forceMobile ? "hidden" : "hidden lg:block")} />
-        
+      <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
         <div className={forceMobile ? "hidden" : "hidden lg:block"}>
           <LanguageSwitcher />
         </div>
@@ -144,67 +97,67 @@ export default function ClipadTopNav({ forceMobile = false }) {
                 )}
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64 font-sans max-h-[85vh] overflow-y-auto">
+            <DropdownMenuContent align="end" className="w-64 font-sans max-h-[85vh] overflow-y-auto mt-2 p-2 border-slate-200 dark:border-white/10 bg-white/95 dark:bg-card/95 backdrop-blur-xl rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)]">
               <DropdownMenuLabel className="font-semibold px-3 py-2 flex flex-col">
                 <span className="text-foreground">{user?.full_name || 'User'}</span>
                 <span className="text-xs text-muted-foreground font-normal">{user?.email}</span>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer py-2">
-                <Settings className="mr-3 h-4 w-4 text-muted-foreground" />
+              <DropdownMenuSeparator className="bg-slate-100 dark:bg-white/5" />
+              <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer py-2.5 rounded-lg focus:bg-slate-50 dark:focus:bg-white/5">
+                <Settings className="mr-3 h-4 w-4 text-slate-500" />
                 <span>Settings</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/integrations')} className="cursor-pointer py-2">
-                <Plug className="mr-3 h-4 w-4 text-muted-foreground" />
+              <DropdownMenuItem onClick={() => navigate('/integrations')} className="cursor-pointer py-2.5 rounded-lg focus:bg-slate-50 dark:focus:bg-white/5">
+                <Plug className="mr-3 h-4 w-4 text-slate-500" />
                 <span>Integrations</span>
               </DropdownMenuItem>
               {user?.role === 'super_admin' && (
-                <DropdownMenuItem onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin')} className="cursor-pointer bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 py-2">
+                <DropdownMenuItem onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin')} className="cursor-pointer bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 py-2.5 mt-1 rounded-lg">
                   <Shield className="mr-3 h-4 w-4" />
-                  <span className="font-semibold">Super Admin Dashboard</span>
+                  <span className="font-semibold">Super Admin</span>
                 </DropdownMenuItem>
               )}
               
               {/* Account Switcher Section */}
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator className="bg-slate-100 dark:bg-white/5 my-1" />
               <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="cursor-pointer py-2">
-                  <User className="mr-3 h-4 w-4 text-muted-foreground" />
+                <DropdownMenuSubTrigger className="cursor-pointer py-2.5 rounded-lg focus:bg-slate-50 dark:focus:bg-white/5">
+                  <User className="mr-3 h-4 w-4 text-slate-500" />
                   <span>Switch Account</span>
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
-                  <DropdownMenuSubContent className="w-56 font-sans">
+                  <DropdownMenuSubContent className="w-56 font-sans p-2 border-slate-200 dark:border-white/10 bg-white/95 dark:bg-card/95 backdrop-blur-xl rounded-xl">
                     {savedAccounts.filter(acc => acc.id !== user?.id).length > 0 && (
                       <>
-                        <DropdownMenuLabel className="text-xs text-muted-foreground font-semibold px-3 py-1.5 uppercase tracking-wider">
+                        <DropdownMenuLabel className="text-xs text-slate-400 dark:text-slate-500 font-semibold px-3 py-1.5 uppercase tracking-wider">
                           Available Accounts
                         </DropdownMenuLabel>
                         {savedAccounts.filter(acc => acc.id !== user?.id).map(acc => (
                           <DropdownMenuItem 
                             key={acc.id} 
                             onClick={() => switchAccount(acc.id)}
-                            className="cursor-pointer flex items-center py-2"
+                            className="cursor-pointer flex items-center py-2.5 rounded-lg focus:bg-slate-50 dark:focus:bg-white/5"
                           >
-                            <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center mr-3 overflow-hidden shrink-0 border border-border">
+                            <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-secondary flex items-center justify-center mr-3 overflow-hidden shrink-0 border border-slate-200 dark:border-border">
                               {acc.avatar_url ? (
                                 <img src={acc.avatar_url} alt={acc.full_name} className="w-full h-full object-cover" />
                               ) : (
-                                <span className="text-[10px] font-bold text-muted-foreground">
+                                <span className="text-[10px] font-bold text-slate-500">
                                   {acc.full_name ? acc.full_name[0].toUpperCase() : <User className="w-3 h-3"/>}
                                 </span>
                               )}
                             </div>
                             <div className="flex flex-col min-w-0">
                               <span className="text-sm font-medium truncate">{acc.full_name || 'User'}</span>
-                              <span className="text-xs text-muted-foreground truncate">{acc.email}</span>
+                              <span className="text-xs text-slate-500 truncate">{acc.email}</span>
                             </div>
                           </DropdownMenuItem>
                         ))}
-                        <DropdownMenuSeparator />
+                        <DropdownMenuSeparator className="bg-slate-100 dark:bg-white/5 my-1" />
                       </>
                     )}
                     
-                    <DropdownMenuItem onClick={handleAddAccount} className="cursor-pointer py-2 text-primary focus:text-primary">
+                    <DropdownMenuItem onClick={handleAddAccount} className="cursor-pointer py-2.5 rounded-lg text-primary focus:text-primary focus:bg-primary/5">
                       <Plus className="mr-3 h-4 w-4" />
                       <span>Add another account</span>
                     </DropdownMenuItem>
@@ -212,8 +165,8 @@ export default function ClipadTopNav({ forceMobile = false }) {
                 </DropdownMenuPortal>
               </DropdownMenuSub>
 
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={async () => { await logout(); navigate('/login'); }} className="cursor-pointer py-2 text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400">
+              <DropdownMenuSeparator className="bg-slate-100 dark:bg-white/5 my-1" />
+              <DropdownMenuItem onClick={async () => { await logout(); navigate('/login'); }} className="cursor-pointer py-2.5 rounded-lg text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-900/20">
                 <LogOut className="mr-3 h-4 w-4" />
                 <span>Sign Out</span>
               </DropdownMenuItem>
