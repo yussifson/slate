@@ -229,32 +229,28 @@ export async function buildOrgContext(options = {}) {
           .limit(limit),
 
     // Decisions
-    spaceIds.length > 0
+    (spaceIds.length > 0
       ? supabase.from('clipad_decisions')
-          .select('id, decision_text, rationale, status, created_at, team_space_id')
-          .eq('status', 'active')
+          .select('id, decision_text, rationale, created_at, team_space_id')
           .in('team_space_id', spaceIds)
           .order('created_at', { ascending: false })
           .limit(15)
       : supabase.from('clipad_decisions')
-          .select('id, decision_text, rationale, status, created_at, team_space_id')
-          .eq('status', 'active')
+          .select('id, decision_text, rationale, created_at, team_space_id')
           .order('created_at', { ascending: false })
-          .limit(15),
+          .limit(15)).then(r => r).catch(() => ({ data: [] })),
 
     // Blockers
-    spaceIds.length > 0
+    (spaceIds.length > 0
       ? supabase.from('clipad_blockers')
-          .select('id, description, status, severity, detected_at, team_space_id')
-          .eq('status', 'open')
+          .select('id, description, detected_at, team_space_id')
           .in('team_space_id', spaceIds)
           .order('detected_at', { ascending: false })
           .limit(10)
       : supabase.from('clipad_blockers')
-          .select('id, description, status, severity, detected_at, team_space_id')
-          .eq('status', 'open')
+          .select('id, description, detected_at, team_space_id')
           .order('detected_at', { ascending: false })
-          .limit(10),
+          .limit(10)).then(r => r).catch(() => ({ data: [] })),
 
     // Videos
     spaceIds.length > 0
@@ -293,10 +289,10 @@ export async function buildOrgContext(options = {}) {
 
     // Commitments (global, not space-bound)
     supabase.from('clipad_commitments')
-      .select('id, commitment_text, status, due_date, owner_name')
-      .eq('status', 'pending')
+      .select('id, commitment_text, due_date')
       .order('created_at', { ascending: false })
-      .limit(15),
+      .limit(15)
+      .then(r => r).catch(() => ({ data: [] })),
 
     // Spaces
     spaceIds.length > 0
@@ -335,24 +331,24 @@ export async function buildOrgContext(options = {}) {
           .limit(20),
 
     // ── NEW: Space members (who is in each space) ──
-    spaceIds.length > 0
+    (spaceIds.length > 0
       ? supabase.from('clipad_space_members')
-          .select('id, space_id, user_id, role, joined_at, profiles:user_id(full_name, email, role)')
+          .select('id, space_id, user_id')
           .in('space_id', spaceIds)
           .limit(50)
-      : { data: [] },
+      : { data: [] }).then(r => r).catch(() => ({ data: [] })),
 
     // ── NEW: Chat rooms / channels ──
-    spaceIds.length > 0
-      ? supabase.from('clipad_chat_rooms')
+    (spaceIds.length > 0
+      ? supabase.from('chat_rooms')
           .select('id, name, description, space_id, created_at')
           .in('space_id', spaceIds)
           .order('created_at', { ascending: false })
           .limit(20)
-      : supabase.from('clipad_chat_rooms')
+      : supabase.from('chat_rooms')
           .select('id, name, description, space_id, created_at')
           .order('created_at', { ascending: false })
-          .limit(20),
+          .limit(20)).then(r => r).catch(() => ({ data: [] })),
 
     // ── NEW: Follow-ups ──
     supabase.from('clipad_follow_ups')

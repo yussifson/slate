@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import {
   Search, Sparkles, FileText, CheckCircle, MessageSquare, Calendar, Video,
   Loader2, X, ShieldAlert, AlertTriangle, ArrowRight, ExternalLink, Zap, Lock,
-  Command, Bot, CornerDownLeft, Filter, Check, Layers, ChevronRight, Copy, CheckCheck, Folder
+  Command, Bot, CornerDownLeft, Filter, Check, Layers, ChevronRight, Copy, CheckCheck, Folder, Clock
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { generateText } from '@/lib/cloudflareAI';
