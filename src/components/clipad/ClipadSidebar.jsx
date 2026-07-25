@@ -15,14 +15,20 @@ export default function ClipadSidebar({ forceMobile }) {
   const { toast } = useToast();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
+  const currentPlan = user?.clipad_plan || 'free';
+  const planRank = { free: 0, pro: 1, enterprise: 2 };
+  const targetPlan = currentPlan === 'free' ? 'pro' : currentPlan === 'pro' ? 'enterprise' : 'pro';
+  const actionWord = (planRank[currentPlan] || 0) > (planRank[targetPlan] || 0) ? 'Downgrade' : 'Upgrade';
+  const displayPlanName = currentPlan === 'enterprise' ? 'Enterprise' : currentPlan === 'pro' ? 'Pro' : 'Free Tier';
+  const targetPlanDisplay = targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1);
+
   const handleUpgradeClick = async () => {
     if (!user || !user.email) {
       toast({ title: 'Error', description: 'User email is required for payment.', variant: 'destructive' });
       return;
     }
 
-    const currentPlan = user.clipad_plan;
-    const isUpgradingToEnterprise = currentPlan === 'pro';
+    const isUpgradingToEnterprise = targetPlan === 'enterprise';
     const amount = isUpgradingToEnterprise ? 300 : 100; // 300 GHS or 100 GHS
 
     try {
@@ -190,17 +196,17 @@ export default function ClipadSidebar({ forceMobile }) {
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Current plan</p>
-                  <p className="text-[14px] font-bold text-slate-900 dark:text-slate-100">{user?.clipad_plan === 'enterprise' ? 'Enterprise' : 'Pro Trial'}</p>
+                  <p className="text-[14px] font-bold text-slate-900 dark:text-slate-100">{displayPlanName}</p>
                 </div>
               </div>
               <p className="text-[12px] text-slate-600 dark:text-slate-400 mb-3 leading-relaxed">
-                Upgrade to {user?.clipad_plan === 'pro' ? 'Enterprise' : 'Pro'} to get the latest exclusive features
+                {actionWord} to {targetPlanDisplay} to get the latest exclusive features
               </p>
               <button 
                 onClick={handleUpgradeClick}
                 className="w-full py-2 bg-white dark:bg-primary rounded-xl text-primary dark:text-white font-semibold text-[13px] shadow-sm border border-slate-200 dark:border-transparent flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors"
               >
-                <Shield className="w-3.5 h-3.5" fill="currentColor" /> Upgrade to {user?.clipad_plan === 'pro' ? 'Enterprise' : 'Pro'}
+                <Shield className="w-3.5 h-3.5" fill="currentColor" /> {actionWord} to {targetPlanDisplay}
               </button>
             </div>
           </div>
@@ -245,7 +251,7 @@ export default function ClipadSidebar({ forceMobile }) {
             <>
               <div className="flex-1 min-w-0">
                 <p className="text-[13px] font-bold text-slate-900 dark:text-slate-100 truncate group-hover:text-primary transition-colors">{firstName}</p>
-                <p className="text-[11px] text-slate-500 truncate">{user?.clipad_plan === 'enterprise' ? 'Enterprise plan' : 'Pro trial'}</p>
+                <p className="text-[11px] text-slate-500 truncate">{displayPlanName}</p>
               </div>
               <ChevronUp className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
             </>
