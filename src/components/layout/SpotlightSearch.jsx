@@ -114,21 +114,18 @@ export default function SpotlightSearch() {
           meetingsRes, videosRes, decisionsRes, actionItemsRes, spacesRes,
           externalRes
         ] = await Promise.all([
-          // CRM — server-side ilike for scalability (no more full-table fetches)
-          supabase.from('legal_cases').select('id, title, case_number, status').eq('company_id', companyId).or(`title.ilike.%${q}%,case_number.ilike.%${q}%`).limit(3),
-          supabase.from('clients').select('id, name, email, status').eq('company_id', companyId).or(`name.ilike.%${q}%,email.ilike.%${q}%`).limit(3),
-          supabase.from('staff_records').select('id, full_name, user_email, department').eq('company_id', companyId).or(`full_name.ilike.%${q}%,user_email.ilike.%${q}%`).limit(3),
-          supabase.from('tasks').select('id, title, status, due_date').eq('company_id', companyId).ilike('title', `%${q}%`).limit(3),
-          // CliPad-native tables
-          supabase.from('clipad_meeting_records').select('id, title, ai_summary, created_at').eq('company_id', companyId).or(`title.ilike.%${q}%,ai_summary.ilike.%${q}%`).order('created_at', { ascending: false }).limit(3),
-          supabase.from('clipad_videos').select('id, title, ai_summary, created_at').eq('company_id', companyId).or(`title.ilike.%${q}%,ai_summary.ilike.%${q}%`).order('created_at', { ascending: false }).limit(3),
-          supabase.from('clipad_decisions').select('id, decision_text, rationale, created_at').or(`decision_text.ilike.%${q}%,rationale.ilike.%${q}%`).order('created_at', { ascending: false }).limit(3),
-          supabase.from('clipad_action_items').select('id, title, is_complete, due_date, assigned_to').ilike('title', `%${q}%`).eq('is_complete', false).limit(3),
-          supabase.from('clipad_spaces').select('id, name, description, is_private').eq('company_id', companyId).or(`name.ilike.%${q}%,description.ilike.%${q}%`).limit(3),
-          // Vector semantic search for integration knowledge
-          supabase.functions.invoke('knowledge-search', {
+          Promise.resolve(supabase.from('legal_cases').select('id, title, case_number, status').eq('company_id', companyId).or(`title.ilike.%${q}%,case_number.ilike.%${q}%`).limit(3)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clients').select('id, name, email, status').eq('company_id', companyId).or(`name.ilike.%${q}%,email.ilike.%${q}%`).limit(3)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('staff_records').select('id, full_name, user_email, department').eq('company_id', companyId).or(`full_name.ilike.%${q}%,user_email.ilike.%${q}%`).limit(3)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('tasks').select('id, title, status, due_date').eq('company_id', companyId).ilike('title', `%${q}%`).limit(3)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_meeting_records').select('id, title, ai_summary, created_at').eq('company_id', companyId).or(`title.ilike.%${q}%,ai_summary.ilike.%${q}%`).order('created_at', { ascending: false }).limit(3)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_videos').select('id, title, ai_summary, created_at').eq('company_id', companyId).or(`title.ilike.%${q}%,ai_summary.ilike.%${q}%`).order('created_at', { ascending: false }).limit(3)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_decisions').select('id, decision_text, rationale, created_at').or(`decision_text.ilike.%${q}%,rationale.ilike.%${q}%`).order('created_at', { ascending: false }).limit(3)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_action_items').select('id, title, is_complete, due_date, assigned_to').ilike('title', `%${q}%`).eq('is_complete', false).limit(3)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_spaces').select('id, name, description, is_private').eq('company_id', companyId).or(`name.ilike.%${q}%,description.ilike.%${q}%`).limit(3)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.functions.invoke('knowledge-search', {
             body: { query: q, company_id: companyId, match_count: 4, threshold: 0.35 }
-          }).catch(() => ({ data: { results: [] } }))
+          })).catch(() => ({ data: { results: [] } }))
         ]);
         setResults({
           cases:       casesRes.data || [],
