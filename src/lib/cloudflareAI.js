@@ -244,14 +244,66 @@ export async function generateText(input, onStream = null) {
 }
 
 /**
- * Perform OCR / Data Extraction on an image using Kimi K2.5 (@cf/moonshotai/kimi-k2.5)
+ * Perform image analysis / OCR / vision on an image using Kimi K2.5
+ * Accepts: Uint8Array, ArrayBuffer, or base64 string
  */
 export async function analyzeImage(imageBytes, prompt) {
-  const result = await runAI(MODELS.vision, {
-    prompt,
-    image: Array.from(imageBytes)
-  });
-  return result.response;
+  // ── Convert to base64 ──────────────────────────────────────────────────────
+  let base64String = '';
+  if (typeof imageBytes === 'string') {
+    // Already base64 or data URL
+    base64String = imageBytes.startsWith('data:')
+      ? imageBytes.split(',')[1]
+      : imageBytes;
+  } else if (imageBytes instanceof ArrayBuffer) {
+    const bytes = new Uint8Array(imageBytes);
+    let binary = '';
+    bytes.forEach(b => { binary += String.fromCharCode(b); });
+    base64String = btoa(binary);
+  } else if (imageBytes instanceof Uint8Array || Array.isArray(imageBytes)) {
+    const arr = imageBytes instanceof Uint8Array ? imageBytes : new Uint8Array(imageBytes);
+    let binary = '';
+    arr.forEach(b => { binary += String.fromCharCode(b); });
+    base64String = btoa(binary);
+  }
+
+  // ── Strategy 1: Vision API with base64 payload ────────────────────────────
+  try {
+    const result = await runAI(MODELS.vision, {
+      prompt: prompt || 'Describe this image in detail and provide relevant business insights.',
+      image: base64String,  // Kimi K2.5 vision expects base64 string, not byte array
+    });
+    const text = result?.response || result?.result?.response || (typeof result === 'string' ? result : '');
+    if (text && text.length > 10) return text;
+  } catch (e) {
+    console.warn('[Vision] Primary vision API failed, trying message embed fallback:', e.message);
+  }
+
+  // ── Strategy 2: Embed base64 image in a chat message (multimodal) ─────────
+  try {
+    const result = await runAI(MODELS.vision, {
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${base64String}` } },
+            { type: 'text', text: prompt || 'Describe this image in detail and provide relevant business insights.' },
+          ],
+        },
+      ],
+      max_tokens: 1500,
+    });
+    const text = result?.response || result?.choices?.[0]?.message?.content || (typeof result === 'string' ? result : '');
+    if (text && text.length > 10) return text;
+  } catch (e) {
+    console.warn('[Vision] Multimodal message embed also failed:', e.message);
+  }
+
+  // ── Strategy 3: Describe what we know without vision (graceful degradation) ─
+  return await generateText([
+    { role: 'system', content: 'The user has uploaded an image for analysis. The vision API is temporarily unavailable. Acknowledge the image was received, explain that vision processing is currently unavailable, and offer to help with any text-based questions about the image.' },
+    { role: 'user', content: prompt || 'Please analyze this image.' },
+  ]);
 }
 
 export async function invokeCloudflareAi(prompt, systemPrompt = "") {
@@ -262,3 +314,4 @@ export async function invokeCloudflareAi(prompt, systemPrompt = "") {
   messages.push({ role: "user", content: prompt });
   return await generateText(messages);
 }
+

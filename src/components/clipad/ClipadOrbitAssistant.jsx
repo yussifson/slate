@@ -310,8 +310,9 @@ export default function ClipadOrbitAssistant({ isOpen = true, onClose, spaceId =
   const [messages, setMessages] = useState([]);
   const [messagesLoading, setMessagesLoading] = useState(false);
 
-  /* input & AI state */
+  /* input, file & AI state */
   const [input, setInput] = useState('');
+  const [attachedFile, setAttachedFile] = useState(null); // { name, bytes, type }
   const [isTyping, setIsTyping] = useState(false);
   const [streamingText, setStreamingText] = useState('');
 
@@ -328,7 +329,26 @@ export default function ClipadOrbitAssistant({ isOpen = true, onClose, spaceId =
 
   const endRef = useRef(null);
   const inputRef = useRef(null);
+  const fileInputRef = useRef(null);
   const streamingRef = useRef('');
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const arrayBuffer = event.target?.result;
+      if (arrayBuffer) {
+        setAttachedFile({
+          name: file.name,
+          bytes: new Uint8Array(arrayBuffer),
+          type: file.type.startsWith('image/') ? 'image' : 'file',
+        });
+      }
+    };
+    reader.readAsArrayBuffer(file);
+    e.target.value = '';
+  };
 
   /* scroll to bottom on new messages */
   useEffect(() => {
@@ -508,9 +528,15 @@ export default function ClipadOrbitAssistant({ isOpen = true, onClose, spaceId =
 
   /* ─── Main send handler ───────────────────────────────────────────────── */
   const handleSend = useCallback(async (overrideText) => {
-    const userText = (overrideText || input).trim();
-    if (!userText || isTyping) return;
+    const rawText = (overrideText || input).trim();
+    const fileSnap = attachedFile;
+    if ((!rawText && !fileSnap) || isTyping) return;
     setInput('');
+    setAttachedFile(null);
+
+    const userText = fileSnap
+      ? `${rawText || 'Please analyze this image.'}\n\n[Attached Image: ${fileSnap.name}]`
+      : rawText;
 
     // Ensure we have an active session
     let sessionId = activeSessionId;
@@ -536,16 +562,25 @@ export default function ClipadOrbitAssistant({ isOpen = true, onClose, spaceId =
 
     // Auto-title on first message
     if (isFirstMessage) {
-      autoTitleSession(sessionId, userText);
+      autoTitleSession(sessionId, rawText || fileSnap?.name || 'Image Analysis');
     }
 
     try {
-      const history = messages.slice(-10).map(m => ({
-        role: m.role === 'assistant' ? 'assistant' : 'user',
-        content: m.text,
-      }));
+      let fullText = '';
 
-      const systemPrompt = `You are Orbit, the AI organizational intelligence assistant for CliPad — a next-generation AI workspace platform. You have FULL real-time access to the workspace data below, including meetings, decisions, videos, blockers, tasks, commitments, standup updates, and content imported from external tools like Google Drive, Slack, GitHub, Zoom, Notion, and more.
+      if (fileSnap && fileSnap.type === 'image') {
+        // ── Vision Analysis Path ──────────────────────────────────────────────
+        const promptText = `Analyze this image in detail. User prompt: ${rawText || 'Describe this image and provide key insights.'}`;
+        const { analyzeImage } = await import('@/lib/cloudflareAI');
+        fullText = await analyzeImage(fileSnap.bytes, promptText);
+      } else {
+        // ── Standard Text Streaming Path ──────────────────────────────────────
+        const history = messages.slice(-10).map(m => ({
+          role: m.role === 'assistant' ? 'assistant' : 'user',
+          content: m.text,
+        }));
+
+        const systemPrompt = `You are Orbit, the AI organizational intelligence assistant for CliPad — a next-generation AI workspace platform. You have FULL real-time access to the workspace data below, including meetings, decisions, videos, blockers, tasks, commitments, standup updates, and content imported from external tools like Google Drive, Slack, GitHub, Zoom, Notion, and more.
 
 You are a top-tier AI assistant on par with ChatGPT, Claude, and Gemini. You respond with intelligence, clarity, and insight. Use markdown formatting: **bold** for emphasis, bullet lists, numbered lists, code blocks, and headings to organize complex answers.
 
@@ -567,22 +602,20 @@ AGENTIC CAPABILITIES — output ACTION:{...} to execute:
 CURRENT WORKSPACE KNOWLEDGE:
 ${orgContext?.contextText || 'Workspace data is loading. You can still answer general questions while I fetch your workspace context.'}`;
 
-      const allMessages = [
-        { role: 'system', content: systemPrompt },
-        ...history,
-        { role: 'user', content: userText },
-      ];
+        const allMessages = [
+          { role: 'system', content: systemPrompt },
+          ...history,
+          { role: 'user', content: userText },
+        ];
 
-      // Use streaming for real-time response
-      let fullText = '';
-      await generateText(allMessages, (accumulated) => {
-        streamingRef.current = accumulated;
-        setStreamingText(accumulated);
-        fullText = accumulated;
-      });
+        await generateText(allMessages, (accumulated) => {
+          streamingRef.current = accumulated;
+          setStreamingText(accumulated);
+          fullText = accumulated;
+        });
 
-      // If streaming returned empty, fallback already gave us something
-      if (!fullText) fullText = streamingRef.current;
+        if (!fullText) fullText = streamingRef.current;
+      }
 
       const { text: cleanedText, sources } = parseSourcesFromResponse(fullText, orgContext?.sourceMap || {});
 
@@ -954,6 +987,17 @@ ${orgContext?.contextText || 'Workspace data is loading. You can still answer ge
 
         {/* Input area */}
         <div className="px-4 pb-4 pt-2 shrink-0 bg-white dark:bg-[#1a1a1a] border-t border-slate-100 dark:border-white/5">
+          {/* File Preview Chip */}
+          {attachedFile && (
+            <div className="flex items-center gap-2 mb-2 px-3 py-1.5 rounded-xl bg-violet-50 dark:bg-violet-500/10 border border-violet-200 dark:border-violet-500/20 text-xs font-medium text-violet-700 dark:text-violet-300 w-fit animate-in fade-in">
+              <ImageIcon className="w-3.5 h-3.5" />
+              <span className="truncate max-w-[200px]">{attachedFile.name}</span>
+              <button onClick={() => setAttachedFile(null)} className="hover:text-red-500 ml-1">
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+
           <div className="relative flex items-end bg-slate-50 dark:bg-[#2a2a2a] rounded-2xl p-2 border border-slate-200 dark:border-white/10 focus-within:border-violet-400/60 dark:focus-within:border-violet-500/40 transition-all shadow-sm">
             <textarea
               ref={inputRef}
@@ -964,16 +1008,16 @@ ${orgContext?.contextText || 'Workspace data is loading. You can still answer ge
                 e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
               }}
               onKeyDown={handleKeyDown}
-              placeholder="Ask me anything..."
+              placeholder={attachedFile ? "Ask a question about this image..." : "Ask me anything..."}
               rows={1}
               className="flex-1 bg-transparent resize-none border-none focus:outline-none text-[14px] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 max-h-[120px] py-1.5 px-2 leading-relaxed"
               style={{ scrollbarWidth: 'none', minHeight: '36px' }}
             />
             <button
               onClick={() => handleSend()}
-              disabled={!input.trim() || isTyping}
+              disabled={(!input.trim() && !attachedFile) || isTyping}
               className={`p-2 rounded-xl ml-1 transition-all shrink-0 ${
-                input.trim() && !isTyping
+                (input.trim() || attachedFile) && !isTyping
                   ? 'bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-sm hover:shadow-violet-500/30 hover:shadow-md'
                   : 'bg-transparent text-transparent pointer-events-none'
               }`}
@@ -981,6 +1025,15 @@ ${orgContext?.contextText || 'Workspace data is loading. You can still answer ge
               <Send className="w-4 h-4 ml-0.5" />
             </button>
           </div>
+
+          {/* Hidden File Input */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileSelect}
+            accept="image/*"
+            className="hidden"
+          />
 
           {/* Footer */}
           <div className="flex justify-between items-center mt-2 px-1">
@@ -990,8 +1043,12 @@ ${orgContext?.contextText || 'Workspace data is loading. You can still answer ge
               {orgContext && <span className="text-slate-300 dark:text-slate-600">· Workspace ready</span>}
             </div>
             <div className="flex items-center gap-2">
-              <button className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
-                <Paperclip className="w-3 h-3" /> Attach
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+              >
+                <Paperclip className="w-3 h-3" /> Attach Image
               </button>
             </div>
           </div>
