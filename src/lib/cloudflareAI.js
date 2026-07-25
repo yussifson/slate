@@ -13,7 +13,7 @@ const API_ACCOUNTS = [];
 
 // Handle the primary/default ones first (no number suffix)
 const defaultToken = import.meta.env.VITE_CLOUDFLARE_AI_TOKEN;
-const defaultAccountId = import.meta.env.VITE_CLOUDFLARE_ACCOUNT_ID || "bf5126510c1f8f2759cc81c4e7d795ef";
+const defaultAccountId = import.meta.env.VITE_CLOUDFLARE_ACCOUNT_ID || "78b7b64f896a40f73928be7d40248fcc9793e94185e8ffb980cf243a6477ce8b";
 
 if (defaultToken) {
   API_ACCOUNTS.push({ token: defaultToken, accountId: defaultAccountId });
