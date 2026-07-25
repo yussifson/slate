@@ -27,7 +27,7 @@ import BlockerRadar from '@/components/clipad/features/BlockerRadar';
 import MeetingNecessityWidget from '@/components/clipad/features/MeetingNecessityWidget';
 import TimezoneFairnessWidget from '@/components/clipad/features/TimezoneFairnessWidget';
 import InstitutionalMemoryVault from '@/components/clipad/features/InstitutionalMemoryVault';
-import AIInsightsPanel from '@/components/clipad/features/AIInsightsPanel';
+import DailyBriefingWidget from '@/components/clipad/DailyBriefingWidget';
 import FollowUpEngine from '@/components/clipad/features/FollowUpEngine';
 import ClipadLoader from '@/components/ui/ClipadLoader';
 import SpaceSelectorModal from '@/components/clipad/SpaceSelectorModal';
@@ -364,9 +364,14 @@ export default function CliPadDashboard() {
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
 
         {/* Greeting */}
-        <div className="mb-8 md:mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="mb-6 md:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <h1 className="text-3xl md:text-5xl font-black mb-2 tracking-tight">{greeting()}, {firstName} <span className="inline-block animate-bounce origin-bottom-right delay-500">{getGreetingEmoji()}</span></h1>
           <p className="text-lg text-slate-500 dark:text-muted-foreground font-medium">Here's what's happening across your spaces.</p>
+        </div>
+
+        {/* CliPad 2.0 Proactive Daily AI Briefing */}
+        <div className="mb-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
+          <DailyBriefingWidget />
         </div>
 
         {/* Stats Row */}
