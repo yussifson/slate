@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Bot, Send, Sparkles, X, Brain, Loader2, ExternalLink, Calendar, Video, ShieldAlert, AlertTriangle, RefreshCw, ChevronDown, Plus, Link } from 'lucide-react';
+import { Bot, Send, Sparkles, X, Brain, Loader2, ExternalLink, Calendar, Video, ShieldAlert, AlertTriangle, RefreshCw, ChevronDown, Plus, Link, GripHorizontal, Mic, Paperclip, Command, ImageIcon, BarChart2, ListTodo, FileText, PenTool, MoreHorizontal, Layers } from 'lucide-react';
 import { buildOrgContext } from '@/lib/clipadIntelligence';
 import { generateText } from '@/lib/cloudflareAI';
 import { supabase } from '@/api/supabaseClient';
@@ -23,14 +23,7 @@ const STARTER_QUESTIONS = [
 
 export default function ClipadOrbitAssistant({ isOpen = true, onClose, spaceId = null }) {
   const { user } = useAuth();
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      role: 'assistant',
-      text: "Hello! I'm **Orbit**, your organizational intelligence assistant. I have real-time access to your workspace — meetings, decisions, videos, blockers, tasks, and commitments.\n\nAsk me anything about your organization.",
-      sources: [],
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [orgContext, setOrgContext] = useState(null);
@@ -288,47 +281,36 @@ ${orgContext?.contextText || 'Workspace data is still loading. Click the refresh
 
   return (
     <div className="fixed inset-0 md:inset-auto md:bottom-6 md:right-6 w-full h-full md:w-[420px] md:h-[650px] md:max-h-[calc(100vh-6rem)] bg-white dark:bg-[#212121] md:border md:border-slate-200 dark:md:border-white/10 md:rounded-3xl flex flex-col z-[100] overflow-hidden shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-300">
-      {/* Header - Native minimalist style */}
-      <div className="bg-white/90 dark:bg-[#212121]/90 backdrop-blur-md border-b border-black/5 dark:border-white/5 px-4 py-3.5 flex justify-between items-center text-slate-900 dark:text-white shrink-0 sticky top-0 z-10">
-        <div className="flex items-center gap-3">
+      {/* Header - Solid background based on design reference */}
+      <div className="bg-white dark:bg-[#1a1a1a] px-4 py-3 flex justify-between items-center text-slate-900 dark:text-white shrink-0 sticky top-0 z-[101]">
+        <div className="flex-1">
           {onClose && (
-            <button onClick={onClose} className="md:hidden p-2 -ml-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">
-              <ChevronDown className="w-6 h-6" />
+            <button onClick={onClose} className="md:hidden p-2 -ml-2 text-slate-500 hover:text-slate-900 transition-colors">
+              <ChevronDown className="w-5 h-5" />
             </button>
           )}
-          <div>
-            <h3 className="font-bold text-lg leading-tight flex items-center gap-2">
-              Orbit AI <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-            </h3>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              {isLoadingContext ? 'Syncing workspace...' : orgContext ? 'Connected to workspace' : 'Ready'}
-            </p>
+        </div>
+        <div className="flex-1 flex justify-center">
+          {/* Logo icon */}
+          <div className="w-6 h-6 text-slate-800 dark:text-slate-200">
+             <Layers className="w-full h-full" strokeWidth={2.5} />
           </div>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 flex-1 justify-end">
           <button
             onClick={loadContext}
             title="Refresh workspace data"
-            className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors"
+            className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors"
           >
-            <RefreshCw className={`w-4.5 h-4.5 ${isLoadingContext ? 'animate-spin' : ''}`} />
+            <GripHorizontal className="w-4.5 h-4.5" />
           </button>
           {onClose && (
-            <button onClick={onClose} className="hidden md:flex p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
-              <X className="w-5 h-5" />
+            <button onClick={onClose} className="hidden md:flex p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors">
+              <X className="w-4.5 h-4.5" />
             </button>
           )}
         </div>
       </div>
-
-      {/* Context Status */}
-      {orgContext && (
-        <div className="flex items-center justify-center gap-2 px-4 py-1.5 bg-slate-50 dark:bg-white/[0.02] border-b border-slate-100 dark:border-white/5 text-[10px] text-slate-500 dark:text-slate-400 font-medium shrink-0 flex-wrap">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          {orgContext.meetings.length} meetings · {orgContext.decisions.length} decisions · {orgContext.blockers.length} blockers · {orgContext.tasks.length} tasks
-          {orgContext.importedKnowledge?.length > 0 && <span>· <span className="text-sky-500 font-semibold">{orgContext.importedKnowledge.length} integrations</span></span>}
-        </div>
-      )}
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
@@ -412,54 +394,92 @@ ${orgContext?.contextText || 'Workspace data is still loading. Click the refresh
         <div ref={endRef} />
       </div>
 
-      {/* Starter Questions */}
-      {messages.length === 1 && !isTyping && (
-        <div className="px-4 pb-4 shrink-0 flex flex-col items-center">
-          <div className="flex flex-wrap justify-center gap-2 max-w-sm">
-            {STARTER_QUESTIONS.slice(0, 4).map((q) => (
-              <button
-                key={q}
-                onClick={() => handleSend(q)}
-                className="text-[13px] px-4 py-2 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#2f2f2f] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors font-medium shadow-sm text-center"
-              >
-                {q}
-              </button>
-            ))}
-          </div>
+      {/* Starter Area */}
+      {messages.length === 0 && !isTyping && (
+        <div className="flex-1 overflow-y-auto px-4 py-8 flex flex-col items-center">
+           <div className="flex flex-col items-center text-center mt-6 w-full">
+             <div className="w-12 h-12 text-slate-800 dark:text-slate-200 mb-6">
+               <Layers className="w-full h-full" strokeWidth={2} />
+             </div>
+             <h2 className="text-base text-slate-500 dark:text-slate-400 font-medium mb-1">Hi {user?.full_name?.split(' ')[0] || 'there'},</h2>
+             <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Welcome back! How can I help?</h1>
+             <p className="text-[13.5px] text-slate-500 dark:text-slate-400 mb-8 max-w-[280px] leading-relaxed">
+               I'm here to help you tackle your tasks. Choose from the prompts below or just tell me what you need!
+             </p>
+             <div className="grid grid-cols-2 gap-3 w-full max-w-[340px]">
+                <button onClick={() => handleSend("Create an image")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
+                  <ImageIcon className="w-3.5 h-3.5 text-emerald-500"/> Create image
+                </button>
+                <button onClick={() => handleSend("Analyze this data")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
+                  <BarChart2 className="w-3.5 h-3.5 text-blue-500"/> Analyze data
+                </button>
+                <button onClick={() => handleSend("Make a plan for")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
+                  <ListTodo className="w-3.5 h-3.5 text-purple-500"/> Make a plan
+                </button>
+                <button onClick={() => handleSend("Summarize this text")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
+                  <FileText className="w-3.5 h-3.5 text-pink-500"/> Summarize text
+                </button>
+                <button onClick={() => handleSend("Help me write")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
+                  <PenTool className="w-3.5 h-3.5 text-orange-500"/> Help me write
+                </button>
+                <button onClick={() => handleSend("Show me more options")} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all bg-white dark:bg-[#1f1f1f]">
+                  <MoreHorizontal className="w-3.5 h-3.5 text-slate-500"/> More
+                </button>
+             </div>
+           </div>
         </div>
       )}
 
       {/* Input */}
-      <div className="p-4 shrink-0 bg-white dark:bg-[#212121] border-t border-black/5 dark:border-white/5 md:border-none md:bg-transparent pb-safe">
-        <div className="relative flex items-end bg-slate-100 dark:bg-[#2f2f2f] rounded-3xl px-4 py-1.5 shadow-sm border border-slate-200/50 dark:border-white/5">
-          <button className="p-2 -ml-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors shrink-0">
-            <Plus className="w-5 h-5" />
-          </button>
+      <div className="px-4 pb-4 pt-2 shrink-0 bg-white dark:bg-[#1a1a1a] md:bg-transparent pb-safe">
+        <div className="relative flex items-end bg-white dark:bg-[#1a1a1a] rounded-2xl p-2 shadow-sm border border-slate-200 dark:border-white/10 focus-within:border-primary/50 transition-colors">
           <textarea
             ref={inputRef}
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => {
+              setInput(e.target.value);
+              e.target.style.height = 'auto';
+              e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
+            }}
             onKeyDown={handleKeyDown}
-            placeholder="Message Orbit..."
+            placeholder="Ask me anything..."
             rows={1}
-            className="flex-1 bg-transparent resize-none border-none focus:outline-none text-[15px] text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 max-h-32 py-2.5 px-2 leading-relaxed"
-            style={{ scrollbarWidth: 'none' }}
+            className="flex-1 bg-transparent resize-none border-none focus:outline-none text-[14.5px] text-slate-900 dark:text-white placeholder-slate-400 max-h-[120px] py-1.5 px-3 leading-relaxed"
+            style={{ scrollbarWidth: 'none', minHeight: '36px' }}
           />
+          <button
+            onClick={() => {}}
+            className="p-2 text-slate-300 dark:text-slate-600 hover:text-slate-500 transition-colors shrink-0"
+          >
+            <Mic className="w-5 h-5" />
+          </button>
           <button
             onClick={() => handleSend()}
             disabled={!input.trim() || isTyping}
-            className={`p-2 rounded-full mb-1 ml-1 transition-all shrink-0 ${
+            className={`p-1.5 rounded-full ml-1 transition-all shrink-0 ${
               input.trim() && !isTyping
-                ? 'bg-black dark:bg-white text-white dark:text-black'
-                : 'bg-slate-200 dark:bg-white/10 text-slate-400 dark:text-white/30'
+                ? 'bg-primary text-white shadow-sm opacity-100 transform scale-100'
+                : 'bg-transparent text-transparent opacity-0 transform scale-75 w-0 pointer-events-none'
             }`}
           >
             <Send className="w-4 h-4 ml-0.5" />
           </button>
         </div>
-        <p className="text-center text-[11px] text-slate-400 dark:text-slate-500 mt-3 hidden md:block">
-          Orbit can make mistakes. Check important info.
-        </p>
+        
+        {/* Footer actions */}
+        <div className="flex justify-between items-center mt-3 px-1">
+          <div className="text-[11px] text-slate-400 font-medium opacity-0 select-none">
+            {/* Removed Orbit V1 / UUI v1.2.8 */}
+          </div>
+          <div className="flex items-center gap-3">
+            <button className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+              <Command className="w-3 h-3" /> Shortcuts
+            </button>
+            <button className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+              <Paperclip className="w-3 h-3" /> Attach
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
