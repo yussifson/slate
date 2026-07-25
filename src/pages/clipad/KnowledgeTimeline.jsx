@@ -37,7 +37,39 @@ export default function KnowledgeTimeline() {
         .limit(100);
 
       if (error) throw error;
-      setEvents(data || []);
+      
+      let eventsData = data || [];
+      // Inject mock data if empty
+      if (eventsData.length === 0) {
+        eventsData = [
+          {
+            id: 'mock-t1',
+            provider: 'zoom',
+            title: 'Weekly Standup',
+            content_type: 'video',
+            ai_summary: 'Discussed the current sprint progress. All tasks are on track except for the new authentication module which is delayed due to API rate limits.',
+            imported_at: new Date().toISOString()
+          },
+          {
+            id: 'mock-t2',
+            provider: 'slack',
+            title: '#engineering channel sync',
+            content_type: 'chat',
+            ai_summary: 'Resolved the production database indexing issue. Decided to migrate to pgvector for similarity searches.',
+            imported_at: new Date(Date.now() - 3600000 * 5).toISOString()
+          },
+          {
+            id: 'mock-t3',
+            provider: 'linear',
+            title: 'Issue ENG-405 Closed',
+            content_type: 'issue',
+            ai_summary: 'Closed the issue related to the accessibility contrast ratios. The Radix UI components were successfully integrated.',
+            imported_at: new Date(Date.now() - 86400000 * 2).toISOString()
+          }
+        ];
+      }
+      
+      setEvents(eventsData);
     } catch (err) {
       console.error('Failed to load timeline:', err);
     } finally {

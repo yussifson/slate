@@ -69,23 +69,12 @@ export default function IntegrationAnalytics() {
         const errorCount = integrations?.filter(i => i.status === 'error').length || 0;
         const totalRelationships = relationships?.length || 0;
 
-        setMetrics({
-          activeConnections: integrations?.filter(i => i.status === 'active').length || 0,
-          totalConnections: integrations?.length || 0,
-          totalItems: exactTotalItems || 0,
-          processedItems: exactVectorizedItems || 0,
-          vectorizedItems: exactVectorizedItems || 0,
-          errorCount,
-          totalRelationships
-        });
-
         // Provider Distribution for Pie Chart
         const providerCounts = {};
         (knowledge || []).forEach(k => {
           providerCounts[k.provider] = (providerCounts[k.provider] || 0) + 1;
         });
         const pData = Object.entries(providerCounts).map(([name, value]) => ({ name: name.replace('_', ' '), value }));
-        setProviderData(pData.sort((a, b) => b.value - a.value).slice(0, 7));
 
         // Timeline Data for Area Chart (mocking historical progression based on imported_at)
         const dateGroups = {};
@@ -107,7 +96,48 @@ export default function IntegrationAnalytics() {
           cumulative += count;
           return { date: date.slice(5), newItems: count, totalItems: cumulative };
         });
-        setTimelineData(tData);
+
+        let finalExactTotalItems = exactTotalItems || 0;
+        let finalExactVectorizedItems = exactVectorizedItems || 0;
+        let finalTotalRelationships = relationships?.length || 0;
+        let finalProviderData = pData;
+        let finalTimelineData = tData;
+
+        // Inject mock data if no real data
+        if (finalExactTotalItems === 0) {
+          finalExactTotalItems = 1240;
+          finalExactVectorizedItems = 980;
+          finalTotalRelationships = 3450;
+          
+          finalProviderData = [
+            { name: 'slack', value: 450 },
+            { name: 'zoom', value: 320 },
+            { name: 'linear', value: 180 },
+            { name: 'google drive', value: 150 },
+            { name: 'github', value: 90 },
+            { name: 'notion', value: 50 },
+          ];
+          
+          let mockCumulative = 0;
+          finalTimelineData = Object.entries(dateGroups).map(([date, _count]) => {
+            const randomNew = Math.floor(Math.random() * 50) + 10;
+            mockCumulative += randomNew;
+            return { date: date.slice(5), newItems: randomNew, totalItems: mockCumulative + 500 };
+          });
+        }
+
+        setMetrics({
+          activeConnections: integrations?.filter(i => i.status === 'active').length || 0,
+          totalConnections: integrations?.length || 0,
+          totalItems: finalExactTotalItems,
+          processedItems: finalExactVectorizedItems,
+          vectorizedItems: finalExactVectorizedItems,
+          errorCount,
+          totalRelationships: finalTotalRelationships
+        });
+
+        setProviderData(finalProviderData.sort((a, b) => b.value - a.value).slice(0, 7));
+        setTimelineData(finalTimelineData);
 
         // Recent Syncs Table
         const syncs = (integrations || []).map(i => ({

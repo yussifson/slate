@@ -270,6 +270,25 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   <LayoutGrid className="w-4 h-4 text-[#71717a] dark:text-gray-400 group-hover:text-primary transition-colors" />
  </Button>
 
+ {/* Orbit AI Toggle */}
+ <Button
+ onClick={toggleAI}
+ variant="ghost"
+ size="icon"
+ className={`shrink-0 group relative overflow-hidden flex items-center justify-center w-8 h-8 sm:w-auto sm:px-3 sm:py-1.5 text-xs font-semibold rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${
+ isAIOpen
+ ? "bg-slate-100 dark:bg-slate-800 text-primary border-primary/40 scale-95 shadow-inner"
+ : "bg-card text-foreground border-primary/40 hover:border-primary/40 hover:bg-slate-50 hover:text-primary dark:hover:bg-slate-100 shadow-sm"
+ }`}
+ >
+ <Sparkles className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isAIOpen ? "text-primary animate-spin" : "text-[#71717a] dark:text-gray-400 group-hover:text-primary"} sm:mr-1.5`} style={{ animationDuration: '3s'}} />
+ <span className={`hidden sm:inline ${isAIOpen ? "text-primary" : "text-[#71717a] dark:text-gray-400 group-hover:text-primary"}`}>{t("orbit_flow", "Orbit Flow")}</span>
+ <span className="flex h-1.5 w-1.5 relative absolute sm:static right-1 top-1 sm:right-auto sm:top-auto">
+ <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${isAIOpen ? "bg-primary" : "bg-primary/70"} opacity-75`}></span>
+ <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
+ </span>
+ </Button>
+
  {/* Orbit Bolt Toggle */}
  {!['client', 'patient', 'guest', 'parent', 'student', 'learner', 'trainee', 'customer', 'policyholder', 'member', 'tenant', 'landlord', 'employee'].includes(user?.role?.toLowerCase()) && (
  <Button
@@ -280,34 +299,13 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  isBoltOpen
  ? "bg-gradient-to-r from-primary/80 to-primary text-white border-primary -[0_0_15px_rgba(var(--primary),0.5)] scale-95"
  : "bg-card text-foreground border-primary/40 hover:border-primary/50 hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/10 hover:text-primary -[0_0_10px_rgba(var(--primary),0.15)]"
-}`}
+ }`}
  >
  <span className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isBoltOpen ? "text-white fill-current" : "text-primary fill-current"} sm:mr-1.5`}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
   <span className="hidden sm:inline">{t("orbit_build", "Orbit Build")}</span>
   </Button>
  )}
-
-
- {/* Orbit AI Toggle */}
- <Button
- onClick={toggleAI}
- variant="ghost"
- size="icon"
- className={`shrink-0 relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-semibold rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 ${
- isAIOpen
- ? "bg-gradient-to-r from-primary to-primary text-white border-primary -[0_0_15px_rgba(59,130,246,0.5)] scale-95"
- : "bg-card text-foreground border-primary/40 hover:border-primary/40 hover:bg-gradient-to-r hover:from-primary/50 hover:to-primary/50 hover:text-primary -[0_0_10px_rgba(59,130,246,0.15)]"
-}`}
- >
- <span className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
- <Sparkles className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isAIOpen ? "animate-spin text-white" : "text-primary"} sm:mr-1.5`} style={{ animationDuration: '3s'}} />
- <span className="hidden sm:inline">{t("orbit_flow", "Orbit Flow")}</span>
- <span className="flex h-1.5 w-1.5 relative absolute sm:static right-1 top-1 sm:right-auto sm:top-auto">
- <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary/70 opacity-75"></span>
- <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
- </span>
- </Button>
 
  {/* Secondary Options OR Popover */}
  {isPanelOpen ? (

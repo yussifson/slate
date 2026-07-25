@@ -46,15 +46,46 @@ export default function DecisionLedger() {
 
       if (e1 && e2) throw e1;
 
-      const allItems = [...(withDecisions || []), ...(byKeyword || [])];
+      let allItems = [...(withDecisions || []), ...(byKeyword || [])];
+      
+      // Inject mock data if empty
+      if (allItems.length === 0) {
+        allItems = [
+          {
+            id: 'mock-d1',
+            provider: 'zoom',
+            title: 'Q3 Product Roadmap Review',
+            imported_at: new Date().toISOString(),
+            ai_entities: { decisions: ['We will prioritize the new Orbit Flow integration over the mobile app redesign for Q3.', 'The budget for Q4 marketing campaign is approved at $50,000.'] },
+            ai_summary: 'Discussion regarding the prioritization of features for the upcoming Q3 product roadmap. The team agreed on pushing the mobile redesign to next year.'
+          },
+          {
+            id: 'mock-d2',
+            provider: 'slack',
+            title: '#engineering channel',
+            imported_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+            ai_entities: { decisions: ['Switched from standard PostgreSQL indexing to pgvector for faster semantic search.', 'Agreed to adopt TailwindCSS for all new internal dashboards.'] },
+            ai_summary: 'Technical debate about database indexing strategies and frontend styling frameworks for the new admin panel.'
+          },
+          {
+            id: 'mock-d3',
+            provider: 'linear',
+            title: 'Issue ENG-405: Upgrade UI components',
+            imported_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+            ai_entities: { decisions: ['Decided to implement Radix UI primitives rather than building custom accessibility wrappers.'] },
+            ai_summary: 'Ticket discussing the ongoing effort to make the application fully accessible. Radix UI was chosen as the base layer.'
+          }
+        ];
+      }
+
       const seen = new Set();
-      const deduped = allItems.filter(item => {
+      const unique = allItems.filter(item => {
         if (seen.has(item.id)) return false;
         seen.add(item.id);
         return true;
       });
 
-      const filtered = deduped.filter(item => {
+      const filtered = unique.filter(item => {
         const hasAiDecision =
           item.ai_entities?.decisions?.length > 0 ||
           (typeof item.ai_entities?.decisions === 'string' && item.ai_entities.decisions.trim().length > 0);

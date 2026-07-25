@@ -51,9 +51,41 @@ export default function ActionItems() {
         .order('imported_at', { ascending: false })
         .limit(200);
 
+      let itemsData = data || [];
+
+      // Inject mock data if empty
+      if (itemsData.length === 0) {
+        itemsData = [
+          {
+            id: 'mock-a1',
+            provider: 'slack',
+            title: 'Project Kickoff Meeting',
+            imported_at: new Date().toISOString(),
+            ai_action_items: ['Schedule follow-up meeting with design team', 'Finalize the Q3 budget estimates by Friday'],
+            ai_summary: 'Kickoff meeting notes covering initial scope and responsibilities.'
+          },
+          {
+            id: 'mock-a2',
+            provider: 'linear',
+            title: 'Issue ENG-102: Refactor auth',
+            imported_at: new Date(Date.now() - 86400000).toISOString(),
+            ai_action_items: ['Update the Supabase JWT token expiration setting', 'Write unit tests for the new login flow'],
+            ai_summary: 'Discussion on moving from cookie-based auth to secure HttpOnly headers.'
+          },
+          {
+            id: 'mock-a3',
+            provider: 'zoom',
+            title: 'Weekly Standup',
+            imported_at: new Date(Date.now() - 86400000 * 3).toISOString(),
+            ai_action_items: ['Review the PR for the new analytics dashboard', 'Send out the weekly progress report to stakeholders'],
+            ai_summary: 'General updates from the engineering and marketing teams.'
+          }
+        ];
+      }
+
       // Flatten into individual action item rows
       const flat = [];
-      (data || []).forEach(row => {
+      itemsData.forEach(row => {
         const actions = Array.isArray(row.ai_action_items) ? row.ai_action_items : [];
         actions.forEach((action, idx) => {
           if (typeof action === 'string' && action.trim().length > 5) {
