@@ -229,8 +229,6 @@ export async function buildOrgContext(options = {}) {
           .limit(limit),
 
     // Decisions
-    (spaceIds.length > 0
-    // Decisions
     (companyId
       ? supabase.from('clipad_decisions')
           .select('id, decision_text, rationale, created_at')
