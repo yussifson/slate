@@ -32,7 +32,7 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
 
   return (
     <>
-      <nav className={cn("fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-background/95 backdrop-blur-3xl border-t border-slate-200/60 dark:border-border/60 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)]", forceMobile ? "flex" : "lg:hidden")}>
+      <nav className={cn("fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-background/95 backdrop-blur-3xl border-t border-slate-200/60 dark:border-border/60 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)]", forceMobile ? "flex" : "md:hidden")}>
         <div className="flex items-center justify-around px-2 md:px-8 h-[60px] md:h-[68px] w-full">
           {navItems.map((item) => {
             const isActive = item.path ? location.pathname.startsWith(item.path) : isMenuOpen;

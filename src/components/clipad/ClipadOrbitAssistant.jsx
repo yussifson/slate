@@ -290,12 +290,7 @@ ${orgContext?.contextText || 'Workspace data is still loading. Click the refresh
             </button>
           )}
         </div>
-        <div className="flex-1 flex justify-center">
-          {/* Logo icon */}
-          <div className="w-6 h-6 text-slate-800 dark:text-slate-200">
-             <Layers className="w-full h-full" strokeWidth={2.5} />
-          </div>
-        </div>
+
         <div className="flex items-center gap-1 flex-1 justify-end">
           <button
             onClick={loadContext}
