@@ -230,27 +230,29 @@ export async function buildOrgContext(options = {}) {
 
     // Decisions
     (spaceIds.length > 0
+    // Decisions
+    (companyId
       ? supabase.from('clipad_decisions')
-          .select('id, decision_text, rationale, created_at, team_space_id')
-          .in('team_space_id', spaceIds)
+          .select('id, decision_text, rationale, created_at')
+          .eq('workspace_id', companyId)
           .order('created_at', { ascending: false })
           .limit(15)
       : supabase.from('clipad_decisions')
-          .select('id, decision_text, rationale, created_at, team_space_id')
+          .select('id, decision_text, rationale, created_at')
           .order('created_at', { ascending: false })
-          .limit(15)).then(r => r).catch(() => ({ data: [] })),
+          .limit(15)).catch(() => ({ data: [] })),
 
     // Blockers
-    (spaceIds.length > 0
+    (companyId
       ? supabase.from('clipad_blockers')
-          .select('id, description, detected_at, team_space_id')
-          .in('team_space_id', spaceIds)
-          .order('detected_at', { ascending: false })
+          .select('id, description, severity, created_at')
+          .eq('workspace_id', companyId)
+          .order('created_at', { ascending: false })
           .limit(10)
       : supabase.from('clipad_blockers')
-          .select('id, description, detected_at, team_space_id')
-          .order('detected_at', { ascending: false })
-          .limit(10)).then(r => r).catch(() => ({ data: [] })),
+          .select('id, description, severity, created_at')
+          .order('created_at', { ascending: false })
+          .limit(10)).catch(() => ({ data: [] })),
 
     // Videos
     spaceIds.length > 0
@@ -287,12 +289,12 @@ export async function buildOrgContext(options = {}) {
           .limit(30)
       : { data: [] },
 
-    // Commitments (global, not space-bound)
+    // Commitments (global)
     supabase.from('clipad_commitments')
       .select('id, commitment_text, due_date')
       .order('created_at', { ascending: false })
       .limit(15)
-      .then(r => r).catch(() => ({ data: [] })),
+      .catch(() => ({ data: [] })),
 
     // Spaces
     spaceIds.length > 0
@@ -306,7 +308,7 @@ export async function buildOrgContext(options = {}) {
           .order('created_at', { ascending: false })
           .limit(20),
 
-    // ── NEW: Standups (the data that was previously missing!) ──
+    // ── Standups ──
     spaceIds.length > 0
       ? supabase.from('clipad_standups')
           .select('id, user_name, today, yesterday, blockers, mood, created_at, space_id')
@@ -318,7 +320,7 @@ export async function buildOrgContext(options = {}) {
           .order('created_at', { ascending: false })
           .limit(30),
 
-    // ── NEW: Org Events timeline ──
+    // ── Org Events timeline ──
     spaceIds.length > 0
       ? supabase.from('clipad_org_events')
           .select('id, event_type, title, description, created_at, space_id, actor_id, importance')
@@ -330,25 +332,16 @@ export async function buildOrgContext(options = {}) {
           .order('created_at', { ascending: false })
           .limit(20),
 
-    // ── NEW: Space members (who is in each space) ──
+    // ── Space members ──
     (spaceIds.length > 0
       ? supabase.from('clipad_space_members')
           .select('id, space_id, user_id')
           .in('space_id', spaceIds)
           .limit(50)
-      : { data: [] }).then(r => r).catch(() => ({ data: [] })),
+      : { data: [] }).catch(() => ({ data: [] })),
 
-    // ── NEW: Chat rooms / channels ──
-    (spaceIds.length > 0
-      ? supabase.from('chat_rooms')
-          .select('id, name, description, space_id, created_at')
-          .in('space_id', spaceIds)
-          .order('created_at', { ascending: false })
-          .limit(20)
-      : supabase.from('chat_rooms')
-          .select('id, name, description, space_id, created_at')
-          .order('created_at', { ascending: false })
-          .limit(20)).then(r => r).catch(() => ({ data: [] })),
+    // ── Chat rooms (PowerSync / Local fallback) ──
+    Promise.resolve({ data: [] }),
 
     // ── NEW: Follow-ups ──
     supabase.from('clipad_follow_ups')

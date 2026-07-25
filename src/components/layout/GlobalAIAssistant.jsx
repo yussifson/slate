@@ -256,15 +256,24 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
   };
 
  useEffect(() => {
- if (!companyId || !user?.email || isInitialized) return;
+ if (!companyId || !user?.email) return;
+ 
+ // Reset/Re-init when company/user changes
+ setIsInitialized(false);
+ 
  const loadSessions = async () => {
    try {
      const stored = localStorage.getItem(`orbit_sessions_${user.email}_${companyId}`);
      if (stored) {
        const parsed = JSON.parse(stored);
-       if (parsed && parsed.length > 0) {
-         setSessions(parsed);
-         setActiveId(parsed[0].id);
+       // Filter out stuck "..." messages or empty artifacts
+       const cleaned = parsed.map(s => ({
+         ...s,
+         messages: (s.messages || []).filter(m => m.content !== '...')
+       }));
+       if (cleaned && cleaned.length > 0) {
+         setSessions(cleaned);
+         setActiveId(cleaned[0].id);
        } else {
          throw new Error("Empty array");
        }
@@ -761,84 +770,78 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 }))
  ];
 
- let maxSteps = 5;
- let stepCount = 0;
- let finalCleanText = "";
+  let maxSteps = 5;
+  let stepCount = 0;
+  let finalCleanText = "";
+  const streamingMsgId = generateId();
+
+  // Add single initial assistant message with streaming state
+  addMessages(sid, [{ id: streamingMsgId, role: 'assistant', content: '...', isStreaming: true }]);
 
   while (stepCount < maxSteps) {
-  stepCount++;
-  
-  const tempMsgId = `stream-${Date.now()}`;
-  if (stepCount === 1) {
-    addMessages(sid, [{ id: tempMsgId, role: 'assistant', content: '...', isStreaming: true }]);
-  }
+    stepCount++;
 
-  const responseText = await generateText(apiMessages, (chunk) => {
-    if (stepCount === 1) {
-      // Strip actions to avoid flickering JSON in UI
-      const displayChunk = chunk.replace(/<[a-zA-Z0-9_]+ACTION>.*?<\/?[a-zA-Z0-9_]+ACTION>/gis, '').replace(/<[a-zA-Z0-9_]+ACTION>/gi, '');
+    const responseText = await generateText(apiMessages, (chunk) => {
+      const displayChunk = chunk
+        .replace(/<[a-zA-Z0-9_]+ACTION>.*?<\/?[a-zA-Z0-9_]+ACTION>/gis, '')
+        .replace(/<[a-zA-Z0-9_]+ACTION>/gi, '');
+
       setSessions(prev => prev.map(s => {
         if (s.id !== sid) return s;
         return {
           ...s,
-          messages: s.messages.map(m => m.id === tempMsgId ? { ...m, content: displayChunk || '...' } : m)
+          messages: s.messages.map(m => m.id === streamingMsgId ? { ...m, content: displayChunk || '...' } : m)
         };
       }));
+    });
+
+    const { cleanText, actions } = parseAgentActions(responseText);
+
+    if (cleanText) finalCleanText += (finalCleanText ? "\n\n" : "") + cleanText;
+
+    if (actions.length === 0) {
+      break; // AI is done
     }
-  });
 
-  const { cleanText, actions} = parseAgentActions(responseText);
-  
-  if (cleanText) finalCleanText += (finalCleanText ? "\n\n" : "") + cleanText;
-
-  if (actions.length === 0) {
-    if (stepCount === 1) {
+    let confirmationAction = actions.find(a => a.tool === 'ask_confirmation');
+    if (confirmationAction) {
       setSessions(prev => prev.map(s => {
         if (s.id !== sid) return s;
         return {
           ...s,
-          messages: s.messages.map(m => m.id === tempMsgId ? { ...m, content: finalCleanText, isStreaming: false } : m)
+          messages: s.messages.map(m => m.id === streamingMsgId ? {
+            ...m,
+            content: finalCleanText || confirmationAction.message,
+            isConfirmation: true,
+            pendingAction: confirmationAction.actionToConfirm,
+            isStreaming: false
+          } : m)
         };
       }));
+      finalCleanText = ""; // Handled via confirmation message
+      break; // Pause loop
     }
-    break; // AI is done
+
+    const actionResults = await executeActionsAsync(actions);
+
+    apiMessages.push({ role: 'assistant', content: responseText });
+    apiMessages.push({ role: 'system', content: `Action Results:\n${actionResults.join('\n')}` });
   }
 
-  let confirmationAction = actions.find(a => a.tool === 'ask_confirmation');
-  if (confirmationAction) {
-    if (stepCount === 1) {
-      setSessions(prev => prev.map(s => {
-        if (s.id !== sid) return s;
-        return {
-          ...s,
-          messages: s.messages.map(m => m.id === tempMsgId ? { ...m, content: finalCleanText || confirmationAction.message, isConfirmation: true, pendingAction: confirmationAction.actionToConfirm, isStreaming: false } : m)
-        };
-      }));
-    } else {
-      addMessages(sid, [{ 
-        role: 'assistant', 
-        content: finalCleanText || confirmationAction.message,
-        isConfirmation: true,
-        pendingAction: confirmationAction.actionToConfirm 
-      }]);
-    }
-    finalCleanText = ""; // Handled via the confirmation message
-    break; // Pause loop
-  }
-
-  const actionResults = await executeActionsAsync(actions);
-  
-  apiMessages.push({ role: 'assistant', content: responseText});
-  apiMessages.push({ role: 'system', content: `Action Results:\n${actionResults.join('\n')}`});
- }
-
-  if (finalCleanText && stepCount > 1) {
-    addMessages(sid, [{ role: 'assistant', content: finalCleanText}]);
-  } else if (stepCount > 1) {
-    // If we had a temp message but no final text, remove the temp message
+  // Ensure streamingMsgId is updated with final text and marked as non-streaming
+  if (finalCleanText) {
     setSessions(prev => prev.map(s => {
       if (s.id !== sid) return s;
-      return { ...s, messages: s.messages.filter(m => m.id !== `stream-${Date.now()}` && !m.isStreaming) };
+      return {
+        ...s,
+        messages: s.messages.map(m => m.id === streamingMsgId ? { ...m, content: finalCleanText, isStreaming: false } : m)
+      };
+    }));
+  } else {
+    // If no text was produced, clean up the placeholder
+    setSessions(prev => prev.map(s => {
+      if (s.id !== sid) return s;
+      return { ...s, messages: s.messages.filter(m => m.id !== streamingMsgId) };
     }));
   }
  }
