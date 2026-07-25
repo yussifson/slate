@@ -3,7 +3,7 @@ import { useTranslation} from "react-i18next";
 import React, { useState, useRef, useEffect, useCallback} from 'react';
 
 import { useLocation, useNavigate} from 'react-router-dom';
-import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square, MoreHorizontal } from 'lucide-react';
+import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square, MoreHorizontal, LayoutGrid, Command, Layers, ListTodo, PenTool, BarChart2, ChevronDown } from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { generateText, analyzeImage} from '@/lib/cloudflareAI';
@@ -166,10 +166,7 @@ function newSession() {
  id: generateId(),
  title: 'New Chat',
  createdAt: new Date().toISOString(),
- messages: [{
- role: 'assistant',
- content: "Hello! I'm **Orbit** 👋\n\nI can help you:\n Navigate the app\n Create, edit & manage records\n Analyze data on any page\n Answer any question\n\nYou can also use your **🎙️ voice** or **📎 upload files** (images, PDFs, CSV, etc.)\n\nWhat would you like to do?"
- }]
+ messages: []
  };
 }
 
@@ -915,15 +912,18 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  {/* Main Panel */}
  <div className="flex-1 flex flex-col min-w-0 relative">
 
-  {/* Header — Floating Top-Right Controls Dropdown (Removes bulky top card) */}
+  {/* Header — Centered Logo & Right Controls */}
+  <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30">
+    <Layers className="w-6 h-6 text-slate-800 dark:text-slate-200" />
+  </div>
   <div className="absolute top-4 right-4 z-30 flex items-center gap-1.5">
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button 
-          className="w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 shadow-md flex items-center justify-center transition-all hover:scale-105 active:scale-95 backdrop-blur-md"
+          className="w-8 h-8 rounded-full bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 flex items-center justify-center transition-all"
           title="OrbitFlow Options"
         >
-          <MoreHorizontal className="w-4 h-4" />
+          <LayoutGrid className="w-4 h-4" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-52 z-[100] shadow-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1117] p-1.5">
@@ -951,7 +951,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 
     <button
       onClick={onClose}
-      className="w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 text-slate-400 border border-slate-200/80 dark:border-slate-700/80 shadow-md flex items-center justify-center transition-all hover:scale-105 active:scale-95 backdrop-blur-md"
+      className="w-8 h-8 rounded-full bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 flex items-center justify-center transition-all"
       title="Close chat"
     >
       <X className="w-4 h-4" />
@@ -1003,21 +1003,40 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  </div>
  </div>
 
- {/* Contextual Suggestions */}
- {!isLoading && messages.length <= 1 && (
- <div className="px-3 pb-2 flex flex-wrap gap-2.5 shrink-0">
- {(PAGE_SUGGESTIONS[location.pathname] || PAGE_SUGGESTIONS['/']).map((s, i) => {
- return (
- <button
- key={i}
- onClick={() => handleSend(s)}
- className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-slate-50 dark:bg-primary/30 text-primary/90 dark:text-primary/70 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:bg-slate-100 dark:hover:bg-primary/40 transition-colors truncate max-w-[180px]"
- >
- {s}
- </button>
- );
-})}
- </div>
+ {/* Zero State Welcome View */}
+ {messages.length === 0 && !isLoading && (
+   <div className="flex flex-col items-center justify-center h-full px-4 mt-[10vh] text-center animate-in fade-in duration-500">
+     <h2 className="text-[18px] font-medium text-slate-800 dark:text-slate-200 mb-1">
+       Hi {user?.full_name?.split(' ')[0] || 'there'},
+     </h2>
+     <h1 className="text-[22px] font-bold text-slate-900 dark:text-white mb-3">
+       Welcome back! How can I help?
+     </h1>
+     <p className="text-[13px] text-slate-500 dark:text-slate-400 max-w-[280px] mb-8 leading-relaxed">
+       I'm here to help you tackle your tasks. Choose from the prompts below or just tell me what you need!
+     </p>
+     
+     <div className="grid grid-cols-2 md:grid-cols-3 gap-2 w-full max-w-[360px]">
+       <button onClick={() => handleSend("Create image")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
+         <Image className="w-[14px] h-[14px] text-emerald-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Create image</span>
+       </button>
+       <button onClick={() => handleSend("Analyze data")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
+         <BarChart2 className="w-[14px] h-[14px] text-blue-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Analyze data</span>
+       </button>
+       <button onClick={() => handleSend("Make a plan")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
+         <ListTodo className="w-[14px] h-[14px] text-purple-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Make a plan</span>
+       </button>
+       <button onClick={() => handleSend("Summarize text")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
+         <FileText className="w-[14px] h-[14px] text-pink-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Summarize text</span>
+       </button>
+       <button onClick={() => handleSend("Help me write")} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left">
+         <PenTool className="w-[14px] h-[14px] text-orange-500 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">Help me write</span>
+       </button>
+       <button className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-left justify-center">
+         <Sparkles className="w-[14px] h-[14px] text-slate-400 shrink-0" /> <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">More</span>
+       </button>
+     </div>
+   </div>
  )}
 
  {/* Attached File Preview */}
@@ -1034,57 +1053,59 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  )}
 
  {/* Input */}
- <div className="px-3 md:px-4 py-3 md:py-4 pb-[max(12px,env(safe-area-inset-bottom))] bg-white dark:bg-[#0A0F1C] border-t border-slate-100 dark:border-white/5 shrink-0 relative z-10">
- <div className="relative rounded-3xl bg-slate-100 dark:bg-[#131A2B] border-none shadow-none focus-within:ring-2 focus-within:ring-emerald-500/50 transition-all duration-300 flex flex-col">
- <textarea
- ref={inputRef}
- value={input}
- onChange={e => setInput(e.target.value)}
- placeholder={isRecording ? 'Listening... speak now' : (chatMode === 'flow' ? 'Design a workflow...' : chatMode === 'automation' ? 'Build an automation...' : 'Ask anything or give a command...')}
- rows={1}
- className={`w-full bg-transparent border-none focus:ring-0 resize-none px-4 pt-3.5 pb-1.5 text-[14px] text-slate-900 dark:text-foreground outline-none leading-relaxed min-h-[48px] max-h-[160px] overflow-y-auto ${
- isRecording ? 'placeholder:text-red-400 placeholder:animate-pulse' : 'placeholder:text-slate-500 dark:placeholder:text-slate-400'
- }`}
- disabled={isLoading}
- onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend();}}}
- />
- <div className="flex items-center justify-between px-3 pb-3">
- <div className="flex items-center gap-0.5">
- <input ref={fileInputRef} type="file" className="hidden" accept="image/*,.pdf,.txt,.csv,.docx,.xlsx,.json,.md" onChange={handleFileUpload} />
- <button
- type="button"
- onClick={() => fileInputRef.current?.click()}
- className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/30 rounded-lg transition-colors"
- title="Attach file or image"
- >
- <Paperclip className="w-4 h-4" />
- </button>
- <button
- type="button"
- onClick={handleMicToggle}
- className={`p-1.5 rounded-lg transition-colors ${
- isRecording
- ? 'text-red-500 bg-red-50 dark:bg-red-950/30 animate-pulse'
- : 'text-[#71717a] dark:text-gray-400 hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/30'
-}`}
- title={isRecording ? 'Stop recording' : 'Voice input'}
- >
- {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
- </button>
- </div>
- <div className="flex items-center gap-2">
- <span className="text-[9px] text-[#71717a] dark:text-gray-400/40 uppercase tracking-wider hidden sm:block tracking-[0.04em]"> {t("send_shift_newline", "Send Shift+ Newline")}</span>
- <button
- type="button"
- disabled={(!input.trim() && !uploadedFile) || isLoading}
- onClick={() => handleSend()}
- className="h-8 w-8 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 disabled:hover:bg-emerald-600 disabled:cursor-not-allowed text-white rounded-full flex items-center justify-center transition-all shadow-sm hover:shadow-md hover:shadow-emerald-500/20"
- >
- <Send className="w-4 h-4 ml-0.5" />
- </button>
- </div>
- </div>
- </div>
+ <div className="px-4 py-4 bg-white dark:bg-[#0A0F1C] border-t border-slate-100 dark:border-white/5 shrink-0 relative z-10">
+   <div className="relative rounded-2xl bg-slate-50 dark:bg-[#131A2B] border border-slate-200 dark:border-slate-800 shadow-sm focus-within:ring-1 focus-within:ring-slate-300 transition-all duration-300 flex flex-col p-2">
+     
+     <div className="flex items-center relative">
+       <textarea
+         ref={inputRef}
+         value={input}
+         onChange={e => setInput(e.target.value)}
+         placeholder={isRecording ? 'Listening...' : 'Ask me anything...'}
+         rows={1}
+         className={`w-full bg-transparent border-none focus:ring-0 resize-none px-3 py-2 text-[14px] text-slate-900 dark:text-foreground outline-none leading-relaxed min-h-[40px] max-h-[160px] overflow-y-auto ${
+         isRecording ? 'placeholder:text-red-400 placeholder:animate-pulse' : 'placeholder:text-slate-400 dark:placeholder:text-slate-500'
+         }`}
+         disabled={isLoading}
+         onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend();}}}
+       />
+       <button
+         type="button"
+         onClick={handleMicToggle}
+         className={`absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-colors ${
+         isRecording
+         ? 'text-red-500 bg-red-50 dark:bg-red-950/30 animate-pulse'
+         : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+         }`}
+         title={isRecording ? 'Stop recording' : 'Voice input'}
+       >
+         {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+       </button>
+     </div>
+     
+     {/* Footer Row */}
+     <div className="flex items-center justify-between px-3 pt-2 mt-1 border-t border-slate-100 dark:border-slate-800">
+       <button className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500 hover:text-slate-700 transition-colors">
+         Orbit v1.0 <ChevronDown className="w-3 h-3" />
+       </button>
+       <div className="flex items-center gap-4">
+         <button className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400 hover:text-slate-600 transition-colors">
+           <Command className="w-3.5 h-3.5" /> Shortcuts
+         </button>
+         <div className="flex items-center gap-1.5">
+           <input ref={fileInputRef} type="file" className="hidden" accept="image/*,.pdf,.txt,.csv,.docx,.xlsx,.json,.md" onChange={handleFileUpload} />
+           <button
+             type="button"
+             onClick={() => fileInputRef.current?.click()}
+             className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400 hover:text-slate-600 transition-colors"
+           >
+             <Paperclip className="w-3.5 h-3.5" /> Attach
+           </button>
+         </div>
+       </div>
+     </div>
+     
+   </div>
  </div>
  </div>
  </div>
