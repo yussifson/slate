@@ -94,11 +94,14 @@ serve(async (req) => {
     }
 
     // If we exhaust all accounts and none succeeded
-    throw new Error(`All accounts failed. Last error: ${lastError}`);
+    const errorObj = new Error(`All accounts failed. Last error: ${lastError}`);
+    errorObj.status = 503; // Service Unavailable
+    throw errorObj;
 
   } catch (err) {
+    const statusCode = err.status || 500;
     return new Response(JSON.stringify({ success: false, error: err.message }), {
-      status: 400,
+      status: statusCode,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

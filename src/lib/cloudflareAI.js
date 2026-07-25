@@ -256,10 +256,18 @@ export async function generateText(input, onStream = null) {
     } catch (_) {}
 
     if (isSuperAdmin) {
-      return `⚠️ [Admin Debug] AI Gateway Error: ${err.message || 'Check Supabase Edge Function & CORS setup'}`;
+      const errStr = `⚠️ [Admin Debug] AI Gateway Error: ${err.message || 'Check Supabase Edge Function & CORS setup'}`;
+      if (messages.some(m => m.content && m.content.toLowerCase().includes('json'))) {
+        return JSON.stringify({ error: errStr });
+      }
+      return errStr;
     }
 
-    return "Our AI servers are currently busy or experiencing a brief connection delay. Please try again in a few moments!";
+    const fallbackMsg = "Our AI servers are currently busy or experiencing a brief connection delay. Please try again in a few moments!";
+    if (messages.some(m => m.content && typeof m.content === 'string' && m.content.toLowerCase().includes('json'))) {
+      return JSON.stringify({ error: fallbackMsg });
+    }
+    return fallbackMsg;
   }
 }
 

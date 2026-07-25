@@ -52,7 +52,18 @@ Return ONLY valid JSON with keys:
 
       const raw = await generateText([{ role: 'user', content: prompt }]);
       const cleaned = (raw || '').replace(/```json|```/g, '').trim();
-      const parsed = JSON.parse(cleaned);
+      
+      let parsed;
+      try {
+        if (cleaned.startsWith('Our AI servers')) {
+          throw new Error('AI Gateway fallback text received');
+        }
+        parsed = JSON.parse(cleaned);
+      } catch (parseError) {
+        console.warn('Failed to parse AI response as JSON:', parseError);
+        throw parseError; // Triggers the outer catch block to use the default fallback briefing
+      }
+      
       setBriefing(parsed);
     } catch (err) {
       console.warn("Failed to generate daily briefing", err);
