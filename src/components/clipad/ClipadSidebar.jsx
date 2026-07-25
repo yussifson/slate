@@ -5,12 +5,51 @@ import { cn } from '@/lib/utils';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
 import { isAdmin } from '@/lib/constants';
+import PaystackAPI from '@/api/PaystackAPI';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function ClipadSidebar({ forceMobile }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const { toast } = useToast();
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const handleUpgradeClick = async () => {
+    if (!user || !user.email) {
+      toast({ title: 'Error', description: 'User email is required for payment.', variant: 'destructive' });
+      return;
+    }
+
+    const currentPlan = user.clipad_plan;
+    const isUpgradingToEnterprise = currentPlan === 'pro';
+    const amount = isUpgradingToEnterprise ? 200000 : 50000; // 200,000 NGN or 50,000 NGN
+
+    try {
+      await PaystackAPI.initializePayment(
+        {
+          email: user.email,
+          amount: amount, 
+        },
+        (response) => {
+          // onSuccess
+          console.log('Payment successful:', response);
+          toast({ 
+            title: 'Payment Successful!', 
+            description: `You have successfully upgraded to ${isUpgradingToEnterprise ? 'Enterprise' : 'Pro'}.` 
+          });
+          // Ideally, we would refresh the user data here.
+        },
+        () => {
+          // onClose
+          console.log('Payment window closed.');
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      toast({ title: 'Payment Failed', description: 'Could not initialize Paystack payment.', variant: 'destructive' });
+    }
+  };
 
   const mainItems = [
     { label: 'Dashboard', path: '/dashboard', icon: Layout },
@@ -154,13 +193,13 @@ export default function ClipadSidebar({ forceMobile }) {
                 </div>
               </div>
               <p className="text-[12px] text-slate-600 dark:text-slate-400 mb-3 leading-relaxed">
-                Upgrade to Pro to get the latest exclusive features
+                Upgrade to {user?.clipad_plan === 'pro' ? 'Enterprise' : 'Pro'} to get the latest exclusive features
               </p>
               <button 
-                onClick={() => navigate(window.location.hostname.includes('clipad') ? '/enterprise' : '/clipad/enterprise')}
+                onClick={handleUpgradeClick}
                 className="w-full py-2 bg-white dark:bg-primary rounded-xl text-primary dark:text-white font-semibold text-[13px] shadow-sm border border-slate-200 dark:border-transparent flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors"
               >
-                <Shield className="w-3.5 h-3.5" fill="currentColor" /> Upgrade to Pro
+                <Shield className="w-3.5 h-3.5" fill="currentColor" /> Upgrade to {user?.clipad_plan === 'pro' ? 'Enterprise' : 'Pro'}
               </button>
             </div>
           </div>

@@ -368,16 +368,21 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
   if (!isOpen) {
     return (
       <>
-        <button
-          onClick={() => setIsOpen(true)}
-          className="hidden md:flex items-center gap-2.5 px-3.5 h-9 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200/80 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-xl transition-all border border-slate-200 dark:border-slate-800 w-full max-w-xs min-w-[140px] shadow-2xs hover:shadow-xs active:scale-[0.99] group"
-        >
-          <Search className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-500 group-hover:scale-110 transition-transform" />
-          <span className="text-xs font-semibold flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis tracking-tight">Search or ask OrbitFlow...</span>
-          <kbd className="text-[10px] font-mono bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded-md text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700 shrink-0 hidden lg:flex items-center gap-0.5 tracking-wider font-bold shadow-2xs">
-            ⌘K
-          </kbd>
-        </button>
+        <div className="hidden md:block w-full max-w-sm rounded-full p-[1.5px] bg-gradient-to-r from-blue-500 to-pink-500 hover:shadow-md transition-shadow cursor-text group">
+          <button
+            onClick={() => setIsOpen(true)}
+            className="flex items-center h-10 w-full bg-white dark:bg-slate-900 rounded-full px-4 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+          >
+            <Search className="w-[18px] h-[18px] shrink-0" />
+            <div className="w-[1px] h-5 bg-slate-200 dark:bg-slate-700 mx-3 shrink-0" />
+            <span className="text-[14px] font-medium flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis tracking-tight text-slate-400 dark:text-slate-500 group-hover:text-slate-500 dark:group-hover:text-slate-400">
+              Search for a document
+            </span>
+            <kbd className="text-[10px] font-mono bg-slate-50 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 shrink-0 hidden lg:block tracking-wider font-bold shadow-sm">
+              ⌘K
+            </kbd>
+          </button>
+        </div>
         <button 
           onClick={() => setIsOpen(true)} 
           className="md:hidden p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors active:scale-95 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -403,7 +408,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
       
       {/* Container */}
       <div
-        className="w-full max-w-[640px] flex flex-col relative"
+        className="w-full max-w-[720px] flex flex-col relative"
         style={{ animation: 'spotlightFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1)' }}
       >
         {/* Gradient Search Input Box */}
@@ -485,43 +490,33 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
             {!hasSearched && query.length === 0 && (
               <div className="pb-4">
                 <div className="px-6 py-4">
-                  <h4 className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-3">Recent Chats</h4>
-                  <div className="space-y-1">
-                    {[
-                      "I need help writing social media posts to promote my Web3 project",
-                      "Please generate a 3D plane in the Airbnb style",
-                      "Help me build a simple, long-term investment plan."
-                    ].map((text, i) => (
-                      <button key={i} onClick={() => { setQuery(text); handleSearch(text); }} className="w-full text-left flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                        <MessageSquare className="w-4 h-4 mt-0.5 text-slate-800 dark:text-slate-200" />
-                        <span className="text-[13px] text-slate-800 dark:text-slate-200 font-medium group-hover:text-black dark:group-hover:text-white leading-relaxed">{text}</span>
-                      </button>
-                    ))}
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Suggested AI Queries</h4>
+                    <span className="text-[11px] text-slate-400 hidden sm:inline">Press 1-6 or click</span>
                   </div>
-                </div>
-                
-                <div className="px-6 pb-2">
-                  <div className="h-px bg-slate-100 dark:bg-slate-800/60 w-full mb-4" />
-                  <h4 className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-3">Assistant</h4>
                   <div className="space-y-2">
-                    {[
-                      { name: 'UX Design Buddy', desc: 'Checks UX and gives design tips.', icon: <CheckCircle className="w-4 h-4 text-white" />, bg: 'bg-black dark:bg-white dark:text-black' },
-                      { name: 'Search Boost', desc: 'Adds keywords and improves search.', icon: <Search className="w-4 h-4 text-white" />, bg: 'bg-black dark:bg-white dark:text-black' },
-                      { name: 'TalentFlow', desc: 'Picks candidates and makes interview questions.', icon: <Bot className="w-4 h-4 text-white" />, bg: 'bg-black dark:bg-white dark:text-black' },
-                    ].map((ast, i) => (
-                      <button key={i} className="w-full text-left flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                        <div className={`w-8 h-8 rounded-lg ${ast.bg} flex items-center justify-center shrink-0`}>
-                          {ast.icon}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[13px] font-bold text-slate-900 dark:text-white">{ast.name}</span>
-                            <span className="text-[11px] text-slate-400 group-hover:text-slate-500">Assistant</span>
+                    {dynamicSuggestions.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <button 
+                          key={item.key} 
+                          onClick={() => { setQuery(item.text); handleSearch(item.text); }} 
+                          className="w-full text-left flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group"
+                        >
+                          <div className={`w-8 h-8 rounded-lg ${item.bg} flex items-center justify-center shrink-0`}>
+                            <Icon className={`w-4 h-4 ${item.color}`} />
                           </div>
-                          <p className="text-[12px] text-slate-500 dark:text-slate-400 mt-0.5">{ast.desc}</p>
-                        </div>
-                      </button>
-                    ))}
+                          <div className="flex-1 flex items-center justify-between">
+                            <span className="text-[13px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-black dark:group-hover:text-white leading-relaxed">{item.text}</span>
+                            <div className="flex items-center gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <kbd className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 shadow-2xs">
+                                {item.key}
+                              </kbd>
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
