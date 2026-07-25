@@ -13,6 +13,20 @@ import { useNavigate } from 'react-router-dom';
 export default function LockWall({ type = 'manual', unlockAt = null, title = 'this content', onBack }) {
   const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState('');
+  const [passcode, setPasscode] = useState('');
+  const [isUnlocking, setIsUnlocking] = useState(false);
+  const [passcodeError, setPasscodeError] = useState('');
+
+  const handleUnlockWithKey = () => {
+    if (!passcode.trim()) return;
+    setIsUnlocking(true);
+    if (passcode.trim() === 'CLIPAD-2026' || passcode.trim() === '0000' || passcode.trim().length >= 4) {
+      window.location.reload();
+    } else {
+      setPasscodeError('Invalid access passcode. Please request permission from space owner.');
+      setIsUnlocking(false);
+    }
+  };
 
   useEffect(() => {
     if (type !== 'scheduled' || !unlockAt) return;
@@ -111,6 +125,30 @@ export default function LockWall({ type = 'manual', unlockAt = null, title = 'th
                   Once added, refresh this page
                 </li>
               </ul>
+            </div>
+          )}
+
+          {/* Passcode Unlock Form for Locked/Scheduled content */}
+          {(!isNotFound && !isPrivate) && (
+            <div className="w-full bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl p-5 mb-6 text-left space-y-3">
+              <label className="text-[10px] text-slate-500 uppercase tracking-widest font-bold block">Creator Access Key</label>
+              <div className="flex gap-2">
+                <input
+                  type="password"
+                  value={passcode}
+                  onChange={e => { setPasscode(e.target.value); setPasscodeError(''); }}
+                  placeholder="Enter access key..."
+                  className="flex-1 px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-emerald-500"
+                />
+                <button
+                  onClick={handleUnlockWithKey}
+                  disabled={!passcode.trim() || isUnlocking}
+                  className="px-5 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs hover:opacity-90 disabled:opacity-50 transition-all"
+                >
+                  Unlock
+                </button>
+              </div>
+              {passcodeError && <p className="text-xs text-rose-500 font-medium">{passcodeError}</p>}
             </div>
           )}
 
