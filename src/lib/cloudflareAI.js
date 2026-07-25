@@ -258,7 +258,21 @@ export async function generateText(input, onStream = null) {
     return finalText || "I am unable to generate a response right now. Please try again.";
   } catch (err) {
     console.error("generateText error:", err);
-    return `AI service unreachable: ${err.message || 'Check network connection'}`;
+    
+    // Check if current logged-in user is a super admin
+    let isSuperAdmin = false;
+    try {
+      if (typeof window !== 'undefined' && window.__SLATE_USER__) {
+        const u = window.__SLATE_USER__;
+        isSuperAdmin = u?.role === 'super_admin' || u?.user_metadata?.role === 'super_admin';
+      }
+    } catch (_) {}
+
+    if (isSuperAdmin) {
+      return `⚠️ [Admin Debug] AI Gateway Error: ${err.message || 'Check Supabase Edge Function & CORS setup'}`;
+    }
+
+    return "Our AI servers are currently busy or experiencing a brief connection delay. Please try again in a few moments!";
   }
 }
 

@@ -654,7 +654,12 @@ ${orgContext?.contextText || 'Workspace data is loading. You can still answer ge
     } catch (err) {
       console.error('[OrbitFlow] Error:', err);
       setStreamingText('');
-      const errText = 'I encountered an issue while processing your request. Please try again.';
+      
+      const isSuperAdmin = user?.role === 'super_admin' || user?.user_metadata?.role === 'super_admin';
+      const errText = isSuperAdmin
+        ? `⚠️ [Admin Debug] AI Request Failed: ${err.message || 'CORS / Edge Function error'}`
+        : 'Our AI servers are currently busy or experiencing a brief connection delay. Please try sending your message again in a moment!';
+
       const savedErr = await dbSaveMessage(sessionId, userId, 'assistant', errText, [], null);
       setMessages(prev => [...prev, { id: savedErr.id, role: 'assistant', text: errText, sources: [] }]);
     } finally {
