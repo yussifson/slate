@@ -131,7 +131,7 @@ export default function SpaceAutomations({ spaceId }) {
               <option value="send_message">Send summary to Chat</option>
               <option value="notify_members">Notify Space Members</option>
               <option value="export_to_jira">Export to Jira / Linear</option>
-              <option value="notify_orbit_flow">Trigger OrbitFlow AI Proactive Alert</option>
+              <option value="notify_orbit_flow">Trigger Orbit AI Proactive Alert</option>
             </select>
           </div>
           <div className="pt-8">

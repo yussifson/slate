@@ -296,7 +296,7 @@ export default function GlobalSearch() {
       const raw = await generateText([
         {
           role: 'system',
-          content: `You are OrbitFlow AI, an enterprise intelligence assistant.
+          content: `You are Orbit AI, an enterprise intelligence assistant.
 
 CRITICAL CONTEXT: 
 - ${timeContext}.

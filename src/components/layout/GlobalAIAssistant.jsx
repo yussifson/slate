@@ -699,7 +699,7 @@ ${kItems}
   const userDepartment = user?.department ? ` in the ${user.department} department` : '';
   const userIndustry = user?.company_industry ? ` in the ${user.company_industry} industry` : '';
 
-  const systemPrompt = `You are OrbitFlow — a highly enthusiastic, intelligent, and entertaining AI assistant embedded in the ClipPad organizational memory and workspace.
+  const systemPrompt = `You are Orbit — a highly enthusiastic, intelligent, and entertaining AI assistant embedded in the ClipPad organizational memory and workspace.
 Your personality is that of a powerful but friendly AI companion—think of a hyper-intelligent digital lion/owl hybrid! Be cheerful, slightly playful, use emojis naturally, but remain highly capable and laser-focused on orchestrating the user's workflows flawlessly.
 Your current context is the ClipPad workspace, specifically the '${ctx?.title || 'Dashboard'}' page.
 
@@ -1024,7 +1024,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
         <DropdownMenuTrigger asChild>
           <button 
             className="w-8 h-8 rounded-full bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 flex items-center justify-center transition-all"
-            title="OrbitFlow Options"
+            title="Orbit Options"
           >
             <LayoutGrid className="w-4 h-4" />
           </button>
@@ -1047,7 +1047,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
           </DropdownMenuItem>
           <DropdownMenuItem onClick={onClose} className="cursor-pointer font-semibold text-xs py-2.5 rounded-lg text-red-600 dark:text-red-400 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/30">
             <X className="w-4 h-4 mr-2" /> 
-            {t("close_orbitflow", "Close OrbitFlow")}
+            {t("close_orbitflow", "Close Orbit")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

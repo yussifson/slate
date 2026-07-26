@@ -632,7 +632,7 @@ Layout the stickies in a clear grid or workflow sequence. Return ONLY raw JSON w
               </h3>
               <button onClick={() => setShowAiModal(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
             </div>
-            <p className="text-xs text-slate-500">Describe the architecture diagram, flowchart, sequence map, or mind map you want OrbitFlow AI to render onto your canvas.</p>
+            <p className="text-xs text-slate-500">Describe the architecture diagram, flowchart, sequence map, or mind map you want Orbit AI to render onto your canvas.</p>
             <textarea
               value={aiPrompt}
               onChange={e => setAiPrompt(e.target.value)}

@@ -188,7 +188,7 @@ Return ONLY valid JSON with keys:
       {/* Footer Bar */}
       <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
         <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500">
-          Powered by OrbitFlow AI
+          Powered by Orbit AI
         </span>
         <button
           onClick={() => {
@@ -198,7 +198,7 @@ Return ONLY valid JSON with keys:
           }}
           className="flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors group/btn"
         >
-          Ask OrbitFlow <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
+          Ask Orbit <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
         </button>
       </div>
     </div>

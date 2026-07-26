@@ -3,7 +3,7 @@
  * 
  * AI-powered pipeline that reads from connected third-party integrations,
  * generates summaries, flags actionable items, and stores them in
- * `integration_knowledge` for OrbitFlow and the Knowledge Graph to use.
+ * `integration_knowledge` for Orbit and the Knowledge Graph to use.
  * 
  * Supported sources: GitHub issues, Gmail, Notion, Jira, Google Drive, Slack
  * 
@@ -106,7 +106,7 @@ export async function ingestGitHubIssues({ userId, companyId, accessToken, repos
   for (const repo of repos) {
     try {
       const resp = await fetch(`https://api.github.com/repos/${repo}/issues?state=open&per_page=20`, {
-        headers: { Authorization: `Bearer ${accessToken}`, 'User-Agent': 'CliPad-OrbitFlow' },
+        headers: { Authorization: `Bearer ${accessToken}`, 'User-Agent': 'CliPad-Orbit' },
       });
       if (!resp.ok) continue;
       const issues = await resp.json();

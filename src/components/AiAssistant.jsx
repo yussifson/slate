@@ -573,7 +573,7 @@ To create an automation, use the \`create_record\` tool with recordType "automat
     default: verticalPersona = "You are assisting in a professional business environment. Be efficient, analytical, and highly capable.";
   }
 
-  const systemPrompt = `You are OrbitFlow — a highly enthusiastic, intelligent, and entertaining AI workflow engineer embedded in Slate SaaS.
+  const systemPrompt = `You are Orbit — a highly enthusiastic, intelligent, and entertaining AI workflow engineer embedded in Slate SaaS.
 Your personality is that of a powerful but friendly AI companion—think of a hyper-intelligent digital lion/owl hybrid! Be cheerful, slightly playful, use emojis naturally, but remain highly capable and laser-focused on orchestrating the user's workflows flawlessly.
 Your current context is the ${ctx.suite} suite, specifically the '${ctx.title}' page.
 
@@ -978,7 +978,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
       <DropdownMenuTrigger asChild>
         <button 
           className="w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 shadow-md flex items-center justify-center transition-all hover:scale-105 active:scale-95 backdrop-blur-md"
-          title="OrbitFlow Options"
+          title="Orbit Options"
         >
           <MoreHorizontal className="w-4 h-4" />
         </button>
@@ -1001,7 +1001,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
         </DropdownMenuItem>
         <DropdownMenuItem onClick={onClose} className="cursor-pointer font-semibold text-xs py-2.5 rounded-lg text-red-600 dark:text-red-400 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/30">
           <X className="w-4 h-4 mr-2" /> 
-          {t("close_orbitflow", "Close OrbitFlow")}
+          {t("close_orbitflow", "Close Orbit")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -1066,7 +1066,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms'}} />
  <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms'}} />
  </div>
- <p className="text-[10px] text-[#71717a] dark:text-gray-400 mt-1.5 italic">{t("orbit_is_thinking", "OrbitFlow is thinking...")}</p>
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400 mt-1.5 italic">{t("orbit_is_thinking", "Orbit is thinking...")}</p>
  </div>
  </div>
  )}

@@ -688,11 +688,11 @@ export default function Automations() {
                   View Logs
                 </Button>
                 <Button 
-                  onClick={() => window.dispatchEvent(new CustomEvent("orbit:inject", { detail: { label: "OrbitFlow Automation Builder", query: "Help me build an automation flow." } }))} 
+                  onClick={() => window.dispatchEvent(new CustomEvent("orbit:inject", { detail: { label: "Orbit Automation Builder", query: "Help me build an automation flow." } }))} 
                   variant="secondary"
                   className="gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-900"
                 >
-                  <OrbitIcon className="w-4 h-4 fill-current flex-shrink-0" /> Automate with OrbitFlow
+                  <OrbitIcon className="w-4 h-4 fill-current flex-shrink-0" /> Automate with Orbit
                 </Button>
                 <Button onClick={startNewFlow} className="gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]">
                   <Plus className="w-4 h-4 flex-shrink-0" /> Create New Flow

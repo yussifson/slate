@@ -282,7 +282,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  }`}
  >
  <Sparkles className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isAIOpen ? "text-primary animate-spin" : "text-[#71717a] dark:text-gray-400 group-hover:text-primary"} sm:mr-1.5`} style={{ animationDuration: '3s'}} />
- <span className={`hidden sm:inline ${isAIOpen ? "text-primary" : "text-[#71717a] dark:text-gray-400 group-hover:text-primary"}`}>{t("orbit_flow", "Orbit Flow")}</span>
+ <span className={`hidden sm:inline ${isAIOpen ? "text-primary" : "text-[#71717a] dark:text-gray-400 group-hover:text-primary"}`}>{t("orbit_flow", "Orbit")}</span>
  <span className="flex h-1.5 w-1.5 relative absolute sm:static right-1 top-1 sm:right-auto sm:top-auto">
  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${isAIOpen ? "bg-primary" : "bg-primary/70"} opacity-75`}></span>
  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
