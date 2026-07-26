@@ -4,6 +4,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/clipadPricing';
 import { useCompanyPlan } from '@/hooks/useCompanyPlan';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { Eye, Users, Search, Video, BarChart3, TrendingUp, UserCircle, Play, Settings, Bell, X, Shield, MessageSquare, Heart, Target } from 'lucide-react';
 
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
@@ -37,6 +38,7 @@ function StatCard({ icon: Icon, color, value, label, trend }) {
 export default function VideoAnalytics() {
   const { user, isLoadingAuth } = useAuth();
   const { plan } = useCompanyPlan();
+  const companyId = useCompanyId();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [videoFilter, setVideoFilter] = useState('top');
@@ -97,9 +99,13 @@ export default function VideoAnalytics() {
       let myMeetings = [];
 
       if (isAdminUser) {
+        if (!companyId) {
+          setLoading(false);
+          return;
+        }
         const [videosRes, meetingsRes] = await Promise.all([
-          supabase.from('clipad_videos').select('id, title, created_at, duration_seconds'),
-          supabase.from('clipad_meeting_records').select('id')
+          supabase.from('clipad_videos').select('id, title, created_at, duration_seconds').eq('company_id', companyId),
+          supabase.from('clipad_meeting_records').select('id').eq('company_id', companyId)
         ]);
         videos = videosRes.data || [];
         myMeetings = meetingsRes.data || [];

@@ -282,10 +282,12 @@ export async function buildOrgContext(options = {}) {
       ? supabase.from('clipad_videos')
           .select('id, title, ai_summary, created_at, duration_seconds, space_id')
           .in('space_id', spaceIds)
+          .eq('company_id', companyId)
           .order('created_at', { ascending: false })
           .limit(limit)
       : supabase.from('clipad_videos')
           .select('id, title, ai_summary, created_at, duration_seconds, space_id')
+          .eq('company_id', companyId)
           .order('created_at', { ascending: false })
           .limit(limit)).catch(() => ({ data: [] })),
 

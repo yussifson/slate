@@ -167,7 +167,7 @@ export default function KnowledgeGraph() {
           supabase.from('clipad_meeting_records').select('id, title, ai_summary, created_at').eq('company_id', companyId).limit(20).catch(() => ({ data: [] })),
           supabase.from('clipad_decisions').select('id, decision_text, rationale, created_at').eq('workspace_id', companyId).limit(20).catch(() => ({ data: [] })),
           supabase.from('clipad_spaces').select('id, name, description, created_at').eq('company_id', companyId).limit(20).catch(() => ({ data: [] })),
-          supabase.from('clipad_videos').select('id, title, ai_summary, created_at').limit(20).catch(() => ({ data: [] })),
+          supabase.from('clipad_videos').select('id, title, ai_summary, created_at').eq('company_id', companyId).limit(20).catch(() => ({ data: [] })),
         ]);
 
         const synthesized = [];
