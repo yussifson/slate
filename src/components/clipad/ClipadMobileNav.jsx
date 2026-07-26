@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
-import { Home, Layers, Video, Camera, User, MessageSquare, Bot, Sparkles, Menu, Settings, Shield, LogOut, X, Tag, Star, Phone, Globe } from 'lucide-react';
+import { Home, Layers, Video, Camera, User, MessageSquare, Bot, Sparkles, Menu, Settings, Shield, LogOut, X, Tag, Star, Phone, Globe, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/AuthContext';
 import ThemeToggle from '@/components/layout/ThemeToggle';
