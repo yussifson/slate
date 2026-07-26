@@ -41,7 +41,6 @@ let currentAccountIndex = 0;
 
 const MODELS = {
   // QwQ-32B: most powerful free CF model (reasoning like o1-mini)
-  // Edge function will try Groq DeepSeek-R1 first, then this via CF
   text: "@cf/qwen/qwq-32b",
   vision: "@cf/zai-org/glm-4.7-flash"  // GLM-4.7 supports vision + 131k context
 };

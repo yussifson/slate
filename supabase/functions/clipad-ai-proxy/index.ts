@@ -6,13 +6,6 @@ const corsHeaders = {
   "Access-Control-Expose-Headers": "content-type",
 };
 
-// ── Groq provider (free, fast, generous limits) ──────────────────────────────
-// Sign up at console.groq.com → create API key → add as GROQ_API_KEY secret
-// Using DeepSeek-R1-Distill-Llama-70B — Groq's most powerful free reasoning model
-// Comparable to o1-mini, far superior to plain Llama for analysis & complex tasks
-const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
-const GROQ_MODEL = "deepseek-r1-distill-llama-70b";
-
 // ── Cloudflare fallback models (free tier, ~10k neurons/day per account) ──────
 // Ordered by power: most capable first
 const CF_FREE_MODELS = [
@@ -22,42 +15,6 @@ const CF_FREE_MODELS = [
   "@cf/qwen/qwen2.5-coder-32b-instruct",         // Great for coding/task execution
   "@cf/meta/llama-3.3-70b-instruct-fp8-fast",    // Last resort: Llama 3.3 70B
 ];
-
-// ── Try Groq ─────────────────────────────────────────────────────────────────
-async function tryGroq(
-  groqApiKey: string,
-  messages: unknown[],
-  stream: boolean,
-): Promise<Response | null> {
-  console.log("[AI Proxy] Trying Groq provider...");
-  try {
-    const resp = await fetch(GROQ_API_URL, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${groqApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: GROQ_MODEL,
-        messages,
-        max_tokens: 2500,
-        stream,
-      }),
-    });
-
-    if (resp.ok) {
-      console.log("[AI Proxy] ✅ Groq succeeded");
-      return resp;
-    }
-
-    const errText = await resp.text();
-    console.warn(`[AI Proxy] Groq failed: ${resp.status} - ${errText.substring(0, 200)}`);
-    return null;
-  } catch (e) {
-    console.warn("[AI Proxy] Groq error:", (e as Error).message);
-    return null;
-  }
-}
 
 // ── Try Cloudflare accounts with a given model ────────────────────────────────
 async function tryCloudflare(
@@ -70,7 +27,7 @@ async function tryCloudflare(
     const { token, accountId } = credentials[i];
 
     // Chat models use OpenAI-compatible endpoint
-    const isChatModel = model.includes("kimi") || model.includes("llama") || model.includes("mistral");
+    const isChatModel = model.includes("kimi") || model.includes("llama") || model.includes("mistral") || model.includes("qwen") || model.includes("deepseek") || model.includes("glm");
     const url = isChatModel
       ? `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/v1/chat/completions`
       : `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
@@ -140,8 +97,6 @@ serve(async (req) => {
       );
     }
 
-    const messages = payload.messages || [];
-
     // ── Build Cloudflare credentials ──
     const credentials: { token: string; accountId: string }[] = [];
     const defaultToken = Deno.env.get("CLOUDFLARE_API_TOKEN");
@@ -155,24 +110,18 @@ serve(async (req) => {
       if (token && accountId) credentials.push({ token, accountId });
     }
 
-    const groqApiKey = Deno.env.get("GROQ_API_KEY");
     const cfPayload = stream ? { ...payload, stream: true } : payload;
 
-    console.log(`[AI Proxy] Request model=${model}, stream=${stream}, cf_accounts=${credentials.length}, groq=${!!groqApiKey}`);
+    console.log(`[AI Proxy] Request model=${model}, stream=${stream}, cf_accounts=${credentials.length}`);
 
     let successResp: Response | null = null;
 
-    // ── Strategy 1: Try Groq first (free, fast, reliable) ──
-    if (groqApiKey) {
-      successResp = await tryGroq(groqApiKey, messages, stream);
-    }
-
-    // ── Strategy 2: Try Cloudflare with the requested model ──
-    if (!successResp && credentials.length > 0) {
+    // ── Strategy 1: Try Cloudflare with the requested model ──
+    if (credentials.length > 0) {
       successResp = await tryCloudflare(credentials, model, cfPayload, stream);
     }
 
-    // ── Strategy 3: Try Cloudflare free fallback models ──
+    // ── Strategy 2: Try Cloudflare free fallback models ──
     if (!successResp && credentials.length > 0) {
       for (const fallbackModel of CF_FREE_MODELS) {
         console.warn(`[AI Proxy] Trying CF free fallback: ${fallbackModel}`);
@@ -182,11 +131,8 @@ serve(async (req) => {
     }
 
     if (!successResp) {
-      const hint = !groqApiKey
-        ? " TIP: Add GROQ_API_KEY secret for reliable free AI — see console.groq.com"
-        : "";
       return new Response(
-        JSON.stringify({ success: false, error: `All AI providers exhausted.${hint}` }),
+        JSON.stringify({ success: false, error: `All Cloudflare AI accounts have exhausted their daily limit. Try again tomorrow or upgrade an account to Workers Paid.` }),
         { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
