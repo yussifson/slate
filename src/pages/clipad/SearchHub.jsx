@@ -5,7 +5,7 @@ import {
   Loader2, X, ShieldAlert, AlertTriangle, ArrowRight, ExternalLink, Zap, Lock,
   Command, Bot, Filter, Check, Layers, ChevronRight, Copy, CheckCheck, Folder, Clock,
   Users, RefreshCw, SlidersHorizontal, ArrowUpRight, ChevronDown, UserCheck, Shield,
-  Share2, CornerDownLeft, Sparkle, Compass, Terminal, Cpu, Lightbulb
+  Share2, CornerDownLeft, Sparkle, Compass, Terminal, Cpu, Lightbulb, ArrowRightCircle
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { generateText } from '@/lib/cloudflareAI';
@@ -18,16 +18,16 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 const TYPE_META = {
-  person:      { icon: Users,         label: 'Person',    color: 'text-violet-500 dark:text-violet-400', bg: 'bg-violet-500/10 border border-violet-500/20' },
-  meeting:     { icon: Calendar,      label: 'Meeting',   color: 'text-blue-500 dark:text-blue-400',     bg: 'bg-blue-500/10 border border-blue-500/20',     route: (id) => `/meetings/${id}` },
-  video:       { icon: Video,         label: 'Video',     color: 'text-purple-500 dark:text-purple-400', bg: 'bg-purple-500/10 border border-purple-500/20', route: (id) => `/watch/${id}` },
-  doc:         { icon: FileText,      label: 'Doc',       color: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-500/10 border border-emerald-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=docs&docId=${id}` : null },
-  task:        { icon: CheckCircle,   label: 'Task',      color: 'text-amber-500 dark:text-amber-400',   bg: 'bg-amber-500/10 border border-amber-500/20',   route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
-  message:     { icon: MessageSquare, label: 'Chat',      color: 'text-indigo-500 dark:text-indigo-400', bg: 'bg-indigo-500/10 border border-indigo-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=chat` : null },
-  decision:    { icon: ShieldAlert,   label: 'Decision',  color: 'text-rose-500 dark:text-rose-400',     bg: 'bg-rose-500/10 border border-rose-500/20',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=decisions` : null },
-  blocker:     { icon: AlertTriangle, label: 'Blocker',   color: 'text-orange-500 dark:text-orange-400', bg: 'bg-orange-500/10 border border-orange-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=overview` : null },
-  standup:     { icon: Zap,           label: 'Standup',   color: 'text-teal-500 dark:text-teal-400',     bg: 'bg-teal-500/10 border border-teal-500/20',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=standup` : null },
-  integration: { icon: ExternalLink,  label: 'Imported',  color: 'text-sky-500 dark:text-sky-400',       bg: 'bg-sky-500/10 border border-sky-500/20',       route: () => `/integrations` },
+  person:      { icon: Users,         label: 'Person',    color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-500/10 border border-emerald-500/20' },
+  meeting:     { icon: Calendar,      label: 'Meeting',   color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-500/10 border border-blue-500/20', route: (id) => `/meetings/${id}` },
+  video:       { icon: Video,         label: 'Video',     color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-500/10 border border-purple-500/20', route: (id) => `/watch/${id}` },
+  doc:         { icon: FileText,      label: 'Doc',       color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-500/10 border border-emerald-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=docs&docId=${id}` : null },
+  task:        { icon: CheckCircle,   label: 'Task',      color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-500/10 border border-amber-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
+  message:     { icon: MessageSquare, label: 'Chat',      color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-500/10 border border-indigo-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=chat` : null },
+  decision:    { icon: ShieldAlert,   label: 'Decision',  color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-500/10 border border-rose-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=decisions` : null },
+  blocker:     { icon: AlertTriangle, label: 'Blocker',   color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-500/10 border border-orange-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=overview` : null },
+  standup:     { icon: Zap,           label: 'Standup',   color: 'text-teal-600 dark:text-teal-400', bg: 'bg-teal-500/10 border border-teal-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=standup` : null },
+  integration: { icon: ExternalLink,  label: 'Imported',  color: 'text-sky-600 dark:text-sky-400', bg: 'bg-sky-500/10 border border-sky-500/20', route: () => `/integrations` },
 };
 
 const FILTER_TABS = [
@@ -255,14 +255,32 @@ export default function SearchHub() {
   const filteredResults = useMemo(() => results.filter(r => matchesFilter(r.type, activeFilter)), [results, activeFilter]);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] dark:bg-[#090d16] text-slate-900 dark:text-slate-100 font-sans selection:bg-primary/20 selection:text-primary">
-      {/* Sleek Header Section */}
-      <div className="border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-[#0d1322]/80 backdrop-blur-xl sticky top-0 z-30 px-4 md:px-8 py-5">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          
-          {/* Main Command Bar Search Input */}
-          <form onSubmit={(e) => { e.preventDefault(); setSearchParams({ q: query }); runSearch(); }} className="w-full md:max-w-2xl relative group">
-            <div className="relative flex items-center bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-1.5 focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary/50 transition-all shadow-sm group-hover:border-slate-300 dark:group-hover:border-slate-700">
+    <div className="min-h-screen bg-slate-50/60 dark:bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary pb-16">
+      
+      {/* Premium Hero & Search Section */}
+      <div className="max-w-5xl mx-auto pt-8 md:pt-14 px-4 md:px-8">
+        
+        {/* Zero State Header / Title */}
+        {!hasPerformedSearch ? (
+          <div className="text-center space-y-4 mb-8 animate-in fade-in duration-300">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-wider uppercase">
+              <Sparkles className="w-3.5 h-3.5" /> Enterprise Search & Intelligence
+            </div>
+
+            <h1 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+              What do you want to <span className="text-primary">discover today?</span>
+            </h1>
+
+            <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base max-w-xl mx-auto font-medium leading-relaxed">
+              Search across Slack, Google Drive, Notion, Meetings, Code, and Team Members in one unified AI command center.
+            </p>
+          </div>
+        ) : null}
+
+        {/* Central Sleek Command Search Input */}
+        <div className="relative group max-w-3xl mx-auto">
+          <form onSubmit={(e) => { e.preventDefault(); setSearchParams({ q: query }); runSearch(); }}>
+            <div className="relative flex items-center bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl p-2 shadow-lg shadow-black/[0.03] dark:shadow-none focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary transition-all">
               <div className="pl-3.5 pr-2 text-slate-400">
                 <Search className="w-5 h-5" />
               </div>
@@ -270,114 +288,93 @@ export default function SearchHub() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Ask Orbit AI or search company knowledge..."
-                className="w-full bg-transparent border-0 outline-none ring-0 text-sm md:text-base font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 py-1.5 pr-3 text-slate-900 dark:text-white"
+                className="w-full bg-transparent border-0 outline-none ring-0 text-base font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 py-2 pr-3 text-foreground"
               />
               {query && (
-                <button type="button" onClick={() => { setQuery(''); setResults([]); setSelectedResult(null); setHasPerformedSearch(false); }} className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg">
+                <button type="button" onClick={() => { setQuery(''); setResults([]); setSelectedResult(null); setHasPerformedSearch(false); setSearchParams({}); }} className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg mr-1">
                   <X className="w-4 h-4" />
                 </button>
               )}
               <button
                 type="submit"
-                className="px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-md shadow-indigo-500/20 transition-all active:scale-95 shrink-0"
+                className="px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl text-xs flex items-center gap-2 shadow-sm transition-all active:scale-95 shrink-0"
               >
                 {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                 <span>Execute</span>
               </button>
             </div>
           </form>
-
-          {/* Stat Badges */}
-          <div className="flex items-center gap-3 text-xs font-semibold text-slate-500 dark:text-slate-400">
-            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
-              <Shield className="w-3.5 h-3.5" /> Company Encrypted
-            </span>
-            {hasPerformedSearch && (
-              <span className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-mono">
-                {results.length} matches
-              </span>
-            )}
-          </div>
-
         </div>
 
-        {/* Filter Pills */}
+        {/* Suggested Prompts Cards (When zero state) */}
+        {!hasPerformedSearch && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-3xl mx-auto mt-6 text-left">
+            {SUGGESTED_PROMPTS.map((promptText, idx) => (
+              <button
+                key={idx}
+                onClick={() => { setQuery(promptText); setSearchParams({ q: promptText }); runSearch(promptText); }}
+                className="p-4 rounded-2xl bg-white dark:bg-card border border-slate-200/80 dark:border-border/80 hover:border-primary/40 shadow-sm hover:shadow-md transition-all group flex items-start gap-3 text-left"
+              >
+                <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
+                  <Lightbulb className="w-4 h-4 text-primary group-hover:text-white" />
+                </div>
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white leading-relaxed">
+                  {promptText}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Filter Pills Bar (When searching) */}
         {hasPerformedSearch && (
-          <div className="max-w-7xl mx-auto flex items-center gap-2 mt-4 overflow-x-auto pb-1 scrollbar-none">
-            {FILTER_TABS.map(tab => {
-              const Icon = tab.icon;
-              const count = results.filter(r => matchesFilter(r.type, tab.id)).length;
-              const active = activeFilter === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveFilter(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
-                    active
-                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                      : 'bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  {tab.label}
-                  <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono ${active ? 'bg-white/20 dark:bg-slate-900/20' : 'bg-slate-100 dark:bg-slate-800'}`}>
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
+          <div className="flex items-center justify-between gap-4 mt-6 border-b border-slate-200/80 dark:border-border pb-3">
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+              {FILTER_TABS.map(tab => {
+                const Icon = tab.icon;
+                const count = results.filter(r => matchesFilter(r.type, tab.id)).length;
+                const active = activeFilter === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveFilter(tab.id)}
+                    className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
+                      active
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'bg-white dark:bg-card border border-slate-200/80 dark:border-border text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-secondary'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {tab.label}
+                    <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono ${active ? 'bg-white/20 dark:bg-black/20' : 'bg-slate-100 dark:bg-slate-800'}`}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="hidden md:flex items-center gap-2 text-xs font-semibold text-slate-400 shrink-0">
+              <Shield className="w-3.5 h-3.5 text-primary" /> Company Scoped
+            </div>
           </div>
         )}
       </div>
 
-      {/* Main Workspace Body */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
-        {!hasPerformedSearch ? (
-          /* Empty / Zero State: Modern AI Landing */
-          <div className="max-w-3xl mx-auto py-12 text-center space-y-8 animate-in fade-in duration-300">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-600 dark:text-violet-400 text-xs font-bold tracking-wide uppercase">
-              <Sparkles className="w-3.5 h-3.5" /> Enterprise Search & Intelligence
-            </div>
-
-            <h1 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-              What do you want to <span className="bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 bg-clip-text text-transparent">discover today?</span>
-            </h1>
-
-            <p className="text-slate-500 dark:text-slate-400 text-base max-w-xl mx-auto font-medium">
-              Search across Slack, Google Drive, Notion, Meetings, Code, and Team Members in one unified AI command center.
-            </p>
-
-            {/* Suggested Prompts Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-left pt-4">
-              {SUGGESTED_PROMPTS.map((promptText, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => { setQuery(promptText); setSearchParams({ q: promptText }); runSearch(promptText); }}
-                  className="p-4 rounded-2xl bg-white dark:bg-[#0d1322] border border-slate-200/90 dark:border-slate-800/90 hover:border-violet-500/50 dark:hover:border-violet-500/50 shadow-sm hover:shadow-md transition-all group flex items-start gap-3"
-                >
-                  <div className="w-8 h-8 rounded-xl bg-violet-500/10 flex items-center justify-center shrink-0 group-hover:bg-violet-500 group-hover:text-white transition-colors">
-                    <Lightbulb className="w-4 h-4 text-violet-500 group-hover:text-white" />
-                  </div>
-                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white leading-relaxed">
-                    {promptText}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-        ) : (
-          /* Active Results State: Dual-Pane Grid */
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {/* Main Results Grid */}
+      {hasPerformedSearch && (
+        <div className="max-w-7xl mx-auto px-4 md:px-8 mt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
             {/* Left Column: Results Feed (7 cols) */}
-            <div className="lg:col-span-7 space-y-3.5">
+            <div className="lg:col-span-7 space-y-3">
               {isSearching ? (
-                <div className="bg-white dark:bg-[#0d1322] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-12 text-center shadow-sm">
-                  <Loader2 className="w-8 h-8 text-violet-500 animate-spin mx-auto mb-3" />
+                <div className="bg-white dark:bg-card border border-slate-200/80 dark:border-border rounded-2xl p-12 text-center shadow-sm">
+                  <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-3" />
                   <p className="font-bold text-sm text-slate-700 dark:text-slate-300">Searching your enterprise graph...</p>
                 </div>
               ) : filteredResults.length === 0 ? (
-                <div className="bg-white dark:bg-[#0d1322] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-12 text-center shadow-sm">
+                <div className="bg-white dark:bg-card border border-slate-200/80 dark:border-border rounded-2xl p-12 text-center shadow-sm">
                   <Search className="w-10 h-10 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
                   <h3 className="font-bold text-base mb-1">No direct matching records</h3>
                   <p className="text-xs text-slate-500 max-w-sm mx-auto">Orbit AI on the right is synthesizing answers from your workspace context.</p>
@@ -392,10 +389,10 @@ export default function SearchHub() {
                     <div
                       key={`${item.type}-${item.id}`}
                       onClick={() => setSelectedResult(item)}
-                      className={`p-5 rounded-2xl border transition-all cursor-pointer bg-white dark:bg-[#0d1322] ${
+                      className={`p-4 md:p-5 rounded-2xl border transition-all cursor-pointer bg-white dark:bg-card ${
                         isSelected
-                          ? 'border-violet-500 ring-2 ring-violet-500/20 shadow-md'
-                          : 'border-slate-200/90 dark:border-slate-800/90 hover:border-slate-300 dark:hover:border-slate-700'
+                          ? 'border-primary ring-2 ring-primary/20 shadow-md'
+                          : 'border-slate-200/80 dark:border-border hover:border-slate-300 dark:hover:border-slate-700'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3 mb-2">
@@ -436,11 +433,11 @@ export default function SearchHub() {
             <div className="lg:col-span-5 space-y-6">
               
               {/* Executive AI Briefing Box */}
-              <div className="bg-white dark:bg-[#0d1322] border border-slate-200/90 dark:border-slate-800/90 rounded-2xl p-6 shadow-sm space-y-4 sticky top-28">
-                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-4">
+              <div className="bg-white dark:bg-card border border-slate-200/80 dark:border-border rounded-2xl p-6 shadow-sm space-y-4 sticky top-6">
+                <div className="flex items-center justify-between border-b border-slate-100 dark:border-border pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-violet-500/10 flex items-center justify-center">
-                      <Sparkles className="w-5 h-5 text-violet-500" />
+                    <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <Sparkles className="w-5 h-5 text-primary" />
                     </div>
                     <div>
                       <h3 className="font-bold text-base text-slate-900 dark:text-white">Orbit AI Executive Synthesis</h3>
@@ -451,13 +448,13 @@ export default function SearchHub() {
 
                 {isSynthesizing && !aiAnswer ? (
                   <div className="flex items-center gap-2.5 text-xs text-slate-500 py-6">
-                    <Loader2 className="w-4 h-4 animate-spin text-violet-500" />
+                    <Loader2 className="w-4 h-4 animate-spin text-primary" />
                     Synthesizing organizational knowledge...
                   </div>
                 ) : (
                   <div className="space-y-4 max-h-[380px] overflow-y-auto pr-1">
                     {chatHistory.map((msg, i) => (
-                      <div key={i} className={`text-xs leading-relaxed ${msg.role === 'user' ? 'bg-slate-100 dark:bg-slate-800 p-3 rounded-xl font-bold' : 'prose prose-xs dark:prose-invert max-w-none'}`}>
+                      <div key={i} className={`text-xs leading-relaxed ${msg.role === 'user' ? 'bg-slate-100 dark:bg-secondary p-3 rounded-xl font-bold' : 'prose prose-xs dark:prose-invert max-w-none'}`}>
                         {msg.role === 'user' ? (
                           <div>Q: {msg.content}</div>
                         ) : (
@@ -469,14 +466,14 @@ export default function SearchHub() {
                 )}
 
                 {/* Follow-up input */}
-                <form onSubmit={handleFollowUp} className="flex gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                <form onSubmit={handleFollowUp} className="flex gap-2 pt-3 border-t border-slate-100 dark:border-border">
                   <input
                     value={followUpInput}
                     onChange={e => setFollowUpInput(e.target.value)}
                     placeholder="Ask a follow-up..."
-                    className="flex-1 text-xs px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:border-violet-500"
+                    className="flex-1 text-xs px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-secondary border border-slate-200 dark:border-border focus:outline-none focus:border-primary"
                   />
-                  <button type="submit" disabled={isSynthesizing} className="px-4 py-2.5 bg-violet-600 text-white rounded-xl text-xs font-bold hover:bg-violet-500 transition-colors disabled:opacity-50">
+                  <button type="submit" disabled={isSynthesizing} className="px-4 py-2.5 bg-primary text-primary-foreground rounded-xl text-xs font-bold hover:bg-primary/90 transition-colors disabled:opacity-50">
                     Ask
                   </button>
                 </form>
@@ -484,7 +481,7 @@ export default function SearchHub() {
 
               {/* Selected Record Inspection Drawer */}
               {selectedResult && (
-                <div className="bg-white dark:bg-[#0d1322] border border-slate-200/90 dark:border-slate-800/90 rounded-2xl p-6 shadow-sm space-y-3 animate-in fade-in">
+                <div className="bg-white dark:bg-card border border-slate-200/80 dark:border-border rounded-2xl p-6 shadow-sm space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                       Record Detail
@@ -495,7 +492,7 @@ export default function SearchHub() {
                           const route = TYPE_META[selectedResult.type].route(selectedResult.id, selectedResult.space_id);
                           if (route) navigate(route);
                         }}
-                        className="flex items-center gap-1 text-xs font-bold text-violet-500 hover:underline"
+                        className="flex items-center gap-1 text-xs font-bold text-primary hover:underline"
                       >
                         Open Source <ArrowUpRight className="w-3.5 h-3.5" />
                       </button>
@@ -506,7 +503,7 @@ export default function SearchHub() {
                     {selectedResult.label}
                   </h3>
 
-                  <div className="p-3.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl text-xs text-slate-700 dark:text-slate-300 leading-relaxed max-h-60 overflow-y-auto">
+                  <div className="p-3.5 bg-slate-50 dark:bg-secondary/60 rounded-xl text-xs text-slate-700 dark:text-slate-300 leading-relaxed max-h-60 overflow-y-auto">
                     {selectedResult.snippet || 'No expanded content preview available for this record.'}
                   </div>
                 </div>
@@ -514,8 +511,8 @@ export default function SearchHub() {
 
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
