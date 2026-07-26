@@ -8,9 +8,10 @@ const corsHeaders = {
 
 // ── Groq provider (free, fast, generous limits) ──────────────────────────────
 // Sign up at console.groq.com → create API key → add as GROQ_API_KEY secret
-// Supported models: llama-3.3-70b-versatile, llama-3.1-8b-instant, mixtral-8x7b-32768
+// Using DeepSeek-R1-Distill-Llama-70B — Groq's most powerful free reasoning model
+// Comparable to o1-mini, far superior to plain Llama for analysis & complex tasks
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
-const GROQ_MODEL = "llama-3.3-70b-versatile"; // fast, free, very capable
+const GROQ_MODEL = "deepseek-r1-distill-llama-70b";
 
 // ── Cloudflare fallback models (free tier, ~10k neurons/day per account) ──────
 // Ordered by power: most capable first
