@@ -114,6 +114,8 @@ export default function GlobalSearch() {
   const [spacesMap, setSpacesMap] = useState({});
   const [dynamicSuggestions, setDynamicSuggestions] = useState(DEFAULT_SUGGESTIONS);
   const [accessibleCount, setAccessibleCount] = useState(0);
+  const [showAllResults, setShowAllResults] = useState(false); // expanded mode
+  const [totalMatchCount, setTotalMatchCount] = useState(0);  // total across all types
 
   const inputRef = useRef(null);
   const overlayRef = useRef(null);
@@ -191,7 +193,7 @@ export default function GlobalSearch() {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 100);
     } else {
-      setQuery(''); setResults([]); setAiAnswer(''); setAiSources([]); setHasSearched(false); setFocusedIndex(-1); setSelectedFilter('all'); setCopiedAnswer(false);
+      setQuery(''); setResults([]); setAiAnswer(''); setAiSources([]); setHasSearched(false); setFocusedIndex(-1); setSelectedFilter('all'); setCopiedAnswer(false); setShowAllResults(false); setTotalMatchCount(0);
     }
   }, [isOpen]);
 
@@ -241,21 +243,22 @@ export default function GlobalSearch() {
         const videoFilter = `space_id.in.(${spaceIdsStr})`;
         const meetingFilter = `space_id.in.(${spaceIdsStr})`;
 
+      // ── Run all queries with the given limit ────────────────────────────
+      const runQueries = async (limit) => {
         const [docs, tasks, messages, meetings, decisions, videos, blockers, standups, integrations] = await Promise.all([
-          supabase.from('clipad_docs').select('id, title, content, space_id').or(getSpaceFilter()).ilike('title', term).limit(5),
-          supabase.from('clipad_action_items').select('id, title, context, space_id').or(getSpaceFilter()).ilike('title', term).limit(5),
-          supabase.from('clipad_messages').select('id, content, space_id').in('space_id', spaceIdArr).ilike('content', term).limit(3),
-          supabase.from('clipad_meeting_records').select('id, title, ai_summary, space_id').or(meetingFilter).ilike('title', term).limit(5),
-          supabase.from('clipad_decisions').select('id, decision_text, team_space_id').or(getTeamSpaceFilter()).ilike('decision_text', term).limit(3),
-          supabase.from('clipad_videos').select('id, title, ai_summary, space_id').or(videoFilter).ilike('title', term).limit(5),
-          supabase.from('clipad_blockers').select('id, description, team_space_id').or(getTeamSpaceFilter()).ilike('description', term).limit(3),
+          supabase.from('clipad_docs').select('id, title, content, space_id').or(getSpaceFilter()).ilike('title', term).limit(limit),
+          supabase.from('clipad_action_items').select('id, title, context, space_id').or(getSpaceFilter()).ilike('title', term).limit(limit),
+          supabase.from('clipad_messages').select('id, content, space_id').in('space_id', spaceIdArr).ilike('content', term).limit(limit),
+          supabase.from('clipad_meeting_records').select('id, title, ai_summary, space_id').or(meetingFilter).ilike('title', term).limit(limit),
+          supabase.from('clipad_decisions').select('id, decision_text, team_space_id').or(getTeamSpaceFilter()).ilike('decision_text', term).limit(limit),
+          supabase.from('clipad_videos').select('id, title, ai_summary, space_id').or(videoFilter).ilike('title', term).limit(limit),
+          supabase.from('clipad_blockers').select('id, description, team_space_id').or(getTeamSpaceFilter()).ilike('description', term).limit(limit),
           spaceIdArr.length > 0
-            ? supabase.from('clipad_standups').select('id, user_name, today, yesterday, blockers, space_id, created_at').in('space_id', spaceIdArr).or(`today.ilike.${term},yesterday.ilike.${term},user_name.ilike.${term}`).limit(5)
-            : supabase.from('clipad_standups').select('id, user_name, today, yesterday, blockers, space_id, created_at').or(`today.ilike.${term},yesterday.ilike.${term},user_name.ilike.${term}`).limit(5),
-          supabase.from('clipad_imported_knowledge').select('id, title, content, provider, content_type').eq('company_id', cid).or(`title.ilike.${term},content.ilike.${term}`).limit(5),
+            ? supabase.from('clipad_standups').select('id, user_name, today, yesterday, blockers, space_id, created_at').in('space_id', spaceIdArr).or(`today.ilike.${term},yesterday.ilike.${term},user_name.ilike.${term}`).limit(limit)
+            : supabase.from('clipad_standups').select('id, user_name, today, yesterday, blockers, space_id, created_at').or(`today.ilike.${term},yesterday.ilike.${term},user_name.ilike.${term}`).limit(limit),
+          supabase.from('clipad_imported_knowledge').select('id, title, content, provider, content_type').eq('company_id', cid).or(`title.ilike.${term},content.ilike.${term}`).limit(limit),
         ]);
-
-        formatted = [
+        return [
           ...(docs.data || []).map(d => ({ type: 'doc', id: d.id, space_id: d.space_id, label: d.title, snippet: d.content?.substring(0, 140) })),
           ...(tasks.data || []).map(t => ({ type: 'task', id: t.id, space_id: t.space_id, label: t.title, snippet: t.context?.substring(0, 140) })),
           ...(messages.data || []).map(m => ({ type: 'message', id: m.id, space_id: m.space_id, label: 'Chat Message', snippet: m.content?.substring(0, 140) })),
@@ -266,6 +269,13 @@ export default function GlobalSearch() {
           ...(standups.data || []).map(s => ({ type: 'standup', id: s.id, space_id: s.space_id, label: `Standup \u2014 ${s.user_name || 'Team member'} (${s.created_at?.slice(0,10)})`, snippet: s.today?.substring(0, 140) })),
           ...(integrations.data || []).map(i => ({ type: 'integration', id: i.id, space_id: null, label: `[${i.provider}] ${i.title}`, snippet: i.content?.substring(0, 140) })),
         ];
+      };
+
+      formatted = await runQueries(5);
+
+      // Background count: run at limit=50 to know if more exist
+      runQueries(50).then(all => setTotalMatchCount(all.length)).catch(() => {});
+
       }
 
       setResults(formatted);
@@ -335,6 +345,52 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
       setIsSynthesizing(false);
     }
   }, [query, user, lastQuery, hasSearched, aiAnswer, isSynthesizing]);
+
+  const handleLoadMore = useCallback(async () => {
+    const q = query.trim();
+    if (!q) return;
+    setIsSearching(true);
+    try {
+      const accessibleSpaceIds = await fetchAccessibleSpaceIds(user);
+      const spaceIdArr = Array.from(accessibleSpaceIds);
+      const term = `%${q}%`;
+      const cid = user.company_id;
+      const spaceIdsStr = spaceIdArr.length > 0 ? spaceIdArr.join(',') : '00000000-0000-0000-0000-000000000000';
+      const getSpaceFilter = () => `space_id.in.(${spaceIdsStr})`;
+      const getTeamSpaceFilter = () => `team_space_id.in.(${spaceIdsStr})`;
+      const [docs, tasks, messages, meetings, decisions, videos, blockers, standups, integrations] = await Promise.all([
+        supabase.from('clipad_docs').select('id, title, content, space_id').or(getSpaceFilter()).ilike('title', term).limit(50),
+        supabase.from('clipad_action_items').select('id, title, context, space_id').or(getSpaceFilter()).ilike('title', term).limit(50),
+        supabase.from('clipad_messages').select('id, content, space_id').in('space_id', spaceIdArr).ilike('content', term).limit(30),
+        supabase.from('clipad_meeting_records').select('id, title, ai_summary, space_id').or(getSpaceFilter()).ilike('title', term).limit(50),
+        supabase.from('clipad_decisions').select('id, decision_text, team_space_id').or(getTeamSpaceFilter()).ilike('decision_text', term).limit(30),
+        supabase.from('clipad_videos').select('id, title, ai_summary, space_id').or(getSpaceFilter()).ilike('title', term).limit(50),
+        supabase.from('clipad_blockers').select('id, description, team_space_id').or(getTeamSpaceFilter()).ilike('description', term).limit(30),
+        spaceIdArr.length > 0
+          ? supabase.from('clipad_standups').select('id, user_name, today, yesterday, blockers, space_id, created_at').in('space_id', spaceIdArr).or(`today.ilike.${term},yesterday.ilike.${term},user_name.ilike.${term}`).limit(30)
+          : supabase.from('clipad_standups').select('id, user_name, today, yesterday, blockers, space_id, created_at').or(`today.ilike.${term},yesterday.ilike.${term},user_name.ilike.${term}`).limit(30),
+        supabase.from('clipad_imported_knowledge').select('id, title, content, provider, content_type').eq('company_id', cid).or(`title.ilike.${term},content.ilike.${term}`).limit(50),
+      ]);
+      const all = [
+        ...(docs.data || []).map(d => ({ type: 'doc', id: d.id, space_id: d.space_id, label: d.title, snippet: d.content?.substring(0, 140) })),
+        ...(tasks.data || []).map(t => ({ type: 'task', id: t.id, space_id: t.space_id, label: t.title, snippet: t.context?.substring(0, 140) })),
+        ...(messages.data || []).map(m => ({ type: 'message', id: m.id, space_id: m.space_id, label: 'Chat Message', snippet: m.content?.substring(0, 140) })),
+        ...(meetings.data || []).map(m => ({ type: 'meeting', id: m.id, space_id: m.space_id, label: m.title || 'Team Meeting', snippet: m.ai_summary?.substring(0, 140) })),
+        ...(decisions.data || []).map(d => ({ type: 'decision', id: d.id, space_id: d.team_space_id, label: 'Decision', snippet: d.decision_text?.substring(0, 140) })),
+        ...(videos.data || []).map(v => ({ type: 'video', id: v.id, space_id: v.space_id, label: v.title || 'Video', snippet: v.ai_summary?.substring(0, 140) })),
+        ...(blockers.data || []).map(b => ({ type: 'blocker', id: b.id, space_id: b.team_space_id, label: 'Blocker', snippet: b.description?.substring(0, 140) })),
+        ...(standups.data || []).map(s => ({ type: 'standup', id: s.id, space_id: s.space_id, label: `Standup \u2014 ${s.user_name || 'Team member'} (${s.created_at?.slice(0,10)})`, snippet: s.today?.substring(0, 140) })),
+        ...(integrations.data || []).map(i => ({ type: 'integration', id: i.id, space_id: null, label: `[${i.provider}] ${i.title}`, snippet: i.content?.substring(0, 140) })),
+      ];
+      setResults(all);
+      setTotalMatchCount(all.length);
+      setShowAllResults(true);
+    } catch (err) {
+      console.error('[GlobalSearch] loadMore error:', err);
+    } finally {
+      setIsSearching(false);
+    }
+  }, [query, user]);
 
   const handleResultClick = (res) => {
     const meta = TYPE_META[res.type];
@@ -565,7 +621,14 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
 
                 {filteredResults.length > 0 && (
                   <div>
-                    <h4 className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">Results</h4>
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Results</h4>
+                      {hasSearched && (
+                        <span className="text-[10px] text-slate-400">
+                          {showAllResults ? `${filteredResults.length} results` : `Top ${filteredResults.length} of ${totalMatchCount > filteredResults.length ? `${totalMatchCount}+` : filteredResults.length}`}
+                        </span>
+                      )}
+                    </div>
                     <div className="space-y-1">
                       {filteredResults.map((res, i) => {
                         const meta = TYPE_META[res.type] || {};
@@ -593,6 +656,26 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
                         );
                       })}
                     </div>
+
+                    {/* View All / Show More Results button */}
+                    {!showAllResults && totalMatchCount > filteredResults.length && (
+                      <button
+                        onClick={handleLoadMore}
+                        disabled={isSearching}
+                        className="w-full mt-3 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary hover:bg-primary/5 transition-all text-[12px] font-semibold group"
+                      >
+                        {isSearching ? (
+                          <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Loading more...</>
+                        ) : (
+                          <><ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" /> View all {totalMatchCount}+ results for "{query}"</>
+                        )}
+                      </button>
+                    )}
+                    {showAllResults && (
+                      <div className="mt-3 text-center text-[11px] text-slate-400">
+                        Showing all {filteredResults.length} results
+                      </div>
+                    )}
                   </div>
                 )}
                 
