@@ -388,6 +388,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const allowedPaths = isAdmin ? null : (customRolePermissions || univAllowedPaths || ROLE_PERMISSIONS[activeRoleName?.toLowerCase()] || INDUSTRY_BASE_PERMISSIONS[activeIndustry] || INDUSTRY_BASE_PERMISSIONS.default);
 
  const coreOrbitNav = [
+ { label: "Search", icon: "Search", path: "/search"},
  { label: "Dashboard", path: "/", icon: "Sparkles"},
  { label: "Time Tracking", path: "/time-tracking", icon: "Clock"},
  { label: "Inbox", path: "/email-inbox", icon: "Mail"},
@@ -395,7 +396,6 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  { label: "Board", path: "/board", icon: "LayoutGrid"},
  { label: "Feature Insider", path: "/feature-insider", icon: "FlaskConical"},
  { label: "Feature Vault", path: "/feature-vault", icon: "Archive"},
- { label: "Search & Intelligence", icon: "Search", path: "/search"},
  { label: "Integrations", path: "/integrations", icon: "Plug"},
  { label: "Settings", path: "/settings", icon: "Settings"}
  ];

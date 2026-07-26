@@ -21,10 +21,10 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
   ];
 
   const appNavItems = [
+    { label: 'Search', path: '/search', icon: Search },
     { label: 'Home', path: '/dashboard', icon: Home },
     { label: 'Spaces', path: '/spaces', icon: Layers },
     { label: 'Record', path: '/videos', icon: Camera },
-    { label: 'Meetings', path: '/meetings', icon: Video },
     { label: 'Menu', action: () => setIsMenuOpen(true), icon: Menu },
   ];
 

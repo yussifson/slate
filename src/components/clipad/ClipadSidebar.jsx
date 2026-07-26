@@ -59,6 +59,7 @@ export default function ClipadSidebar({ forceMobile }) {
   };
 
   const mainItems = [
+    { label: 'Search', path: '/search', icon: Search },
     { label: 'Dashboard', path: '/dashboard', icon: Layout },
     { label: 'Spaces', path: '/spaces', icon: Folder },
     { label: 'Recordings', path: '/videos', icon: Video },

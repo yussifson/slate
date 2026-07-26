@@ -4,7 +4,8 @@ import {
   Search, Sparkles, FileText, CheckCircle, MessageSquare, Calendar, Video,
   Loader2, X, ShieldAlert, AlertTriangle, ArrowRight, ExternalLink, Zap, Lock,
   Command, Bot, Filter, Check, Layers, ChevronRight, Copy, CheckCheck, Folder, Clock,
-  Users, RefreshCw, SlidersHorizontal, ArrowUpRight, ChevronDown, UserCheck, Shield
+  Users, RefreshCw, SlidersHorizontal, ArrowUpRight, ChevronDown, UserCheck, Shield,
+  Share2, CornerDownLeft, Sparkle, Compass, Terminal, Cpu, Lightbulb
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { generateText } from '@/lib/cloudflareAI';
@@ -17,27 +18,34 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 const TYPE_META = {
-  person:      { icon: Users,         label: 'Person',    color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-100 dark:bg-violet-900/30 border border-violet-200 dark:border-violet-700/50' },
-  meeting:     { icon: Calendar,      label: 'Meeting',   color: 'text-blue-700 dark:text-blue-400',       bg: 'bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700/50',     route: (id) => `/meetings/${id}` },
-  video:       { icon: Video,         label: 'Video',     color: 'text-purple-700 dark:text-purple-400',   bg: 'bg-purple-100 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700/50', route: (id) => `/watch/${id}` },
-  doc:         { icon: FileText,      label: 'Doc',       color: 'text-emerald-700 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700/50',route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=docs&docId=${id}` : null },
-  task:        { icon: CheckCircle,   label: 'Task',      color: 'text-amber-700 dark:text-amber-400',     bg: 'bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50',   route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
-  message:     { icon: MessageSquare, label: 'Chat',      color: 'text-indigo-700 dark:text-indigo-400',   bg: 'bg-indigo-100 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700/50', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=chat` : null },
-  decision:    { icon: ShieldAlert,   label: 'Decision',  color: 'text-rose-700 dark:text-rose-400',       bg: 'bg-rose-100 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-700/50',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=decisions` : null },
-  blocker:     { icon: AlertTriangle, label: 'Blocker',   color: 'text-orange-700 dark:text-orange-400',   bg: 'bg-orange-100 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-700/50', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=overview` : null },
-  standup:     { icon: Zap,           label: 'Standup',   color: 'text-teal-700 dark:text-teal-400',       bg: 'bg-teal-100 dark:bg-teal-900/30 border border-teal-200 dark:border-teal-700/50',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=standup` : null },
-  integration: { icon: ExternalLink,  label: 'Imported',  color: 'text-slate-700 dark:text-slate-400',     bg: 'bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700',   route: () => `/integrations` },
+  person:      { icon: Users,         label: 'Person',    color: 'text-violet-500 dark:text-violet-400', bg: 'bg-violet-500/10 border border-violet-500/20' },
+  meeting:     { icon: Calendar,      label: 'Meeting',   color: 'text-blue-500 dark:text-blue-400',     bg: 'bg-blue-500/10 border border-blue-500/20',     route: (id) => `/meetings/${id}` },
+  video:       { icon: Video,         label: 'Video',     color: 'text-purple-500 dark:text-purple-400', bg: 'bg-purple-500/10 border border-purple-500/20', route: (id) => `/watch/${id}` },
+  doc:         { icon: FileText,      label: 'Doc',       color: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-500/10 border border-emerald-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=docs&docId=${id}` : null },
+  task:        { icon: CheckCircle,   label: 'Task',      color: 'text-amber-500 dark:text-amber-400',   bg: 'bg-amber-500/10 border border-amber-500/20',   route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
+  message:     { icon: MessageSquare, label: 'Chat',      color: 'text-indigo-500 dark:text-indigo-400', bg: 'bg-indigo-500/10 border border-indigo-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=chat` : null },
+  decision:    { icon: ShieldAlert,   label: 'Decision',  color: 'text-rose-500 dark:text-rose-400',     bg: 'bg-rose-500/10 border border-rose-500/20',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=decisions` : null },
+  blocker:     { icon: AlertTriangle, label: 'Blocker',   color: 'text-orange-500 dark:text-orange-400', bg: 'bg-orange-500/10 border border-orange-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=overview` : null },
+  standup:     { icon: Zap,           label: 'Standup',   color: 'text-teal-500 dark:text-teal-400',     bg: 'bg-teal-500/10 border border-teal-500/20',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=standup` : null },
+  integration: { icon: ExternalLink,  label: 'Imported',  color: 'text-sky-500 dark:text-sky-400',       bg: 'bg-sky-500/10 border border-sky-500/20',       route: () => `/integrations` },
 };
 
 const FILTER_TABS = [
-  { id: 'all', label: 'All Results', icon: Layers },
+  { id: 'all', label: 'All Knowledge', icon: Layers },
   { id: 'person', label: 'People', icon: Users },
-  { id: 'doc', label: 'Docs', icon: FileText },
+  { id: 'doc', label: 'Documents', icon: FileText },
   { id: 'task', label: 'Tasks', icon: CheckCircle },
   { id: 'meeting', label: 'Meetings', icon: Calendar },
   { id: 'decision', label: 'Decisions', icon: ShieldAlert },
-  { id: 'message', label: 'Chats', icon: MessageSquare },
+  { id: 'message', label: 'Conversations', icon: MessageSquare },
   { id: 'integration', label: 'Integrations', icon: ExternalLink },
+];
+
+const SUGGESTED_PROMPTS = [
+  "Summarize key active blockers across engineering spaces",
+  "Show recent decisions regarding Q3 roadmap & infrastructure",
+  "What were the main highlights from yesterday's standups?",
+  "Find all active action items assigned to team members"
 ];
 
 const FILTER_TYPE_MAP = {
@@ -93,10 +101,10 @@ export default function SearchHub() {
 
   // AI State
   const [aiAnswer, setAiAnswer] = useState('');
-  const [aiSources, setAiSources] = useState([]);
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
   const [followUpInput, setFollowUpInput] = useState('');
+  const [hasPerformedSearch, setHasPerformedSearch] = useState(false);
 
   const companyId = user?.company_id;
 
@@ -125,6 +133,7 @@ export default function SearchHub() {
     const q = (qTerm !== undefined ? qTerm : query).trim();
     if (!q || !companyId) return;
 
+    setHasPerformedSearch(true);
     setIsSearching(true);
     setResults([]);
     setSelectedResult(null);
@@ -171,7 +180,6 @@ export default function SearchHub() {
   const runAISynthesis = async (q, matchedResults, spaceIdArr) => {
     setIsSynthesizing(true);
     setAiAnswer('');
-    setAiSources([]);
     setChatHistory([]);
 
     try {
@@ -185,7 +193,7 @@ export default function SearchHub() {
       const promptMessages = [
         {
           role: 'system',
-          content: `You are Orbit AI, an enterprise intelligence assistant. Provide an executive-level synthesized briefing based on the organizational context and search results. Use markdown with bullet points. Be thorough, clear, and actionable.`
+          content: `You are Orbit AI, an elite enterprise intelligence engine. Provide a sleek, authoritative executive synthesis based on organizational signals. Format nicely with markdown bullet points. Be direct, clear, and high signal.`
         },
         {
           role: 'user',
@@ -204,7 +212,7 @@ export default function SearchHub() {
     } catch (e) {
       console.error('[SearchHub] AI error:', e);
       setAiAnswer('Unable to generate AI synthesis at this time.');
-    } fontally {
+    } finally {
       setIsSynthesizing(false);
     }
   };
@@ -220,7 +228,7 @@ export default function SearchHub() {
 
     try {
       const messages = [
-        { role: 'system', content: 'You are Orbit AI. Answer follow-up questions about the enterprise search results directly and clearly using markdown.' },
+        { role: 'system', content: 'You are Orbit AI. Answer follow-up questions about the search results directly and clearly using markdown.' },
         ...newHistory
       ];
       let answer = '';
@@ -247,210 +255,266 @@ export default function SearchHub() {
   const filteredResults = useMemo(() => results.filter(r => matchesFilter(r.type, activeFilter)), [results, activeFilter]);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans p-4 md:p-8">
-      {/* Search Header Bar */}
-      <div className="max-w-7xl mx-auto mb-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-sm">
-          <form onSubmit={(e) => { e.preventDefault(); setSearchParams({ q: query }); runSearch(); }} className="flex items-center gap-3 w-full md:w-[600px]">
-            <Search className="w-5 h-5 text-slate-400 shrink-0" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search enterprise knowledge, emails, chats, documents, or team members..."
-              className="flex-1 bg-transparent border-0 outline-none ring-0 text-base font-medium placeholder:text-slate-400"
-            />
-            {query && (
-              <button type="button" onClick={() => { setQuery(''); setResults([]); setSelectedResult(null); }} className="text-slate-400 hover:text-slate-600">
-                <X className="w-4 h-4" />
+    <div className="min-h-screen bg-[#fafafa] dark:bg-[#090d16] text-slate-900 dark:text-slate-100 font-sans selection:bg-primary/20 selection:text-primary">
+      {/* Sleek Header Section */}
+      <div className="border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-[#0d1322]/80 backdrop-blur-xl sticky top-0 z-30 px-4 md:px-8 py-5">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          
+          {/* Main Command Bar Search Input */}
+          <form onSubmit={(e) => { e.preventDefault(); setSearchParams({ q: query }); runSearch(); }} className="w-full md:max-w-2xl relative group">
+            <div className="relative flex items-center bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-1.5 focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary/50 transition-all shadow-sm group-hover:border-slate-300 dark:group-hover:border-slate-700">
+              <div className="pl-3.5 pr-2 text-slate-400">
+                <Search className="w-5 h-5" />
+              </div>
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Ask Orbit AI or search company knowledge..."
+                className="w-full bg-transparent border-0 outline-none ring-0 text-sm md:text-base font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 py-1.5 pr-3 text-slate-900 dark:text-white"
+              />
+              {query && (
+                <button type="button" onClick={() => { setQuery(''); setResults([]); setSelectedResult(null); setHasPerformedSearch(false); }} className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg">
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+              <button
+                type="submit"
+                className="px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-md shadow-indigo-500/20 transition-all active:scale-95 shrink-0"
+              >
+                {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                <span>Execute</span>
               </button>
-            )}
-            <button type="submit" className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-sm">
-              {isSearching ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-              Search
-            </button>
+            </div>
           </form>
 
-          <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
-            <span className="flex items-center gap-1"><Shield className="w-3.5 h-3.5 text-emerald-500" /> Company Scoped</span>
-            <span>·</span>
-            <span>{results.length} records found</span>
+          {/* Stat Badges */}
+          <div className="flex items-center gap-3 text-xs font-semibold text-slate-500 dark:text-slate-400">
+            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+              <Shield className="w-3.5 h-3.5" /> Company Encrypted
+            </span>
+            {hasPerformedSearch && (
+              <span className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-mono">
+                {results.length} matches
+              </span>
+            )}
           </div>
+
         </div>
 
-        {/* Filter Bar */}
-        <div className="flex items-center gap-1.5 mt-4 overflow-x-auto pb-1 scrollbar-none">
-          {FILTER_TABS.map(tab => {
-            const Icon = tab.icon;
-            const count = results.filter(r => matchesFilter(r.type, tab.id)).length;
-            const active = activeFilter === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveFilter(tab.id)}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
-                  active
-                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                    : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                {tab.label}
-                <span className={`px-1.5 py-0.5 rounded-md text-[10px] ${active ? 'bg-white/20 dark:bg-slate-900/20' : 'bg-slate-100 dark:bg-slate-800'}`}>
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Main Dual-Pane Layout */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        {/* Left Column: Results List (7 cols) */}
-        <div className="lg:col-span-7 space-y-3">
-          {isSearching ? (
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-12 text-center">
-              <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-3" />
-              <p className="font-bold text-sm">Searching across all integrations & workspace spaces...</p>
-            </div>
-          ) : filteredResults.length === 0 ? (
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-12 text-center">
-              <Search className="w-10 h-10 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
-              <h3 className="font-bold text-base mb-1">No matching results found</h3>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">Try typing a document name, colleague, meeting topic, or ask Orbit AI on the right pane.</p>
-            </div>
-          ) : (
-            filteredResults.map(item => {
-              const meta = TYPE_META[item.type] || TYPE_META.doc;
-              const Icon = meta.icon;
-              const isSelected = selectedResult?.id === item.id;
-
+        {/* Filter Pills */}
+        {hasPerformedSearch && (
+          <div className="max-w-7xl mx-auto flex items-center gap-2 mt-4 overflow-x-auto pb-1 scrollbar-none">
+            {FILTER_TABS.map(tab => {
+              const Icon = tab.icon;
+              const count = results.filter(r => matchesFilter(r.type, tab.id)).length;
+              const active = activeFilter === tab.id;
               return (
-                <div
-                  key={`${item.type}-${item.id}`}
-                  onClick={() => setSelectedResult(item)}
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer bg-white dark:bg-slate-900 ${
-                    isSelected
-                      ? 'border-primary ring-2 ring-primary/20 shadow-md'
-                      : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveFilter(tab.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
+                    active
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
+                      : 'bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-3 mb-1.5">
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold flex items-center gap-1 ${meta.bg} ${meta.color}`}>
-                        <Icon className="w-3 h-3" />
-                        {meta.label}
-                      </span>
-                      {item.provider && (
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                          [{item.provider}]
-                        </span>
+                  <Icon className="w-3.5 h-3.5" />
+                  {tab.label}
+                  <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono ${active ? 'bg-white/20 dark:bg-slate-900/20' : 'bg-slate-100 dark:bg-slate-800'}`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Main Workspace Body */}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
+        {!hasPerformedSearch ? (
+          /* Empty / Zero State: Modern AI Landing */
+          <div className="max-w-3xl mx-auto py-12 text-center space-y-8 animate-in fade-in duration-300">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-600 dark:text-violet-400 text-xs font-bold tracking-wide uppercase">
+              <Sparkles className="w-3.5 h-3.5" /> Enterprise Search & Intelligence
+            </div>
+
+            <h1 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+              What do you want to <span className="bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 bg-clip-text text-transparent">discover today?</span>
+            </h1>
+
+            <p className="text-slate-500 dark:text-slate-400 text-base max-w-xl mx-auto font-medium">
+              Search across Slack, Google Drive, Notion, Meetings, Code, and Team Members in one unified AI command center.
+            </p>
+
+            {/* Suggested Prompts Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-left pt-4">
+              {SUGGESTED_PROMPTS.map((promptText, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => { setQuery(promptText); setSearchParams({ q: promptText }); runSearch(promptText); }}
+                  className="p-4 rounded-2xl bg-white dark:bg-[#0d1322] border border-slate-200/90 dark:border-slate-800/90 hover:border-violet-500/50 dark:hover:border-violet-500/50 shadow-sm hover:shadow-md transition-all group flex items-start gap-3"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-violet-500/10 flex items-center justify-center shrink-0 group-hover:bg-violet-500 group-hover:text-white transition-colors">
+                    <Lightbulb className="w-4 h-4 text-violet-500 group-hover:text-white" />
+                  </div>
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white leading-relaxed">
+                    {promptText}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          /* Active Results State: Dual-Pane Grid */
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            {/* Left Column: Results Feed (7 cols) */}
+            <div className="lg:col-span-7 space-y-3.5">
+              {isSearching ? (
+                <div className="bg-white dark:bg-[#0d1322] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-12 text-center shadow-sm">
+                  <Loader2 className="w-8 h-8 text-violet-500 animate-spin mx-auto mb-3" />
+                  <p className="font-bold text-sm text-slate-700 dark:text-slate-300">Searching your enterprise graph...</p>
+                </div>
+              ) : filteredResults.length === 0 ? (
+                <div className="bg-white dark:bg-[#0d1322] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-12 text-center shadow-sm">
+                  <Search className="w-10 h-10 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
+                  <h3 className="font-bold text-base mb-1">No direct matching records</h3>
+                  <p className="text-xs text-slate-500 max-w-sm mx-auto">Orbit AI on the right is synthesizing answers from your workspace context.</p>
+                </div>
+              ) : (
+                filteredResults.map(item => {
+                  const meta = TYPE_META[item.type] || TYPE_META.doc;
+                  const Icon = meta.icon;
+                  const isSelected = selectedResult?.id === item.id;
+
+                  return (
+                    <div
+                      key={`${item.type}-${item.id}`}
+                      onClick={() => setSelectedResult(item)}
+                      className={`p-5 rounded-2xl border transition-all cursor-pointer bg-white dark:bg-[#0d1322] ${
+                        isSelected
+                          ? 'border-violet-500 ring-2 ring-violet-500/20 shadow-md'
+                          : 'border-slate-200/90 dark:border-slate-800/90 hover:border-slate-300 dark:hover:border-slate-700'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-3 mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1.5 ${meta.bg} ${meta.color}`}>
+                            <Icon className="w-3.5 h-3.5" />
+                            {meta.label}
+                          </span>
+                          {item.provider && (
+                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                              [{item.provider}]
+                            </span>
+                          )}
+                        </div>
+                        {item.created_at && (
+                          <span className="text-[11px] text-slate-400 font-medium">
+                            {new Date(item.created_at).toLocaleDateString()}
+                          </span>
+                        )}
+                      </div>
+
+                      <h4 className="font-bold text-base text-slate-900 dark:text-white leading-snug mb-1.5">
+                        {item.label}
+                      </h4>
+
+                      {item.snippet && (
+                        <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed font-normal">
+                          {item.snippet}
+                        </p>
                       )}
                     </div>
-                    {item.created_at && (
-                      <span className="text-[10px] text-slate-400 font-medium">
-                        {new Date(item.created_at).toLocaleDateString()}
-                      </span>
-                    )}
-                  </div>
-
-                  <h4 className="font-bold text-sm text-slate-900 dark:text-white leading-snug mb-1">
-                    {item.label}
-                  </h4>
-
-                  {item.snippet && (
-                    <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
-                      {item.snippet}
-                    </p>
-                  )}
-                </div>
-              );
-            })
-          )}
-        </div>
-
-        {/* Right Column: AI Intelligence Briefing & Detail Drawer (5 cols) */}
-        <div className="lg:col-span-5 space-y-6">
-          
-          {/* Executive AI Briefing Box */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-violet-500/10 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-violet-500" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">Orbit AI Executive Synthesis</h3>
-                  <p className="text-[10px] text-slate-400">Cross-platform intelligence summary</p>
-                </div>
-              </div>
+                  );
+                })
+              )}
             </div>
 
-            {isSynthesizing && !aiAnswer ? (
-              <div className="flex items-center gap-2 text-xs text-slate-500 py-4">
-                <Loader2 className="w-4 h-4 animate-spin text-violet-500" />
-                Synthesizing organizational knowledge...
-              </div>
-            ) : (
-              <div className="space-y-4 max-h-[350px] overflow-y-auto pr-1">
-                {chatHistory.map((msg, i) => (
-                  <div key={i} className={`text-xs leading-relaxed ${msg.role === 'user' ? 'bg-slate-100 dark:bg-slate-800 p-3 rounded-xl font-bold' : 'prose prose-xs dark:prose-invert max-w-none'}`}>
-                    {msg.role === 'user' ? (
-                      <div>Q: {msg.content}</div>
-                    ) : (
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
-                    )}
+            {/* Right Column: AI Intelligence Briefing (5 cols) */}
+            <div className="lg:col-span-5 space-y-6">
+              
+              {/* Executive AI Briefing Box */}
+              <div className="bg-white dark:bg-[#0d1322] border border-slate-200/90 dark:border-slate-800/90 rounded-2xl p-6 shadow-sm space-y-4 sticky top-28">
+                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-violet-500/10 flex items-center justify-center">
+                      <Sparkles className="w-5 h-5 text-violet-500" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-base text-slate-900 dark:text-white">Orbit AI Executive Synthesis</h3>
+                      <p className="text-[11px] text-slate-400">Cross-platform intelligence summary</p>
+                    </div>
                   </div>
-                ))}
-              </div>
-            )}
+                </div>
 
-            {/* Follow-up input */}
-            <form onSubmit={handleFollowUp} className="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-              <input
-                value={followUpInput}
-                onChange={e => setFollowUpInput(e.target.value)}
-                placeholder="Ask a follow-up question..."
-                className="flex-1 text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none"
-              />
-              <button type="submit" disabled={isSynthesizing} className="px-3 py-2 bg-violet-600 text-white rounded-xl text-xs font-bold hover:bg-violet-700 transition-colors disabled:opacity-50">
-                Ask
-              </button>
-            </form>
-          </div>
-
-          {/* Selected Record Detail Panel */}
-          {selectedResult && (
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-3 animate-in fade-in">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  Record Inspection
-                </span>
-                {TYPE_META[selectedResult.type]?.route && (
-                  <button
-                    onClick={() => {
-                      const route = TYPE_META[selectedResult.type].route(selectedResult.id, selectedResult.space_id);
-                      if (route) navigate(route);
-                    }}
-                    className="flex items-center gap-1 text-xs font-bold text-primary hover:underline"
-                  >
-                    Open Record <ArrowUpRight className="w-3.5 h-3.5" />
-                  </button>
+                {isSynthesizing && !aiAnswer ? (
+                  <div className="flex items-center gap-2.5 text-xs text-slate-500 py-6">
+                    <Loader2 className="w-4 h-4 animate-spin text-violet-500" />
+                    Synthesizing organizational knowledge...
+                  </div>
+                ) : (
+                  <div className="space-y-4 max-h-[380px] overflow-y-auto pr-1">
+                    {chatHistory.map((msg, i) => (
+                      <div key={i} className={`text-xs leading-relaxed ${msg.role === 'user' ? 'bg-slate-100 dark:bg-slate-800 p-3 rounded-xl font-bold' : 'prose prose-xs dark:prose-invert max-w-none'}`}>
+                        {msg.role === 'user' ? (
+                          <div>Q: {msg.content}</div>
+                        ) : (
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 )}
+
+                {/* Follow-up input */}
+                <form onSubmit={handleFollowUp} className="flex gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                  <input
+                    value={followUpInput}
+                    onChange={e => setFollowUpInput(e.target.value)}
+                    placeholder="Ask a follow-up..."
+                    className="flex-1 text-xs px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:border-violet-500"
+                  />
+                  <button type="submit" disabled={isSynthesizing} className="px-4 py-2.5 bg-violet-600 text-white rounded-xl text-xs font-bold hover:bg-violet-500 transition-colors disabled:opacity-50">
+                    Ask
+                  </button>
+                </form>
               </div>
 
-              <h3 className="font-bold text-base text-slate-900 dark:text-white leading-tight">
-                {selectedResult.label}
-              </h3>
+              {/* Selected Record Inspection Drawer */}
+              {selectedResult && (
+                <div className="bg-white dark:bg-[#0d1322] border border-slate-200/90 dark:border-slate-800/90 rounded-2xl p-6 shadow-sm space-y-3 animate-in fade-in">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      Record Detail
+                    </span>
+                    {TYPE_META[selectedResult.type]?.route && (
+                      <button
+                        onClick={() => {
+                          const route = TYPE_META[selectedResult.type].route(selectedResult.id, selectedResult.space_id);
+                          if (route) navigate(route);
+                        }}
+                        className="flex items-center gap-1 text-xs font-bold text-violet-500 hover:underline"
+                      >
+                        Open Source <ArrowUpRight className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
 
-              <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-xs text-slate-700 dark:text-slate-300 leading-relaxed max-h-60 overflow-y-auto">
-                {selectedResult.snippet || 'No expanded content preview available for this record.'}
-              </div>
+                  <h3 className="font-bold text-base text-slate-900 dark:text-white leading-tight">
+                    {selectedResult.label}
+                  </h3>
+
+                  <div className="p-3.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl text-xs text-slate-700 dark:text-slate-300 leading-relaxed max-h-60 overflow-y-auto">
+                    {selectedResult.snippet || 'No expanded content preview available for this record.'}
+                  </div>
+                </div>
+              )}
+
             </div>
-          )}
-
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
