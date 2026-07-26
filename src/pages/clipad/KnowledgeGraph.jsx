@@ -4,6 +4,8 @@ import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useTheme } from 'next-themes';
+import { generateText } from '@/lib/cloudflareAI';
+import ReactMarkdown from 'react-markdown';
 import {
   ReactFlow,
   Background,
@@ -19,7 +21,7 @@ import {
 import '@xyflow/react/dist/style.css';
 import {
   Network, RefreshCw, Loader2, Filter, AlertCircle, ZoomIn, ZoomOut,
-  Layers, GitBranch, Search, X, Info, ExternalLink, ArrowLeft
+  Layers, GitBranch, Search, X, Info, ExternalLink, ArrowLeft, Sparkles
 } from 'lucide-react';
 import { INTEGRATIONS } from '@/config/integrationsList';
 
@@ -139,6 +141,40 @@ export default function KnowledgeGraph() {
   const [filterRelation, setFilterRelation] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [providers, setProviders] = useState([]);
+  const [aiInsights, setAiInsights] = useState('');
+  const [aiInsightsOpen, setAiInsightsOpen] = useState(false);
+  const [aiInsightsLoading, setAiInsightsLoading] = useState(false);
+
+  const generateAIInsights = useCallback(async () => {
+    if (aiInsightsLoading) return;
+    setAiInsightsOpen(true);
+    setAiInsights('');
+    setAiInsightsLoading(true);
+    try {
+      const topProviders = providers.slice(0, 8).join(', ') || 'none';
+      const relTypes = Object.keys(RELATIONSHIP_COLORS).join(', ');
+      await generateText([
+        {
+          role: 'system',
+          content: 'You are an enterprise knowledge analyst. Provide concise, actionable insights about a knowledge graph. Use markdown with bullet points. Be specific and short (under 200 words). DO NOT use <think> tags.',
+        },
+        {
+          role: 'user',
+          content: `Analyze this knowledge graph:\n- Total nodes: ${stats.nodes}\n- Total relationships: ${stats.edges}\n- Connected sources: ${stats.providers} (${topProviders})\n- Relationship types in use: ${relTypes}\n\nProvide:\n1. Top 2-3 observations about the knowledge landscape\n2. Which source appears dominant and what that means\n3. One recommendation to improve knowledge coverage`,
+        },
+      ], (accumulated) => {
+        const clean = accumulated
+          .replace(/<(think|thought)>[\s\S]*?<\/\1>/gi, '')
+          .replace(/<(think|thought)>[\s\S]*$/gi, '')
+          .replace(/<\/(think|thought)>/gi, '');
+        setAiInsights(clean);
+      }, { fast: true });
+    } catch (e) {
+      setAiInsights('Could not generate insights. Please try again.');
+    } finally {
+      setAiInsightsLoading(false);
+    }
+  }, [stats, providers, aiInsightsLoading]);
 
   const loadGraph = useCallback(async () => {
     if (!companyId) return;
@@ -278,6 +314,13 @@ export default function KnowledgeGraph() {
               <RefreshCw className="w-4 h-4" />
               Refresh
             </button>
+            <button
+              onClick={generateAIInsights}
+              className="flex items-center gap-2 px-4 py-2 bg-violet-500/10 hover:bg-violet-500/20 text-violet-600 dark:text-violet-400 rounded-xl text-sm font-medium transition-colors border border-violet-500/20"
+            >
+              <Sparkles className="w-4 h-4" />
+              AI Insights
+            </button>
           </div>
         </div>
 
@@ -365,6 +408,36 @@ export default function KnowledgeGraph() {
               nodeColor={n => getProviderColor(n.data?.provider)}
             />
           </ReactFlow>
+        )}
+
+        {/* AI Insights Panel */}
+        {aiInsightsOpen && (
+          <div className="absolute top-4 left-4 w-80 bg-card border border-violet-500/20 rounded-2xl shadow-2xl p-5 z-20 animate-in fade-in slide-in-from-left-4 max-h-[80vh] overflow-y-auto">
+            <div className="flex items-start justify-between gap-2 mb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-violet-500" />
+                </div>
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-violet-500">AI Analysis</div>
+                  <div className="text-xs font-semibold text-foreground">Knowledge Insights</div>
+                </div>
+              </div>
+              <button onClick={() => setAiInsightsOpen(false)} className="text-muted-foreground hover:text-foreground mt-0.5">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            {aiInsightsLoading && !aiInsights ? (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
+                <Loader2 className="w-4 h-4 animate-spin text-violet-500" />
+                Analyzing your knowledge graph…
+              </div>
+            ) : (
+              <div className="prose prose-sm dark:prose-invert max-w-none text-xs leading-relaxed">
+                <ReactMarkdown>{aiInsights}</ReactMarkdown>
+              </div>
+            )}
+          </div>
         )}
 
         {/* Node detail panel */}

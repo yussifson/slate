@@ -75,20 +75,33 @@ function TypewriterText({ text }) {
   return <span>{displayed}</span>;
 }
 
+// ── Module-level cache for space ID lookups (60s TTL) ──
+const _spaceIdCache = new Map(); // key: userId -> { ids: Set, expiry: number }
+
 /**
  * Fetches accessible space IDs for security scoping
  */
 async function fetchAccessibleSpaceIds(user) {
   if (!user?.company_id) return new Set();
+
+  const cacheKey = `${user.id}:${user.company_id}`;
+  const cached = _spaceIdCache.get(cacheKey);
+  if (cached && Date.now() < cached.expiry) return cached.ids;
+
+  let ids;
   if (isAdmin(user)) {
     const { data } = await supabase.from('clipad_spaces').select('id').eq('company_id', user.company_id);
-    return new Set((data || []).map(s => s.id));
+    ids = new Set((data || []).map(s => s.id));
+  } else {
+    const { data: memberships } = await supabase.from('clipad_space_members').select('space_id').eq('user_id', user.id);
+    const memberSpaceIds = new Set((memberships || []).map(m => m.space_id));
+    const { data: publicSpaces } = await supabase.from('clipad_spaces').select('id').eq('company_id', user.company_id).eq('is_private', false);
+    (publicSpaces || []).forEach(s => memberSpaceIds.add(s.id));
+    ids = memberSpaceIds;
   }
-  const { data: memberships } = await supabase.from('clipad_space_members').select('space_id').eq('user_id', user.id);
-  const memberSpaceIds = new Set((memberships || []).map(m => m.space_id));
-  const { data: publicSpaces } = await supabase.from('clipad_spaces').select('id').eq('company_id', user.company_id).eq('is_private', false);
-  (publicSpaces || []).forEach(s => memberSpaceIds.add(s.id));
-  return memberSpaceIds;
+
+  _spaceIdCache.set(cacheKey, { ids, expiry: Date.now() + 60_000 });
+  return ids;
 }
 
 export default function GlobalSearch() {
@@ -261,7 +274,11 @@ export default function GlobalSearch() {
     setFocusedIndex(-1);
 
     try {
-      const accessibleSpaceIds = await fetchAccessibleSpaceIds(user);
+      const [accessibleSpaceIds, orgContextResult] = await Promise.all([
+        fetchAccessibleSpaceIds(user),
+        buildOrgContext({ limit: 25, companyId: user.company_id, userId: user.id, userRole: user?.role || 'member' })
+          .catch(e => { console.warn('[GlobalSearch] Could not load org context:', e.message); return { contextText: '' }; }),
+      ]);
       const spaceIdArr = Array.from(accessibleSpaceIds);
       setAccessibleCount(spaceIdArr.length);
       const term = `%${q}%`;
@@ -316,29 +333,25 @@ export default function GlobalSearch() {
       setResults(formatted);
       setIsSearching(false);
 
-      // AI Synthesis
+      // AI Synthesis — streaming so text appears immediately
       setIsSynthesizing(true);
       const userRole = isAdmin(user) ? 'Company Admin' : isSpaceman(user) ? 'Spaceman (Space Admin)' : 'Member';
 
-      let fullOrgContext = '';
-      try {
-        const { contextText } = await buildOrgContext({ limit: 25, spaceIds: spaceIdArr, companyId: user.company_id, userId: user.id, userRole: user?.role || 'member' });
-        if (contextText && contextText.length > 50) fullOrgContext = contextText;
-      } catch (ctxErr) {
-        console.warn('[GlobalSearch] Could not load full org context:', ctxErr.message);
-      }
+      const fullOrgContext = orgContextResult?.contextText && orgContextResult.contextText.length > 50 ? orgContextResult.contextText : '';
 
       const keywordResultsContext = formatted.length > 0
-        ? `\\n\\nKEYWORD SEARCH RESULTS (${formatted.length} records matched "${q}"):\\n` +
-          formatted.map(r => `[${r.type.toUpperCase()} ID:${r.id}] ${r.label}: ${r.snippet || ''}`).join('\\n')
-        : `\\n\\nKEYWORD SEARCH: No records matched "${q}" directly \u2014 check org context.`;
+        ? `\n\nKEYWORD SEARCH RESULTS (${formatted.length} records matched "${q}"):\n` +
+          formatted.map(r => `[${r.type.toUpperCase()} ID:${r.id}] ${r.label}: ${r.snippet || ''}`).join('\n')
+        : `\n\nKEYWORD SEARCH: No records matched "${q}" directly — check org context.`;
 
       const now = new Date();
       const timeContext = `CURRENT DATE & TIME: ${now.toLocaleDateString()} ${now.toLocaleTimeString()} (${Intl.DateTimeFormat().resolvedOptions().timeZone})`;
       const userDepartment = user?.department ? ` in the ${user.department} department` : '';
       const userIndustry = user?.company_industry ? ` in the ${user.company_industry} industry` : '';
 
-      const raw = await generateText([
+      // Use streaming so the answer appears token-by-token
+      let streamingAnswer = '';
+      await generateText([
         {
           role: 'system',
           content: `You are Orbit AI, an enterprise intelligence assistant.
@@ -361,17 +374,24 @@ DO NOT mention internal IDs (e.g. M-123, I-456, or UUIDs) in your text response.
 After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>"}].`,
         },
         { role: 'user', content: `Query: "${q}"` },
-      ], null, { fast: true });
+      ], (accumulated) => {
+        // Strip any thinking tags as they arrive
+        const clean = accumulated
+          .replace(/<(think|thought)>[\s\S]*?<\/\1>/gi, '')
+          .replace(/<(think|thought)>[\s\S]*$/gi, '')
+          .replace(/<\/(think|thought)>/gi, '');
+        // Show content before SOURCES: tag
+        const displayText = clean.replace(/SOURCES:.*$/s, '').trim();
+        setAiAnswer(displayText);
+        streamingAnswer = accumulated;
+      }, { fast: true });
 
-      const sourcesMatch = (raw || '').match(/SOURCES:\s*(\[.*?\])/s);
+      // Final parse for sources after streaming completes
+      const sourcesMatch = (streamingAnswer || '').match(/SOURCES:\s*(\[.*?\])/s);
       let sources = [];
-      let answer = (raw || '').replace(/SOURCES:.*$/s, '').trim();
       if (sourcesMatch) {
         try { sources = JSON.parse(sourcesMatch[1]); } catch { /* ignore */ }
       }
-      // Strip reasoning BEFORE storing — parseThinking separates thinking from the clean answer
-      const { content: cleanAnswer } = parseThinking(answer);
-      setAiAnswer(cleanAnswer || answer);
       setAiSources(sources.map(s => formatted.find(r => r.id === s.id)).filter(Boolean));
     } catch (err) {
       console.error('[GlobalSearch]', err);

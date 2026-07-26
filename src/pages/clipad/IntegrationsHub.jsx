@@ -45,6 +45,7 @@ export default function IntegrationsHub() {
   const [activeView, setActiveView] = useState('hub'); // 'hub' or 'analytics'
   const [apiKeyModal, setApiKeyModal] = useState(null); // { provider, integration, fields }
   const [configModal, setConfigModal] = useState(null); // { integration, conn }
+  const [customFreqInput, setCustomFreqInput] = useState({}); // { [connId]: hoursString }
 
   // ── Visibility scope selector state ──────────────────────────────────────────
   const [scopeModal, setScopeModal] = useState(null); // { integration } — pending connect
@@ -247,6 +248,17 @@ export default function IntegrationsHub() {
     } catch (e) {
       toast({ title: 'Error', description: 'Failed to update auto-sync.', variant: 'destructive' });
     }
+  };
+
+  const handleSetCustomFrequency = async (connId) => {
+    const hours = parseFloat(customFreqInput[connId]);
+    if (!hours || hours <= 0) {
+      toast({ title: 'Invalid', description: 'Enter a valid number of hours (e.g. 2, 4, 6).', variant: 'destructive' });
+      return;
+    }
+    const freq = `Custom:${hours}h`;
+    await handleUpdateSyncFrequency(connId, freq);
+    setCustomFreqInput(prev => ({ ...prev, [connId]: '' }));
   };
 
   const handleSyncNow = async (integration, forceFull = false) => {
@@ -690,7 +702,7 @@ export default function IntegrationsHub() {
                                 <Clock className="w-4 h-4" />
                               </button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="center" className="w-48 font-sans z-[100] p-2 rounded-2xl border border-border shadow-xl bg-card">
+                            <DropdownMenuContent align="center" className="w-56 font-sans z-[100] p-2 rounded-2xl border border-border shadow-xl bg-card">
                               <DropdownMenuLabel className="text-[11px] text-muted-foreground font-bold px-3 py-2 uppercase tracking-widest text-center">Sync Frequency</DropdownMenuLabel>
                               <DropdownMenuSeparator className="bg-border my-1" />
                               {['Manual', '15 Minutes', 'Hourly', 'Daily', 'Weekly'].map(freq => {
@@ -708,6 +720,38 @@ export default function IntegrationsHub() {
                                   </DropdownMenuItem>
                                 );
                               })}
+                              {/* Custom frequency option */}
+                              <DropdownMenuSeparator className="bg-border my-1" />
+                              <div className="px-3 py-2">
+                                <div className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                                  <Sliders className="w-3 h-3" /> Custom Interval
+                                </div>
+                                {conn.sync_frequency?.startsWith('Custom:') && (
+                                  <div className="text-[11px] text-primary font-semibold mb-1.5 flex items-center gap-1">
+                                    <CheckCircle2 className="w-3 h-3" />
+                                    Active: every {conn.sync_frequency.replace('Custom:', '').replace('h', '')}h
+                                  </div>
+                                )}
+                                <div className="flex gap-1.5">
+                                  <input
+                                    type="number"
+                                    min="0.5"
+                                    step="0.5"
+                                    placeholder="hrs"
+                                    value={customFreqInput[conn.id] || ''}
+                                    onChange={e => setCustomFreqInput(prev => ({ ...prev, [conn.id]: e.target.value }))}
+                                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleSetCustomFrequency(conn.id); } }}
+                                    onClick={e => e.stopPropagation()}
+                                    className="flex-1 text-xs px-2 py-1.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:border-primary"
+                                  />
+                                  <button
+                                    onClick={e => { e.stopPropagation(); handleSetCustomFrequency(conn.id); }}
+                                    className="px-2.5 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/90 transition-colors"
+                                  >
+                                    Set
+                                  </button>
+                                </div>
+                              </div>
                             </DropdownMenuContent>
                           </DropdownMenu>
 

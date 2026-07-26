@@ -10,8 +10,26 @@ export default function DailyBriefingWidget() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const fetchAndGenerateBriefing = async () => {
+  const fetchAndGenerateBriefing = async (forceRefresh = false) => {
     if (!user?.company_id) return;
+
+    // Check 6h cache unless force-refreshing
+    if (!forceRefresh) {
+      const today = new Date().toISOString().slice(0, 10);
+      const cacheKey = `briefing:${user.company_id}:${today}`;
+      try {
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+          const { data, ts } = JSON.parse(cached);
+          if (data && Date.now() - ts < 6 * 60 * 60 * 1000) {
+            setBriefing(data);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (_) {/* cache miss is fine */}
+    }
+
     setLoading(true);
     try {
       // 1. Fetch yesterday's meetings, pending commitments, and blockers
@@ -71,6 +89,13 @@ Return ONLY valid JSON with keys:
       }
       
       setBriefing(parsed);
+      // Persist to cache
+      try {
+        const today = new Date().toISOString().slice(0, 10);
+        const cacheKey = `briefing:${user.company_id}:${today}`;
+        localStorage.setItem(cacheKey, JSON.stringify({ data: parsed, ts: Date.now() }));
+      } catch (_) {/* storage quota errors are non-fatal */}
+
     } catch (err) {
       console.warn("Failed to generate daily briefing", err);
       setBriefing({
@@ -125,7 +150,7 @@ Return ONLY valid JSON with keys:
           </div>
         </div>
         <button
-          onClick={() => { setRefreshing(true); fetchAndGenerateBriefing(); }}
+          onClick={() => { setRefreshing(true); fetchAndGenerateBriefing(true); }}
           disabled={refreshing}
           className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700/80 text-slate-500 dark:text-slate-400 transition-colors"
           title="Refresh briefing"
