@@ -40,9 +40,10 @@ envKeys.forEach(key => {
 let currentAccountIndex = 0;
 
 const MODELS = {
-  // QwQ-32B: most powerful free CF model (reasoning like o1-mini)
-  text: "@cf/qwen/qwq-32b",
-  vision: "@cf/zai-org/glm-4.7-flash"  // GLM-4.7 supports vision + 131k context
+  // Preferred model — the edge function cascades automatically:
+  //   moonshotai/kimi-k3 → moonshotai/kimi-k2.5 → @cf/qwen/qwq-32b → DeepSeek-R1 → GLM-4.7 → Llama
+  text: "moonshotai/kimi-k3",
+  vision: "@cf/zai-org/glm-4.7-flash", // GLM-4.7 supports vision + 131k context
 };
 
 // ── Environment constants for production streaming ──
