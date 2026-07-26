@@ -790,50 +790,45 @@ export default function IntegrationsHub() {
               </div>
             </div>
 
-            {/* Scope options in a single row */}
-            <div className="grid grid-cols-3 gap-2.5 mb-4">
-              {/* Personal */}
+            {/* Scope options - Sleek Segmented Control style */}
+            <div className="flex bg-slate-100 dark:bg-slate-800/80 p-1 mb-4" style={{ borderRadius: '10px' }}>
               <button
+                type="button"
                 onClick={() => setSelectedScope('personal')}
-                className={`flex flex-col items-center text-center p-3 rounded-xl border transition-all h-full ${
+                style={{ borderRadius: '8px' }}
+                className={`flex-1 py-1.5 text-xs font-bold transition-all text-center border-0 cursor-pointer ${
                   selectedScope === 'personal'
-                    ? 'border-emerald-500 bg-emerald-50/40 dark:bg-emerald-500/10 ring-1 ring-emerald-500/20'
-                    : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50'
+                    ? 'bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm border border-slate-200/50 dark:border-slate-600/50'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 bg-transparent'
                 }`}
               >
-                <User className={`w-4 h-4 mb-1.5 ${selectedScope === 'personal' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`} />
-                <span className="text-xs font-bold text-slate-900 dark:text-white mb-0.5">Personal</span>
-                <span className="text-[9px] font-medium text-slate-500 dark:text-slate-400 leading-tight">Only you</span>
+                Personal
               </button>
-
-              {/* Space-level */}
               <button
+                type="button"
                 onClick={() => setSelectedScope('space')}
-                className={`flex flex-col items-center text-center p-3 rounded-xl border transition-all h-full ${
+                style={{ borderRadius: '8px' }}
+                className={`flex-1 py-1.5 text-xs font-bold transition-all text-center border-0 cursor-pointer ${
                   selectedScope === 'space'
-                    ? 'border-emerald-500 bg-emerald-50/40 dark:bg-emerald-500/10 ring-1 ring-emerald-500/20'
-                    : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50'
+                    ? 'bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm border border-slate-200/50 dark:border-slate-600/50'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 bg-transparent'
                 }`}
               >
-                <Users className={`w-4 h-4 mb-1.5 ${selectedScope === 'space' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`} />
-                <span className="text-xs font-bold text-slate-900 dark:text-white mb-0.5">Space</span>
-                <span className="text-[9px] font-medium text-slate-500 dark:text-slate-400 leading-tight">Members</span>
+                Space
               </button>
-
-              {/* Company-wide — admin only */}
               <button
+                type="button"
                 onClick={() => isAdmin && setSelectedScope('company')}
                 disabled={!isAdmin}
-                className={`flex flex-col items-center text-center p-3 rounded-xl border transition-all h-full ${
-                  !isAdmin ? 'opacity-40 cursor-not-allowed bg-slate-100/50 dark:bg-slate-950/20' :
+                style={{ borderRadius: '8px' }}
+                className={`flex-1 py-1.5 text-xs font-bold transition-all text-center border-0 ${
+                  !isAdmin ? 'opacity-40 cursor-not-allowed text-slate-400 bg-transparent' :
                   selectedScope === 'company'
-                    ? 'border-emerald-500 bg-emerald-50/40 dark:bg-emerald-500/10 ring-1 ring-emerald-500/20'
-                    : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50'
+                    ? 'bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm border border-slate-200/50 dark:border-slate-600/50'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 bg-transparent'
                 }`}
               >
-                <Globe className={`w-4 h-4 mb-1.5 ${selectedScope === 'company' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`} />
-                <span className="text-xs font-bold text-slate-900 dark:text-white mb-0.5">Company</span>
-                <span className="text-[9px] font-medium text-slate-500 dark:text-slate-400 leading-tight">Everyone</span>
+                Company
               </button>
             </div>
 
@@ -873,16 +868,18 @@ export default function IntegrationsHub() {
             <div className="flex gap-2">
               <button
                 onClick={() => setScopeModal(null)}
-                className="flex-1 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                style={{ borderRadius: '8px' }}
+                className="flex-1 px-4 py-2 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmConnect}
                 disabled={selectedScope === 'space' && (!selectedSpaceId || userSpaces.length === 0)}
-                className="flex-1 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/10"
+                style={{ borderRadius: '8px' }}
+                className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/10"
               >
-                <Plug className="w-3.5 h-3.5" /> Connect
+                <Plug className="w-3.5 h-3.5 text-emerald-100" /> Connect
               </button>
             </div>
           </div>
