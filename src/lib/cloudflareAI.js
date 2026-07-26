@@ -244,12 +244,14 @@ export async function generateText(input, onStream = null) {
     }
     if (!finalText && typeof result === 'string') finalText = result;
 
-    // Strip out <think>...</think> tags for JSON or background text if not explicitly requested
-    if (finalText && (finalText.includes('<think>') || finalText.includes('<thought>'))) {
-      const isJsonRequest = messages.some(m => typeof m.content === 'string' && m.content.toLowerCase().includes('json'));
-      if (isJsonRequest) {
-        finalText = finalText.replace(/<(think|thought)>[\s\S]*?<\/\1>/gi, '').trim();
-      }
+    // Strip ALL <think>...</think> tags and orphan </think> tags from non-streaming responses.
+    // Non-streaming callers (daily briefing, context capsule, etc.) never need to see reasoning steps.
+    if (finalText && (finalText.includes('<think>') || finalText.includes('</think>') || finalText.includes('<thought>'))) {
+      finalText = finalText
+        .replace(/<(think|thought)>[\s\S]*?<\/\1>/gi, '') // complete blocks
+        .replace(/<(think|thought)>[\s\S]*$/gi, '')        // unclosed opening tags
+        .replace(/<\/(think|thought)>/gi, '')              // orphan closing tags
+        .trim();
     }
 
     return finalText || "I am unable to generate a response right now. Please try again.";

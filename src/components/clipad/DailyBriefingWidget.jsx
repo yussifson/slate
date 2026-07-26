@@ -51,7 +51,13 @@ Return ONLY valid JSON with keys:
 - "risks": array of 1-2 critical blockers or risk warnings (can be empty array)`;
 
       const raw = await generateText([{ role: 'user', content: prompt }]);
-      const cleaned = (raw || '').replace(/```json|```/g, '').trim();
+      // Strip all <think>...</think> reasoning blocks and orphan tags before parsing JSON
+      const cleaned = (raw || '')
+        .replace(/<(think|thought)>[\s\S]*?<\/\1>/gi, '')
+        .replace(/<(think|thought)>[\s\S]*$/gi, '')
+        .replace(/<\/(think|thought)>/gi, '')
+        .replace(/```json|```/g, '')
+        .trim();
       
       let parsed;
       try {
@@ -182,7 +188,7 @@ Return ONLY valid JSON with keys:
       {/* Footer Bar */}
       <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
         <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500">
-          Powered by Kimi K2.5 Organizational Intelligence
+          Powered by OrbitFlow AI
         </span>
         <button
           onClick={() => {
