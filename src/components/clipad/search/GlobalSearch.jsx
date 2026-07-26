@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { isAdmin, isSpaceman } from '@/lib/constants';
 import { useToast } from '@/components/ui/use-toast';
+import ThinkingAccordion, { parseThinking } from '@/components/chat/ThinkingAccordion';
 
 const TYPE_META = {
   meeting:     { icon: Calendar,      label: 'Meeting',   color: 'text-blue-700 dark:text-blue-400',       bg: 'bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700/50',     route: (id) => `/meetings/${id}` },
@@ -309,6 +310,7 @@ ${keywordResultsContext}
 
 Instructions:
 Be clear, direct, and concise (2-4 sentences). Focus on actionable enterprise answers.
+Wrap any internal reasoning inside <think>...</think> tags before providing your answer.
 If the requested data is found, state exact details, assignees, or dates.
 DO NOT mention internal IDs (e.g. M-123, I-456, or UUIDs) in your text response. Use titles instead.
 After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>"}].`,
@@ -548,12 +550,16 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
                     <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-5/6 animate-pulse" />
                     <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-4/5 animate-pulse" />
                   </div>
-                ) : aiAnswer ? (
-                  <div className="mb-6">
-                    <h4 className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-2 uppercase tracking-wider">AI Answer</h4>
-                    <p className="text-[13px] text-slate-800 dark:text-slate-200 leading-relaxed"><TypewriterText text={aiAnswer} /></p>
-                  </div>
-                ) : null}
+                ) : aiAnswer ? (() => {
+                  const { thinking, content: cleanAnswer, isThinkingDone } = parseThinking(aiAnswer);
+                  return (
+                    <div className="mb-6">
+                      <h4 className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-2 uppercase tracking-wider">AI Answer</h4>
+                      {thinking && <ThinkingAccordion thinking={thinking} isThinkingDone={isThinkingDone} />}
+                      {cleanAnswer && <p className="text-[13px] text-slate-800 dark:text-slate-200 leading-relaxed"><TypewriterText text={cleanAnswer} /></p>}
+                    </div>
+                  );
+                })() : null}
 
                 {filteredResults.length > 0 && (
                   <div>

@@ -1,26 +1,63 @@
 import React, { useState } from 'react';
-import { Brain, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
+import { Brain, ChevronDown, ChevronUp } from 'lucide-react';
 
 /**
- * Parse reasoning/thinking tags emitted by models like QwQ, DeepSeek-R1, or Kimi.
- * Supports <think>...</think> and <thought>...</thought>.
- * Also handles in-progress (streaming) thinking tags.
+ * Parse reasoning/thinking tags emitted by models like QwQ, DeepSeek-R1, Qwen3, or Kimi.
+ * Handles:
+ * 1. Explicit <think>...</think> or <thought>...</thought> tags.
+ * 2. In-progress (streaming) open <think> tags.
+ * 3. Plain text headers like "Thinking Process:" or "Thought:".
+ * 4. Untagged 1st-person reasoning monologues ("Okay, let me tackle...", "The user is asking...").
  */
 export function parseThinking(text) {
   if (!text || typeof text !== 'string') {
     return { thinking: null, content: text || '', isThinkingDone: true };
   }
 
-  // Match complete or open-ended <think> or <thought> tags
+  const trimmed = text.trim();
+
+  // 1. Explicit <think>...</think> or <thought>...</thought> tags
   const thinkRegex = /<(think|thought)>([\s\S]*?)(?:<\/\1>|$)/i;
-  const match = text.match(thinkRegex);
+  const match = trimmed.match(thinkRegex);
 
   if (match) {
     const thinking = match[2].trim();
-    // Remove the thought block from the main content
-    const content = text.replace(match[0], '').trim();
-    const isThinkingDone = text.includes('</think>') || text.includes('</thought>');
+    const content = trimmed.replace(match[0], '').trim();
+    const isThinkingDone = trimmed.includes('</think>') || trimmed.includes('</thought>');
     return { thinking: thinking || null, content, isThinkingDone };
+  }
+
+  // 2. Explicit headers: "Thinking Process:" or "Thought:" or "Reasoning:"
+  const headerRegex = /^(Thinking Process|Thought|Reasoning):\s*([\s\S]*?)(?:\n\n(?=[A-Z0-9#\*])|$)/i;
+  const headerMatch = trimmed.match(headerRegex);
+  if (headerMatch) {
+    const thinking = headerMatch[2].trim();
+    const content = trimmed.replace(headerMatch[0], '').trim();
+    return { thinking, content, isThinkingDone: true };
+  }
+
+  // 3. Monologue reasoning at start of response without XML tags
+  // (e.g., "Okay, let me tackle this query. The user is asking... First, I need to...")
+  const monologueStartRegex = /^(okay,?\s+let\s+me|let's\s+analyze|the\s+user\s+is\s+asking|first,?\s+i\s+need\s+to|looking\s+at\s+the|to\s+answer\s+this|i\s+should\s+focus\s+on)/i;
+
+  if (monologueStartRegex.test(trimmed)) {
+    // Look for paragraph split where actual response begins
+    const splitRegex = /\n\n(?=(?:here\s+|based\s+on\s+|the\s+following|your\s+|active\s+|=|#|\*|-|\d+\.))/i;
+    const splitIdx = trimmed.search(splitRegex);
+
+    if (splitIdx !== -1) {
+      const thinking = trimmed.substring(0, splitIdx).trim();
+      const content = trimmed.substring(splitIdx).trim();
+      return { thinking, content, isThinkingDone: true };
+    } else {
+      // Fallback: if there are multiple paragraphs, treat the first paragraph as internal reasoning
+      const paragraphs = trimmed.split(/\n\n+/);
+      if (paragraphs.length > 1) {
+        const thinking = paragraphs[0].trim();
+        const content = paragraphs.slice(1).join('\n\n').trim();
+        return { thinking, content, isThinkingDone: true };
+      }
+    }
   }
 
   return { thinking: null, content: text, isThinkingDone: true };
