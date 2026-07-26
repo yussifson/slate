@@ -304,7 +304,7 @@ export async function buildOrgContext(options = {}) {
           .limit(20)).catch(() => ({ data: [] })),
 
     // Imported Knowledge — PRIVACY-SCOPED per userId/userRole
-    importedKnowledgeQuery.catch(() => ({ data: [] })),
+    Promise.resolve(importedKnowledgeQuery).catch(() => ({ data: [] })),
 
     // Commitments (global)
     Promise.resolve(supabase.from('clipad_commitments')
