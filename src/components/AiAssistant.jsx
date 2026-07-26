@@ -16,6 +16,7 @@ import { powerSync} from "@/api/PowerSyncConnector";
 import { OrbitIcon} from '@/components/ui/OrbitIcon';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import ThinkingAccordion, { parseThinking } from '@/components/chat/ThinkingAccordion';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useAuth} from '@/lib/AuthContext';
 
@@ -166,37 +167,44 @@ function parseAgentActions(text) {
  return { cleanText, actions};
 }
 
-// Format message with simple markdown 
+// Format message with simple markdown + collapsible reasoning
 function FormatMessage({ content}) {
- return (
- <div className="prose prose-sm dark:prose-invert max-w-none break-words [&>p]:mb-2 [&>p:last-child]:mb-0 [&>ul]:mt-1 [&>ul]:mb-2 [&>ol]:mt-1 [&>ol]:mb-2 [&>ul]:pl-4 [&>ol]:pl-4">
-  <ReactMarkdown 
-    remarkPlugins={[remarkGfm]}
-    components={{
-      a: ({ href, children, ...props }) => {
-        let safeHref = href;
-        if (safeHref && !safeHref.startsWith('http') && !safeHref.startsWith('/') && !safeHref.startsWith('mailto:')) {
-          safeHref = 'https://' + safeHref;
-        }
-        return (
-          <a 
-            href={safeHref} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            onClick={(e) => e.stopPropagation()} 
-            className="text-primary hover:underline font-semibold underline-offset-2 break-all"
-            {...props}
+  const { thinking, content: cleanContent, isThinkingDone } = parseThinking(content);
+
+  return (
+    <div>
+      {thinking && <ThinkingAccordion thinking={thinking} isThinkingDone={isThinkingDone} />}
+      {cleanContent ? (
+        <div className="prose prose-sm dark:prose-invert max-w-none break-words [&>p]:mb-2 [&>p:last-child]:mb-0 [&>ul]:mt-1 [&>ul]:mb-2 [&>ol]:mt-1 [&>ol]:mb-2 [&>ul]:pl-4 [&>ol]:pl-4">
+          <ReactMarkdown 
+            remarkPlugins={[remarkGfm]}
+            components={{
+              a: ({ href, children, ...props }) => {
+                let safeHref = href;
+                if (safeHref && !safeHref.startsWith('http') && !safeHref.startsWith('/') && !safeHref.startsWith('mailto:')) {
+                  safeHref = 'https://' + safeHref;
+                }
+                return (
+                  <a 
+                    href={safeHref} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    onClick={(e) => e.stopPropagation()} 
+                    className="text-primary hover:underline font-semibold underline-offset-2 break-all"
+                    {...props}
+                  >
+                    {children}
+                  </a>
+                );
+              }
+            }}
           >
-            {children}
-          </a>
-        );
-      }
-    }}
-  >
-  {content}
-  </ReactMarkdown>
- </div>
- );
+            {cleanContent}
+          </ReactMarkdown>
+        </div>
+      ) : null}
+    </div>
+  );
 }
 // Session Storage (Fallback/Types)
 const generateId = () => {

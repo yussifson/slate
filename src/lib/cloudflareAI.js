@@ -243,6 +243,15 @@ export async function generateText(input, onStream = null) {
       }
     }
     if (!finalText && typeof result === 'string') finalText = result;
+
+    // Strip out <think>...</think> tags for JSON or background text if not explicitly requested
+    if (finalText && (finalText.includes('<think>') || finalText.includes('<thought>'))) {
+      const isJsonRequest = messages.some(m => typeof m.content === 'string' && m.content.toLowerCase().includes('json'));
+      if (isJsonRequest) {
+        finalText = finalText.replace(/<(think|thought)>[\s\S]*?<\/\1>/gi, '').trim();
+      }
+    }
+
     return finalText || "I am unable to generate a response right now. Please try again.";
   } catch (err) {
     console.error("generateText error:", err);

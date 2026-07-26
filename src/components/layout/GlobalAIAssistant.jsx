@@ -15,6 +15,7 @@ import { base44} from '@/api/base44Client';
 import { powerSync} from "@/api/PowerSyncConnector";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import ThinkingAccordion, { parseThinking } from '@/components/chat/ThinkingAccordion';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useAuth} from '@/lib/AuthContext';
 import { isAdmin, isSpaceman } from '@/lib/constants';
@@ -119,36 +120,43 @@ function parseAgentActions(text) {
  return { cleanText, actions};
 }
 
-// Format message with markdown + styled citation links
+// Format message with markdown + styled citation links + collapsible reasoning
 function FormatMessage({ content }) {
- return (
- <div className="prose prose-sm dark:prose-invert max-w-none break-words [&>p]:mb-2 [&>p:last-child]:mb-0 [&>ul]:mt-1 [&>ul]:mb-2 [&>ol]:mt-1 [&>ol]:mb-2 [&>ul]:pl-4 [&>ol]:pl-4">
- <ReactMarkdown
-   remarkPlugins={[remarkGfm]}
-   components={{
-     a: ({ href, children }) => {
-        let safeHref = href;
-        if (safeHref && !safeHref.startsWith('http') && !safeHref.startsWith('/') && !safeHref.startsWith('mailto:')) {
-          safeHref = 'https://' + safeHref;
-        }
-        return (
-          <a
-            href={safeHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors no-underline border border-primary/20 mx-0.5"
+  const { thinking, content: cleanContent, isThinkingDone } = parseThinking(content);
+
+  return (
+    <div>
+      {thinking && <ThinkingAccordion thinking={thinking} isThinkingDone={isThinkingDone} />}
+      {cleanContent ? (
+        <div className="prose prose-sm dark:prose-invert max-w-none break-words [&>p]:mb-2 [&>p:last-child]:mb-0 [&>ul]:mt-1 [&>ul]:mb-2 [&>ol]:mt-1 [&>ol]:mb-2 [&>ul]:pl-4 [&>ol]:pl-4">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              a: ({ href, children }) => {
+                let safeHref = href;
+                if (safeHref && !safeHref.startsWith('http') && !safeHref.startsWith('/') && !safeHref.startsWith('mailto:')) {
+                  safeHref = 'https://' + safeHref;
+                }
+                return (
+                  <a
+                    href={safeHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors no-underline border border-primary/20 mx-0.5"
+                  >
+                    🔗 {children}
+                  </a>
+                );
+              },
+            }}
           >
-            🔗 {children}
-          </a>
-        );
-      },
-   }}
- >
- {content}
- </ReactMarkdown>
- </div>
- );
+            {cleanContent}
+          </ReactMarkdown>
+        </div>
+      ) : null}
+    </div>
+  );
 }
 // Session Storage (Fallback/Types)
 const generateId = () => {

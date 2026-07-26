@@ -12,6 +12,7 @@ import { buildOrgContext } from '@/lib/clipadIntelligence';
 import { generateText } from '@/lib/cloudflareAI';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
+import ThinkingAccordion, { parseThinking } from '@/components/chat/ThinkingAccordion';
 
 /* ─── Source type metadata ────────────────────────────────────────────────── */
 const SOURCE_META = {
@@ -33,7 +34,7 @@ const STARTER_PROMPTS = [
 ];
 
 /* ─── Markdown renderer ───────────────────────────────────────────────────── */
-function renderMarkdown(text) {
+function renderMarkdownContent(text) {
   if (!text) return null;
   const lines = text.split('\n');
   const elements = [];
@@ -102,6 +103,18 @@ function renderMarkdown(text) {
     i++;
   }
   return elements;
+}
+
+function renderMarkdown(text) {
+  if (!text) return null;
+  const { thinking, content: cleanText, isThinkingDone } = parseThinking(text);
+
+  return (
+    <div>
+      {thinking && <ThinkingAccordion thinking={thinking} isThinkingDone={isThinkingDone} />}
+      {cleanText ? renderMarkdownContent(cleanText) : null}
+    </div>
+  );
 }
 
 function inlineMarkdown(text) {

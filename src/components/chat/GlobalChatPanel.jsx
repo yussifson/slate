@@ -13,6 +13,7 @@ import AddChatDialog from "./AddChatDialog";
 import { useToast} from "@/components/ui/use-toast";
 import { format} from "date-fns";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
+import ThinkingAccordion, { parseThinking } from "./ThinkingAccordion";
 
 export default function GlobalChatPanel({ isOpen, onClose}) {
  const { user} = useAuth();
@@ -471,9 +472,15 @@ export default function GlobalChatPanel({ isOpen, onClose}) {
  )}
  </div>
  </div>
- ) : (
- <div className="whitespace-pre-wrap pr-12">{msg.content}</div>
- )}
+ ) : (() => {
+    const { thinking, content: cleanContent, isThinkingDone } = parseThinking(msg.content);
+    return (
+      <div className="pr-12">
+        {thinking && <ThinkingAccordion thinking={thinking} isThinkingDone={isThinkingDone} />}
+        {cleanContent && <div className="whitespace-pre-wrap">{cleanContent}</div>}
+      </div>
+    );
+  })()}
  
  <div className="float-right -mb-1 ml-2 text-[10px] text-[#71717a] dark:text-gray-400 flex items-center gap-2 mt-1">
  {msg.is_edited && <span className="mr-1 italic">edited</span>}
