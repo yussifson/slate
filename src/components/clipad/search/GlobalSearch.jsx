@@ -120,6 +120,12 @@ export default function GlobalSearch() {
   const inputRef = useRef(null);
   const overlayRef = useRef(null);
 
+  const handleResultClick = useCallback((res) => {
+    const meta = TYPE_META[res.type];
+    const route = meta?.route(res.id, res.space_id);
+    if (route) { navigate(route); setIsOpen(false); }
+  }, [navigate]);
+
   // Load space names map for context chips
   useEffect(() => {
     if (!user?.company_id) return;
@@ -420,12 +426,6 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
       setIsSearching(false);
     }
   }, [query, user]);
-
-  const handleResultClick = (res) => {
-    const meta = TYPE_META[res.type];
-    const route = meta?.route(res.id, res.space_id);
-    if (route) { navigate(route); setIsOpen(false); }
-  };
 
   const filteredResults = results.filter(r => matchesFilter(r.type, selectedFilter));
 
