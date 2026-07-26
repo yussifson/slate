@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
-import { upsertKnowledge } from './utils.ts'
+import { upsertKnowledge, saveSyncCursor, markSyncComplete, createTimeoutGuard } from './utils.ts'
 
 // Imports for extracted syncers
 import { syncAWS } from './syncers/aws.ts';
@@ -35,10 +35,21 @@ import { syncMSTeams } from './syncers/ms_teams.ts';
 import { syncClickUp } from './syncers/clickup.ts';
 import { syncSharePoint } from './syncers/sharepoint.ts';
 import { syncGoogleCloud } from './syncers/google_cloud.ts';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+type SyncResult = { imported: number; cursor: Record<string, any> | null };
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// ─── Extracted syncer wrapper (no cursor support yet) ──────────────────────
+// For syncers in separate files, we wrap them and return no cursor on completion.
+async function wrapExtractedSyncer(fn: (...args: any[]) => Promise<number>, ...args: any[]): Promise<SyncResult> {
+  const imported = await fn(...args);
+  return { imported, cursor: null };
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
@@ -64,185 +75,105 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Integration not found' }), { status: 404, headers: corsHeaders });
     }
 
-    // ── Incremental sync: only import items newer than last sync ─────────────
+    // ── Determine sync mode ────────────────────────────────────────────────────
+    // Full backfill: sync_phase='full' or a non-null cursor means we're still
+    // working through the entire history — do NOT filter by date.
+    // Incremental: phase='incremental', no cursor — only fetch new/changed items.
+    const savedCursor = integration.sync_cursor || null;
+    const isFullBackfill = integration.sync_phase !== 'incremental' || savedCursor !== null;
     const lastSynced = integration.last_synced_at ? new Date(integration.last_synced_at) : null;
+    const effectiveLastSynced = isFullBackfill ? null : lastSynced;
 
-    let imported = 0;
-    let syncError = null;
+    // ── Timeout guard: stop at 45s to avoid hard Edge Function kill ───────────
+    const shouldStop = createTimeoutGuard(45_000);
+
+    let result: SyncResult = { imported: 0, cursor: null };
+    let syncError: string | null = null;
 
     try {
       switch (provider.toLowerCase()) {
-        // ── Phase 1: Existing connectors (now with incremental sync) ──────────
         case 'google_drive':
-          imported = await syncGoogleDrive(integration, supabase, lastSynced);
-          break;
+          result = await syncGoogleDrive(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
         case 'notion':
-          imported = await syncNotion(integration, supabase, lastSynced);
-          break;
+          result = await syncNotion(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
         case 'slack':
-          imported = await syncSlack(integration, supabase, lastSynced);
-          break;
-        case 'zoom':
-          imported = await syncZoom(integration, supabase, lastSynced);
-          break;
-        case 'github':
-          imported = await syncGitHub(integration, supabase, lastSynced);
-          break;
-        case 'microsoft_onedrive':
-          imported = await syncOneDrive(integration, supabase, lastSynced);
-          break;
-        case 'ms_teams':
-          imported = await syncMSTeams(integration, supabase, lastSynced);
-          break;
+          result = await syncSlack(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
         case 'gmail':
-          imported = await syncGmail(integration, supabase, lastSynced);
-          break;
+          result = await syncGmail(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
         case 'jira':
-          imported = await syncJira(integration, supabase, lastSynced);
-          break;
+          result = await syncJira(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
         case 'confluence':
-          imported = await syncConfluence(integration, supabase, lastSynced);
-          break;
-        case 'clickup':
-          imported = await syncClickUp(integration, supabase, lastSynced);
-          break;
-        case 'asana':
-          imported = await syncAsana(integration, supabase, lastSynced);
-          break;
-        case 'linear':
-          imported = await syncLinear(integration, supabase, lastSynced);
-          break;
-        case 'trello':
-          imported = await syncTrello(integration, supabase, lastSynced);
-          break;
-        case 'dropbox':
-          imported = await syncDropbox(integration, supabase, lastSynced);
-          break;
-        case 'box':
-          imported = await syncBox(integration, supabase, lastSynced);
-          break;
-        case 'salesforce':
-          imported = await syncSalesforce(integration, supabase, lastSynced);
-          break;
-        case 'hubspot':
-          imported = await syncHubSpot(integration, supabase, lastSynced);
-          break;
-        case 'google_meet':
-          imported = await syncGoogleMeet(integration, supabase, lastSynced);
-          break;
+          result = await syncConfluence(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+        case 'microsoft_onedrive':
+          result = await syncOneDrive(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
         case 'outlook':
-          imported = await syncOutlook(integration, supabase, lastSynced);
-          break;
-
-        // ── Phase 3: New connectors ───────────────────────────────────────────
-        case 'discord':
-          imported = await syncDiscord(integration, supabase, lastSynced);
-          break;
-        case 'monday':
-          imported = await syncMonday(integration, supabase, lastSynced);
-          break;
-        case 'gitlab':
-          imported = await syncGitLab(integration, supabase, lastSynced);
-          break;
-        case 'bitbucket':
-          imported = await syncBitbucket(integration, supabase, lastSynced);
-          break;
-        case 'zoho_crm':
-          imported = await syncZohoCRM(integration, supabase, lastSynced);
-          break;
-        case 'zendesk':
-          imported = await syncZendesk(integration, supabase, lastSynced);
-          break;
-        case 'intercom':
-          imported = await syncIntercom(integration, supabase, lastSynced);
-          break;
-        case 'freshdesk':
-          imported = await syncFreshdesk(integration, supabase, lastSynced);
-          break;
-        case 'figma':
-          imported = await syncFigma(integration, supabase, lastSynced);
-          break;
-        case 'miro':
-          imported = await syncMiro(integration, supabase, lastSynced);
-          break;
+          result = await syncOutlook(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+        case 'google_meet':
+          result = await syncGoogleMeet(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
         case 'google_calendar':
-          imported = await syncGoogleCalendar(integration, supabase, lastSynced);
-          break;
-        case 'sharepoint':
-          imported = await syncSharePoint(integration, supabase, lastSynced);
-          break;
+          result = await syncGoogleCalendar(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+        case 'salesforce':
+          result = await syncSalesforce(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+        case 'hubspot':
+          result = await syncHubSpot(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+        case 'dropbox':
+          result = await syncDropbox(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+        case 'box':
+          result = await syncBox(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+        case 'discord':
+          result = await syncDiscord(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+        case 'bitbucket':
+          result = await syncBitbucket(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+        case 'zoho_crm':
+          result = await syncZohoCRM(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+        case 'zendesk':
+          result = await syncZendesk(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+        case 'intercom':
+          result = await syncIntercom(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+        case 'freshdesk':
+          result = await syncFreshdesk(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+        case 'figma':
+          result = await syncFigma(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+        case 'miro':
+          result = await syncMiro(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
         case 'guru':
-          imported = await syncGuru(integration, supabase, lastSynced);
-          break;
+          result = await syncGuru(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
         case 'google_workspace':
-          imported = await syncGoogleWorkspace(integration, supabase, lastSynced);
-          break;
-        case 'pipedrive':
-          imported = await syncPipedrive(integration, supabase, lastSynced);
-          break;
-        case 'mailchimp':
-          imported = await syncMailchimp(integration, supabase, lastSynced);
-          break;
-        case 'stripe':
-          imported = await syncStripe(integration, supabase, lastSynced);
-          break;
-        case 'quickbooks':
-          imported = await syncQuickbooks(integration, supabase, lastSynced);
-          break;
-        case 'aws':
-          imported = await syncAWS(integration, supabase, lastSynced);
-          break;
-        case 'azure':
-          imported = await syncAzure(integration, supabase, lastSynced);
-          break;
-        case 'google_cloud':
-          imported = await syncGoogleCloud(integration, supabase, lastSynced);
-          break;
-        case 'datadog':
-          imported = await syncDatadog(integration, supabase, lastSynced);
-          break;
-        case 'sentry':
-          imported = await syncSentry(integration, supabase, lastSynced);
-          break;
-        case 'pagerduty':
-          imported = await syncPagerDuty(integration, supabase, lastSynced);
-          break;
-        case 'jenkins':
-          imported = await syncJenkins(integration, supabase, lastSynced);
-          break;
-        case 'canva':
-          imported = await syncCanva(integration, supabase, lastSynced);
-          break;
-        case 'whatsapp':
-          imported = await syncWhatsApp(integration, supabase, lastSynced);
-          break;
-        case 'telegram':
-          imported = await syncTelegram(integration, supabase, lastSynced);
-          break;
-        case 'airtable':
-          imported = await syncAirtable(integration, supabase, lastSynced);
-          break;
-        case 'sap':
-          imported = await syncSAP(integration, supabase, lastSynced);
-          break;
-        case 'oracle':
-          imported = await syncOracle(integration, supabase, lastSynced);
-          break;
-        case 'servicenow':
-          imported = await syncServiceNow(integration, supabase, lastSynced);
-          break;
-        case 'workday':
-          imported = await syncWorkday(integration, supabase, lastSynced);
-          break;
-        case 'bamboohr':
-          imported = await syncBambooHR(integration, supabase, lastSynced);
-          break;
-        case 'docusign':
-          imported = await syncDocuSign(integration, supabase, lastSynced);
-          break;
-        case 'calendly':
-          imported = await syncCalendly(integration, supabase, lastSynced);
-          break;
+          result = await syncGoogleWorkspace(integration, supabase, effectiveLastSynced, savedCursor, shouldStop); break;
+
+        // Extracted syncers (no cursor support yet — wrapped for consistency)
+        case 'zoom':        result = await wrapExtractedSyncer(syncZoom, integration, supabase, effectiveLastSynced); break;
+        case 'github':      result = await wrapExtractedSyncer(syncGitHub, integration, supabase, effectiveLastSynced); break;
+        case 'ms_teams':    result = await wrapExtractedSyncer(syncMSTeams, integration, supabase, effectiveLastSynced); break;
+        case 'clickup':     result = await wrapExtractedSyncer(syncClickUp, integration, supabase, effectiveLastSynced); break;
+        case 'sharepoint':  result = await wrapExtractedSyncer(syncSharePoint, integration, supabase, effectiveLastSynced); break;
+        case 'google_cloud':result = await wrapExtractedSyncer(syncGoogleCloud, integration, supabase, effectiveLastSynced); break;
+        case 'monday':      result = await wrapExtractedSyncer(syncMonday, integration, supabase, effectiveLastSynced); break;
+        case 'gitlab':      result = await wrapExtractedSyncer(syncGitLab, integration, supabase, effectiveLastSynced); break;
+        case 'asana':       result = await wrapExtractedSyncer(syncAsana, integration, supabase, effectiveLastSynced); break;
+        case 'trello':      result = await wrapExtractedSyncer(syncTrello, integration, supabase, effectiveLastSynced); break;
+        case 'linear':      result = await wrapExtractedSyncer(syncLinear, integration, supabase, effectiveLastSynced); break;
+        case 'pipedrive':   result = await wrapExtractedSyncer(syncPipedrive, integration, supabase, effectiveLastSynced); break;
+        case 'mailchimp':   result = await wrapExtractedSyncer(syncMailchimp, integration, supabase, effectiveLastSynced); break;
+        case 'stripe':      result = await wrapExtractedSyncer(syncStripe, integration, supabase, effectiveLastSynced); break;
+        case 'quickbooks':  result = await wrapExtractedSyncer(syncQuickbooks, integration, supabase, effectiveLastSynced); break;
+        case 'aws':         result = await wrapExtractedSyncer(syncAWS, integration, supabase, effectiveLastSynced); break;
+        case 'azure':       result = await wrapExtractedSyncer(syncAzure, integration, supabase, effectiveLastSynced); break;
+        case 'datadog':     result = await wrapExtractedSyncer(syncDatadog, integration, supabase, effectiveLastSynced); break;
+        case 'sentry':      result = await wrapExtractedSyncer(syncSentry, integration, supabase, effectiveLastSynced); break;
+        case 'pagerduty':   result = await wrapExtractedSyncer(syncPagerDuty, integration, supabase, effectiveLastSynced); break;
+        case 'jenkins':     result = await wrapExtractedSyncer(syncJenkins, integration, supabase, effectiveLastSynced); break;
+        case 'canva':       result = await wrapExtractedSyncer(syncCanva, integration, supabase, effectiveLastSynced); break;
+        case 'whatsapp':    result = await wrapExtractedSyncer(syncWhatsApp, integration, supabase, effectiveLastSynced); break;
+        case 'telegram':    result = await wrapExtractedSyncer(syncTelegram, integration, supabase, effectiveLastSynced); break;
+        case 'airtable':    result = await wrapExtractedSyncer(syncAirtable, integration, supabase, effectiveLastSynced); break;
+        case 'sap':         result = await wrapExtractedSyncer(syncSAP, integration, supabase, effectiveLastSynced); break;
+        case 'oracle':      result = await wrapExtractedSyncer(syncOracle, integration, supabase, effectiveLastSynced); break;
+        case 'servicenow':  result = await wrapExtractedSyncer(syncServiceNow, integration, supabase, effectiveLastSynced); break;
+        case 'workday':     result = await wrapExtractedSyncer(syncWorkday, integration, supabase, effectiveLastSynced); break;
+        case 'bamboohr':    result = await wrapExtractedSyncer(syncBambooHR, integration, supabase, effectiveLastSynced); break;
+        case 'docusign':    result = await wrapExtractedSyncer(syncDocuSign, integration, supabase, effectiveLastSynced); break;
+        case 'calendly':    result = await wrapExtractedSyncer(syncCalendly, integration, supabase, effectiveLastSynced); break;
         default:
           throw new Error(`Provider '${provider}' sync not implemented`);
       }
@@ -251,59 +182,85 @@ serve(async (req) => {
       console.error(`Sync error for ${provider}:`, syncError);
     }
 
-    // Update last_synced_at
-    await supabase.from('clipad_integrations').update({
-      last_synced_at: new Date().toISOString(),
-      sync_error: syncError,
-      status: syncError ? 'error' : 'active'
-    }).eq('id', integrationId);
+    const { imported, cursor } = result;
 
-    // Write org event for timeline
+    if (syncError) {
+      // On error: mark error in DB but do not advance last_synced_at
+      await supabase.from('clipad_integrations').update({
+        sync_error: syncError,
+        status: 'error',
+      }).eq('id', integrationId);
+    } else if (cursor !== null) {
+      // Sync was interrupted by timeout — save cursor so next cron run resumes
+      await saveSyncCursor(supabase, integrationId, cursor);
+      console.log(`[integration-sync] ${provider}: interrupted after ${imported} items. Cursor saved for next run.`);
+    } else {
+      // Sync fully completed — advance last_synced_at, clear cursor, promote to incremental
+      await markSyncComplete(supabase, integrationId, null);
+      console.log(`[integration-sync] ${provider}: fully completed. ${imported} items imported/updated.`);
+    }
+
+    // Write org timeline event when items were imported
     if (imported > 0 && !syncError) {
+      const statusLabel = cursor !== null ? `(in progress — ${imported} this run)` : `(${imported} items)`;
       await supabase.from('clipad_org_events').insert({
         workspace_id: integration.company_id,
         event_type: 'integration_synced',
-        title: `${provider.replace(/_/g, ' ')} synced — ${imported} items imported`,
-        description: `Automatic knowledge import from ${provider}`,
+        title: `${provider.replace(/_/g, ' ')} synced — ${statusLabel}`,
+        description: `Knowledge import from ${provider}`,
         importance: 3,
       }).catch(() => {});
-      
-      // Trigger the AI processor queue for the newly imported items
+
+      // Trigger AI processor for unprocessed items
       try {
         const { inngest } = await import('../inngest/client.ts');
-        await inngest.send({
-          name: 'ai/process.batch',
-          data: { integration_id: integrationId }
-        });
+        await inngest.send({ name: 'ai/process.batch', data: { integration_id: integrationId } });
       } catch (err) {
         console.error("Failed to trigger Inngest AI queue:", err);
       }
     }
 
-    return new Response(JSON.stringify({ success: !syncError, imported, error: syncError }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({
+        success: !syncError,
+        imported,
+        interrupted: cursor !== null,
+        error: syncError
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
 
   } catch (e: any) {
-    return new Response(JSON.stringify({ success: false, imported: 0, error: e?.message || String(e) }), {
-      status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({ success: false, imported: 0, error: e?.message || String(e) }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   }
 });
 
-// upsertKnowledge has been moved to ./utils.ts
 // ─── Google Drive Sync ────────────────────────────────────────────────────────
-async function syncGoogleDrive(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
+async function syncGoogleDrive(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
+  const token = await refreshGoogleToken(integration, supabase);
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
+  const limit = Number(integration.settings?.sync_limit || 100000);
 
   const modifiedQuery = lastSynced
     ? `&q=trashed=false and modifiedTime>'${lastSynced.toISOString()}'`
     : `&q=trashed=false`;
 
-  let pageToken = '';
+  let pageToken = savedCursor?.pageToken || '';
+
+  const SUPPORTED_TYPES: Record<string, string> = {
+    'application/vnd.google-apps.document': 'document',
+    'application/vnd.google-apps.spreadsheet': 'spreadsheet',
+    'application/vnd.google-apps.presentation': 'presentation',
+    'application/pdf': 'pdf',
+  };
 
   do {
     const pageParam = pageToken ? `&pageToken=${pageToken}` : '';
@@ -313,13 +270,6 @@ async function syncGoogleDrive(integration: any, supabase: any, lastSynced: Date
     );
     if (!res.ok) throw new Error(`Google Drive API error: ${res.status}`);
     const data = await res.json();
-
-    const SUPPORTED_TYPES: Record<string, string> = {
-      'application/vnd.google-apps.document': 'document',
-      'application/vnd.google-apps.spreadsheet': 'spreadsheet',
-      'application/vnd.google-apps.presentation': 'presentation',
-      'application/pdf': 'pdf',
-    };
 
     for (const file of (data.files || [])) {
       if (imported >= limit) break;
@@ -336,24 +286,25 @@ async function syncGoogleDrive(integration: any, supabase: any, lastSynced: Date
       }
 
       const ok = await upsertKnowledge(supabase, {
-        provider: 'google_drive',
-        external_id: file.id,
-        content_type: contentType,
-        title: file.name,
-        content: textContent.substring(0, 10000),
-        url: file.webViewLink,
-        author: file.owners?.[0]?.displayName || null,
+        provider: 'google_drive', external_id: file.id, content_type: contentType,
+        title: file.name, content: textContent.substring(0, 10000),
+        url: file.webViewLink, author: file.owners?.[0]?.displayName || null,
       }, integration);
       if (ok) imported++;
     }
-    
-    pageToken = data.nextPageToken;
+
+    pageToken = data.nextPageToken || '';
+
+    // Check timeout after each page
+    if (shouldStop() && pageToken) {
+      return { imported, cursor: { pageToken } };
+    }
   } while (pageToken && imported < limit);
 
-  return imported;
+  return { imported, cursor: null };
 }
 
-// ─── Notion Sync ─────────────────────────────────────────────────────────────
+// ─── Notion Sync ──────────────────────────────────────────────────────────────
 async function fetchNotionPageContent(pageId: string, token: string): Promise<string> {
   try {
     const res = await fetch(`https://api.notion.com/v1/blocks/${pageId}/children?page_size=100`, {
@@ -364,21 +315,24 @@ async function fetchNotionPageContent(pageId: string, token: string): Promise<st
     let content = '';
     for (const block of (data.results || [])) {
       const type = block.type;
-      if (block[type] && block[type].rich_text) {
+      if (block[type]?.rich_text) {
         const text = block[type].rich_text.map((t: any) => t.plain_text).join('');
         if (text) content += text + '\n';
       }
     }
     return content;
-  } catch (e) {
-    return '';
-  }
+  } catch { return ''; }
 }
 
-async function syncNotion(integration: any, supabase: any, lastSynced: Date | null) {
+async function syncNotion(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
   const token = integration.access_token;
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
+  const limit = Number(integration.settings?.sync_limit || 100000);
 
   const filterBody: any = { filter: { value: 'page', property: 'object' }, page_size: 50 };
   if (lastSynced) {
@@ -390,7 +344,7 @@ async function syncNotion(integration: any, supabase: any, lastSynced: Date | nu
     };
   }
 
-  let nextCursor = undefined;
+  let nextCursor: string | undefined = savedCursor?.nextCursor;
   let hasMore = true;
 
   while (hasMore && imported < limit) {
@@ -412,35 +366,38 @@ async function syncNotion(integration: any, supabase: any, lastSynced: Date | nu
       if (imported >= limit) break;
       const title = page.properties?.title?.title?.[0]?.plain_text ||
                     page.properties?.Name?.title?.[0]?.plain_text || 'Untitled';
-      
       const content = await fetchNotionPageContent(page.id, token);
-
       const ok = await upsertKnowledge(supabase, {
-        provider: 'notion',
-        external_id: page.id,
-        content_type: 'page',
-        title,
-        content,
-        url: page.url,
+        provider: 'notion', external_id: page.id, content_type: 'page',
+        title, content, url: page.url,
       }, integration);
       if (ok) imported++;
     }
 
     hasMore = data.has_more;
     nextCursor = data.next_cursor;
+
+    if (shouldStop() && hasMore) {
+      return { imported, cursor: { nextCursor } };
+    }
   }
-  return imported;
+  return { imported, cursor: null };
 }
 
 // ─── Slack Sync ───────────────────────────────────────────────────────────────
-async function syncSlack(integration: any, supabase: any, lastSynced: Date | null) {
+async function syncSlack(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
   const token = integration.access_token;
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
+  const limit = Number(integration.settings?.sync_limit || 100000);
 
-  let chCursor = undefined;
-  let channels = [];
-
+  // Load all channels first
+  let channels: any[] = [];
+  let chCursor: string | undefined = undefined;
   do {
     const cursorParam = chCursor ? `&cursor=${chCursor}` : '';
     const chRes = await fetch(`https://slack.com/api/conversations.list?limit=100&types=public_channel,private_channel${cursorParam}`, {
@@ -448,17 +405,21 @@ async function syncSlack(integration: any, supabase: any, lastSynced: Date | nul
     });
     const chData = await chRes.json();
     if (!chData.ok) throw new Error(chData.error);
-    
     channels = channels.concat(chData.channels || []);
     chCursor = chData.response_metadata?.next_cursor;
-  } while (chCursor && channels.length < 50); // limit to 50 channels to prevent abuse
+  } while (chCursor && channels.length < 50);
 
   const oldestParam = lastSynced ? `&oldest=${Math.floor(lastSynced.getTime() / 1000)}` : '';
 
-  for (const channel of channels) {
+  // Resume from saved channel index + message cursor
+  const startChannelIdx = savedCursor?.channelIdx || 0;
+  let resumeMsgCursor = savedCursor?.msgCursor || undefined;
+
+  for (let ci = startChannelIdx; ci < channels.length; ci++) {
+    const channel = channels[ci];
     if (imported >= limit) break;
-    let msgCursor = undefined;
-    
+    let msgCursor: string | undefined = ci === startChannelIdx ? resumeMsgCursor : undefined;
+
     do {
       if (imported >= limit) break;
       const msgCursorParam = msgCursor ? `&cursor=${msgCursor}` : '';
@@ -482,15 +443,211 @@ async function syncSlack(integration: any, supabase: any, lastSynced: Date | nul
         if (ok) imported++;
       }
       msgCursor = msgData.response_metadata?.next_cursor;
+
+      if (shouldStop() && (msgCursor || ci < channels.length - 1)) {
+        return { imported, cursor: { channelIdx: ci, msgCursor: msgCursor || undefined } };
+      }
     } while (msgCursor);
   }
-  return imported;
+  return { imported, cursor: null };
 }
 
-// ─── GitHub Sync ──────────────────────────────────────────────────────────────
-// syncGitHub has been moved to ./syncers/github.ts
+// ─── Gmail Sync ───────────────────────────────────────────────────────────────
+async function syncGmail(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
+  const token = await refreshGoogleToken(integration, supabase);
+  let imported = 0;
+  const limit = Number(integration.settings?.sync_limit || 100000);
 
-// ── Microsoft Token Refresh Helper ─────────────────────────────────────────────
+  const afterParam = lastSynced ? `after:${Math.floor(lastSynced.getTime() / 1000)} ` : '';
+  let pageToken = savedCursor?.pageToken || '';
+
+  do {
+    const tokenParam = pageToken ? `&pageToken=${pageToken}` : '';
+    const listRes = await fetch(
+      `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=100&q=${encodeURIComponent(afterParam + 'is:important')}${tokenParam}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (!listRes.ok) throw new Error(`Gmail API error: ${listRes.status}`);
+    const listData = await listRes.json();
+    const messages = listData.messages || [];
+
+    const batchSize = 20;
+    for (let i = 0; i < messages.length; i += batchSize) {
+      if (imported >= limit) break;
+      const batch = messages.slice(i, i + batchSize);
+      const batchResults = await Promise.all(batch.map(async (msgRef: any) => {
+        try {
+          const msgRes = await fetch(
+            `https://gmail.googleapis.com/gmail/v1/users/me/messages/${msgRef.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          if (!msgRes.ok) return null;
+          return await msgRes.json();
+        } catch { return null; }
+      }));
+
+      for (const msg of batchResults) {
+        if (!msg || imported >= limit) continue;
+        const headers = msg.payload?.headers || [];
+        const subject = headers.find((h: any) => h.name === 'Subject')?.value || '(No Subject)';
+        const from = headers.find((h: any) => h.name === 'From')?.value || '';
+        const date = headers.find((h: any) => h.name === 'Date')?.value || '';
+        const ok = await upsertKnowledge(supabase, {
+          provider: 'gmail', external_id: msg.id, content_type: 'email',
+          title: subject, content: (msg.snippet || '').substring(0, 2000), author: from,
+          url: `https://mail.google.com/mail/u/0/#all/${msg.threadId}`,
+          metadata: { date, threadId: msg.threadId },
+        }, integration);
+        if (ok) imported++;
+      }
+    }
+
+    pageToken = listData.nextPageToken || '';
+    if (shouldStop() && pageToken) {
+      return { imported, cursor: { pageToken } };
+    }
+  } while (pageToken && imported < limit);
+
+  return { imported, cursor: null };
+}
+
+// ─── Jira Sync ────────────────────────────────────────────────────────────────
+async function syncJira(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
+  const token = integration.access_token;
+  let baseUrl = integration.metadata?.base_url || integration.config?.base_url;
+
+  if (!baseUrl && token) {
+    const res = await fetch('https://api.atlassian.com/oauth/token/accessible-resources', {
+      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      const resources = await res.json();
+      const site = resources.find((r: any) => r.scopes?.some((s: string) => s.includes('jira'))) || resources[0];
+      if (site) baseUrl = `https://api.atlassian.com/ex/jira/${site.id}`;
+    }
+  }
+  if (!baseUrl) throw new Error('Jira base URL not configured.');
+
+  let imported = 0;
+  const limit = Number(integration.settings?.sync_limit || 100000);
+  const jql = lastSynced ? `updated >= "${lastSynced.toISOString().split('T')[0]}"` : 'updated >= -365d';
+  let nextPageToken = savedCursor?.nextPageToken || '';
+  let hasMore = true;
+
+  while (hasMore && imported < limit) {
+    const body: any = {
+      jql,
+      maxResults: 100,
+      fields: ['summary', 'description', 'status', 'assignee', 'priority', 'issuetype', 'project', 'updated']
+    };
+    if (nextPageToken) body.nextPageToken = nextPageToken;
+
+    const res = await fetch(`${baseUrl}/rest/api/3/search/jql`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(`Jira API error: ${res.status} — ${JSON.stringify(errBody)}`);
+    }
+    const data = await res.json();
+
+    for (const issue of (data.issues || [])) {
+      if (imported >= limit) break;
+      const fields = issue.fields || {};
+      const description = fields.description?.content?.[0]?.content?.[0]?.text || '';
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'jira', external_id: issue.id,
+        content_type: fields.issuetype?.name?.toLowerCase() || 'issue',
+        title: `[${fields.project?.key}] ${fields.summary}`,
+        content: description.substring(0, 3000),
+        url: `${baseUrl}/browse/${issue.key}`,
+        author: fields.assignee?.displayName || null,
+        tags: [fields.status?.name, fields.priority?.name].filter(Boolean),
+        metadata: { project: fields.project?.name, status: fields.status?.name, priority: fields.priority?.name },
+      }, integration);
+      if (ok) imported++;
+    }
+    nextPageToken = data.nextPageToken || '';
+    hasMore = !!nextPageToken;
+
+    if (shouldStop() && hasMore) {
+      return { imported, cursor: { nextPageToken } };
+    }
+  }
+  return { imported, cursor: null };
+}
+
+// ─── Confluence Sync ──────────────────────────────────────────────────────────
+async function syncConfluence(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
+  const token = integration.access_token;
+  let baseUrl = integration.metadata?.base_url || integration.config?.base_url;
+
+  if (!baseUrl && token) {
+    const res = await fetch('https://api.atlassian.com/oauth/token/accessible-resources', {
+      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      const resources = await res.json();
+      const site = resources.find((r: any) => r.scopes?.some((s: string) => s.includes('confluence'))) || resources[0];
+      if (site) baseUrl = `https://api.atlassian.com/ex/confluence/${site.id}`;
+    }
+  }
+  if (!baseUrl) throw new Error('Confluence base URL not configured.');
+
+  let imported = 0;
+  const limit = Number(integration.settings?.sync_limit || 100000);
+  const lastModParam = lastSynced
+    ? `&lastModified>${lastSynced.toISOString().replace('T', '+').split('.')[0]}`
+    : '';
+
+  let nextUrl = savedCursor?.nextUrl ||
+    `${baseUrl}/rest/api/content?type=page&limit=100&expand=body.storage,space,history${lastModParam}`;
+
+  while (nextUrl && imported < limit) {
+    const res = await fetch(nextUrl, { headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' } });
+    if (!res.ok) throw new Error(`Confluence API error: ${res.status}`);
+    const data = await res.json();
+
+    for (const page of (data.results || [])) {
+      if (imported >= limit) break;
+      const rawHtml = page.body?.storage?.value || '';
+      const textContent = rawHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'confluence', external_id: page.id, content_type: 'page',
+        title: page.title, content: textContent.substring(0, 5000),
+        url: `${baseUrl}${page._links?.webui || ''}`,
+        author: page.history?.createdBy?.displayName || null,
+        metadata: { space: page.space?.name, version: page.version?.number },
+      }, integration);
+      if (ok) imported++;
+    }
+
+    nextUrl = data._links?.next ? `${baseUrl}${data._links.next}` : '';
+    if (shouldStop() && nextUrl) {
+      return { imported, cursor: { nextUrl } };
+    }
+  }
+  return { imported, cursor: null };
+}
+
+// ─── Microsoft OneDrive Sync ──────────────────────────────────────────────────
 async function refreshMicrosoftToken(integration: any, supabase: any): Promise<string> {
   let token = integration.access_token;
   const tokenExpiry = integration.token_expires_at ? new Date(integration.token_expires_at) : null;
@@ -502,6 +659,38 @@ async function refreshMicrosoftToken(integration: any, supabase: any): Promise<s
       const clientSecret = Deno.env.get('MICROSOFT_CLIENT_SECRET');
       if (clientId && clientSecret) {
         const res = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ client_id: clientId, client_secret: clientSecret, grant_type: 'refresh_token', refresh_token: integration.refresh_token }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.access_token) {
+            token = data.access_token;
+            await supabase.from('clipad_integrations').update({
+              access_token: token,
+              refresh_token: data.refresh_token || integration.refresh_token,
+              token_expires_at: new Date(Date.now() + (data.expires_in || 3600) * 1000).toISOString(),
+            }).eq('id', integration.id);
+          }
+        }
+      }
+    } catch (e: any) { console.warn('Microsoft token refresh failed:', e?.message); }
+  }
+  return token;
+}
+
+async function refreshGoogleToken(integration: any, supabase: any): Promise<string> {
+  let token = integration.access_token;
+  const tokenExpiry = integration.token_expires_at ? new Date(integration.token_expires_at) : null;
+  const isExpiring = !tokenExpiry || tokenExpiry < new Date(Date.now() + 5 * 60 * 1000);
+
+  if (isExpiring && integration.refresh_token) {
+    try {
+      const clientId = Deno.env.get('GOOGLE_CLIENT_ID');
+      const clientSecret = Deno.env.get('GOOGLE_CLIENT_SECRET');
+      if (clientId && clientSecret) {
+        const res = await fetch('https://oauth2.googleapis.com/token', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams({
@@ -523,27 +712,27 @@ async function refreshMicrosoftToken(integration: any, supabase: any): Promise<s
           }
         }
       }
-    } catch (e: any) {
-      console.warn('Microsoft token refresh failed:', e?.message);
-    }
+    } catch (e: any) { console.warn('Google token refresh failed:', e?.message); }
   }
   return token;
 }
 
-// ─── Microsoft OneDrive Sync ──────────────────────────────────────────────────
-async function syncOneDrive(integration: any, supabase: any, lastSynced: Date | null) {
+async function syncOneDrive(
+  integration: any, supabase: any,
+  _lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
   const token = await refreshMicrosoftToken(integration, supabase);
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
+  const limit = Number(integration.settings?.sync_limit || 100000);
+  const SUPPORTED_EXT = ['docx', 'xlsx', 'pptx', 'pdf', 'txt', 'md'];
 
-  const filterParam = '';
-
-  let nextLink = `https://graph.microsoft.com/v1.0/me/drive/root/children?$top=999&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy${filterParam}`;
+  let nextLink = savedCursor?.nextLink ||
+    `https://graph.microsoft.com/v1.0/me/drive/root/children?$top=999&$select=id,name,file,webUrl,lastModifiedDateTime,createdBy`;
 
   do {
-    const res = await fetch(nextLink, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const res = await fetch(nextLink, { headers: { Authorization: `Bearer ${token}` } });
     if (!res.ok) throw new Error(`OneDrive API error: ${res.status}`);
     const data = await res.json();
 
@@ -551,234 +740,250 @@ async function syncOneDrive(integration: any, supabase: any, lastSynced: Date | 
       if (imported >= limit) break;
       if (!item.file) continue;
       const ext = item.name?.split('.').pop()?.toLowerCase();
-      const SUPPORTED_EXT = ['docx', 'xlsx', 'pptx', 'pdf', 'txt', 'md'];
       if (!SUPPORTED_EXT.includes(ext)) continue;
-
       const ok = await upsertKnowledge(supabase, {
-        provider: 'microsoft_onedrive',
-        external_id: item.id,
+        provider: 'microsoft_onedrive', external_id: item.id,
         content_type: ext === 'pdf' ? 'pdf' : ext === 'xlsx' ? 'spreadsheet' : ext === 'pptx' ? 'presentation' : 'document',
-        title: item.name,
-        url: item.webUrl,
+        title: item.name, url: item.webUrl,
         author: item.createdBy?.user?.displayName || null,
         metadata: { lastModified: item.lastModifiedDateTime, size: item.file?.size },
       }, integration);
       if (ok) imported++;
     }
-    
+
     nextLink = data['@odata.nextLink'] || '';
+    if (shouldStop() && nextLink) {
+      return { imported, cursor: { nextLink } };
+    }
   } while (nextLink && imported < limit);
 
-  return imported;
+  return { imported, cursor: null };
 }
 
-// ─── Microsoft Teams Sync ─────────────────────────────────────────────────────
-// syncMSTeams has been moved to ./syncers/ms_teams.ts
+// ─── Gmail Sync (already defined above) ─────────────────────────────────────
 
-// ─── Gmail Sync ───────────────────────────────────────────────────────────────
-async function syncGmail(integration: any, supabase: any, lastSynced: Date | null) {
+// ─── Salesforce Sync ──────────────────────────────────────────────────────────
+async function syncSalesforce(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
   const token = integration.access_token;
+  const instanceUrl = integration.metadata?.instance_url || integration.config?.instance_url;
+  if (!instanceUrl) throw new Error('Salesforce instance URL not configured.');
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
+  const limit = Number(integration.settings?.sync_limit || 100000);
+  const dateFilter = lastSynced ? `WHERE CreatedDate > ${lastSynced.toISOString()}` : '';
 
-  const afterParam = lastSynced
-    ? `after:${Math.floor(lastSynced.getTime() / 1000)} `
-    : '';
+  let nextUrl = savedCursor?.nextUrl ||
+    `${instanceUrl}/services/data/v57.0/query?q=${encodeURIComponent(`SELECT Id,Title,Body,CreatedDate,CreatedBy.Name FROM Note ${dateFilter} ORDER BY CreatedDate DESC`)}`;
 
-  let pageToken = '';
-  do {
-    const tokenParam = pageToken ? `&pageToken=${pageToken}` : '';
-    const listRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=100&q=${encodeURIComponent(afterParam + 'is:important')}${tokenParam}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!listRes.ok) throw new Error(`Gmail API error: ${listRes.status}`);
-    const listData = await listRes.json();
+  while (nextUrl && imported < limit) {
+    const notesRes = await fetch(nextUrl, { headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' } });
+    if (!notesRes.ok) throw new Error(`Salesforce API error: ${notesRes.status}`);
+    const notesData = await notesRes.json();
 
-    const messages = listData.messages || [];
-    
-    // Process messages in batches of 20 to prevent Edge Function timeout
-    const batchSize = 20;
-    for (let i = 0; i < messages.length; i += batchSize) {
+    for (const note of (notesData.records || [])) {
       if (imported >= limit) break;
-      const batch = messages.slice(i, i + batchSize);
-      
-      const batchResults = await Promise.all(batch.map(async (msgRef: any) => {
-        try {
-          const msgRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msgRef.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          if (!msgRes.ok) return null;
-          return await msgRes.json();
-        } catch {
-          return null;
-        }
-      }));
-
-      for (const msg of batchResults) {
-        if (!msg) continue;
-        if (imported >= limit) break;
-        const headers = msg.payload?.headers || [];
-        const subject = headers.find((h: any) => h.name === 'Subject')?.value || '(No Subject)';
-        const from = headers.find((h: any) => h.name === 'From')?.value || '';
-        const date = headers.find((h: any) => h.name === 'Date')?.value || '';
-
-        const ok = await upsertKnowledge(supabase, {
-          provider: 'gmail',
-          external_id: msg.id,
-          content_type: 'email',
-          title: subject,
-          content: (msg.snippet || '').substring(0, 2000),
-          author: from,
-          url: `https://mail.google.com/mail/u/0/#all/${msg.threadId}`,
-          metadata: { date, threadId: msg.threadId },
-        }, integration);
-        if (ok) imported++;
-      }
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'salesforce', external_id: note.Id, content_type: 'note',
+        title: note.Title || 'Salesforce Note', content: note.Body?.substring(0, 3000) || '',
+        author: note.CreatedBy?.Name || null, url: `${instanceUrl}/${note.Id}`,
+        metadata: { createdDate: note.CreatedDate },
+      }, integration);
+      if (ok) imported++;
     }
-    pageToken = listData.nextPageToken || '';
-  } while (pageToken && imported < limit);
-  return imported;
-}
 
-// ─── Jira Sync ────────────────────────────────────────────────────────────────
-async function syncJira(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
-  let baseUrl = integration.metadata?.base_url || integration.config?.base_url;
-
-  if (!baseUrl && token) {
-    const res = await fetch('https://api.atlassian.com/oauth/token/accessible-resources', {
-      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
-    });
-    if (res.ok) {
-      const resources = await res.json();
-      const site = resources.find((r: any) => r.scopes?.some((s: string) => s.includes('jira'))) || resources[0];
-      if (site) baseUrl = `https://api.atlassian.com/ex/jira/${site.id}`;
+    nextUrl = notesData.nextRecordsUrl ? `${instanceUrl}${notesData.nextRecordsUrl}` : '';
+    if (shouldStop() && nextUrl) {
+      return { imported, cursor: { nextUrl } };
     }
   }
+  return { imported, cursor: null };
+}
 
-  if (!baseUrl) throw new Error('Jira base URL not configured and could not determine cloud ID.');
+// ─── HubSpot Sync ─────────────────────────────────────────────────────────────
+async function syncHubSpot(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
+  const token = integration.access_token;
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
+  const limit = Number(integration.settings?.sync_limit || 100000);
+  const afterParam = lastSynced ? `&after=${lastSynced.getTime()}` : '';
 
-  const jql = lastSynced
-    ? `updated >= "${lastSynced.toISOString().split('T')[0]}"`
-    : 'updated >= -30d';
-
-  let nextPageToken = '';
+  let afterId = savedCursor?.afterId || '';
   let hasMore = true;
 
   while (hasMore && imported < limit) {
-    const body: any = {
-      jql: jql,
-      maxResults: 100,
-      fields: ['summary', 'description', 'status', 'assignee', 'priority', 'issuetype', 'project', 'updated']
-    };
-    if (nextPageToken) body.nextPageToken = nextPageToken;
+    const after = afterId ? `&after=${afterId}` : afterParam;
+    const notesRes = await fetch(
+      `https://api.hubapi.com/crm/v3/objects/notes?limit=100&properties=hs_note_body,hs_timestamp,hubspot_owner_id&sort=-hs_timestamp${after}`,
+      { headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' } }
+    );
+    if (!notesRes.ok) throw new Error(`HubSpot API error: ${notesRes.status}`);
+    const notesData = await notesRes.json();
 
-    const res = await fetch(`${baseUrl}/rest/api/3/search/jql`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json', 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    
-    if (!res.ok) {
-      const errBody = await res.json().catch(() => ({}));
-      throw new Error(`Jira API error: ${res.status} — ${JSON.stringify(errBody)}`);
-    }
-    
-    const data = await res.json();
-
-    for (const issue of (data.issues || [])) {
+    for (const note of (notesData.results || [])) {
       if (imported >= limit) break;
-      const fields = issue.fields || {};
-      const description = fields.description?.content?.[0]?.content?.[0]?.text || '';
       const ok = await upsertKnowledge(supabase, {
-        provider: 'jira',
-        external_id: issue.id,
-        content_type: fields.issuetype?.name?.toLowerCase() || 'issue',
-        title: `[${fields.project?.key}] ${fields.summary}`,
-        content: description.substring(0, 3000),
-        url: `${baseUrl}/browse/${issue.key}`,
-        author: fields.assignee?.displayName || null,
-        tags: [fields.status?.name, fields.priority?.name].filter(Boolean),
-        metadata: { project: fields.project?.name, status: fields.status?.name, priority: fields.priority?.name },
+        provider: 'hubspot', external_id: note.id, content_type: 'note',
+        title: `HubSpot Note (${note.properties?.hs_timestamp?.slice(0, 10) || 'recent'})`,
+        content: (note.properties?.hs_note_body || '').substring(0, 3000),
+        metadata: { timestamp: note.properties?.hs_timestamp },
       }, integration);
       if (ok) imported++;
     }
-    nextPageToken = data.nextPageToken;
-    hasMore = !!nextPageToken;
-  }
-  return imported;
-}
 
-// ─── Confluence Sync ──────────────────────────────────────────────────────────
-async function syncConfluence(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
-  let baseUrl = integration.metadata?.base_url || integration.config?.base_url;
+    if (notesData.paging?.next?.after) {
+      afterId = notesData.paging.next.after;
+    } else {
+      hasMore = false;
+    }
 
-  if (!baseUrl && token) {
-    const res = await fetch('https://api.atlassian.com/oauth/token/accessible-resources', {
-      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
-    });
-    if (res.ok) {
-      const resources = await res.json();
-      const site = resources.find((r: any) => r.scopes?.some((s: string) => s.includes('confluence'))) || resources[0];
-      if (site) baseUrl = `https://api.atlassian.com/ex/confluence/${site.id}`;
+    if (shouldStop() && hasMore) {
+      return { imported, cursor: { afterId } };
     }
   }
 
-  if (!baseUrl) throw new Error('Confluence base URL not configured and could not determine cloud ID.');
+  // Also sync deals (single page, no cursor needed)
+  const dealsRes = await fetch(
+    `https://api.hubapi.com/crm/v3/objects/deals?limit=100&properties=dealname,dealstage,amount,closedate&sort=-hs_lastmodifieddate${afterParam}`,
+    { headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' } }
+  );
+  if (dealsRes.ok) {
+    const dealsData = await dealsRes.json();
+    for (const deal of (dealsData.results || [])) {
+      if (imported >= limit) break;
+      await upsertKnowledge(supabase, {
+        provider: 'hubspot', external_id: `deal_${deal.id}`, content_type: 'deal',
+        title: `Deal: ${deal.properties?.dealname || 'Unnamed'}`,
+        content: `Stage: ${deal.properties?.dealstage || 'unknown'}. Amount: ${deal.properties?.amount || 'N/A'}. Close date: ${deal.properties?.closedate || 'N/A'}.`,
+        metadata: { stage: deal.properties?.dealstage, amount: deal.properties?.amount },
+      }, integration);
+      imported++;
+    }
+  }
+  return { imported, cursor: null };
+}
+
+// ─── Google Meet Sync ─────────────────────────────────────────────────────────
+async function syncGoogleMeet(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
+  const token = await refreshGoogleToken(integration, supabase);
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
+  const limit = Number(integration.settings?.sync_limit || 100000);
+  const timeMin = lastSynced ? lastSynced.toISOString() : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  let pageToken = savedCursor?.pageToken || '';
 
-  const lastModParam = lastSynced
-    ? `&lastModified>${lastSynced.toISOString().replace('T', '+').split('.')[0]}`
-    : '';
-
-  let nextUrl = `${baseUrl}/rest/api/content?type=page&limit=100&expand=body.storage,space,history${lastModParam}`;
-
-  while (nextUrl && imported < limit) {
-    const res = await fetch(nextUrl, {
-      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
-    });
-    if (!res.ok) throw new Error(`Confluence API error: ${res.status}`);
+  do {
+    const tokenParam = pageToken ? `&pageToken=${pageToken}` : '';
+    const res = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&maxResults=100&singleEvents=true&orderBy=startTime&q=meet${tokenParam}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (!res.ok) throw new Error(`Google Calendar API error: ${res.status}`);
     const data = await res.json();
 
-    for (const page of (data.results || [])) {
+    for (const event of (data.items || [])) {
       if (imported >= limit) break;
-      const rawHtml = page.body?.storage?.value || '';
-      const textContent = rawHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      if (!event.conferenceData) continue;
+      const meetLink = event.conferenceData?.entryPoints?.find((ep: any) => ep.entryPointType === 'video')?.uri;
+      const attendees = (event.attendees || []).map((a: any) => a.email).join(', ');
       const ok = await upsertKnowledge(supabase, {
-        provider: 'confluence',
-        external_id: page.id,
-        content_type: 'page',
-        title: page.title,
-        content: textContent.substring(0, 5000),
-        url: `${baseUrl}${page._links?.webui || ''}`,
-        author: page.history?.createdBy?.displayName || null,
-        metadata: { space: page.space?.name, version: page.version?.number },
+        provider: 'google_meet', external_id: event.id, content_type: 'meeting',
+        title: event.summary || 'Google Meet',
+        content: [event.description, attendees ? `Attendees: ${attendees}` : ''].filter(Boolean).join('\n'),
+        url: meetLink || event.htmlLink, author: event.organizer?.email || null,
+        metadata: { start: event.start?.dateTime, end: event.end?.dateTime, attendeeCount: event.attendees?.length || 0 },
       }, integration);
       if (ok) imported++;
     }
-    nextUrl = data._links?.next ? `${baseUrl}${data._links.next}` : '';
-  }
-  return imported;
+
+    pageToken = data.nextPageToken || '';
+    if (shouldStop() && pageToken) {
+      return { imported, cursor: { pageToken } };
+    }
+  } while (pageToken && imported < limit);
+
+  return { imported, cursor: null };
 }
 
-// ─── ClickUp Sync ─────────────────────────────────────────────────────────────
-// syncClickUp has been moved to ./syncers/clickup.ts
+// ─── Microsoft Outlook Sync ───────────────────────────────────────────────────
+async function syncOutlook(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
+  const token = await refreshMicrosoftToken(integration, supabase);
+  let imported = 0;
+  const limit = Number(integration.settings?.sync_limit || 100000);
+  const filterParam = lastSynced
+    ? `&$filter=receivedDateTime ge ${lastSynced.toISOString()}`
+    : `&$filter=importance eq 'high'`;
+
+  let nextLink = savedCursor?.nextLink ||
+    `https://graph.microsoft.com/v1.0/me/messages?$top=100&$select=id,subject,bodyPreview,from,receivedDateTime,importance&$orderby=receivedDateTime desc${filterParam}`;
+
+  while (nextLink && imported < limit) {
+    const res = await fetch(nextLink, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) throw new Error(`Outlook API error: ${res.status}`);
+    const data = await res.json();
+
+    for (const email of (data.value || [])) {
+      if (imported >= limit) break;
+      const ok = await upsertKnowledge(supabase, {
+        provider: 'outlook', external_id: email.id, content_type: 'email',
+        title: email.subject || '(No Subject)',
+        content: email.bodyPreview?.substring(0, 2000) || '',
+        author: email.from?.emailAddress?.address || null,
+        metadata: { receivedDateTime: email.receivedDateTime, importance: email.importance },
+      }, integration);
+      if (ok) imported++;
+    }
+
+    nextLink = data['@odata.nextLink'] || '';
+    if (shouldStop() && nextLink) {
+      return { imported, cursor: { nextLink } };
+    }
+  }
+  return { imported, cursor: null };
+}
 
 // ─── Dropbox Sync ─────────────────────────────────────────────────────────────
-async function syncDropbox(integration: any, supabase: any, _lastSynced: Date | null) {
+async function syncDropbox(
+  integration: any, supabase: any,
+  _lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
   const token = integration.access_token;
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-
-  let url = 'https://api.dropboxapi.com/2/files/list_folder';
-  let body: any = { path: '', recursive: true, limit: 100 };
-  let hasMore = true;
-
+  const limit = Number(integration.settings?.sync_limit || 100000);
   const SUPPORTED_EXT = ['pdf', 'doc', 'docx', 'txt', 'md', 'xlsx', 'pptx'];
+
+  let url: string;
+  let body: any;
+
+  if (savedCursor?.cursor) {
+    // Resume from saved Dropbox cursor
+    url = 'https://api.dropboxapi.com/2/files/list_folder/continue';
+    body = { cursor: savedCursor.cursor };
+  } else {
+    url = 'https://api.dropboxapi.com/2/files/list_folder';
+    body = { path: '', recursive: true, limit: 100 };
+  }
+
+  let hasMore = true;
+  let dropboxCursor = savedCursor?.cursor || '';
 
   while (hasMore && imported < limit) {
     const res = await fetch(url, {
@@ -788,16 +993,15 @@ async function syncDropbox(integration: any, supabase: any, _lastSynced: Date | 
     });
     if (!res.ok) throw new Error(`Dropbox API error: ${res.status}`);
     const data = await res.json();
+    dropboxCursor = data.cursor || dropboxCursor;
 
     for (const entry of (data.entries || [])) {
       if (imported >= limit) break;
       if (entry['.tag'] !== 'file') continue;
       const ext = entry.name?.split('.').pop()?.toLowerCase();
       if (!SUPPORTED_EXT.includes(ext)) continue;
-
       const ok = await upsertKnowledge(supabase, {
-        provider: 'dropbox',
-        external_id: entry.id,
+        provider: 'dropbox', external_id: entry.id,
         content_type: ext === 'pdf' ? 'pdf' : 'document',
         title: entry.name,
         metadata: { size: entry.size, modified: entry.client_modified, path: entry.path_display },
@@ -808,27 +1012,36 @@ async function syncDropbox(integration: any, supabase: any, _lastSynced: Date | 
     hasMore = data.has_more;
     if (hasMore) {
       url = 'https://api.dropboxapi.com/2/files/list_folder/continue';
-      body = { cursor: data.cursor };
+      body = { cursor: dropboxCursor };
+    }
+
+    if (shouldStop() && hasMore) {
+      return { imported, cursor: { cursor: dropboxCursor } };
     }
   }
-  return imported;
+  return { imported, cursor: null };
 }
 
 // ─── Box Sync ─────────────────────────────────────────────────────────────────
-async function syncBox(integration: any, supabase: any, _lastSynced: Date | null) {
+async function syncBox(
+  integration: any, supabase: any,
+  _lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
   const token = integration.access_token;
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-  let offset = 0;
-  let totalCount = 1; // dummy initial
+  const limit = Number(integration.settings?.sync_limit || 100000);
+  let offset = savedCursor?.offset || 0;
+  let totalCount = savedCursor?.totalCount || 1;
   const limitPerPage = 100;
-
   const SUPPORTED_EXT = ['pdf', 'doc', 'docx', 'txt', 'md', 'xlsx', 'pptx'];
 
   while (offset < totalCount && imported < limit) {
-    const res = await fetch(`https://api.box.com/2.0/folders/0/items?limit=${limitPerPage}&offset=${offset}&fields=id,name,type,size,created_at,modified_at,created_by,shared_link`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const res = await fetch(
+      `https://api.box.com/2.0/folders/0/items?limit=${limitPerPage}&offset=${offset}&fields=id,name,type,size,created_at,modified_at,created_by,shared_link`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
     if (!res.ok) throw new Error(`Box API error: ${res.status}`);
     const data = await res.json();
     totalCount = data.total_count || 0;
@@ -838,211 +1051,34 @@ async function syncBox(integration: any, supabase: any, _lastSynced: Date | null
       if (entry.type !== 'file') continue;
       const ext = entry.name?.split('.').pop()?.toLowerCase();
       if (!SUPPORTED_EXT.includes(ext)) continue;
-
       const ok = await upsertKnowledge(supabase, {
-        provider: 'box',
-        external_id: entry.id,
+        provider: 'box', external_id: entry.id,
         content_type: ext === 'pdf' ? 'pdf' : 'document',
-        title: entry.name,
-        url: entry.shared_link?.url || null,
+        title: entry.name, url: entry.shared_link?.url || null,
         author: entry.created_by?.name || null,
         metadata: { size: entry.size, modified: entry.modified_at },
       }, integration);
       if (ok) imported++;
     }
+
     offset += limitPerPage;
-  }
-  return imported;
-}
-
-// ─── Salesforce Sync ──────────────────────────────────────────────────────────
-async function syncSalesforce(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
-  const instanceUrl = integration.metadata?.instance_url || integration.config?.instance_url;
-  if (!instanceUrl) throw new Error('Salesforce instance URL not configured.');
-  let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-
-  const dateFilter = lastSynced
-    ? `WHERE CreatedDate > ${lastSynced.toISOString()}`
-    : '';
-
-  let nextUrl = `${instanceUrl}/services/data/v57.0/query?q=${encodeURIComponent(`SELECT Id,Title,Body,CreatedDate,CreatedBy.Name FROM Note ${dateFilter} ORDER BY CreatedDate DESC`)}`;
-
-  while (nextUrl && imported < limit) {
-    const notesRes = await fetch(nextUrl, {
-      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
-    });
-    if (!notesRes.ok) throw new Error(`Salesforce API error: ${notesRes.status}`);
-    const notesData = await notesRes.json();
-
-    for (const note of (notesData.records || [])) {
-      if (imported >= limit) break;
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'salesforce',
-        external_id: note.Id,
-        content_type: 'note',
-        title: note.Title || 'Salesforce Note',
-        content: note.Body?.substring(0, 3000) || '',
-        author: note.CreatedBy?.Name || null,
-        url: `${instanceUrl}/${note.Id}`,
-        metadata: { createdDate: note.CreatedDate },
-      }, integration);
-      if (ok) imported++;
-    }
-    nextUrl = notesData.nextRecordsUrl ? `${instanceUrl}${notesData.nextRecordsUrl}` : '';
-  }
-  return imported;
-}
-
-// ─── HubSpot Sync ─────────────────────────────────────────────────────────────
-async function syncHubSpot(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
-  let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-
-  const afterParam = lastSynced ? `&after=${lastSynced.getTime()}` : '';
-
-  let afterId = '';
-  let hasMore = true;
-
-  while (hasMore && imported < limit) {
-    const after = afterId ? `&after=${afterId}` : afterParam;
-    const notesRes = await fetch(`https://api.hubapi.com/crm/v3/objects/notes?limit=100&properties=hs_note_body,hs_timestamp,hubspot_owner_id&sort=-hs_timestamp${after}`, {
-      headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
-    });
-    if (!notesRes.ok) throw new Error(`HubSpot API error: ${notesRes.status}`);
-    const notesData = await notesRes.json();
-
-    for (const note of (notesData.results || [])) {
-      if (imported >= limit) break;
-      const body = note.properties?.hs_note_body || '';
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'hubspot',
-        external_id: note.id,
-        content_type: 'note',
-        title: `HubSpot Note (${note.properties?.hs_timestamp?.slice(0, 10) || 'recent'})`,
-        content: body.substring(0, 3000),
-        metadata: { timestamp: note.properties?.hs_timestamp },
-      }, integration);
-      if (ok) imported++;
-    }
-    
-    if (notesData.paging?.next?.after) {
-      afterId = notesData.paging.next.after;
-    } else {
-      hasMore = false;
+    if (shouldStop() && offset < totalCount) {
+      return { imported, cursor: { offset, totalCount } };
     }
   }
-
-  const dealsRes = await fetch(`https://api.hubapi.com/crm/v3/objects/deals?limit=100&properties=dealname,dealstage,amount,closedate&sort=-hs_lastmodifieddate${afterParam}`, {
-    headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' }
-  });
-  if (dealsRes.ok) {
-    const dealsData = await dealsRes.json();
-    for (const deal of (dealsData.results || [])) {
-      if (imported >= limit) break;
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'hubspot',
-        external_id: `deal_${deal.id}`,
-        content_type: 'deal',
-        title: `Deal: ${deal.properties?.dealname || 'Unnamed'}`,
-        content: `Stage: ${deal.properties?.dealstage || 'unknown'}. Amount: ${deal.properties?.amount || 'N/A'}. Close date: ${deal.properties?.closedate || 'N/A'}.`,
-        metadata: { stage: deal.properties?.dealstage, amount: deal.properties?.amount },
-      }, integration);
-      if (ok) imported++;
-    }
-  }
-  return imported;
+  return { imported, cursor: null };
 }
-
-// ─── Google Meet Sync ─────────────────────────────────────────────────────────
-async function syncGoogleMeet(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
-  let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-
-  const timeMin = lastSynced ? lastSynced.toISOString() : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-  
-  let pageToken = '';
-
-  do {
-    const tokenParam = pageToken ? `&pageToken=${pageToken}` : '';
-    const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&maxResults=100&singleEvents=true&orderBy=startTime&q=meet${tokenParam}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!res.ok) throw new Error(`Google Calendar API error: ${res.status}`);
-    const data = await res.json();
-
-    for (const event of (data.items || [])) {
-      if (imported >= limit) break;
-      if (!event.conferenceData) continue;
-      const meetLink = event.conferenceData?.entryPoints?.find((ep: any) => ep.entryPointType === 'video')?.uri;
-      const attendees = (event.attendees || []).map((a: any) => a.email).join(', ');
-
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'google_meet',
-        external_id: event.id,
-        content_type: 'meeting',
-        title: event.summary || 'Google Meet',
-        content: [event.description, attendees ? `Attendees: ${attendees}` : ''].filter(Boolean).join('\n'),
-        url: meetLink || event.htmlLink,
-        author: event.organizer?.email || null,
-        metadata: { start: event.start?.dateTime, end: event.end?.dateTime, attendeeCount: event.attendees?.length || 0 },
-      }, integration);
-      if (ok) imported++;
-    }
-    pageToken = data.nextPageToken || '';
-  } while (pageToken && imported < limit);
-  return imported;
-}
-
-// ─── Microsoft Outlook Sync ───────────────────────────────────────────────────
-async function syncOutlook(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = await refreshMicrosoftToken(integration, supabase);
-  let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-
-  const filterParam = lastSynced
-    ? `&$filter=receivedDateTime ge ${lastSynced.toISOString()}`
-    : `&$filter=importance eq 'high'`;
-
-  let nextLink = `https://graph.microsoft.com/v1.0/me/messages?$top=100&$select=id,subject,bodyPreview,from,receivedDateTime,importance&$orderby=receivedDateTime desc${filterParam}`;
-
-  while (nextLink && imported < limit) {
-    const res = await fetch(nextLink, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!res.ok) throw new Error(`Outlook API error: ${res.status}`);
-    const data = await res.json();
-
-    for (const email of (data.value || [])) {
-      if (imported >= limit) break;
-      const ok = await upsertKnowledge(supabase, {
-        provider: 'outlook',
-        external_id: email.id,
-        content_type: 'email',
-        title: email.subject || '(No Subject)',
-        content: email.bodyPreview?.substring(0, 2000) || '',
-        author: email.from?.emailAddress?.address || null,
-        metadata: { receivedDateTime: email.receivedDateTime, importance: email.importance },
-      }, integration);
-      if (ok) imported++;
-    }
-    nextLink = data['@odata.nextLink'] || '';
-  }
-  return imported;
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// PHASE 3: NEW CONNECTORS
-// ─────────────────────────────────────────────────────────────────────────────
 
 // ─── Discord Sync ─────────────────────────────────────────────────────────────
-async function syncDiscord(integration: any, supabase: any, lastSynced: Date | null) {
+async function syncDiscord(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
   const token = integration.access_token;
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
+  const limit = Number(integration.settings?.sync_limit || 100000);
 
   const guildsRes = await fetch('https://discord.com/api/v10/users/@me/guilds', {
     headers: { Authorization: `Bearer ${token}` }
@@ -1050,8 +1086,13 @@ async function syncDiscord(integration: any, supabase: any, lastSynced: Date | n
   if (!guildsRes.ok) throw new Error(`Discord API error: ${guildsRes.status}`);
   const guilds = await guildsRes.json();
 
-  for (const guild of (guilds || [])) {
+  const startGuildIdx = savedCursor?.guildIdx || 0;
+  const startChannelIdx = savedCursor?.channelIdx || 0;
+
+  for (let gi = startGuildIdx; gi < (guilds || []).length; gi++) {
+    const guild = guilds[gi];
     if (imported >= limit) break;
+
     const channelsRes = await fetch(`https://discord.com/api/v10/guilds/${guild.id}/channels`, {
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -1059,9 +1100,11 @@ async function syncDiscord(integration: any, supabase: any, lastSynced: Date | n
     const channels = await channelsRes.json();
     const textChannels = (channels || []).filter((c: any) => c.type === 0);
 
-    for (const channel of textChannels) {
+    for (let ci = (gi === startGuildIdx ? startChannelIdx : 0); ci < textChannels.length; ci++) {
+      const channel = textChannels[ci];
       if (imported >= limit) break;
-      let lastMsgId = '';
+
+      let lastMsgId = gi === startGuildIdx && ci === startChannelIdx ? savedCursor?.lastMsgId || '' : '';
       let hasMore = true;
 
       while (hasMore && imported < limit) {
@@ -1073,80 +1116,72 @@ async function syncDiscord(integration: any, supabase: any, lastSynced: Date | n
         } else {
           afterParam = '?limit=100';
         }
-        
+
         const msgsRes = await fetch(`https://discord.com/api/v10/channels/${channel.id}/messages${afterParam}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        if (!msgsRes.ok) break;
+        if (!msgsRes.ok) { hasMore = false; break; }
         const messages = await msgsRes.json();
-        if (messages.length === 0) {
-          hasMore = false;
-          break;
-        }
+        if (messages.length === 0) { hasMore = false; break; }
 
         for (const msg of messages) {
           if (imported >= limit) break;
           if (!msg.content) continue;
           const ok = await upsertKnowledge(supabase, {
-            provider: 'discord',
-            external_id: msg.id,
-            content_type: 'message',
+            provider: 'discord', external_id: msg.id, content_type: 'message',
             title: `#${channel.name} (${guild.name})`,
-            content: msg.content.substring(0, 2000),
-            author: msg.author?.username || null,
+            content: msg.content.substring(0, 2000), author: msg.author?.username || null,
             metadata: { guildId: guild.id, guildName: guild.name, channelName: channel.name },
           }, integration);
           if (ok) imported++;
           lastMsgId = msg.id;
         }
-        
+
         if (messages.length < 100) hasMore = false;
+
+        if (shouldStop() && (hasMore || ci < textChannels.length - 1 || gi < guilds.length - 1)) {
+          return { imported, cursor: { guildIdx: gi, channelIdx: ci, lastMsgId } };
+        }
       }
     }
   }
-  return imported;
+  return { imported, cursor: null };
 }
 
-// ─── GitLab Sync ─────────────────────────────────────────────────────────────
-// syncGitLab has been moved to ./syncers/gitlab.ts
-
 // ─── Bitbucket Sync ───────────────────────────────────────────────────────────
-async function syncBitbucket(integration: any, supabase: any, lastSynced: Date | null) {
+async function syncBitbucket(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
   const token = integration.access_token;
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-
-  let wsUrl = 'https://api.bitbucket.org/2.0/repositories?role=member&pagelen=100';
+  const limit = Number(integration.settings?.sync_limit || 100000);
+  let wsUrl = savedCursor?.wsUrl || 'https://api.bitbucket.org/2.0/repositories?role=member&pagelen=100';
 
   while (wsUrl && imported < limit) {
-    const wsRes = await fetch(wsUrl, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const wsRes = await fetch(wsUrl, { headers: { Authorization: `Bearer ${token}` } });
     if (!wsRes.ok) throw new Error(`Bitbucket API error: ${wsRes.status}`);
     const wsData = await wsRes.json();
 
     for (const repo of (wsData.values || [])) {
       if (imported >= limit) break;
       const updatedParam = lastSynced ? `&q=updated_on>"${lastSynced.toISOString()}"` : '';
-      
       let issuesUrl = `https://api.bitbucket.org/2.0/repositories/${repo.full_name}/issues?pagelen=100${updatedParam}`;
+
       while (issuesUrl && imported < limit) {
-        const issuesRes = await fetch(issuesUrl, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const issuesRes = await fetch(issuesUrl, { headers: { Authorization: `Bearer ${token}` } });
         if (!issuesRes.ok) break;
         const issuesData = await issuesRes.json();
 
         for (const issue of (issuesData.values || [])) {
           if (imported >= limit) break;
           const ok = await upsertKnowledge(supabase, {
-            provider: 'bitbucket',
-            external_id: String(issue.id),
-            content_type: 'issue',
+            provider: 'bitbucket', external_id: String(issue.id), content_type: 'issue',
             title: `[${repo.name}] ${issue.title}`,
             content: issue.content?.raw?.substring(0, 3000) || '',
-            url: issue.links?.html?.href || null,
-            author: issue.reporter?.nickname || null,
+            url: issue.links?.html?.href || null, author: issue.reporter?.nickname || null,
             tags: [issue.state, issue.priority].filter(Boolean),
             metadata: { repo: repo.full_name, state: issue.state, kind: issue.kind },
           }, integration);
@@ -1155,55 +1190,48 @@ async function syncBitbucket(integration: any, supabase: any, lastSynced: Date |
         issuesUrl = issuesData.next || '';
       }
     }
+
     wsUrl = wsData.next || '';
+    if (shouldStop() && wsUrl) {
+      return { imported, cursor: { wsUrl } };
+    }
   }
-  return imported;
+  return { imported, cursor: null };
 }
 
 // ─── Zoho CRM Sync ────────────────────────────────────────────────────────────
-async function syncZohoCRM(integration: any, supabase: any, lastSynced: Date | null) {
+async function syncZohoCRM(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
   const token = integration.access_token;
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-
-  let page = 1;
+  const limit = Number(integration.settings?.sync_limit || 100000);
+  let page = savedCursor?.page || 1;
   let hasMore = true;
 
   while (hasMore && imported < limit) {
     const headers: Record<string, string> = { Authorization: `Zoho-oauthtoken ${token}` };
-    if (lastSynced) {
-      headers['If-Modified-Since'] = lastSynced.toISOString();
-    }
+    if (lastSynced) headers['If-Modified-Since'] = lastSynced.toISOString();
 
-    const notesRes = await fetch(`https://www.zohoapis.com/crm/v2/Notes?sort_by=Modified_Time&sort_order=desc&per_page=100&page=${page}`, {
-      headers
-    });
+    const notesRes = await fetch(
+      `https://www.zohoapis.com/crm/v2/Notes?sort_by=Modified_Time&sort_order=desc&per_page=100&page=${page}`,
+      { headers }
+    );
     if (!notesRes.ok) throw new Error(`Zoho CRM API error: ${notesRes.status}`);
-    
-    if (notesRes.status === 204) {
-      hasMore = false;
-      break;
-    }
+    if (notesRes.status === 204) { hasMore = false; break; }
 
     const text = await notesRes.text();
-    if (!text) {
-      hasMore = false;
-      break;
-    }
-
+    if (!text) { hasMore = false; break; }
     const notesData = JSON.parse(text);
-    
-    if (!notesData.data || notesData.data.length === 0) {
-      hasMore = false;
-      break;
-    }
+    if (!notesData.data || notesData.data.length === 0) { hasMore = false; break; }
 
     for (const note of notesData.data) {
       if (imported >= limit) break;
       const ok = await upsertKnowledge(supabase, {
-        provider: 'zoho_crm',
-        external_id: note.id,
-        content_type: 'note',
+        provider: 'zoho_crm', external_id: note.id, content_type: 'note',
         title: note.Note_Title || `Zoho Note (${note.Modified_Time?.slice(0, 10)})`,
         content: note.Note_Content?.substring(0, 3000) || '',
         author: note.Created_By?.name || null,
@@ -1211,40 +1239,43 @@ async function syncZohoCRM(integration: any, supabase: any, lastSynced: Date | n
       }, integration);
       if (ok) imported++;
     }
-    
-    if (!notesData.info?.more_records) {
-      hasMore = false;
-    }
+
+    if (!notesData.info?.more_records) hasMore = false;
     page++;
+
+    if (shouldStop() && hasMore) {
+      return { imported, cursor: { page } };
+    }
   }
-  return imported;
+  return { imported, cursor: null };
 }
 
 // ─── Zendesk Sync ─────────────────────────────────────────────────────────────
-async function syncZendesk(integration: any, supabase: any, lastSynced: Date | null) {
+async function syncZendesk(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
   const token = integration.access_token;
   const subdomain = integration.metadata?.subdomain;
   if (!subdomain) throw new Error('Zendesk subdomain not configured.');
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-
+  const limit = Number(integration.settings?.sync_limit || 100000);
   const updatedParam = lastSynced ? `&updated_since=${lastSynced.toISOString()}` : '';
 
-  let nextUrl = `https://${subdomain}.zendesk.com/api/v2/tickets.json?sort_by=updated_at&sort_order=desc&per_page=100${updatedParam}`;
+  let nextUrl = savedCursor?.nextUrl ||
+    `https://${subdomain}.zendesk.com/api/v2/tickets.json?sort_by=updated_at&sort_order=desc&per_page=100${updatedParam}`;
 
   while (nextUrl && imported < limit) {
-    const res = await fetch(nextUrl, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const res = await fetch(nextUrl, { headers: { Authorization: `Bearer ${token}` } });
     if (!res.ok) throw new Error(`Zendesk API error: ${res.status}`);
     const data = await res.json();
 
     for (const ticket of (data.tickets || [])) {
       if (imported >= limit) break;
       const ok = await upsertKnowledge(supabase, {
-        provider: 'zendesk',
-        external_id: String(ticket.id),
-        content_type: 'ticket',
+        provider: 'zendesk', external_id: String(ticket.id), content_type: 'ticket',
         title: `[#${ticket.id}] ${ticket.subject}`,
         content: ticket.description?.substring(0, 3000) || '',
         url: `https://${subdomain}.zendesk.com/agent/tickets/${ticket.id}`,
@@ -1253,19 +1284,30 @@ async function syncZendesk(integration: any, supabase: any, lastSynced: Date | n
       }, integration);
       if (ok) imported++;
     }
+
     nextUrl = data.next_page || '';
+    if (shouldStop() && nextUrl) {
+      return { imported, cursor: { nextUrl } };
+    }
   }
-  return imported;
+  return { imported, cursor: null };
 }
 
 // ─── Intercom Sync ────────────────────────────────────────────────────────────
-async function syncIntercom(integration: any, supabase: any, lastSynced: Date | null) {
+async function syncIntercom(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
   const token = integration.access_token;
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
+  const limit = Number(integration.settings?.sync_limit || 100000);
+  const updatedSince = lastSynced
+    ? Math.floor(lastSynced.getTime() / 1000)
+    : Math.floor((Date.now() - 30 * 24 * 60 * 60 * 1000) / 1000);
 
-  const updatedSince = lastSynced ? Math.floor(lastSynced.getTime() / 1000) : Math.floor((Date.now() - 30 * 24 * 60 * 60 * 1000) / 1000);
-  let startingAfter = '';
+  let startingAfter = savedCursor?.startingAfter || '';
   let hasMore = true;
 
   while (hasMore && imported < limit) {
@@ -1275,89 +1317,95 @@ async function syncIntercom(integration: any, supabase: any, lastSynced: Date | 
     });
     if (!res.ok) throw new Error(`Intercom API error: ${res.status}`);
     const data = await res.json();
-    
     if (!data.conversations || data.conversations.length === 0) break;
 
     for (const conv of data.conversations) {
       if (imported >= limit) break;
       if (lastSynced && conv.updated_at < updatedSince) continue;
       const ok = await upsertKnowledge(supabase, {
-        provider: 'intercom',
-        external_id: conv.id,
-        content_type: 'conversation',
+        provider: 'intercom', external_id: conv.id, content_type: 'conversation',
         title: conv.title || `Conversation ${conv.id}`,
         content: conv.conversation_message?.body?.replace(/<[^>]+>/g, '').substring(0, 3000) || '',
         tags: [conv.state, conv.read ? 'read' : 'unread'].filter(Boolean),
-        metadata: { state: conv.state, assignee: conv.assignee?.name, contact: conv.contacts?.contacts?.[0]?.id },
+        metadata: { state: conv.state, assignee: conv.assignee?.name },
       }, integration);
       if (ok) imported++;
     }
-    
-    if (data.pages && data.pages.next && data.pages.next.starting_after) {
+
+    if (data.pages?.next?.starting_after) {
       startingAfter = data.pages.next.starting_after;
     } else {
       hasMore = false;
     }
+
+    if (shouldStop() && hasMore) {
+      return { imported, cursor: { startingAfter } };
+    }
   }
-  return imported;
+  return { imported, cursor: null };
 }
 
 // ─── Freshdesk Sync ───────────────────────────────────────────────────────────
-async function syncFreshdesk(integration: any, supabase: any, lastSynced: Date | null) {
+async function syncFreshdesk(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
   const apiKey = integration.access_token;
   const subdomain = integration.metadata?.subdomain;
   if (!subdomain) throw new Error('Freshdesk subdomain not configured.');
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-
+  const limit = Number(integration.settings?.sync_limit || 100000);
   const auth = btoa(`${apiKey}:X`);
   const updatedParam = lastSynced ? `&updated_since=${lastSynced.toISOString()}` : '';
-
-  let page = 1;
+  let page = savedCursor?.page || 1;
   let hasMore = true;
 
   while (hasMore && imported < limit) {
-    const res = await fetch(`https://${subdomain}.freshdesk.com/api/v2/tickets?order_by=updated_at&order_type=desc&per_page=100&page=${page}${updatedParam}`, {
-      headers: { Authorization: `Basic ${auth}` }
-    });
+    const res = await fetch(
+      `https://${subdomain}.freshdesk.com/api/v2/tickets?order_by=updated_at&order_type=desc&per_page=100&page=${page}${updatedParam}`,
+      { headers: { Authorization: `Basic ${auth}` } }
+    );
     if (!res.ok) throw new Error(`Freshdesk API error: ${res.status}`);
     const tickets = await res.json();
-    
-    if (tickets.length === 0) {
-      hasMore = false;
-      break;
-    }
+    if (tickets.length === 0) { hasMore = false; break; }
 
     for (const ticket of tickets) {
       if (imported >= limit) break;
       const ok = await upsertKnowledge(supabase, {
-        provider: 'freshdesk',
-        external_id: String(ticket.id),
-        content_type: 'ticket',
+        provider: 'freshdesk', external_id: String(ticket.id), content_type: 'ticket',
         title: `[#${ticket.id}] ${ticket.subject}`,
         content: ticket.description_text?.substring(0, 3000) || '',
         url: `https://${subdomain}.freshdesk.com/a/tickets/${ticket.id}`,
         tags: (ticket.tags || []).concat([ticket.status_text, ticket.priority_text]).filter(Boolean),
-        metadata: { status: ticket.status, priority: ticket.priority, type: ticket.type },
+        metadata: { status: ticket.status, priority: ticket.priority },
       }, integration);
       if (ok) imported++;
     }
-    
+
     if (tickets.length < 100) hasMore = false;
     page++;
+
+    if (shouldStop() && hasMore) {
+      return { imported, cursor: { page } };
+    }
   }
-  return imported;
+  return { imported, cursor: null };
 }
 
 // ─── Figma Sync ───────────────────────────────────────────────────────────────
-async function syncFigma(integration: any, supabase: any, lastSynced: Date | null) {
+async function syncFigma(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  _savedCursor: Record<string, any> | null,
+  _shouldStop: () => boolean
+): Promise<SyncResult> {
   const token = integration.access_token;
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
+  const limit = Number(integration.settings?.sync_limit || 100000);
 
-  const res = await fetch('https://api.figma.com/v1/me/files', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  const res = await fetch('https://api.figma.com/v1/me/files', { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`Figma API error: ${res.status}`);
   const data = await res.json();
 
@@ -1365,26 +1413,27 @@ async function syncFigma(integration: any, supabase: any, lastSynced: Date | nul
     if (imported >= limit) break;
     if (lastSynced && new Date(file.last_modified) <= lastSynced) continue;
     const ok = await upsertKnowledge(supabase, {
-      provider: 'figma',
-      external_id: file.key,
-      content_type: 'design',
-      title: file.name,
-      url: `https://www.figma.com/file/${file.key}`,
+      provider: 'figma', external_id: file.key, content_type: 'design',
+      title: file.name, url: `https://www.figma.com/file/${file.key}`,
       author: file.last_modified_by?.handle || null,
       metadata: { thumbnail: file.thumbnail_url, lastModified: file.last_modified, projectId: file.project_id },
     }, integration);
     if (ok) imported++;
   }
-  return imported;
+  return { imported, cursor: null }; // Single page API — no cursor needed
 }
 
 // ─── Miro Sync ────────────────────────────────────────────────────────────────
-async function syncMiro(integration: any, supabase: any, lastSynced: Date | null) {
+async function syncMiro(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
   const token = integration.access_token;
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-
-  let offset = 0;
+  const limit = Number(integration.settings?.sync_limit || 100000);
+  let offset = savedCursor?.offset || 0;
   let hasMore = true;
 
   while (hasMore && imported < limit) {
@@ -1393,49 +1442,50 @@ async function syncMiro(integration: any, supabase: any, lastSynced: Date | null
     });
     if (!res.ok) throw new Error(`Miro API error: ${res.status}`);
     const data = await res.json();
-
-    if (!data.data || data.data.length === 0) {
-      hasMore = false;
-      break;
-    }
+    if (!data.data || data.data.length === 0) { hasMore = false; break; }
 
     for (const board of data.data) {
       if (imported >= limit) break;
       if (lastSynced && new Date(board.modifiedAt) <= lastSynced) continue;
       const ok = await upsertKnowledge(supabase, {
-        provider: 'miro',
-        external_id: board.id,
-        content_type: 'whiteboard',
-        title: board.name,
-        url: board.viewLink || `https://miro.com/app/board/${board.id}/`,
+        provider: 'miro', external_id: board.id, content_type: 'whiteboard',
+        title: board.name, url: board.viewLink || `https://miro.com/app/board/${board.id}/`,
         author: board.owner?.name || null,
         metadata: { teamId: board.team?.id, createdAt: board.createdAt, modifiedAt: board.modifiedAt },
       }, integration);
       if (ok) imported++;
     }
-    
+
     offset += data.data.length;
     if (data.data.length < 50) hasMore = false;
+
+    if (shouldStop() && hasMore) {
+      return { imported, cursor: { offset } };
+    }
   }
-  return imported;
+  return { imported, cursor: null };
 }
 
 // ─── Google Calendar Sync ─────────────────────────────────────────────────────
-async function syncGoogleCalendar(integration: any, supabase: any, lastSynced: Date | null) {
-  const token = integration.access_token;
+async function syncGoogleCalendar(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
+  const token = await refreshGoogleToken(integration, supabase);
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-
+  const limit = Number(integration.settings?.sync_limit || 100000);
   const timeMin = lastSynced ? lastSynced.toISOString() : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const timeMax = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
-
-  let pageToken = '';
+  let pageToken = savedCursor?.pageToken || '';
 
   do {
     const tokenParam = pageToken ? `&pageToken=${pageToken}` : '';
-    const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&timeMax=${timeMax}&maxResults=100&singleEvents=true&orderBy=startTime${tokenParam}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const res = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&timeMax=${timeMax}&maxResults=100&singleEvents=true&orderBy=startTime${tokenParam}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
     if (!res.ok) throw new Error(`Google Calendar API error: ${res.status}`);
     const data = await res.json();
 
@@ -1443,34 +1493,36 @@ async function syncGoogleCalendar(integration: any, supabase: any, lastSynced: D
       if (imported >= limit) break;
       const attendees = (event.attendees || []).map((a: any) => a.email).join(', ');
       const ok = await upsertKnowledge(supabase, {
-        provider: 'google_calendar',
-        external_id: event.id,
-        content_type: 'calendar_event',
+        provider: 'google_calendar', external_id: event.id, content_type: 'calendar_event',
         title: event.summary || '(No Title)',
         content: [event.description, attendees ? `Attendees: ${attendees}` : '', event.location ? `Location: ${event.location}` : ''].filter(Boolean).join('\n'),
-        url: event.htmlLink,
-        author: event.organizer?.email || null,
+        url: event.htmlLink, author: event.organizer?.email || null,
         metadata: { start: event.start?.dateTime || event.start?.date, end: event.end?.dateTime || event.end?.date, attendeeCount: event.attendees?.length || 0, recurrence: !!event.recurrence },
       }, integration);
       if (ok) imported++;
     }
+
     pageToken = data.nextPageToken || '';
+    if (shouldStop() && pageToken) {
+      return { imported, cursor: { pageToken } };
+    }
   } while (pageToken && imported < limit);
 
-  return imported;
+  return { imported, cursor: null };
 }
 
-// ─── SharePoint Sync ──────────────────────────────────────────────────────────
-// syncSharePoint has been moved to ./syncers/sharepoint.ts
-
 // ─── Guru Sync ────────────────────────────────────────────────────────────────
-async function syncGuru(integration: any, supabase: any, lastSynced: Date | null) {
+async function syncGuru(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  _savedCursor: Record<string, any> | null,
+  _shouldStop: () => boolean
+): Promise<SyncResult> {
   const token = integration.access_token;
   const username = integration.metadata?.username || integration.metadata?.email;
   if (!username) throw new Error('Guru username not configured.');
   let imported = 0;
-  const limit = Number(integration.settings?.sync_limit || integration.settings?.import_limit || 100000);
-
+  const limit = Number(integration.settings?.sync_limit || 100000);
   const auth = btoa(`${username}:${token}`);
   const updatedParam = lastSynced ? `?dateUpdated=${lastSynced.toISOString()}` : '';
 
@@ -1484,11 +1536,8 @@ async function syncGuru(integration: any, supabase: any, lastSynced: Date | null
     if (imported >= limit) break;
     const textContent = card.content?.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() || '';
     const ok = await upsertKnowledge(supabase, {
-      provider: 'guru',
-      external_id: card.id,
-      content_type: 'knowledge_card',
-      title: card.preferredPhrase || card.title,
-      content: textContent.substring(0, 5000),
+      provider: 'guru', external_id: card.id, content_type: 'knowledge_card',
+      title: card.preferredPhrase || card.title, content: textContent.substring(0, 5000),
       url: `https://app.getguru.com/card/${card.id}`,
       author: card.owner?.user?.email || null,
       tags: (card.tags || []).map((t: any) => t.value).filter(Boolean),
@@ -1496,90 +1545,39 @@ async function syncGuru(integration: any, supabase: any, lastSynced: Date | null
     }, integration);
     if (ok) imported++;
   }
-  return imported;
+  return { imported, cursor: null }; // Single page API
 }
 
-// ─── syncGoogleWorkspace ─────────────────────────────────────────────────────────────
-async function syncGoogleWorkspace(integration: any, supabase: any, lastSynced: Date | null) {
+// ─── Google Workspace (umbrella) ──────────────────────────────────────────────
+async function syncGoogleWorkspace(
+  integration: any, supabase: any,
+  lastSynced: Date | null,
+  savedCursor: Record<string, any> | null,
+  shouldStop: () => boolean
+): Promise<SyncResult> {
   let imported = 0;
-  try {
-    imported += await syncGoogleDrive(integration, supabase, lastSynced);
-  } catch (e: any) {
-    console.error('Google Workspace (Drive) error:', e?.message || String(e));
+  let cursor: Record<string, any> | null = null;
+
+  // Resume Drive or Calendar based on where we left off
+  const driveDone = savedCursor?.driveDone || false;
+
+  if (!driveDone) {
+    const driveResult = await syncGoogleDrive(integration, supabase, lastSynced, savedCursor?.drive || null, shouldStop);
+    imported += driveResult.imported;
+    if (driveResult.cursor !== null) {
+      // Still working through Drive
+      return { imported, cursor: { drive: driveResult.cursor, driveDone: false } };
+    }
   }
-  try {
-    imported += await syncGoogleCalendar(integration, supabase, lastSynced);
-  } catch (e: any) {
-    console.error('Google Workspace (Calendar) error:', e?.message || String(e));
+
+  // Drive done — proceed to Calendar
+  if (!shouldStop()) {
+    const calResult = await syncGoogleCalendar(integration, supabase, lastSynced, savedCursor?.calendar || null, shouldStop);
+    imported += calResult.imported;
+    if (calResult.cursor !== null) {
+      return { imported, cursor: { driveDone: true, calendar: calResult.cursor } };
+    }
   }
-  
-  
-  return imported;
+
+  return { imported, cursor: null };
 }
-
-// ─── syncPipedrive ─────────────────────────────────────────────────────────────
-// syncPipedrive has been moved to ./syncers/pipedrive.ts
-
-// ─── syncMailchimp ─────────────────────────────────────────────────────────────
-// syncMailchimp has been moved to ./syncers/mailchimp.ts
-
-// ─── syncStripe ─────────────────────────────────────────────────────────────
-// syncStripe has been moved to ./syncers/stripe.ts
-
-// ─── syncQuickbooks ─────────────────────────────────────────────────────────────
-// syncQuickbooks has been moved to ./syncers/quickbooks.ts
-
-// ─── syncAWS ─────────────────────────────────────────────────────────────
-// syncAWS has been moved to ./syncers/aws.ts
-
-// ─── syncAzure ─────────────────────────────────────────────────────────────
-// syncAzure has been moved to ./syncers/azure.ts
-
-// ─── syncGoogleCloud ─────────────────────────────────────────────────────────────
-// syncGoogleCloud has been moved to ./syncers/google_cloud.ts
-
-// ─── syncDatadog ─────────────────────────────────────────────────────────────
-// syncDatadog has been moved to ./syncers/datadog.ts
-
-// ─── syncSentry ─────────────────────────────────────────────────────────────
-// syncSentry has been moved to ./syncers/sentry.ts
-
-// ─── syncPagerDuty ─────────────────────────────────────────────────────────────
-// syncPagerDuty has been moved to ./syncers/pagerduty.ts
-
-// ─── syncJenkins ─────────────────────────────────────────────────────────────
-// syncJenkins has been moved to ./syncers/jenkins.ts
-
-// ─── syncCanva ─────────────────────────────────────────────────────────────
-// syncCanva has been moved to ./syncers/canva.ts
-
-// ─── syncWhatsApp ─────────────────────────────────────────────────────────────
-// syncWhatsApp has been moved to ./syncers/whatsapp.ts
-
-// ─── syncTelegram ─────────────────────────────────────────────────────────────
-// syncTelegram has been moved to ./syncers/telegram.ts
-
-// ─── syncAirtable ─────────────────────────────────────────────────────────────
-// syncAirtable has been moved to ./syncers/airtable.ts
-
-// ─── syncSAP ─────────────────────────────────────────────────────────────
-// syncSAP has been moved to ./syncers/sap.ts
-
-// ─── syncOracle ─────────────────────────────────────────────────────────────
-// syncOracle has been moved to ./syncers/oracle.ts
-
-// ─── syncServiceNow ─────────────────────────────────────────────────────────────
-// syncServiceNow has been moved to ./syncers/servicenow.ts
-
-// ─── syncWorkday ─────────────────────────────────────────────────────────────
-// syncWorkday has been moved to ./syncers/workday.ts
-
-// ─── syncBambooHR ─────────────────────────────────────────────────────────────
-// syncBambooHR has been moved to ./syncers/bamboohr.ts
-
-// ─── syncDocuSign ─────────────────────────────────────────────────────────────
-// syncDocuSign has been moved to ./syncers/docusign.ts
-
-// ─── syncCalendly ─────────────────────────────────────────────────────────────
-// syncCalendly has been moved to ./syncers/calendly.ts
-
