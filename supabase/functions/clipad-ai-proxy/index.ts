@@ -13,9 +13,13 @@ const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_MODEL = "llama-3.3-70b-versatile"; // fast, free, very capable
 
 // ── Cloudflare fallback models (free tier, ~10k neurons/day per account) ──────
+// Ordered by power: most capable first
 const CF_FREE_MODELS = [
-  "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-  "@cf/meta/llama-3.1-8b-instruct",
+  "@cf/qwen/qwq-32b",                            // Most powerful — 32B reasoning model (like o1-mini)
+  "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b",// DeepSeek R1 reasoning distilled
+  "@cf/zai-org/glm-4.7-flash",                   // 131k context, fast and capable
+  "@cf/qwen/qwen2.5-coder-32b-instruct",         // Great for coding/task execution
+  "@cf/meta/llama-3.3-70b-instruct-fp8-fast",    // Last resort: Llama 3.3 70B
 ];
 
 // ── Try Groq ─────────────────────────────────────────────────────────────────
