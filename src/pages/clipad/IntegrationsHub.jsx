@@ -51,6 +51,7 @@ export default function IntegrationsHub() {
   const [selectedScope, setSelectedScope] = useState('personal'); // 'personal' | 'space' | 'company'
   const [selectedSpaceId, setSelectedSpaceId] = useState(''); // when scope='space'
   const [userSpaces, setUserSpaces] = useState([]); // spaces this user belongs to
+  const [changeScopeModal, setChangeScopeModal] = useState(null); // { conn, integration } — change scope of existing
 
   const userRole = user?.role || user?.user_metadata?.role || 'member';
   const isAdmin = ['super_admin', 'admin'].includes(userRole);
@@ -152,6 +153,29 @@ export default function IntegrationsHub() {
     const spaceParam = selectedScope === 'space' && selectedSpaceId ? `&space_id=${selectedSpaceId}` : '';
     const oauthUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/oauth-init?provider=${integration.provider}&company_id=${companyId}&user_id=${user.id}&integration_id=${integration.id}&visibility=${selectedScope}${spaceParam}&return_url=${returnUrl}`;
     window.location.href = oauthUrl;
+  };
+
+  // ── Change scope of an already-connected integration ───────────────────────
+  const handleChangeScope = async () => {
+    if (!changeScopeModal) return;
+    const { conn } = changeScopeModal;
+    try {
+      const spaceIdVal = selectedScope === 'space' ? (selectedSpaceId || null) : null;
+      const { error } = await supabase
+        .from('clipad_integrations')
+        .update({
+          visibility: selectedScope,
+          space_id: spaceIdVal,
+          connected_by_user_id: user.id,
+        })
+        .eq('id', conn.id);
+      if (error) throw error;
+      toast({ title: '✅ Scope updated', description: `Integration is now ${selectedScope === 'company' ? 'company-wide' : selectedScope === 'space' ? 'space-level' : 'personal'}.` });
+      setChangeScopeModal(null);
+      await loadConnected();
+    } catch (e) {
+      toast({ title: 'Error', description: e.message, variant: 'destructive' });
+    }
   };
 
   const handleDisconnect = async (integration) => {
@@ -415,29 +439,59 @@ export default function IntegrationsHub() {
           </div>
         </div>
 
-        {/* Connected integrations summary */}
-        {connectedCount > 0 && (
-          <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-5">
-            <h2 className="font-bold text-sm text-emerald-600 dark:text-emerald-400 mb-3 flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4" /> {connectedCount} Active Connection{connectedCount !== 1 ? 's' : ''}
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {Object.entries(connected).map(([provider, conn]) => {
-                const intg = INTEGRATIONS.find(i => i.provider === provider || i.id === provider);
-                if (!intg) return null;
-                return (
-                  <div key={provider} className="flex items-center gap-2 bg-white dark:bg-card border border-emerald-500/20 rounded-xl px-3 py-1.5">
-                    <span>{intg.icon}</span>
-                    <span className="text-sm font-semibold">{intg.name}</span>
-                    {conn.last_synced_at && (
-                      <span className="text-xs text-muted-foreground">• synced {new Date(conn.last_synced_at).toLocaleDateString()}</span>
-                    )}
-                  </div>
-                );
-              })}
+        {/* ── My Connections Panel (scoped view) ─────────────────────────── */}
+        {connectedCount > 0 && (() => {
+          const personal = Object.entries(connected).filter(([, c]) => c.visibility === 'personal' || (!c.visibility && c.connected_by_user_id === user?.id));
+          const space    = Object.entries(connected).filter(([, c]) => c.visibility === 'space');
+          const company  = Object.entries(connected).filter(([, c]) => c.visibility === 'company' || (!c.visibility && !c.connected_by_user_id));
+
+          const ScopeGroup = ({ label, items, icon: Icon, color, bg, pill }) => items.length === 0 ? null : (
+            <div>
+              <div className={`flex items-center gap-2 mb-2`}>
+                <Icon className={`w-3.5 h-3.5 ${color}`} />
+                <span className={`text-xs font-bold ${color}`}>{label}</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold ${pill}`}>{items.length}</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {items.map(([provider, conn]) => {
+                  const intg = INTEGRATIONS.find(i => i.provider === provider || i.id === provider);
+                  if (!intg) return null;
+                  const canEdit = isAdmin || conn.connected_by_user_id === user?.id;
+                  return (
+                    <div key={provider} className={`flex items-center gap-2 bg-white dark:bg-card border ${bg} rounded-xl px-3 py-1.5 group`}>
+                      <span className="text-base">{intg.icon}</span>
+                      <div className="flex flex-col">
+                        <span className="text-xs font-bold text-foreground">{intg.name}</span>
+                        {conn.last_synced_at && <span className="text-[10px] text-muted-foreground">synced {new Date(conn.last_synced_at).toLocaleDateString()}</span>}
+                      </div>
+                      {canEdit && (
+                        <button
+                          onClick={() => { setSelectedScope(conn.visibility || 'personal'); setSelectedSpaceId(conn.space_id || ''); setChangeScopeModal({ conn, integration: intg }); }}
+                          className="opacity-0 group-hover:opacity-100 ml-1 p-1 rounded-lg hover:bg-secondary transition-all"
+                          title="Change who can access this integration"
+                        >
+                          <Settings className="w-3 h-3 text-muted-foreground" />
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        )}
+          );
+
+          return (
+            <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-5 space-y-4">
+              <h2 className="font-bold text-sm text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4" /> {connectedCount} Active Connection{connectedCount !== 1 ? 's' : ''}
+                <span className="ml-auto text-[10px] text-muted-foreground font-normal">Hover a card to change scope</span>
+              </h2>
+              <ScopeGroup label="Personal — Only you" items={personal} icon={User} color="text-violet-600 dark:text-violet-400" bg="border-violet-200 dark:border-violet-800/50" pill="bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400" />
+              <ScopeGroup label="Space-level" items={space} icon={Users} color="text-blue-600 dark:text-blue-400" bg="border-blue-200 dark:border-blue-800/50" pill="bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400" />
+              <ScopeGroup label="Company-wide — Everyone" items={company} icon={Globe} color="text-emerald-600 dark:text-emerald-400" bg="border-emerald-200 dark:border-emerald-800/50" pill="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400" />
+            </div>
+          );
+        })()}
 
         {/* Integration Cards Grid */}
         <div>
@@ -465,13 +519,22 @@ export default function IntegrationsHub() {
                         {integration.icon}
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <h3 className="font-bold text-foreground text-sm">{integration.name}</h3>
                           {isConnected && (
                             <span className="flex items-center gap-1 px-1.5 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-bold">
                               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                               Connected
                             </span>
+                          )}
+                          {isConnected && conn?.visibility === 'personal' && (
+                            <span className="flex items-center gap-1 px-1.5 py-0.5 bg-violet-500/10 text-violet-600 dark:text-violet-400 rounded-full text-[10px] font-semibold"><User className="w-2.5 h-2.5" /> Personal</span>
+                          )}
+                          {isConnected && conn?.visibility === 'space' && (
+                            <span className="flex items-center gap-1 px-1.5 py-0.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-full text-[10px] font-semibold"><Users className="w-2.5 h-2.5" /> Space</span>
+                          )}
+                          {isConnected && (conn?.visibility === 'company' || !conn?.visibility) && (
+                            <span className="flex items-center gap-1 px-1.5 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-semibold"><Globe className="w-2.5 h-2.5" /> Company</span>
                           )}
                           {!isAllowedToConnect && (
                             <span className="px-1.5 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-[10px] font-bold">
@@ -804,6 +867,79 @@ export default function IntegrationsHub() {
                 className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-sm font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-violet-500/20"
               >
                 <Plug className="w-4 h-4" /> Continue
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* ── Change Scope Modal — for already-connected integrations ──────────── */}
+      {changeScopeModal && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-xl shrink-0">
+                {changeScopeModal.integration?.icon || <Settings className="w-5 h-5 text-white" />}
+              </div>
+              <div>
+                <h2 className="text-base font-bold text-slate-900 dark:text-white">Change Access Scope</h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{changeScopeModal.integration?.name} · Who can access this?</p>
+              </div>
+            </div>
+
+            <div className="space-y-3 mb-5">
+              {/* Personal */}
+              <button onClick={() => setSelectedScope('personal')} className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${selectedScope === 'personal' ? 'border-violet-500 bg-violet-50 dark:bg-violet-500/10' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'}`}>
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'personal' ? 'bg-violet-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}><User className="w-4 h-4" /></div>
+                <div>
+                  <div className="flex items-center gap-2"><span className="text-sm font-bold text-slate-900 dark:text-white">Personal</span><span className="text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 px-2 py-0.5 rounded-full">Only you</span></div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Only you can see and query data from this connection.</p>
+                </div>
+              </button>
+
+              {/* Space */}
+              <button onClick={() => setSelectedScope('space')} className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${selectedScope === 'space' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'}`}>
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'space' ? 'bg-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}><Users className="w-4 h-4" /></div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2"><span className="text-sm font-bold text-slate-900 dark:text-white">Space</span><span className="text-[10px] font-semibold bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">Space members only</span></div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Only members of the selected space can access this data.</p>
+                  {selectedScope === 'space' && (
+                    <div className="mt-3" onClick={e => e.stopPropagation()}>
+                      {userSpaces.length > 0 ? (
+                        <select value={selectedSpaceId} onChange={e => setSelectedSpaceId(e.target.value)} className="w-full px-3 py-2 text-xs font-medium bg-white dark:bg-slate-800 border border-blue-300 dark:border-blue-600 rounded-lg focus:outline-none">
+                          {userSpaces.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                        </select>
+                      ) : (
+                        <p className="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-3 py-2 rounded-lg">You are not a member of any spaces yet.</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </button>
+
+              {/* Company-wide */}
+              <button onClick={() => isAdmin && setSelectedScope('company')} className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${!isAdmin ? 'opacity-40 cursor-not-allowed' : selectedScope === 'company' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'}`}>
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'company' && isAdmin ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}><Globe className="w-4 h-4" /></div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-bold text-slate-900 dark:text-white">Company-wide</span>
+                    <span className="text-[10px] font-semibold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full">Everyone</span>
+                    {!isAdmin && <span className="text-[10px] font-semibold bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-full flex items-center gap-1"><Lock className="w-2.5 h-2.5" /> Admin only</span>}
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">All company members can see this data via OrbitFlow and Spotlight.</p>
+                </div>
+              </button>
+            </div>
+
+            <div className="flex gap-3">
+              <button onClick={() => setChangeScopeModal(null)} className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+              <button
+                onClick={handleChangeScope}
+                disabled={selectedScope === 'space' && (!selectedSpaceId || userSpaces.length === 0)}
+                className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-sm font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-violet-500/20"
+              >
+                <Lock className="w-4 h-4" /> Save Access
               </button>
             </div>
           </div>
