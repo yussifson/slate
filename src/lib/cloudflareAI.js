@@ -163,11 +163,12 @@ async function consumeSSEStream(reader, onToken) {
 }
 
 /**
- * Generate text using Kimi K2.5 (@cf/moonshotai/kimi-k2.5)
+ * Generate text using Kimi K2.5 or faster models depending on options
  * @param {Array|string} input - Array of {role, content} objects or a prompt string
  * @param {Function|null} onStream - If provided, uses REAL SSE streaming. Called with accumulated text on each token.
+ * @param {Object} options - Options object, e.g. { fast: boolean }
  */
-export async function generateText(input, onStream = null) {
+export async function generateText(input, onStream = null, options = {}) {
   let messages = [];
   if (Array.isArray(input)) {
     messages = input;
@@ -180,6 +181,9 @@ export async function generateText(input, onStream = null) {
     typeof window !== 'undefined' && 
     (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
+  const selectedModel = options.fast ? "@cf/zai-org/glm-4.7-flash" : MODELS.text;
+  const maxTokens = options.fast ? 800 : 2500;
+
   // ── REAL STREAMING PATH ────────────────────────────────────────────────────
   if (useStream) {
     try {
@@ -188,14 +192,14 @@ export async function generateText(input, onStream = null) {
       if (isLocalProxy) {
         // Local dev: call Cloudflare directly via Vite proxy with stream:true
         const accountConfig = API_ACCOUNTS[currentAccountIndex];
-        const url = `/api/ai/${accountConfig.accountId}/${MODELS.text}`;
+        const url = `/api/ai/${accountConfig.accountId}/${selectedModel}`;
         response = await fetch(url, {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${accountConfig.token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ messages, max_tokens: 2500, stream: true }),
+          body: JSON.stringify({ messages, max_tokens: maxTokens, stream: true }),
         });
       } else {
         // Production: call Supabase edge function via raw fetch
@@ -210,8 +214,8 @@ export async function generateText(input, onStream = null) {
             'apikey': SUPABASE_ANON_KEY,
           },
           body: JSON.stringify({
-            model: MODELS.text,
-            payload: { messages, max_tokens: 2500 },
+            model: selectedModel,
+            payload: { messages, max_tokens: maxTokens },
             stream: true,
           }),
         });
@@ -219,7 +223,7 @@ export async function generateText(input, onStream = null) {
 
       if (!response.ok || !response.body) {
         console.warn('[OrbitFlow] Streaming not available, falling back to non-stream.');
-        return generateText(input, null);
+        return generateText(input, null, options);
       }
 
       const reader = response.body.getReader();
@@ -227,13 +231,13 @@ export async function generateText(input, onStream = null) {
 
     } catch (streamErr) {
       console.warn('[OrbitFlow] Streaming error, falling back:', streamErr.message);
-      return generateText(input, null);
+      return generateText(input, null, options);
     }
   }
 
   // ── NON-STREAMING PATH (used for background AI tasks: summaries, extraction) ──
   try {
-    const result = await runAI(MODELS.text, { messages, max_tokens: 2500 });
+    const result = await runAI(selectedModel, { messages, max_tokens: maxTokens });
 
     let finalText = result?.response || '';
     if (result?.choices && result.choices.length > 0) {

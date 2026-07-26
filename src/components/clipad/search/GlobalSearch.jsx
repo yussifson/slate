@@ -355,13 +355,13 @@ ${keywordResultsContext}
 
 Instructions:
 Be clear, direct, and concise (2-4 sentences). Focus on actionable enterprise answers.
-Wrap any internal reasoning inside <think>...</think> tags before providing your answer.
+DO NOT use slow internal reasoning or <think> tags. Keep responses instant.
 If the requested data is found, state exact details, assignees, or dates.
 DO NOT mention internal IDs (e.g. M-123, I-456, or UUIDs) in your text response. Use titles instead.
 After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>"}].`,
         },
         { role: 'user', content: `Query: "${q}"` },
-      ]);
+      ], null, { fast: true });
 
       const sourcesMatch = (raw || '').match(/SOURCES:\s*(\[.*?\])/s);
       let sources = [];
