@@ -6,7 +6,7 @@
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
-    "build": "node --max-old-space-size=16384 ./node_modules/vite/bin/vite.js build",
+    "build": "node --max-old-space-size=4096 ./node_modules/vite/bin/vite.js build",
     "lint": "eslint . --quiet",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc -p ./jsconfig.json",
@@ -14,7 +14,7 @@
     "cap:sync": "npm run build && npx cap sync",
     "cap:build": "npm run build && npx cap copy",
     "desktop:dev": "vite --mode electron",
-    "desktop:build": "node --max-old-space-size=16384 ./node_modules/vite/bin/vite.js build --base ./ && electron-builder"
+    "desktop:build": "node --max-old-space-size=4096 ./node_modules/vite/bin/vite.js build --base ./ && electron-builder"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.0",
