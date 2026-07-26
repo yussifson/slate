@@ -88,46 +88,46 @@ input, textarea, [contenteditable="true"] {
   }
 
   .dark {
-    --bg-base-rgb-dark: 11, 15, 20;
+    --bg-base-rgb-dark: 15, 20, 32;
 
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
     ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
-    /* SaaSPO Style - Main Background #0B0F14 */
-    --background: 213 29% 6%;
+    /* SaaSPO Style - Main Background #0F1420 */
+    --background: 222 36% 9.2%;
     
     /* Primary White Typography #FFFFFF */
     --foreground: 0 0% 100%;
     
-    /* Secondary Surface / Card Background #141B22 */
-    --card: 210 26% 11%;
+    /* Secondary Surface / Card Background #151c2d */
+    --card: 222 30% 13%;
     --card-foreground: 0 0% 100%;
-    --popover: 210 26% 11%;
+    --popover: 222 36% 9.2%;
     --popover-foreground: 0 0% 100%;
     
     /* Brand Green Accent #0AF395 */
     --primary: 156 92% 50%;
-    --primary-foreground: 213 29% 6%; /* Dark text on bright green */
+    --primary-foreground: 222 36% 9.2%; /* Dark text on bright green */
     
     /* Secondary Surface elements */
-    --secondary: 210 26% 11%;
+    --secondary: 222 30% 13%;
     --secondary-foreground: 0 0% 100%;
     
     /* Secondary Text #A7B0BA */
-    --muted: 210 26% 11%;
+    --muted: 222 30% 13%;
     --muted-foreground: 212 11% 69%;
     
-    /* Hover / Borders / Divider Color #1C2935 */
-    --accent: 209 31% 16%;
+    /* Hover / Borders / Divider Color #222b3e */
+    --accent: 222 25% 18%;
     --accent-foreground: 0 0% 100%;
     
     /* Destructive Accents */
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 98%;
     
-    /* Border / Divider Color #1C2935 */
-    --border: 209 31% 16%;
-    --input: 209 31% 16%;
+    /* Border / Divider Color #222b3e */
+    --border: 222 25% 18%;
+    --input: 222 25% 18%;
     --ring: 156 92% 50%;
     
     --chart-1: 156 92% 50%;
@@ -137,7 +137,7 @@ input, textarea, [contenteditable="true"] {
     --chart-5: 340 75% 55%;
     
     /* Sidebar matching the SaaSPO palette */
-    --sidebar-background: 213 29% 6%;
+    --sidebar-background: 222 36% 9.2%;
     --sidebar-foreground: 212 11% 69%;
     --sidebar-primary: 156 92% 50%;
     --sidebar-primary-foreground: 213 29% 6%;

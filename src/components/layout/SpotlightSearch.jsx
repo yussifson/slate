@@ -319,7 +319,7 @@ export default function SpotlightSearch() {
             flexDirection: "column",
             paddingBottom: "env(safe-area-inset-bottom)",
           }}
-          className="dark:bg-[#0F1420] w-full flex flex-col"
+          className="dark:bg-background w-full flex flex-col"
         >
           {/* Drag handle */}
           <div className="flex justify-center pt-3 pb-1 shrink-0">
@@ -336,7 +336,7 @@ export default function SpotlightSearch() {
               type="text"
               inputMode="search"
               placeholder="Search or ask anything…"
-              className="flex-1 bg-transparent border-0 outline-none text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-[16px] font-medium min-w-0"
+              className="flex-1 bg-transparent border-0 focus:ring-0 focus:border-0 !border-none !outline-none !ring-0 !shadow-none focus:!border-none focus:!outline-none focus:!ring-0 focus:!shadow-none text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-[16px] font-medium min-w-0"
               style={{ fontSize: 16 /* prevent iOS zoom */ }}
               value={query}
               onChange={e => setQuery(e.target.value)}
@@ -388,7 +388,7 @@ export default function SpotlightSearch() {
         }
       `}</style>
       <div
-        className="w-full max-w-[680px] flex flex-col max-h-[72vh] overflow-hidden dark:bg-[#0F1420] dark:border-white/[0.07]"
+        className="w-full max-w-[680px] flex flex-col max-h-[72vh] overflow-hidden dark:bg-background dark:border-white/[0.07]"
         style={{
           background: "rgba(255,255,255,0.97)",
           borderRadius: 20,
@@ -407,7 +407,7 @@ export default function SpotlightSearch() {
             ref={inputRef}
             type="text"
             placeholder="Search meetings, videos, decisions, or ask AI anything..."
-            className="flex-1 bg-transparent border-0 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:ring-0 font-medium min-w-0"
+            className="flex-1 bg-transparent border-0 focus:ring-0 focus:border-0 !border-none !outline-none !ring-0 !shadow-none focus:!border-none focus:!outline-none focus:!ring-0 focus:!shadow-none text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 outline-none font-medium min-w-0"
             style={{ fontSize: 16, paddingLeft: 0 }}
             value={query}
             onChange={e => setQuery(e.target.value)}
