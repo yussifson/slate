@@ -612,7 +612,7 @@ export default function IntegrationsHub() {
                               className="flex items-center gap-1.5 px-3 py-1.5 rounded-l-xl rounded-r-none bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors disabled:opacity-50 border-r border-primary/20"
                             >
                               {isSyncing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-                              {isSyncing ? 'Syncing...' : 'Sync Now'}
+                              {isSyncing ? 'Syncing...' : 'Sync'}
                             </button>
                             
                             <DropdownMenu>
@@ -776,9 +776,9 @@ export default function IntegrationsHub() {
       {/* ── Scope Selector Modal — shown BEFORE connecting any integration ─────── */}
       {scopeModal && createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl w-full max-w-2xl p-6 animate-in fade-in zoom-in-95 duration-200">
             {/* Header */}
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-5">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-xl shrink-0">
                 {scopeModal.integration?.emoji || <Plug className="w-5 h-5 text-white" />}
               </div>
@@ -790,99 +790,89 @@ export default function IntegrationsHub() {
               </div>
             </div>
 
-            {/* Scope options */}
-            <div className="space-y-3 mb-6">
+            {/* Scope options in a single row */}
+            <div className="grid grid-cols-3 gap-3 mb-5">
               {/* Personal */}
               <button
                 onClick={() => setSelectedScope('personal')}
-                className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${
+                className={`flex flex-col items-center text-center p-4 rounded-xl border-2 transition-all h-full ${
                   selectedScope === 'personal'
-                    ? 'border-violet-500 bg-violet-50 dark:bg-violet-500/10'
+                    ? 'border-violet-500 bg-violet-50/50 dark:bg-violet-500/10'
                     : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
                 }`}
               >
-                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'personal' ? 'bg-violet-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center mb-3 ${selectedScope === 'personal' ? 'bg-violet-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
                   <User className="w-4 h-4" />
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-slate-900 dark:text-white">Personal</span>
-                    <span className="text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-full">Only you</span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
-                    Only you can see and query data from this connection. Ideal for your personal GitHub, Gmail, or Notion.
-                  </p>
-                </div>
+                <span className="text-xs font-bold text-slate-900 dark:text-white mb-1">Personal</span>
+                <span className="text-[9px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-full mb-3">Only you</span>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-normal">
+                  Ideal for personal accounts. Only you can query data.
+                </p>
               </button>
 
               {/* Space-level */}
               <button
                 onClick={() => setSelectedScope('space')}
-                className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${
+                className={`flex flex-col items-center text-center p-4 rounded-xl border-2 transition-all h-full ${
                   selectedScope === 'space'
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10'
+                    ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-500/10'
                     : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
                 }`}
               >
-                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'space' ? 'bg-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center mb-3 ${selectedScope === 'space' ? 'bg-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
                   <Users className="w-4 h-4" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-slate-900 dark:text-white">Space</span>
-                    <span className="text-[10px] font-semibold bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">Space members only</span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
-                    Only members of the selected space can access this data. Perfect for team-specific repos or project boards.
-                  </p>
-                  {/* Space picker — shown only when 'space' scope is selected */}
-                  {selectedScope === 'space' && (
-                    <div className="mt-3" onClick={e => e.stopPropagation()}>
-                      {userSpaces.length > 0 ? (
-                        <select
-                          value={selectedSpaceId}
-                          onChange={e => setSelectedSpaceId(e.target.value)}
-                          className="w-full px-3 py-2 text-xs font-medium bg-white dark:bg-slate-800 border border-blue-300 dark:border-blue-600 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 dark:text-slate-100"
-                        >
-                          {userSpaces.map(s => (
-                            <option key={s.id} value={s.id}>{s.name}</option>
-                          ))}
-                        </select>
-                      ) : (
-                        <p className="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-3 py-2 rounded-lg">
-                          You are not a member of any spaces yet. Join a space first.
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
+                <span className="text-xs font-bold text-slate-900 dark:text-white mb-1">Space</span>
+                <span className="text-[9px] font-semibold bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full mb-3">Space members</span>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-normal">
+                  Ideal for team projects. Accessible to space members.
+                </p>
               </button>
 
               {/* Company-wide — admin only */}
               <button
                 onClick={() => isAdmin && setSelectedScope('company')}
-                className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${
+                disabled={!isAdmin}
+                className={`flex flex-col items-center text-center p-4 rounded-xl border-2 transition-all h-full ${
                   !isAdmin ? 'opacity-40 cursor-not-allowed' :
                   selectedScope === 'company'
-                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10'
+                    ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-500/10'
                     : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
                 }`}
               >
-                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'company' && isAdmin ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center mb-3 ${selectedScope === 'company' && isAdmin ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
                   <Globe className="w-4 h-4" />
                 </div>
-                <div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-bold text-slate-900 dark:text-white">Company-wide</span>
-                    <span className="text-[10px] font-semibold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full">Everyone</span>
-                    {!isAdmin && <span className="text-[10px] font-semibold bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-full flex items-center gap-1"><Lock className="w-2.5 h-2.5" /> Admin only</span>}
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
-                    All company members can see this. Admins use this for shared company accounts (e.g., the official GitHub org or company Gmail).
-                  </p>
-                </div>
+                <span className="text-xs font-bold text-slate-900 dark:text-white mb-1">Company-wide</span>
+                <span className="text-[9px] font-semibold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full mb-3">Everyone</span>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-normal">
+                  Admins connect shared workspaces (e.g. company org).
+                </p>
               </button>
             </div>
+
+            {/* Space Picker dropdown rendered below the cards when Space is selected */}
+            {selectedScope === 'space' && (
+              <div className="mb-5 p-3 rounded-xl bg-blue-50/30 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50">
+                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-2">Select Space</label>
+                {userSpaces.length > 0 ? (
+                  <select
+                    value={selectedSpaceId}
+                    onChange={e => setSelectedSpaceId(e.target.value)}
+                    className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 dark:text-slate-100"
+                  >
+                    {userSpaces.map(s => (
+                      <option key={s.id} value={s.id}>{s.name}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-3 py-2 rounded-lg">
+                    You are not a member of any spaces. Join a space first.
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Footer info note */}
             <div className="flex items-start gap-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 mb-5">
@@ -890,7 +880,7 @@ export default function IntegrationsHub() {
               <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
                 {selectedScope === 'personal' && 'No one else will ever see data from this connection — not even admins.'}
                 {selectedScope === 'space' && `Only members of "${userSpaces.find(s => s.id === selectedSpaceId)?.name || 'the selected space'}" will see this data. Members of other spaces cannot access it.`}
-                {selectedScope === 'company' && 'All company members will be able to query data from this integration via OrbitFlow and Spotlight.'}
+                {selectedScope === 'company' && 'All company members will be able to query data from this integration via Orbit and Spotlight.'}
               </p>
             </div>
 
@@ -905,9 +895,9 @@ export default function IntegrationsHub() {
               <button
                 onClick={confirmConnect}
                 disabled={selectedScope === 'space' && (!selectedSpaceId || userSpaces.length === 0)}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-sm font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-violet-500/20"
+                className="flex-1 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-sm font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10"
               >
-                <Plug className="w-4 h-4" /> Continue
+                <Plug className="w-4 h-4" /> Connect
               </button>
             </div>
           </div>
