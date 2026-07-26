@@ -427,7 +427,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
       >
         {/* Gradient Search Input Box */}
         <div className="bg-gradient-to-r from-purple-500 via-pink-400 to-amber-500 p-[1.5px] rounded-xl shadow-lg relative z-20">
-          <div className="bg-white dark:bg-background rounded-[10px] flex items-center px-4 py-3 h-[52px]">
+          <div className="bg-white dark:bg-slate-900 rounded-[10px] flex items-center px-4 py-3 h-[52px]">
             <Search className="w-5 h-5 text-slate-400 mr-3 shrink-0" />
             <input
               ref={inputRef}
@@ -435,7 +435,8 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Tap to start search..."
-              className="flex-1 bg-transparent border-0 focus:ring-0 focus:border-0 !border-none !outline-none !ring-0 !shadow-none focus:!border-none focus:!outline-none focus:!ring-0 focus:!shadow-none text-slate-800 dark:text-slate-100 text-[16px] font-medium placeholder:text-slate-400 min-w-0"
+              className="flex-1 bg-transparent text-slate-800 dark:text-slate-100 text-[16px] font-medium placeholder:text-slate-400 min-w-0 border-0 outline-none ring-0 shadow-none focus:border-0 focus:outline-none focus:ring-0 focus:shadow-none"
+              style={{ border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent' }}
             />
             {query || isSearching ? (
               <button onClick={() => { setQuery(''); setResults([]); setAiAnswer(''); setHasSearched(false); inputRef.current?.focus(); }} className="text-slate-400 hover:text-slate-600 ml-2">
