@@ -1,7 +1,6 @@
 -- ═══════════════════════════════════════════════════════════════════════════
 --  INTEGRATION KNOWLEDGE — fixes the uuid/text mismatch safely
---  If the table was already created with uuid columns in a previous run,
---  this script will forcefully cast them to text so the policies work.
+--  Drops old foreign keys, alters columns to text, recreates policies.
 -- ═══════════════════════════════════════════════════════════════════════════
 
 -- 1. Create table (will preserve existing types if already created)
@@ -26,7 +25,11 @@ CREATE TABLE IF NOT EXISTS public.integration_knowledge (
   updated_at           timestamptz NOT NULL DEFAULT now()
 );
 
--- 2. Force existing columns to be TEXT (this fixes the error if they were previously created as UUID)
+-- 2. Drop old constraints (from V1) that block type conversion
+ALTER TABLE public.integration_knowledge DROP CONSTRAINT IF EXISTS integration_knowledge_company_id_fkey;
+ALTER TABLE public.integration_knowledge DROP CONSTRAINT IF EXISTS integration_knowledge_space_id_fkey;
+
+-- 3. Force existing columns to be TEXT
 ALTER TABLE public.integration_knowledge ALTER COLUMN company_id TYPE text USING company_id::text;
 ALTER TABLE public.integration_knowledge ALTER COLUMN space_id TYPE text USING space_id::text;
 ALTER TABLE public.integration_knowledge ALTER COLUMN connected_by_user_id TYPE text USING connected_by_user_id::text;
