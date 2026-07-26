@@ -604,6 +604,7 @@ export default function IntegrationsHub() {
                   <div className="flex items-center gap-2 mt-auto pt-2 border-t border-border">
                     {isAllowedToConnect ? (
                       isConnected ? (
+                        <>
                           <div className="flex items-center -space-x-px">
                             <button
                               onClick={() => handleSyncNow(integration, false)}
