@@ -151,6 +151,25 @@ serve(async (req) => {
     if (defaultToken && defaultAccountId) {
       credentials.push({ token: defaultToken, accountId: defaultAccountId });
     }
+    // Support a single JSON string CLOUDFLARE_ROTATING_ACCOUNTS to bypass Supabase's 100-secret limit
+    // Format: [{"token":"...","accountId":"..."}, ...]
+    const rotatingAccountsJson = Deno.env.get("CLOUDFLARE_ROTATING_ACCOUNTS");
+    if (rotatingAccountsJson) {
+      try {
+        const parsed = JSON.parse(rotatingAccountsJson);
+        if (Array.isArray(parsed)) {
+          for (const item of parsed) {
+            if (item.token && item.accountId) {
+              credentials.push({ token: item.token, accountId: item.accountId });
+            }
+          }
+        }
+      } catch (err) {
+        console.error("[AI Proxy] Failed to parse CLOUDFLARE_ROTATING_ACCOUNTS JSON:", (err as Error).message);
+      }
+    }
+
+    // Keep backwards compatibility with individual env vars
     for (let i = 2; i <= 100; i++) {
       const token = Deno.env.get(`CLOUDFLARE_API_TOKEN_${i}`);
       const accountId = Deno.env.get(`CLOUDFLARE_ACCOUNT_ID_${i}`) || defaultAccountId;
