@@ -395,6 +395,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  { label: "Board", path: "/board", icon: "LayoutGrid"},
  { label: "Feature Insider", path: "/feature-insider", icon: "FlaskConical"},
  { label: "Feature Vault", path: "/feature-vault", icon: "Archive"},
+ { label: "Search & Intelligence", icon: "Search", path: "/search"},
  { label: "Integrations", path: "/integrations", icon: "Plug"},
  { label: "Settings", path: "/settings", icon: "Settings"}
  ];

@@ -637,6 +637,13 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
                 <Sparkles className="w-3 h-3" /> Ask AI
               </button>
             )}
+            <button
+              onClick={() => { setIsOpen(false); navigate(`/search?q=${encodeURIComponent(query)}`); }}
+              title="Expand to Full-Page Search Hub"
+              className="shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" />
+            </button>
             {isSynthesizing && (
               <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/50 px-2 py-1 rounded-lg border border-violet-200 dark:border-violet-700 animate-pulse">
                 <Sparkles className="w-3 h-3 animate-spin" /> AI thinking…

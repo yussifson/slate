@@ -44,6 +44,7 @@ const AuditMonitor = React.lazy(() => import('@/pages/clipad/admin/AuditMonitor'
 const ClipadLiveSupport = React.lazy(() => import('@/pages/clipad/admin/LiveSupport'));
 const AdminAI = React.lazy(() => import('@/pages/clipad/admin/AdminAI'));
 const IntegrationsHub = React.lazy(() => import('@/pages/clipad/IntegrationsHub'));
+const SearchHub = React.lazy(() => import('@/pages/clipad/SearchHub'));
 
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
@@ -901,6 +902,7 @@ function PlatformRoutes() {
         <Route path="/clipad/save-meeting/:id" element={<SaveMeetingPage />} />
         <Route path="/clipad/settings" element={<CliPadSettings />} />
         <Route path="/clipad/integrations" element={<IntegrationsHub />} />
+        <Route path="/clipad/search" element={<SearchHub />} />
         <Route path="/clipad/analytics" element={<VideoAnalytics />} />
         <Route path="/clipad/enterprise" element={<CliPadEnterpriseDashboard />} />
         <Route path="/clipad/health" element={<KnowledgeHealth />} />
@@ -1449,6 +1451,7 @@ function App() {
                           <Route path="/save-meeting/:id" element={<SaveMeetingPage />} />
                           <Route path="/settings" element={<CliPadSettings />} />
                           <Route path="/integrations" element={<IntegrationsHub />} />
+                          <Route path="/search" element={<SearchHub />} />
                           <Route path="/support" element={<CliPadSupport />} />
                           <Route path="/chat" element={<ClipadChat />} />
                           <Route path="/chat/:roomId" element={<ClipadChat />} />
