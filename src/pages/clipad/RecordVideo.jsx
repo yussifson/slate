@@ -961,8 +961,9 @@ export default function RecordVideo() {
       wsIsReconnectingRef.current = false;
       wsEndRequestedRef.current = false;
 
-      // WebSocket live streamer disabled to eliminate 503 connection errors; relies on Supabase Storage TUS/Direct upload.
-      const wsUrl = null;
+      // WebSocket live streamer (Render) with HTTP keep-alive wake-up ping
+      const wsUrl = 'wss://slate-2fli.onrender.com';
+      fetch('https://slate-2fli.onrender.com/health').catch(() => {});
 
       // ── Application-level heartbeat to keep Render from sleeping ──
       let wsPingInterval = null;
@@ -995,7 +996,6 @@ export default function RecordVideo() {
       };
 
       const connectWS = async (isReconnect = false) => {
-        if (!wsUrl) return;
         const ws = new WebSocket(wsUrl);
         wsRef.current = ws;
 
@@ -1369,7 +1369,7 @@ export default function RecordVideo() {
             contentType: 'video/webm',
             cacheControl: '3600',
           },
-          chunkSize: 4 * 1024 * 1024, // 4MB per chunk payload
+          chunkSize: 2 * 1024 * 1024, // 2MB per chunk payload for multi-gigabyte upload reliability
           onError: function (error) {
              reject(error);
           },
