@@ -1,8 +1,10 @@
 -- ═══════════════════════════════════════════════════════════════════════════
---  INTEGRATION KNOWLEDGE — fully type-safe, run this in Supabase SQL editor
---  Uses text for IDs and auth.uid()::text everywhere to avoid operator errors.
+--  INTEGRATION KNOWLEDGE — fixes the uuid/text mismatch safely
+--  If the table was already created with uuid columns in a previous run,
+--  this script will forcefully cast them to text so the policies work.
 -- ═══════════════════════════════════════════════════════════════════════════
 
+-- 1. Create table (will preserve existing types if already created)
 CREATE TABLE IF NOT EXISTS public.integration_knowledge (
   id                   uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id           text        NOT NULL,
@@ -23,6 +25,11 @@ CREATE TABLE IF NOT EXISTS public.integration_knowledge (
   created_at           timestamptz NOT NULL DEFAULT now(),
   updated_at           timestamptz NOT NULL DEFAULT now()
 );
+
+-- 2. Force existing columns to be TEXT (this fixes the error if they were previously created as UUID)
+ALTER TABLE public.integration_knowledge ALTER COLUMN company_id TYPE text USING company_id::text;
+ALTER TABLE public.integration_knowledge ALTER COLUMN space_id TYPE text USING space_id::text;
+ALTER TABLE public.integration_knowledge ALTER COLUMN connected_by_user_id TYPE text USING connected_by_user_id::text;
 
 -- Indexes
 CREATE INDEX IF NOT EXISTS idx_integration_knowledge_company  ON public.integration_knowledge (company_id);
@@ -48,8 +55,8 @@ CREATE POLICY "users_see_own" ON public.integration_knowledge
 CREATE POLICY "users_see_company" ON public.integration_knowledge
   FOR SELECT USING (
     visibility = 'company' AND
-    company_id::text IN (
-      SELECT company_id::text FROM public.profiles WHERE id::text = auth.uid()::text
+    company_id = ANY(
+      ARRAY(SELECT company_id::text FROM public.profiles WHERE id::text = auth.uid()::text)
     )
   );
 
@@ -57,8 +64,8 @@ CREATE POLICY "users_see_company" ON public.integration_knowledge
 CREATE POLICY "users_see_space" ON public.integration_knowledge
   FOR SELECT USING (
     visibility = 'space' AND
-    space_id::text IN (
-      SELECT space_id::text FROM public.clipad_space_members WHERE user_id::text = auth.uid()::text
+    space_id = ANY(
+      ARRAY(SELECT space_id::text FROM public.clipad_space_members WHERE user_id::text = auth.uid()::text)
     )
   );
 
@@ -72,6 +79,10 @@ CREATE POLICY "users_manage_own" ON public.integration_knowledge
 ALTER TABLE public.clipad_imported_knowledge
   ADD COLUMN IF NOT EXISTS connected_by_user_id text,
   ADD COLUMN IF NOT EXISTS visibility           text NOT NULL DEFAULT 'company';
+
+-- Also force these to text just in case they were created as UUID previously
+ALTER TABLE public.clipad_imported_knowledge ALTER COLUMN connected_by_user_id TYPE text USING connected_by_user_id::text;
+ALTER TABLE public.clipad_imported_knowledge ALTER COLUMN visibility TYPE text USING visibility::text;
 
 UPDATE public.clipad_imported_knowledge
   SET visibility = 'company'
