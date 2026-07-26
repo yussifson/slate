@@ -8,7 +8,8 @@ import {
   CheckCircle2, XCircle, RefreshCw, Plug, Unplug, ExternalLink,
   Loader2, Clock, FileText, MessageSquare, Video, Github,
   AlertCircle, Zap, Search, Filter, ArrowLeft, BarChart2, ChevronDown, Key, Eye, EyeOff,
-  Settings, FolderOpen, Hash, Sliders, Network, Scale, Link, CheckSquare
+  Settings, FolderOpen, Hash, Sliders, Network, Scale, Link, CheckSquare,
+  Lock, Globe, Users, User
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -45,6 +46,15 @@ export default function IntegrationsHub() {
   const [apiKeyModal, setApiKeyModal] = useState(null); // { provider, integration, fields }
   const [configModal, setConfigModal] = useState(null); // { integration, conn }
 
+  // ── Visibility scope selector state ──────────────────────────────────────────
+  const [scopeModal, setScopeModal] = useState(null); // { integration } — pending connect
+  const [selectedScope, setSelectedScope] = useState('personal'); // 'personal' | 'space' | 'company'
+  const [selectedSpaceId, setSelectedSpaceId] = useState(''); // when scope='space'
+  const [userSpaces, setUserSpaces] = useState([]); // spaces this user belongs to
+
+  const userRole = user?.role || user?.user_metadata?.role || 'member';
+  const isAdmin = ['super_admin', 'admin'].includes(userRole);
+
   // Handle OAuth callback status
   useEffect(() => {
     const status = searchParams.get('status');
@@ -69,14 +79,34 @@ export default function IntegrationsHub() {
 
   const loadConnected = useCallback(async () => {
     if (!companyId) return;
+    // Load only integrations visible to this user (RLS will enforce scoping once migration applied)
     const { data } = await supabase.from('clipad_integrations').select('*').eq('company_id', companyId);
     if (data) {
       const map = {};
-      data.forEach(row => { map[row.provider] = row; });
+      // Key by provider — personal integrations keyed as `${provider}_personal_${userId}`
+      data.forEach(row => {
+        const key = row.visibility === 'personal' && row.connected_by_user_id !== user?.id
+          ? null  // skip other people's personal integrations
+          : row.provider;
+        if (key) map[key] = row;
+      });
       setConnected(map);
     }
     setLoading(false);
-  }, [companyId]);
+  }, [companyId, user?.id]);
+
+  // Load spaces this user belongs to (for the space scope selector)
+  const loadUserSpaces = useCallback(async () => {
+    if (!user?.id) return;
+    try {
+      const { data } = await supabase
+        .from('clipad_space_members')
+        .select('space_id, clipad_spaces(id, name)')
+        .eq('user_id', user.id)
+        .limit(30);
+      setUserSpaces((data || []).map(m => ({ id: m.space_id, name: m.clipad_spaces?.name || 'Unnamed Space' })));
+    } catch { /* ignore */ }
+  }, [user?.id]);
 
   const loadKnowledge = useCallback(async () => {
     if (!companyId) return;
@@ -92,15 +122,35 @@ export default function IntegrationsHub() {
   useEffect(() => {
     loadConnected();
     loadKnowledge();
-  }, [loadConnected, loadKnowledge]);
+    loadUserSpaces();
+  }, [loadConnected, loadKnowledge, loadUserSpaces]);
 
+  // ── Open scope selector before connecting ────────────────────────────────────
   const handleConnect = (integration) => {
     if (!companyId) {
-      toast({ title: 'Not authorized', description: 'You must be an admin to connect integrations.', variant: 'destructive' });
+      toast({ title: 'Not authorized', description: 'You must belong to a company to connect integrations.', variant: 'destructive' });
       return;
     }
+    // Default scope based on role: admins default to 'company', others to 'personal'
+    setSelectedScope(isAdmin ? 'company' : 'personal');
+    setSelectedSpaceId(userSpaces[0]?.id || '');
+    setScopeModal({ integration });
+  };
+
+  // ── Actually fire the connection after scope is chosen ───────────────────────
+  const confirmConnect = () => {
+    const { integration } = scopeModal;
+    setScopeModal(null);
+
+    // Company-wide: admin only guard
+    if (selectedScope === 'company' && !isAdmin) {
+      toast({ title: 'Permission denied', description: 'Only admins can create company-wide integrations.', variant: 'destructive' });
+      return;
+    }
+
     const returnUrl = encodeURIComponent(window.location.href.split('?')[0]);
-    const oauthUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/oauth-init?provider=${integration.provider}&company_id=${companyId}&user_id=${user.id}&integration_id=${integration.id}&return_url=${returnUrl}`;
+    const spaceParam = selectedScope === 'space' && selectedSpaceId ? `&space_id=${selectedSpaceId}` : '';
+    const oauthUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/oauth-init?provider=${integration.provider}&company_id=${companyId}&user_id=${user.id}&integration_id=${integration.id}&visibility=${selectedScope}${spaceParam}&return_url=${returnUrl}`;
     window.location.href = oauthUrl;
   };
 
@@ -196,19 +246,25 @@ export default function IntegrationsHub() {
   const handleSaveApiKey = async (provider, keyData) => {
     if (!companyId) return;
     try {
-      // Avoid upsert onConflict errors by doing a select first
       const { data: existing } = await supabase
         .from('clipad_integrations')
         .select('id')
         .eq('company_id', companyId)
         .eq('provider', provider)
+        // For personal integrations, scope to this user
+        .eq('connected_by_user_id', user.id)
         .maybeSingle();
+
+      const spaceIdForPayload = selectedScope === 'space' ? (selectedSpaceId || null) : null;
 
       const payload = {
         company_id: companyId,
         provider: provider,
         status: 'active',
         access_token: keyData.api_key || keyData.token || '',
+        connected_by_user_id: user.id,
+        visibility: selectedScope || 'personal',
+        space_id: spaceIdForPayload,
         updated_at: new Date().toISOString(),
       };
 
@@ -222,7 +278,7 @@ export default function IntegrationsHub() {
       }
 
       if (error) throw error;
-      toast({ title: '✅ Connected!', description: `${provider.replace(/_/g, ' ')} connected successfully.` });
+      toast({ title: '✅ Connected!', description: `${provider.replace(/_/g, ' ')} connected (${selectedScope === 'company' ? 'company-wide' : selectedScope === 'space' ? 'space-level' : 'personal'}).` });
       setApiKeyModal(null);
       await loadConnected();
     } catch (e) {
@@ -611,6 +667,148 @@ export default function IntegrationsHub() {
           </div>
           </div>
         </div>
+      )}
+
+      {/* ── Scope Selector Modal — shown BEFORE connecting any integration ─────── */}
+      {scopeModal && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-xl shrink-0">
+                {scopeModal.integration?.emoji || <Plug className="w-5 h-5 text-white" />}
+              </div>
+              <div>
+                <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                  Connect {scopeModal.integration?.name}
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Choose who can see and use this integration</p>
+              </div>
+            </div>
+
+            {/* Scope options */}
+            <div className="space-y-3 mb-6">
+              {/* Personal */}
+              <button
+                onClick={() => setSelectedScope('personal')}
+                className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${
+                  selectedScope === 'personal'
+                    ? 'border-violet-500 bg-violet-50 dark:bg-violet-500/10'
+                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                }`}
+              >
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'personal' ? 'bg-violet-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
+                  <User className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-slate-900 dark:text-white">Personal</span>
+                    <span className="text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-full">Only you</span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                    Only you can see and query data from this connection. Ideal for your personal GitHub, Gmail, or Notion.
+                  </p>
+                </div>
+              </button>
+
+              {/* Space-level */}
+              <button
+                onClick={() => setSelectedScope('space')}
+                className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${
+                  selectedScope === 'space'
+                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10'
+                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                }`}
+              >
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'space' ? 'bg-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
+                  <Users className="w-4 h-4" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-slate-900 dark:text-white">Space</span>
+                    <span className="text-[10px] font-semibold bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">Space members only</span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                    Only members of the selected space can access this data. Perfect for team-specific repos or project boards.
+                  </p>
+                  {/* Space picker — shown only when 'space' scope is selected */}
+                  {selectedScope === 'space' && (
+                    <div className="mt-3" onClick={e => e.stopPropagation()}>
+                      {userSpaces.length > 0 ? (
+                        <select
+                          value={selectedSpaceId}
+                          onChange={e => setSelectedSpaceId(e.target.value)}
+                          className="w-full px-3 py-2 text-xs font-medium bg-white dark:bg-slate-800 border border-blue-300 dark:border-blue-600 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 dark:text-slate-100"
+                        >
+                          {userSpaces.map(s => (
+                            <option key={s.id} value={s.id}>{s.name}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <p className="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-3 py-2 rounded-lg">
+                          You are not a member of any spaces yet. Join a space first.
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </button>
+
+              {/* Company-wide — admin only */}
+              <button
+                onClick={() => isAdmin && setSelectedScope('company')}
+                className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${
+                  !isAdmin ? 'opacity-40 cursor-not-allowed' :
+                  selectedScope === 'company'
+                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10'
+                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                }`}
+              >
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'company' && isAdmin ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
+                  <Globe className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-bold text-slate-900 dark:text-white">Company-wide</span>
+                    <span className="text-[10px] font-semibold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full">Everyone</span>
+                    {!isAdmin && <span className="text-[10px] font-semibold bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-full flex items-center gap-1"><Lock className="w-2.5 h-2.5" /> Admin only</span>}
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                    All company members can see this. Admins use this for shared company accounts (e.g., the official GitHub org or company Gmail).
+                  </p>
+                </div>
+              </button>
+            </div>
+
+            {/* Footer info note */}
+            <div className="flex items-start gap-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 mb-5">
+              <Lock className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" />
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                {selectedScope === 'personal' && 'No one else will ever see data from this connection — not even admins.'}
+                {selectedScope === 'space' && `Only members of "${userSpaces.find(s => s.id === selectedSpaceId)?.name || 'the selected space'}" will see this data. Members of other spaces cannot access it.`}
+                {selectedScope === 'company' && 'All company members will be able to query data from this integration via OrbitFlow and Spotlight.'}
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setScopeModal(null)}
+                className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmConnect}
+                disabled={selectedScope === 'space' && (!selectedSpaceId || userSpaces.length === 0)}
+                className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-sm font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-violet-500/20"
+              >
+                <Plug className="w-4 h-4" /> Continue
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
 
       {/* API Key Modal */}

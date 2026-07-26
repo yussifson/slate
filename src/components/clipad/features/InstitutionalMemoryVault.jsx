@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Database, Search, Bot, Lock, ArrowRight, Loader2, AlertCircle, Link, Sparkles } from 'lucide-react';
 import { generateText } from '@/lib/cloudflareAI';
+import { parseThinking } from '@/components/chat/ThinkingAccordion';
 import { useNavigate } from 'react-router-dom';
 
 export default function InstitutionalMemoryVault({ workspaceId }) {
@@ -169,7 +170,9 @@ ${knowledgeContext}`
         rawResponse = rawResponse.replace(/SOURCES:\s*\[.*?\]/s, '').trim();
       }
 
-      setResponse(rawResponse);
+      // Strip all <think> blocks / monologue reasoning before showing to user
+      const { content: cleanResponse } = parseThinking(rawResponse);
+      setResponse(cleanResponse || rawResponse);
       setCitations(extractedCitations);
     } catch (err) {
       console.error('Knowledge Graph error:', err);

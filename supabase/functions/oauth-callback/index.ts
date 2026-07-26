@@ -114,7 +114,7 @@ serve(async (req) => {
 
     // Decode state
     const stateObj = JSON.parse(atob(state))
-    const { company_id, provider, integration_id, return_url, code_verifier } = stateObj
+    const { company_id, provider, integration_id, user_id, visibility, space_id, return_url, code_verifier } = stateObj
     const fallbackUrl = return_url || `${appUrl}/clipad/settings`
 
     if (!company_id || !provider) {
@@ -452,8 +452,16 @@ serve(async (req) => {
         external_account_name: externalAccountName,
         status: 'active',
         sync_error: null,
+        // Visibility scoping — saved from the user's scope selection
+        connected_by_user_id: user_id || null,
+        visibility: visibility || 'company',
+        space_id: space_id || null,
         updated_at: new Date().toISOString(),
-      }, { onConflict: 'company_id,provider' })
+      }, {
+        // Unique per company+provider+user: allows same integration at different scopes
+        onConflict: 'company_id,provider',
+        ignoreDuplicates: false,
+      })
       .select()
       .single()
 

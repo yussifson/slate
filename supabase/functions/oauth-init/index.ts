@@ -8,6 +8,9 @@ serve(async (req) => {
     const provider = url.searchParams.get('provider')
     const company_id = url.searchParams.get('company_id')
     const integration_id = url.searchParams.get('integration_id')
+    const user_id = url.searchParams.get('user_id')
+    const visibility = url.searchParams.get('visibility') || 'company'
+    const space_id = url.searchParams.get('space_id') || null
     const return_url = url.searchParams.get('return_url') || `${Deno.env.get('APP_URL') || 'http://localhost:3000'}/clipad/settings`
 
     if (!provider || !company_id) {
@@ -16,7 +19,7 @@ serve(async (req) => {
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || url.origin
     const redirectUri = Deno.env.get('OAUTH_REDIRECT_URI') || `${supabaseUrl}/functions/v1/oauth-callback`
-    const state = btoa(JSON.stringify({ company_id, provider, integration_id, return_url }))
+    const state = btoa(JSON.stringify({ company_id, provider, integration_id, user_id, visibility, space_id, return_url }))
 
     let authUrl = ''
 
