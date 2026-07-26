@@ -6,57 +6,75 @@ const corsHeaders = {
   "Access-Control-Expose-Headers": "content-type",
 };
 
-serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
+// ── Groq provider (free, fast, generous limits) ──────────────────────────────
+// Sign up at console.groq.com → create API key → add as GROQ_API_KEY secret
+// Supported models: llama-3.3-70b-versatile, llama-3.1-8b-instant, mixtral-8x7b-32768
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_MODEL = "llama-3.3-70b-versatile"; // fast, free, very capable
 
+// ── Cloudflare fallback models (free tier, ~10k neurons/day per account) ──────
+const CF_FREE_MODELS = [
+  "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "@cf/meta/llama-3.1-8b-instruct",
+];
+
+// ── Try Groq ─────────────────────────────────────────────────────────────────
+async function tryGroq(
+  groqApiKey: string,
+  messages: unknown[],
+  stream: boolean,
+): Promise<Response | null> {
+  console.log("[AI Proxy] Trying Groq provider...");
   try {
-    const { model, payload, stream = false } = await req.json();
+    const resp = await fetch(GROQ_API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${groqApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages,
+        max_tokens: 2500,
+        stream,
+      }),
+    });
 
-    if (!model || !payload) {
-      throw new Error("model and payload are required");
+    if (resp.ok) {
+      console.log("[AI Proxy] ✅ Groq succeeded");
+      return resp;
     }
 
-    const credentials = [];
-    
-    const defaultToken = Deno.env.get('CLOUDFLARE_API_TOKEN');
-    const defaultAccountId = Deno.env.get('CLOUDFLARE_ACCOUNT_ID');
-    if (defaultToken && defaultAccountId) {
-      credentials.push({ token: defaultToken, accountId: defaultAccountId });
-    }
+    const errText = await resp.text();
+    console.warn(`[AI Proxy] Groq failed: ${resp.status} - ${errText.substring(0, 200)}`);
+    return null;
+  } catch (e) {
+    console.warn("[AI Proxy] Groq error:", (e as Error).message);
+    return null;
+  }
+}
 
-    for (let i = 2; i <= 10; i++) {
-      const token = Deno.env.get(`CLOUDFLARE_API_TOKEN_${i}`);
-      // Fallback to default account ID if they only supplied a new token but same account
-      const accountId = Deno.env.get(`CLOUDFLARE_ACCOUNT_ID_${i}`) || defaultAccountId;
-      if (token && accountId) {
-        credentials.push({ token, accountId });
-      }
-    }
+// ── Try Cloudflare accounts with a given model ────────────────────────────────
+async function tryCloudflare(
+  credentials: { token: string; accountId: string }[],
+  model: string,
+  payload: Record<string, unknown>,
+  stream: boolean,
+): Promise<Response | null> {
+  for (let i = 0; i < credentials.length; i++) {
+    const { token, accountId } = credentials[i];
 
-    if (credentials.length === 0) {
-      throw new Error("Cloudflare credentials not configured");
-    }
+    // Chat models use OpenAI-compatible endpoint
+    const isChatModel = model.includes("kimi") || model.includes("llama") || model.includes("mistral");
+    const url = isChatModel
+      ? `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/v1/chat/completions`
+      : `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
 
-    console.log(`[AI Proxy] Starting request with model=${model}, accounts available=${credentials.length}`);
+    const requestPayload = isChatModel ? { ...payload, model } : payload;
 
-    const cfPayload = stream ? { ...payload, stream: true } : payload;
-    let lastError = "Unknown error";
-    const errors: string[] = [];
+    console.log(`[AI Proxy] CF model=${model} account ${i + 1}/${credentials.length}`);
 
-    for (let i = 0; i < credentials.length; i++) {
-      const { token, accountId } = credentials[i];
-      // kimi and llama models use the OpenAI-compatible chat completions endpoint
-      const isChatModel = model.includes('kimi') || model.includes('llama') || model.includes('mistral');
-      const url = isChatModel
-        ? `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/v1/chat/completions`
-        : `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
-      
-      const requestPayload = isChatModel ? { ...cfPayload, model } : cfPayload;
-
-      console.log(`[AI Proxy] Trying account ${i + 1}/${credentials.length}, accountId=${accountId.substring(0, 8)}...`);
-
+    try {
       const resp = await fetch(url, {
         method: "POST",
         headers: {
@@ -66,83 +84,131 @@ serve(async (req) => {
         body: JSON.stringify(requestPayload),
       });
 
-      if (!resp.ok) {
-        const errText = await resp.text();
-        lastError = `Account ${i + 1} (${resp.status}): ${errText}`;
-        errors.push(lastError);
-        console.warn(`[AI Proxy] Account ${i + 1} failed: ${resp.status}`);
-        
-        // 402 = Insufficient balance / not on paid plan — rotate to next account
-        // 429 = Rate limit exceeded — rotate to next account
-        // 403 = Forbidden / out of credits — rotate to next account
-        // 401 = Invalid token — rotate to next account
-        // 5xx = Server error — rotate to next account
-        if (resp.status === 402 || resp.status === 429 || resp.status === 403 ||
-            resp.status === 401 || resp.status >= 500) {
-          continue;
-        }
+      if (resp.ok) {
+        console.log(`[AI Proxy] ✅ CF account ${i + 1} succeeded with model=${model}`);
+        return resp;
+      }
 
-        // 400 can mean: bad payload (stop) OR account-level model restriction (rotate).
-        // We detect account-restriction by checking the error body.
-        if (resp.status === 400) {
-          let errBody: any = {};
-          try { errBody = JSON.parse(errText); } catch (_) {}
-          const errMsg: string = (errBody?.errors?.[0]?.message || errText).toLowerCase();
-          // If it's clearly a model/account restriction, rotate. Otherwise stop.
-          const isAccountRestriction = errMsg.includes('insufficient') || 
-            errMsg.includes('balance') || errMsg.includes('upgrade') ||
-            errMsg.includes('gateway') || errMsg.includes('byok') ||
-            errMsg.includes('not authorized') || errMsg.includes('unauthorized') ||
-            errMsg.includes('model') || errMsg.includes('access') ||
-            errMsg.includes('quota') || errMsg.includes('limit');
-          if (isAccountRestriction) {
-            console.warn(`[AI Proxy] Account ${i + 1} has model/plan restriction, rotating...`);
-            continue;
-          }
-          // True bad payload — don't rotate, throw immediately
-          throw new Error(lastError);
-        }
+      const errText = await resp.text();
+      console.warn(`[AI Proxy] CF account ${i + 1} failed: ${resp.status}`);
 
-        // 404 = Model not found on this account — rotate
-        if (resp.status === 404) {
-          continue;
-        }
-
-        // For any other unexpected status, rotate
+      // Always rotate on these — they are account/plan/quota issues
+      if ([401, 402, 403, 404, 429].includes(resp.status) || resp.status >= 500) {
         continue;
       }
 
-      // ── Streaming mode: pipe the Cloudflare SSE response directly to the client ──
-      if (stream && resp.body) {
-        return new Response(resp.body, {
-          headers: {
-            ...corsHeaders,
-            "Content-Type": "text/event-stream",
-            "Cache-Control": "no-cache",
-            "X-Accel-Buffering": "no",
-          },
-        });
+      // For 400, check if it's a plan restriction vs bad payload
+      if (resp.status === 400) {
+        let errBody: Record<string, unknown> = {};
+        try { errBody = JSON.parse(errText); } catch (_) { /* ignore */ }
+        const msg: string = ((errBody?.errors as Array<{message: string}>)?.[0]?.message || errText).toLowerCase();
+        const isPlanRestriction = msg.includes("insufficient") || msg.includes("balance") ||
+          msg.includes("upgrade") || msg.includes("byok") || msg.includes("gateway") ||
+          msg.includes("access") || msg.includes("quota") || msg.includes("limit");
+        if (isPlanRestriction) { continue; }
+        // Genuine bad payload — stop
+        return null;
       }
 
-      // ── Non-streaming mode: return full JSON response ──
-      const data = await resp.json();
+      continue;
+    } catch (e) {
+      console.warn(`[AI Proxy] CF account ${i + 1} fetch error:`, (e as Error).message);
+      continue;
+    }
+  }
 
-      return new Response(JSON.stringify(data), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+  return null;
+}
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  try {
+    const { model, payload, stream = false } = await req.json();
+
+    if (!model || !payload) {
+      return new Response(
+        JSON.stringify({ success: false, error: "model and payload are required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    const messages = payload.messages || [];
+
+    // ── Build Cloudflare credentials ──
+    const credentials: { token: string; accountId: string }[] = [];
+    const defaultToken = Deno.env.get("CLOUDFLARE_API_TOKEN");
+    const defaultAccountId = Deno.env.get("CLOUDFLARE_ACCOUNT_ID");
+    if (defaultToken && defaultAccountId) {
+      credentials.push({ token: defaultToken, accountId: defaultAccountId });
+    }
+    for (let i = 2; i <= 10; i++) {
+      const token = Deno.env.get(`CLOUDFLARE_API_TOKEN_${i}`);
+      const accountId = Deno.env.get(`CLOUDFLARE_ACCOUNT_ID_${i}`) || defaultAccountId;
+      if (token && accountId) credentials.push({ token, accountId });
+    }
+
+    const groqApiKey = Deno.env.get("GROQ_API_KEY");
+    const cfPayload = stream ? { ...payload, stream: true } : payload;
+
+    console.log(`[AI Proxy] Request model=${model}, stream=${stream}, cf_accounts=${credentials.length}, groq=${!!groqApiKey}`);
+
+    let successResp: Response | null = null;
+
+    // ── Strategy 1: Try Groq first (free, fast, reliable) ──
+    if (groqApiKey) {
+      successResp = await tryGroq(groqApiKey, messages, stream);
+    }
+
+    // ── Strategy 2: Try Cloudflare with the requested model ──
+    if (!successResp && credentials.length > 0) {
+      successResp = await tryCloudflare(credentials, model, cfPayload, stream);
+    }
+
+    // ── Strategy 3: Try Cloudflare free fallback models ──
+    if (!successResp && credentials.length > 0) {
+      for (const fallbackModel of CF_FREE_MODELS) {
+        console.warn(`[AI Proxy] Trying CF free fallback: ${fallbackModel}`);
+        successResp = await tryCloudflare(credentials, fallbackModel, cfPayload, stream);
+        if (successResp) break;
+      }
+    }
+
+    if (!successResp) {
+      const hint = !groqApiKey
+        ? " TIP: Add GROQ_API_KEY secret for reliable free AI — see console.groq.com"
+        : "";
+      return new Response(
+        JSON.stringify({ success: false, error: `All AI providers exhausted.${hint}` }),
+        { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    // ── Streaming response ──
+    if (stream && successResp.body) {
+      return new Response(successResp.body, {
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          "X-Accel-Buffering": "no",
+        },
       });
     }
 
-    // If we exhaust all accounts and none succeeded
-    console.error(`[AI Proxy] All ${credentials.length} accounts failed. Errors:`, errors);
-    const errorObj = new Error(`All ${credentials.length} accounts failed. Last error: ${lastError}`);
-    (errorObj as any).status = 503; // Service Unavailable
-    throw errorObj;
-
-  } catch (err) {
-    const statusCode = err.status || 500;
-    return new Response(JSON.stringify({ success: false, error: err.message }), {
-      status: statusCode,
+    // ── Non-streaming response ──
+    const data = await successResp.json();
+    return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
+  } catch (err) {
+    console.error("[AI Proxy] Unhandled error:", err);
+    return new Response(
+      JSON.stringify({ success: false, error: (err as Error).message }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    );
   }
 });
