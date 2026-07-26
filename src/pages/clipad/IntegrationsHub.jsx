@@ -7,7 +7,7 @@ import { useToast } from '@/components/ui/use-toast';
 import {
   CheckCircle2, XCircle, RefreshCw, Plug, Unplug, ExternalLink,
   Loader2, Clock, FileText, MessageSquare, Video, Github,
-  AlertCircle, Zap, Search, Filter, ArrowLeft, BarChart2, ChevronDown, Key, Eye, EyeOff,
+  AlertCircle, Zap, Search, Filter, ArrowLeft, BarChart2, ChevronDown, Key, Eye, EyeOff, Trash2,
   Settings, FolderOpen, Hash, Sliders, Network, Scale, Link, CheckSquare,
   Lock, Globe, Users, User
 } from 'lucide-react';
@@ -207,17 +207,25 @@ export default function IntegrationsHub() {
     }
   };
 
-  const handleSyncNow = async (integration) => {
+  const handleSyncNow = async (integration, forceFull = false) => {
     try {
       const conn = connected[integration.provider] || connected[integration.id];
       if (!conn) return;
 
       setSyncing(prev => ({ ...prev, [integration.id]: true }));
 
-      // Optimistically clear any sync error
+      // Prepare database updates
+      const updates = { sync_error: null };
+      if (forceFull) {
+        updates.sync_cursor = null;
+        updates.sync_phase = 'full';
+        updates.last_synced_at = null;
+      }
+
+      // Clear any sync error and reset pagination state if forcing full sync
       await supabase
         .from('clipad_integrations')
-        .update({ sync_error: null })
+        .update(updates)
         .eq('id', conn.id);
 
       const { data: syncResult, error } = await supabase.functions.invoke('integration-sync', {
@@ -226,7 +234,15 @@ export default function IntegrationsHub() {
       if (error) throw error;
 
       const imported = syncResult?.imported || 0;
-      toast({ title: `✅ ${integration.name} synced`, description: `${imported} item${imported !== 1 ? 's' : ''} imported. AI is now processing the content...` });
+      const isInterrupted = syncResult?.interrupted || false;
+      const descriptionText = isInterrupted 
+        ? `${imported} items imported. Auto-sync is currently processing more pages in the background...`
+        : `${imported} item${imported !== 1 ? 's' : ''} imported. AI is now processing the content...`;
+
+      toast({ 
+        title: forceFull ? `🔄 Full Sync Started` : `✅ ${integration.name} synced`, 
+        description: descriptionText
+      });
 
       // Trigger AI reprocessing for any items missing ai_summary
       setTimeout(async () => {
@@ -588,15 +604,39 @@ export default function IntegrationsHub() {
                   <div className="flex items-center gap-2 mt-auto pt-2 border-t border-border">
                     {isAllowedToConnect ? (
                       isConnected ? (
-                        <>
-                          <button
-                            onClick={() => handleSyncNow(integration)}
-                            disabled={isSyncing}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors disabled:opacity-50"
-                          >
-                            {isSyncing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-                            {isSyncing ? 'Syncing...' : 'Sync Now'}
-                          </button>
+                          <div className="flex items-center -space-x-px">
+                            <button
+                              onClick={() => handleSyncNow(integration, false)}
+                              disabled={isSyncing}
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-l-xl rounded-r-none bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors disabled:opacity-50 border-r border-primary/20"
+                            >
+                              {isSyncing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+                              {isSyncing ? 'Syncing...' : 'Sync Now'}
+                            </button>
+                            
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <button
+                                  disabled={isSyncing}
+                                  className="flex items-center justify-center w-6 h-8 rounded-r-xl rounded-l-none bg-primary/10 hover:bg-primary/20 text-primary transition-colors border-l-0"
+                                  title="Sync Options"
+                                >
+                                  <ChevronDown className="w-3.5 h-3.5" />
+                                </button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="start" className="w-52 font-sans z-[100] p-2 rounded-2xl border border-border shadow-xl bg-card">
+                                <DropdownMenuLabel className="text-[10px] text-muted-foreground font-bold px-3 py-1.5 uppercase tracking-widest">Options</DropdownMenuLabel>
+                                <DropdownMenuSeparator className="bg-border my-1" />
+                                <DropdownMenuItem
+                                  onClick={() => handleSyncNow(integration, true)}
+                                  className="cursor-pointer px-3 py-2 my-0.5 rounded-xl text-xs font-semibold text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 hover:text-amber-700 dark:hover:text-amber-300 transition-all flex items-center gap-2"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5 text-amber-500" />
+                                  <span>Force Full Re-Sync</span>
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
                           
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
