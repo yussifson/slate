@@ -5,7 +5,8 @@ import {
   Loader2, X, ShieldAlert, AlertTriangle, ArrowRight, ExternalLink, Zap, Lock,
   Command, Bot, Filter, Check, Layers, ChevronRight, Copy, CheckCheck, Folder, Clock,
   Users, RefreshCw, SlidersHorizontal, ArrowUpRight, ChevronDown, UserCheck, Shield,
-  Share2, CornerDownLeft, Sparkle, Compass, Terminal, Cpu, Lightbulb, ArrowRightCircle
+  Share2, CornerDownLeft, Sparkle, Compass, Terminal, Cpu, Lightbulb, ArrowRightCircle,
+  Brain, FileSearch, SparklesIcon, Send
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { generateText } from '@/lib/cloudflareAI';
@@ -42,10 +43,10 @@ const FILTER_TABS = [
 ];
 
 const SUGGESTED_PROMPTS = [
-  "Summarize key active blockers across engineering spaces",
-  "Show recent decisions regarding Q3 roadmap & infrastructure",
-  "What were the main highlights from yesterday's standups?",
-  "Find all active action items assigned to team members"
+  { title: "Blockers Summary", desc: "Summarize key active blockers across engineering spaces", icon: AlertTriangle },
+  { title: "Strategic Decisions", desc: "Show recent decisions regarding Q3 roadmap & infrastructure", icon: ShieldAlert },
+  { title: "Standup Highlights", desc: "What were the main highlights from yesterday's standups?", icon: Zap },
+  { title: "Action Items", desc: "Find all active action items assigned to team members", icon: CheckCircle }
 ];
 
 const FILTER_TYPE_MAP = {
@@ -255,119 +256,128 @@ export default function SearchHub() {
   const filteredResults = useMemo(() => results.filter(r => matchesFilter(r.type, activeFilter)), [results, activeFilter]);
 
   return (
-    <div className="min-h-screen bg-slate-50/60 dark:bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary pb-16">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary pb-20">
       
-      {/* Premium Hero & Search Section */}
-      <div className="max-w-5xl mx-auto pt-8 md:pt-14 px-4 md:px-8">
-        
-        {/* Zero State Header / Title */}
-        {!hasPerformedSearch ? (
-          <div className="text-center space-y-4 mb-8 animate-in fade-in duration-300">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-wider uppercase">
-              <Sparkles className="w-3.5 h-3.5" /> Enterprise Search & Intelligence
+      {/* High-End Hero Section (ChatGPT / Perplexity AI Workspace Style) */}
+      <div className="relative overflow-hidden bg-white dark:bg-card border-b border-slate-200/80 dark:border-border/80 shadow-sm">
+        {/* Subtle Ambient Glow */}
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="max-w-4xl mx-auto pt-10 md:pt-16 pb-10 px-4 md:px-8 relative z-10">
+          
+          {/* Header Badge */}
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-widest uppercase shadow-sm">
+              <Sparkles className="w-3.5 h-3.5" /> Orbit AI Workspace Search
             </div>
-
-            <h1 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-              What do you want to <span className="text-primary">discover today?</span>
-            </h1>
-
-            <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base max-w-xl mx-auto font-medium leading-relaxed">
-              Search across Slack, Google Drive, Notion, Meetings, Code, and Team Members in one unified AI command center.
-            </p>
           </div>
-        ) : null}
 
-        {/* Central Sleek Command Search Input */}
-        <div className="relative group max-w-3xl mx-auto">
-          <form onSubmit={(e) => { e.preventDefault(); setSearchParams({ q: query }); runSearch(); }}>
-            <div className="relative flex items-center bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl p-2 shadow-lg shadow-black/[0.03] dark:shadow-none focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary transition-all">
-              <div className="pl-3.5 pr-2 text-slate-400">
-                <Search className="w-5 h-5" />
-              </div>
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Ask Orbit AI or search company knowledge..."
-                className="w-full bg-transparent border-0 outline-none ring-0 text-base font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 py-2 pr-3 text-foreground"
-              />
-              {query && (
-                <button type="button" onClick={() => { setQuery(''); setResults([]); setSelectedResult(null); setHasPerformedSearch(false); setSearchParams({}); }} className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg mr-1">
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-              <button
-                type="submit"
-                className="px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl text-xs flex items-center gap-2 shadow-sm transition-all active:scale-95 shrink-0"
-              >
-                {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                <span>Execute</span>
-              </button>
-            </div>
-          </form>
-        </div>
+          {/* Hero Heading */}
+          <h1 className="text-3xl md:text-5xl font-black text-center tracking-tight text-slate-900 dark:text-white leading-[1.15] mb-4">
+            Search <span className="text-primary underline decoration-primary/30 underline-offset-8">everything</span> across your organization.
+          </h1>
 
-        {/* Suggested Prompts Cards (When zero state) */}
-        {!hasPerformedSearch && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-3xl mx-auto mt-6 text-left">
-            {SUGGESTED_PROMPTS.map((promptText, idx) => (
-              <button
-                key={idx}
-                onClick={() => { setQuery(promptText); setSearchParams({ q: promptText }); runSearch(promptText); }}
-                className="p-4 rounded-2xl bg-white dark:bg-card border border-slate-200/80 dark:border-border/80 hover:border-primary/40 shadow-sm hover:shadow-md transition-all group flex items-start gap-3 text-left"
-              >
-                <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
-                  <Lightbulb className="w-4 h-4 text-primary group-hover:text-white" />
+          <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base text-center max-w-lg mx-auto font-medium leading-relaxed mb-8">
+            Instantly surface documents, Slack messages, tasks, meeting summaries, and team insights in one unified AI command center.
+          </p>
+
+          {/* Central Command Bar */}
+          <div className="relative max-w-2xl mx-auto">
+            <form onSubmit={(e) => { e.preventDefault(); setSearchParams({ q: query }); runSearch(); }}>
+              <div className="relative flex items-center bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-border/90 rounded-2xl p-2 shadow-xl shadow-slate-900/5 focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary transition-all">
+                <div className="pl-4 pr-2 text-slate-400">
+                  <Search className="w-5 h-5" />
                 </div>
-                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white leading-relaxed">
-                  {promptText}
-                </span>
-              </button>
-            ))}
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Ask Orbit AI or search company knowledge..."
+                  className="w-full bg-transparent border-0 outline-none ring-0 text-base font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 py-2.5 pr-3 text-slate-900 dark:text-white"
+                />
+                {query && (
+                  <button type="button" onClick={() => { setQuery(''); setResults([]); setSelectedResult(null); setHasPerformedSearch(false); setSearchParams({}); }} className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg mr-1.5">
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl text-xs flex items-center gap-2 shadow-md transition-all active:scale-95 shrink-0"
+                >
+                  {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  <span>Search</span>
+                </button>
+              </div>
+            </form>
           </div>
-        )}
 
-        {/* Filter Pills Bar (When searching) */}
-        {hasPerformedSearch && (
-          <div className="flex items-center justify-between gap-4 mt-6 border-b border-slate-200/80 dark:border-border pb-3">
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-              {FILTER_TABS.map(tab => {
-                const Icon = tab.icon;
-                const count = results.filter(r => matchesFilter(r.type, tab.id)).length;
-                const active = activeFilter === tab.id;
+          {/* Suggested Prompt Chips (When zero state) */}
+          {!hasPerformedSearch && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl mx-auto mt-8">
+              {SUGGESTED_PROMPTS.map((item, idx) => {
+                const Icon = item.icon;
                 return (
                   <button
-                    key={tab.id}
-                    onClick={() => setActiveFilter(tab.id)}
-                    className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
-                      active
-                        ? 'bg-primary text-primary-foreground shadow-sm'
-                        : 'bg-white dark:bg-card border border-slate-200/80 dark:border-border text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-secondary'
-                    }`}
+                    key={idx}
+                    onClick={() => { setQuery(item.desc); setSearchParams({ q: item.desc }); runSearch(item.desc); }}
+                    className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-900/50 border border-slate-200/80 dark:border-border/60 hover:border-primary/40 hover:bg-white dark:hover:bg-card shadow-sm transition-all group flex items-start gap-3.5 text-left"
                   >
-                    <Icon className="w-3.5 h-3.5" />
-                    {tab.label}
-                    <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono ${active ? 'bg-white/20 dark:bg-black/20' : 'bg-slate-100 dark:bg-slate-800'}`}>
-                      {count}
-                    </span>
+                    <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
+                      <Icon className="w-4.5 h-4.5 text-primary group-hover:text-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-slate-900 dark:text-white mb-0.5">{item.title}</h4>
+                      <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1 leading-snug">{item.desc}</p>
+                    </div>
                   </button>
                 );
               })}
             </div>
+          )}
 
-            <div className="hidden md:flex items-center gap-2 text-xs font-semibold text-slate-400 shrink-0">
-              <Shield className="w-3.5 h-3.5 text-primary" /> Company Scoped
+          {/* Filter Pills Bar (When active search) */}
+          {hasPerformedSearch && (
+            <div className="flex items-center justify-between gap-4 mt-8 pt-4 border-t border-slate-100 dark:border-border/60">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                {FILTER_TABS.map(tab => {
+                  const Icon = tab.icon;
+                  const count = results.filter(r => matchesFilter(r.type, tab.id)).length;
+                  const active = activeFilter === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveFilter(tab.id)}
+                      className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
+                        active
+                          ? 'bg-primary text-primary-foreground shadow-sm'
+                          : 'bg-slate-100 dark:bg-slate-900/60 border border-slate-200/80 dark:border-border text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-card'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                      {tab.label}
+                      <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono ${active ? 'bg-white/20 dark:bg-black/20' : 'bg-slate-200 dark:bg-slate-800'}`}>
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="hidden md:flex items-center gap-2 text-xs font-semibold text-slate-400 shrink-0">
+                <Shield className="w-3.5 h-3.5 text-primary" /> Workspace Scoped
+              </div>
             </div>
-          </div>
-        )}
+          )}
+
+        </div>
       </div>
 
-      {/* Main Results Grid */}
+      {/* Main Results Body */}
       {hasPerformedSearch && (
-        <div className="max-w-7xl mx-auto px-4 md:px-8 mt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 mt-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            {/* Left Column: Results Feed (7 cols) */}
-            <div className="lg:col-span-7 space-y-3">
+            {/* Left Column: Results List (7 cols) */}
+            <div className="lg:col-span-7 space-y-3.5">
               {isSearching ? (
                 <div className="bg-white dark:bg-card border border-slate-200/80 dark:border-border rounded-2xl p-12 text-center shadow-sm">
                   <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-3" />
@@ -389,7 +399,7 @@ export default function SearchHub() {
                     <div
                       key={`${item.type}-${item.id}`}
                       onClick={() => setSelectedResult(item)}
-                      className={`p-4 md:p-5 rounded-2xl border transition-all cursor-pointer bg-white dark:bg-card ${
+                      className={`p-5 rounded-2xl border transition-all cursor-pointer bg-white dark:bg-card ${
                         isSelected
                           ? 'border-primary ring-2 ring-primary/20 shadow-md'
                           : 'border-slate-200/80 dark:border-border hover:border-slate-300 dark:hover:border-slate-700'
