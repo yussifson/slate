@@ -170,15 +170,44 @@ export default function GlobalSearch() {
       });
   }, [user]);
 
-  // Global Keyboard listener (⌘K / Ctrl+K)
+  // Global Keyboard listener (⌘K / Ctrl+K + Navigation)
   useEffect(() => {
     const onKey = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         e.stopPropagation();
         setIsOpen(v => !v);
+        return;
       }
-      if (e.key === 'Escape' && isOpen) setIsOpen(false);
+      if (!isOpen) return;
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setIsOpen(false);
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setFocusedIndex(i => {
+          const next = Math.min(i + 1, results.filter(r => matchesFilter(r.type, selectedFilter)).length - 1);
+          // Scroll into view
+          const el = document.getElementById(`search-item-${next}`);
+          if (el) el.scrollIntoView({ block: 'nearest' });
+          return next;
+        });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setFocusedIndex(i => {
+          const prev = Math.max(i - 1, -1);
+          const el = document.getElementById(`search-item-${prev}`);
+          if (el) el.scrollIntoView({ block: 'nearest' });
+          return prev;
+        });
+      } else if (e.key === 'Enter') {
+        const filtered = results.filter(r => matchesFilter(r.type, selectedFilter));
+        if (focusedIndex >= 0 && filtered[focusedIndex]) {
+          e.preventDefault();
+          handleResultClick(filtered[focusedIndex]);
+        }
+      }
     };
     const handleCustomOpen = () => setIsOpen(true);
     document.addEventListener('keydown', onKey, true);
@@ -187,7 +216,7 @@ export default function GlobalSearch() {
       document.removeEventListener('keydown', onKey, true);
       window.removeEventListener('open-global-search', handleCustomOpen);
     };
-  }, [isOpen]);
+  }, [isOpen, results, selectedFilter, focusedIndex, handleResultClick]);
 
   useEffect(() => {
     if (isOpen) {
@@ -539,7 +568,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
             </div>
           </div>
 
-          <div className="flex-1 max-h-[60vh] overflow-y-auto">
+          <div className="flex-1 max-h-[42vh] overflow-y-auto">
             {/* Zero State (No Search) */}
             {!hasSearched && query.length === 0 && (
               <div className="pb-4">
@@ -637,9 +666,12 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
                         return (
                           <button
                             key={i}
+                            id={`search-item-${i}`}
                             onClick={() => handleResultClick(res)}
-                            className={`w-full text-left flex items-start gap-3 p-3 rounded-xl transition-colors ${
-                              isFocused ? 'bg-slate-100 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                            className={`w-full text-left flex items-start gap-3 p-3 rounded-xl transition-all ${
+                              isFocused 
+                                ? 'bg-slate-100 dark:bg-slate-800 ring-2 ring-primary/45 border-transparent' 
+                                : 'hover:bg-slate-50 dark:hover:bg-slate-800/50 border-transparent'
                             }`}
                           >
                             <div className={`w-8 h-8 rounded-lg ${meta.bg || 'bg-slate-100'} flex items-center justify-center shrink-0`}>
