@@ -151,7 +151,7 @@ serve(async (req) => {
     if (defaultToken && defaultAccountId) {
       credentials.push({ token: defaultToken, accountId: defaultAccountId });
     }
-    for (let i = 2; i <= 20; i++) {
+    for (let i = 2; i <= 100; i++) {
       const token = Deno.env.get(`CLOUDFLARE_API_TOKEN_${i}`);
       const accountId = Deno.env.get(`CLOUDFLARE_ACCOUNT_ID_${i}`) || defaultAccountId;
       if (token && accountId) credentials.push({ token, accountId });
