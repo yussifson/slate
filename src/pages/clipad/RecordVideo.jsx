@@ -961,7 +961,8 @@ export default function RecordVideo() {
       wsIsReconnectingRef.current = false;
       wsEndRequestedRef.current = false;
 
-      const wsUrl = 'wss://slate-2fli.onrender.com';
+      // WebSocket live streamer disabled to eliminate 503 connection errors; relies on Supabase Storage TUS/Direct upload.
+      const wsUrl = null;
 
       // ── Application-level heartbeat to keep Render from sleeping ──
       let wsPingInterval = null;
@@ -994,6 +995,7 @@ export default function RecordVideo() {
       };
 
       const connectWS = async (isReconnect = false) => {
+        if (!wsUrl) return;
         const ws = new WebSocket(wsUrl);
         wsRef.current = ws;
 
