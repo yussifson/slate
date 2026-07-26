@@ -117,13 +117,13 @@ export default function SearchHub() {
     if (!cid) return [];
     const term = `%${qTerm}%`;
     const data = await safeQuery(
-      supabase.from('clipad_users').select('id, full_name, email, role, department, avatar_url').eq('company_id', cid).or(`full_name.ilike.${term},email.ilike.${term},department.ilike.${term}`).limit(5)
+      supabase.from('profiles').select('id, full_name, email, role, avatar_url').eq('company_id', cid).or(`full_name.ilike.${term},email.ilike.${term}`).limit(5)
     );
     return (data || []).map(u => ({
       type: 'person',
       id: u.id,
       label: u.full_name || u.email,
-      snippet: `${u.role || 'Member'} ${u.department ? '· ' + u.department : ''} (${u.email})`,
+      snippet: `${u.role || 'Member'} (${u.email})`,
       avatar_url: u.avatar_url,
       raw: u
     }));
