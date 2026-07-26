@@ -245,8 +245,8 @@ export default function GlobalSearch() {
       if (data) { const map = {}; data.forEach(s => { map[s.id] = s.name; }); setSpacesMap(map); }
     });
     // Total doc count for scope badge
-    supabase.from('clipad_docs').select('id', { count: 'exact', head: true }).eq('company_id', user.company_id)
-      .then(({ count }) => { if (count) setTotalDocCount(count); });
+    supabase.from('clipad_docs').select('id', { count: 'exact', head: true })
+      .then(({ count }) => { if (count) setTotalDocCount(count); }).catch(() => {});
     // Dynamic integration suggestions
     supabase.from('clipad_integrations').select('provider').eq('company_id', user.company_id).eq('status', 'active')
       .then(({ data }) => {
@@ -374,7 +374,7 @@ export default function GlobalSearch() {
       ),
       // Integration knowledge: title + full content
       safeQuery(
-        supabase.from('clipad_imported_knowledge').select('id, title, content, provider, content_type, created_at').eq('company_id', cid).or(`title.ilike.${term},content.ilike.${term}`).limit(limit)
+        supabase.from('clipad_imported_knowledge').select('id, title, content, provider, content_type, created_at').eq('company_id', cid).ilike('title', term).limit(limit)
       ),
       // People search
       Promise.resolve(searchPeople(q, cid)).catch(() => []),

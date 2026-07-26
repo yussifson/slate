@@ -152,7 +152,7 @@ export default function SearchHub() {
       safeQuery(spaceIdArr.length > 0 ? supabase.from('clipad_videos').select('id, title, ai_summary, space_id, created_at').in('space_id', spaceIdArr).or(`title.ilike.${term},ai_summary.ilike.${term}`).limit(20) : supabase.from('clipad_videos').select('id, title, ai_summary, space_id, created_at').or(`title.ilike.${term},ai_summary.ilike.${term}`).limit(20)),
       safeQuery(spaceIdArr.length > 0 ? supabase.from('clipad_blockers').select('id, description, team_space_id, created_at').in('team_space_id', spaceIdArr).ilike('description', term).limit(20) : supabase.from('clipad_blockers').select('id, description, team_space_id, created_at').ilike('description', term).limit(20)),
       safeQuery(spaceIdArr.length > 0 ? supabase.from('clipad_standups').select('id, user_name, today, yesterday, blockers, space_id, created_at').in('space_id', spaceIdArr).or(`today.ilike.${term},yesterday.ilike.${term},user_name.ilike.${term}`).limit(20) : supabase.from('clipad_standups').select('id, user_name, today, yesterday, blockers, space_id, created_at').or(`today.ilike.${term},yesterday.ilike.${term},user_name.ilike.${term}`).limit(20)),
-      safeQuery(supabase.from('clipad_imported_knowledge').select('id, title, content, provider, content_type, created_at').eq('company_id', cid).or(`title.ilike.${term},content.ilike.${term}`).limit(20)),
+      safeQuery(supabase.from('clipad_imported_knowledge').select('id, title, content, provider, content_type, created_at').eq('company_id', cid).ilike('title', term).limit(20)),
       searchPeople(q, cid)
     ]);
 
