@@ -98,16 +98,58 @@ export default function IntegrationsHub() {
 
   // Load spaces this user belongs to (for the space scope selector)
   const loadUserSpaces = useCallback(async () => {
-    if (!user?.id) return;
+    if (!user?.id || !companyId) return;
     try {
-      const { data } = await supabase
+      // 1. Fetch created spaces
+      const { data: created } = await supabase
+        .from('clipad_spaces')
+        .select('id, name')
+        .eq('company_id', companyId)
+        .eq('created_by', user.id)
+        .limit(100);
+
+      // 2. Fetch member spaces
+      const { data: memberRefs } = await supabase
         .from('clipad_space_members')
-        .select('space_id, clipad_spaces(id, name)')
+        .select('space_id')
         .eq('user_id', user.id)
-        .limit(30);
-      setUserSpaces((data || []).map(m => ({ id: m.space_id, name: m.clipad_spaces?.name || 'Unnamed Space' })));
-    } catch { /* ignore */ }
-  }, [user?.id]);
+        .limit(100);
+
+      const memberSpaceIds = (memberRefs || []).map(m => m.space_id).filter(Boolean);
+      let memberSpaces = [];
+      if (memberSpaceIds.length > 0) {
+        const { data: members } = await supabase
+          .from('clipad_spaces')
+          .select('id, name')
+          .in('id', memberSpaceIds);
+        memberSpaces = members || [];
+      }
+
+      // 3. Fetch public spaces
+      const { data: publicSpaces } = await supabase
+        .from('clipad_spaces')
+        .select('id, name')
+        .eq('company_id', companyId)
+        .eq('is_private', false)
+        .limit(100);
+
+      // Combine and filter unique by ID
+      const allSpacesMap = new Map();
+      [...(created || []), ...memberSpaces, ...(publicSpaces || [])].forEach(s => {
+        allSpacesMap.set(s.id, s);
+      });
+
+      const uniqueSpaces = Array.from(allSpacesMap.values());
+      setUserSpaces(uniqueSpaces);
+
+      // Set default selected space if not already set
+      if (uniqueSpaces.length > 0) {
+        setSelectedSpaceId(prev => prev || uniqueSpaces[0].id);
+      }
+    } catch (err) {
+      console.error('Failed to load user spaces:', err);
+    }
+  }, [user?.id, companyId]);
 
   const loadKnowledge = useCallback(async () => {
     if (!companyId) return;
@@ -779,7 +821,7 @@ export default function IntegrationsHub() {
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-5 animate-in fade-in zoom-in-95 duration-200">
             {/* Header */}
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30 flex items-center justify-center text-lg shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center text-lg shrink-0">
                 {scopeModal.integration?.emoji || <Plug className="w-4 h-4" />}
               </div>
               <div>
@@ -798,7 +840,7 @@ export default function IntegrationsHub() {
                 style={{ borderRadius: '8px' }}
                 className={`flex-1 py-1.5 text-xs font-bold transition-all text-center border-0 cursor-pointer ${
                   selectedScope === 'personal'
-                    ? 'bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm border border-slate-200/50 dark:border-slate-600/50'
+                    ? 'bg-white dark:bg-slate-700 text-primary shadow-sm border border-slate-200/50 dark:border-slate-600/50'
                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 bg-transparent'
                 }`}
               >
@@ -810,7 +852,7 @@ export default function IntegrationsHub() {
                 style={{ borderRadius: '8px' }}
                 className={`flex-1 py-1.5 text-xs font-bold transition-all text-center border-0 cursor-pointer ${
                   selectedScope === 'space'
-                    ? 'bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm border border-slate-200/50 dark:border-slate-600/50'
+                    ? 'bg-white dark:bg-slate-700 text-primary shadow-sm border border-slate-200/50 dark:border-slate-600/50'
                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 bg-transparent'
                 }`}
               >
@@ -824,7 +866,7 @@ export default function IntegrationsHub() {
                 className={`flex-1 py-1.5 text-xs font-bold transition-all text-center border-0 ${
                   !isAdmin ? 'opacity-40 cursor-not-allowed text-slate-400 bg-transparent' :
                   selectedScope === 'company'
-                    ? 'bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm border border-slate-200/50 dark:border-slate-600/50'
+                    ? 'bg-white dark:bg-slate-700 text-primary shadow-sm border border-slate-200/50 dark:border-slate-600/50'
                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 bg-transparent'
                 }`}
               >
@@ -877,9 +919,9 @@ export default function IntegrationsHub() {
                 onClick={confirmConnect}
                 disabled={selectedScope === 'space' && (!selectedSpaceId || userSpaces.length === 0)}
                 style={{ borderRadius: '8px' }}
-                className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/10"
+                className="flex-1 px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 shadow-md"
               >
-                <Plug className="w-3.5 h-3.5 text-emerald-100" /> Connect
+                <Plug className="w-3.5 h-3.5 text-primary-foreground" /> Connect
               </button>
             </div>
           </div>
