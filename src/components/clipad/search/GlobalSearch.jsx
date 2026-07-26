@@ -324,17 +324,17 @@ export default function GlobalSearch() {
     });
 
     const [docs, tasks, messages, meetings, decisions, videos, blockers, standups, integrations, people] = await Promise.all([
-      // Docs: space filter + search title or content
+      // Docs: space filter + search title
       safeQuery(
         spaceIdArr.length > 0
-          ? supabase.from('clipad_docs').select('id, title, content, space_id, created_at').in('space_id', spaceIdArr).or(`title.ilike.${term},content.ilike.${term}`).limit(limit)
-          : supabase.from('clipad_docs').select('id, title, content, space_id, created_at').or(`title.ilike.${term},content.ilike.${term}`).limit(limit)
+          ? supabase.from('clipad_docs').select('id, title, content, space_id, created_at').in('space_id', spaceIdArr).ilike('title', term).limit(limit)
+          : supabase.from('clipad_docs').select('id, title, content, space_id, created_at').ilike('title', term).limit(limit)
       ),
-      // Tasks: space filter + search title or context
+      // Tasks: space filter + search title
       safeQuery(
         spaceIdArr.length > 0
-          ? supabase.from('clipad_action_items').select('id, title, context, space_id, created_at').in('space_id', spaceIdArr).or(`title.ilike.${term},context.ilike.${term}`).limit(limit)
-          : supabase.from('clipad_action_items').select('id, title, context, space_id, created_at').or(`title.ilike.${term},context.ilike.${term}`).limit(limit)
+          ? supabase.from('clipad_action_items').select('id, title, context, space_id, created_at').in('space_id', spaceIdArr).ilike('title', term).limit(limit)
+          : supabase.from('clipad_action_items').select('id, title, context, space_id, created_at').ilike('title', term).limit(limit)
       ),
       // Messages: full content match
       safeQuery(
@@ -342,11 +342,11 @@ export default function GlobalSearch() {
           ? supabase.from('clipad_messages').select('id, content, space_id, created_at').in('space_id', spaceIdArr).ilike('content', term).limit(limit)
           : supabase.from('clipad_messages').select('id, content, space_id, created_at').ilike('content', term).limit(limit)
       ),
-      // Meetings: title + AI summary
+      // Meetings: title
       safeQuery(
         spaceIdArr.length > 0
-          ? supabase.from('clipad_meeting_records').select('id, title, ai_summary, space_id, created_at').in('space_id', spaceIdArr).or(`title.ilike.${term},ai_summary.ilike.${term}`).limit(limit)
-          : supabase.from('clipad_meeting_records').select('id, title, ai_summary, space_id, created_at').or(`title.ilike.${term},ai_summary.ilike.${term}`).limit(limit)
+          ? supabase.from('clipad_meeting_records').select('id, title, ai_summary, space_id, created_at').in('space_id', spaceIdArr).ilike('title', term).limit(limit)
+          : supabase.from('clipad_meeting_records').select('id, title, ai_summary, space_id, created_at').ilike('title', term).limit(limit)
       ),
       // Decisions: decision text
       safeQuery(
@@ -354,11 +354,11 @@ export default function GlobalSearch() {
           ? supabase.from('clipad_decisions').select('id, decision_text, team_space_id, created_at').in('team_space_id', spaceIdArr).ilike('decision_text', term).limit(limit)
           : supabase.from('clipad_decisions').select('id, decision_text, team_space_id, created_at').ilike('decision_text', term).limit(limit)
       ),
-      // Videos: title + AI summary
+      // Videos: title
       safeQuery(
         spaceIdArr.length > 0
-          ? supabase.from('clipad_videos').select('id, title, ai_summary, space_id, created_at').in('space_id', spaceIdArr).or(`title.ilike.${term},ai_summary.ilike.${term}`).limit(limit)
-          : supabase.from('clipad_videos').select('id, title, ai_summary, space_id, created_at').or(`title.ilike.${term},ai_summary.ilike.${term}`).limit(limit)
+          ? supabase.from('clipad_videos').select('id, title, ai_summary, space_id, created_at').in('space_id', spaceIdArr).ilike('title', term).limit(limit)
+          : supabase.from('clipad_videos').select('id, title, ai_summary, space_id, created_at').ilike('title', term).limit(limit)
       ),
       // Blockers
       safeQuery(
@@ -366,11 +366,11 @@ export default function GlobalSearch() {
           ? supabase.from('clipad_blockers').select('id, description, team_space_id, created_at').in('team_space_id', spaceIdArr).ilike('description', term).limit(limit)
           : supabase.from('clipad_blockers').select('id, description, team_space_id, created_at').ilike('description', term).limit(limit)
       ),
-      // Standups: today + yesterday + user name
+      // Standups: today
       safeQuery(
         spaceIdArr.length > 0
-          ? supabase.from('clipad_standups').select('id, user_name, today, yesterday, blockers, space_id, created_at').in('space_id', spaceIdArr).or(`today.ilike.${term},yesterday.ilike.${term},user_name.ilike.${term}`).limit(limit)
-          : supabase.from('clipad_standups').select('id, user_name, today, yesterday, blockers, space_id, created_at').or(`today.ilike.${term},yesterday.ilike.${term},user_name.ilike.${term}`).limit(limit)
+          ? supabase.from('clipad_standups').select('id, user_name, today, yesterday, blockers, space_id, created_at').in('space_id', spaceIdArr).ilike('today', term).limit(limit)
+          : supabase.from('clipad_standups').select('id, user_name, today, yesterday, blockers, space_id, created_at').ilike('today', term).limit(limit)
       ),
       // Integration knowledge: title + full content
       safeQuery(
