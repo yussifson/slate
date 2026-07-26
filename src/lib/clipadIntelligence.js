@@ -195,9 +195,36 @@ export async function buildOrgContext(options = {}) {
   const limit     = options.limit     || 20;
   const spaceIds  = options.spaceIds  || [];
   const companyId = options.companyId || null;
+  // Privacy scoping — always pass these from the calling component
+  const userId    = options.userId    || null;
+  const userRole  = options.userRole  || 'member'; // 'super_admin' | 'admin' | 'spaceman' | 'member'
+  const isAdmin   = ['super_admin', 'admin'].includes(userRole);
 
   // Helper: build space filter clause
   const inSpaces = (col) => spaceIds.length > 0 ? { in: [col, spaceIds] } : null;
+
+  // ── Imported knowledge visibility rules ─────────────────────────────────────
+  // personal  — only the connecting user can see it
+  // space     — members of that space can see it
+  // company   — all company members can see it (admin connections)
+  let importedKnowledgeQuery = supabase
+    .from('clipad_imported_knowledge')
+    .select('id, provider, content_type, title, content, ai_summary, ai_action_items, metadata, updated_at, connected_by_user_id, visibility')
+    .order('updated_at', { ascending: false })
+    .limit(30);
+
+  if (companyId) {
+    importedKnowledgeQuery = importedKnowledgeQuery.eq('company_id', companyId);
+  }
+
+  // Non-admins only see: their own personal integrations + company-wide integrations + space integrations they belong to
+  if (!isAdmin && userId) {
+    // Use Supabase OR filter: (connected_by_user_id = me) OR (visibility = 'company') OR (visibility = 'space' AND space_id IN mySpaces)
+    importedKnowledgeQuery = importedKnowledgeQuery.or(
+      `connected_by_user_id.eq.${userId},visibility.eq.company${spaceIds.length > 0 ? `,and(visibility.eq.space,space_id.in.(${spaceIds.join(',')}))` : ''}`
+    );
+  }
+  // Admins see everything within their company (no extra filter needed — companyId filter above is sufficient)
 
   // Run ALL fetches in parallel for speed
   const [
@@ -276,14 +303,8 @@ export async function buildOrgContext(options = {}) {
           .order('created_at', { ascending: false })
           .limit(20)).catch(() => ({ data: [] })),
 
-    // Imported Knowledge (Integrations)
-    Promise.resolve(companyId
-      ? supabase.from('clipad_imported_knowledge')
-          .select('id, provider, content_type, title, content, ai_summary, ai_action_items, metadata, updated_at')
-          .eq('company_id', companyId)
-          .order('updated_at', { ascending: false })
-          .limit(30)
-      : { data: [] }).catch(() => ({ data: [] })),
+    // Imported Knowledge — PRIVACY-SCOPED per userId/userRole
+    importedKnowledgeQuery.catch(() => ({ data: [] })),
 
     // Commitments (global)
     Promise.resolve(supabase.from('clipad_commitments')
@@ -345,7 +366,7 @@ export async function buildOrgContext(options = {}) {
       .order('created_at', { ascending: false })
       .limit(15)).catch(() => ({ data: [] })),
 
-    // Completed action items (recent, for history) 
+    // ── NEW: Completed action items (recent, for history)
     Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_action_items')
           .select('id, title, is_complete, due_date, assigned_to, space_id')
@@ -359,6 +380,26 @@ export async function buildOrgContext(options = {}) {
           .order('created_at', { ascending: false })
           .limit(10)).catch(() => ({ data: [] })),
   ]);
+
+  // ── Pull from integration_knowledge (new table) if it exists ─────────────
+  let integrationKnowledge = [];
+  if (userId || companyId) {
+    try {
+      let ikQuery = supabase
+        .from('integration_knowledge')
+        .select('id, integration_type, title, summary, tags, sentiment, flagged_action, source_url, metadata, is_flagged, updated_at')
+        .order('updated_at', { ascending: false })
+        .limit(25);
+      if (companyId) ikQuery = ikQuery.eq('company_id', companyId);
+      if (!isAdmin && userId) {
+        ikQuery = ikQuery.or(
+          `connected_by_user_id.eq.${userId},visibility.eq.company${spaceIds.length > 0 ? `,and(visibility.eq.space,space_id.in.(${spaceIds.join(',')}))` : ''}`
+        );
+      }
+      const { data: ikData, error: ikErr } = await ikQuery;
+      if (!ikErr && ikData) integrationKnowledge = ikData;
+    } catch {/* table may not exist yet */}
+  }
 
   const meetings     = meetingsRes?.data     || [];
   const decisions    = decisionsRes?.data    || [];
@@ -381,6 +422,7 @@ export async function buildOrgContext(options = {}) {
   decisions.forEach((d) => { sourceMap[d.id] = { type: 'decision', title: d.decision_text?.substring(0, 60), id: d.id }; });
   videos.forEach((v) => { sourceMap[v.id] = { type: 'video', title: v.title, id: v.id }; });
   spaces.forEach((s) => { sourceMap[s.id] = { type: 'space', title: s.name, id: s.id }; });
+  integrationKnowledge.forEach((ik) => { sourceMap[ik.id] = { type: ik.integration_type, title: ik.title, id: ik.id, url: ik.source_url }; });
 
   // Build context text — comprehensive view of the entire org
   const today = new Date().toISOString().slice(0, 10);
@@ -468,6 +510,17 @@ export async function buildOrgContext(options = {}) {
 
     chatRooms.length > 0 ? `\n━━ ACTIVE CHAT ROOMS (${chatRooms.length}) ━━\n` +
       chatRooms.map(r => `• #${r.name} — ${r.description || 'No description'}`).join('\n') : '',
+
+    // ── Integration Knowledge (GitHub, Gmail, Notion, Jira, etc.) ──────────────
+    integrationKnowledge.length > 0
+      ? `\n━━ THIRD-PARTY INTEGRATION INTELLIGENCE (${integrationKnowledge.length} items from connected apps) ━━\n` +
+        integrationKnowledge.map(ik => {
+          const flagged = ik.is_flagged ? ' ⚠️ ACTION NEEDED' : '';
+          const action = ik.flagged_action ? ` → ${ik.flagged_action}` : '';
+          const tags = ik.tags?.length > 0 ? ` [${ik.tags.join(', ')}]` : '';
+          return `• [${(ik.integration_type || 'integration').toUpperCase()}${flagged}] "${ik.title}"${tags}: ${ik.summary || 'No summary'}${action}${ik.source_url ? ` — ${ik.source_url}` : ''}`;
+        }).join('\n')
+      : '',
   ];
 
   // ── TOPOLOGICAL GRAPH MAPPING ──
@@ -525,6 +578,7 @@ export async function buildOrgContext(options = {}) {
     videos,
     tasks,
     importedKnowledge,
+    integrationKnowledge, // NEW: AI-ingested third-party data
     commitments,
     spaces,
     standups,

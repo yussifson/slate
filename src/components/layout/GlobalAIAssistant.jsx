@@ -628,7 +628,7 @@ To create an automation, use the \`create_record\` tool with recordType "automat
     if (cached && cached.key === cacheKey && (now - cached.ts) < 60_000) {
       contextText = cached.text;
     } else {
-      const result = await buildOrgContext({ limit: 25, spaceIds: Array.from(accessibleIds), companyId });
+      const result = await buildOrgContext({ limit: 25, spaceIds: Array.from(accessibleIds), companyId, userId: user?.id, userRole: user?.role || user?.user_metadata?.role || 'member' });
       contextText = result.contextText;
       GlobalAIAssistant._orgCtxCache = { key: cacheKey, text: contextText, ts: now };
     }

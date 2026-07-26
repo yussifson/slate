@@ -141,6 +141,7 @@ const LS_KEY_SESSIONS = (uid) => `orbit_sessions_${uid}`;
 const LS_KEY_MSGS = (sid) => `orbit_msgs_${sid}`;
 
 async function dbLoadSessions(userId) {
+  // Always try Supabase first — localStorage is ONLY a write-through cache, never a primary source
   try {
     const { data, error } = await supabase
       .from('orbit_chat_sessions')
@@ -149,9 +150,12 @@ async function dbLoadSessions(userId) {
       .order('updated_at', { ascending: false })
       .limit(50);
     if (error) throw error;
-    return data || [];
-  } catch {
-    // Fallback to localStorage
+    const sessions = data || [];
+    // Keep localStorage in sync (so offline fallback is recent)
+    try { localStorage.setItem(LS_KEY_SESSIONS(userId), JSON.stringify(sessions.slice(0, 20))); } catch {}
+    return sessions;
+  } catch (dbErr) {
+    console.warn('[OrbitFlow] Supabase session load failed, using localStorage fallback:', dbErr?.message);
     try {
       return JSON.parse(localStorage.getItem(LS_KEY_SESSIONS(userId)) || '[]');
     } catch { return []; }
@@ -233,6 +237,7 @@ async function dbDeleteSession(sessionId, userId) {
 }
 
 async function dbLoadMessages(sessionId, userId) {
+  // Always prefer DB — this is the single source of truth for message history
   try {
     const { data, error } = await supabase
       .from('orbit_chat_messages')
@@ -240,7 +245,7 @@ async function dbLoadMessages(sessionId, userId) {
       .eq('session_id', sessionId)
       .order('created_at', { ascending: true });
     if (error) throw error;
-    return (data || []).map(m => ({
+    const messages = (data || []).map(m => ({
       id: m.id,
       role: m.role,
       text: m.content,
@@ -248,7 +253,11 @@ async function dbLoadMessages(sessionId, userId) {
       executedAction: m.executed_action || null,
       created_at: m.created_at,
     }));
-  } catch {
+    // Write-through to localStorage for offline resilience
+    try { localStorage.setItem(LS_KEY_MSGS(sessionId), JSON.stringify(messages.slice(-30))); } catch {}
+    return messages;
+  } catch (dbErr) {
+    console.warn('[OrbitFlow] Supabase message load failed, using localStorage fallback:', dbErr?.message);
     try {
       return JSON.parse(localStorage.getItem(LS_KEY_MSGS(sessionId)) || '[]');
     } catch { return []; }
@@ -394,7 +403,7 @@ export default function ClipadOrbitAssistant({ isOpen = true, onClose, spaceId =
   const loadContext = async () => {
     setIsLoadingContext(true);
     try {
-      const ctx = await buildOrgContext({ limit: 20, companyId, spaceId: spaceId || undefined });
+      const ctx = await buildOrgContext({ limit: 20, companyId, spaceId: spaceId || undefined, userId, userRole: user?.role || user?.user_metadata?.role || 'member' });
       setOrgContext(ctx);
     } catch (err) {
       console.error('[OrbitFlow] Failed to load org context:', err);
@@ -472,25 +481,70 @@ export default function ClipadOrbitAssistant({ isOpen = true, onClose, spaceId =
   /* ─── Execute agentic actions ─────────────────────────────────────────── */
   const executeAction = async (parsed) => {
     try {
+      // ── Task Management ───────────────────────────────────────────────────
       if (parsed.action === 'create_task') {
-        const { error } = await supabase.from('clipad_tasks').insert({
+        const { error } = await supabase.from('clipad_action_items').insert({
           title: parsed.title || 'Orbit Task',
           status: 'todo',
-          space_id: spaceId || null,
-          assignee_id: user?.id || null,
+          space_id: parsed.space_id || spaceId || null,
+          assigned_to: parsed.assignee || user?.full_name || null,
+          due_date: parsed.due_date || null,
           is_complete: false,
+          company_id: companyId,
+          created_at: new Date().toISOString(),
         });
         return { ...parsed, status: error ? 'error' : 'success', error: error?.message };
       }
+
+      if (parsed.action === 'update_task') {
+        const updates = {};
+        if (parsed.status) updates.status = parsed.status;
+        if (parsed.assignee) updates.assigned_to = parsed.assignee;
+        if (parsed.due_date) updates.due_date = parsed.due_date;
+        if (parsed.is_complete !== undefined) updates.is_complete = parsed.is_complete;
+        const { error } = await supabase.from('clipad_action_items')
+          .update(updates).eq('id', parsed.task_id);
+        return { ...parsed, status: error ? 'error' : 'success', error: error?.message };
+      }
+
+      // ── Space Management ──────────────────────────────────────────────────
+      if (parsed.action === 'create_space') {
+        const { error } = await supabase.from('clipad_spaces').insert({
+          name: parsed.name || 'New Space',
+          description: parsed.description || '',
+          company_id: companyId,
+          is_private: parsed.is_private || false,
+          created_by: user?.id,
+          created_at: new Date().toISOString(),
+        });
+        return { ...parsed, status: error ? 'error' : 'success', error: error?.message };
+      }
+
+      // ── Document Drafting ─────────────────────────────────────────────────
+      if (parsed.action === 'draft_document' || parsed.action === 'create_document') {
+        const { error } = await supabase.from('clipad_docs').insert({
+          title: parsed.title || 'Untitled Draft',
+          content: parsed.content || '',
+          company_id: companyId,
+          space_id: parsed.space_id || spaceId || null,
+          author_id: user?.id,
+          created_at: new Date().toISOString(),
+        });
+        return { ...parsed, status: error ? 'error' : 'success', error: error?.message };
+      }
+
+      // ── Messaging ─────────────────────────────────────────────────────────
       if (parsed.action === 'send_message') {
         const { error } = await supabase.from('chat_messages').insert({
-          channel_id: 'general',
+          channel_id: parsed.channel_id || 'general',
           user_id: user?.id,
           content: parsed.message || '',
           created_at: new Date().toISOString(),
         });
         return { ...parsed, status: error ? 'error' : 'success' };
       }
+
+      // ── Meeting Scheduling ────────────────────────────────────────────────
       if (parsed.action === 'schedule_meeting') {
         const { error } = await supabase.from('clipad_meeting_records').insert({
           title: parsed.topic || 'Orbit Scheduled Sync',
@@ -501,16 +555,21 @@ export default function ClipadOrbitAssistant({ isOpen = true, onClose, spaceId =
         });
         return { ...parsed, status: error ? 'error' : 'success' };
       }
+
+      // ── Blocker Logging ───────────────────────────────────────────────────
       if (parsed.action === 'log_blocker') {
         const { error } = await supabase.from('clipad_blockers').insert({
           description: parsed.description || 'Blocker',
           severity: parsed.severity || 'medium',
           status: 'open',
           team_space_id: spaceId || null,
+          workspace_id: companyId,
           detected_at: new Date().toISOString(),
         });
         return { ...parsed, status: error ? 'error' : 'success' };
       }
+
+      // ── Decision Recording ────────────────────────────────────────────────
       if (parsed.action === 'record_decision') {
         const { error } = await supabase.from('clipad_decisions').insert({
           decision_text: parsed.decision_text || 'Decision',
@@ -522,17 +581,19 @@ export default function ClipadOrbitAssistant({ isOpen = true, onClose, spaceId =
         });
         return { ...parsed, status: error ? 'error' : 'success' };
       }
-      if (parsed.action === 'draft_document') {
-        const { error } = await supabase.from('clipad_docs').insert({
-          title: parsed.title || 'Untitled Draft',
-          content: parsed.content || '',
-          company_id: companyId,
-          space_id: spaceId || null,
-          author_id: user?.id,
+
+      // ── Commitment Tracking ───────────────────────────────────────────────
+      if (parsed.action === 'log_commitment') {
+        const { error } = await supabase.from('clipad_commitments').insert({
+          commitment_text: parsed.commitment_text || parsed.text,
+          owner_name: parsed.owner || user?.full_name,
+          due_date: parsed.due_date || null,
+          status: 'pending',
           created_at: new Date().toISOString(),
         });
         return { ...parsed, status: error ? 'error' : 'success' };
       }
+
     } catch (e) {
       return { ...parsed, status: 'error', error: e.message };
     }
@@ -593,24 +654,38 @@ export default function ClipadOrbitAssistant({ isOpen = true, onClose, spaceId =
           content: m.text,
         }));
 
-        const systemPrompt = `You are Orbit, the AI organizational intelligence assistant for CliPad — a next-generation AI workspace platform. You have FULL real-time access to the workspace data below, including meetings, decisions, videos, blockers, tasks, commitments, standup updates, and content imported from external tools like Google Drive, Slack, GitHub, Zoom, Notion, and more.
+        const systemPrompt = `You are OrbitFlow — CliPad's autonomous AI agent and organizational co-pilot. You are NOT a search tool. Your unique purpose:
+• You REASON across the entire workspace to surface insights, patterns, and risks the user may not have noticed.
+• You EXECUTE actions directly: create tasks, spaces, documents, log blockers, record decisions, schedule meetings.
+• You MONITOR: if you see a pattern in the data (e.g., blocked tasks, missed commitments, overdue items), proactively flag it.
+• You REMEMBER context across a session and can refer back to earlier parts of the conversation.
 
-You are a top-tier AI assistant on par with ChatGPT, Claude, and Gemini. You respond with intelligence, clarity, and insight. Use markdown formatting: **bold** for emphasis, bullet lists, numbered lists, code blocks, and headings to organize complex answers.
+DIFFERENCE FROM OTHER FEATURES:
+- Spotlight Search: used for quick record lookups ("find the Q3 meeting"). You are NOT that.
+- Knowledge Graph: stores organizational memory. You QUERY it, but you go further — you reason across it.
+- You are the ACTION layer: when something needs to be done, YOU do it.
+
+You have live access to the full workspace data below. You are on par with GPT-4, Claude, and Gemini.
+Use markdown: **bold**, bullet lists, numbered lists, code blocks, headings.
 
 KEY RULES:
-- Answer accurately based on the provided context. If context is insufficient, draw on your general knowledge and say so.
-- DO NOT mention internal IDs (UUIDs) in your text responses. Use titles instead.
-- When answering from workspace data, cite sources using SOURCES:[{"id":"<id>","type":"<type>"},...] at the very end.
-- Be proactive, insightful and helpful. If you see patterns in the data, point them out.
-- If asked to perform an action, output ACTION:{...} at the end (before SOURCES).
+- Answer accurately from context; use general knowledge when context is insufficient (say so).
+- DO NOT mention UUIDs or internal IDs in responses. Use titles.
+- Cite sources at the very end: SOURCES:[{"id":"<id>","type":"<type>"}]
+- Wrap internal reasoning in <think>...</think> before your final answer.
+- If asked to do something, output ACTION:{...} at the end (before SOURCES).
+- For write actions (send email, create GitHub issue), describe what you will do and confirm with: CONFIRM_ACTION:{...}
 
-AGENTIC CAPABILITIES — output ACTION:{...} to execute:
-1. create_task: {"action":"create_task","title":"...","assignee":"..."}
-2. send_message: {"action":"send_message","recipient":"...","message":"..."}
-3. schedule_meeting: {"action":"schedule_meeting","topic":"..."}
-4. log_blocker: {"action":"log_blocker","description":"...","severity":"medium"}
-5. record_decision: {"action":"record_decision","decision_text":"...","rationale":"..."}
-6. draft_document: {"action":"draft_document","title":"...","content":"..."}
+AGENTIC CAPABILITIES — output ACTION:{} to execute immediately:
+1. create_task:      {"action":"create_task","title":"...","assignee":"...","due_date":"YYYY-MM-DD","space_id":"..."}
+2. update_task:      {"action":"update_task","task_id":"...","status":"done","assignee":"..."}
+3. create_space:     {"action":"create_space","name":"...","description":"...","is_private":false}
+4. create_document:  {"action":"create_document","title":"...","content":"...","space_id":"..."}
+5. send_message:     {"action":"send_message","channel_id":"...","message":"..."}
+6. schedule_meeting: {"action":"schedule_meeting","topic":"...","date":"YYYY-MM-DD"}
+7. log_blocker:      {"action":"log_blocker","description":"...","severity":"low|medium|high|critical"}
+8. record_decision:  {"action":"record_decision","decision_text":"...","rationale":"..."}
+9. log_commitment:   {"action":"log_commitment","commitment_text":"...","owner":"...","due_date":"YYYY-MM-DD"}
 
 CURRENT WORKSPACE KNOWLEDGE:
 ${orgContext?.contextText || 'Workspace data is loading. You can still answer general questions while I fetch your workspace context.'}`;

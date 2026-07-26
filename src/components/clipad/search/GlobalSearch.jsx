@@ -277,7 +277,7 @@ export default function GlobalSearch() {
 
       let fullOrgContext = '';
       try {
-        const { contextText } = await buildOrgContext({ limit: 25, spaceIds: spaceIdArr, companyId: user.company_id });
+        const { contextText } = await buildOrgContext({ limit: 25, spaceIds: spaceIdArr, companyId: user.company_id, userId: user.id, userRole: user?.role || 'member' });
         if (contextText && contextText.length > 50) fullOrgContext = contextText;
       } catch (ctxErr) {
         console.warn('[GlobalSearch] Could not load full org context:', ctxErr.message);
