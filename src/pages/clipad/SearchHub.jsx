@@ -131,14 +131,21 @@ export default function SearchHub() {
     }));
   };
 
+  // Ref to track the current synthesis session — prevents double-firing
+  const synthSessionRef = React.useRef(0);
+  const lastQueryRef = React.useRef('');
+
   const runSearch = useCallback(async (qTerm) => {
     const q = (qTerm !== undefined ? qTerm : query).trim();
     if (!q || !companyId) return;
 
+    lastQueryRef.current = q;
     setHasPerformedSearch(true);
     setIsSearching(true);
     setResults([]);
     setSelectedResult(null);
+    setChatHistory([]);
+    setAiAnswer('');
 
     const accessibleSpaceIds = await fetchAccessibleSpaceIds(user);
     const spaceIdArr = Array.from(accessibleSpaceIds);
@@ -175,17 +182,16 @@ export default function SearchHub() {
     setIsSearching(false);
     if (raw.length > 0) setSelectedResult(raw[0]);
 
-    // AI Executive Synthesis
+    // AI Executive Synthesis — bump session id to prevent stale callbacks
     runAISynthesis(q, raw, spaceIdArr);
   }, [query, companyId, user]);
 
   const runAISynthesis = async (q, matchedResults, spaceIdArr) => {
+    const sessionId = ++synthSessionRef.current;
     setIsSynthesizing(true);
-    setAiAnswer('');
     setChatHistory([]);
 
     try {
-      const userRole = isAdmin(user) ? 'Company Admin' : isSpaceman(user) ? 'Spaceman (Space Admin)' : 'Member';
       const orgCtx = await buildOrgContext({
         limit: 25,
         companyId: user?.company_id,
@@ -194,6 +200,9 @@ export default function SearchHub() {
         spaceIds: spaceIdArr,
       }).catch(() => ({ contextText: '' }));
 
+      // Bail if a newer synthesis has started
+      if (synthSessionRef.current !== sessionId) return;
+
       const resContext = matchedResults.length > 0
         ? matchedResults.map(r => `[${r.type.toUpperCase()} ID:${r.id}] ${r.label}: ${r.snippet?.substring(0, 180) || ''}`).join('\n')
         : 'No direct database records matched.';
@@ -201,27 +210,38 @@ export default function SearchHub() {
       const promptMessages = [
         {
           role: 'system',
-          content: `You are Orbit AI, an elite enterprise intelligence engine. Provide a sleek, authoritative executive synthesis based on organizational signals. Format nicely with markdown bullet points. Be direct, clear, and high signal.`
+          content: `You are Orbit AI, an elite enterprise intelligence assistant. Give a concise, authoritative synthesis in clean markdown. Use bullet points for lists. Bold key terms. Be direct and high-signal. Do not repeat the query.`
         },
         {
           role: 'user',
-          content: `Query: "${q}"\n\nMATCHED RECORDS:\n${resContext}\n\nORGANIZATIONAL CONTEXT:\n${orgCtx.contextText || 'None'}`
+          content: `Search query: "${q}"\n\nMATCHED RECORDS:\n${resContext}\n\nORGANIZATIONAL CONTEXT:\n${orgCtx.contextText || 'None'}`
         }
       ];
 
       let fullText = '';
       await generateText(promptMessages, (accumulated) => {
-        const clean = accumulated.replace(/<(think|thought)>[\s\S]*?<\/\1>/gi, '').replace(/<(think|thought)>[\s\S]*$/gi, '').replace(/<\/(think|thought)>/gi, '');
-        setAiAnswer(clean);
+        if (synthSessionRef.current !== sessionId) return; // stale stream
+        const clean = accumulated
+          .replace(/<(think|thought)>[\s\S]*?<\/\1>/gi, '')
+          .replace(/<(think|thought)>[\s\S]*$/gi, '')
+          .replace(/<\/(think|thought)>/gi, '');
         fullText = clean;
+        // Update chatHistory in real-time so streaming text is visible immediately
+        setChatHistory([{ role: 'assistant', content: clean }]);
       });
 
-      setChatHistory([{ role: 'assistant', content: fullText }]);
+      if (synthSessionRef.current === sessionId) {
+        setChatHistory([{ role: 'assistant', content: fullText }]);
+      }
     } catch (e) {
-      console.error('[SearchHub] AI error:', e);
-      setAiAnswer('Unable to generate AI synthesis at this time.');
+      if (synthSessionRef.current === sessionId) {
+        console.error('[SearchHub] AI error:', e);
+        setChatHistory([{ role: 'assistant', content: 'Unable to generate AI synthesis at this time.' }]);
+      }
     } finally {
-      setIsSynthesizing(false);
+      if (synthSessionRef.current === sessionId) {
+        setIsSynthesizing(false);
+      }
     }
   };
 
@@ -230,23 +250,39 @@ export default function SearchHub() {
     if (!followUpInput.trim() || isSynthesizing) return;
     const userMsg = followUpInput.trim();
     setFollowUpInput('');
-    const newHistory = [...chatHistory, { role: 'user', content: userMsg }];
-    setChatHistory(newHistory);
+
+    // Build the full conversation including user's question
+    const updatedHistory = [...chatHistory, { role: 'user', content: userMsg }];
+    setChatHistory(updatedHistory);
     setIsSynthesizing(true);
 
     try {
       const messages = [
-        { role: 'system', content: 'You are Orbit AI. Answer follow-up questions about the search results directly and clearly using markdown.' },
-        ...newHistory
+        {
+          role: 'system',
+          content: `You are Orbit AI. The user searched for: "${lastQueryRef.current || 'unknown'}". Answer their follow-up question based on the conversation context. Use clear markdown formatting.`
+        },
+        // Include prior conversation (exclude system messages that might be in history)
+        ...updatedHistory.filter(m => m.role === 'user' || m.role === 'assistant')
       ];
+
       let answer = '';
       await generateText(messages, (accumulated) => {
-        const clean = accumulated.replace(/<(think|thought)>[\s\S]*?<\/\1>/gi, '').replace(/<(think|thought)>[\s\S]*$/gi, '').replace(/<\/(think|thought)>/gi, '');
+        const clean = accumulated
+          .replace(/<(think|thought)>[\s\S]*?<\/\1>/gi, '')
+          .replace(/<(think|thought)>[\s\S]*$/gi, '')
+          .replace(/<\/(think|thought)>/gi, '');
         answer = clean;
-        setChatHistory([...newHistory, { role: 'assistant', content: answer }]);
+        // Stream answer in real time
+        setChatHistory([...updatedHistory, { role: 'assistant', content: answer }]);
       });
+
+      // Finalise
+      setChatHistory([...updatedHistory, { role: 'assistant', content: answer }]);
     } catch (err) {
+      console.error('[SearchHub] Follow-up error:', err);
       toast({ title: 'Error', description: 'Could not fetch response.', variant: 'destructive' });
+      setChatHistory([...updatedHistory, { role: 'assistant', content: 'Sorry, I could not process your follow-up.' }]);
     } finally {
       setIsSynthesizing(false);
     }

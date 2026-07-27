@@ -61,6 +61,7 @@ export default function ClipadSidebar({ forceMobile }) {
   const mainItems = [
     { label: 'Search', path: '/search', icon: Search },
     { label: 'Dashboard', path: '/dashboard', icon: Layout },
+    { label: 'Analytics', path: '/analytics', icon: BarChart2 },
     { label: 'Spaces', path: '/spaces', icon: Folder },
     { label: 'Recordings', path: '/videos', icon: Video },
     { label: 'Meetings', path: '/meetings', icon: Calendar },
@@ -74,15 +75,17 @@ export default function ClipadSidebar({ forceMobile }) {
     { label: 'Action Items', path: '/action-items', icon: CheckSquare },
     { label: 'Knowledge Journey', path: '/journey', icon: Map },
     { label: 'Integrations', path: '/integrations', icon: Plug },
+    { label: 'Integration Analytics', path: '/integration-analytics', icon: BarChart2 },
   ];
 
+  // Admin-only analytics item — always labelled "Analytics" regardless of plan
   const adminItems = [];
   if (isAdmin(user)) {
-    if (user?.clipad_plan === 'enterprise') {
-      adminItems.push({ label: 'Enterprise', path: window.location.hostname.includes('clipad') ? '/enterprise' : '/clipad/enterprise', icon: Shield });
-    } else {
-      adminItems.push({ label: 'Analytics', path: window.location.hostname.includes('clipad') ? '/analytics' : '/clipad/analytics', icon: BarChart2 });
-    }
+    adminItems.push({
+      label: 'Analytics',
+      path: window.location.hostname.includes('clipad') ? '/clipad/enterprise' : '/enterprise',
+      icon: Shield
+    });
   }
   
   if (user?.role === 'super_admin') {
@@ -149,19 +152,6 @@ export default function ClipadSidebar({ forceMobile }) {
 
       <div className={cn("flex-1 overflow-y-auto scrollbar-hide pb-4", isCollapsed ? "px-2" : "px-3")}>
         
-        {/* Quick Actions */}
-        <div className={cn("py-2 space-y-0.5", !isCollapsed && "px-1")}>
-          <button 
-            onClick={() => window.dispatchEvent(new CustomEvent('open-global-search'))} 
-            className={cn("w-full flex items-center rounded-xl text-[14px] text-slate-600 hover:bg-slate-100 font-medium group", isCollapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2.5")}
-            title={isCollapsed ? "Quick Search" : undefined}
-          >
-            <Search className="w-4 h-4 opacity-70 group-hover:opacity-100" />
-            {!isCollapsed && <span>Quick search</span>}
-          </button>
-        </div>
-
-        <div className="h-px bg-slate-200/70 dark:bg-white/5 my-2 mx-2" />
 
         {/* Menu */}
         <div className="py-1">
