@@ -309,11 +309,11 @@ export async function buildOrgContext(options = {}) {
     // Imported Knowledge — PRIVACY-SCOPED per userId/userRole
     Promise.resolve(importedKnowledgeQuery).catch(() => ({ data: [] })),
 
-    // Commitments — scoped to companyId
+    // Commitments — scoped to companyId via workspace_id
     Promise.resolve(companyId
       ? supabase.from('clipad_commitments')
           .select('id, commitment_text, due_date')
-          .eq('company_id', companyId)
+          .eq('workspace_id', companyId)
           .order('created_at', { ascending: false })
           .limit(15)
       : { data: [] }).catch(() => ({ data: [] })),
@@ -343,7 +343,7 @@ export async function buildOrgContext(options = {}) {
       : companyId
         ? supabase.from('clipad_standups')
             .select('id, user_name, today, yesterday, blockers, mood, created_at, space_id')
-            .eq('company_id', companyId)
+            .eq('workspace_id', companyId)
             .order('created_at', { ascending: false })
             .limit(30)
         : { data: [] }).catch(() => ({ data: [] })),
@@ -358,7 +358,7 @@ export async function buildOrgContext(options = {}) {
       : companyId
         ? supabase.from('clipad_org_events')
             .select('id, event_type, title, description, created_at, space_id, actor_id, importance')
-            .eq('company_id', companyId)
+            .eq('workspace_id', companyId)
             .order('created_at', { ascending: false })
             .limit(20)
         : { data: [] }).catch(() => ({ data: [] })),
@@ -374,11 +374,11 @@ export async function buildOrgContext(options = {}) {
     // ── Chat rooms (PowerSync / Local fallback) ──
     Promise.resolve({ data: [] }),
 
-    // ── Follow-ups — scoped to companyId ──
+    // ── Follow-ups — scoped to companyId via workspace_id ──
     Promise.resolve(companyId
       ? supabase.from('clipad_follow_ups')
           .select('id, commitment_text, due_date, status, detected_from')
-          .eq('company_id', companyId)
+          .eq('workspace_id', companyId)
           .eq('status', 'pending')
           .order('created_at', { ascending: false })
           .limit(15)
