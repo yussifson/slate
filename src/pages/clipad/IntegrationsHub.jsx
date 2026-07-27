@@ -202,6 +202,18 @@ export default function IntegrationsHub() {
   const handleChangeScope = async () => {
     if (!changeScopeModal) return;
     const { conn } = changeScopeModal;
+
+    // Security: company-wide scope requires admin
+    if (selectedScope === 'company' && !isAdmin) {
+      toast({ title: 'Permission denied', description: 'Only admins can set company-wide integrations.', variant: 'destructive' });
+      return;
+    }
+    // Security: only admin or the owner can change scope
+    if (!isAdmin && conn.connected_by_user_id !== user?.id) {
+      toast({ title: 'Permission denied', description: 'You can only modify integrations you connected.', variant: 'destructive' });
+      return;
+    }
+
     try {
       const spaceIdVal = selectedScope === 'space' ? (selectedSpaceId || null) : null;
       const { error } = await supabase
@@ -211,7 +223,8 @@ export default function IntegrationsHub() {
           space_id: spaceIdVal,
           connected_by_user_id: user.id,
         })
-        .eq('id', conn.id);
+        .eq('id', conn.id)
+        .eq('company_id', companyId); // ensure cross-company update is impossible
       if (error) throw error;
       toast({ title: '✅ Scope updated', description: `Integration is now ${selectedScope === 'company' ? 'company-wide' : selectedScope === 'space' ? 'space-level' : 'personal'}.` });
       setChangeScopeModal(null);
@@ -222,9 +235,25 @@ export default function IntegrationsHub() {
   };
 
   const handleDisconnect = async (integration) => {
+    const conn = connected[integration.provider] || connected[integration.id];
+    if (!conn) return;
+
+    // Security: only admin or the user who connected it can disconnect
+    if (!isAdmin && conn.connected_by_user_id !== user?.id) {
+      toast({ title: 'Permission denied', description: 'You can only disconnect integrations you connected.', variant: 'destructive' });
+      return;
+    }
+    // Security: company-wide integrations require admin
+    if (conn.visibility === 'company' && !isAdmin) {
+      toast({ title: 'Permission denied', description: 'Only admins can disconnect company-wide integrations.', variant: 'destructive' });
+      return;
+    }
+
     setDisconnecting(prev => ({ ...prev, [integration.id]: true }));
     try {
-      await supabase.from('clipad_integrations').delete().eq('company_id', companyId).in('provider', [integration.provider, integration.id]);
+      await supabase.from('clipad_integrations').delete()
+        .eq('company_id', companyId)
+        .eq('id', conn.id);
       toast({ title: 'Disconnected', description: `${integration.name} has been disconnected.` });
       await loadConnected();
     } catch (e) {

@@ -243,39 +243,37 @@ export async function buildOrgContext(options = {}) {
     followUpsRes,
     actionItemsRes,
   ] = await Promise.all([
-    // Meetings
+    // Meetings — always scoped to accessible spaces (which are already company-scoped)
     Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_meeting_records')
           .select('id, title, ai_summary, created_at, ended_at, space_id')
           .in('space_id', spaceIds)
           .order('created_at', { ascending: false })
           .limit(limit)
-      : supabase.from('clipad_meeting_records')
-          .select('id, title, ai_summary, created_at, ended_at, space_id')
-          .order('created_at', { ascending: false })
-          .limit(limit)).catch(() => ({ data: [] })),
+      : companyId
+        ? supabase.from('clipad_meeting_records')
+            .select('id, title, ai_summary, created_at, ended_at, space_id')
+            .eq('company_id', companyId)
+            .order('created_at', { ascending: false })
+            .limit(limit)
+        : { data: [] }).catch(() => ({ data: [] })),
 
-    // Decisions
+    // Decisions — require companyId, no fallback to unscoped query
     Promise.resolve(companyId
       ? supabase.from('clipad_decisions')
           .select('id, decision_text, rationale, created_at')
           .eq('workspace_id', companyId)
           .order('created_at', { ascending: false })
           .limit(15)
-      : supabase.from('clipad_decisions')
-          .select('id, decision_text, rationale, created_at')
-          .order('created_at', { ascending: false })
-          .limit(15)).catch(() => ({ data: [] })),
+      : { data: [] }).catch(() => ({ data: [] })),
 
-    // Blockers
+    // Blockers — require companyId, no fallback to unscoped query
     Promise.resolve(companyId
       ? supabase.from('clipad_blockers')
           .select('id, description, severity')
           .eq('workspace_id', companyId)
           .limit(10)
-      : supabase.from('clipad_blockers')
-          .select('id, description, severity')
-          .limit(10)).catch(() => ({ data: [] })),
+      : { data: [] }).catch(() => ({ data: [] })),
 
     // Videos
     Promise.resolve(spaceIds.length > 0
@@ -291,7 +289,7 @@ export async function buildOrgContext(options = {}) {
           .order('created_at', { ascending: false })
           .limit(limit)).catch(() => ({ data: [] })),
 
-    // Tasks / Action items (clipad_action_items)
+    // Tasks / Action items — scoped to accessible spaces or companyId
     Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_action_items')
           .select('id, title, is_complete, due_date, assigned_to, space_id')
@@ -299,56 +297,71 @@ export async function buildOrgContext(options = {}) {
           .in('space_id', spaceIds)
           .order('created_at', { ascending: false })
           .limit(20)
-      : supabase.from('clipad_action_items')
-          .select('id, title, is_complete, due_date, assigned_to, space_id')
-          .eq('is_complete', false)
-          .order('created_at', { ascending: false })
-          .limit(20)).catch(() => ({ data: [] })),
+      : companyId
+        ? supabase.from('clipad_action_items')
+            .select('id, title, is_complete, due_date, assigned_to, space_id')
+            .eq('is_complete', false)
+            .eq('company_id', companyId)
+            .order('created_at', { ascending: false })
+            .limit(20)
+        : { data: [] }).catch(() => ({ data: [] })),
 
     // Imported Knowledge — PRIVACY-SCOPED per userId/userRole
     Promise.resolve(importedKnowledgeQuery).catch(() => ({ data: [] })),
 
-    // Commitments (global)
-    Promise.resolve(supabase.from('clipad_commitments')
-      .select('id, commitment_text, due_date')
-      .order('created_at', { ascending: false })
-      .limit(15)).catch(() => ({ data: [] })),
+    // Commitments — scoped to companyId
+    Promise.resolve(companyId
+      ? supabase.from('clipad_commitments')
+          .select('id, commitment_text, due_date')
+          .eq('company_id', companyId)
+          .order('created_at', { ascending: false })
+          .limit(15)
+      : { data: [] }).catch(() => ({ data: [] })),
 
-    // Spaces
+    // Spaces — always scoped via spaceIds (already company-scoped) or companyId
     Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_spaces')
           .select('id, name, description, created_at, is_private')
           .in('id', spaceIds)
           .order('created_at', { ascending: false })
           .limit(20)
-      : supabase.from('clipad_spaces')
-          .select('id, name, description, created_at, is_private')
-          .order('created_at', { ascending: false })
-          .limit(20)).catch(() => ({ data: [] })),
+      : companyId
+        ? supabase.from('clipad_spaces')
+            .select('id, name, description, created_at, is_private')
+            .eq('company_id', companyId)
+            .order('created_at', { ascending: false })
+            .limit(20)
+        : { data: [] }).catch(() => ({ data: [] })),
 
-    // ── Standups ──
+    // ── Standups — scoped to accessible spaces or companyId ──
     Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_standups')
           .select('id, user_name, today, yesterday, blockers, mood, created_at, space_id')
           .in('space_id', spaceIds)
           .order('created_at', { ascending: false })
           .limit(30)
-      : supabase.from('clipad_standups')
-          .select('id, user_name, today, yesterday, blockers, mood, created_at, space_id')
-          .order('created_at', { ascending: false })
-          .limit(30)).catch(() => ({ data: [] })),
+      : companyId
+        ? supabase.from('clipad_standups')
+            .select('id, user_name, today, yesterday, blockers, mood, created_at, space_id')
+            .eq('company_id', companyId)
+            .order('created_at', { ascending: false })
+            .limit(30)
+        : { data: [] }).catch(() => ({ data: [] })),
 
-    // ── Org Events timeline ──
+    // ── Org Events timeline — scoped to accessible spaces or companyId ──
     Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_org_events')
           .select('id, event_type, title, description, created_at, space_id, actor_id, importance')
           .in('space_id', spaceIds)
           .order('created_at', { ascending: false })
           .limit(20)
-      : supabase.from('clipad_org_events')
-          .select('id, event_type, title, description, created_at, space_id, actor_id, importance')
-          .order('created_at', { ascending: false })
-          .limit(20)).catch(() => ({ data: [] })),
+      : companyId
+        ? supabase.from('clipad_org_events')
+            .select('id, event_type, title, description, created_at, space_id, actor_id, importance')
+            .eq('company_id', companyId)
+            .order('created_at', { ascending: false })
+            .limit(20)
+        : { data: [] }).catch(() => ({ data: [] })),
 
     // ── Space members ──
     Promise.resolve(spaceIds.length > 0
@@ -361,14 +374,17 @@ export async function buildOrgContext(options = {}) {
     // ── Chat rooms (PowerSync / Local fallback) ──
     Promise.resolve({ data: [] }),
 
-    // ── NEW: Follow-ups ──
-    Promise.resolve(supabase.from('clipad_follow_ups')
-      .select('id, commitment_text, due_date, status, detected_from')
-      .eq('status', 'pending')
-      .order('created_at', { ascending: false })
-      .limit(15)).catch(() => ({ data: [] })),
+    // ── Follow-ups — scoped to companyId ──
+    Promise.resolve(companyId
+      ? supabase.from('clipad_follow_ups')
+          .select('id, commitment_text, due_date, status, detected_from')
+          .eq('company_id', companyId)
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false })
+          .limit(15)
+      : { data: [] }).catch(() => ({ data: [] })),
 
-    // ── NEW: Completed action items (recent, for history)
+    // ── Completed action items — scoped to accessible spaces or companyId ──
     Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_action_items')
           .select('id, title, is_complete, due_date, assigned_to, space_id')
@@ -376,11 +392,14 @@ export async function buildOrgContext(options = {}) {
           .in('space_id', spaceIds)
           .order('created_at', { ascending: false })
           .limit(10)
-      : supabase.from('clipad_action_items')
-          .select('id, title, is_complete, due_date, assigned_to, space_id')
-          .eq('is_complete', true)
-          .order('created_at', { ascending: false })
-          .limit(10)).catch(() => ({ data: [] })),
+      : companyId
+        ? supabase.from('clipad_action_items')
+            .select('id, title, is_complete, due_date, assigned_to, space_id')
+            .eq('is_complete', true)
+            .eq('company_id', companyId)
+            .order('created_at', { ascending: false })
+            .limit(10)
+        : { data: [] }).catch(() => ({ data: [] })),
   ]);
 
   // ── Pull from integration_knowledge (new table) if it exists ─────────────

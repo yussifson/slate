@@ -8,6 +8,7 @@ import {
   Share2, CornerDownLeft, Sparkle, Compass, Terminal, Cpu, Lightbulb, ArrowRightCircle,
   Brain, FileSearch, SparklesIcon, Send
 } from 'lucide-react';
+import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { supabase } from '@/api/supabaseClient';
 import { generateText } from '@/lib/cloudflareAI';
 import { buildOrgContext } from '@/lib/clipadIntelligence';
@@ -185,7 +186,13 @@ export default function SearchHub() {
 
     try {
       const userRole = isAdmin(user) ? 'Company Admin' : isSpaceman(user) ? 'Spaceman (Space Admin)' : 'Member';
-      const orgCtx = await buildOrgContext({ limit: 25, companyId: user?.company_id, userId: user?.id, userRole: user?.role || 'member' }).catch(() => ({ contextText: '' }));
+      const orgCtx = await buildOrgContext({
+        limit: 25,
+        companyId: user?.company_id,
+        userId: user?.id,
+        userRole: user?.role || 'member',
+        spaceIds: spaceIdArr,
+      }).catch(() => ({ contextText: '' }));
 
       const resContext = matchedResults.length > 0
         ? matchedResults.map(r => `[${r.type.toUpperCase()} ID:${r.id}] ${r.label}: ${r.snippet?.substring(0, 180) || ''}`).join('\n')
@@ -264,8 +271,8 @@ export default function SearchHub() {
         <div className="flex flex-col items-center justify-center min-h-screen px-4 pb-20 -mt-12">
 
           {/* Orbit icon mark */}
-          <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center mb-6 shadow-lg shadow-primary/25">
-            <Sparkles className="w-6 h-6 text-white" />
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 shadow-sm">
+            <CliPadLogo size={36} className="text-primary" />
           </div>
 
           {/* Greeting heading — minimal like ChatGPT */}
@@ -461,8 +468,8 @@ export default function SearchHub() {
                   
                   {/* Header */}
                   <div className="flex items-center gap-2.5 mb-4 pb-4 border-b border-slate-100 dark:border-white/8">
-                    <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
-                      <Sparkles className="w-4 h-4 text-white" />
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <CliPadLogo size={20} className="text-primary" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-sm text-slate-900 dark:text-white">Orbit AI</h3>
