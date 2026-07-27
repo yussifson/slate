@@ -6,7 +6,8 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { format } from 'date-fns';
 import {
   Scale, AlertCircle, FileText, Calendar, CheckCircle2, Search,
-  Target, Users, ChevronDown, RefreshCw, Sparkles, ArrowLeft, Filter
+  Target, Users, ChevronDown, RefreshCw, Sparkles, ArrowLeft, Filter,
+  Play, TrendingUp, Clock, Shield, GitBranch
 } from 'lucide-react';
 import { INTEGRATIONS } from '@/config/integrationsList';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
@@ -28,30 +29,56 @@ export default function DecisionLedger() {
   const loadDecisions = async () => {
     setLoading(true);
     try {
-      const { data: withDecisions, error: e1 } = await supabase
+      // Load from clipad_decisions (native AI-detected decisions)
+      const { data: nativeDecisions } = await supabase
+        .from('clipad_decisions')
+        .select('id, decision_text, rationale, status, importance_score, confidence_score, participants, outcome_status, ai_detected, created_at, team_space_id')
+        .eq('workspace_id', companyId)
+        .order('created_at', { ascending: false })
+        .limit(150);
+
+      // Also load from knowledge imports
+      const { data: withDecisions } = await supabase
         .from('clipad_imported_knowledge')
         .select('*')
         .eq('company_id', companyId)
         .not('ai_entities', 'is', null)
         .order('imported_at', { ascending: false })
-        .limit(200);
+        .limit(100);
 
-      const { data: byKeyword, error: e2 } = await supabase
+      const { data: byKeyword } = await supabase
         .from('clipad_imported_knowledge')
         .select('*')
         .eq('company_id', companyId)
         .or('title.ilike.%decision%,ai_summary.ilike.%decided%,ai_summary.ilike.%decision%')
         .order('imported_at', { ascending: false })
-        .limit(50);
+        .limit(30);
 
-      if (e1 && e2) throw e1;
+      // Combine native decisions and knowledge-based ones
+      const nativeMapped = (nativeDecisions || []).map(d => ({
+        _type: 'native',
+        id: d.id,
+        nativeId: d.id,
+        provider: 'clipad',
+        title: d.decision_text,
+        imported_at: d.created_at,
+        ai_entities: { decisions: [d.decision_text] },
+        ai_summary: d.rationale,
+        importance_score: d.importance_score,
+        confidence_score: d.confidence_score,
+        outcome_status: d.outcome_status,
+        status: d.status,
+        ai_detected: d.ai_detected,
+        participants: d.participants,
+      }));
 
-      let allItems = [...(withDecisions || []), ...(byKeyword || [])];
-      
-      // Inject mock data if empty
-      if (allItems.length === 0) {
-        allItems = [
+      let knowledgeItems = [...(withDecisions || []), ...(byKeyword || [])].map(d => ({ ...d, _type: 'knowledge' }));
+
+      // Use mock data only if truly empty
+      if (nativeMapped.length === 0 && knowledgeItems.length === 0) {
+        knowledgeItems = [
           {
+            _type: 'knowledge',
             id: 'mock-d1',
             provider: 'zoom',
             title: 'Q3 Product Roadmap Review',
@@ -60,6 +87,7 @@ export default function DecisionLedger() {
             ai_summary: 'Discussion regarding the prioritization of features for the upcoming Q3 product roadmap. The team agreed on pushing the mobile redesign to next year.'
           },
           {
+            _type: 'knowledge',
             id: 'mock-d2',
             provider: 'slack',
             title: '#engineering channel',
@@ -67,17 +95,10 @@ export default function DecisionLedger() {
             ai_entities: { decisions: ['Switched from standard PostgreSQL indexing to pgvector for faster semantic search.', 'Agreed to adopt TailwindCSS for all new internal dashboards.'] },
             ai_summary: 'Technical debate about database indexing strategies and frontend styling frameworks for the new admin panel.'
           },
-          {
-            id: 'mock-d3',
-            provider: 'linear',
-            title: 'Issue ENG-405: Upgrade UI components',
-            imported_at: new Date(Date.now() - 86400000 * 5).toISOString(),
-            ai_entities: { decisions: ['Decided to implement Radix UI primitives rather than building custom accessibility wrappers.'] },
-            ai_summary: 'Ticket discussing the ongoing effort to make the application fully accessible. Radix UI was chosen as the base layer.'
-          }
         ];
       }
 
+      const allItems = [...nativeMapped, ...knowledgeItems];
       const seen = new Set();
       const unique = allItems.filter(item => {
         if (seen.has(item.id)) return false;
@@ -86,13 +107,12 @@ export default function DecisionLedger() {
       });
 
       const filtered = unique.filter(item => {
+        if (item._type === 'native') return true;
         const hasAiDecision =
           item.ai_entities?.decisions?.length > 0 ||
           (typeof item.ai_entities?.decisions === 'string' && item.ai_entities.decisions.trim().length > 0);
-
         const titleKeyword = (item.title || '').toLowerCase().includes('decision');
         const summaryKeyword = (item.ai_summary || '').toLowerCase().includes('decid');
-
         return hasAiDecision || titleKeyword || summaryKeyword;
       });
 
@@ -240,11 +260,24 @@ export default function DecisionLedger() {
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-2">
                         <span className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider bg-amber-500/10 px-2 py-0.5 rounded-md">
-                          {aiDecisions ? '🤖 AI-Detected Decision' : '📄 Decision Reference'}
+                          {item._type === 'native' ? '🤖 AI-Detected' : '📄 Knowledge Source'}
                         </span>
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
                           <Calendar className="w-3 h-3" /> {format(new Date(item.imported_at), 'MMM d, yyyy')}
                         </span>
+                        {item.outcome_status && (
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${
+                            item.outcome_status === 'successful' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' :
+                            item.outcome_status === 'unsuccessful' ? 'bg-red-500/10 border-red-500/30 text-red-400' :
+                            item.outcome_status === 'partial' ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' :
+                            'bg-blue-500/10 border-blue-500/30 text-blue-400'
+                          }`}>
+                            {item.outcome_status}
+                          </span>
+                        )}
+                        {item.importance_score && (
+                          <span className="text-xs text-muted-foreground">Impact: <span className="font-bold text-foreground">{item.importance_score}/10</span></span>
+                        )}
                         {intg && (
                           <span className="text-xs flex items-center gap-1.5 text-muted-foreground font-medium">
                             <span className="w-4 h-4 flex items-center justify-center shrink-0">{intg.icon}</span> {intg.name}
@@ -256,7 +289,6 @@ export default function DecisionLedger() {
                         {item.title || 'Decision Artifact'}
                       </h3>
 
-                      {/* REMOVED ARTIFICIAL SLICE() TO SHOW ALL DECISIONS */}
                       {aiDecisions && (
                         <div className="space-y-2 mb-3">
                           {aiDecisions.map((d, i) => (
@@ -268,7 +300,6 @@ export default function DecisionLedger() {
                         </div>
                       )}
 
-                      {/* AI summary as context */}
                       {item.ai_summary && (
                         <div className="bg-secondary/30 rounded-xl px-4 py-3 border border-border/50 mb-3">
                           <p className="text-xs font-semibold text-muted-foreground mb-1">Context</p>
@@ -292,7 +323,16 @@ export default function DecisionLedger() {
                         {item.content_type && (
                           <span className="capitalize text-muted-foreground bg-secondary px-2 py-0.5 rounded-md">{item.content_type}</span>
                         )}
-                        {item.url && (
+                        {item._type === 'native' && (
+                          <button
+                            onClick={() => navigate(`${window.location.pathname.startsWith('/clipad') ? '/clipad' : ''}/decisions/${item.nativeId}/replay`)}
+                            className="ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-lg text-xs font-semibold hover:bg-indigo-500/20 transition-colors"
+                          >
+                            <Play className="w-3 h-3" fill="currentColor" />
+                            Replay Decision
+                          </button>
+                        )}
+                        {item.url && !item._type !== 'native' && (
                           <a
                             href={item.url}
                             target="_blank"

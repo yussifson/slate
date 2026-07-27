@@ -54,6 +54,12 @@ const AnalyticsPageRouter = () => {
 
 const IntegrationsHub = React.lazy(() => import('@/pages/clipad/IntegrationsHub'));
 const SearchHub = React.lazy(() => import('@/pages/clipad/SearchHub'));
+// CliPad 3.0 Intelligence Pages
+const DecisionReplay = React.lazy(() => import('@/pages/clipad/DecisionReplay'));
+const CommitmentIntelligence = React.lazy(() => import('@/pages/clipad/CommitmentIntelligence'));
+const PredictiveRisk = React.lazy(() => import('@/pages/clipad/PredictiveRisk'));
+const OrgHealthPulse = React.lazy(() => import('@/pages/clipad/OrgHealthPulse'));
+const CrossSpaceIntelligence = React.lazy(() => import('@/pages/clipad/CrossSpaceIntelligence'));
 
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
@@ -918,9 +924,14 @@ function PlatformRoutes() {
         <Route path="/clipad/integration-analytics" element={<IntegrationAnalytics />} />
         <Route path="/clipad/timeline" element={<KnowledgeTimeline />} />
         <Route path="/clipad/decisions" element={<DecisionLedger />} />
+        <Route path="/clipad/decisions/:decisionId/replay" element={<DecisionReplay />} />
         <Route path="/clipad/knowledge-graph" element={<KnowledgeGraph />} />
         <Route path="/clipad/action-items" element={<ActionItems />} />
         <Route path="/clipad/journey" element={<KnowledgeJourney />} />
+        <Route path="/clipad/commitments" element={<CommitmentIntelligence />} />
+        <Route path="/clipad/risk" element={<PredictiveRisk />} />
+        <Route path="/clipad/pulse" element={<OrgHealthPulse />} />
+        <Route path="/clipad/cross-space" element={<CrossSpaceIntelligence />} />
       </Route>
 
       {/* Clipad Super Admin Routes */}
@@ -1439,6 +1450,7 @@ function App() {
                           <Route path="/health" element={<KnowledgeHealth />} />
                           <Route path="/timeline" element={<KnowledgeTimeline />} />
                           <Route path="/decisions" element={<DecisionLedger />} />
+                          <Route path="/decisions/:decisionId/replay" element={<DecisionReplay />} />
                           <Route path="/knowledge-graph" element={<KnowledgeGraph />} />
                           <Route path="/action-items" element={<ActionItems />} />
                           <Route path="/journey" element={<KnowledgeJourney />} />
@@ -1455,6 +1467,10 @@ function App() {
                           <Route path="/support" element={<CliPadSupport />} />
                           <Route path="/chat" element={<ClipadChat />} />
                           <Route path="/chat/:roomId" element={<ClipadChat />} />
+                          <Route path="/commitments" element={<CommitmentIntelligence />} />
+                          <Route path="/risk" element={<PredictiveRisk />} />
+                          <Route path="/pulse" element={<OrgHealthPulse />} />
+                          <Route path="/cross-space" element={<CrossSpaceIntelligence />} />
                         </Route>
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>

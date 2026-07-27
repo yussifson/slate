@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Folder, Video, Calendar, MessageSquare, Shield, BarChart2, Network, Clock, Scale, CheckSquare, Map, Plug, Search, Settings, HelpCircle, PanelLeftClose, PanelLeft, ChevronUp, Activity, LogOut } from 'lucide-react';
+import { Layout, Folder, Video, Calendar, MessageSquare, Shield, BarChart2, Network, Clock, Scale, CheckSquare, Map, Plug, Search, Settings, HelpCircle, PanelLeftClose, PanelLeft, ChevronUp, Activity, LogOut, Target, TrendingUp, Zap, GitMerge, HeartPulse } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
@@ -83,6 +83,10 @@ export default function ClipadSidebar({ forceMobile }) {
     { label: 'Knowledge Journey', path: '/journey', icon: Map },
     { label: 'Integrations', path: '/integrations', icon: Plug },
     { label: 'Integration Analytics', path: '/integration-analytics', icon: BarChart2 },
+    { label: 'Commitment Engine', path: '/commitments', icon: Target },
+    { label: 'Risk Intelligence', path: '/risk', icon: TrendingUp },
+    { label: 'Org Health Pulse', path: '/pulse', icon: HeartPulse },
+    { label: 'Cross-Space Intel', path: '/cross-space', icon: GitMerge },
   ];
 
   // Admin items
