@@ -42,6 +42,7 @@ const CompanyManagement = React.lazy(() => import('@/pages/clipad/admin/CompanyM
 const PricingTags = React.lazy(() => import('@/pages/clipad/admin/PricingTags'));
 const AuditMonitor = React.lazy(() => import('@/pages/clipad/admin/AuditMonitor'));
 const ClipadLiveSupport = React.lazy(() => import('@/pages/clipad/admin/LiveSupport'));
+const AdminAI = React.lazy(() => import('@/pages/clipad/admin/AdminAI'));
 const AnalyticsPageRouter = () => {
   const { user } = useAuth();
   const plan = user?.clipad_plan || user?.user_metadata?.clipad_plan || 'free';
