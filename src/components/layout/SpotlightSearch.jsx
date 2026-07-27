@@ -120,8 +120,8 @@ export default function SpotlightSearch() {
           Promise.resolve(supabase.from('tasks').select('id, title, status, due_date').eq('company_id', companyId).ilike('title', `%${q}%`).limit(3)).catch(() => ({ data: [] })),
           Promise.resolve(supabase.from('clipad_meeting_records').select('id, title, ai_summary, created_at').eq('company_id', companyId).or(`title.ilike.%${q}%,ai_summary.ilike.%${q}%`).order('created_at', { ascending: false }).limit(3)).catch(() => ({ data: [] })),
           Promise.resolve(supabase.from('clipad_videos').select('id, title, ai_summary, created_at').eq('company_id', companyId).or(`title.ilike.%${q}%,ai_summary.ilike.%${q}%`).order('created_at', { ascending: false }).limit(3)).catch(() => ({ data: [] })),
-          Promise.resolve(supabase.from('clipad_decisions').select('id, decision_text, rationale, created_at').or(`decision_text.ilike.%${q}%,rationale.ilike.%${q}%`).order('created_at', { ascending: false }).limit(3)).catch(() => ({ data: [] })),
-          Promise.resolve(supabase.from('clipad_action_items').select('id, title, is_complete, due_date, assigned_to').ilike('title', `%${q}%`).eq('is_complete', false).limit(3)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_decisions').select('id, decision_text, rationale, created_at').eq('workspace_id', companyId).or(`decision_text.ilike.%${q}%,rationale.ilike.%${q}%`).order('created_at', { ascending: false }).limit(3)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_action_items').select('id, title, is_complete, due_date, assigned_to').eq('company_id', companyId).ilike('title', `%${q}%`).eq('is_complete', false).limit(3)).catch(() => ({ data: [] })),
           Promise.resolve(supabase.from('clipad_spaces').select('id, name, description, is_private').eq('company_id', companyId).or(`name.ilike.%${q}%,description.ilike.%${q}%`).limit(3)).catch(() => ({ data: [] })),
           Promise.resolve(supabase.functions.invoke('knowledge-search', {
             body: { query: q, company_id: companyId, match_count: 4, threshold: 0.35 }
