@@ -42,7 +42,15 @@ const CompanyManagement = React.lazy(() => import('@/pages/clipad/admin/CompanyM
 const PricingTags = React.lazy(() => import('@/pages/clipad/admin/PricingTags'));
 const AuditMonitor = React.lazy(() => import('@/pages/clipad/admin/AuditMonitor'));
 const ClipadLiveSupport = React.lazy(() => import('@/pages/clipad/admin/LiveSupport'));
-const AdminAI = React.lazy(() => import('@/pages/clipad/admin/AdminAI'));
+const AnalyticsPageRouter = () => {
+  const { user } = useAuth();
+  const plan = user?.clipad_plan || user?.user_metadata?.clipad_plan || 'free';
+  if (plan === 'enterprise' || user?.role === 'super_admin' || user?.role === 'admin') {
+    return <CliPadEnterpriseDashboard />;
+  }
+  return <VideoAnalytics />;
+};
+
 const IntegrationsHub = React.lazy(() => import('@/pages/clipad/IntegrationsHub'));
 const SearchHub = React.lazy(() => import('@/pages/clipad/SearchHub'));
 
@@ -1421,18 +1429,9 @@ function App() {
                         <Route path="/join/:roomId" element={<StandaloneMeeting />} />
                         <Route path="/watch/:videoId" element={<WatchVideo />} />
                       </Route>
-                      <Route path="/analytics" element={<VideoAnalytics />} />
-                      <Route element={<ProtectedRoute />}>
-                        <Route element={<ClipadAdminLayout />}>
-                          <Route path="/admin" element={<ClipadAdminOverview />} />
-                          <Route path="/admin/companies" element={<CompanyManagement />} />
-                          <Route path="/admin/pricing" element={<PricingTags />} />
-                          <Route path="/admin/audit" element={<AuditMonitor />} />
-                          <Route path="/admin/ai" element={<AdminAI />} />
-                          <Route path="/admin/support" element={<ClipadLiveSupport />} />
-                        </Route>
                         <Route element={<ClipadLayout />}>
                           <Route path="/dashboard" element={<CliPadDashboard />} />
+                          <Route path="/analytics" element={<AnalyticsPageRouter />} />
                           <Route path="/enterprise" element={<CliPadEnterpriseDashboard />} />
                           <Route path="/spaces" element={<SpacesList />} />
                           <Route path="/spaces/:spaceId" element={<SpaceDashboard />} />

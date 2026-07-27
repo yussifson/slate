@@ -83,7 +83,7 @@ export default function ClipadSidebar({ forceMobile }) {
   if (isAdmin(user)) {
     adminItems.push({
       label: 'Analytics',
-      path: window.location.hostname.includes('clipad') ? '/clipad/enterprise' : '/enterprise',
+      path: window.location.hostname.includes('clipad') ? '/clipad/analytics' : '/analytics',
       icon: Shield
     });
   }
