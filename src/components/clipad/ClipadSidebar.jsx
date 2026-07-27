@@ -1,17 +1,25 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Folder, Video, Calendar, MessageSquare, Shield, BarChart2, Network, Clock, Scale, CheckSquare, Map, Plug, Search, Settings, HelpCircle, PanelLeftClose, PanelLeft, ChevronUp, Activity } from 'lucide-react';
+import { Layout, Folder, Video, Calendar, MessageSquare, Shield, BarChart2, Network, Clock, Scale, CheckSquare, Map, Plug, Search, Settings, HelpCircle, PanelLeftClose, PanelLeft, ChevronUp, Activity, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
 import { isAdmin } from '@/lib/constants';
 import PaystackAPI from '@/api/PaystackAPI';
 import { useToast } from '@/components/ui/use-toast';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function ClipadSidebar({ forceMobile }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { toast } = useToast();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -241,24 +249,51 @@ export default function ClipadSidebar({ forceMobile }) {
 
       {/* User Profile Footer */}
       <div className={cn("p-4 border-t border-slate-200/70 dark:border-white/5 bg-white/50 dark:bg-transparent", isCollapsed ? "flex justify-center" : "")}>
-        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/settings')}>
-          <div className="w-9 h-9 shrink-0 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden border border-slate-200">
-            {user?.avatar_url || user?.user_metadata?.avatar_url ? (
-              <img src={user.avatar_url || user.user_metadata.avatar_url} alt={firstName} className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-sm font-bold text-slate-700">{firstName[0]?.toUpperCase()}</span>
-            )}
-          </div>
-          {!isCollapsed && (
-            <>
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-bold text-slate-900 dark:text-slate-100 truncate group-hover:text-primary transition-colors">{firstName}</p>
-                <p className="text-[11px] text-slate-500 truncate">{displayPlanName}</p>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="flex items-center gap-3 cursor-pointer group">
+              <div className="w-9 h-9 shrink-0 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden border border-slate-200">
+                {user?.avatar_url || user?.user_metadata?.avatar_url ? (
+                  <img src={user.avatar_url || user.user_metadata.avatar_url} alt={firstName} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-sm font-bold text-slate-700">{firstName[0]?.toUpperCase()}</span>
+                )}
               </div>
-              <ChevronUp className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
-            </>
-          )}
-        </div>
+              {!isCollapsed && (
+                <>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-bold text-slate-900 dark:text-slate-100 truncate group-hover:text-primary transition-colors">{firstName}</p>
+                    <p className="text-[11px] text-slate-500 truncate">{displayPlanName}</p>
+                  </div>
+                  <ChevronUp className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
+                </>
+              )}
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align={isCollapsed ? "center" : "end"} className="w-56 font-sans">
+            <DropdownMenuLabel className="font-semibold px-3 py-2 flex flex-col">
+              <span className="text-foreground">{user?.full_name || 'User'}</span>
+              <span className="text-xs text-muted-foreground font-normal">{user?.email}</span>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {user?.role === 'super_admin' && (
+              <DropdownMenuItem 
+                onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin')} 
+                className="cursor-pointer py-2"
+              >
+                <Shield className="mr-3 h-4 w-4 text-muted-foreground" />
+                <span>Super Admin</span>
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem 
+              onClick={async () => { await logout(); navigate('/login'); }} 
+              className="cursor-pointer py-2 text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
+            >
+              <LogOut className="mr-3 h-4 w-4" />
+              <span>Log Out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Expand Toggle (Visible when collapsed) */}

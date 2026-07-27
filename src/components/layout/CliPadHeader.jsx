@@ -74,14 +74,6 @@ export default function CliPadHeader() {
               <span className="text-xs text-muted-foreground font-normal">{user?.email}</span>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate('/clipad/settings')} className="cursor-pointer py-2">
-              <Settings className="mr-3 h-4 w-4 text-muted-foreground" />
-              <span>Settings</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/clipad/integrations')} className="cursor-pointer py-2">
-              <Plug className="mr-3 h-4 w-4 text-muted-foreground" />
-              <span>Integrations</span>
-            </DropdownMenuItem>
             
             {/* Account Switcher Section */}
             {savedAccounts.length > 1 && (
