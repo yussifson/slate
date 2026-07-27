@@ -18,6 +18,7 @@ import WithoutCliPadSection from '@/components/clipad/WithoutCliPadSection';
 import WithCliPadSection from '@/components/clipad/WithCliPadSection';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useAuth } from '@/lib/AuthContext';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import ContactSalesModal from '@/components/clipad/ContactSalesModal';
 import PaymentReceiptModal from '@/components/clipad/PaymentReceiptModal';
@@ -239,6 +240,29 @@ export default function MeetLandingPage() {
   }, []);
 
   useEffect(() => {
+    // Detect and apply browser language on initial load if no translation cookie is set
+    const hasGoogtrans = document.cookie.split(';').some(item => item.trim().startsWith('googtrans='));
+    if (!hasGoogtrans) {
+      const browserLang = navigator.language || navigator.userLanguage;
+      if (browserLang) {
+        const langCode = browserLang.split('-')[0].toLowerCase();
+        if (langCode !== 'en') {
+          document.cookie = `googtrans=/en/${langCode}; path=/; domain=${window.location.hostname}`;
+          document.cookie = `googtrans=/en/${langCode}; path=/`;
+          
+          const googleSelect = document.querySelector('.goog-te-combo');
+          if (googleSelect) {
+            googleSelect.value = langCode;
+            googleSelect.dispatchEvent(new Event('change'));
+          } else {
+            window.location.reload();
+          }
+        }
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     const isMobilePhone = window.innerWidth < 768;
     if (isMobilePhone && !isLoadingAuth && user) {
       navigate('/dashboard');
@@ -399,6 +423,7 @@ export default function MeetLandingPage() {
           </div>
           
           <div className="flex items-center gap-2">
+            <LanguageSwitcher className="h-9 w-[130px] rounded-xl border border-slate-200 dark:border-border bg-background hover:bg-slate-50 dark:hover:bg-secondary text-slate-700 dark:text-foreground text-xs" />
             {user ? (
               <Button onClick={() => navigate('/dashboard')} className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
                 <Layers className="w-4 h-4 mr-2" /> Dashboard
