@@ -218,13 +218,22 @@ export default function SearchHub() {
         }
       ];
 
+      const cleanText = (raw) => {
+        return raw
+          .replace(/<(think|thought)>[\s\S]*?<\/\1>/gi, '')
+          .replace(/<(think|thought)>[\s\S]*$/gi, '')
+          .replace(/<\/(think|thought)>/gi, '')
+          // Clean up raw backslash escaped quotes, braces, brackets, and raw backslash characters
+          .replace(/\\([\\`*_{}[\]()#+\-.!])/g, '$1')
+          // Strip out typical malformed token artifacts or corrupt byte markers sometimes outputted by LLMs
+          .replace(/[\uFFFD\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
+          .trim();
+      };
+
       let fullText = '';
       await generateText(promptMessages, (accumulated) => {
         if (synthSessionRef.current !== sessionId) return; // stale stream
-        const clean = accumulated
-          .replace(/<(think|thought)>[\s\S]*?<\/\1>/gi, '')
-          .replace(/<(think|thought)>[\s\S]*$/gi, '')
-          .replace(/<\/(think|thought)>/gi, '');
+        const clean = cleanText(accumulated);
         fullText = clean;
         // Update chatHistory in real-time so streaming text is visible immediately
         setChatHistory([{ role: 'assistant', content: clean }]);
@@ -266,12 +275,19 @@ export default function SearchHub() {
         ...updatedHistory.filter(m => m.role === 'user' || m.role === 'assistant')
       ];
 
-      let answer = '';
-      await generateText(messages, (accumulated) => {
-        const clean = accumulated
+      const cleanText = (raw) => {
+        return raw
           .replace(/<(think|thought)>[\s\S]*?<\/\1>/gi, '')
           .replace(/<(think|thought)>[\s\S]*$/gi, '')
-          .replace(/<\/(think|thought)>/gi, '');
+          .replace(/<\/(think|thought)>/gi, '')
+          .replace(/\\([\\`*_{}[\]()#+\-.!])/g, '$1')
+          .replace(/[\uFFFD\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
+          .trim();
+      };
+
+      let answer = '';
+      await generateText(messages, (accumulated) => {
+        const clean = cleanText(accumulated);
         answer = clean;
         // Stream answer in real time
         setChatHistory([...updatedHistory, { role: 'assistant', content: answer }]);
