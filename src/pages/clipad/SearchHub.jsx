@@ -316,7 +316,7 @@ export default function SearchHub() {
   const filteredResults = useMemo(() => results.filter(r => matchesFilter(r.type, activeFilter)), [results, activeFilter]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0f0f0f] text-foreground font-sans selection:bg-primary/20 selection:text-primary">
+    <div className="min-h-screen bg-white dark:bg-[#0b0f19] text-foreground font-sans selection:bg-primary/20 selection:text-primary">
 
       {/* ── ZERO STATE: Centered hero ── */}
       {!hasPerformedSearch && (
@@ -386,7 +386,7 @@ export default function SearchHub() {
       {hasPerformedSearch && (
         <div>
           {/* Sticky top search bar */}
-          <div className="sticky top-0 z-30 bg-white/90 dark:bg-[#0f0f0f]/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/5 px-4 md:px-8 py-3">
+          <div className="sticky top-0 z-30 bg-white/90 dark:bg-[#0b0f19]/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/5 px-4 md:px-8 py-3">
             <div className="max-w-3xl mx-auto">
               <form onSubmit={(e) => { e.preventDefault(); setSearchParams({ q: query }); runSearch(); }}>
                 <div className="relative flex items-center bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-1 focus-within:border-primary dark:focus-within:border-primary transition-all">

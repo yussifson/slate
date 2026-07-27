@@ -103,7 +103,7 @@ export default function ClipadSidebar({ forceMobile }) {
           "w-full flex items-center px-3 py-2.5 transition-all duration-200 group relative mb-0.5",
           isCollapsed ? "justify-center rounded-xl" : "gap-3 rounded-xl",
           isActive 
-            ? "bg-white dark:bg-[#1a1a1a] text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.04)] font-semibold" 
+            ? "bg-white dark:bg-[#161e2e] text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.04)] font-semibold" 
             : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 border border-transparent font-medium"
         )}
         title={isCollapsed ? item.label : undefined}
