@@ -316,7 +316,7 @@ export default function SearchHub() {
   const filteredResults = useMemo(() => results.filter(r => matchesFilter(r.type, activeFilter)), [results, activeFilter]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0b0f19] text-foreground font-sans selection:bg-primary/20 selection:text-primary">
+    <div className="min-h-screen bg-white dark:bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary">
 
       {/* ── ZERO STATE: Centered hero ── */}
       {!hasPerformedSearch && (

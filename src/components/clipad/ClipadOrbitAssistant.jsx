@@ -385,6 +385,18 @@ export default function ClipadOrbitAssistant({ isOpen = true, onClose, spaceId =
     }
   }, [isOpen, userId]);
 
+  /* listen for injected prompts (e.g. from DailyBriefing or other widgets) */
+  useEffect(() => {
+    const handleInject = (e) => {
+      const query = e.detail?.query;
+      if (query) {
+        handleSend(query);
+      }
+    };
+    window.addEventListener('orbit:inject', handleInject);
+    return () => window.removeEventListener('orbit:inject', handleInject);
+  }, [handleSend]);
+
   const loadSessions = async () => {
     if (!userId) return;
     setSessionsLoading(true);
