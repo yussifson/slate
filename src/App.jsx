@@ -1455,7 +1455,6 @@ function App() {
                           <Route path="/chat" element={<ClipadChat />} />
                           <Route path="/chat/:roomId" element={<ClipadChat />} />
                         </Route>
-                      </Route>
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                   </React.Suspense>
