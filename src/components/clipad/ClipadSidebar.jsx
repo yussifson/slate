@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Folder, Video, Calendar, MessageSquare, Shield, BarChart2, Network, Clock, Scale, CheckSquare, Map, Plug, Search, Settings, HelpCircle, PanelLeftClose, PanelLeft, ChevronUp } from 'lucide-react';
+import { Layout, Folder, Video, Calendar, MessageSquare, Shield, BarChart2, Network, Clock, Scale, CheckSquare, Map, Plug, Search, Settings, HelpCircle, PanelLeftClose, PanelLeft, ChevronUp, Activity } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
@@ -61,7 +61,6 @@ export default function ClipadSidebar({ forceMobile }) {
   const mainItems = [
     { label: 'Search', path: '/search', icon: Search },
     { label: 'Dashboard', path: '/dashboard', icon: Layout },
-    { label: 'Analytics', path: '/analytics', icon: BarChart2 },
     { label: 'Spaces', path: '/spaces', icon: Folder },
     { label: 'Recordings', path: '/videos', icon: Video },
     { label: 'Meetings', path: '/meetings', icon: Calendar },
@@ -78,18 +77,29 @@ export default function ClipadSidebar({ forceMobile }) {
     { label: 'Integration Analytics', path: '/integration-analytics', icon: BarChart2 },
   ];
 
-  // Admin-only analytics item — always labelled "Analytics" regardless of plan
+  // Admin items
   const adminItems = [];
+  const isClipadUrl = window.location.pathname.startsWith('/clipad') || window.location.hostname.includes('clipad');
+
   if (isAdmin(user)) {
     adminItems.push({
       label: 'Analytics',
-      path: window.location.hostname.includes('clipad') ? '/clipad/analytics' : '/analytics',
-      icon: Shield
+      path: isClipadUrl ? '/clipad/analytics' : '/analytics',
+      icon: BarChart2
+    });
+    adminItems.push({
+      label: 'Knowledge Health',
+      path: isClipadUrl ? '/clipad/health' : '/health',
+      icon: Activity
     });
   }
   
   if (user?.role === 'super_admin') {
-    adminItems.push({ label: 'Super Admin', path: window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin', icon: Shield });
+    adminItems.push({ 
+      label: 'Super Admin', 
+      path: isClipadUrl ? '/clipad/admin' : '/admin', 
+      icon: Shield 
+    });
   }
 
   const renderNavItem = (item) => {
