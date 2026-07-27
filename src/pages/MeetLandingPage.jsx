@@ -416,6 +416,13 @@ export default function MeetLandingPage() {
 
       <main className="relative z-10 flex-1 flex flex-col md:flex-row items-center justify-center p-6 md:p-12 gap-12 md:gap-16 max-w-7xl mx-auto w-full">
         <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-8 max-w-xl">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-50/90 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 shadow-md transition-all duration-300 hover:scale-105 select-none">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            <span>CliPad 2.0 Live</span>
+          </div>
           <h1 className="text-4xl md:text-5xl font-normal text-slate-800 leading-tight tracking-tight">
             #1 Enterprise AI-powered organizational memory and intelligence layer.<br />Now free for everyone.
           </h1>

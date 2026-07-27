@@ -50,6 +50,13 @@ export default function ClipadTopNav({ forceMobile = false }) {
         <h1 className="text-lg md:text-xl font-semibold text-slate-800 dark:text-slate-100 hidden md:block">
           {getPageTitle()}
         </h1>
+        <div className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-500/20 shadow-sm transition-all duration-300 hover:scale-105 select-none">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span>CliPad 2.0 Live</span>
+        </div>
       </div>
       
       {/* Search & AI Bar — tablet and up */}
