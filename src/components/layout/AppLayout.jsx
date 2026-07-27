@@ -99,7 +99,7 @@ export default function AppLayout() {
         link.rel = 'icon';
         document.head.appendChild(link);
       }
-      link.href = '/clipad-logo.svg';
+      link.href = '/clipad-favicon-round.svg';
       document.title = 'CliPad - #1 Enterprise AI-Powered Organizational Memory Layer';
       return; // Do not apply company branding on Clipad
     }
