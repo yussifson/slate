@@ -151,7 +151,7 @@ export const EnterpriseAnalyticsAPI = {
     try {
       const { data: videos } = await supabase
         .from('clipad_videos')
-        .select('id, title, created_at, host_id')
+        .select('id, title, created_at, creator_id')
         .eq('company_id', companyId)
         .order('created_at', { ascending: false });
 
@@ -167,7 +167,7 @@ export const EnterpriseAnalyticsAPI = {
       (users || []).forEach(u => userMap[u.id] = u.full_name);
 
       const all = [
-        ...(videos || []).map(v => ({ ...v, type: 'video', host_name: userMap[v.host_id] || 'Unknown' })),
+        ...(videos || []).map(v => ({ ...v, type: 'video', host_id: v.creator_id, host_name: userMap[v.creator_id] || 'Unknown' })),
         ...(meetings || []).map(m => ({ ...m, type: 'meeting', host_name: userMap[m.host_id] || 'Unknown' }))
       ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 

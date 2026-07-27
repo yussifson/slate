@@ -363,7 +363,7 @@ export default function GlobalSearch() {
       // Blockers
       safeQuery(
         spaceIdArr.length > 0
-          ? supabase.from('clipad_blockers').select('id, description, team_space_id, created_at').in('team_space_id', spaceIdArr).ilike('description', term).limit(limit)
+          ? supabase.from('clipad_blockers').select('id, description, team_space_id, detected_at').in('team_space_id', spaceIdArr).ilike('description', term).limit(limit)
           : []
       ),
       // Standups: space filter
@@ -374,7 +374,7 @@ export default function GlobalSearch() {
       ),
       // Integration knowledge: title + full content
       safeQuery(
-        supabase.from('clipad_imported_knowledge').select('id, title, content, provider, content_type, created_at').eq('company_id', cid).ilike('title', term).limit(limit)
+        supabase.from('clipad_imported_knowledge').select('id, title, content, provider, content_type, updated_at').eq('company_id', cid).ilike('title', term).limit(limit)
       ),
       // People search
       Promise.resolve(searchPeople(q, cid)).catch(() => []),
@@ -382,15 +382,15 @@ export default function GlobalSearch() {
 
     const raw = [
       ...(people || []),
-      ...(docs.data || []).map(d => ({ type: 'doc', id: d.id, space_id: d.space_id, label: d.title, snippet: d.content?.substring(0, 200), created_at: d.created_at })),
-      ...(tasks.data || []).map(t => ({ type: 'task', id: t.id, space_id: t.space_id, label: t.title, snippet: t.context?.substring(0, 200), created_at: t.created_at })),
-      ...(messages.data || []).map(m => ({ type: 'message', id: m.id, space_id: m.space_id, label: 'Chat Message', snippet: m.content?.substring(0, 200), created_at: m.created_at })),
-      ...(meetings.data || []).map(m => ({ type: 'meeting', id: m.id, space_id: m.space_id, label: m.title || 'Team Meeting', snippet: m.ai_summary?.substring(0, 200), created_at: m.created_at })),
-      ...(decisions.data || []).map(d => ({ type: 'decision', id: d.id, space_id: d.team_space_id, label: 'Decision', snippet: d.decision_text?.substring(0, 200), created_at: d.created_at })),
-      ...(videos.data || []).map(v => ({ type: 'video', id: v.id, space_id: v.space_id, label: v.title || 'Video', snippet: v.ai_summary?.substring(0, 200), created_at: v.created_at })),
-      ...(blockers.data || []).map(b => ({ type: 'blocker', id: b.id, space_id: b.team_space_id, label: 'Blocker', snippet: b.description?.substring(0, 200), created_at: b.created_at })),
-      ...(standups.data || []).map(s => ({ type: 'standup', id: s.id, space_id: s.space_id, label: `Standup — ${s.user_name || 'Team member'} (${s.created_at?.slice(0, 10)})`, snippet: s.today?.substring(0, 200), created_at: s.created_at })),
-      ...(integrations.data || []).map(i => ({ type: 'integration', id: i.id, space_id: null, label: `[${i.provider}] ${i.title}`, snippet: i.content?.substring(0, 200), created_at: i.created_at })),
+      ...(docs || []).map(d => ({ type: 'doc', id: d.id, space_id: d.space_id, label: d.title, snippet: d.content?.substring(0, 200), created_at: d.created_at })),
+      ...(tasks || []).map(t => ({ type: 'task', id: t.id, space_id: t.space_id, label: t.title, snippet: t.context?.substring(0, 200), created_at: t.created_at })),
+      ...(messages || []).map(m => ({ type: 'message', id: m.id, space_id: m.space_id, label: 'Chat Message', snippet: m.content?.substring(0, 200), created_at: m.created_at })),
+      ...(meetings || []).map(m => ({ type: 'meeting', id: m.id, space_id: m.space_id, label: m.title || 'Team Meeting', snippet: m.ai_summary?.substring(0, 200), created_at: m.created_at })),
+      ...(decisions || []).map(d => ({ type: 'decision', id: d.id, space_id: d.team_space_id, label: 'Decision', snippet: d.decision_text?.substring(0, 200), created_at: d.created_at })),
+      ...(videos || []).map(v => ({ type: 'video', id: v.id, space_id: v.space_id, label: v.title || 'Video', snippet: v.ai_summary?.substring(0, 200), created_at: v.created_at })),
+      ...(blockers || []).map(b => ({ type: 'blocker', id: b.id, space_id: b.team_space_id, label: 'Blocker', snippet: b.description?.substring(0, 200), created_at: b.detected_at })),
+      ...(standups || []).map(s => ({ type: 'standup', id: s.id, space_id: s.space_id, label: `Standup — ${s.user_name || 'Team member'} (${s.created_at?.slice(0, 10)})`, snippet: s.today?.substring(0, 200), created_at: s.created_at })),
+      ...(integrations || []).map(i => ({ type: 'integration', id: i.id, space_id: null, label: `[${i.provider}] ${i.title}`, snippet: i.content?.substring(0, 200), created_at: i.updated_at })),
     ];
 
     // Smart ranking: sort by relevance score descending

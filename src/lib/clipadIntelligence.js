@@ -309,11 +309,11 @@ export async function buildOrgContext(options = {}) {
     // Imported Knowledge — PRIVACY-SCOPED per userId/userRole
     Promise.resolve(importedKnowledgeQuery).catch(() => ({ data: [] })),
 
-    // Commitments — scoped to companyId via workspace_id
-    Promise.resolve(companyId
+    // Commitments — scoped to companyId via spaceIds
+    Promise.resolve(spaceIds.length > 0
       ? supabase.from('clipad_commitments')
           .select('id, commitment_text, due_date')
-          .eq('workspace_id', companyId)
+          .in('team_space_id', spaceIds)
           .order('created_at', { ascending: false })
           .limit(15)
       : { data: [] }).catch(() => ({ data: [] })),
@@ -714,18 +714,19 @@ export async function detectRisks(companyId, spaceIds = []) {
     // 5. Commitments overdue (due_date passed and still pending)
     const { data: overdueCommitments } = await supabase
       .from('clipad_commitments')
-      .select('id, commitment_text, owner_name, due_date')
+      .select('id, commitment_text, due_date, assignee:assignee_id(full_name)')
       .eq('status', 'pending')
       .not('due_date', 'is', null)
       .lt('due_date', now.toISOString().split('T')[0])
       .limit(5);
 
     (overdueCommitments || []).forEach(c => {
+      const ownerName = c.assignee?.full_name;
       risks.push({
         type: 'overdue_commitment',
         severity: 'high',
         title: `Commitment overdue`,
-        description: `"${c.commitment_text?.substring(0, 100)}"${c.owner_name ? ` (${c.owner_name})` : ''} — was due ${c.due_date}`,
+        description: `"${c.commitment_text?.substring(0, 100)}"${ownerName ? ` (${ownerName})` : ''} — was due ${c.due_date}`,
         source_id: c.id,
         source_table: 'clipad_commitments',
       });
