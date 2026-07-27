@@ -239,7 +239,8 @@ export default function MeetLandingPage() {
   }, []);
 
   useEffect(() => {
-    if (!isLoadingAuth && user) {
+    const isMobilePhone = window.innerWidth < 768;
+    if (isMobilePhone && !isLoadingAuth && user) {
       navigate('/search');
     }
   }, [user, isLoadingAuth, navigate]);
