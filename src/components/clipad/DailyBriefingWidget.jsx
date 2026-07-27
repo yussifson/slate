@@ -10,6 +10,8 @@ export default function DailyBriefingWidget() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const fetchAndGenerateBriefing = async (forceRefresh = false) => {
     if (!user?.company_id) return;
 
@@ -58,15 +60,15 @@ export default function DailyBriefingWidget() {
 
       // 2. Synthesize using Kimi K2.5
       const prompt = `You are an executive chief of staff. Synthesize a concise 3-bullet "Good Morning Executive Briefing" based on these org signals:
-Meetings in last 24h: ${JSON.stringify(meetings)}
-Active Commitments: ${JSON.stringify(commitments)}
-Active Blockers: ${JSON.stringify(blockers)}
+      Meetings in last 24h: ${JSON.stringify(meetings)}
+      Active Commitments: ${JSON.stringify(commitments)}
+      Active Blockers: ${JSON.stringify(blockers)}
 
-Return ONLY valid JSON with keys:
-- "greeting": short personalized greeting
-- "highlights": array of 2-3 key accomplishments/meeting summaries from yesterday
-- "topPriorities": array of 2-3 urgent commitments due soon
-- "risks": array of 1-2 critical blockers or risk warnings (can be empty array)`;
+      Return ONLY valid JSON with keys:
+      - "greeting": short personalized greeting
+      - "highlights": array of 2-3 key accomplishments/meeting summaries from yesterday
+      - "topPriorities": array of 2-3 urgent commitments due soon
+      - "risks": array of 1-2 critical blockers or risk warnings (can be empty array)`;
 
       const raw = await generateText([{ role: 'user', content: prompt }]);
       // Strip all <think>...</think> reasoning blocks and orphan tags before parsing JSON
@@ -97,7 +99,7 @@ Return ONLY valid JSON with keys:
       } catch (_) {/* storage quota errors are non-fatal */}
 
     } catch (err) {
-      console.warn("Failed to generate daily briefing", err);
+      console.warn("Failed to daily briefing", err);
       setBriefing({
         greeting: `Good day, ${user?.full_name?.split(' ')[0] || 'Team'}!`,
         highlights: ["Workspace initialized. All systems operating smoothly."],
@@ -130,13 +132,13 @@ Return ONLY valid JSON with keys:
   if (!briefing) return null;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-300 hover:shadow-md p-5 md:p-6 group">
+    <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-300 hover:shadow-md p-5 group">
       {/* Top glowing accent bar */}
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 rounded-t-2xl" />
 
       {/* Header Bar */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3 cursor-pointer select-none" onClick={() => setIsExpanded(!isExpanded)}>
           <div className="w-9 h-9 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20 dark:border-emerald-500/30 flex items-center justify-center shrink-0">
             <Sparkles className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           </div>
@@ -145,87 +147,107 @@ Return ONLY valid JSON with keys:
               <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                 Daily Briefing
               </span>
+              <span className="text-[10px] text-slate-400 font-medium">
+                {isExpanded ? '(Click to collapse)' : '(Click to expand)'}
+              </span>
             </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight mt-0.5">{briefing.greeting}</h3>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight mt-0.5">{briefing.greeting}</h3>
           </div>
         </div>
-        <button
-          onClick={() => { setRefreshing(true); fetchAndGenerateBriefing(true); }}
-          disabled={refreshing}
-          className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700/80 text-slate-500 dark:text-slate-400 transition-colors"
-          title="Refresh briefing"
-        >
-          <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => { setRefreshing(true); fetchAndGenerateBriefing(true); }}
+            disabled={refreshing}
+            className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700/80 text-slate-500 dark:text-slate-400 transition-colors"
+            title="Refresh briefing"
+          >
+            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+          </button>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700/80 text-slate-500 dark:text-slate-400 transition-colors text-xs font-bold"
+          >
+            {isExpanded ? 'Collapse' : 'Expand'}
+          </button>
+        </div>
       </div>
 
-      {/* Grid of Signals */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Yesterday's Highlights */}
-        {briefing.highlights?.length > 0 && (
-          <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-800/80 space-y-2">
-            <h4 className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5" /> Yesterday's Key Highlights
-            </h4>
-            <ul className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
-              {briefing.highlights.map((h, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 mt-1.5" />
-                  <span>{h}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+      {isExpanded && (
+        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 animate-in fade-in slide-in-from-top-2 duration-200">
+          {/* Grid of Signals */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Yesterday's Highlights */}
+            {briefing.highlights?.length > 0 && (
+              <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-800/80 space-y-2">
+                <h4 className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5" /> Yesterday's Key Highlights
+                </h4>
+                <ul className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                  {briefing.highlights.map((h, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 mt-1.5" />
+                      <span>{h}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-        {/* Top Priorities & Risks */}
-        <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-800/80 space-y-2">
-          <h4 className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5" /> Today's Priorities
-          </h4>
-          <ul className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
-            {briefing.topPriorities?.map((p, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0 mt-1.5" />
-                <span>{p}</span>
-              </li>
-            ))}
-          </ul>
-
-          {briefing.risks?.length > 0 && (
-            <div className="mt-3 pt-2.5 border-t border-slate-200/80 dark:border-slate-700/60">
-              <span className="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider flex items-center gap-1 mb-1">
-                <AlertTriangle className="w-3.5 h-3.5" /> Risks / Blockers
-              </span>
-              <ul className="space-y-1 text-xs text-red-600 dark:text-red-300">
-                {briefing.risks.map((r, i) => (
-                  <li key={i} className="flex items-start gap-1.5">
-                    <span className="text-red-500 font-bold">•</span>
-                    <span>{r}</span>
+            {/* Top Priorities & Risks */}
+            <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-800/80 space-y-2">
+              <h4 className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Today's Priorities
+              </h4>
+              <ul className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                {briefing.topPriorities?.map((p, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0 mt-1.5" />
+                    <span>{p}</span>
                   </li>
                 ))}
               </ul>
-            </div>
-          )}
-        </div>
-      </div>
 
-      {/* Footer Bar */}
-      <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-        <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500">
-          Powered by Orbit AI
-        </span>
-        <button
-          onClick={() => {
-            window.dispatchEvent(new CustomEvent('orbit:inject', {
-              detail: { query: 'Give me a deeper breakdown of my team’s active blockers and commitments' }
-            }));
-          }}
-          className="flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors group/btn"
-        >
-          Ask Orbit <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
-        </button>
-      </div>
+              {briefing.risks?.length > 0 && (
+                <div className="mt-3 pt-2.5 border-t border-slate-200/80 dark:border-slate-700/60">
+                  <span className="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider flex items-center gap-1 mb-1">
+                    <AlertTriangle className="w-3.5 h-3.5" /> Risks / Blockers
+                  </span>
+                  <ul className="space-y-1 text-xs text-red-600 dark:text-red-300">
+                    {briefing.risks.map((r, i) => (
+                      <li key={i} className="flex items-start gap-1.5">
+                        <span className="text-red-500 font-bold">•</span>
+                        <span>{r}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Footer Bar */}
+          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+            <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500">
+              Powered by Orbit AI
+            </span>
+            <button
+              onClick={() => {
+                // Ensure Orbit AI panel opens first
+                window.dispatchEvent(new CustomEvent('toggle-clipad-orbit'));
+                // Delay sending the prompt slightly to allow side drawer animation to initialize
+                setTimeout(() => {
+                  window.dispatchEvent(new CustomEvent('orbit:inject', {
+                    detail: { query: 'Give me a deeper breakdown of my team’s active blockers and commitments' }
+                  }));
+                }, 150);
+              }}
+              className="flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors group/btn"
+            >
+              Ask Orbit <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
