@@ -179,7 +179,7 @@ export default function DecisionLedger() {
               onClick={() => setFilterProvider('all')}
               className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
                 filterProvider === 'all' 
-                  ? 'bg-foreground text-background shadow-sm' 
+                  ? 'bg-emerald-600 text-white shadow-sm' 
                   : 'bg-card border border-border text-muted-foreground hover:bg-secondary'
               }`}
             >
@@ -193,11 +193,11 @@ export default function DecisionLedger() {
                   onClick={() => setFilterProvider(provider)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
                     filterProvider === provider 
-                      ? 'bg-foreground text-background shadow-sm' 
+                      ? 'bg-emerald-600 text-white shadow-sm' 
                       : 'bg-card border border-border text-muted-foreground hover:bg-secondary'
                   }`}
                 >
-                  {intg?.icon && <span className="w-3.5 h-3.5">{intg.icon}</span>}
+                  {intg?.icon && <span className="w-4 h-4 flex items-center justify-center shrink-0">{intg.icon}</span>}
                   <span className="capitalize">{intg?.name || provider}</span>
                 </button>
               );
@@ -246,8 +246,8 @@ export default function DecisionLedger() {
                           <Calendar className="w-3 h-3" /> {format(new Date(item.imported_at), 'MMM d, yyyy')}
                         </span>
                         {intg && (
-                          <span className="text-xs flex items-center gap-1 text-muted-foreground">
-                            <span className="text-sm">{intg.icon}</span> {intg.name}
+                          <span className="text-xs flex items-center gap-1.5 text-muted-foreground font-medium">
+                            <span className="w-4 h-4 flex items-center justify-center shrink-0">{intg.icon}</span> {intg.name}
                           </span>
                         )}
                       </div>
