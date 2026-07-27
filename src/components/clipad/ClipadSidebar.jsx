@@ -87,17 +87,16 @@ export default function ClipadSidebar({ forceMobile }) {
 
   // Admin items
   const adminItems = [];
-  const isClipadUrl = window.location.pathname.startsWith('/clipad') || window.location.hostname.includes('clipad');
 
   if (isAdmin(user)) {
     adminItems.push({
       label: 'Analytics',
-      path: isClipadUrl ? '/clipad/analytics' : '/analytics',
+      path: '/analytics',
       icon: BarChart2
     });
     adminItems.push({
       label: 'Knowledge Health',
-      path: isClipadUrl ? '/clipad/health' : '/health',
+      path: '/health',
       icon: Activity
     });
   }
@@ -105,18 +104,20 @@ export default function ClipadSidebar({ forceMobile }) {
   if (user?.role === 'super_admin') {
     adminItems.push({ 
       label: 'Super Admin', 
-      path: isClipadUrl ? '/clipad/admin' : '/admin', 
+      path: '/admin', 
       icon: Shield 
     });
   }
 
   const renderNavItem = (item) => {
-    const isActive = location.pathname.startsWith(item.path) || (item.path === '/search' && location.pathname === '/');
+    const isLegacyPath = window.location.pathname.startsWith('/clipad');
+    const targetPath = isLegacyPath ? `/clipad${item.path}` : item.path;
+    const isActive = location.pathname.startsWith(targetPath) || (item.path === '/search' && location.pathname === '/');
     const Icon = item.icon;
     return (
       <button
         key={item.path}
-        onClick={() => navigate(item.path)}
+        onClick={() => navigate(targetPath)}
         className={cn(
           "w-full flex items-center px-3 py-2.5 transition-all duration-200 group relative mb-0.5",
           isCollapsed ? "justify-center rounded-xl" : "gap-3 rounded-xl",
