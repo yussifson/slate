@@ -93,7 +93,7 @@ export default function ClipadSidebar({ forceMobile }) {
   }
 
   const renderNavItem = (item) => {
-    const isActive = location.pathname.startsWith(item.path) || (item.path === '/dashboard' && location.pathname === '/');
+    const isActive = location.pathname.startsWith(item.path) || (item.path === '/search' && location.pathname === '/');
     const Icon = item.icon;
     return (
       <button
@@ -136,7 +136,7 @@ export default function ClipadSidebar({ forceMobile }) {
     >
       {/* Header */}
       <div className={cn("h-[68px] flex items-center shrink-0 border-b border-transparent transition-all", isCollapsed ? "px-0 justify-center" : "px-4 justify-between")}>
-        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/dashboard')}>
+        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/search')}>
           <div className="w-8 h-8 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center border border-slate-200 dark:border-white/10 shadow-sm text-primary group-hover:scale-105 transition-transform">
             <CliPadLogo size={20} />
           </div>

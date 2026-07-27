@@ -239,6 +239,12 @@ export default function MeetLandingPage() {
   }, []);
 
   useEffect(() => {
+    if (!isLoadingAuth && user) {
+      navigate('/search');
+    }
+  }, [user, isLoadingAuth, navigate]);
+
+  useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 6000);
@@ -257,7 +263,7 @@ export default function MeetLandingPage() {
     }
 
     if (tierName === 'Free') {
-      navigate('/dashboard');
+      navigate('/search');
       return;
     }
 
@@ -297,9 +303,9 @@ export default function MeetLandingPage() {
                 status: 'active',
                 paystack_customer_code: response.reference,
                 updated_at: new Date().toISOString()
-              }).then(() => navigate('/dashboard'));
+              }).then(() => navigate('/search'));
             } else {
-              navigate('/dashboard');
+              navigate('/search');
             }
           },
           onClose: function () {
@@ -393,8 +399,8 @@ export default function MeetLandingPage() {
           
           <div className="flex items-center gap-2">
             {user ? (
-              <Button onClick={() => navigate('/dashboard')} className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
-                <Layers className="w-4 h-4 mr-2" /> Dashboard
+              <Button onClick={() => navigate('/search')} className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
+                <Search className="w-4 h-4 mr-2" /> Search
               </Button>
             ) : (
               <Button onClick={() => navigate('/login')} variant="outline" className="rounded-xl border-border bg-background hover:bg-secondary text-foreground">

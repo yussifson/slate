@@ -11,7 +11,7 @@ import { CliPadLogo } from '@/components/ui/CliPadLogo';
 export default function CliPadLogin() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const redirectUrl = searchParams.get('redirect') || '/dashboard';
+  const redirectUrl = searchParams.get('redirect') || '/search';
   const { toast } = useToast();
   const [mode, setMode] = useState('sso');
   const [email, setEmail] = useState('');
@@ -20,16 +20,16 @@ export default function CliPadLogin() {
   const [loading, setLoading] = useState(false);
   const [workspaces, setWorkspaces] = useState([]);
   const [showWorkspaceSelect, setShowWorkspaceSelect] = useState(false);
-
+ 
   const handleSSOLogin = () => {
     const continueUrl = encodeURIComponent(`${window.location.origin}/auth/callback?continue=${encodeURIComponent(redirectUrl)}`);
     window.location.href = `https://account.optavel.com/sso?redirect_uri=${continueUrl}`;
   };
-
+ 
   const handleGoogleOAuth = async () => {
     try {
       setLoading(true);
-      const continueUrl = redirectUrl || '/dashboard';
+      const continueUrl = redirectUrl || '/search';
       
       let callbackPath = '/auth/callback';
       if (continueUrl) {
