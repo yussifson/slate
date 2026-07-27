@@ -200,10 +200,10 @@ export default function KnowledgeGraph() {
       // Fallback: If no imported knowledge items exist yet, synthesize graph nodes from core workspace data (meetings, decisions, spaces, videos)
       if (finalItems.length === 0) {
         const [mRes, dRes, sRes, vRes] = await Promise.all([
-          supabase.from('clipad_meeting_records').select('id, title, ai_summary, created_at').eq('company_id', companyId).limit(20).catch(() => ({ data: [] })),
-          supabase.from('clipad_decisions').select('id, decision_text, rationale, created_at').eq('workspace_id', companyId).limit(20).catch(() => ({ data: [] })),
-          supabase.from('clipad_spaces').select('id, name, description, created_at').eq('company_id', companyId).limit(20).catch(() => ({ data: [] })),
-          supabase.from('clipad_videos').select('id, title, ai_summary, created_at').eq('company_id', companyId).limit(20).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_meeting_records').select('id, title, ai_summary, created_at').eq('company_id', companyId).limit(20)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_decisions').select('id, decision_text, rationale, created_at').eq('workspace_id', companyId).limit(20)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_spaces').select('id, name, description, created_at').eq('company_id', companyId).limit(20)).catch(() => ({ data: [] })),
+          Promise.resolve(supabase.from('clipad_videos').select('id, title, ai_summary, created_at').eq('company_id', companyId).limit(20)).catch(() => ({ data: [] })),
         ]);
 
         const synthesized = [];

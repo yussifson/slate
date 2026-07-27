@@ -63,11 +63,21 @@ export const EnterpriseAnalyticsAPI = {
         .select('*', { count: 'exact', head: true })
         .eq('workspace_id', companyId);
 
-      const { count: commitmentsCount } = await supabase
-        .from('clipad_commitments')
-        .select('*', { count: 'exact', head: true })
-        .eq('workspace_id', companyId)
-        .eq('status', 'pending');
+      // Fetch spaces belonging to the company first
+      const { data: spaces } = await supabase
+        .from('clipad_spaces')
+        .select('id')
+        .eq('company_id', companyId);
+      const spaceIds = (spaces || []).map(s => s.id);
+
+      const commitmentsPromise = spaceIds.length > 0
+        ? supabase
+            .from('clipad_commitments')
+            .select('*', { count: 'exact', head: true })
+            .in('team_space_id', spaceIds)
+            .eq('status', 'pending')
+        : { count: 0 };
+      const { count: commitmentsCount } = await commitmentsPromise;
 
       return {
         openBlockers: blockersCount || 0,
