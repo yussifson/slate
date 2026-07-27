@@ -114,20 +114,6 @@ export default function ClipadTopNav({ forceMobile = false }) {
                 <span className="text-xs text-muted-foreground font-normal">{user?.email}</span>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-slate-100 dark:bg-white/5" />
-              <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer py-2.5 rounded-lg focus:bg-slate-50 dark:focus:bg-white/5">
-                <Settings className="mr-3 h-4 w-4 text-slate-500" />
-                <span>Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/integrations')} className="cursor-pointer py-2.5 rounded-lg focus:bg-slate-50 dark:focus:bg-white/5">
-                <Plug className="mr-3 h-4 w-4 text-slate-500" />
-                <span>Integrations</span>
-              </DropdownMenuItem>
-              {user?.role === 'super_admin' && (
-                <DropdownMenuItem onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin')} className="cursor-pointer bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 py-2.5 mt-1 rounded-lg">
-                  <Shield className="mr-3 h-4 w-4" />
-                  <span className="font-semibold">Super Admin</span>
-                </DropdownMenuItem>
-              )}
               
               {/* Account Switcher Section */}
               <DropdownMenuSeparator className="bg-slate-100 dark:bg-white/5 my-1" />
