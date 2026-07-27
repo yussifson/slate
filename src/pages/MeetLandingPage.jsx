@@ -241,7 +241,7 @@ export default function MeetLandingPage() {
   useEffect(() => {
     const isMobilePhone = window.innerWidth < 768;
     if (isMobilePhone && !isLoadingAuth && user) {
-      navigate('/search');
+      navigate('/dashboard');
     }
   }, [user, isLoadingAuth, navigate]);
 
@@ -264,7 +264,7 @@ export default function MeetLandingPage() {
     }
 
     if (tierName === 'Free') {
-      navigate('/search');
+      navigate('/dashboard');
       return;
     }
 
@@ -304,9 +304,9 @@ export default function MeetLandingPage() {
                 status: 'active',
                 paystack_customer_code: response.reference,
                 updated_at: new Date().toISOString()
-              }).then(() => navigate('/search'));
+              }).then(() => navigate('/dashboard'));
             } else {
-              navigate('/search');
+              navigate('/dashboard');
             }
           },
           onClose: function () {
@@ -400,8 +400,8 @@ export default function MeetLandingPage() {
           
           <div className="flex items-center gap-2">
             {user ? (
-              <Button onClick={() => navigate('/search')} className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
-                <Search className="w-4 h-4 mr-2" /> Search
+              <Button onClick={() => navigate('/dashboard')} className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
+                <Layers className="w-4 h-4 mr-2" /> Dashboard
               </Button>
             ) : (
               <Button onClick={() => navigate('/login')} variant="outline" className="rounded-xl border-border bg-background hover:bg-secondary text-foreground">
