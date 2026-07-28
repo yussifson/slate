@@ -113,7 +113,7 @@ export default function RecordVideo() {
   // Fix #2 — Pre-warm the Render server the moment the page loads so it's
   // awake by the time the user clicks Record (avoids cold-start during upload).
   useEffect(() => {
-    fetch('https://slate-2fli.onrender.com/health').catch(() => {});
+    fetch('https://slate-2fli.onrender.com/health', { mode: 'no-cors' }).catch(() => {});
   }, []);
   
   const [showRecoverPrompt, setShowRecoverPrompt] = useState(false);
@@ -983,7 +983,7 @@ export default function RecordVideo() {
 
       // WebSocket live streamer (Render) with HTTP keep-alive wake-up ping
       const wsUrl = 'wss://slate-2fli.onrender.com';
-      fetch('https://slate-2fli.onrender.com/health').catch(() => {});
+      fetch('https://slate-2fli.onrender.com/health', { mode: 'no-cors' }).catch(() => {});
 
       // ── Application-level heartbeat to keep Render from sleeping ──
       let wsPingInterval = null;
@@ -1150,7 +1150,7 @@ export default function RecordVideo() {
           toast({ title: 'Switching to direct upload…', description: 'Cloud relay timed out — uploading directly. Please wait.', variant: 'default' });
           setPhase('review'); // review phase reveals the Save button which calls uploadRecording()
           // Give React one tick to render the blob before triggering upload
-          setTimeout(() => uploadRecording(), 100);
+          setTimeout(() => uploadRecording(blob), 100);
         }, 300000); // 5 minutes
 
         // Flush any remaining buffered chunks before signalling END
@@ -1176,7 +1176,7 @@ export default function RecordVideo() {
             setRecordingUrl(url);
             toast({ title: 'Switching to direct upload…', description: 'Relay server unavailable — uploading directly. Please wait.', variant: 'default' });
             setPhase('review');
-            setTimeout(() => uploadRecording(), 100);
+            setTimeout(() => uploadRecording(blob), 100);
           }
         };
         waitAndEnd();
@@ -1264,8 +1264,14 @@ export default function RecordVideo() {
     }
   };
 
-  const uploadRecording = async () => {
+  const uploadRecording = async (blobOverride) => {
     if (!user) return;
+    
+    const finalBlob = blobOverride instanceof Blob ? blobOverride : videoBlob;
+    if (!finalBlob && !activeVideoId) {
+       toast({ title: 'Upload Failed', description: 'No recording found to upload.', variant: 'destructive' });
+       return;
+    }
     
     let finalUnlockAt = null;
     let finalIsLocked = false;
@@ -1382,7 +1388,7 @@ export default function RecordVideo() {
       const { data: { session } } = await supabase.auth.getSession();
       
       const tryTusUpload = () => new Promise((resolve, reject) => {
-        const upload = new tus.Upload(videoBlob, {
+        const upload = new tus.Upload(finalBlob, {
           endpoint: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/upload/resumable`,
           retryDelays: [0, 2000, 5000, 10000],
           headers: {
@@ -1421,7 +1427,7 @@ export default function RecordVideo() {
         // Direct upload fallback (handles Blobs up to Enterprise plan limits without TUS overhead)
         const { error: directUploadError } = await supabase.storage
           .from('clipad_videos')
-          .upload(fileName, videoBlob, {
+          .upload(fileName, finalBlob, {
             contentType: 'video/webm',
             cacheControl: '3600',
             upsert: true
