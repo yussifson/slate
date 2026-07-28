@@ -113,7 +113,7 @@ export default function RecordVideo() {
   // Fix #2 — Pre-warm the Render server the moment the page loads so it's
   // awake by the time the user clicks Record (avoids cold-start during upload).
   useEffect(() => {
-    fetch('https://slate-2fli.onrender.com/health', { mode: 'no-cors' }).catch(() => {});
+    fetch('https://slate-gcph.onrender.com/health', { mode: 'no-cors' }).catch(() => {});
   }, []);
   
   const [showRecoverPrompt, setShowRecoverPrompt] = useState(false);
@@ -982,8 +982,8 @@ export default function RecordVideo() {
       wsEndRequestedRef.current = false;
 
       // WebSocket live streamer (Render) with HTTP keep-alive wake-up ping
-      const wsUrl = 'wss://slate-2fli.onrender.com';
-      fetch('https://slate-2fli.onrender.com/health', { mode: 'no-cors' }).catch(() => {});
+      const wsUrl = 'wss://slate-gcph.onrender.com';
+      fetch('https://slate-gcph.onrender.com/health', { mode: 'no-cors' }).catch(() => {});
 
       // ── Application-level heartbeat to keep Render from sleeping ──
       let wsPingInterval = null;
