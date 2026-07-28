@@ -112,27 +112,28 @@ export default function AccountPayments() {
     : <AlertCircle className="w-4 h-4 text-gray-400" />;
 
   return (
-    <div className="animate-in fade-in duration-500 max-w-3xl mx-auto">
-      <div className="mb-12 text-center relative pt-4">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-100/40 via-transparent to-transparent dark:from-amber-900/20 rounded-full blur-3xl opacity-70"></div>
-        <div className="inline-flex items-center justify-center p-3.5 bg-gradient-to-b from-amber-50 to-amber-100/50 dark:from-amber-900/40 dark:to-amber-900/10 text-amber-600 dark:text-amber-400 rounded-2xl mb-6 ring-1 ring-amber-200/50 dark:ring-amber-800/50 shadow-sm">
-          <CreditCard className="w-6 h-6" />
+    <div className="animate-in fade-in duration-300 max-w-4xl mx-auto space-y-8">
+      {/* Premium Header */}
+      <div className="bg-white dark:bg-card border border-slate-200 dark:border-white/5 rounded-3xl p-8 shadow-sm flex flex-col items-center text-center relative overflow-hidden">
+        <div className="absolute -left-16 -bottom-16 w-36 h-36 rounded-full bg-amber-500/5 blur-3xl pointer-events-none" />
+        <div className="inline-flex items-center justify-center p-3 h-12 w-12 bg-amber-50 dark:bg-amber-900/10 text-amber-600 dark:text-amber-400 rounded-2xl mb-4 border border-amber-100 dark:border-amber-900/20">
+          <CreditCard className="w-5 h-5" />
         </div>
-        <h1 className="text-3xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 tracking-tight mb-4 pb-1">
-          Payments &amp; Subscriptions
+        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          Billing &amp; Subscriptions
         </h1>
-        <p className="text-slate-600 dark:text-muted-foreground text-[1.1rem] max-w-xl mx-auto leading-relaxed">
-          Manage your payment methods and subscriptions across the Optavel ecosystem.
+        <p className="text-slate-500 dark:text-slate-400 text-sm md:text-[15px] font-medium leading-relaxed max-w-xl mt-2">
+          Manage your payment profiles, track active subscription tiers, and download invoices across the ecosystem.
         </p>
       </div>
 
       <div className="space-y-6">
         {/* Active Subscription */}
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden">
-          <div className="p-6 md:p-8 border-b border-gray-200 dark:border-gray-800">
-            <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-1">Your subscriptions</h2>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Manage your active plans across Optavel Slate, Preloom, and other apps.
+        <div className="rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-card overflow-hidden shadow-sm">
+          <div className="p-6 md:p-8 border-b border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.01]">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Active Plans</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm mt-1">
+              Active subscriptions assigned to your business workspaces and personal accounts.
             </p>
           </div>
 

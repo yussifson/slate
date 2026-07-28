@@ -22,81 +22,90 @@ export default function AccountHelp() {
   return (
     <div className="flex relative w-full h-[calc(100vh-40px)] overflow-hidden bg-transparent">
       {/* Main Content Area */}
-      <div className={`animate-in fade-in duration-500 flex-1 h-full overflow-y-auto transition-all duration-500 ease-in-out pb-20 px-4 sm:px-6 lg:px-8`}>
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-12 text-center relative pt-4">
-            <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent dark:from-blue-900/20 rounded-full blur-3xl opacity-70"></div>
-            <div className="inline-flex items-center justify-center p-3.5 bg-gradient-to-b from-blue-50 to-blue-100/50 dark:from-blue-900/40 dark:to-blue-900/10 text-blue-600 dark:text-blue-400 rounded-2xl mb-6 ring-1 ring-blue-200/50 dark:ring-blue-800/50 shadow-sm">
-              <HelpCircle className="w-6 h-6" />
+      <div className={`animate-in fade-in duration-300 flex-1 h-full overflow-y-auto transition-all duration-300 ease-in-out pb-20 px-4 sm:px-6 lg:px-8`}>
+        <div className="max-w-4xl mx-auto space-y-8">
+          
+          {/* Premium Header Card */}
+          <div className="bg-white dark:bg-card border border-slate-200 dark:border-white/5 rounded-3xl p-8 shadow-sm flex flex-col items-center text-center relative overflow-hidden mt-4">
+            <div className="absolute -left-16 -bottom-16 w-36 h-36 rounded-full bg-blue-500/5 blur-3xl pointer-events-none" />
+            <div className="inline-flex items-center justify-center p-3 h-12 w-12 bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400 rounded-2xl mb-4 border border-blue-100 dark:border-blue-900/20">
+              <HelpCircle className="w-5 h-5" />
             </div>
-            <h1 className="text-3xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 tracking-tight mb-4 pb-1">
-              How can we help you?
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+              Customer Support
             </h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm md:text-[15px] font-medium leading-relaxed max-w-xl mt-2 mb-6">
+              Search the knowledge directory or request direct assistance from the support team.
+            </p>
             
-            {/* Search Bar */}
-            <div className="max-w-xl mx-auto relative mt-6">
+            {/* Search Bar - Stylized */}
+            <div className="w-full max-w-lg relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
+                <Search className="h-4.5 w-4.5 text-slate-400" />
               </div>
               <input 
                 type="text" 
-                className="block w-full pl-11 pr-4 py-4 rounded-2xl border-none shadow-md ring-1 ring-black/5 dark:ring-white/10 bg-white dark:bg-card text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-primary transition-shadow text-lg" 
-                placeholder="Search help topics..."
+                className="block w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-secondary text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-shadow text-sm" 
+                placeholder="Search support database..."
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Help Topics */}
-            <div onClick={() => navigate('/docs')} className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card hover:shadow-md transition-shadow cursor-pointer group">
-              <div className="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4">
-                <FileText className="w-6 h-6" strokeWidth={1.5} />
+            <div onClick={() => navigate('/docs')} className="p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-card hover:shadow-md transition-shadow cursor-pointer group relative">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[30%] bg-purple-500 rounded-r-full opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-900/10 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-6 border border-purple-100 dark:border-purple-900/20">
+                <FileText className="w-5 h-5" strokeWidth={2} />
               </div>
-              <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Documentation</h2>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed">
-                Detailed guides and documentation for all Optavel ecosystem products including Slate and Preloom.
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Documentation</h2>
+              <p className="text-slate-500 dark:text-slate-400 text-xs md:text-[13px] leading-relaxed mb-6">
+                Detailed guides and API references for Optavel Slate, Preloom, and other connected integrations.
               </p>
-              <div className="text-primary text-sm font-medium flex items-center gap-1">
-                Browse Docs <ExternalLink className="w-4 h-4" />
+              <div className="text-primary text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 mt-auto">
+                Browse Docs <ExternalLink className="w-3.5 h-3.5" />
               </div>
             </div>
 
-            <div onClick={() => navigate('/tutorials')} className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card hover:shadow-md transition-shadow cursor-pointer group">
-              <div className="w-12 h-12 rounded-xl bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-4">
-                <BookOpen className="w-6 h-6" strokeWidth={1.5} />
+            <div onClick={() => navigate('/tutorials')} className="p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-card hover:shadow-md transition-shadow cursor-pointer group relative">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[30%] bg-orange-500 rounded-r-full opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="w-12 h-12 rounded-2xl bg-orange-50 dark:bg-orange-900/10 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-6 border border-orange-100 dark:border-orange-900/20">
+                <BookOpen className="w-5 h-5" strokeWidth={2} />
               </div>
-              <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Tutorials & Guides</h2>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed">
-                Step-by-step video tutorials and quick start guides to help you get the most out of your account.
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Tutorials &amp; Guides</h2>
+              <p className="text-slate-500 dark:text-slate-400 text-xs md:text-[13px] leading-relaxed mb-6">
+                Step-by-step video tutorials and quick start guides to help you configure your workflows.
               </p>
-              <div className="text-primary text-sm font-medium flex items-center gap-1">
-                View Tutorials <ExternalLink className="w-4 h-4" />
+              <div className="text-primary text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 mt-auto">
+                View Tutorials <ExternalLink className="w-3.5 h-3.5" />
               </div>
             </div>
 
             {/* Contact Support */}
-            <div onClick={handleOpenChat} className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card hover:shadow-md transition-shadow cursor-pointer group">
-              <div className="w-12 h-12 rounded-xl bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 flex items-center justify-center mb-4">
-                <MessageCircle className="w-6 h-6" strokeWidth={1.5} />
+            <div onClick={handleOpenChat} className="p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-card hover:shadow-md transition-shadow cursor-pointer group relative">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[30%] bg-emerald-500 rounded-r-full opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-6 border border-emerald-100 dark:border-emerald-900/20">
+                <MessageCircle className="w-5 h-5" strokeWidth={2} />
               </div>
-              <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Chat Support</h2>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed">
-                Get instant help from our AI assistant or connect with a human support agent.
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Chat Support</h2>
+              <p className="text-slate-500 dark:text-slate-400 text-xs md:text-[13px] leading-relaxed mb-6">
+                Get instant help from our AI agent or open a direct support ticket.
               </p>
-              <div className="text-primary text-sm font-medium flex items-center gap-1">
+              <div className="text-primary text-xs font-bold uppercase tracking-wider mt-auto">
                 Start Chat
               </div>
             </div>
 
-            <div onClick={handleOpenPhone} className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card hover:shadow-md transition-shadow cursor-pointer group">
-              <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4">
-                <PhoneCall className="w-6 h-6" strokeWidth={1.5} />
+            <div onClick={handleOpenPhone} className="p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-card hover:shadow-md transition-shadow cursor-pointer group relative">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[30%] bg-blue-500 rounded-r-full opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-6 border border-blue-100 dark:border-blue-900/20">
+                <PhoneCall className="w-5 h-5" strokeWidth={2} />
               </div>
-              <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Phone Support</h2>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed">
-                Premium accounts can schedule a direct call with our technical support team.
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Phone Support</h2>
+              <p className="text-slate-500 dark:text-slate-400 text-xs md:text-[13px] leading-relaxed mb-6">
+                Schedule a direct diagnostic call with our engineering and systems architecture team.
               </p>
-              <div className="text-primary text-sm font-medium flex items-center gap-1">
+              <div className="text-primary text-xs font-bold uppercase tracking-wider mt-auto">
                 Schedule Call
               </div>
             </div>

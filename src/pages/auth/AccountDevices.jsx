@@ -36,24 +36,28 @@ export default function AccountDevices() {
     return 'Web Browser';
   };
   return (
-    <div className="animate-in fade-in duration-500 max-w-3xl mx-auto">
-      <div className="mb-12 text-center relative pt-4">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent dark:from-blue-900/20 rounded-full blur-3xl opacity-70"></div>
-        <div className="inline-flex items-center justify-center p-3.5 bg-gradient-to-b from-blue-50 to-blue-100/50 dark:from-blue-900/40 dark:to-blue-900/10 text-blue-600 dark:text-blue-400 rounded-2xl mb-6 ring-1 ring-blue-200/50 dark:ring-blue-800/50 shadow-sm">
-          <MonitorSmartphone className="w-6 h-6" />
+    <div className="animate-in fade-in duration-300 max-w-4xl mx-auto space-y-8">
+      {/* Premium Header */}
+      <div className="bg-white dark:bg-card border border-slate-200 dark:border-white/5 rounded-3xl p-8 shadow-sm flex flex-col items-center text-center relative overflow-hidden">
+        <div className="absolute -left-16 -bottom-16 w-36 h-36 rounded-full bg-blue-500/5 blur-3xl pointer-events-none" />
+        <div className="inline-flex items-center justify-center p-3 h-12 w-12 bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400 rounded-2xl mb-4 border border-blue-100 dark:border-blue-900/20">
+          <MonitorSmartphone className="w-5 h-5" />
         </div>
-        <h1 className="text-3xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 tracking-tight mb-4 pb-1">
-          Your Devices
+        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          Active Devices
         </h1>
-        <p className="text-slate-600 dark:text-muted-foreground text-[1.1rem] max-w-xl mx-auto leading-relaxed">
-          Manage the devices where you're currently signed in. If you don't recognize a device, sign out immediately to secure your account.
+        <p className="text-slate-500 dark:text-slate-400 text-sm md:text-[15px] font-medium leading-relaxed max-w-xl mt-2">
+          Track and revoke active user login sessions to secure your profile access.
         </p>
       </div>
 
       <div className="space-y-6">
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden">
-          <div className="p-6 md:p-8 border-b border-gray-200 dark:border-gray-800">
-             <h2 className="text-xl font-medium text-gray-900 dark:text-white">Active Sessions</h2>
+        <div className="rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-card overflow-hidden shadow-sm">
+          <div className="p-6 md:p-8 border-b border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.01]">
+             <h2 className="text-lg font-bold text-slate-900 dark:text-white">Audited Sessions</h2>
+             <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm mt-1">
+               Active web browser connections and desktop clients linked to your credentials.
+             </p>
           </div>
           
           <div className="divide-y divide-gray-100 dark:divide-gray-800">

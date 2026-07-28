@@ -286,25 +286,29 @@ export default function AccountPortalLayout() {
                </div>
              </button>
              
-             <button onClick={() => handleAppLauncherClick('https://teleply.optavel.com')} className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors group">
-               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-background flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
-                 <PhoneCall className="w-7 h-7 text-indigo-500" />
-               </div>
-               <div className="text-center">
-                 <span className="block text-sm font-medium text-gray-900 dark:text-white">Teleply</span>
-                 <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Telehealth</span>
-               </div>
-             </button>
-             
-             <button onClick={() => handleAppLauncherClick('https://clipad.optavel.com')} className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors group">
-               <div className="w-14 h-14 rounded-2xl bg-white dark:bg-background flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
-                 <Video className="w-7 h-7 text-orange-500" />
-               </div>
-               <div className="text-center">
-                 <span className="block text-sm font-medium text-gray-900 dark:text-white">Clipad</span>
-                 <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Productivity</span>
-               </div>
-             </button>
+             <button 
+                disabled 
+                className="flex flex-col items-center gap-2 p-4 rounded-xl border border-gray-100 dark:border-gray-800 opacity-40 cursor-not-allowed select-none bg-gray-50/50 dark:bg-card/50 relative"
+              >
+                <div className="absolute top-2 right-2 text-[8px] font-extrabold uppercase tracking-wider bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-1.5 py-0.5 rounded-md">Soon</div>
+                <div className="w-14 h-14 rounded-2xl bg-white dark:bg-background flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800">
+                  <PhoneCall className="w-7 h-7 text-slate-400" />
+                </div>
+                <div className="text-center">
+                  <span className="block text-sm font-medium text-slate-400">Teleply</span>
+                  <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Telehealth</span>
+                </div>
+              </button>
+              
+              <button onClick={() => handleAppLauncherClick('https://clipad.optavel.com')} className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-100 dark:border-gray-800 transition-colors group">
+                <div className="w-14 h-14 rounded-2xl bg-white dark:bg-background flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-105 transition-transform">
+                  <Video className="w-7 h-7 text-orange-500" />
+                </div>
+                <div className="text-center">
+                  <span className="block text-sm font-medium text-gray-900 dark:text-white">Clipad</span>
+                  <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Productivity</span>
+                </div>
+              </button>
            </div>
            
            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 text-center">

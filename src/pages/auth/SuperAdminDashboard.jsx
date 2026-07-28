@@ -441,25 +441,25 @@ export default function SuperAdminDashboard() {
   };
 
   return (
-    <div className="animate-in fade-in duration-500 w-full px-4 sm:px-6 lg:px-8 pt-8 pb-12 flex flex-col md:flex-row gap-8">
+    <div className="animate-in fade-in duration-300 w-full px-4 sm:px-6 lg:px-8 pt-8 pb-12 flex flex-col md:flex-row gap-8">
       {/* Sidebar Navigation */}
       <div className={`shrink-0 transition-all duration-300 ${isSidebarCollapsed ? 'w-16' : 'w-full md:w-64'}`}>
         <div className="flex items-center justify-between px-3 mb-6">
           {!isSidebarCollapsed && (
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
-                <ShieldAlert className="w-6 h-6 text-red-500" />
+              <h1 className="text-[17px] font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                <ShieldAlert className="w-5 h-5 text-red-500 shrink-0" />
                 Admin Portal
               </h1>
-              <p className="text-gray-500 text-xs">Global management</p>
+              <p className="text-slate-400 text-[10px] uppercase font-bold tracking-wider mt-0.5">Platform Controller</p>
             </div>
           )}
           {isSidebarCollapsed && (
-             <ShieldAlert className="w-6 h-6 text-red-500 mx-auto mt-2" />
+             <ShieldAlert className="w-6 h-6 text-red-500 mx-auto mt-2 animate-pulse" />
           )}
           <button 
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-            className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors hidden md:block"
+            className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors hidden md:block"
             title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {isSidebarCollapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
@@ -467,21 +467,27 @@ export default function SuperAdminDashboard() {
         </div>
         
         <nav className="space-y-1">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              title={isSidebarCollapsed ? tab.label : ''}
-              className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center p-2.5' : 'gap-3 px-3 py-2.5'} rounded-xl text-sm font-medium transition-all ${
-                activeTab === tab.id 
-                  ? 'bg-primary/10 text-primary' 
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50'
-              }`}
-            >
-              {tab.icon}
-              {!isSidebarCollapsed && <span>{tab.label}</span>}
-            </button>
-          ))}
+          {tabs.map(tab => {
+            const isTabActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                title={isSidebarCollapsed ? tab.label : ''}
+                className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center p-2.5' : 'gap-3 px-3 py-2.5'} rounded-xl text-sm transition-all duration-200 group relative mb-0.5 ${
+                  isTabActive 
+                    ? 'bg-white dark:bg-[#161e2e] text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.04)] font-semibold' 
+                    : 'text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 border border-transparent font-medium'
+                }`}
+              >
+                {isTabActive && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[60%] bg-primary rounded-r-full" />
+                )}
+                <div className={`${isTabActive ? 'text-primary' : 'text-slate-500 opacity-80'}`}>{tab.icon}</div>
+                {!isSidebarCollapsed && <span className="truncate">{tab.label}</span>}
+              </button>
+            );
+          })}
         </nav>
       </div>
 

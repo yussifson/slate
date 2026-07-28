@@ -228,31 +228,32 @@ export default function AccountPersonalInfo() {
   };
 
   return (
-    <div className="animate-in fade-in duration-500 max-w-3xl mx-auto">
-      <div className="mb-12 text-center relative pt-4">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/40 via-transparent to-transparent dark:from-indigo-900/20 rounded-full blur-3xl opacity-70"></div>
-        <div className="inline-flex items-center justify-center p-3.5 bg-gradient-to-b from-indigo-50 to-indigo-100/50 dark:from-indigo-900/40 dark:to-indigo-900/10 text-indigo-600 dark:text-indigo-400 rounded-2xl mb-6 ring-1 ring-indigo-200/50 dark:ring-indigo-800/50 shadow-sm">
-          <User className="w-6 h-6" />
+    <div className="animate-in fade-in duration-300 max-w-4xl mx-auto space-y-8">
+      {/* Premium Header */}
+      <div className="bg-white dark:bg-card border border-slate-200 dark:border-white/5 rounded-3xl p-8 shadow-sm flex flex-col items-center text-center relative overflow-hidden">
+        <div className="absolute -left-16 -bottom-16 w-36 h-36 rounded-full bg-blue-500/5 blur-3xl pointer-events-none" />
+        <div className="inline-flex items-center justify-center p-3 h-12 w-12 bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400 rounded-2xl mb-4 border border-blue-100 dark:border-blue-900/20">
+          <User className="w-5 h-5" />
         </div>
-        <h1 className="text-3xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 tracking-tight mb-4 pb-1">
-          Personal Info
+        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          Personal Information
         </h1>
-        <p className="text-slate-600 dark:text-muted-foreground text-[1.1rem] max-w-xl mx-auto leading-relaxed">
+        <p className="text-slate-500 dark:text-slate-400 text-sm md:text-[15px] font-medium leading-relaxed max-w-xl mt-2">
           Info about you and your preferences across Optavel services.
         </p>
       </div>
 
       <div className="space-y-6">
         
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden">
-          <div className="p-6 md:p-8 border-b border-gray-200 dark:border-gray-800">
-             <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-2">Basic info</h2>
-             <p className="text-gray-600 dark:text-gray-400 text-sm">
-               Some info may be visible to other people using Optavel services.
+        <div className="rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-card overflow-hidden shadow-sm">
+          <div className="p-6 md:p-8 border-b border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.01]">
+             <h2 className="text-lg font-bold text-slate-900 dark:text-white">Basic Profile</h2>
+             <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm mt-1">
+               Personalized metadata saved to verify your identity across Slack, Gmail, and active Slate products.
              </p>
           </div>
           
-          <div className="divide-y divide-gray-100 dark:divide-gray-800">
+          <div className="divide-y divide-slate-100 dark:divide-white/5">
             {/* Profile Picture */}
             <div className="p-6 md:px-8 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                {isEditingAvatar ? (

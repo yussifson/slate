@@ -118,45 +118,46 @@ export default function AccountSecurity() {
   };
 
   return (
-    <div className="animate-in fade-in duration-500 max-w-3xl mx-auto">
-      <div className="mb-12 text-center relative pt-4">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-green-100/40 via-transparent to-transparent dark:from-green-900/20 rounded-full blur-3xl opacity-70"></div>
-        <div className="inline-flex items-center justify-center p-3.5 bg-gradient-to-b from-green-50 to-green-100/50 dark:from-green-900/40 dark:to-green-900/10 text-green-600 dark:text-green-400 rounded-2xl mb-6 ring-1 ring-green-200/50 dark:ring-green-800/50 shadow-sm">
-          <ShieldCheck className="w-6 h-6" />
+    <div className="animate-in fade-in duration-300 max-w-4xl mx-auto space-y-8">
+      {/* Premium Header */}
+      <div className="bg-white dark:bg-card border border-slate-200 dark:border-white/5 rounded-3xl p-8 shadow-sm flex flex-col items-center text-center relative overflow-hidden">
+        <div className="absolute -left-16 -bottom-16 w-36 h-36 rounded-full bg-emerald-500/5 blur-3xl pointer-events-none" />
+        <div className="inline-flex items-center justify-center p-3 h-12 w-12 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 rounded-2xl mb-4 border border-emerald-100 dark:border-emerald-900/20">
+          <ShieldCheck className="w-5 h-5" />
         </div>
-        <h1 className="text-3xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 tracking-tight mb-4 pb-1">
-          Security
+        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          Security Hub
         </h1>
-        <p className="text-slate-600 dark:text-muted-foreground text-[1.1rem] max-w-xl mx-auto leading-relaxed">
-          Settings and recommendations to help you keep your account secure.
+        <p className="text-slate-500 dark:text-slate-400 text-sm md:text-[15px] font-medium leading-relaxed max-w-xl mt-2">
+          Settings, multi-factor tokens, and session auditing to safeguard your Optavel credentials.
         </p>
       </div>
 
       <div className="space-y-6">
         {/* Security Checkup */}
-        <div className="p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card">
+        <div className="p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-card shadow-sm">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-             <div>
-               <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                 <ShieldCheck className="text-green-500 w-6 h-6" />
-                 Your account is protected
+             <div className="space-y-1">
+               <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
+                 <ShieldCheck className="text-emerald-500 w-5 h-5 shrink-0" />
+                 Your Account is Secure
                </h2>
-               <p className="text-gray-600 dark:text-gray-400 text-sm">
-                 The Security Checkup checked your account and found no recommended actions.
+               <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm">
+                 The automated security scanner inspected active token sessions and found no anomalies.
                </p>
              </div>
-             <button onClick={handleDetailsClick} className="whitespace-nowrap px-4 py-2 text-sm font-medium text-primary bg-primary/10 hover:bg-primary/20 rounded-full transition-colors">
-               See details
+             <button onClick={handleDetailsClick} className="whitespace-nowrap px-4 py-2 text-[12px] font-extrabold uppercase tracking-wider text-primary bg-primary/10 hover:bg-primary/20 rounded-xl transition-all">
+               Run Check
              </button>
           </div>
         </div>
 
         {/* How you sign in */}
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden">
-          <div className="p-6 md:p-8 border-b border-gray-200 dark:border-gray-800">
-             <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-2">How you sign in to Optavel</h2>
-             <p className="text-gray-600 dark:text-gray-400 text-sm">
-               Make sure that you can always access your Optavel Account by keeping this information up to date.
+        <div className="rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-card overflow-hidden shadow-sm">
+          <div className="p-6 md:p-8 border-b border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.01]">
+             <h2 className="text-lg font-bold text-slate-900 dark:text-white">Signing In</h2>
+             <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm mt-1">
+               Keep your password, OAuth access keys, and recovery seeds updated to prevent lockout.
              </p>
           </div>
           
