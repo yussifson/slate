@@ -1533,6 +1533,15 @@ export default function RecordVideo() {
     } catch (err) {
       console.error(err);
       toast({ title: 'Upload failed', description: err.message, variant: 'destructive' });
+      
+      // FIX: If the cloud upload fails completely (e.g. no internet) and we have no URL,
+      // generate a local preview URL so the user isn't stuck with a blank screen.
+      if (!recordingUrl && chunksRef.current.length > 0) {
+        const fallbackBlob = new Blob(chunksRef.current, { type: 'video/webm' });
+        setVideoBlob(fallbackBlob);
+        setRecordingUrl(URL.createObjectURL(fallbackBlob));
+      }
+      
       setPhase('review');
     }
   };
