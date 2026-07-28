@@ -1,4 +1,4 @@
-import { powerSync } from '@/api/PowerSyncConnector';
+﻿import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -57,7 +57,7 @@ export default function UnivEmployeePerformance() {
   const [saving, setSaving] = useState(false);
 
   const fetchData = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     setLoading(true);
     try {
       const __res = await powerSync.execute(`SELECT * FROM ${TABLE} WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
@@ -128,7 +128,7 @@ export default function UnivEmployeePerformance() {
   const getEmployeeName = (idOrName) => {
     const emp = employees.find(e => e.id === idOrName);
     if (emp) return `${emp.first_name} ${emp.last_name}`;
-    return idOrName || '—';
+    return idOrName || 'â€”';
   };
 
   const filtered = records.filter(r => {
@@ -208,16 +208,16 @@ export default function UnivEmployeePerformance() {
                     <td className="px-4 py-4 max-w-xs">
                       <div className="mb-2">
                         <span className="text-[10px] uppercase font-semibold text-primary tracking-wider block mb-0.5 tracking-[0.04em]">Goals</span>
-                        <p className="text-[#71717a] dark:text-gray-400 text-xs line-clamp-2 tracking-[0.04em]">{r.goals || '—'}</p>
+                        <p className="text-[#71717a] dark:text-gray-400 text-xs line-clamp-2 tracking-[0.04em]">{r.goals || 'â€”'}</p>
                       </div>
                       <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-primary/10">
                         <div>
                           <span className="text-[10px] uppercase font-semibold text-emerald-600 tracking-wider block tracking-[0.04em]">Strengths</span>
-                          <p className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{r.strengths || '—'}</p>
+                          <p className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{r.strengths || 'â€”'}</p>
                         </div>
                         <div>
                           <span className="text-[10px] uppercase font-semibold text-amber-600 tracking-wider block tracking-[0.04em]">To Improve</span>
-                          <p className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{r.areas_for_improvement || '—'}</p>
+                          <p className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{r.areas_for_improvement || 'â€”'}</p>
                         </div>
                       </div>
                     </td>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+﻿import React, { useState, useEffect, useCallback, useRef } from "react";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { supabase } from "@/api/supabaseClient";
 import SmartDocumentViewer from "@/components/SmartDocumentViewer";
@@ -40,9 +40,9 @@ const CAT_COLORS = {
 };
 
 function DocIcon({ type }) {
-  const icons = { pdf: "📄", docx: "📝", doc: "📝", xlsx: "📊", xls: "📊", png: "🖼️", jpg: "🖼️", jpeg: "🖼️" };
+  const icons = { pdf: "ðŸ“„", docx: "ðŸ“", doc: "ðŸ“", xlsx: "ðŸ“Š", xls: "ðŸ“Š", png: "ðŸ–¼ï¸", jpg: "ðŸ–¼ï¸", jpeg: "ðŸ–¼ï¸" };
   const ext = (type || "").toLowerCase().replace(".", "");
-  return <span className="text-xl">{icons[ext] || "📁"}</span>;
+  return <span className="text-xl">{icons[ext] || "ðŸ“"}</span>;
 }
 
 function ExpiryIndicator({ expiryDate }) {
@@ -65,7 +65,7 @@ function DocumentCard({ doc, onClick, isSelected }) {
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-sm text-foreground truncate">{doc.name}</p>
-          <p className="text-xs text-muted-foreground">{doc.uploaded_by || "Unknown"} · {doc.filing_date?.split("T")[0] || "—"}</p>
+          <p className="text-xs text-muted-foreground">{doc.uploaded_by || "Unknown"} Â· {doc.filing_date?.split("T")[0] || "â€”"}</p>
           <div className="flex flex-wrap gap-1 mt-2">
             {doc.category && <Badge className={`text-[10px] px-1.5 py-0 h-4 ${CAT_COLORS[doc.category] || "bg-slate-100 text-slate-600"}`}>{doc.category}</Badge>}
             {doc.tags?.split(",").filter(Boolean).slice(0, 2).map(tag => (
@@ -149,7 +149,7 @@ function AISummaryPanel({ doc, links, onView }) {
               <div key={link.id} className="flex items-center gap-2 text-xs bg-background rounded-lg px-3 py-2 border border-border">
                 <Link2 className="w-3 h-3 text-teal-500 flex-shrink-0" />
                 <span className="font-medium text-foreground capitalize">{link.entity_type}</span>
-                <span className="text-muted-foreground">·</span>
+                <span className="text-muted-foreground">Â·</span>
                 <span className="text-muted-foreground truncate">{link.relationship || link.entity_id}</span>
               </div>
             ))}
@@ -211,7 +211,7 @@ export default function SmartDocs() {
   const [folderForm, setFolderForm] = useState({ name: "", color: "#6366f1" });
 
   const loadDocs = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     const res = await powerSync.execute("SELECT * FROM documents WHERE company_id = ? ORDER BY created_at DESC", [companyId]);
     const parsed = (res.rows?._array || []).map(d => {
       let extra = {};
@@ -225,13 +225,13 @@ export default function SmartDocs() {
   }, [companyId]);
 
   const loadFolders = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     const res = await powerSync.execute("SELECT * FROM smart_folders WHERE company_id = ? ORDER BY name ASC", [companyId]);
     setFolders(res.rows?._array || []);
   }, [companyId]);
 
   const loadLinks = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     const res = await powerSync.execute("SELECT * FROM smart_doc_links WHERE company_id = ?", [companyId]);
     setLinks(res.rows?._array || []);
   }, [companyId]);
@@ -346,7 +346,7 @@ export default function SmartDocs() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold">Smart Docs</h1>
-                <p className="text-emerald-200 text-sm">Business Knowledge Graph · AI-powered document intelligence</p>
+                <p className="text-emerald-200 text-sm">Business Knowledge Graph Â· AI-powered document intelligence</p>
               </div>
             </div>
             <div className="flex gap-6 mt-3 text-sm">
@@ -374,7 +374,7 @@ export default function SmartDocs() {
           <div className="flex flex-wrap gap-2">
             {expiringSoon.map(d => (
               <button key={d.id} onClick={() => selectDoc(d)} className="text-xs bg-white dark:bg-amber-900/40 border border-amber-200 px-3 py-1.5 rounded-lg font-medium text-amber-800 hover:bg-amber-100 transition-colors">
-                {d.name} · {d.expiry_date}
+                {d.name} Â· {d.expiry_date}
               </button>
             ))}
           </div>
@@ -442,7 +442,7 @@ export default function SmartDocs() {
           <div className="w-80 flex-shrink-0 bg-card border border-border rounded-2xl p-5 h-fit sticky top-4 space-y-4">
             <div className="flex items-center justify-between">
               <p className="font-bold text-foreground truncate text-sm">{selectedDoc.name}</p>
-              <button onClick={() => setSelectedDoc(null)} className="text-muted-foreground hover:text-foreground text-lg leading-none">×</button>
+              <button onClick={() => setSelectedDoc(null)} className="text-muted-foreground hover:text-foreground text-lg leading-none">Ã—</button>
             </div>
 
             <Button size="sm" variant="outline" className="w-full gap-2 text-violet-600 border-violet-200 hover:bg-violet-50" onClick={() => setShowLinkForm(true)}>

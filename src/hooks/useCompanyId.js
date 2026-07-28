@@ -5,7 +5,8 @@ import { useAuth } from "@/lib/AuthContext";
 import { get, set } from 'idb-keyval';
 
 export function useCompanyId() {
-  const { user } = useAuth();
+  const { user, isLoadingAuth } = useAuth();
+  if (isLoadingAuth) return undefined;
   return user?.company_id || null;
 }
 

@@ -1,4 +1,4 @@
-import { powerSync } from '@/api/PowerSyncConnector';
+﻿import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -29,7 +29,7 @@ export default function UnivFleet() {
   const [saving, setSaving] = useState(false);
 
   const fetchData = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     setLoading(true);
     try {
       const __res = await powerSync.execute(`SELECT * FROM ${TABLE} WHERE company_id = ? ORDER BY vehicle_name ASC`, [companyId]);

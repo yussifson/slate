@@ -117,7 +117,7 @@ serve(async (req) => {
     const { company_id, provider, integration_id, user_id, visibility, space_id, return_url, code_verifier } = stateObj
     const fallbackUrl = return_url || `${appUrl}/clipad/settings`
 
-    if (!company_id || !provider) {
+    if (!provider || (company_id === undefined)) {
       const errUrl = new URL(fallbackUrl)
       errUrl.searchParams.set('status', 'error')
       errUrl.searchParams.set('message', 'Invalid_State_Token')

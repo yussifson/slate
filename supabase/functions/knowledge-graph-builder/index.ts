@@ -10,9 +10,9 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
-    const { company_id, limit = 50 } = await req.json();
-    if (!company_id) {
-      return new Response(JSON.stringify({ error: 'Missing company_id' }), { status: 400, headers: corsHeaders });
+    const { company_id = null, limit = 50 } = await req.json();
+    if (company_id === undefined) {
+      return new Response(JSON.stringify({ error: 'Missing company_id parameter' }), { status: 400, headers: corsHeaders });
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';

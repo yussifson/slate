@@ -1,4 +1,4 @@
-import { powerSync } from '@/api/PowerSyncConnector';
+﻿import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -8,7 +8,7 @@ import { useDropzone } from 'react-dropzone';
 import { motion } from 'framer-motion';
 
 const TABLE = 'univ_documents';
-const TYPE_ICONS = { "Offer Letter": '📄', "Contract": '📝', "NDA": '🔒', "Performance Review": '📈', "Tax Form": '🏛️', "Other": '📁' };
+const TYPE_ICONS = { "Offer Letter": 'ðŸ“„', "Contract": 'ðŸ“', "NDA": 'ðŸ”’', "Performance Review": 'ðŸ“ˆ', "Tax Form": 'ðŸ›ï¸', "Other": 'ðŸ“' };
 const STATUS_COLORS = { "Active": 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200', "Archived": 'bg-muted text-[#71717a] dark:text-gray-400 border-primary/40', "Draft": 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200' };
 
 const EMPTY_FORM = { employee_name: '', name: '', type: 'Offer Letter', description: '', file_url: '', status: 'Active', tags: '' };
@@ -52,7 +52,7 @@ export default function UnivDocument() {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const fetchData = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     setLoading(true);
     try {
       const __res = await powerSync.execute(`SELECT * FROM ${TABLE} WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
@@ -137,7 +137,7 @@ export default function UnivDocument() {
   const getEmployeeName = (idOrName) => {
     const emp = employees.find(e => e.id === idOrName);
     if (emp) return `${emp.first_name} ${emp.last_name}`;
-    return idOrName || '—';
+    return idOrName || 'â€”';
   };
 
   const filtered = records.filter(r => {
@@ -194,7 +194,7 @@ export default function UnivDocument() {
               }, {})
             ).map(([s, count]) => (
               <div key={s} className="px-3 py-1.5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 bg-muted/30 text-foreground text-[11px] font-semibold uppercase tracking-wider flex items-center gap-2 whitespace-nowrap tracking-[0.04em]">
-                <span>{TYPE_ICONS[s] || '📄'} {s}</span>
+                <span>{TYPE_ICONS[s] || 'ðŸ“„'} {s}</span>
                 <span className="bg-background/50 border-[0.5px] border-black/9 dark:border-white/8 rounded-md px-1.5">{count}</span>
               </div>
             ))}

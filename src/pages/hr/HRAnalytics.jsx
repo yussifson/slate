@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { 
   Users, 
   TrendingUp, 
@@ -35,7 +35,7 @@ export default function HRAnalytics() {
   useEffect(() => {
     let active = true;
     const fetchAnalytics = async () => {
-      if (!companyId) return;
+      if (companyId === undefined) return;
       setIsLoading(true);
       try {
         const empRes = await powerSync.getAll('SELECT * FROM univ_hr_employees WHERE company_id = ?', [companyId]);
@@ -208,7 +208,7 @@ export default function HRAnalytics() {
                         </div>
                         <div>
                           <h4 className="text-base font-bold text-foreground">{employee.name}</h4>
-                          <p className="text-xs font-semibold text-muted-foreground tracking-wider uppercase mt-0.5">{employee.role} • {employee.department}</p>
+                          <p className="text-xs font-semibold text-muted-foreground tracking-wider uppercase mt-0.5">{employee.role} â€¢ {employee.department}</p>
                           <div className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/40 px-3 py-1.5 rounded-lg">
                             <BrainCircuit className="w-3.5 h-3.5" />
                             Risk Factor: {employee.reason}

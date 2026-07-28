@@ -1,4 +1,4 @@
-import { OrbitLoader } from '@/components/ui/orbit-loader';
+﻿import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useRef, useEffect} from 'react';
 import { createPortal} from 'react-dom';
@@ -137,7 +137,7 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema}) {
 };
 
  const saveSession = async (s) => {
- if (!companyId) return;
+ if (companyId === undefined) return;
  await (async () => {
  const _payload = {
  id: s.id,

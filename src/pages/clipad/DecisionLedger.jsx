@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
@@ -22,7 +22,7 @@ export default function DecisionLedger() {
   const [filterProvider, setFilterProvider] = useState('all');
 
   useEffect(() => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     loadDecisions();
   }, [companyId]);
 
@@ -260,7 +260,7 @@ export default function DecisionLedger() {
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-2">
                         <span className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider bg-amber-500/10 px-2 py-0.5 rounded-md">
-                          {item._type === 'native' ? '🤖 AI-Detected' : '📄 Knowledge Source'}
+                          {item._type === 'native' ? 'ðŸ¤– AI-Detected' : 'ðŸ“„ Knowledge Source'}
                         </span>
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
                           <Calendar className="w-3 h-3" /> {format(new Date(item.imported_at), 'MMM d, yyyy')}

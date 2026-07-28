@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
   const [form, setForm] = useState({ staff_id: "", period: "", type: "Manager Review", score: "", strengths: "", weaknesses: "", status: "draft" });
 
   const loadReviews = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     const res = await powerSync.execute(
       "SELECT r.*, s.name as full_name, s.department FROM hr_performance_reviews r LEFT JOIN univ_hr_employees s ON r.staff_id = s.id WHERE r.company_id = ? ORDER BY r.created_at DESC",
       [companyId]
@@ -62,7 +62,7 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
 
   return (
     <div className="space-y-6 p-6 font-dmsans">
-      {/* ── Hero Header ── */}
+      {/* â”€â”€ Hero Header â”€â”€ */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
@@ -90,7 +90,7 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
         </div>
       </div>
 
-      {/* ── KPI Cards ── */}
+      {/* â”€â”€ KPI Cards â”€â”€ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map((kpi, i) => (
           <div key={i} className="bg-card rounded-2xl border border-border/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">

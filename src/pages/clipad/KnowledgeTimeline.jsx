@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -21,7 +21,7 @@ export default function KnowledgeTimeline() {
   const [activeFilter, setActiveFilter] = useState('all');
 
   useEffect(() => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     loadTimeline();
   }, [companyId]);
 
@@ -79,7 +79,7 @@ export default function KnowledgeTimeline() {
 
   const getProviderIcon = (providerId) => {
     const intg = INTEGRATIONS.find(i => i.id === providerId || i.provider === providerId);
-    return intg?.icon || '📄';
+    return intg?.icon || 'ðŸ“„';
   };
 
   const filteredEvents = events.filter(e => {
@@ -160,7 +160,7 @@ export default function KnowledgeTimeline() {
                     onClick={() => setActiveFilter(p)}
                     className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${activeFilter === p ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-medium' : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}`}
                   >
-                    <div className="flex items-center gap-2"><span className="text-base">{intg?.icon || '📄'}</span> {intg?.name || p}</div>
+                    <div className="flex items-center gap-2"><span className="text-base">{intg?.icon || 'ðŸ“„'}</span> {intg?.name || p}</div>
                     <span className="text-xs bg-background border border-border px-1.5 py-0.5 rounded-md">{count}</span>
                   </button>
                 );
@@ -201,14 +201,14 @@ export default function KnowledgeTimeline() {
                     <div className="bg-card border border-border rounded-2xl p-5 hover:shadow-md hover:border-indigo-500/30 transition-all">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
-                          <span className="text-xl" title={intg?.name}>{intg?.icon || '📄'}</span>
+                          <span className="text-xl" title={intg?.name}>{intg?.icon || 'ðŸ“„'}</span>
                           <span className="text-xs font-semibold px-2 py-1 bg-secondary text-secondary-foreground rounded-md uppercase tracking-wider">
                             {item.content_type || 'Document'}
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                           <Clock className="w-3.5 h-3.5" />
-                          {format(new Date(item.imported_at), 'MMM d, yyyy • h:mm a')}
+                          {format(new Date(item.imported_at), 'MMM d, yyyy â€¢ h:mm a')}
                         </div>
                       </div>
                       

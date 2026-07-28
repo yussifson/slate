@@ -1,4 +1,4 @@
-import { supabase} from '@/api/supabaseClient';
+﻿import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect} from "react";
 import { useTranslation} from "react-i18next";
 import {Video, Plus, Calendar, Clock, Users, Copy, Sparkles, LayoutGrid} from "lucide-react";
@@ -53,7 +53,7 @@ export default function Board() {
  const getRoomUrl = (id) => `https://meet.ffmuc.net/slate-${companyId}-${id.slice(0,8)}`;
 
  useEffect(() => {
- if (!companyId) return;
+ if (companyId === undefined) return;
  loadRooms();
 
  const roomSub = supabase.channel('video-rooms')

@@ -13,8 +13,8 @@ serve(async (req) => {
     const space_id = url.searchParams.get('space_id') || null
     const return_url = url.searchParams.get('return_url') || `${Deno.env.get('APP_URL') || 'http://localhost:3000'}/clipad/settings`
 
-    if (!provider || !company_id) {
-      return new Response(JSON.stringify({ error: 'Missing provider or company_id' }), { status: 400, headers: { 'Content-Type': 'application/json' } })
+    if (!provider || (company_id === undefined)) {
+      return new Response(JSON.stringify({ error: 'Missing provider' }), { status: 400, headers: { 'Content-Type': 'application/json' } })
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || url.origin

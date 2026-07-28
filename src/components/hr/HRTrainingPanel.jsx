@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,7 +33,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
   const [enrollForm, setEnrollForm] = useState({ staff_id: "", course_id: "", expiry_date: "" });
 
   const loadData = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     try {
       const cr = await powerSync.execute("SELECT * FROM hr_training_courses WHERE company_id = ? ORDER BY created_at DESC", [companyId]);
       const rr = await powerSync.execute(
@@ -113,7 +113,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
 
   return (
     <div className="space-y-6 p-6 font-dmsans">
-      {/* ── Hero Header ── */}
+      {/* â”€â”€ Hero Header â”€â”€ */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
@@ -142,7 +142,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
         </div>
       </div>
 
-      {/* ── KPI Cards ── */}
+      {/* â”€â”€ KPI Cards â”€â”€ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map((kpi, i) => (
           <div key={i} className="bg-card rounded-2xl border border-border/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">

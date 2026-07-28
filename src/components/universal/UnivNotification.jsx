@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+﻿import React, { useState, useEffect} from 'react';
 
 import GenericGrid from '@/components/views/GenericGrid';
 import GenericKanban from '@/components/views/GenericKanban';
@@ -49,7 +49,7 @@ export default function UnivNotification() {
 };
 
   const markAllRead = async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     
     // Optimistic UI update
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));

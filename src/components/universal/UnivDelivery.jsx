@@ -1,4 +1,4 @@
-import { powerSync } from '@/api/PowerSyncConnector';
+﻿import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -39,7 +39,7 @@ export default function UnivDelivery() {
   const [saving, setSaving] = useState(false);
 
   const fetchData = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     setLoading(true);
     try {
       const __res = await powerSync.execute(`SELECT * FROM ${TABLE} WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
@@ -191,10 +191,10 @@ export default function UnivDelivery() {
                     <p className="font-mono font-bold text-primary text-xs border border-primary/20 bg-primary/5 px-2 py-1 rounded w-fit uppercase">{r.tracking_number}</p>
                   </td>
                   <td className="px-4 py-4">
-                    <p className="font-bold text-foreground flex items-center gap-2"><User className="w-4 h-4 text-muted-foreground" /> {r.recipient_name || '—'}</p>
+                    <p className="font-bold text-foreground flex items-center gap-2"><User className="w-4 h-4 text-muted-foreground" /> {r.recipient_name || 'â€”'}</p>
                   </td>
                   <td className="px-4 py-4 max-w-xs">
-                    <p className="text-sm text-muted-foreground flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 shrink-0" /> {r.delivery_address || '—'}</p>
+                    <p className="text-sm text-muted-foreground flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 shrink-0" /> {r.delivery_address || 'â€”'}</p>
                   </td>
                   <td className="px-4 py-4">
                     <span className={`px-2 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider border flex items-center gap-1.5 w-fit ${STATUS_COLORS[r.status] || 'bg-muted text-foreground'}`}>

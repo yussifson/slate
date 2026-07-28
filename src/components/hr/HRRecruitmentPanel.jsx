@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ const STATUS_COLORS = {
 const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Internship", "Remote"];
 
 function ScoreBadge({ score }) {
-  if (score == null) return <span className="text-xs text-muted-foreground">—</span>;
+  if (score == null) return <span className="text-xs text-muted-foreground">â€”</span>;
   const color = score >= 75 ? "bg-green-100 text-green-700" : score >= 50 ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700";
   return <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${color}`}>{score}</span>;
 }
@@ -118,7 +118,7 @@ export default function HRRecruitmentPanel({ companyId, isAdmin, staff = [] }) {
   const [appForm, setAppForm] = useState({ name: "", email: "", phone: "", job_id: "", stage: "applied", notes: "" });
 
   const loadData = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     const jr = await powerSync.execute("SELECT * FROM hr_jobs WHERE company_id = ? ORDER BY created_at DESC", [companyId]);
     const ar = await powerSync.execute("SELECT a.*, j.title as job_title FROM hr_applicants a LEFT JOIN hr_jobs j ON a.job_id = j.id WHERE a.company_id = ? ORDER BY a.created_at DESC", [companyId]);
     setJobs(jr.rows?._array || []);
@@ -127,7 +127,7 @@ export default function HRRecruitmentPanel({ companyId, isAdmin, staff = [] }) {
 
   useEffect(() => {
     loadData();
-    if (!companyId) return;
+    if (companyId === undefined) return;
     const unsub = powerSync.watch("SELECT * FROM hr_jobs WHERE company_id = ?", [companyId], { onResult: loadData });
     return () => unsub?.();
   }, [companyId, loadData]);
@@ -200,7 +200,7 @@ export default function HRRecruitmentPanel({ companyId, isAdmin, staff = [] }) {
         <div className="relative z-10 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold">Recruitment Pipeline</h2>
-            <p className="text-violet-200 text-sm">{jobs.filter(j => j.status === "open").length} open positions · {applicants.length} total applicants</p>
+            <p className="text-violet-200 text-sm">{jobs.filter(j => j.status === "open").length} open positions Â· {applicants.length} total applicants</p>
           </div>
           {isAdmin && (
             <div className="flex gap-2">
@@ -283,7 +283,7 @@ export default function HRRecruitmentPanel({ companyId, isAdmin, staff = [] }) {
                     return (
                       <tr key={job.id} className={`border-b border-border last:border-0 hover:bg-muted/30 transition-colors ${i % 2 === 0 ? "" : "bg-muted/10"}`}>
                         <td className="px-4 py-3 font-medium text-foreground">{job.title}</td>
-                        <td className="px-4 py-3 text-muted-foreground">{job.department || "—"}</td>
+                        <td className="px-4 py-3 text-muted-foreground">{job.department || "â€”"}</td>
                         <td className="px-4 py-3 text-muted-foreground">
                           {job.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{job.location}</span>}
                         </td>
@@ -401,7 +401,7 @@ export default function HRRecruitmentPanel({ companyId, isAdmin, staff = [] }) {
                   </Select>
                 </div>
                 <div>
-                  <Label>Interview Score (0–100)</Label>
+                  <Label>Interview Score (0â€“100)</Label>
                   <Input type="number" min={0} max={100} value={selectedApplicant.interview_score || ""} onChange={e => setSelectedApplicant(a => ({ ...a, interview_score: e.target.value }))} />
                 </div>
               </div>

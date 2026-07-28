@@ -20,9 +20,9 @@ serve(async (req) => {
 
   try {
     // Default threshold lowered to 0.35 (from 0.5) to surface more relevant results
-    const { query, company_id, match_count = 20, threshold = 0.35 } = await req.json();
-    if (!query || !company_id) {
-      return new Response(JSON.stringify({ error: 'Missing query or company_id' }), { status: 400, headers: corsHeaders });
+    const { query, company_id = null, match_count = 20, threshold = 0.35 } = await req.json();
+    if (!query || (company_id === undefined)) {
+      return new Response(JSON.stringify({ error: 'Missing query' }), { status: 400, headers: corsHeaders });
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';

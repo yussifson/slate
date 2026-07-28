@@ -1,4 +1,4 @@
-import { powerSync} from '@/api/PowerSyncConnector';
+﻿import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useEffect} from 'react';
 
 import GenericGrid from '@/components/views/GenericGrid';
@@ -48,7 +48,7 @@ export default function UnivPatient() {
 };
 
  const handleAddPatient = async () => {
- if (!companyId) return;
+ if (companyId === undefined) return;
  const newPatient = {
  company_id: companyId,
  patient_number: `PT-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -211,19 +211,19 @@ export default function UnivPatient() {
  </div>
  <div>
  <div className="font-semibold text-foreground">{p.first_name} {p.last_name}</div>
- <div className="text-[11px] text-[#71717a] dark:text-gray-400">{p.email || 'No email'} • {p.phone || 'No phone'}</div>
+ <div className="text-[11px] text-[#71717a] dark:text-gray-400">{p.email || 'No email'} â€¢ {p.phone || 'No phone'}</div>
  </div>
  </div>
  </td>
  <td className="p-4 text-[#71717a] dark:text-gray-400 font-medium">
- {p.date_of_birth || '—'}
+ {p.date_of_birth || 'â€”'}
  </td>
  <td className="p-4">
  {p.blood_group ? (
  <span className="px-2 py-1 rounded-md bg-red-50 text-red-700 dark:bg-red-500/10/10 border-[0.5px] border-black/9 dark:border-white/8 border-red-200 font-semibold text-xs tracking-[0.04em]">
  {p.blood_group}
  </span>
- ) : '—'}
+ ) : 'â€”'}
  </td>
  <td className="p-4">
  <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg border-[0.5px] border-black/9 dark:border-white/8 flex items-center gap-2 w-fit ${

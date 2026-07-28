@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+﻿import React, { useState, useEffect} from "react";
 import { useTranslation} from "react-i18next";
 import { getTerm} from "@/config/industries";
 import { base44} from "@/api/base44Client";
@@ -49,8 +49,8 @@ export function CurrencySettings({ activeIndustry, company, onSave, saving }) {
  <Select value={form.currency_position} onValueChange={v => setForm({ ...form, currency_position: v})}>
  <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
  <SelectContent>
- <SelectItem value="before">{t("before_amount_gh_100", "Before amount (GH₵100)")}</SelectItem>
- <SelectItem value="after">{t("after_amount_100_gh", "After amount (100 GH₵)")}</SelectItem>
+ <SelectItem value="before">{t("before_amount_gh_100", "Before amount (GHâ‚µ100)")}</SelectItem>
+ <SelectItem value="after">{t("after_amount_100_gh", "After amount (100 GHâ‚µ)")}</SelectItem>
  </SelectContent>
  </Select>
  </Field>
@@ -154,7 +154,7 @@ export function SecuritySettings() {
  <div className="p-4 rounded-xl bg-amber-500/10 border-[0.5px] border-black/9 dark:border-white/8 border-amber-500/20 text-xs text-amber-600 dark:text-amber-500 leading-relaxed font-semibold tracking-[0.04em]">
  {t(
  "lexafrica_zero_trust_framework",
- "🔑 Zero-Trust Framework: All sensitive text fields are cryptographically encrypted directly inside your local web browser using AES-GCM-256 before leaving your computer. Store this passphrase securely; if lost, encrypted data cannot be recovered."
+ "ðŸ”‘ Zero-Trust Framework: All sensitive text fields are cryptographically encrypted directly inside your local web browser using AES-GCM-256 before leaving your computer. Store this passphrase securely; if lost, encrypted data cannot be recovered."
  )}
  </div>
  </div>
@@ -175,7 +175,7 @@ export function BillingSettings({ company, activeIndustry}) {
  const { toast} = useToast();
 
  useEffect(() => {
- if (!companyId) return;
+ if (companyId === undefined) return;
  const fetchUsage = async () => {
  const { count: usersCount} = await supabase
  .from('profiles')
@@ -471,7 +471,7 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
                     <div className="mb-6">
                       <h3 className="font-semibold text-lg text-foreground mb-2">{p.name}</h3>
                       <div className="flex items-end gap-2 mb-2">
-                        <span className="text-4xl font-semibold tracking-tight tracking-[-0.02em]">GH₵{p.price_monthly}</span>
+                        <span className="text-4xl font-semibold tracking-tight tracking-[-0.02em]">GHâ‚µ{p.price_monthly}</span>
                         <span className="text-[#71717a] dark:text-gray-400 font-medium text-sm mb-1.5">/mo</span>
                       </div>
                     </div>

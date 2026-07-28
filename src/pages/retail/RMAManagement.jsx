@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useTranslation } from "react-i18next";
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -51,7 +51,7 @@ export default function RMAManagement() {
   useEffect(() => {
     let active = true;
     const fetchData = async () => {
-      if (!companyId) return;
+      if (companyId === undefined) return;
       try {
         const [rmaRes, productRes, supplierRes] = await Promise.all([
           powerSync.execute('SELECT r.*, p.name as product_name, p.sku FROM univ_retail_rmas r LEFT JOIN univ_retail_products p ON r.product_id = p.id WHERE r.company_id = ? ORDER BY r.created_at DESC', [companyId]),

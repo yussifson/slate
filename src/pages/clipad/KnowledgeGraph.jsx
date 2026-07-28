@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 import { INTEGRATIONS } from '@/config/integrationsList';
 
-// ─── Provider color palette ───────────────────────────────────────────────────
+// â”€â”€â”€ Provider color palette â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const PROVIDER_COLORS = {
   slack: '#4A154B',
   github: '#24292E',
@@ -63,7 +63,7 @@ const RELATIONSHIP_COLORS = {
   related: '#8B5CF6',
 };
 
-// ─── Custom Node Component ─────────────────────────────────────────────────────
+// â”€â”€â”€ Custom Node Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function KnowledgeNode({ data, selected }) {
   const intg = INTEGRATIONS.find(i => i.id === data.provider || i.provider === data.provider);
   const color = getProviderColor(data.provider);
@@ -86,7 +86,7 @@ function KnowledgeNode({ data, selected }) {
             className="w-7 h-7 rounded-lg flex items-center justify-center text-sm shrink-0"
             style={{ background: `${color}25` }}
           >
-            {intg?.icon || '📄'}
+            {intg?.icon || 'ðŸ“„'}
           </div>
           <div className="min-w-0">
             <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color }}>
@@ -113,7 +113,7 @@ function KnowledgeNode({ data, selected }) {
 
 const nodeTypes = { knowledge: KnowledgeNode };
 
-// ─── Layout: simple force-style grid placement ────────────────────────────────
+// â”€â”€â”€ Layout: simple force-style grid placement â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function layoutNodes(nodes) {
   const COLS = Math.ceil(Math.sqrt(nodes.length)) || 1;
   const W = 240, H = 160;
@@ -126,7 +126,7 @@ function layoutNodes(nodes) {
   }));
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Main Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function KnowledgeGraph() {
   const { user } = useAuth();
   const companyId = useCompanyId();
@@ -177,7 +177,7 @@ export default function KnowledgeGraph() {
   }, [stats, providers, aiInsightsLoading]);
 
   const loadGraph = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     setLoading(true);
     try {
       // Load knowledge items (nodes)
@@ -228,7 +228,7 @@ export default function KnowledgeGraph() {
       }));
       const positionedNodes = layoutNodes(rawNodes);
 
-      // Build edges — only for items we have as nodes
+      // Build edges â€” only for items we have as nodes
       const rawEdges = (relationships || [])
         .filter(r => itemSet.has(r.source_id) && itemSet.has(r.target_id))
         .map(r => ({
@@ -374,7 +374,7 @@ export default function KnowledgeGraph() {
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="flex flex-col items-center gap-3">
               <Loader2 className="w-8 h-8 text-violet-500 animate-spin" />
-              <p className="text-sm text-muted-foreground">Building knowledge graph…</p>
+              <p className="text-sm text-muted-foreground">Building knowledge graphâ€¦</p>
             </div>
           </div>
         ) : filteredNodes.length === 0 ? (
@@ -430,7 +430,7 @@ export default function KnowledgeGraph() {
             {aiInsightsLoading && !aiInsights ? (
               <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
                 <Loader2 className="w-4 h-4 animate-spin text-violet-500" />
-                Analyzing your knowledge graph…
+                Analyzing your knowledge graphâ€¦
               </div>
             ) : (
               <div className="prose prose-sm dark:prose-invert max-w-none text-xs leading-relaxed">
@@ -449,7 +449,7 @@ export default function KnowledgeGraph() {
                   className="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
                   style={{ background: `${getProviderColor(selectedNode.provider)}25` }}
                 >
-                  {INTEGRATIONS.find(i => i.id === selectedNode.provider)?.icon || '📄'}
+                  {INTEGRATIONS.find(i => i.id === selectedNode.provider)?.icon || 'ðŸ“„'}
                 </div>
                 <div>
                   <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
@@ -469,7 +469,7 @@ export default function KnowledgeGraph() {
 
             {selectedNode.ai_summary && (
               <p className="text-xs text-muted-foreground leading-relaxed mb-3 bg-secondary/30 rounded-xl p-3">
-                {selectedNode.ai_summary.substring(0, 200)}…
+                {selectedNode.ai_summary.substring(0, 200)}â€¦
               </p>
             )}
 

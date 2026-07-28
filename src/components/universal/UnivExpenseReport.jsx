@@ -1,4 +1,4 @@
-import { powerSync } from '@/api/PowerSyncConnector';
+﻿import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -31,7 +31,7 @@ export default function UnivExpenseReport() {
   const [saving, setSaving] = useState(false);
 
   const fetchData = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     setLoading(true);
     try {
       const __res = await powerSync.execute(`SELECT * FROM ${TABLE} WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
@@ -108,12 +108,12 @@ export default function UnivExpenseReport() {
   const getEmployeeName = (idOrName) => {
     const emp = employees.find(e => e.id === idOrName);
     if (emp) return `${emp.first_name} ${emp.last_name}`;
-    return idOrName || '—';
+    return idOrName || 'â€”';
   };
 
   const formatCurrency = (amount) => {
     const num = parseFloat(amount);
-    if (isNaN(num)) return '—';
+    if (isNaN(num)) return 'â€”';
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
   };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ function hoursWorked(clockIn, clockOut) {
 }
 
 function formatTime(iso) {
-  if (!iso) return "—";
+  if (!iso) return "â€”";
   return new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
@@ -56,7 +56,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
   const [gpsStatus, setGpsStatus] = useState(null);
 
   const loadTodayRecords = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     try {
       const res = await powerSync.execute(
         "SELECT a.*, s.name as full_name FROM hr_attendance a LEFT JOIN univ_hr_employees s ON a.staff_id = s.id WHERE a.company_id = ? AND a.date = ? ORDER BY a.clock_in DESC",
@@ -72,7 +72,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
   }, [companyId, today, user?.id]);
 
   const loadHistory = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     try {
       const res = await powerSync.execute(
         "SELECT a.*, s.name as full_name FROM hr_attendance a LEFT JOIN univ_hr_employees s ON a.staff_id = s.id WHERE a.company_id = ? ORDER BY a.date DESC, a.clock_in DESC",
@@ -104,7 +104,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
         );
         await loadTodayRecords();
         await loadHistory();
-        toast({ title: status === "late" ? "Clocked in — You are late" : "Clocked in successfully ✓" });
+        toast({ title: status === "late" ? "Clocked in â€” You are late" : "Clocked in successfully âœ“" });
       } catch (err) {
         toast({ title: "Failed to clock in", variant: "destructive" });
       } finally {
@@ -165,7 +165,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
 
   return (
     <div className="space-y-6 p-6 font-dmsans">
-      {/* ── Hero Header ── */}
+      {/* â”€â”€ Hero Header â”€â”€ */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
@@ -207,7 +207,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
         </div>
       </div>
 
-      {/* ── KPI Cards ── */}
+      {/* â”€â”€ KPI Cards â”€â”€ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map((kpi, i) => (
           <div key={i} className="bg-card rounded-2xl border border-border/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
@@ -339,7 +339,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
                           </td>
                           <td className="p-4 font-medium text-foreground">{formatTime(r.clock_in)}</td>
                           <td className="p-4 font-medium text-foreground">{formatTime(r.clock_out)}</td>
-                          <td className="p-4 font-bold text-foreground">{hoursWorked(r.clock_in, r.clock_out) || "—"}</td>
+                          <td className="p-4 font-bold text-foreground">{hoursWorked(r.clock_in, r.clock_out) || "â€”"}</td>
                           <td className="p-4"><StatusBadge status={r.status} /></td>
                         </tr>
                       );

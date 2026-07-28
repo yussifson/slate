@@ -1,4 +1,4 @@
-import { powerSync} from '@/api/PowerSyncConnector';
+﻿import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useEffect} from 'react';
 
 import GenericGrid from '@/components/views/GenericGrid';
@@ -62,7 +62,7 @@ export default function UnivParentPortal() {
 };
 
  const generateAccessCode = async () => {
- if (!companyId) return;
+ if (companyId === undefined) return;
  try {
  // Find a student in this company to link, otherwise fallback to dummy UUID
  const { data: students} = await supabase

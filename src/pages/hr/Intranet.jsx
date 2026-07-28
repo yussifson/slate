@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useTranslation } from "react-i18next";
 import { Sparkles, Megaphone, Plus, CalendarDays, Building2, User, ArrowUpRight, ArrowDownRight, Users, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -41,7 +41,7 @@ export default function Intranet() {
   useEffect(() => {
     let active = true;
     const fetchData = async () => {
-      if (!companyId) return;
+      if (companyId === undefined) return;
       setIsLoading(true);
       try {
         const annRes = await powerSync.execute(
@@ -112,7 +112,7 @@ export default function Intranet() {
 
   return (
     <div className="space-y-6 p-6 font-dmsans">
-      {/* ── Hero Header ── */}
+      {/* â”€â”€ Hero Header â”€â”€ */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
@@ -138,7 +138,7 @@ export default function Intranet() {
         </div>
       </div>
 
-      {/* ── KPI Cards ── */}
+      {/* â”€â”€ KPI Cards â”€â”€ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map((kpi, i) => (
           <div key={i} className="bg-card rounded-2xl border border-border/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
@@ -194,7 +194,7 @@ export default function Intranet() {
                         <p className="font-bold text-sm text-foreground">{ann.author_name || 'System'}</p>
                         <p className="text-[10px] uppercase font-bold text-muted-foreground flex items-center gap-1 mt-0.5">
                           <CalendarDays className="w-3 h-3" />
-                          {format(new Date(ann.created_at || new Date()), 'MMM d, yyyy • h:mm a')}
+                          {format(new Date(ann.created_at || new Date()), 'MMM d, yyyy â€¢ h:mm a')}
                         </p>
                       </div>
                     </div>

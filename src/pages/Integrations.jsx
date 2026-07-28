@@ -1,4 +1,4 @@
-import { supabase} from '@/api/supabaseClient';
+﻿import { supabase} from '@/api/supabaseClient';
 import { useTranslation} from "react-i18next";
 import React, { useState, useEffect} from 'react';
 import { useAuth} from '@/lib/AuthContext';
@@ -164,7 +164,7 @@ export default function Integrations() {
 
  useEffect(() => {
  const fetchConnections = async () => {
- if (!companyId) return;
+ if (companyId === undefined) return;
  try {
  setInitialLoading(true);
  // Fetch from production database
@@ -229,7 +229,7 @@ export default function Integrations() {
 }, [toast]);
 
  const handleConnect = async (app) => {
- if (!companyId) return;
+ if (companyId === undefined) return;
  
  const CREDENTIALS_PROVIDERS = ['stripe', 'paystack', 'twilio', 'docusign', 'mailchimp', 'shipstation'];
  if (CREDENTIALS_PROVIDERS.includes(app.provider)) {
@@ -311,7 +311,7 @@ export default function Integrations() {
 };
 
  const handleDisconnect = async (app) => {
- if (!companyId) return;
+ if (companyId === undefined) return;
  setLoadingAppId(app.id);
  
  try {
@@ -344,7 +344,7 @@ export default function Integrations() {
 };
 
  const handleTestSync = async (app) => {
- if (!companyId) return;
+ if (companyId === undefined) return;
  setLoadingAppId(app.id);
  
  toast({
@@ -396,7 +396,7 @@ export default function Integrations() {
 };
 
  const handleTestFeature = async (app) => {
- if (!companyId) return;
+ if (companyId === undefined) return;
  setLoadingAppId(app.id);
  
  toast({

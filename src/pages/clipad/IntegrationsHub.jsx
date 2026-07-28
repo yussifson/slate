@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { useAuth } from '@/lib/AuthContext';
@@ -25,7 +25,7 @@ import { INTEGRATIONS, CATEGORIES } from '@/config/integrationsList';
 
 const isSuperAdmin = (user) => user?.role === 'super_admin' || user?.user_metadata?.role === 'super_admin';
 
-// ─── Main Component ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Main Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function IntegrationsHub() {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -47,12 +47,12 @@ export default function IntegrationsHub() {
   const [configModal, setConfigModal] = useState(null); // { integration, conn }
   const [customFreqInput, setCustomFreqInput] = useState({}); // { [connId]: hoursString }
 
-  // ── Visibility scope selector state ──────────────────────────────────────────
-  const [scopeModal, setScopeModal] = useState(null); // { integration } — pending connect
+  // â”€â”€ Visibility scope selector state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const [scopeModal, setScopeModal] = useState(null); // { integration } â€” pending connect
   const [selectedScope, setSelectedScope] = useState('personal'); // 'personal' | 'space' | 'company'
   const [selectedSpaceId, setSelectedSpaceId] = useState(''); // when scope='space'
   const [userSpaces, setUserSpaces] = useState([]); // spaces this user belongs to
-  const [changeScopeModal, setChangeScopeModal] = useState(null); // { conn, integration } — change scope of existing
+  const [changeScopeModal, setChangeScopeModal] = useState(null); // { conn, integration } â€” change scope of existing
 
   const userRole = user?.role || user?.user_metadata?.role || 'member';
   const isAdmin = ['super_admin', 'admin'].includes(userRole);
@@ -64,11 +64,11 @@ export default function IntegrationsHub() {
     const message = searchParams.get('message');
 
     if (status === 'success' && provider) {
-      toast({ title: '✅ Connected!', description: `${provider.replace('_', ' ')} connected successfully. Syncing your data...` });
+      toast({ title: 'âœ… Connected!', description: `${provider.replace('_', ' ')} connected successfully. Syncing your data...` });
       setSearchParams({});
       loadConnected();
     } else if (status === 'needs_api_key' && provider) {
-      // API key-based provider — open the key input modal
+      // API key-based provider â€” open the key input modal
       const integration = INTEGRATIONS.find(i => i.provider === provider || i.id === provider);
       setApiKeyModal({ provider, integration });
       setSearchParams({});
@@ -80,12 +80,12 @@ export default function IntegrationsHub() {
   }, []);
 
   const loadConnected = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     // Load only integrations visible to this user (RLS will enforce scoping once migration applied)
     const { data } = await supabase.from('clipad_integrations').select('*').eq('company_id', companyId);
     if (data) {
       const map = {};
-      // Key by provider — personal integrations keyed as `${provider}_personal_${userId}`
+      // Key by provider â€” personal integrations keyed as `${provider}_personal_${userId}`
       data.forEach(row => {
         const key = row.visibility === 'personal' && row.connected_by_user_id !== user?.id
           ? null  // skip other people's personal integrations
@@ -153,7 +153,7 @@ export default function IntegrationsHub() {
   }, [user?.id, companyId]);
 
   const loadKnowledge = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     
     // Fetch total count
     const { count } = await supabase.from('clipad_imported_knowledge').select('*', { count: 'exact', head: true }).eq('company_id', companyId);
@@ -169,7 +169,7 @@ export default function IntegrationsHub() {
     loadUserSpaces();
   }, [loadConnected, loadKnowledge, loadUserSpaces]);
 
-  // ── Open scope selector before connecting ────────────────────────────────────
+  // â”€â”€ Open scope selector before connecting â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const handleConnect = (integration) => {
     if (!companyId) {
       toast({ title: 'Not authorized', description: 'You must belong to a company to connect integrations.', variant: 'destructive' });
@@ -181,7 +181,7 @@ export default function IntegrationsHub() {
     setScopeModal({ integration });
   };
 
-  // ── Actually fire the connection after scope is chosen ───────────────────────
+  // â”€â”€ Actually fire the connection after scope is chosen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const confirmConnect = () => {
     const { integration } = scopeModal;
     setScopeModal(null);
@@ -198,7 +198,7 @@ export default function IntegrationsHub() {
     window.location.href = oauthUrl;
   };
 
-  // ── Change scope of an already-connected integration ───────────────────────
+  // â”€â”€ Change scope of an already-connected integration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const handleChangeScope = async () => {
     if (!changeScopeModal) return;
     const { conn } = changeScopeModal;
@@ -226,7 +226,7 @@ export default function IntegrationsHub() {
         .eq('id', conn.id)
         .eq('company_id', companyId); // ensure cross-company update is impossible
       if (error) throw error;
-      toast({ title: '✅ Scope updated', description: `Integration is now ${selectedScope === 'company' ? 'company-wide' : selectedScope === 'space' ? 'space-level' : 'personal'}.` });
+      toast({ title: 'âœ… Scope updated', description: `Integration is now ${selectedScope === 'company' ? 'company-wide' : selectedScope === 'space' ? 'space-level' : 'personal'}.` });
       setChangeScopeModal(null);
       await loadConnected();
     } catch (e) {
@@ -323,7 +323,7 @@ export default function IntegrationsHub() {
         : `${imported} item${imported !== 1 ? 's' : ''} imported. AI is now processing the content...`;
 
       toast({ 
-        title: forceFull ? `🔄 Full Sync Started` : `✅ ${integration.name} synced`, 
+        title: forceFull ? `ðŸ”„ Full Sync Started` : `âœ… ${integration.name} synced`, 
         description: descriptionText
       });
 
@@ -367,7 +367,7 @@ export default function IntegrationsHub() {
   };
 
   const handleSaveApiKey = async (provider, keyData) => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     try {
       const { data: existing } = await supabase
         .from('clipad_integrations')
@@ -401,7 +401,7 @@ export default function IntegrationsHub() {
       }
 
       if (error) throw error;
-      toast({ title: '✅ Connected!', description: `${provider.replace(/_/g, ' ')} connected (${selectedScope === 'company' ? 'company-wide' : selectedScope === 'space' ? 'space-level' : 'personal'}).` });
+      toast({ title: 'âœ… Connected!', description: `${provider.replace(/_/g, ' ')} connected (${selectedScope === 'company' ? 'company-wide' : selectedScope === 'space' ? 'space-level' : 'personal'}).` });
       setApiKeyModal(null);
       await loadConnected();
     } catch (e) {
@@ -538,7 +538,7 @@ export default function IntegrationsHub() {
           </div>
         </div>
 
-        {/* ── My Connections Panel (scoped view) ─────────────────────────── */}
+        {/* â”€â”€ My Connections Panel (scoped view) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         {connectedCount > 0 && (() => {
           const personal = Object.entries(connected).filter(([, c]) => c.visibility === 'personal' || (!c.visibility && c.connected_by_user_id === user?.id));
           const space    = Object.entries(connected).filter(([, c]) => c.visibility === 'space');
@@ -585,9 +585,9 @@ export default function IntegrationsHub() {
                 <CheckCircle2 className="w-4 h-4" /> {connectedCount} Active Connection{connectedCount !== 1 ? 's' : ''}
                 <span className="ml-auto text-[10px] text-muted-foreground font-normal">Hover a card to change scope</span>
               </h2>
-              <ScopeGroup label="Personal — Only you" items={personal} icon={User} color="text-violet-600 dark:text-violet-400" bg="border-violet-200 dark:border-violet-800/50" pill="bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400" />
+              <ScopeGroup label="Personal â€” Only you" items={personal} icon={User} color="text-violet-600 dark:text-violet-400" bg="border-violet-200 dark:border-violet-800/50" pill="bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400" />
               <ScopeGroup label="Space-level" items={space} icon={Users} color="text-blue-600 dark:text-blue-400" bg="border-blue-200 dark:border-blue-800/50" pill="bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400" />
-              <ScopeGroup label="Company-wide — Everyone" items={company} icon={Globe} color="text-emerald-600 dark:text-emerald-400" bg="border-emerald-200 dark:border-emerald-800/50" pill="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400" />
+              <ScopeGroup label="Company-wide â€” Everyone" items={company} icon={Globe} color="text-emerald-600 dark:text-emerald-400" bg="border-emerald-200 dark:border-emerald-800/50" pill="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400" />
             </div>
           );
         })()}
@@ -835,7 +835,7 @@ export default function IntegrationsHub() {
                 const intg = INTEGRATIONS.find(i => i.provider === item.provider || i.id === item.provider);
                 return (
                   <div key={item.id} className="flex items-start gap-3 bg-card border border-border rounded-xl p-4 hover:border-primary/30 transition-colors group">
-                    <div className="text-xl shrink-0 mt-0.5">{intg?.icon || '📄'}</div>
+                    <div className="text-xl shrink-0 mt-0.5">{intg?.icon || 'ðŸ“„'}</div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span className="font-semibold text-sm text-foreground truncate">{item.title || 'Untitled'}</span>
@@ -846,7 +846,7 @@ export default function IntegrationsHub() {
                       )}
                       <div className="flex items-center gap-2 mt-1.5">
                         <span className="text-[11px] text-muted-foreground">{intg?.name || item.provider}</span>
-                        <span className="text-muted-foreground">·</span>
+                        <span className="text-muted-foreground">Â·</span>
                         <span className="text-[11px] text-muted-foreground">{new Date(item.imported_at).toLocaleDateString()}</span>
                         {item.url && (
                           <a href={item.url} target="_blank" rel="noopener noreferrer" className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
@@ -888,7 +888,7 @@ export default function IntegrationsHub() {
         </div>
       )}
 
-      {/* ── Scope Selector Modal — shown BEFORE connecting any integration ─────── */}
+      {/* â”€â”€ Scope Selector Modal â€” shown BEFORE connecting any integration â”€â”€â”€â”€â”€â”€â”€ */}
       {scopeModal && createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-5 animate-in fade-in zoom-in-95 duration-200">
@@ -973,7 +973,7 @@ export default function IntegrationsHub() {
             <div className="flex items-start gap-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl p-2.5 mb-4">
               <Lock className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" />
               <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                {selectedScope === 'personal' && 'Only you can access this connection data — not even admins.'}
+                {selectedScope === 'personal' && 'Only you can access this connection data â€” not even admins.'}
                 {selectedScope === 'space' && `Only members of "${userSpaces.find(s => s.id === selectedSpaceId)?.name || 'the space'}" will see this.`}
                 {selectedScope === 'company' && 'All members of the company can query this integration via Orbit and Spotlight.'}
               </p>
@@ -1002,7 +1002,7 @@ export default function IntegrationsHub() {
         document.body
       )}
 
-      {/* ── Change Scope Modal — for already-connected integrations ──────────── */}
+      {/* â”€â”€ Change Scope Modal â€” for already-connected integrations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       {changeScopeModal && createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200">
@@ -1012,7 +1012,7 @@ export default function IntegrationsHub() {
               </div>
               <div>
                 <h2 className="text-base font-bold text-slate-900 dark:text-white">Change Access Scope</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{changeScopeModal.integration?.name} · Who can access this?</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{changeScopeModal.integration?.name} Â· Who can access this?</p>
               </div>
             </div>
 
@@ -1103,7 +1103,7 @@ export default function IntegrationsHub() {
                 })
                 .eq('id', configModal.conn.id);
               if (error) throw error;
-              toast({ title: '✅ Settings saved', description: 'Import configuration updated.' });
+              toast({ title: 'âœ… Settings saved', description: 'Import configuration updated.' });
               setConfigModal(null);
               await loadConnected();
             } catch (e) {
@@ -1117,7 +1117,7 @@ export default function IntegrationsHub() {
   );
 }
 
-// ─── API Key Input Modal ──────────────────────────────────────────────────────
+// â”€â”€â”€ API Key Input Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const API_KEY_CONFIGS = {
   freshdesk:        { label: 'Freshdesk',             fields: [{ key: 'api_key', label: 'API Key', secret: true }, { key: 'subdomain', label: 'Subdomain (e.g. yourcompany)', secret: false }] },
   guru:             { label: 'Guru',                   fields: [{ key: 'api_key', label: 'API Key', secret: true }, { key: 'username', label: 'Username / Email', secret: false }] },
@@ -1196,7 +1196,7 @@ function ApiKeyModal({ integration, provider, onSave, onClose }) {
                   value={values[field.key] || ''}
                   onChange={e => setValues(prev => ({ ...prev, [field.key]: e.target.value }))}
                   className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-border rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 pr-10"
-                  placeholder={field.secret ? '••••••••••••••••' : ''}
+                  placeholder={field.secret ? 'â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢' : ''}
                 />
                 {field.secret && (
                   <button type="button" onClick={() => setShowSecrets(p => ({ ...p, [field.key]: !p[field.key] }))} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
@@ -1223,7 +1223,7 @@ function ApiKeyModal({ integration, provider, onSave, onClose }) {
   );
 }
 
-// ─── Per-Integration Config Modal ─────────────────────────────────────────────
+// â”€â”€â”€ Per-Integration Config Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function IntegrationConfigModal({ integration, conn, onSave, onClose }) {
   const meta = conn?.settings || {};
   const [importLimit, setImportLimit] = useState(meta.import_limit || 100);
@@ -1252,7 +1252,7 @@ function IntegrationConfigModal({ integration, conn, onSave, onClose }) {
             {integration?.icon || <Sliders className="w-5 h-5 text-blue-500" />}
           </div>
           <div>
-            <h2 className="text-base font-bold">{integration?.name} — Import Settings</h2>
+            <h2 className="text-base font-bold">{integration?.name} â€” Import Settings</h2>
             <p className="text-xs text-muted-foreground">Control what gets imported and how</p>
           </div>
         </div>

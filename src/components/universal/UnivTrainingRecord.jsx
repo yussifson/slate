@@ -1,4 +1,4 @@
-import { powerSync } from '@/api/PowerSyncConnector';
+﻿import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -30,7 +30,7 @@ export default function UnivTrainingRecord() {
   const [saving, setSaving] = useState(false);
 
   const fetchData = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     setLoading(true);
     try {
       const __res = await powerSync.execute(`SELECT * FROM ${TABLE} WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
@@ -102,7 +102,7 @@ export default function UnivTrainingRecord() {
   const getEmployeeName = (idOrName) => {
     const emp = employees.find(e => e.id === idOrName);
     if (emp) return `${emp.first_name} ${emp.last_name}`;
-    return idOrName || '—';
+    return idOrName || 'â€”';
   };
 
   const filtered = records.filter(r => {
@@ -192,7 +192,7 @@ export default function UnivTrainingRecord() {
                       <p className="font-semibold text-foreground flex items-center gap-2"><User className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> {empName}</p>
                     </td>
                     <td className="px-4 py-4 max-w-xs">
-                      <p className="font-semibold text-primary line-clamp-1">{r.training_name || '—'}</p>
+                      <p className="font-semibold text-primary line-clamp-1">{r.training_name || 'â€”'}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-muted/50 px-1.5 py-0.5 rounded-md tracking-[0.04em]">{r.training_type || 'General'}</span>
                         <span className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{r.provider && `via ${r.provider}`}</span>
@@ -200,12 +200,12 @@ export default function UnivTrainingRecord() {
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex flex-col gap-2 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
-                        <div className="flex items-center gap-2.5"><Calendar className="w-3.5 h-3.5" /> <span className="w-10">Start:</span> <span className="font-medium text-foreground">{r.start_date || '—'}</span></div>
-                        <div className="flex items-center gap-2.5"><ShieldCheck className="w-3.5 h-3.5" /> <span className="w-10">End:</span> <span className="font-medium text-foreground">{r.completion_date || '—'}</span></div>
+                        <div className="flex items-center gap-2.5"><Calendar className="w-3.5 h-3.5" /> <span className="w-10">Start:</span> <span className="font-medium text-foreground">{r.start_date || 'â€”'}</span></div>
+                        <div className="flex items-center gap-2.5"><ShieldCheck className="w-3.5 h-3.5" /> <span className="w-10">End:</span> <span className="font-medium text-foreground">{r.completion_date || 'â€”'}</span></div>
                       </div>
                     </td>
                     <td className="px-4 py-4">
-                      {r.score ? <span className="font-semibold text-foreground bg-primary/10 text-primary px-2 py-1 rounded-lg">{r.score}</span> : <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">—</span>}
+                      {r.score ? <span className="font-semibold text-foreground bg-primary/10 text-primary px-2 py-1 rounded-lg">{r.score}</span> : <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">â€”</span>}
                     </td>
                     <td className="px-4 py-4">
                       <span className={`px-2 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider border ${STATUS_COLORS[r.status] || 'bg-muted text-foreground'}`}>{r.status}</span>

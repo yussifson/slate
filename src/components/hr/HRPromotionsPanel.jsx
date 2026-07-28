@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ export default function HRPromotionsPanel({ companyId, staff, currency, isAdmin,
   useEffect(() => {
     let active = true;
     const fetchPromotions = async () => {
-      if (!companyId) return;
+      if (companyId === undefined) return;
       try {
         const res = await powerSync.execute(
           "SELECT p.*, s.name as full_name FROM univ_erp_promotions p LEFT JOIN univ_hr_employees s ON p.staff_id = s.id WHERE p.company_id = ? ORDER BY p.created_at DESC",
@@ -57,7 +57,7 @@ export default function HRPromotionsPanel({ companyId, staff, currency, isAdmin,
 
   return (
     <div className="space-y-6 p-6 font-dmsans">
-      {/* ── Hero Header ── */}
+      {/* â”€â”€ Hero Header â”€â”€ */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
@@ -85,7 +85,7 @@ export default function HRPromotionsPanel({ companyId, staff, currency, isAdmin,
         </div>
       </div>
 
-      {/* ── KPI Cards ── */}
+      {/* â”€â”€ KPI Cards â”€â”€ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map((kpi, i) => (
           <div key={i} className="bg-card rounded-2xl border border-border/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
@@ -136,7 +136,7 @@ export default function HRPromotionsPanel({ companyId, staff, currency, isAdmin,
                 <div className="flex items-center gap-4 text-xs shrink-0 self-start md:self-center">
                   <div className="text-right hidden sm:block mr-4">
                     <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Salary Adjustment</p>
-                    <p className="font-bold text-foreground">{formatCurrency(promo.old_salary, currency)} → <span className="text-green-600">{formatCurrency(promo.new_salary, currency)}</span></p>
+                    <p className="font-bold text-foreground">{formatCurrency(promo.old_salary, currency)} â†’ <span className="text-green-600">{formatCurrency(promo.new_salary, currency)}</span></p>
                   </div>
 
                   <span className={cn("px-2.5 py-1 rounded-md font-bold uppercase tracking-wider border shadow-sm", 

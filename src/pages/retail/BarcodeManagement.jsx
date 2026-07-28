@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from "react-i18next";
 import { Package, Printer, Plus, Minus, Search, Layers } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
@@ -20,7 +20,7 @@ export default function BarcodeManagement() {
   useEffect(() => {
     let active = true;
     const fetchProducts = async () => {
-      if (!companyId) return;
+      if (companyId === undefined) return;
       try {
         const res = await powerSync.execute(
           'SELECT * FROM univ_retail_products WHERE company_id = ? ORDER BY name ASC',
@@ -140,7 +140,7 @@ export default function BarcodeManagement() {
                       </div>
                       <div>
                         <p className="font-semibold text-sm">{product.name}</p>
-                        <p className="text-xs text-slate-500">SKU: {product.sku || 'N/A'} • Stock: {product.stock_quantity || 0}</p>
+                        <p className="text-xs text-slate-500">SKU: {product.sku || 'N/A'} â€¢ Stock: {product.stock_quantity || 0}</p>
                       </div>
                     </div>
                     <Button variant="outline" size="sm" onClick={() => addToQueue(product)}>

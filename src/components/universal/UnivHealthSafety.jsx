@@ -1,4 +1,4 @@
-import { powerSync} from '@/api/PowerSyncConnector';
+﻿import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useEffect, useCallback} from 'react';
 
 import GenericGrid from '@/components/views/GenericGrid';
@@ -29,7 +29,7 @@ export default function UnivHealthSafety() {
  const [saving, setSaving] = useState(false);
 
  const fetchData = useCallback(async () => {
- if (!companyId) return;
+ if (companyId === undefined) return;
  setLoading(true);
  const { data, error} = await supabase
  .from(TABLE)

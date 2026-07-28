@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo} from 'react';
+﻿import React, { useState, useEffect, useMemo} from 'react';
 import { useCompanyId} from '@/hooks/useCompanyId';
 
 import { supabase} from "@/api/supabaseClient";
@@ -13,7 +13,7 @@ import {
 } from 'recharts';
 import { format, subMonths, startOfMonth, endOfMonth} from 'date-fns';
 
-// ─── Data Sources ──────────────────────────────────────────────────────────────
+// â”€â”€â”€ Data Sources â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const AVAILABLE_SOURCES = [
  { label: 'Employees', table: 'univ_hr_employees', icon: Users},
  { label: 'CRM Leads', table: 'univ_crm_leads', icon: TrendingUp},
@@ -35,7 +35,7 @@ const DEFAULT_LAYOUT = [
  { id: '3', title: 'Support Tickets', table: 'univ_support_tickets', type: 'metric'},
 ];
 
-// ─── Helpers ───────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function monthRange(monthsAgo) {
  const d = subMonths(new Date(), monthsAgo);
  return { start: startOfMonth(d), end: endOfMonth(d), label: format(d, 'MMM')};
@@ -46,7 +46,7 @@ function trendPercent(current, previous) {
  return Math.round(((current - previous) / previous) * 100);
 }
 
-// ─── Custom Tooltip for AreaChart ──────────────────────────────────────────────
+// â”€â”€â”€ Custom Tooltip for AreaChart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function CustomTooltip({ active, payload, label}) {
  if (!active || !payload?.length) return null;
  return (
@@ -61,7 +61,7 @@ function CustomTooltip({ active, payload, label}) {
  );
 }
 
-// ─── Main Component ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Main Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function UnivDashboard({
  title = 'Dashboard',
  subtitle = 'Dynamic overview of your workspace.',
@@ -87,7 +87,7 @@ export default function UnivDashboard({
 
  const LOCAL_KEY = `dashboard_layout_${companyId}`;
 
- // ─── Fetch Layout ────────────────────────────────────────────────────────────
+ // â”€â”€â”€ Fetch Layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
  useEffect(() => {
  if (companyId) fetchLayout();
 }, [companyId]);
@@ -134,9 +134,9 @@ export default function UnivDashboard({
 }
 };
 
- // ─── Fetch Rich Widget Data ──────────────────────────────────────────────────
+ // â”€â”€â”€ Fetch Rich Widget Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
  const fetchAllWidgetData = async (currentLayout) => {
- if (!companyId) return;
+ if (companyId === undefined) return;
  const now = new Date();
  const thisMonthStart = startOfMonth(now);
  const thisMonthEnd = endOfMonth(now);
@@ -212,7 +212,7 @@ export default function UnivDashboard({
  setLastSynced(new Date());
 };
 
- // ─── Save Layout ─────────────────────────────────────────────────────────────
+ // â”€â”€â”€ Save Layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
  const saveLayout = async (newLayout) => {
  setSaving(true);
  setSaveStatus('saving');
@@ -248,11 +248,11 @@ export default function UnivDashboard({
  saveLayout(layout.filter((w) => w.id !== id));
 };
 
- // ─── Derived values ──────────────────────────────────────────────────────────
+ // â”€â”€â”€ Derived values â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
  const statusLabel =
  saveStatus === 'saving' ? 'Saving...' :
- saveStatus === 'saved' ? '✓ Saved to cloud' :
- saveStatus === 'local' ? '✓ Saved locally' : '';
+ saveStatus === 'saved' ? 'âœ“ Saved to cloud' :
+ saveStatus === 'local' ? 'âœ“ Saved locally' : '';
 
  const totalRecordsThisMonth = useMemo(
  () => layout.reduce((sum, w) => sum + (widgetData[w.id]?.thisMonth ?? 0), 0),
@@ -293,11 +293,11 @@ export default function UnivDashboard({
  return months.map((month, i) => ({ month, records: counts[i]}));
 }, [layout, widgetData]);
 
- // ─── Render ──────────────────────────────────────────────────────────────────
+ // â”€â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
  return (
  <div className="flex flex-col h-full bg-background overflow-y-auto custom-scrollbar pb-8">
 
- {/* ── Header ─────────────────────────────────────────────────────────── */}
+ {/* â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
  <div className="view-header flex items-center justify-between mb-6 shrink-0 px-1 pt-2 gap-4 flex-wrap">
  <div>
  <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">{title}</h2>
@@ -356,7 +356,7 @@ export default function UnivDashboard({
  </div>
  ) : (
  <>
- {/* ── AI Insight Banner ─────────────────────────────────────────────── */}
+ {/* â”€â”€ AI Insight Banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
  {zeroWidgets.length > 0 && (
  <motion.div
  initial={{ opacity: 0, y: -8}}
@@ -383,7 +383,7 @@ export default function UnivDashboard({
  </motion.div>
  )}
 
- {/* ── KPI Cards ─────────────────────────────────────────────────────── */}
+ {/* â”€â”€ KPI Cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
  {layout.map((w, idx) => {
  const source = AVAILABLE_SOURCES.find((s) => s.table === w.table);
@@ -431,7 +431,7 @@ export default function UnivDashboard({
  )
  ) : (
  <span className="text-[#71717a] dark:text-gray-400 text-base font-medium animate-pulse">
- Loading…
+ Loadingâ€¦
  </span>
  )}
  </h3>
@@ -483,11 +483,11 @@ export default function UnivDashboard({
  )}
  </div>
 
- {/* ── Charts + Recent Records (2-col) ──────────────────────────────── */}
+ {/* â”€â”€ Charts + Recent Records (2-col) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
  {layout.length > 0 && (
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
 
- {/* Activity AreaChart — spans 2/3 */}
+ {/* Activity AreaChart â€” spans 2/3 */}
  <motion.div
  initial={{ opacity: 0, y: 12}}
  animate={{ opacity: 1, y: 0}}
@@ -547,7 +547,7 @@ export default function UnivDashboard({
  </ResponsiveContainer>
  </motion.div>
 
- {/* Recent Records Panel — 1/3 */}
+ {/* Recent Records Panel â€” 1/3 */}
  <motion.div
  initial={{ opacity: 0, y: 12}}
  animate={{ opacity: 1, y: 0}}
@@ -572,7 +572,7 @@ export default function UnivDashboard({
  const label = rec.name || rec.title || `Record #${rec.id ?? i + 1}`;
  const date = rec.created_at
  ? format(new Date(rec.created_at), 'MMM d, yyyy')
- : '—';
+ : 'â€”';
  return (
  <div
  key={rec.id ?? i}
@@ -595,7 +595,7 @@ export default function UnivDashboard({
  </div>
  )}
 
- {/* ── System Health Row ─────────────────────────────────────────────── */}
+ {/* â”€â”€ System Health Row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
  {layout.length > 0 && (
  <motion.div
  initial={{ opacity: 0, y: 8}}
@@ -626,7 +626,7 @@ export default function UnivDashboard({
  Last Synced
  </p>
  <p className="text-sm font-black text-foreground">
- {lastSynced ? format(lastSynced, 'h:mm a') : '—'}
+ {lastSynced ? format(lastSynced, 'h:mm a') : 'â€”'}
  </p>
  </div>
  </div>
@@ -650,7 +650,7 @@ export default function UnivDashboard({
  </>
  )}
 
- {/* ── Add Widget Modal ──────────────────────────────────────────────────── */}
+ {/* â”€â”€ Add Widget Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm animate-in fade-in">
  <div className="bg-card w-full max-w-md rounded-2xl flex flex-col overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">

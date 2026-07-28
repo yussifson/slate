@@ -1,4 +1,4 @@
-import { powerSync } from '@/api/PowerSyncConnector';
+﻿import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -32,7 +32,7 @@ export default function UnivBenefitElection() {
   const [saving, setSaving] = useState(false);
 
   const fetchData = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     setLoading(true);
     try {
       const __res = await powerSync.execute(`SELECT * FROM ${TABLE} WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
@@ -104,7 +104,7 @@ export default function UnivBenefitElection() {
   const getEmployeeName = (idOrName) => {
     const emp = employees.find(e => e.id === idOrName);
     if (emp) return `${emp.first_name} ${emp.last_name}`;
-    return idOrName || '—';
+    return idOrName || 'â€”';
   };
 
   const filtered = records.filter(r => {
@@ -196,9 +196,9 @@ export default function UnivBenefitElection() {
                     <td className="px-4 py-4">
                       <div className="flex items-center gap-2">
                         <Activity className="w-4 h-4 text-primary opacity-70" />
-                        <span className="font-semibold text-foreground">{r.benefit_type || '—'}</span>
+                        <span className="font-semibold text-foreground">{r.benefit_type || 'â€”'}</span>
                       </div>
-                      <div className="text-[10px] text-[#71717a] dark:text-gray-400 mt-1 ml-6 uppercase tracking-wider tracking-[0.04em]">Since: {r.start_date || '—'}</div>
+                      <div className="text-[10px] text-[#71717a] dark:text-gray-400 mt-1 ml-6 uppercase tracking-wider tracking-[0.04em]">Since: {r.start_date || 'â€”'}</div>
                     </td>
                     <td className="px-4 py-4">
                       <span className="px-2 py-1 rounded-md bg-secondary/50 text-secondary-foreground text-xs font-medium border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 tracking-[0.04em]">
@@ -210,7 +210,7 @@ export default function UnivBenefitElection() {
                         <span className="font-mono font-semibold text-foreground flex items-center">
                           <DollarSign className="w-3.5 h-3.5 text-[#71717a] dark:text-gray-400 mr-0.5" />{r.cost}
                         </span>
-                      ) : <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">—</span>}
+                      ) : <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">â€”</span>}
                     </td>
                     <td className="px-4 py-4">
                       <span className={`px-2 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider border ${STATUS_COLORS[r.status] || 'bg-muted text-foreground'}`}>{r.status}</span>

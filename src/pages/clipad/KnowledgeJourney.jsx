@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
@@ -43,7 +43,7 @@ export default function KnowledgeJourney() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const loadJourneys = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     setLoading(true);
     try {
       // Fetch relationships with full source+target node data
@@ -203,7 +203,7 @@ export default function KnowledgeJourney() {
               <h1 className="text-2xl font-bold text-foreground">Knowledge Journey</h1>
             </div>
             <p className="text-sm text-muted-foreground max-w-xl">
-              Trace how ideas, decisions, and work items flow across your organization — from a Slack message to a Notion doc to a GitHub release.
+              Trace how ideas, decisions, and work items flow across your organization â€” from a Slack message to a Notion doc to a GitHub release.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -235,7 +235,7 @@ export default function KnowledgeJourney() {
             <GitBranch className="w-8 h-8 text-muted-foreground mx-auto mb-3 opacity-50" />
             <h3 className="font-semibold text-foreground mb-1">No knowledge journeys yet</h3>
             <p className="text-sm text-muted-foreground">
-              As the AI detects relationships between your synced knowledge items, cross-system knowledge journeys will appear here — showing how ideas flow from a Slack message to a decision to a code commit.
+              As the AI detects relationships between your synced knowledge items, cross-system knowledge journeys will appear here â€” showing how ideas flow from a Slack message to a decision to a code commit.
             </p>
           </div>
         ) : (
@@ -256,7 +256,7 @@ export default function KnowledgeJourney() {
   );
 }
 
-// ─── Journey Card ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Journey Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function JourneyCard({ journey, onSelect, isSelected }) {
   return (
     <div
@@ -290,12 +290,12 @@ function JourneyCard({ journey, onSelect, isSelected }) {
   );
 }
 
-// ─── Inline horizontal chain preview ─────────────────────────────────────────
+// â”€â”€â”€ Inline horizontal chain preview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function ChainPreview({ node, depth }) {
   const intg = INTEGRATIONS.find(i => i.id === node.item.provider || i.provider === node.item.provider);
   const color = getColor(node.item.provider);
 
-  if (depth > 3) return <span className="text-muted-foreground text-xs">…</span>;
+  if (depth > 3) return <span className="text-muted-foreground text-xs">â€¦</span>;
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
@@ -303,7 +303,7 @@ function ChainPreview({ node, depth }) {
         className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold border"
         style={{ background: `${color}15`, borderColor: `${color}40`, color }}
       >
-        <span>{intg?.icon || '📄'}</span>
+        <span>{intg?.icon || 'ðŸ“„'}</span>
         <span className="capitalize">{node.item.provider?.replace('_', ' ')}</span>
       </div>
       <p className="text-xs text-foreground font-medium max-w-xs truncate">{node.item.title}</p>
@@ -321,7 +321,7 @@ function ChainPreview({ node, depth }) {
   );
 }
 
-// ─── Vertical detailed chain ──────────────────────────────────────────────────
+// â”€â”€â”€ Vertical detailed chain â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function DetailChain({ node, depth }) {
   const intg = INTEGRATIONS.find(i => i.id === node.item.provider || i.provider === node.item.provider);
   const color = getColor(node.item.provider);
@@ -340,7 +340,7 @@ function DetailChain({ node, depth }) {
           style={{ background: `${color}10`, borderColor: `${color}30`, marginLeft: depth > 0 ? depth * 16 : 0 }}
         >
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-base">{intg?.icon || '📄'}</span>
+            <span className="text-base">{intg?.icon || 'ðŸ“„'}</span>
             <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color }}>{node.item.provider?.replace('_', ' ')}</span>
             <span className="text-[10px] text-muted-foreground ml-auto">
               {node.item.imported_at ? format(new Date(node.item.imported_at), 'MMM d, yyyy') : ''}

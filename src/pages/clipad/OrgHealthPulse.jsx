@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
@@ -12,11 +12,11 @@ import {
 import { useNavigate as useNav } from 'react-router-dom';
 
 const GRADE_CONFIG = {
-  A: { color: 'emerald', label: 'Excellent', emoji: '🏆' },
-  B: { color: 'green', label: 'Good', emoji: '✅' },
-  C: { color: 'amber', label: 'Fair', emoji: '⚠️' },
-  D: { color: 'orange', label: 'Poor', emoji: '🔻' },
-  F: { color: 'red', label: 'Critical', emoji: '🚨' },
+  A: { color: 'emerald', label: 'Excellent', emoji: 'ðŸ†' },
+  B: { color: 'green', label: 'Good', emoji: 'âœ…' },
+  C: { color: 'amber', label: 'Fair', emoji: 'âš ï¸' },
+  D: { color: 'orange', label: 'Poor', emoji: 'ðŸ”»' },
+  F: { color: 'red', label: 'Critical', emoji: 'ðŸš¨' },
 };
 
 function PulseGauge({ score }) {
@@ -61,7 +61,7 @@ function PulseGauge({ score }) {
         </div>
       </div>
       <div className={`mt-2 px-3 py-1 rounded-full text-xs font-black border bg-${cfg.color}-500/10 border-${cfg.color}-500/30 text-${cfg.color}-400`}>
-        {cfg.emoji} Grade {grade} — {cfg.label}
+        {cfg.emoji} Grade {grade} â€” {cfg.label}
       </div>
     </div>
   );
@@ -84,7 +84,7 @@ export default function OrgHealthPulse() {
   const since30 = subDays(new Date(), 30).toISOString();
 
   const loadMetrics = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     setLoading(true);
     try {
       const [blockers, commitments, decisions, meetings, knowledge, videos] = await Promise.allSettled([
@@ -202,7 +202,7 @@ Respond in valid JSON only:
           <div className="flex items-start justify-between flex-wrap gap-3">
             <div>
               <h1 className="text-2xl font-black text-foreground">CliPad Pulse</h1>
-              <p className="text-sm text-muted-foreground mt-1">Your organization's vital signs — real-time health score built from every signal Orbit tracks.</p>
+              <p className="text-sm text-muted-foreground mt-1">Your organization's vital signs â€” real-time health score built from every signal Orbit tracks.</p>
               {lastUpdated && <p className="text-xs text-muted-foreground/60 mt-0.5">Last updated: {format(lastUpdated, 'h:mm a')}</p>}
             </div>
             <div className="flex items-center gap-2">
@@ -256,7 +256,7 @@ Respond in valid JSON only:
                 <Clock className="w-8 h-8 text-amber-400 shrink-0" />
                 <div>
                   <p className="font-bold text-foreground">Estimated meeting cost this month: <span className="text-amber-400">${metrics.meetingCostEstimate.toLocaleString()}</span></p>
-                  <p className="text-sm text-muted-foreground">{metrics.meetingsThisMonth} meetings tracked · Use Meeting ROI data to identify which ones could be async</p>
+                  <p className="text-sm text-muted-foreground">{metrics.meetingsThisMonth} meetings tracked Â· Use Meeting ROI data to identify which ones could be async</p>
                 </div>
               </div>
             )}

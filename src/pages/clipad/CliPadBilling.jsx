@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { supabase } from '@/api/supabaseClient';
@@ -94,7 +94,7 @@ export default function CliPadBilling() {
 
   
   const fetchHistory = async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     try {
       const { data } = await supabase
         .from('optavel_transactions')

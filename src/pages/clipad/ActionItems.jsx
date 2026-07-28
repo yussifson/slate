@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
@@ -13,13 +13,13 @@ import {
 import { INTEGRATIONS } from '@/config/integrationsList';
 
 const EXPORT_TARGETS = [
-  { id: 'jira', label: 'Jira', icon: '🔵', color: '#0052CC' },
-  { id: 'clickup', label: 'ClickUp', icon: '🟣', color: '#7B68EE' },
-  { id: 'asana', label: 'Asana', icon: '🔴', color: '#F06A6A' },
-  { id: 'linear', label: 'Linear', icon: '⚡', color: '#5E6AD2' },
-  { id: 'github', label: 'GitHub Issue', icon: '⚫', color: '#24292E' },
-  { id: 'trello', label: 'Trello', icon: '🔷', color: '#0079BF' },
-  { id: 'slack', label: 'Slack', icon: '💜', color: '#4A154B' },
+  { id: 'jira', label: 'Jira', icon: 'ðŸ”µ', color: '#0052CC' },
+  { id: 'clickup', label: 'ClickUp', icon: 'ðŸŸ£', color: '#7B68EE' },
+  { id: 'asana', label: 'Asana', icon: 'ðŸ”´', color: '#F06A6A' },
+  { id: 'linear', label: 'Linear', icon: 'âš¡', color: '#5E6AD2' },
+  { id: 'github', label: 'GitHub Issue', icon: 'âš«', color: '#24292E' },
+  { id: 'trello', label: 'Trello', icon: 'ðŸ”·', color: '#0079BF' },
+  { id: 'slack', label: 'Slack', icon: 'ðŸ’œ', color: '#4A154B' },
 ];
 
 const STATUS_OPTIONS = ['todo', 'in_progress', 'done'];
@@ -40,7 +40,7 @@ export default function ActionItems() {
   const [localStatus, setLocalStatus] = useState({}); // track per-action completion
 
   const loadItems = useCallback(async () => {
-    if (!companyId) return;
+    if (companyId === undefined) return;
     setLoading(true);
     try {
       const { data } = await supabase
@@ -138,7 +138,7 @@ export default function ActionItems() {
         return;
       }
 
-      // For Slack — just post a message; for task tools — create a task
+      // For Slack â€” just post a message; for task tools â€” create a task
       const { data: result, error } = await supabase.functions.invoke('integration-sync', {
         body: {
           integrationId: intg.id,
@@ -146,7 +146,7 @@ export default function ActionItems() {
           action: 'create_task',
           payload: {
             title: actionItem.text,
-            description: `Action item extracted from ${actionItem.provider} — "${actionItem.sourceTitle}"\n\nContext: ${actionItem.ai_summary || ''}`.substring(0, 500),
+            description: `Action item extracted from ${actionItem.provider} â€” "${actionItem.sourceTitle}"\n\nContext: ${actionItem.ai_summary || ''}`.substring(0, 500),
             source_url: actionItem.sourceUrl,
           },
         },
@@ -155,7 +155,7 @@ export default function ActionItems() {
       if (error) throw error;
 
       toast({
-        title: `✅ Exported to ${target.charAt(0).toUpperCase() + target.slice(1)}`,
+        title: `âœ… Exported to ${target.charAt(0).toUpperCase() + target.slice(1)}`,
         description: actionItem.text.substring(0, 60),
       });
 
