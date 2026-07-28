@@ -140,6 +140,141 @@ export default function SearchHub() {
     chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatHistory, isSynthesizing]);
 
+  const [activeSessionId, setActiveSessionId] = useState(null);
+
+  // Restore inputs on mount
+  useEffect(() => {
+    if (!user?.id) return;
+    const savedQuery = localStorage.getItem(`search_hub_query_${user.id}`);
+    const savedFollowUp = localStorage.getItem(`search_hub_followup_${user.id}`);
+    if (savedQuery) setQuery(savedQuery);
+    if (savedFollowUp) setFollowUpInput(savedFollowUp);
+  }, [user?.id]);
+
+  // Persist inputs on change
+  useEffect(() => {
+    if (user?.id) {
+      if (query) {
+        localStorage.setItem(`search_hub_query_${user.id}`, query);
+      } else {
+        localStorage.removeItem(`search_hub_query_${user.id}`);
+      }
+    }
+  }, [query, user?.id]);
+
+  useEffect(() => {
+    if (user?.id) {
+      if (followUpInput) {
+        localStorage.setItem(`search_hub_followup_${user.id}`, followUpInput);
+      } else {
+        localStorage.removeItem(`search_hub_followup_${user.id}`);
+      }
+    }
+  }, [followUpInput, user?.id]);
+
+  // Load persistent chat history from Supabase on mount
+  useEffect(() => {
+    if (!user?.id) return;
+    const loadPersistentChat = async () => {
+      try {
+        const { data: sessions } = await supabase
+          .from('orbit_chat_sessions')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('title', 'Search Hub AI Chat')
+          .order('updated_at', { ascending: false })
+          .limit(1);
+
+        if (sessions && sessions.length > 0) {
+          const sid = sessions[0].id;
+          setActiveSessionId(sid);
+
+          const { data: msgs } = await supabase
+            .from('orbit_chat_messages')
+            .select('*')
+            .eq('session_id', sid)
+            .order('created_at', { ascending: true });
+
+          if (msgs && msgs.length > 0) {
+            setChatHistory(msgs.map(m => ({
+              role: m.role,
+              content: m.content
+            })));
+            setHasPerformedSearch(true);
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to load persistent search messages:', err);
+      }
+    };
+    loadPersistentChat();
+  }, [user?.id]);
+
+  const getOrCreateSession = async () => {
+    if (!user?.id) return null;
+    if (activeSessionId) return activeSessionId;
+
+    try {
+      const { data, error } = await supabase
+        .from('orbit_chat_sessions')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('title', 'Search Hub AI Chat')
+        .order('updated_at', { ascending: false })
+        .limit(1);
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        setActiveSessionId(data[0].id);
+        return data[0].id;
+      }
+
+      const sid = crypto.randomUUID();
+      const { error: insErr } = await supabase
+        .from('orbit_chat_sessions')
+        .insert({
+          id: sid,
+          user_id: user.id,
+          company_id: companyId || null,
+          title: 'Search Hub AI Chat',
+          model: 'moonshotai/kimi-k3',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+
+      if (insErr) throw insErr;
+      setActiveSessionId(sid);
+      return sid;
+    } catch (err) {
+      console.warn('Failed to load/create persistent search session:', err);
+      return null;
+    }
+  };
+
+  const handleNewSearch = async () => {
+    if (activeSessionId) {
+      try {
+        await supabase.from('orbit_chat_messages').delete().eq('session_id', activeSessionId);
+        await supabase.from('orbit_chat_sessions').delete().eq('id', activeSessionId);
+      } catch (err) {
+        console.warn('Failed to clear persistent search session:', err);
+      }
+    }
+    setQuery('');
+    setFollowUpInput('');
+    if (user?.id) {
+      localStorage.removeItem(`search_hub_query_${user.id}`);
+      localStorage.removeItem(`search_hub_followup_${user.id}`);
+    }
+    setResults([]);
+    setSelectedResult(null);
+    setHasPerformedSearch(false);
+    setSearchParams({});
+    setActiveSessionId(null);
+    setChatHistory([]);
+  };
+
   const companyId = user?.company_id;
 
   const safeQuery = (promise) => Promise.resolve(promise).then(res => res.data || []).catch(err => {
@@ -273,6 +408,26 @@ export default function SearchHub() {
 
       if (synthSessionRef.current === sessionId) {
         setChatHistory([{ role: 'assistant', content: fullText }]);
+        const sid = await getOrCreateSession();
+        if (sid) {
+          await supabase.from('orbit_chat_messages').delete().eq('session_id', sid);
+          await supabase.from('orbit_chat_messages').insert([
+            {
+              id: crypto.randomUUID(),
+              session_id: sid,
+              role: 'user',
+              content: q,
+              created_at: new Date().toISOString()
+            },
+            {
+              id: crypto.randomUUID(),
+              session_id: sid,
+              role: 'assistant',
+              content: fullText,
+              created_at: new Date().toISOString()
+            }
+          ]);
+        }
       }
     } catch (e) {
       if (synthSessionRef.current === sessionId) {
@@ -298,6 +453,17 @@ export default function SearchHub() {
     setIsSynthesizing(true);
 
     try {
+      const sid = await getOrCreateSession();
+      if (sid) {
+        await supabase.from('orbit_chat_messages').insert({
+          id: crypto.randomUUID(),
+          session_id: sid,
+          role: 'user',
+          content: userMsg,
+          created_at: new Date().toISOString()
+        });
+      }
+
       const messages = [
         {
           role: 'system',
@@ -327,6 +493,16 @@ export default function SearchHub() {
 
       // Finalise
       setChatHistory([...updatedHistory, { role: 'assistant', content: answer }]);
+      if (sid) {
+        await supabase.from('orbit_chat_messages').insert({
+          id: crypto.randomUUID(),
+          session_id: sid,
+          role: 'assistant',
+          content: answer,
+          created_at: new Date().toISOString()
+        });
+        await supabase.from('orbit_chat_sessions').update({ updated_at: new Date().toISOString() }).eq('id', sid);
+      }
     } catch (err) {
       console.error('[SearchHub] Follow-up error:', err);
       toast({ title: 'Error', description: 'Could not fetch response.', variant: 'destructive' });
@@ -450,13 +626,7 @@ export default function SearchHub() {
               </div>
               <div className="flex items-center gap-3 shrink-0">
                 <button
-                  onClick={() => {
-                    setQuery('');
-                    setResults([]);
-                    setSelectedResult(null);
-                    setHasPerformedSearch(false);
-                    setSearchParams({});
-                  }}
+                  onClick={handleNewSearch}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-650 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-white/10 transition-all shadow-sm active:scale-95"
                 >
                   <Plus className="w-3.5 h-3.5 text-primary" />
@@ -686,29 +856,31 @@ export default function SearchHub() {
 
                   {/* Floating ChatGPT-like Input Form at bottom */}
                   <div className="p-4 bg-transparent shrink-0">
-                    <form onSubmit={handleFollowUp} className="max-w-[680px] mx-auto w-full relative flex items-center bg-slate-50 dark:bg-[#161a23]/60 border border-black/[0.08] dark:border-white/10 rounded-2xl px-3.5 py-2 hover:border-slate-300 dark:hover:border-white/20 focus-within:border-primary dark:focus-within:border-primary focus-within:shadow-[0_0_12px_rgba(25,184,110,0.12)] transition-all">
-                      
-                      {/* Left icon badge matching Spotlight layout */}
-                      <div className="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center shrink-0 shadow-sm shadow-emerald-500/30 mr-2.5">
-                        <Sparkles className="w-4 h-4 text-white" />
-                      </div>
+                    <div className="max-w-[680px] mx-auto w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-[1.5px] rounded-2xl shadow-sm">
+                      <form onSubmit={handleFollowUp} className="relative flex items-center bg-slate-50 dark:bg-[#111622] rounded-[15px] px-3.5 py-2 transition-all">
+                        
+                        {/* Left icon badge matching Spotlight layout */}
+                        <div className="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center shrink-0 shadow-sm shadow-emerald-500/30 mr-2.5">
+                          <Sparkles className="w-4 h-4 text-white" />
+                        </div>
 
-                      <input
-                        value={followUpInput}
-                        onChange={e => setFollowUpInput(e.target.value)}
-                        placeholder="Ask Orbit AI..."
-                        className="flex-1 bg-transparent border-none outline-none ring-0 text-sm py-2 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-0 focus:border-none focus:shadow-none"
-                      />
-                      
-                      {/* Send button (Primary green, cleanly aligned) */}
-                      <button
-                        type="submit"
-                        disabled={isSynthesizing || !followUpInput.trim()}
-                        className="ml-2.5 w-8 h-8 rounded-xl bg-primary text-white hover:bg-primary/95 flex items-center justify-center transition-all disabled:opacity-30 active:scale-95 shrink-0 shadow-sm shadow-primary/30"
-                      >
-                        <Send className="w-4 h-4 text-white" />
-                      </button>
-                    </form>
+                        <input
+                          value={followUpInput}
+                          onChange={e => setFollowUpInput(e.target.value)}
+                          placeholder="Ask Orbit AI..."
+                          className="flex-1 bg-transparent border-none outline-none ring-0 text-sm py-2 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-0 focus:border-none focus:shadow-none"
+                        />
+                        
+                        {/* Send button (Primary green, cleanly aligned) */}
+                        <button
+                          type="submit"
+                          disabled={isSynthesizing || !followUpInput.trim()}
+                          className="ml-2.5 w-8 h-8 rounded-xl bg-primary text-white hover:bg-primary/95 flex items-center justify-center transition-all disabled:opacity-30 active:scale-95 shrink-0 shadow-sm shadow-primary/30"
+                        >
+                          <Send className="w-4 h-4 text-white" />
+                        </button>
+                      </form>
+                    </div>
                   </div>
 
                 </div>
