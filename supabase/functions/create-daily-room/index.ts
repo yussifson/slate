@@ -86,7 +86,12 @@ serve(async (req) => {
 
       if (dbError) {
         console.error('Failed to insert into video_rooms:', dbError)
-        throw new Error(`Database error: ${dbError.message}`)
+        // Fix #5 — return 500 so the client knows room creation failed and doesn't
+        // navigate to a room that can't be joined (no DB row = 404 on join).
+        return new Response(JSON.stringify({ error: `Database error: ${dbError.message}` }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500,
+        })
       }
     }
 

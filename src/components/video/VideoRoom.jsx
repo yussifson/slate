@@ -463,6 +463,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
             title: meetingTitle,
             daily_room_name: roomUrl.split('/').pop().split('?')[0] || 'room',
             host_id: user?.id || null,
+            company_id: user?.company_id || null, // Fix #3 — needed for RLS and teammate visibility
             ai_summary: rawTranscript ? 'Generating summary...' : 'No transcript recorded.',
             started_at: new Date(joinTimeRef.current).toISOString(),
             ended_at: new Date().toISOString(),
@@ -555,11 +556,15 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
 
           
           daily.leave();
+          const basePath = window.location.pathname.startsWith('/clipad') ? '/clipad' : '';
           if (insertedMeeting) {
-            const basePath = window.location.pathname.startsWith('/clipad') ? '/clipad' : '';
             navigate(`${basePath}/save-meeting/${insertedMeeting.id}${spaceId ? `?spaceId=${spaceId}` : ''}`);
-            return;
+          } else {
+            // Fix #11 — insert failed; go to dashboard with a clear error instead of blank Board
+            toast({ title: 'Meeting ended', description: 'Could not save meeting record. Please try again.', variant: 'destructive' });
+            navigate(basePath || '/dashboard');
           }
+          return;
         }
       } catch (e) {
         console.error('Failed to save meeting record:', e);

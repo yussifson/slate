@@ -11,10 +11,12 @@ import NotificationCenter from '@/components/clipad/notifications/NotificationCe
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import SpaceSelectorModal from '@/components/clipad/SpaceSelectorModal';
 import { generateShortId } from '@/utils/idGenerator';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function MeetingsList() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [meetings, setMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -100,6 +102,8 @@ export default function MeetingsList() {
       navigate(url);
     } catch (err) {
       console.error(err);
+      // Fix #6 — always show a toast so the user knows why the meeting didn't start
+      toast({ title: 'Could not create meeting', description: err?.message || 'Please try again.', variant: 'destructive' });
     } finally {
       setIsCreating(false);
     }

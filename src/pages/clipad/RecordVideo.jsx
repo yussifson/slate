@@ -45,6 +45,10 @@ const openDB = () => new Promise((resolve, reject) => {
 
 let lastIDBSaveMap = new Map();
 
+// Fix #7 — expose a toast callback so the IDB saver can warn the user
+let _idbQuotaToastFn = null;
+export function _setIdbQuotaToast(fn) { _idbQuotaToastFn = fn; }
+
 const saveRecordingState = async (id, chunks, force = false) => {
   const now = Date.now();
   const lastSave = lastIDBSaveMap.get(id) || 0;
@@ -57,7 +61,13 @@ const saveRecordingState = async (id, chunks, force = false) => {
     tx.objectStore(STORE_NAME).put({ id, chunks, timestamp: now });
     return new Promise(resolve => tx.oncomplete = resolve);
   } catch (err) {
-    if (err?.name !== 'QuotaExceededError' && err?.name !== 'UnknownError') {
+    if (err?.name === 'QuotaExceededError') {
+      // Fix #7 — inform the user that crash-recovery is disabled
+      _idbQuotaToastFn?.({
+        title: '⚠️ Local backup disabled',
+        description: 'Storage quota reached — recording continues, but do NOT close this tab.',
+      });
+    } else if (err?.name !== 'UnknownError') {
       console.warn('IDB Save Warning:', err?.message || err);
     }
   }
@@ -88,6 +98,10 @@ export default function RecordVideo() {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Fix #7 — wire the module-level IDB error notifier to this component's toast
+  useEffect(() => { _setIdbQuotaToast(toast); return () => _setIdbQuotaToast(null); }, [toast]);
+
   const { id } = useParams();
 
   useEffect(() => {
@@ -95,6 +109,12 @@ export default function RecordVideo() {
       navigate(`/record/${uuidv4()}`, { replace: true });
     }
   }, [id, navigate]);
+
+  // Fix #2 — Pre-warm the Render server the moment the page loads so it's
+  // awake by the time the user clicks Record (avoids cold-start during upload).
+  useEffect(() => {
+    fetch('https://slate-2fli.onrender.com/health').catch(() => {});
+  }, []);
   
   const [showRecoverPrompt, setShowRecoverPrompt] = useState(false);
   const [recoveredChunks, setRecoveredChunks] = useState(null);
@@ -983,7 +1003,10 @@ export default function RecordVideo() {
         if (isFlushing) return;
         isFlushing = true;
         while (pendingChunks.length > 0) {
-          if (socket.readyState !== WebSocket.OPEN) break;
+          if (socket.readyState !== WebSocket.OPEN) {
+            isFlushing = false; // Fix #8 — reset flag so next call isn't stuck
+            break;
+          }
           if (socket.bufferedAmount > 5 * 1024 * 1024) {
             setTimeout(() => flushChunks(socket), 200);
             isFlushing = false;
@@ -1033,6 +1056,7 @@ export default function RecordVideo() {
             const videoTitle = title.trim() || `Recording - ${new Date().toLocaleDateString()}`;
             const { data: videoRecord, error: dbError } = await supabase.from('clipad_videos').insert({
               creator_id: user.id,
+              company_id: user?.company_id || null, // Fix #4 — needed for RLS and teammate visibility
               video_url: publicUrl,
               title: videoTitle,
               space_id: selectedSpace || null,
@@ -1113,16 +1137,21 @@ export default function RecordVideo() {
         setUploadProgress(10);
         wsEndRequestedRef.current = true;
 
-        // Hard absolute deadline — if upload hasn't resolved in 60s, always escape to review
+        // Fix #1 — Extended to 5 minutes so large videos (30–50 MB+) have enough time
+        // for two network hops (client → Render → Supabase) even on slow connections.
         const uploadDeadline = setTimeout(() => {
-          console.warn('Upload deadline exceeded — forcing review phase');
-          toast({ title: 'Upload Timeout', description: 'Cloud upload took too long. Your recording is saved locally — please re-upload.', variant: 'destructive' });
+          console.warn('Upload deadline exceeded — auto-falling back to TUS resumable upload');
+          clearTimeout(uploadDeadline);
           const blob = new Blob(chunksRef.current, { type: 'video/webm' });
-          const url = URL.createObjectURL(blob);
           setVideoBlob(blob);
+          const url = URL.createObjectURL(blob);
           setRecordingUrl(url);
-          setPhase('review');
-        }, 60000);
+          // Automatically trigger TUS/direct upload rather than just showing review
+          toast({ title: 'Switching to direct upload…', description: 'Cloud relay timed out — uploading directly. Please wait.', variant: 'default' });
+          setPhase('review'); // review phase reveals the Save button which calls uploadRecording()
+          // Give React one tick to render the blob before triggering upload
+          setTimeout(() => uploadRecording(), 100);
+        }, 300000); // 5 minutes
 
         // Flush any remaining buffered chunks before signalling END
         let endAttempts = 0;
@@ -1139,16 +1168,15 @@ export default function RecordVideo() {
             // Still reconnecting — END will be sent after reconnect (handled in onopen)
             setTimeout(waitAndEnd, 500);
           } else {
-            // Permanent WS failure — show review screen (do not force download, user can download manually)
+            // Fix #1 — Permanent WS failure: auto-fallback to TUS resumable upload
             clearTimeout(uploadDeadline);
-            toast({ title: 'Upload Server Offline', description: 'Your recording was saved locally. You can preview it now and save/download it manually.', variant: 'default' });
             const blob = new Blob(chunksRef.current, { type: 'video/webm' });
             const url = URL.createObjectURL(blob);
-            
-            // Set blob/url so the review player works
             setVideoBlob(blob);
             setRecordingUrl(url);
+            toast({ title: 'Switching to direct upload…', description: 'Relay server unavailable — uploading directly. Please wait.', variant: 'default' });
             setPhase('review');
+            setTimeout(() => uploadRecording(), 100);
           }
         };
         waitAndEnd();
@@ -1409,6 +1437,7 @@ export default function RecordVideo() {
 
       const { data: videoRecord, error: dbError } = await supabase.from('clipad_videos').insert({
         creator_id: user.id,
+        company_id: user?.company_id || null, // Fix #4 — needed for RLS and teammate visibility
         video_url: publicUrl,
         title: videoTitle,
         space_id: selectedSpace || null,

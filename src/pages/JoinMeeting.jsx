@@ -13,6 +13,8 @@ export default function JoinMeeting() {
   const { joinRoom } = useVideo();
   const { toast } = useToast();
   const [error, setError] = useState(null);
+  // Fix #10 — step-by-step status so the user sees progress instead of a blank spinner
+  const [status, setStatus] = useState('Looking up meeting room…');
 
   useEffect(() => {
     if (!roomId) return;
@@ -21,6 +23,7 @@ export default function JoinMeeting() {
 
   const handleJoin = async () => {
     try {
+      setStatus('Looking up meeting room…');
       const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(roomId);
       let query = supabase.from('video_rooms').select('*');
       if (isUUID) {
@@ -38,17 +41,25 @@ export default function JoinMeeting() {
       let joinUrl = room.daily_room_url;
 
       if (room.privacy_type === 'private') {
+        setStatus('Generating secure access token…');
         const { data, error: tokenError } = await supabase.functions.invoke('generate-daily-token', {
           body: { roomName: room.daily_room_name, userName: user?.full_name, userId: user?.id }
         });
 
         if (tokenError || !data?.token) {
-          throw new Error('You do not have permission to join this private meeting.');
+          // Fix #2.3 — distinguish real 403s from infrastructure errors
+          const is403 = tokenError?.message?.includes('403') || tokenError?.status === 403;
+          throw new Error(
+            is403
+              ? 'You do not have permission to join this private meeting.'
+              : 'Could not connect to the meeting server. Please try again.'
+          );
         }
 
         joinUrl = `${joinUrl}?t=${data.token}`;
       }
 
+      setStatus('Connecting to meeting…');
       joinRoom(joinUrl);
       navigate('/board'); // redirect to board where video is overlaid
     } catch (err) {
@@ -73,7 +84,7 @@ export default function JoinMeeting() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
       <OrbitLoader />
-      <p className="text-muted-foreground animate-pulse">Connecting to meeting...</p>
+      <p className="text-muted-foreground animate-pulse">{status}</p>
     </div>
   );
 }
