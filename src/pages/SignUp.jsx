@@ -330,7 +330,7 @@ export default function SignUp() {
           size="large"
           theme="outline"
           text="signup_with"
-          width="100%"
+          width="360"
         />
       </GoogleOAuthProvider>
     </div>
