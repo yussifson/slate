@@ -4,7 +4,8 @@ export function getSubdomainAndBase() {
   const host = window.location.hostname;
   
   const envBase = import.meta.env.VITE_BASE_DOMAIN;
-  const knownBaseDomains = ['optavel.com', 'slate.optavel.com', 'slated.optavel.com', 'oatstack.com', 'clipad.optavel.com'];
+  // These are the genuine ROOT base domains. *.optavel.com subdomains are resolved below.
+  const knownBaseDomains = ['optavel.com', 'oatstack.com'];
   if (envBase && !knownBaseDomains.includes(envBase)) {
     knownBaseDomains.push(envBase);
   }
@@ -28,22 +29,22 @@ export function getSubdomainAndBase() {
     return { currentSubdomain: null, baseDomain: host, isCustomDomain: false };
   }
   
-  // Check exact matches FIRST
+  // Check exact matches FIRST (e.g. optavel.com itself)
   for (const base of knownBaseDomains) {
     if (host === base) {
       return { currentSubdomain: null, baseDomain: base, isCustomDomain: false };
     }
   }
 
-  // Then check suffix matches
+  // Then check suffix matches — *.optavel.com, *.oatstack.com etc.
   for (const base of knownBaseDomains) {
     if (host.endsWith(`.${base}`)) {
-      const currentSubdomain = host.replace(`.${base}`, '');
+      const sub = host.slice(0, host.length - base.length - 1); // strip '.base'
       // Only block truly generic web prefixes like 'www'
-      if (reservedSubdomains.includes(currentSubdomain)) {
+      if (reservedSubdomains.includes(sub)) {
         return { currentSubdomain: null, baseDomain: base, isCustomDomain: false };
       }
-      return { currentSubdomain, baseDomain: base, isCustomDomain: false };
+      return { currentSubdomain: sub, baseDomain: base, isCustomDomain: false };
     }
   }
 

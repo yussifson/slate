@@ -65,8 +65,9 @@ export default function AdminOverview() {
         if (!error && data) {
           setTelemetry(data);
         }
+        // Silently skip 404 — the RPC may not be deployed yet
       } catch (err) {
-        console.error("Failed to load telemetry", err);
+        // Silently ignore — telemetry is non-critical
       } finally {
         setLoadingTelemetry(false);
       }

@@ -45,7 +45,7 @@ export default function AccountPortalLayout() {
       if (user?.email) {
         supabase.functions.invoke('send-auth-alert', {
           body: { email: user.email, type: 'Logout', deviceInfo: getDevice() }
-        }).catch(e => console.error("Failed to send logout alert:", e));
+        }).catch(() => { /* Silenced: CORS on some origins is expected */ });
       }
     } catch (e) {}
 

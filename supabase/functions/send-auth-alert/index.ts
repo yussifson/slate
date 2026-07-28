@@ -1,14 +1,13 @@
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts"
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   // Handle CORS preflight request
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response('ok', { headers: corsHeaders, status: 200 })
   }
 
   try {
@@ -21,9 +20,8 @@ serve(async (req) => {
       })
     }
 
-    // Prepare the email payload
     const subject = `Security Alert: New ${type} on your Optavel Account`;
-    
+
     // In a real implementation, you would use Resend or SendGrid here:
     /*
     const res = await fetch('https://api.resend.com/emails', {
@@ -47,7 +45,7 @@ serve(async (req) => {
     */
 
     // For now, we mock a successful send
-    console.log(`[MOCK EMAIL SENT] To: ${email} | Subject: ${subject} | Device: ${deviceInfo}`);
+    console.log(`[MOCK EMAIL SENT] To: ${email} | Subject: ${subject} | Device: ${deviceInfo}`)
 
     return new Response(JSON.stringify({ success: true, message: 'Notification sent successfully (mocked)' }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

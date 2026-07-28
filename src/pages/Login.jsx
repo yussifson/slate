@@ -394,7 +394,7 @@ export default function Login() {
  return;
 }
 
- // Trigger Login Alert (fire and forget)
+ // Trigger Login Alert (fire and forget — CORS errors are intentionally silenced)
  try {
    const getDevice = () => {
      if (typeof window === 'undefined') return 'Unknown';
@@ -408,8 +408,8 @@ export default function Login() {
    };
    supabase.functions.invoke('send-auth-alert', {
      body: { email: loginEmail, type: 'Login', deviceInfo: getDevice() }
-   }).catch(e => console.error("Failed to send login alert:", e));
- } catch (e) {}
+   }).catch(() => { /* Silenced: CORS on some origins is expected */ });
+ } catch (e) { /* Silenced */ }
  
  if (targetSubdomain) {
     // Check if user belongs to this subdomain via Supabase directly (local DB might not be synced yet)
