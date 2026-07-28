@@ -116,17 +116,17 @@ export default function AccountPortalLayout() {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-slate-50/50 dark:bg-[#0b0f19] text-slate-900 dark:text-gray-100 font-sans flex flex-col md:flex-row transition-colors duration-200">
+    <div className="h-screen overflow-hidden bg-[#f8f9fc] dark:bg-background text-slate-900 dark:text-gray-100 font-sans flex flex-col md:flex-row transition-colors duration-200">
       
       {/* Mobile Header */}
-      <header className="md:hidden flex items-center justify-between px-4 h-16 bg-white dark:bg-[#111827] border-b border-gray-100 dark:border-white/5 sticky top-0 z-50">
+      <header className="md:hidden flex items-center justify-between px-4 h-16 bg-white dark:bg-sidebar border-b border-gray-200 dark:border-white/5 sticky top-0 z-50">
         <div className="flex items-center gap-3">
           <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
           <div className="flex items-center gap-2">
              <Logo className="w-8 h-8" />
-             <span className="text-xl font-semibold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400">Optavel</span>
+             <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300">Optavel</span>
           </div>
         </div>
         <AccountSwitcher className={`shrink-0 rounded-full ${
@@ -135,99 +135,108 @@ export default function AccountPortalLayout() {
         }`} />
       </header>
 
-      {/* Sidebar Navigation */}
+      {/* Sidebar Navigation - Stylized to match CliPad aesthetic */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 bg-white dark:bg-[#111827] border-r border-gray-100 dark:border-white/5 transform transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col
+        fixed inset-y-0 left-0 z-40 bg-[#f8f9fc] dark:bg-background border-r border-slate-200 dark:border-white/5 transform transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col
         ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl w-64' : '-translate-x-full md:shadow-none'}
-        ${isDesktopCollapsed ? 'md:w-22' : 'md:w-68'}
+        ${isDesktopCollapsed ? 'md:w-[72px]' : 'md:w-[260px]'}
       `}>
         {/* Desktop Logo Area */}
-        <div className="hidden md:flex items-center justify-between px-6 h-20 pt-4">
+        <div className={`hidden md:flex items-center ${isDesktopCollapsed ? 'px-0 justify-center' : 'px-5 justify-between'} h-20`}>
           {!isDesktopCollapsed && (
             <div className="flex items-center justify-between w-full overflow-hidden">
               <div className="flex items-center gap-3">
                 <Logo className="w-9 h-9 shrink-0" />
-                <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400">Optavel</span>
+                <span className="text-[17px] font-bold tracking-tight text-slate-800 dark:text-slate-100 whitespace-nowrap">Optavel</span>
               </div>
               <button 
                 onClick={() => setIsDesktopCollapsed(true)}
-                className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-colors p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 <PanelLeftClose className="w-5 h-5" />
               </button>
             </div>
           )}
           {isDesktopCollapsed && (
-            <div className="w-full flex justify-center">
-              <button 
-                onClick={() => setIsDesktopCollapsed(false)}
-                className="text-gray-400 hover:text-primary transition-colors p-2 rounded-xl hover:bg-primary/10"
-                title="Expand sidebar"
-              >
-                <PanelLeftOpen className="w-6 h-6" />
-              </button>
-            </div>
+             <div className="w-full flex justify-center">
+                <button 
+                  onClick={() => setIsDesktopCollapsed(false)}
+                  className="text-slate-400 hover:text-primary transition-all p-2 rounded-xl hover:bg-primary/10"
+                  title="Expand sidebar"
+                >
+                  <PanelLeftOpen className="w-6 h-6" />
+                </button>
+             </div>
           )}
         </div>
 
         <div className="flex flex-col flex-1 overflow-hidden">
-          <nav className="flex-1 px-4 py-4 md:py-6 space-y-1.5 overflow-y-auto scrollbar-hide">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={({ isActive }) => `
-                  flex items-center ${isDesktopCollapsed ? 'justify-center px-0' : 'gap-4 px-4'} py-3.5 rounded-2xl font-medium text-[15px] transition-all duration-200 group
-                  ${isActive 
-                    ? 'bg-primary/10 text-primary dark:text-primary font-semibold shadow-sm border-[0.5px] border-primary/20' 
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/40 hover:text-slate-900 dark:hover:text-slate-200'
-                  }
-                `}
-                title={isDesktopCollapsed ? item.name : undefined}
-              >
-                <item.icon className="w-5 h-5 shrink-0 transition-transform group-hover:scale-105" />
-                {!isDesktopCollapsed && <span className="whitespace-nowrap tracking-wide">{item.name}</span>}
-              </NavLink>
-            ))}
+          <nav className={`flex-1 ${isDesktopCollapsed ? 'px-2' : 'px-3'} py-4 space-y-1 overflow-y-auto scrollbar-hide`}>
+            {!isDesktopCollapsed && (
+              <div className="px-3 py-2 text-[10px] font-bold text-slate-400 tracking-wider uppercase select-none">Account</div>
+            )}
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`
+                    w-full flex items-center ${isDesktopCollapsed ? 'justify-center rounded-xl p-2.5' : 'gap-3 px-3 py-2.5 rounded-xl'} transition-all duration-200 group relative mb-0.5
+                    ${isActive 
+                      ? 'bg-white dark:bg-[#161e2e] text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.04)] font-semibold' 
+                      : 'text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 border border-transparent font-medium'
+                    }
+                  `}
+                  title={isDesktopCollapsed ? item.name : undefined}
+                >
+                  {isActive && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[60%] bg-primary rounded-r-full" />
+                  )}
+                  <item.icon className={`shrink-0 transition-transform duration-200 group-hover:scale-110 ${isDesktopCollapsed ? 'w-5 h-5' : 'w-4 h-4'} ${isActive ? 'text-primary' : 'text-slate-500 opacity-80'}`} strokeWidth={isActive ? 2.5 : 2} />
+                  {!isDesktopCollapsed && <span className="truncate whitespace-nowrap">{item.name}</span>}
+                </NavLink>
+              );
+            })}
             
             {/* Apps Launcher Button */}
-            <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800/50">
+            <div className="pt-2 mt-2 border-t border-slate-200 dark:border-white/5">
               <button
                 onClick={() => setIsAppsLauncherOpen(!isAppsLauncherOpen)}
                 className={`
-                  w-full flex items-center ${isDesktopCollapsed ? 'justify-center px-0' : 'gap-4 px-4'} py-3.5 rounded-2xl font-medium text-[15px] transition-all duration-200 group
+                  w-full flex items-center ${isDesktopCollapsed ? 'justify-center rounded-xl p-2.5' : 'gap-3 px-3 py-2.5 rounded-xl'} transition-all duration-200 group border border-transparent font-medium
                   ${isAppsLauncherOpen 
-                    ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/10 dark:text-purple-400 shadow-sm border-[0.5px] border-purple-500/15' 
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/40 hover:text-slate-900 dark:hover:text-slate-200'
+                    ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/10 dark:text-purple-400 border-purple-200/50' 
+                    : 'text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 text-slate-600'
                   }
                 `}
                 title={isDesktopCollapsed ? "Apps" : undefined}
               >
-                <LayoutGrid className="w-5 h-5 shrink-0 transition-transform group-hover:scale-105" />
-                {!isDesktopCollapsed && <span className="whitespace-nowrap tracking-wide">Apps</span>}
+                <LayoutGrid className={`shrink-0 transition-transform duration-200 group-hover:scale-110 ${isDesktopCollapsed ? 'w-5 h-5' : 'w-4 h-4'} ${isAppsLauncherOpen ? 'text-purple-600' : 'text-slate-500 opacity-80'}`} />
+                {!isDesktopCollapsed && <span className="truncate whitespace-nowrap">Apps Launcher</span>}
               </button>
             </div>
           </nav>
           
-          <div className="p-4 border-t border-slate-100 dark:border-slate-800/60 space-y-4 relative">
+          <div className="p-4 border-t border-slate-200 dark:border-white/5 space-y-4 relative">
              {/* Theme Switcher */}
              <div className={`flex items-center ${isDesktopCollapsed ? 'justify-center' : 'justify-between px-1'}`}>
-                {!isDesktopCollapsed && <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">Theme</span>}
-                <div className={`flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-full p-1 border border-slate-200/50 dark:border-slate-700 ${isDesktopCollapsed ? 'flex-col gap-2' : ''}`}>
+                {!isDesktopCollapsed && <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Theme</span>}
+                <div className={`flex items-center bg-slate-200/50 dark:bg-secondary rounded-full p-1 border border-slate-200 dark:border-border ${isDesktopCollapsed ? 'flex-col gap-2' : ''}`}>
                   <button 
                     onClick={() => changeTheme('light')} 
                     title="Light Mode"
-                    className={`p-1.5 rounded-full transition-all ${theme === 'light' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`p-1.5 rounded-full transition-all ${theme === 'light' ? 'bg-white text-gray-800 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                   >
-                    <Sun className="w-4 h-4" />
+                    <Sun className="w-3.5 h-3.5" />
                   </button>
                   <button 
                     onClick={() => changeTheme('dark')} 
                     title="Dark Mode"
                     className={`p-1.5 rounded-full transition-all ${theme === 'dark' ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-400 hover:text-slate-300'}`}
                   >
-                    <Moon className="w-4 h-4" />
+                    <Moon className="w-3.5 h-3.5" />
                   </button>
                 </div>
              </div>
@@ -237,9 +246,9 @@ export default function AccountPortalLayout() {
                onClick={handleLogout}
                disabled={isLoggingOut}
                title={isDesktopCollapsed ? "Sign out" : undefined}
-               className={`flex items-center ${isDesktopCollapsed ? 'justify-center' : 'gap-3 px-3'} w-full py-3 text-sm font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-2xl transition-colors`}
+               className={`flex items-center ${isDesktopCollapsed ? 'justify-center' : 'gap-3 px-3'} w-full py-2.5 text-[14px] font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors`}
              >
-               <LogOut className="w-5 h-5 shrink-0" />
+               <LogOut className="w-4 h-4 shrink-0 text-red-500" />
                {!isDesktopCollapsed && <span>{isLoggingOut ? 'Signing out...' : 'Sign out everywhere'}</span>}
              </button>
           </div>
@@ -248,7 +257,7 @@ export default function AccountPortalLayout() {
 
       {/* Apps Launcher Popover */}
       {isAppsLauncherOpen && (
-        <div className={`fixed z-50 bottom-24 ${isDesktopCollapsed ? 'left-24' : 'left-68 md:left-72'} w-80 max-h-[500px] overflow-y-auto bg-white/80 dark:bg-card/80 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] rounded-3xl p-5 transition-all animate-in zoom-in-95 duration-300 ring-1 ring-black/5 dark:ring-white/5`}>
+        <div className={`fixed z-50 bottom-24 ${isDesktopCollapsed ? 'left-24' : 'left-68 md:left-72'} w-80 max-h-[500px] overflow-y-auto bg-white/85 dark:bg-card/85 backdrop-blur-xl border border-slate-200 dark:border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] rounded-3xl p-5 transition-all animate-in zoom-in-95 duration-200`}>
            <div className="flex items-center justify-between mb-6 px-1">
              <h3 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 tracking-tight">Optavel Apps</h3>
              <button onClick={() => setIsAppsLauncherOpen(false)} className="p-1.5 rounded-full bg-slate-100 dark:bg-secondary hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-muted-foreground transition-all hover:rotate-90 duration-300 shadow-sm border border-slate-200/50 dark:border-border/50 flex items-center justify-center">
@@ -322,14 +331,8 @@ export default function AccountPortalLayout() {
           </div>
         </div>
         
-        <div className={`w-full flex-1 flex flex-col ${['/help', '/admin'].includes(location.pathname) ? 'md:pt-4' : 'max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-10 pb-24'}`}>
-          {['/help', '/admin'].includes(location.pathname) ? (
-            <Outlet />
-          ) : (
-            <div className="flex-1 bg-white dark:bg-[#111827] rounded-3xl border border-slate-100 dark:border-slate-800/40 p-6 sm:p-10 shadow-[0_4px_20px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.2)] animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <Outlet />
-            </div>
-          )}
+        <div className={`w-full ${['/help', '/admin'].includes(location.pathname) ? 'flex-1 md:pt-4' : 'max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12 pb-32'}`}>
+           <Outlet />
         </div>
         <CompanySelectionModal isOpen={isCompanyModalOpen} onClose={() => setIsCompanyModalOpen(false)} />
       </main>
