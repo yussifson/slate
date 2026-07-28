@@ -349,7 +349,7 @@ export default function SearchHub() {
   const showLeftPanel = isSearching || filteredResults.length > 0;
 
   return (
-    <div className={`bg-white dark:bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary ${hasPerformedSearch ? 'h-screen flex flex-col overflow-hidden' : 'min-h-screen'}`}>
+    <div className={`bg-white dark:bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary ${hasPerformedSearch ? 'h-full flex flex-col overflow-hidden' : 'min-h-screen'}`}>
 
       {/* ── ZERO STATE: Centered hero ── */}
       {!hasPerformedSearch && (
