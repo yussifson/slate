@@ -22,7 +22,7 @@ export default function MarketingLayout({ children}) {
  const currentLanguage = languages.find(l => l.code === (i18n.language || 'en').split('-')[0]) || languages.find(l => l.code === 'en');
 
  const { baseDomain} = getSubdomainAndBase();
- const companySubdomain = user?.subdomain || user?.company_name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
+ const companySubdomain = user?.companies?.subdomain || user?.subdomain || user?.company_name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
  const isNativeApp = isDesktopApp();
  
  let workspaceUrl = '/clipad';
