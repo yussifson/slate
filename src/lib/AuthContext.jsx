@@ -734,14 +734,24 @@ export const AuthProvider = ({ children }) => {
       } else {
         removeAccount(currentUser.id);
       }
-      // Log logout security event
+      // Log logout security event safely without blocking the logout operation
       if (currentUser.company_id) {
-        supabase.from('clipad_org_events').insert({
-          workspace_id: currentUser.company_id,
-          type: 'security',
-          title: 'User logged out securely',
-          user_id: currentUser.id
-        }).then();
+        (async () => {
+          try {
+            // Use a short timeout so a network freeze or CORS preflight block doesn't halt logout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 1500);
+            await supabase.from('clipad_org_events').insert({
+              workspace_id: currentUser.company_id,
+              type: 'security',
+              title: 'User logged out securely',
+              user_id: currentUser.id
+            }).abortSignal(controller.signal);
+            clearTimeout(timeoutId);
+          } catch (e) {
+            console.warn("Could not log logout event to server:", e);
+          }
+        })();
       }
     }
     
