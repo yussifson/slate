@@ -107,6 +107,11 @@ export default function SearchHub() {
   const [chatHistory, setChatHistory] = useState([]);
   const [followUpInput, setFollowUpInput] = useState('');
   const [hasPerformedSearch, setHasPerformedSearch] = useState(false);
+  const chatBottomRef = React.useRef(null);
+
+  useEffect(() => {
+    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatHistory, isSynthesizing]);
 
   const companyId = user?.company_id;
 
@@ -314,6 +319,7 @@ export default function SearchHub() {
 
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || 'there';
   const filteredResults = useMemo(() => results.filter(r => matchesFilter(r.type, activeFilter)), [results, activeFilter]);
+  const showLeftPanel = isSearching || filteredResults.length > 0;
 
   return (
     <div className="min-h-screen bg-white dark:bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary">
@@ -455,67 +461,63 @@ export default function SearchHub() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
               {/* Left: Results list */}
-              <div className="lg:col-span-7 space-y-2.5">
-                {isSearching ? (
-                  <div className="flex items-center gap-3 py-16 justify-center">
-                    <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Searching your workspace...</p>
-                  </div>
-                ) : filteredResults.length === 0 ? (
-                  <div className="py-16 text-center">
-                    <Search className="w-8 h-8 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
-                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400">No records matched</p>
-                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Orbit AI is synthesizing an answer on the right.</p>
-                  </div>
-                ) : (
-                  filteredResults.map(item => {
-                    const meta = TYPE_META[item.type] || TYPE_META.doc;
-                    const Icon = meta.icon;
-                    const isSelected = selectedResult?.id === item.id;
-                    return (
-                      <div
-                        key={`${item.type}-${item.id}`}
-                        onClick={() => setSelectedResult(item)}
-                        className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                          isSelected
-                            ? 'bg-primary/5 border-primary/30 dark:border-primary/40'
-                            : 'bg-white dark:bg-white/[0.03] border-slate-200/80 dark:border-white/8 hover:border-slate-300 dark:hover:border-white/15 hover:bg-slate-50 dark:hover:bg-white/5'
-                        }`}
-                      >
-                        <div className="flex items-start justify-between gap-3 mb-1.5">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold shrink-0 ${meta.bg} ${meta.color}`}>
-                              <Icon className="w-3 h-3" />
-                              {meta.label}
-                            </span>
-                            {item.provider && (
-                              <span className="text-[10px] font-mono text-slate-400 truncate">
-                                {item.provider}
+              {showLeftPanel && (
+                <div className="lg:col-span-6 space-y-2.5">
+                  {isSearching ? (
+                    <div className="flex items-center gap-3 py-16 justify-center">
+                      <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                      <p className="text-sm text-slate-500 dark:text-slate-400">Searching your workspace...</p>
+                    </div>
+                  ) : (
+                    filteredResults.map(item => {
+                      const meta = TYPE_META[item.type] || TYPE_META.doc;
+                      const Icon = meta.icon;
+                      const isSelected = selectedResult?.id === item.id;
+                      return (
+                        <div
+                          key={`${item.type}-${item.id}`}
+                          onClick={() => setSelectedResult(item)}
+                          className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                            isSelected
+                              ? 'bg-primary/5 border-primary/30 dark:border-primary/40'
+                              : 'bg-white dark:bg-white/[0.03] border-slate-200/80 dark:border-white/8 hover:border-slate-300 dark:hover:border-white/15 hover:bg-slate-50 dark:hover:bg-white/5'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-3 mb-1.5">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold shrink-0 ${meta.bg} ${meta.color}`}>
+                                <Icon className="w-3 h-3" />
+                                {meta.label}
+                              </span>
+                              {item.provider && (
+                                <span className="text-[10px] font-mono text-slate-400 truncate">
+                                  {item.provider}
+                                </span>
+                              )}
+                            </div>
+                            {item.created_at && (
+                              <span className="text-[11px] text-slate-400 shrink-0">
+                                {new Date(item.created_at).toLocaleDateString()}
                               </span>
                             )}
                           </div>
-                          {item.created_at && (
-                            <span className="text-[11px] text-slate-400 shrink-0">
-                              {new Date(item.created_at).toLocaleDateString()}
-                            </span>
+                          <h4 className="font-semibold text-sm text-slate-900 dark:text-white leading-snug mb-1">
+                            {item.label}
+                          </h4>
+                          {item.snippet && (
+                            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                              {item.snippet}
+                            </p>
                           )}
                         </div>
-                        <h4 className="font-semibold text-sm text-slate-900 dark:text-white leading-snug mb-1">
-                          {item.label}
-                        </h4>
-                        {item.snippet && (
-                          <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
-                            {item.snippet}
-                          </p>
-                        )}
-                      </div>
-                    );
-                  })
-                )}
-              </div>
+                      );
+                    })
+                  )}
+                </div>
+              )}
 
               {/* Right: AI Synthesis Panel */}
-              <div className="lg:col-span-5 space-y-4">
+              <div className={`${showLeftPanel ? "lg:col-span-6" : "lg:col-span-12"} space-y-4`}>
                 <div className="bg-white dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-xl p-5 sticky top-[72px]">
                   
                   {/* Header */}
@@ -536,7 +538,7 @@ export default function SearchHub() {
                   </div>
 
                   {/* AI Content */}
-                  {isSynthesizing && !aiAnswer ? (
+                  {isSynthesizing && chatHistory.length === 0 ? (
                     <div className="space-y-2 py-4">
                       <div className="h-3 bg-slate-100 dark:bg-white/10 rounded-full animate-pulse w-full" />
                       <div className="h-3 bg-slate-100 dark:bg-white/10 rounded-full animate-pulse w-4/5" />
@@ -545,23 +547,46 @@ export default function SearchHub() {
                       <div className="h-3 bg-slate-100 dark:bg-white/10 rounded-full animate-pulse w-2/3" />
                     </div>
                   ) : (
-                    <div className="space-y-3 max-h-[360px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-white/10">
+                    <div className="space-y-4 max-h-[500px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-white/10">
                       {chatHistory.map((msg, i) => (
-                        <div key={i} className={`text-xs leading-relaxed ${
-                          msg.role === 'user'
-                            ? 'bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-3 py-2.5 rounded-lg text-slate-700 dark:text-slate-300 font-medium'
-                            : 'prose prose-xs dark:prose-invert max-w-none text-slate-700 dark:text-slate-300'
-                        }`}>
+                        <div key={i} className="w-full">
                           {msg.role === 'user' ? (
-                            <div className="flex items-start gap-2">
-                              <span className="text-primary font-bold text-[10px] uppercase tracking-wider mt-0.5">You</span>
-                              <span>{msg.content}</span>
+                            <div className="flex justify-end w-full mb-3">
+                              <div className="max-w-[85%] bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-4 py-3 rounded-2xl rounded-tr-sm shadow-sm text-slate-800 dark:text-slate-200 text-[13px] font-medium leading-relaxed">
+                                <div className="text-[10px] text-primary font-bold uppercase tracking-wider mb-1">You</div>
+                                {msg.content}
+                              </div>
                             </div>
                           ) : (
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                            <div className="flex items-start gap-3 justify-start max-w-[95%] mb-4">
+                              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
+                                <CliPadLogo size={20} className="text-primary" />
+                              </div>
+                              <div className="bg-slate-50 dark:bg-white/[0.02] border border-slate-200/60 dark:border-white/5 rounded-2xl px-4.5 py-3.5 shadow-sm text-[14px] leading-relaxed text-slate-800 dark:text-slate-200">
+                                <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-slate-900 prose-pre:text-slate-100 text-[14px]">
+                                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                                </div>
+                              </div>
+                            </div>
                           )}
                         </div>
                       ))}
+                      {/* Bouncing dots thinking bubble */}
+                      {isSynthesizing && chatHistory[chatHistory.length - 1]?.role === 'user' && (
+                        <div className="flex items-start gap-3 justify-start max-w-[85%] mt-2 animate-in fade-in duration-200">
+                          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
+                            <CliPadLogo size={20} className="text-primary animate-pulse" />
+                          </div>
+                          <div className="bg-slate-50 dark:bg-white/[0.02] border border-slate-200/60 dark:border-white/5 rounded-2xl px-4.5 py-4 shadow-sm">
+                            <div className="flex items-center gap-1.5 py-1">
+                              <span className="w-2.5 h-2.5 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: '0ms' }} />
+                              <span className="w-2.5 h-2.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '150ms' }} />
+                              <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }} />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      <div ref={chatBottomRef} />
                     </div>
                   )}
 
