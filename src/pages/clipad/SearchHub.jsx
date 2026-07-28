@@ -449,10 +449,6 @@ export default function SearchHub() {
                 })}
               </div>
               <div className="flex items-center gap-3 shrink-0">
-                <div className="hidden md:flex items-center gap-1.5 text-xs font-medium text-slate-400">
-                  <Shield className="w-3.5 h-3.5 text-primary" />
-                  Workspace scoped
-                </div>
                 <button
                   onClick={() => {
                     setQuery('');
