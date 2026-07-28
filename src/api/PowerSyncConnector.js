@@ -25,6 +25,25 @@ class SupabaseConnector {
   }
 
   async uploadData(database) {
+    const { data: { session }, error: sessionError } = await this.client.auth.getSession();
+    if (sessionError || !session) {
+      console.warn('[PowerSync] Skipping upload: No active session.');
+      return;
+    }
+    
+    // Auto-refresh token if expired or expiring within 30 seconds
+    const expiresAt = session.expires_at;
+    const now = Math.floor(Date.now() / 1000);
+    if (expiresAt && expiresAt - now < 30) {
+      try {
+        console.log('[PowerSync] Token expiring soon, refreshing session...');
+        await this.client.auth.refreshSession();
+      } catch (e) {
+        console.error('[PowerSync] Failed to refresh session, postponing upload:', e);
+        return;
+      }
+    }
+
     const transaction = await database.getNextCrudTransaction();
     if (!transaction) return;
 
@@ -226,8 +245,8 @@ class SupabaseConnector {
             continue; // Skip the rest of the loop for this op
           }
 
-          // TIER 3: Hard errors (403, 404, 422, or 400 with PG code)
-          if ([403, 404, 422, 400].includes(opEx.status) || (opEx.code && typeof opEx.code === 'string')) {
+          // TIER 3: Hard errors (401, 403, 404, 422, or 400 with PG code)
+          if ([401, 403, 404, 422, 400].includes(opEx.status) || (opEx.code && typeof opEx.code === 'string')) {
             console.error(`[v0] PowerSync hard error ${op.op} on ${op.table}:`, {status: opEx.status, code: opEx.code, msg: opEx.message, data: op.opData});
             
             // Write to sync_errors table
