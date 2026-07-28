@@ -859,11 +859,6 @@ export default function SearchHub() {
                     <div className="max-w-[680px] mx-auto w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-[1.5px] rounded-2xl shadow-sm">
                       <form onSubmit={handleFollowUp} className="relative flex items-center bg-slate-50 dark:bg-[#111622] rounded-[15px] px-3.5 py-2 transition-all">
                         
-                        {/* Left icon badge matching Spotlight layout */}
-                        <div className="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center shrink-0 shadow-sm shadow-emerald-500/30 mr-2.5">
-                          <Sparkles className="w-4 h-4 text-white" />
-                        </div>
-
                         <input
                           value={followUpInput}
                           onChange={e => setFollowUpInput(e.target.value)}
