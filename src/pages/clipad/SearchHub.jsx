@@ -568,15 +568,20 @@ export default function SearchHub() {
                           {chatHistory.map((msg, i) => (
                             <div key={i} className="w-full">
                               {msg.role === 'user' ? (
-                                <div className="flex justify-end w-full mb-2">
-                                  <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-4.5 py-2.5 rounded-2xl text-[14px] leading-relaxed shadow-sm">
+                                <div className="flex justify-end w-full mb-4">
+                                  <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-4.5 py-2.5 rounded-xl shadow-sm text-[14px] leading-relaxed max-w-[70%] break-words">
                                     {msg.content}
                                   </div>
                                 </div>
                               ) : (
-                                <div className="w-full text-[14.5px] leading-relaxed text-slate-800 dark:text-slate-200">
-                                  <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-slate-900 prose-pre:text-slate-100 text-[14.5px]">
-                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                                <div className="flex items-start gap-4 justify-start w-full mb-6">
+                                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20 mt-0.5">
+                                    <CliPadLogo size={18} className="text-primary" />
+                                  </div>
+                                  <div className="flex-1 text-[14px] leading-relaxed text-slate-800 dark:text-slate-200">
+                                    <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-slate-900 prose-pre:text-slate-100 text-[14px]">
+                                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                                    </div>
                                   </div>
                                 </div>
                               )}
@@ -584,10 +589,15 @@ export default function SearchHub() {
                           ))}
                           {/* Bouncing dots thinking indicator */}
                           {isSynthesizing && chatHistory[chatHistory.length - 1]?.role === 'user' && (
-                            <div className="flex items-center gap-1.5 py-3 w-full animate-in fade-in duration-200">
-                              <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-                              <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '150ms' }} />
-                              <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                            <div className="flex items-start gap-4 justify-start w-full mb-6 animate-in fade-in duration-200">
+                              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20 mt-0.5">
+                                <CliPadLogo size={18} className="text-primary animate-pulse" />
+                              </div>
+                              <div className="flex items-center gap-1.5 py-3">
+                                <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                                <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                                <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                              </div>
                             </div>
                           )}
                           <div ref={chatBottomRef} />
