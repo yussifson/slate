@@ -66,11 +66,15 @@ export default function AdminFirms() {
     const map = {};
     profiles.forEach(p => {
       const session = activeSessions.find(s => s.email === p.email);
-      if (session) {
+      if (session && session.last_sign_in_at) {
         const existing = map[p.company_id];
-        const ts = new Date(session.last_sign_in_at);
-        if (!existing || ts > new Date(existing)) {
-          map[p.company_id] = session.last_sign_in_at;
+        // Normalize PostgreSQL space-separated timestamp to ISO 8601 'T' format for Firefox support
+        const cleanTimestamp = session.last_sign_in_at.replace(' ', 'T');
+        const ts = new Date(cleanTimestamp);
+        if (!isNaN(ts.getTime())) {
+          if (!existing || ts > new Date(existing.replace(' ', 'T'))) {
+            map[p.company_id] = session.last_sign_in_at;
+          }
         }
       }
     });

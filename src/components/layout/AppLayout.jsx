@@ -192,25 +192,35 @@ export default function AppLayout() {
  if (isBoltOpen && newState) setIsBoltOpen(false); // Close Bolt if opening AI
  
  if (user?.email && user?.company_id) {
- try {
- const { supabase} = await import("@/api/supabaseClient");
- const recordId = uiPrefsId || crypto.randomUUID();
- if (!uiPrefsId) setUiPrefsId(recordId);
+  try {
+    const recordId = uiPrefsId || crypto.randomUUID();
+    if (!uiPrefsId) setUiPrefsId(recordId);
 
- await (async () => {
- const _payload = {
- id: recordId,
- company_id: user.company_id,
- industry: 'core',
- record_type: 'ui_prefs',
- search_text: user.email,
- data: { isAIOpen: newState}
-};
-  await supabase.from('industry_records').upsert(_payload);
-})();
-} catch (e) {
- console.error("Failed to save UI prefs", e);
-}
+    const _payload = {
+      id: recordId,
+      company_id: user.company_id,
+      industry: 'core',
+      record_type: 'ui_prefs',
+      search_text: user.email,
+      data: { isAIOpen: newState }
+    };
+    
+    // Save locally via PowerSync immediately to avoid RLS preflight issues
+    const existing = await powerSync.getOptional('SELECT id FROM industry_records WHERE id = ?', [recordId]);
+    if (existing) {
+      await powerSync.execute(
+        'UPDATE industry_records SET data = ? WHERE id = ?', 
+        [JSON.stringify(_payload.data), recordId]
+      );
+    } else {
+      await powerSync.execute(
+        'INSERT INTO industry_records (id, company_id, industry, record_type, search_text, data) VALUES (?, ?, ?, ?, ?, ?)',
+        [recordId, _payload.company_id, _payload.industry, _payload.record_type, _payload.search_text, JSON.stringify(_payload.data)]
+      );
+    }
+  } catch (e) {
+    console.error("Failed to save UI prefs", e);
+  }
 }
 };
 
