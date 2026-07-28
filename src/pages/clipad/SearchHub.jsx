@@ -143,6 +143,9 @@ export default function SearchHub() {
 
   const [activeSessionId, setActiveSessionId] = useState(null);
 
+  // Ref so the early-mounting useEffect can call runSearch after it is defined
+  const runSearchRef = React.useRef(null);
+
   // Restore inputs on mount
   useEffect(() => {
     if (!user?.id) return;
@@ -207,7 +210,8 @@ export default function SearchHub() {
             const firstUserMsg = msgs.find(m => m.role === 'user');
             if (firstUserMsg) {
               setQuery(firstUserMsg.content);
-              runSearch(firstUserMsg.content, true);
+              // Use the ref so we don't reference runSearch before it is initialized
+              if (runSearchRef.current) runSearchRef.current(firstUserMsg.content, true);
             }
           }
         }
@@ -216,7 +220,7 @@ export default function SearchHub() {
       }
     };
     loadPersistentChat();
-  }, [user?.id, companyId, runSearch]);
+  }, [user?.id, companyId]);
 
   const getOrCreateSession = async () => {
     if (!user?.id) return null;
@@ -363,6 +367,8 @@ export default function SearchHub() {
       runAISynthesis(q, raw, spaceIdArr);
     }
   }, [query, companyId, user]);
+  // Keep the ref up-to-date every render so the persistent-load effect can call it safely
+  runSearchRef.current = runSearch;
 
   const runAISynthesis = async (q, matchedResults, spaceIdArr) => {
     const sessionId = ++synthSessionRef.current;
