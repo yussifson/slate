@@ -596,7 +596,7 @@ export default function SearchHub() {
                             <div key={i} className="w-full">
                               {msg.role === 'user' ? (
                                 <div className="flex flex-col items-end w-full mb-5 animate-in fade-in duration-200">
-                                  <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-4.5 py-2.5 rounded-xl shadow-sm text-[14px] leading-relaxed max-w-[70%] break-words">
+                                  <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-5 py-3 rounded-xl shadow-sm text-[14px] leading-relaxed max-w-[70%] break-words">
                                     {msg.content}
                                   </div>
                                   <div className="flex items-center gap-2 mt-1 mr-1 text-slate-400 select-none">

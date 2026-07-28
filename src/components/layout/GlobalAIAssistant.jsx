@@ -1078,12 +1078,20 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
       <CliPadLogo size={18} className="text-primary" />
     </div>
   )}
-  <div className={`px-4.5 py-2.5 rounded-xl text-[13px] leading-relaxed max-w-[80%] shadow-sm break-words ${
+  <div className={`px-5 py-3 rounded-xl text-[13px] leading-relaxed max-w-[80%] shadow-sm break-words ${
   msg.role === 'user'
   ? 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100'
   : 'bg-white dark:bg-[#131A2B] border border-slate-100 dark:border-white/5 text-slate-700 dark:text-foreground'
   }`}>
- <FormatMessage content={msg.content} />
+ {msg.content === '...' ? (
+    <div className="flex items-center gap-1.5 py-1.5 min-w-[36px]">
+      <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+      <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+      <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+    </div>
+  ) : (
+    <FormatMessage content={msg.content} />
+  )}
  
  {msg.isConfirmation && msg.pendingAction && (
  <div className="mt-3 flex gap-2 pt-3 border-t border-primary/40">
