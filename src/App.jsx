@@ -29,6 +29,7 @@ const KnowledgeJourney = React.lazy(() => import('@/pages/clipad/KnowledgeJourne
 const IntegrationAnalytics = React.lazy(() => import('@/pages/clipad/IntegrationAnalytics'));
 const CliPadDashboard = React.lazy(() => import('@/pages/clipad/CliPadDashboard'));
 const CliPadLogin = React.lazy(() => import('@/pages/clipad/CliPadLogin'));
+const CliPadSignUp = React.lazy(() => import('@/pages/clipad/CliPadSignUp'));
 const SpacesList = React.lazy(() => import('@/pages/clipad/SpacesList'));
 const MeetingRecord = React.lazy(() => import('@/pages/clipad/MeetingRecord'));
 const SaveMeetingPage = React.lazy(() => import('@/pages/clipad/SaveMeetingPage'));
@@ -1435,6 +1436,7 @@ function App() {
                     <Routes>
                       <Route path="/" element={<MeetLandingPage />} />
                       <Route path="/login" element={<CliPadLogin />} />
+                      <Route path="/signup" element={<CliPadSignUp />} />
                       <Route path="/auth/callback" element={<SSOCallback />} />
                       <Route path="/auth/google-callback" element={<GoogleCallback />} />
                       <Route element={<ClipadLayout />}>

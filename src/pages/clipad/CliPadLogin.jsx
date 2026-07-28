@@ -266,12 +266,20 @@ export default function CliPadLogin() {
             )}
           </div>
 
-          <p className="text-center text-xs text-slate-400 mt-8">
-            Joining a meeting?{' '}
-            <span className="text-primary font-medium cursor-pointer hover:underline" onClick={() => navigate('/')}>
-              Go to meeting home
-            </span>
-          </p>
+          <div className="flex flex-col gap-2 mt-8">
+            <p className="text-center text-sm text-slate-500">
+              Don't have an account?{' '}
+              <span className="text-primary font-medium cursor-pointer hover:underline" onClick={() => navigate(`/signup${window.location.search}`)}>
+                Sign up
+              </span>
+            </p>
+            <p className="text-center text-xs text-slate-400">
+              Joining a meeting?{' '}
+              <span className="text-primary font-medium cursor-pointer hover:underline" onClick={() => navigate('/')}>
+                Go to meeting home
+              </span>
+            </p>
+          </div>
         </div>
       </div>
     </>
