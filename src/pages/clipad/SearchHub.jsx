@@ -6,7 +6,7 @@ import {
   Command, Bot, Filter, Check, Layers, ChevronRight, Copy, CheckCheck, Folder, Clock,
   Users, RefreshCw, SlidersHorizontal, ArrowUpRight, ChevronDown, UserCheck, Shield,
   Share2, CornerDownLeft, Sparkle, Compass, Terminal, Cpu, Lightbulb, ArrowRightCircle,
-  Brain, FileSearch, SparklesIcon, Send
+  Brain, FileSearch, SparklesIcon, Send, Plus
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { supabase } from '@/api/supabaseClient';
@@ -391,36 +391,8 @@ export default function SearchHub() {
       {/* ── SEARCH STATE: Compact bar at top + results below ── */}
       {hasPerformedSearch && (
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Sticky top search bar */}
-          <div className="shrink-0 bg-white/90 dark:bg-[#0b0f19]/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/5 px-4 md:px-8 py-3">
-            <div className="max-w-3xl mx-auto">
-              <form onSubmit={(e) => { e.preventDefault(); setSearchParams({ q: query }); runSearch(); }}>
-                <div className="relative flex items-center bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-1 focus-within:border-primary dark:focus-within:border-primary transition-all">
-                  <Search className="w-4 h-4 text-slate-400 shrink-0 mr-3" />
-                  <input
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search or ask Orbit AI..."
-                    className="flex-1 bg-transparent border-0 outline-none ring-0 text-sm font-normal placeholder:text-slate-400 py-2.5 text-slate-900 dark:text-white"
-                  />
-                  {query && (
-                    <button type="button" onClick={() => { setQuery(''); setResults([]); setSelectedResult(null); setHasPerformedSearch(false); setSearchParams({}); }} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 mr-1.5">
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
-                  <button
-                    type="submit"
-                    className="px-3.5 py-1.5 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg text-xs flex items-center gap-1.5 transition-all active:scale-95 shrink-0"
-                  >
-                    {isSearching ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ArrowRight className="w-3.5 h-3.5" />}
-                    Search
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
 
-          {/* Filter tabs + scope */}
+          {/* Filter tabs + scope + New Search button */}
           <div className="shrink-0 max-w-7xl w-full mx-auto px-4 md:px-8 pt-4 pb-2">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
@@ -449,9 +421,24 @@ export default function SearchHub() {
                   );
                 })}
               </div>
-              <div className="hidden md:flex items-center gap-1.5 text-xs font-medium text-slate-400 shrink-0">
-                <Shield className="w-3.5 h-3.5 text-primary" />
-                Workspace scoped
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="hidden md:flex items-center gap-1.5 text-xs font-medium text-slate-400">
+                  <Shield className="w-3.5 h-3.5 text-primary" />
+                  Workspace scoped
+                </div>
+                <button
+                  onClick={() => {
+                    setQuery('');
+                    setResults([]);
+                    setSelectedResult(null);
+                    setHasPerformedSearch(false);
+                    setSearchParams({});
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-650 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-white/10 transition-all shadow-sm active:scale-95"
+                >
+                  <Plus className="w-3.5 h-3.5 text-primary" />
+                  New Search
+                </button>
               </div>
             </div>
           </div>
