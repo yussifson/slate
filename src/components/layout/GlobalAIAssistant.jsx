@@ -19,6 +19,7 @@ import ThinkingAccordion, { parseThinking } from '@/components/chat/ThinkingAcco
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useAuth} from '@/lib/AuthContext';
 import { isAdmin, isSpaceman } from '@/lib/constants';
+import { CliPadLogo } from '@/components/ui/CliPadLogo';
 
 async function fetchAccessibleSpaceIds(user) {
   if (!user?.company_id) return new Set();
@@ -1067,19 +1068,21 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div className="relative z-10 space-y-6">
  {messages.filter(m => m.role !== 'system').map((msg, i) => {
  return (
- <div key={i} className={`flex gap-3 max-w-full ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
- <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm ${
- msg.role === 'user'
- ? 'bg-primary/10 text-primary border border-primary/20'
- : 'bg-emerald-600 text-white shadow-emerald-500/20'
- }`}>
- {msg.role === 'user' ? <User className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
- </div>
- <div className={`px-4 py-3 rounded-2xl text-[13px] leading-relaxed max-w-[85%] shadow-sm ${
- msg.role === 'user'
- ? 'bg-primary text-primary-foreground rounded-tr-sm'
- : 'bg-white dark:bg-[#131A2B] border border-slate-100 dark:border-white/5 rounded-tl-sm text-slate-700 dark:text-foreground'
- }`}>
+ <div key={i} className={`flex gap-3 max-w-full items-start ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+  {msg.role === 'user' ? (
+    <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-450 border border-slate-200 dark:border-white/10">
+      <User className="w-4 h-4" />
+    </div>
+  ) : (
+    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20 mt-0.5">
+      <CliPadLogo size={18} className="text-primary" />
+    </div>
+  )}
+  <div className={`px-4.5 py-2.5 rounded-xl text-[13px] leading-relaxed max-w-[80%] shadow-sm break-words ${
+  msg.role === 'user'
+  ? 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100'
+  : 'bg-white dark:bg-[#131A2B] border border-slate-100 dark:border-white/5 text-slate-700 dark:text-foreground'
+  }`}>
  <FormatMessage content={msg.content} />
  
  {msg.isConfirmation && msg.pendingAction && (
