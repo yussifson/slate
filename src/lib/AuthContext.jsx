@@ -124,6 +124,18 @@ export const AuthProvider = ({ children }) => {
       const sessionUser = sessionVal?.user;
       
       if (!sessionUser) {
+        try {
+          const cachedUserRaw = localStorage.getItem('slate_cached_user');
+          if (cachedUserRaw) {
+            const cachedUser = JSON.parse(cachedUserRaw);
+            setUser(cachedUser);
+            setIsAuthenticated(true);
+            setAuthChecked(true);
+            setIsLoadingAuth(false);
+            isCheckingRef.current = false;
+            return;
+          }
+        } catch (e) {}
         throw new Error("Not logged in");
       }
       

@@ -442,7 +442,7 @@ export default function Login() {
         return;
       }
       
-      if (companySubdomain && companySubdomain !== currentSubdomain && !workspace) {
+      if (profile?.role !== 'super_admin' && companySubdomain && companySubdomain !== currentSubdomain && !workspace) {
         // Strict multi-tenant boundary: Do not allow logging into another company's subdomain
         await supabase.auth.signOut();
         setError("You are not authorized to access this workspace.");

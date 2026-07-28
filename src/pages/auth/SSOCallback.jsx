@@ -62,14 +62,14 @@ export default function SSOCallback() {
           logAuditEvent({ action: 'login', user: sessionData.session.user });
         }
         if (userId) {
-          const { data: profile } = await supabase.from('profiles').select('company_id').eq('id', userId).single();
+          const { data: profile } = await supabase.from('profiles').select('company_id, role').eq('id', userId).single();
           if (!profile?.company_id && !sessionData?.session?.user?.user_metadata?.company_id) {
              navigate("/signup", { replace: true });
              return;
           }
 
           // Strict Multi-tenant boundary check: enforce subdomain isolation
-          if (profile?.company_id) {
+          if (profile?.role !== 'super_admin' && profile?.company_id) {
              const { currentSubdomain } = getSubdomainAndBase();
              if (currentSubdomain) {
                 const { data: company } = await supabase.from('companies').select('name, subdomain, custom_domain').eq('id', profile.company_id).single();
