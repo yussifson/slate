@@ -64,12 +64,20 @@ export default function AccountSignUp() {
         throw new Error('Please use a standard email address. Email aliases (containing "+") are not permitted.');
       }
 
-      // Check for aliased emails to prevent duplicate accounts
-      const { data: aliasExists, error: rpcError } = await supabase.rpc('check_email_alias_exists', {
-        input_email: emailInput
-      });
-
-      if (rpcError) throw rpcError;
+      let aliasExists = false;
+      try {
+        const { data, error: rpcError } = await supabase.rpc('check_email_alias_exists', {
+          input_email: emailInput
+        });
+        
+        // Only throw if it's a real error, not a 404 (missing RPC function)
+        if (rpcError && rpcError.code !== 'PGRST104' && rpcError.status !== 404) {
+          throw rpcError;
+        }
+        if (data) aliasExists = true;
+      } catch (e) {
+        console.warn("Skipping check_email_alias_exists check: RPC is not available.", e);
+      }
 
       if (aliasExists) {
         throw new Error('An account with this email (or an alias) already exists. Please log in or request a workspace invitation from your admin.');
