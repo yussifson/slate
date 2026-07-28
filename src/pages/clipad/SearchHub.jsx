@@ -546,10 +546,10 @@ export default function SearchHub() {
 
               {/* Right: AI Synthesis Panel (ChatGPT-like Chat Bot Interface) */}
               <div className={`${showLeftPanel ? "lg:col-span-6" : "lg:col-span-12"} h-full flex flex-col overflow-hidden pb-2`}>
-                <div className="flex flex-col h-full bg-white dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-2xl shadow-sm overflow-hidden">
+                <div className="flex flex-col h-full bg-transparent overflow-hidden">
                   
-                  {/* Header (Pinned) */}
-                  <div className="flex items-center gap-2.5 p-4.5 border-b border-slate-100 dark:border-white/8 bg-slate-50/50 dark:bg-slate-900/10 shrink-0">
+                  {/* Header (Pinned, borderless) */}
+                  <div className="flex items-center gap-2.5 p-4.5 bg-transparent shrink-0">
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
                       <CliPadLogo size={20} className="text-primary" />
                     </div>
@@ -617,19 +617,19 @@ export default function SearchHub() {
                     )}
                   </div>
 
-                  {/* Pinned Input Form at bottom */}
-                  <div className="p-4 bg-slate-50/70 dark:bg-[#151b26]/50 border-t border-slate-100 dark:border-white/8 shrink-0">
-                    <form onSubmit={handleFollowUp} className="flex gap-2">
+                  {/* Floating ChatGPT-like Input Form at bottom */}
+                  <div className="p-4 bg-transparent shrink-0">
+                    <form onSubmit={handleFollowUp} className="max-w-2xl mx-auto w-full relative flex items-center bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 rounded-2xl px-4 py-1.5 focus-within:border-slate-300 dark:focus-within:border-white/20 transition-all shadow-sm">
                       <input
                         value={followUpInput}
                         onChange={e => setFollowUpInput(e.target.value)}
-                        placeholder="Ask a follow-up question..."
-                        className="flex-1 text-sm px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all shadow-inner"
+                        placeholder="Ask Orbit AI..."
+                        className="flex-1 bg-transparent border-0 outline-none ring-0 text-sm py-2.5 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none"
                       />
                       <button
                         type="submit"
                         disabled={isSynthesizing || !followUpInput.trim()}
-                        className="px-4 py-3 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-40 shrink-0 shadow-sm flex items-center justify-center active:scale-95 transition-all"
+                        className="p-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl hover:opacity-90 transition-all disabled:opacity-30 active:scale-95 shrink-0"
                       >
                         <Send className="w-4 h-4" />
                       </button>
