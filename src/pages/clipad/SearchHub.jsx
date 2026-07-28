@@ -554,7 +554,7 @@ export default function SearchHub() {
 
                   {/* AI Content (Scrollable message area) */}
                   <div className="flex-1 overflow-y-auto p-5 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-white/10">
-                    <div className="max-w-2xl mx-auto w-full space-y-6 py-4">
+                    <div className="max-w-[680px] mx-auto w-full space-y-6 py-4">
                       {isSynthesizing && chatHistory.length === 0 ? (
                         <div className="space-y-3 py-4 animate-pulse">
                           <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-full" />
@@ -598,19 +598,27 @@ export default function SearchHub() {
 
                   {/* Floating ChatGPT-like Input Form at bottom */}
                   <div className="p-4 bg-transparent shrink-0">
-                    <form onSubmit={handleFollowUp} className="max-w-2xl mx-auto w-full relative flex items-center bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 rounded-2xl px-4 py-1.5 focus-within:border-slate-300 dark:focus-within:border-white/20 transition-all shadow-sm">
+                    <form onSubmit={handleFollowUp} className="max-w-[680px] mx-auto w-full relative flex items-center bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-white/10 rounded-2xl px-3.5 py-2 hover:border-slate-350 dark:hover:border-white/20 focus-within:border-primary dark:focus-within:border-primary focus-within:shadow-md transition-all">
+                      
+                      {/* Left icon badge matching Spotlight layout */}
+                      <div className="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center shrink-0 shadow-sm shadow-emerald-500/30 mr-2.5">
+                        <Sparkles className="w-4 h-4 text-white" />
+                      </div>
+
                       <input
                         value={followUpInput}
                         onChange={e => setFollowUpInput(e.target.value)}
                         placeholder="Ask Orbit AI..."
-                        className="flex-1 bg-transparent border-0 outline-none ring-0 text-sm py-2.5 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none"
+                        className="flex-1 bg-transparent border-none outline-none ring-0 text-sm py-2 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-0 focus:border-none focus:shadow-none"
                       />
+                      
+                      {/* Send button (Primary green, cleanly aligned) */}
                       <button
                         type="submit"
                         disabled={isSynthesizing || !followUpInput.trim()}
-                        className="p-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl hover:opacity-90 transition-all disabled:opacity-30 active:scale-95 shrink-0"
+                        className="ml-2.5 w-8 h-8 rounded-xl bg-primary text-white hover:bg-primary/95 flex items-center justify-center transition-all disabled:opacity-30 active:scale-95 shrink-0 shadow-sm shadow-primary/30"
                       >
-                        <Send className="w-4 h-4" />
+                        <Send className="w-4 h-4 text-white" />
                       </button>
                     </form>
                   </div>
