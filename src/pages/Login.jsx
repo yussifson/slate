@@ -703,11 +703,11 @@ export default function Login() {
     <span className="text-sm text-slate-500 font-medium tracking-[0.04em]">{t("don_t_have_an_account", "Don't have an account?")} </span>
     {isElectron ? (
       <Link to="/signup" className="text-sm font-semibold text-primary hover:underline tracking-[0.04em]">
-        {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
+        {t("sign_up", "Sign Up")}
       </Link>
     ) : (
       <a href={`${getMainAppUrl()}/signup`} className="text-sm font-semibold text-primary hover:underline tracking-[0.04em]">
-        {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
+        {t("sign_up", "Sign Up")}
       </a>
     )}
   </div>
