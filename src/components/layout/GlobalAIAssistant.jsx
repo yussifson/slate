@@ -274,13 +274,6 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
       if (activeId === id) setActiveId(updated[0].id);
       return updated;
     });
-
-    try {
-      await supabase.from('orbit_chat_messages').delete().eq('session_id', id);
-      await supabase.from('orbit_chat_sessions').delete().eq('id', id);
-    } catch (dbErr) {
-      console.warn('Failed to delete session from DB:', dbErr);
-    }
   };
 
   const loadedUserKeyRef = useRef('');
