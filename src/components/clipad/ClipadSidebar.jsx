@@ -75,6 +75,7 @@ export default function ClipadSidebar({ forceMobile }) {
     { label: 'Chat', path: '/chat', icon: MessageSquare }
   ];
 
+  const isSuperAdmin = user?.role === 'super_admin';
   const intelligenceItems = [
     { label: 'Timeline', path: '/timeline', icon: Clock },
     { label: 'Knowledge Graph', path: '/knowledge-graph', icon: Network },
@@ -83,10 +84,12 @@ export default function ClipadSidebar({ forceMobile }) {
     { label: 'Knowledge Journey', path: '/journey', icon: Map },
     { label: 'Integrations', path: '/integrations', icon: Plug },
     { label: 'Integration Analytics', path: '/integration-analytics', icon: BarChart2 },
-    { label: 'Commitment Engine', path: '/commitments', icon: Target },
-    { label: 'Risk Intelligence', path: '/risk', icon: TrendingUp },
-    { label: 'Org Health Pulse', path: '/pulse', icon: HeartPulse },
-    { label: 'Cross-Space Intel', path: '/cross-space', icon: GitMerge },
+    ...(isSuperAdmin ? [
+      { label: 'Commitment Engine', path: '/commitments', icon: Target },
+      { label: 'Risk Intelligence', path: '/risk', icon: TrendingUp },
+      { label: 'Org Health Pulse', path: '/pulse', icon: HeartPulse },
+      { label: 'Cross-Space Intel', path: '/cross-space', icon: GitMerge },
+    ] : []),
   ];
 
   // Admin items

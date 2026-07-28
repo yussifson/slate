@@ -382,30 +382,32 @@ export default function CliPadDashboard() {
           <StatCard icon={TrendingUp} accentColor="bg-emerald-500" bgColor="bg-emerald-50 dark:bg-emerald-500/10" iconColor="text-emerald-500" value={`${stats.completionRate}%`} label="Completed" trend={5} />
         </div>
 
-        {/* CliPad 3.0 Intelligence Strip */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 animate-in fade-in slide-in-from-bottom-7 duration-700 delay-150">
-          {[
-            { label: 'Org Health Pulse', desc: 'Live health score', path: '/pulse', colorClass: 'from-emerald-500 to-teal-500', iconEl: <HeartPulse className="w-4 h-4 text-white" /> },
-            { label: 'Risk Intelligence', desc: 'Failure prediction', path: '/risk', colorClass: 'from-red-500 to-orange-500', iconEl: <TrendingUp className="w-4 h-4 text-white" /> },
-            { label: 'Commitment Engine', desc: 'Accountability layer', path: '/commitments', colorClass: 'from-blue-500 to-indigo-500', iconEl: <Target className="w-4 h-4 text-white" /> },
-            { label: 'Cross-Space Intel', desc: 'Silo & collision scanner', path: '/cross-space', colorClass: 'from-violet-500 to-purple-500', iconEl: <Network className="w-4 h-4 text-white" /> },
-          ].map(item => (
-            <button
-              key={item.path}
-              onClick={() => navigate(item.path)}
-              className="relative overflow-hidden flex flex-col gap-2 p-4 rounded-2xl bg-white dark:bg-card border border-slate-200 dark:border-border hover:border-primary/30 hover:shadow-md transition-all duration-300 group text-left active:scale-[0.98]"
-            >
-              <div className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${item.colorClass} rounded-t-2xl`} />
-              <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${item.colorClass} flex items-center justify-center shadow-sm`}>
-                {item.iconEl}
-              </div>
-              <div>
-                <p className="text-[13px] font-bold text-slate-900 dark:text-white leading-tight">{item.label}</p>
-                <p className="text-[11px] text-slate-500 dark:text-muted-foreground mt-0.5">{item.desc}</p>
-              </div>
-            </button>
-          ))}
-        </div>
+        {/* CliPad 3.0 Intelligence Strip (Super Admin Only) */}
+        {user?.role === 'super_admin' && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 animate-in fade-in slide-in-from-bottom-7 duration-700 delay-150">
+            {[
+              { label: 'Org Health Pulse', desc: 'Live health score', path: '/pulse', colorClass: 'from-emerald-500 to-teal-500', iconEl: <HeartPulse className="w-4 h-4 text-white" /> },
+              { label: 'Risk Intelligence', desc: 'Failure prediction', path: '/risk', colorClass: 'from-red-500 to-orange-500', iconEl: <TrendingUp className="w-4 h-4 text-white" /> },
+              { label: 'Commitment Engine', desc: 'Accountability layer', path: '/commitments', colorClass: 'from-blue-500 to-indigo-500', iconEl: <Target className="w-4 h-4 text-white" /> },
+              { label: 'Cross-Space Intel', desc: 'Silo & collision scanner', path: '/cross-space', colorClass: 'from-violet-500 to-purple-500', iconEl: <Network className="w-4 h-4 text-white" /> },
+            ].map(item => (
+              <button
+                key={item.path}
+                onClick={() => navigate(item.path)}
+                className="relative overflow-hidden flex flex-col gap-2 p-4 rounded-2xl bg-white dark:bg-card border border-slate-200 dark:border-border hover:border-primary/30 hover:shadow-md transition-all duration-300 group text-left active:scale-[0.98]"
+              >
+                <div className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${item.colorClass} rounded-t-2xl`} />
+                <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${item.colorClass} flex items-center justify-center shadow-sm`}>
+                  {item.iconEl}
+                </div>
+                <div>
+                  <p className="text-[13px] font-bold text-slate-900 dark:text-white leading-tight">{item.label}</p>
+                  <p className="text-[11px] text-slate-500 dark:text-muted-foreground mt-0.5">{item.desc}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Quick Actions — native mobile grid */}
         <div className="grid grid-cols-3 gap-3 mb-8 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">

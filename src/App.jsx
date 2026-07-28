@@ -1467,10 +1467,12 @@ function App() {
                           <Route path="/support" element={<CliPadSupport />} />
                           <Route path="/chat" element={<ClipadChat />} />
                           <Route path="/chat/:roomId" element={<ClipadChat />} />
-                          <Route path="/commitments" element={<CommitmentIntelligence />} />
-                          <Route path="/risk" element={<PredictiveRisk />} />
-                          <Route path="/pulse" element={<OrgHealthPulse />} />
-                          <Route path="/cross-space" element={<CrossSpaceIntelligence />} />
+                          <Route element={<SuperAdminRoute />}>
+                            <Route path="/commitments" element={<CommitmentIntelligence />} />
+                            <Route path="/risk" element={<PredictiveRisk />} />
+                            <Route path="/pulse" element={<OrgHealthPulse />} />
+                            <Route path="/cross-space" element={<CrossSpaceIntelligence />} />
+                          </Route>
                         </Route>
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
