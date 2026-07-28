@@ -60,24 +60,21 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 }, 500);
 };
 
- const handleIndustryChange = (newIndustry) => {
- if (!navigator.onLine) {
- toast({
- title: t('offline_mode', "Offline Mode"),
- description: t('cannot_switch_industry_offline', "Cannot switch industries while offline. Please reconnect."),
- variant: "destructive"});
- return;
-}
- sessionStorage.setItem('slate_industry_override', newIndustry);
- queryClient.clear();
- toast({
- title: t('industry_switched', "Industry Switched"),
- description: t('active_industry_changed', "Active industry changed")});
- navigate('/');
- setTimeout(() => {
- window.location.reload();
-}, 100);
-};
+  const handleIndustryChange = (newIndustry) => {
+    if (!navigator.onLine) {
+      toast({
+        title: t('offline_mode', "Offline Mode"),
+        description: t('cannot_switch_industry_offline', "Cannot switch industries while offline. Please reconnect."),
+        variant: "destructive"});
+      return;
+    }
+    sessionStorage.setItem('slate_industry_override', newIndustry);
+    queryClient.clear();
+    toast({
+      title: t('industry_switched', "Industry Switched"),
+      description: t('active_industry_changed', "Active industry changed to " + newIndustry)});
+    navigate('/');
+  };
 
  const handleSwitchWorkspace = async (targetCompanyId) => {
  if (!targetCompanyId || targetCompanyId === user?.company_id) return;

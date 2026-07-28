@@ -144,7 +144,8 @@ export default function Login() {
      try {
        // Use RPC to bypass RLS securely for public branding info
        let brandData = null;
-       const { data: rpcData, error: rpcError} = await supabase.rpc('get_company_by_subdomain', { p_subdomain: currentSubdomain});
+       const cleanSub = currentSubdomain.toLowerCase().trim();
+       const { data: rpcData, error: rpcError} = await supabase.rpc('get_company_by_subdomain', { p_subdomain: cleanSub });
        
        if (!rpcError && rpcData) {
          const row = Array.isArray(rpcData) ? rpcData[0] : rpcData;
@@ -152,14 +153,14 @@ export default function Login() {
        }
 
        if (!brandData) {
-       console.log("RPC missed, trying direct table query...");
-        const { data: directData} = await supabase.from('companies').select('id, name, logo_url, logo_light_url, tagline').or(`subdomain.eq.${currentSubdomain},custom_domain.eq.${currentSubdomain}`).maybeSingle();
+        console.log("RPC missed, trying direct table query...");
+        const { data: directData} = await supabase.from('companies').select('id, name, logo_url, logo_light_url, tagline').or(`subdomain.ilike.${cleanSub},custom_domain.ilike.${cleanSub}`).maybeSingle();
         
         if (directData) {
-        brandData = directData;
+          brandData = directData;
         } else {
-        const { data: tableData} = await powerSync.execute('SELECT id, name, logo_url, logo_light_url, tagline FROM companies WHERE subdomain = ? OR custom_domain = ? LIMIT 1', [currentSubdomain, currentSubdomain]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
-        brandData = tableData;
+          const { data: tableData} = await powerSync.execute('SELECT id, name, logo_url, logo_light_url, tagline FROM companies WHERE LOWER(subdomain) = ? OR LOWER(custom_domain) = ? LIMIT 1', [cleanSub, cleanSub]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
+          brandData = tableData;
         }
        }
 
