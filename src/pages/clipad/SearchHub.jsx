@@ -322,7 +322,7 @@ export default function SearchHub() {
   const showLeftPanel = isSearching || filteredResults.length > 0;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary">
+    <div className={`bg-white dark:bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary ${hasPerformedSearch ? 'h-screen flex flex-col overflow-hidden' : 'min-h-screen'}`}>
 
       {/* ── ZERO STATE: Centered hero ── */}
       {!hasPerformedSearch && (
@@ -390,9 +390,9 @@ export default function SearchHub() {
 
       {/* ── SEARCH STATE: Compact bar at top + results below ── */}
       {hasPerformedSearch && (
-        <div>
+        <div className="flex-1 flex flex-col overflow-hidden">
           {/* Sticky top search bar */}
-          <div className="sticky top-0 z-30 bg-white/90 dark:bg-[#0b0f19]/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/5 px-4 md:px-8 py-3">
+          <div className="shrink-0 bg-white/90 dark:bg-[#0b0f19]/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/5 px-4 md:px-8 py-3">
             <div className="max-w-3xl mx-auto">
               <form onSubmit={(e) => { e.preventDefault(); setSearchParams({ q: query }); runSearch(); }}>
                 <div className="relative flex items-center bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-1 focus-within:border-primary dark:focus-within:border-primary transition-all">
@@ -421,7 +421,7 @@ export default function SearchHub() {
           </div>
 
           {/* Filter tabs + scope */}
-          <div className="max-w-7xl mx-auto px-4 md:px-8 pt-5 pb-3">
+          <div className="shrink-0 max-w-7xl w-full mx-auto px-4 md:px-8 pt-4 pb-2">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
                 {FILTER_TABS.map(tab => {
@@ -457,77 +457,105 @@ export default function SearchHub() {
           </div>
 
           {/* Results + AI panel */}
-          <div className="max-w-7xl mx-auto px-4 md:px-8 pb-20">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="flex-1 max-w-7xl w-full mx-auto px-4 md:px-8 pb-4 overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full overflow-hidden">
 
-              {/* Left: Results list */}
+              {/* Left: Results list & details */}
               {showLeftPanel && (
-                <div className="lg:col-span-6 space-y-2.5">
-                  {isSearching ? (
-                    <div className="flex items-center gap-3 py-16 justify-center">
-                      <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                      <p className="text-sm text-slate-500 dark:text-slate-400">Searching your workspace...</p>
-                    </div>
-                  ) : (
-                    filteredResults.map(item => {
-                      const meta = TYPE_META[item.type] || TYPE_META.doc;
-                      const Icon = meta.icon;
-                      const isSelected = selectedResult?.id === item.id;
-                      return (
-                        <div
-                          key={`${item.type}-${item.id}`}
-                          onClick={() => setSelectedResult(item)}
-                          className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                            isSelected
-                              ? 'bg-primary/5 border-primary/30 dark:border-primary/40'
-                              : 'bg-white dark:bg-white/[0.03] border-slate-200/80 dark:border-white/8 hover:border-slate-300 dark:hover:border-white/15 hover:bg-slate-50 dark:hover:bg-white/5'
-                          }`}
-                        >
-                          <div className="flex items-start justify-between gap-3 mb-1.5">
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold shrink-0 ${meta.bg} ${meta.color}`}>
-                                <Icon className="w-3 h-3" />
-                                {meta.label}
-                              </span>
-                              {item.provider && (
-                                <span className="text-[10px] font-mono text-slate-400 truncate">
-                                  {item.provider}
+                <div className="lg:col-span-6 flex flex-col h-full overflow-hidden space-y-3 pb-2">
+                  <div className="flex-1 overflow-y-auto space-y-2.5 pr-2 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-white/10">
+                    {isSearching ? (
+                      <div className="flex items-center gap-3 py-16 justify-center">
+                        <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                        <p className="text-sm text-slate-500 dark:text-slate-400">Searching your workspace...</p>
+                      </div>
+                    ) : (
+                      filteredResults.map(item => {
+                        const meta = TYPE_META[item.type] || TYPE_META.doc;
+                        const Icon = meta.icon;
+                        const isSelected = selectedResult?.id === item.id;
+                        return (
+                          <div
+                            key={`${item.type}-${item.id}`}
+                            onClick={() => setSelectedResult(item)}
+                            className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                              isSelected
+                                ? 'bg-primary/5 border-primary/30 dark:border-primary/40'
+                                : 'bg-white dark:bg-white/[0.03] border-slate-200/80 dark:border-white/8 hover:border-slate-300 dark:hover:border-white/15 hover:bg-slate-50 dark:hover:bg-white/5'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-3 mb-1.5">
+                              <div className="flex items-center gap-2 min-w-0">
+                                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold shrink-0 ${meta.bg} ${meta.color}`}>
+                                  <Icon className="w-3 h-3" />
+                                  {meta.label}
+                                </span>
+                                {item.provider && (
+                                  <span className="text-[10px] font-mono text-slate-400 truncate">
+                                    {item.provider}
+                                  </span>
+                                )}
+                              </div>
+                              {item.created_at && (
+                                <span className="text-[11px] text-slate-400 shrink-0">
+                                  {new Date(item.created_at).toLocaleDateString()}
                                 </span>
                               )}
                             </div>
-                            {item.created_at && (
-                              <span className="text-[11px] text-slate-400 shrink-0">
-                                {new Date(item.created_at).toLocaleDateString()}
-                              </span>
+                            <h4 className="font-semibold text-sm text-slate-900 dark:text-white leading-snug mb-1">
+                              {item.label}
+                            </h4>
+                            {item.snippet && (
+                              <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                {item.snippet}
+                              </p>
                             )}
                           </div>
-                          <h4 className="font-semibold text-sm text-slate-900 dark:text-white leading-snug mb-1">
-                            {item.label}
-                          </h4>
-                          {item.snippet && (
-                            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
-                              {item.snippet}
-                            </p>
-                          )}
-                        </div>
-                      );
-                    })
+                        );
+                      })
+                    )}
+                  </div>
+
+                  {/* Selected record detail (Pinned inside the left results column at the bottom) */}
+                  {selectedResult && (
+                    <div className="shrink-0 bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-xl p-4.5 space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Record detail</span>
+                        {TYPE_META[selectedResult.type]?.route && (
+                          <button
+                            onClick={() => {
+                              const route = TYPE_META[selectedResult.type].route(selectedResult.id, selectedResult.space_id);
+                              if (route) navigate(route);
+                            }}
+                            className="flex items-center gap-1 text-xs font-bold text-primary hover:underline"
+                          >
+                            Open <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                      <h3 className="font-semibold text-sm text-slate-900 dark:text-white leading-snug">
+                        {selectedResult.label}
+                      </h3>
+                      <div className="p-3 bg-white dark:bg-slate-900/60 border border-slate-200/50 dark:border-white/5 rounded-lg text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-h-40 overflow-y-auto">
+                        {selectedResult.snippet || 'No content preview available.'}
+                      </div>
+                    </div>
                   )}
                 </div>
               )}
 
-              {/* Right: AI Synthesis Panel */}
-              <div className={`${showLeftPanel ? "lg:col-span-6" : "lg:col-span-12"} space-y-4`}>
-                <div className="bg-white dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-xl p-5 sticky top-[72px]">
+              {/* Right: AI Synthesis Panel (ChatGPT-like Chat Bot Interface) */}
+              <div className={`${showLeftPanel ? "lg:col-span-6" : "lg:col-span-12"} h-full flex flex-col overflow-hidden pb-2`}>
+                <div className="flex flex-col h-full bg-white dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-2xl shadow-sm overflow-hidden">
                   
-                  {/* Header */}
-                  <div className="flex items-center gap-2.5 mb-4 pb-4 border-b border-slate-100 dark:border-white/8">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  {/* Header (Pinned) */}
+                  <div className="flex items-center gap-2.5 p-4.5 border-b border-slate-100 dark:border-white/8 bg-slate-50/50 dark:bg-slate-900/10 shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
                       <CliPadLogo size={20} className="text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-sm text-slate-900 dark:text-white">Orbit AI</h3>
-                      <p className="text-[11px] text-slate-400">Executive synthesis</p>
+                      <h3 className="font-semibold text-sm text-slate-900 dark:text-white leading-none">Orbit AI</h3>
+                      <span className="text-[10px] text-slate-400 mt-1 block">Executive synthesis</span>
                     </div>
                     {isSynthesizing && (
                       <div className="ml-auto flex items-center gap-1.5 text-[11px] text-primary font-medium">
@@ -537,120 +565,99 @@ export default function SearchHub() {
                     )}
                   </div>
 
-                  {/* AI Content */}
-                  {isSynthesizing && chatHistory.length === 0 ? (
-                    <div className="space-y-2 py-4">
-                      <div className="h-3 bg-slate-100 dark:bg-white/10 rounded-full animate-pulse w-full" />
-                      <div className="h-3 bg-slate-100 dark:bg-white/10 rounded-full animate-pulse w-4/5" />
-                      <div className="h-3 bg-slate-100 dark:bg-white/10 rounded-full animate-pulse w-3/4" />
-                      <div className="h-3 bg-slate-100 dark:bg-white/10 rounded-full animate-pulse w-full mt-2" />
-                      <div className="h-3 bg-slate-100 dark:bg-white/10 rounded-full animate-pulse w-2/3" />
-                    </div>
-                  ) : (
-                    <div className="space-y-4 max-h-[500px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-white/10">
-                      {chatHistory.map((msg, i) => (
-                        <div key={i} className="w-full">
-                          {msg.role === 'user' ? (
-                            <div className="flex justify-end w-full mb-4 items-start pr-2">
-                              <div className="relative max-w-[80%] bg-primary text-white px-5.5 py-4.5 rounded-2xl rounded-tr-none shadow-md text-[14px] leading-relaxed">
-                                <div className="text-[10px] text-emerald-100 font-bold uppercase tracking-wider mb-1.5">You</div>
-                                {msg.content}
-                                {/* Sleek tail pointing right */}
-                                <svg className="absolute -right-2 top-0 text-primary fill-current w-2.5 h-2.5" viewBox="0 0 10 10">
-                                  <polygon points="0,0 10,0 0,10" />
-                                </svg>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="flex items-start gap-3 justify-start max-w-[95%] mb-5 pl-2">
-                              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
-                                <CliPadLogo size={20} className="text-primary" />
-                              </div>
-                              <div className="relative bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-2xl rounded-tl-none px-5.5 py-4.5 shadow-sm text-[14px] leading-relaxed text-slate-800 dark:text-slate-200">
-                                {/* Sleek tail pointing left */}
-                                <svg className="absolute -left-[9px] top-0 text-slate-200 dark:text-white/8 fill-current w-2.5 h-2.5" viewBox="0 0 10 10">
-                                  <polygon points="10,0 0,0 10,10" />
-                                </svg>
-                                <svg className="absolute -left-2 top-[0.5px] text-slate-50 dark:text-[#181a20] fill-current w-2 h-2" viewBox="0 0 10 10">
-                                  <polygon points="10,0 0,0 10,10" />
-                                </svg>
-                                <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-slate-900 prose-pre:text-slate-100 text-[14px]">
-                                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                  {/* AI Content (Scrollable message area) */}
+                  <div className="flex-1 overflow-y-auto p-5 space-y-4 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-white/10">
+                    {isSynthesizing && chatHistory.length === 0 ? (
+                      <div className="space-y-3 py-4 animate-pulse">
+                        <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-full" />
+                        <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-4/5" />
+                        <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-3/4" />
+                        <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-full mt-2" />
+                        <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-2/3" />
+                      </div>
+                    ) : (
+                      <>
+                        {chatHistory.map((msg, i) => (
+                          <div key={i} className="w-full">
+                            {msg.role === 'user' ? (
+                              <div className="flex justify-end w-full mb-4 items-start pr-2">
+                                <div className="relative max-w-[80%] bg-primary text-white px-5.5 py-4.5 rounded-2xl rounded-tr-none shadow-md text-[14px] leading-relaxed">
+                                  <div className="text-[10px] text-emerald-100 font-bold uppercase tracking-wider mb-1.5">You</div>
+                                  {msg.content}
+                                  {/* Sleek tail pointing right */}
+                                  <svg className="absolute -right-2 top-0 text-primary fill-current w-2.5 h-2.5" viewBox="0 0 10 10">
+                                    <polygon points="0,0 10,0 0,10" />
+                                  </svg>
                                 </div>
                               </div>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                      {/* Bouncing dots thinking bubble */}
-                      {isSynthesizing && chatHistory[chatHistory.length - 1]?.role === 'user' && (
-                        <div className="flex items-start gap-3 justify-start max-w-[85%] mt-2 mb-5 pl-2 animate-in fade-in duration-200">
-                          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
-                            <CliPadLogo size={20} className="text-primary animate-pulse" />
+                            ) : (
+                              <div className="flex items-start gap-3 justify-start max-w-[95%] mb-5 pl-2">
+                                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
+                                  <CliPadLogo size={20} className="text-primary" />
+                                </div>
+                                <div className="relative bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-2xl rounded-tl-none px-5.5 py-4.5 shadow-sm text-[14px] leading-relaxed text-slate-800 dark:text-slate-200">
+                                  {/* Sleek tail pointing left */}
+                                  <svg className="absolute -left-[9px] top-0 text-slate-200 dark:text-white/8 fill-current w-2.5 h-2.5" viewBox="0 0 10 10">
+                                    <polygon points="10,0 0,0 10,10" />
+                                  </svg>
+                                  <svg className="absolute -left-2 top-[0.5px] text-slate-50 dark:text-[#181a20] fill-current w-2 h-2" viewBox="0 0 10 10">
+                                    <polygon points="10,0 0,0 10,10" />
+                                  </svg>
+                                  <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-slate-900 prose-pre:text-slate-100 text-[14px]">
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </div>
-                          <div className="relative bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-2xl rounded-tl-none px-6 py-4.5 shadow-sm">
-                            {/* Sleek tail pointing left */}
-                            <svg className="absolute -left-[9px] top-0 text-slate-200 dark:text-white/8 fill-current w-2.5 h-2.5" viewBox="0 0 10 10">
-                              <polygon points="10,0 0,0 10,10" />
-                            </svg>
-                            <svg className="absolute -left-2 top-[0.5px] text-slate-50 dark:text-[#181a20] fill-current w-2 h-2" viewBox="0 0 10 10">
-                              <polygon points="10,0 0,0 10,10" />
-                            </svg>
-                            <div className="flex items-center gap-1.5 py-1.5">
-                              <span className="w-2.5 h-2.5 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: '0ms' }} />
-                              <span className="w-2.5 h-2.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '150ms' }} />
-                              <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }} />
+                        ))}
+                        {/* Bouncing dots thinking bubble */}
+                        {isSynthesizing && chatHistory[chatHistory.length - 1]?.role === 'user' && (
+                          <div className="flex items-start gap-3 justify-start max-w-[85%] mt-2 mb-5 pl-2 animate-in fade-in duration-200">
+                            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
+                              <CliPadLogo size={20} className="text-primary animate-pulse" />
+                            </div>
+                            <div className="relative bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-2xl rounded-tl-none px-6 py-4.5 shadow-sm">
+                              {/* Sleek tail pointing left */}
+                              <svg className="absolute -left-[9px] top-0 text-slate-200 dark:text-white/8 fill-current w-2.5 h-2.5" viewBox="0 0 10 10">
+                                <polygon points="10,0 0,0 10,10" />
+                              </svg>
+                              <svg className="absolute -left-2 top-[0.5px] text-slate-50 dark:text-[#181a20] fill-current w-2 h-2" viewBox="0 0 10 10">
+                                <polygon points="10,0 0,0 10,10" />
+                              </svg>
+                              <div className="flex items-center gap-1.5 py-1.5">
+                                <span className="w-2.5 h-2.5 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: '0ms' }} />
+                                <span className="w-2.5 h-2.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '150ms' }} />
+                                <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }} />
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
-                      <div ref={chatBottomRef} />
-                    </div>
-                  )}
-
-                  {/* Follow-up input */}
-                  <form onSubmit={handleFollowUp} className="flex gap-2 mt-4 pt-4 border-t border-slate-100 dark:border-white/8">
-                    <input
-                      value={followUpInput}
-                      onChange={e => setFollowUpInput(e.target.value)}
-                      placeholder="Ask a follow-up question..."
-                      className="flex-1 text-xs px-3 py-2.5 rounded-lg bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-primary transition-all"
-                    />
-                    <button
-                      type="submit"
-                      disabled={isSynthesizing || !followUpInput.trim()}
-                      className="px-3.5 py-2.5 bg-primary text-white rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors disabled:opacity-40 shrink-0"
-                    >
-                      <Send className="w-3.5 h-3.5" />
-                    </button>
-                  </form>
-                </div>
-
-                {/* Selected record detail */}
-                {selectedResult && (
-                  <div className="bg-white dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-xl p-5 space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-200">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">Record detail</span>
-                      {TYPE_META[selectedResult.type]?.route && (
-                        <button
-                          onClick={() => {
-                            const route = TYPE_META[selectedResult.type].route(selectedResult.id, selectedResult.space_id);
-                            if (route) navigate(route);
-                          }}
-                          className="flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
-                        >
-                          Open <ArrowUpRight className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                    </div>
-                    <h3 className="font-semibold text-sm text-slate-900 dark:text-white leading-snug">
-                      {selectedResult.label}
-                    </h3>
-                    <div className="p-3 bg-slate-50 dark:bg-white/5 rounded-lg text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-h-48 overflow-y-auto">
-                      {selectedResult.snippet || 'No content preview available.'}
-                    </div>
+                        )}
+                        <div ref={chatBottomRef} />
+                      </>
+                    )}
                   </div>
-                )}
+
+                  {/* Pinned Input Form at bottom */}
+                  <div className="p-4 bg-slate-50/70 dark:bg-[#151b26]/50 border-t border-slate-100 dark:border-white/8 shrink-0">
+                    <form onSubmit={handleFollowUp} className="flex gap-2">
+                      <input
+                        value={followUpInput}
+                        onChange={e => setFollowUpInput(e.target.value)}
+                        placeholder="Ask a follow-up question..."
+                        className="flex-1 text-sm px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all shadow-inner"
+                      />
+                      <button
+                        type="submit"
+                        disabled={isSynthesizing || !followUpInput.trim()}
+                        className="px-4 py-3 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-40 shrink-0 shadow-sm flex items-center justify-center active:scale-95 transition-all"
+                      >
+                        <Send className="w-4 h-4" />
+                      </button>
+                    </form>
+                  </div>
+
+                </div>
               </div>
 
             </div>
