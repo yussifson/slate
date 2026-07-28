@@ -4,8 +4,19 @@ export function getSubdomainAndBase() {
   const host = window.location.hostname;
   
   const envBase = import.meta.env.VITE_BASE_DOMAIN;
-  // These are the genuine ROOT base domains. *.optavel.com subdomains are resolved below.
-  const knownBaseDomains = ['optavel.com', 'oatstack.com'];
+  // Base domains for each product:
+  // - slate.optavel.com  → Slate workspace (multi-tenant: company1.slate.optavel.com, etc.)
+  // - clipad.optavel.com → CliPad (single product, no sub-subdomains)
+  // - account.optavel.com → Optavel Accounts / SSO portal
+  // - optavel.com        → Root marketing / identity domain
+  const knownBaseDomains = [
+    'optavel.com',
+    'slate.optavel.com',
+    'slated.optavel.com',
+    'clipad.optavel.com',
+    'account.optavel.com',
+    'oatstack.com',
+  ];
   if (envBase && !knownBaseDomains.includes(envBase)) {
     knownBaseDomains.push(envBase);
   }

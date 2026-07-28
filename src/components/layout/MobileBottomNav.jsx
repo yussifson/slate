@@ -270,7 +270,11 @@ export default function MobileBottomNav() {
                       value={sessionStorage.getItem('slate_industry_override') || 'law'}
                       onChange={(e) => {
                         sessionStorage.setItem('slate_industry_override', e.target.value);
-                        navigate('/');
+                        if (user?.role === 'super_admin') {
+                          navigate('/admin');
+                        } else {
+                          navigate('/');
+                        }
                       }}
                       className="bg-transparent border-0 pr-0 text-[#8E8E93] text-[17px] outline-none"
                       style={{ direction: 'rtl' }}

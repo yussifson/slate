@@ -1399,8 +1399,8 @@ function App() {
   const { currentSubdomain } = getSubdomainAndBase();
   const isNativeApp = isDesktopApp();
   const isBaseDomain = currentSubdomain === null;
-  const isMeetDomain = currentSubdomain === 'clipad' || window.location.hostname.startsWith('clipad.');
-  const isAccountDomain = currentSubdomain === 'account' || window.location.hostname.startsWith('account.');
+  const isMeetDomain = window.location.hostname.startsWith('clipad.');
+  const isAccountDomain = window.location.hostname.startsWith('account.');
 
   useEffect(() => {
     initPowerSync().catch(console.error);

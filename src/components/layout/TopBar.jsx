@@ -73,7 +73,13 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
     toast({
       title: t('industry_switched', "Industry Switched"),
       description: t('active_industry_changed', "Active industry changed to " + newIndustry)});
-    navigate('/');
+    // Super admins live on the base domain (slate.optavel.com) where / is the marketing page.
+    // Route them back to /admin. Company users are on subdomains where / is their dashboard.
+    if (user?.role === 'super_admin') {
+      navigate('/admin');
+    } else {
+      navigate('/');
+    }
   };
 
  const handleSwitchWorkspace = async (targetCompanyId) => {
