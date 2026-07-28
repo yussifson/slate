@@ -201,6 +201,13 @@ export default function SearchHub() {
               content: m.content
             })));
             setHasPerformedSearch(true);
+
+            // Re-run search matching records silently without restarting AI synthesis
+            const firstUserMsg = msgs.find(m => m.role === 'user');
+            if (firstUserMsg) {
+              setQuery(firstUserMsg.content);
+              runSearch(firstUserMsg.content, true);
+            }
           }
         }
       } catch (err) {
@@ -208,7 +215,7 @@ export default function SearchHub() {
       }
     };
     loadPersistentChat();
-  }, [user?.id]);
+  }, [user?.id, companyId, runSearch]);
 
   const getOrCreateSession = async () => {
     if (!user?.id) return null;
@@ -302,7 +309,7 @@ export default function SearchHub() {
   const synthSessionRef = React.useRef(0);
   const lastQueryRef = React.useRef('');
 
-  const runSearch = useCallback(async (qTerm) => {
+  const runSearch = useCallback(async (qTerm, skipAISynthesis = false) => {
     const q = (qTerm !== undefined ? qTerm : query).trim();
     if (!q || !companyId) return;
 
@@ -311,7 +318,9 @@ export default function SearchHub() {
     setIsSearching(true);
     setResults([]);
     setSelectedResult(null);
-    setChatHistory([]);
+    if (!skipAISynthesis) {
+      setChatHistory([]);
+    }
     setAiAnswer('');
 
     const accessibleSpaceIds = await fetchAccessibleSpaceIds(user);
@@ -349,8 +358,10 @@ export default function SearchHub() {
     setIsSearching(false);
     if (raw.length > 0) setSelectedResult(raw[0]);
 
-    // AI Executive Synthesis — bump session id to prevent stale callbacks
-    runAISynthesis(q, raw, spaceIdArr);
+    if (!skipAISynthesis) {
+      // AI Executive Synthesis — bump session id to prevent stale callbacks
+      runAISynthesis(q, raw, spaceIdArr);
+    }
   }, [query, companyId, user]);
 
   const runAISynthesis = async (q, matchedResults, spaceIdArr) => {
