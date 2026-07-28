@@ -236,9 +236,8 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
 
  const updateLocalSessions = (newSessions) => {
     localStorage.setItem(`orbit_sessions_${user.email}_${companyId}`, JSON.stringify(newSessions));
-  };
-
-  const startNewChat = () => {
+  };   
+  const startNewChat = async () => {
     const s = newSession();
     setSessions(prev => {
       const updated = [s, ...prev];
@@ -248,6 +247,19 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
     setActiveId(s.id);
     setShowHistory(false);
     setIsExpanded(false);
+
+    try {
+      await supabase.from('orbit_chat_sessions').insert({
+        id: s.id,
+        user_id: user.id,
+        company_id: companyId || null,
+        title: s.title,
+        created_at: s.createdAt || new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+    } catch (err) {
+      console.warn('Failed to save new chat session to DB:', err);
+    }
   };
 
   const deleteSession = async (id, e) => {
@@ -262,6 +274,13 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
       if (activeId === id) setActiveId(updated[0].id);
       return updated;
     });
+
+    try {
+      await supabase.from('orbit_chat_messages').delete().eq('session_id', id);
+      await supabase.from('orbit_chat_sessions').delete().eq('id', id);
+    } catch (dbErr) {
+      console.warn('Failed to delete session from DB:', dbErr);
+    }
   };
 
   const loadedUserKeyRef = useRef('');
@@ -274,6 +293,43 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
 
     const loadSessions = async () => {
       try {
+        const { data: dbSessions, error } = await supabase
+          .from('orbit_chat_sessions')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('updated_at', { ascending: false })
+          .limit(30);
+
+        if (error) throw error;
+
+        if (dbSessions && dbSessions.length > 0) {
+          const populatedSessions = await Promise.all(
+            dbSessions.map(async (s) => {
+              const { data: msgs } = await supabase
+                .from('orbit_chat_messages')
+                .select('*')
+                .eq('session_id', s.id)
+                .order('created_at', { ascending: true });
+
+              return {
+                id: s.id,
+                title: s.title || 'New Chat',
+                createdAt: s.created_at,
+                messages: (msgs || []).map(m => ({
+                  id: m.id,
+                  role: m.role,
+                  content: m.content
+                }))
+              };
+            })
+          );
+
+          setSessions(populatedSessions);
+          setActiveId(populatedSessions[0].id);
+          updateLocalSessions(populatedSessions);
+          return;
+        }
+
         const stored = localStorage.getItem(`orbit_sessions_${user.email}_${companyId}`);
         if (stored) {
           const parsed = JSON.parse(stored);
@@ -284,6 +340,27 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
           if (cleaned && cleaned.length > 0) {
             setSessions(cleaned);
             setActiveId(cleaned[0].id);
+            for (const s of cleaned) {
+              await supabase.from('orbit_chat_sessions').upsert({
+                id: s.id,
+                user_id: user.id,
+                company_id: companyId || null,
+                title: s.title,
+                created_at: s.createdAt || new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              });
+              if (s.messages && s.messages.length > 0) {
+                await supabase.from('orbit_chat_messages').upsert(
+                  s.messages.map(m => ({
+                    id: m.id || generateId(),
+                    session_id: s.id,
+                    role: m.role,
+                    content: m.content,
+                    created_at: new Date().toISOString()
+                  }))
+                );
+              }
+            }
           } else {
             throw new Error("Empty array");
           }
@@ -294,7 +371,16 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
         const s = newSession();
         setSessions([s]);
         setActiveId(s.id);
-        localStorage.setItem(`orbit_sessions_${user.email}_${companyId}`, JSON.stringify([s]));
+        try {
+          await supabase.from('orbit_chat_sessions').upsert({
+            id: s.id,
+            user_id: user.id,
+            company_id: companyId || null,
+            title: s.title,
+            created_at: s.createdAt || new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+        } catch {}
       }
 
       // Pre-load automation registries safely with catch fallbacks
@@ -568,10 +654,33 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
 }
 
  addMessages(sid, [{ role: 'user', content: userContent, hiddenContext: actualHiddenContext}]);
- setInput('');
- const fileSnap = uploadedFile;
- setUploadedFile(null);
- setIsLoading(true);
+
+  try {
+    const activeSession = currentSessions.find(s => s.id === sid);
+    if (activeSession) {
+      await supabase.from('orbit_chat_sessions').upsert({
+        id: activeSession.id,
+        user_id: user.id,
+        company_id: companyId || null,
+        title: activeSession.title,
+        updated_at: new Date().toISOString()
+      });
+      await supabase.from('orbit_chat_messages').insert({
+        id: generateId(),
+        session_id: activeSession.id,
+        role: 'user',
+        content: userContent,
+        created_at: new Date().toISOString()
+      });
+    }
+  } catch (dbErr) {
+    console.warn('Failed to save user message to DB:', dbErr);
+  }
+
+  setInput('');
+  const fileSnap = uploadedFile;
+  setUploadedFile(null);
+  setIsLoading(true);
 
  try {
  let responseText;
@@ -821,19 +930,31 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 
     let confirmationAction = actions.find(a => a.tool === 'ask_confirmation');
     if (confirmationAction) {
+      const finalMsgContent = finalCleanText || confirmationAction.message;
       setSessions(prev => prev.map(s => {
         if (s.id !== sid) return s;
         return {
           ...s,
           messages: s.messages.map(m => m.id === streamingMsgId ? {
             ...m,
-            content: finalCleanText || confirmationAction.message,
+            content: finalMsgContent,
             isConfirmation: true,
             pendingAction: confirmationAction.actionToConfirm,
             isStreaming: false
           } : m)
         };
       }));
+      try {
+        await supabase.from('orbit_chat_messages').insert({
+          id: streamingMsgId,
+          session_id: sid,
+          role: 'assistant',
+          content: finalMsgContent,
+          created_at: new Date().toISOString()
+        });
+      } catch (dbErr) {
+        console.warn('Failed to save confirmation message to DB:', dbErr);
+      }
       finalCleanText = ""; // Handled via confirmation message
       break; // Pause loop
     }
@@ -853,6 +974,18 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
         messages: s.messages.map(m => m.id === streamingMsgId ? { ...m, content: finalCleanText, isStreaming: false } : m)
       };
     }));
+    try {
+      await supabase.from('orbit_chat_messages').insert({
+        id: streamingMsgId,
+        session_id: sid,
+        role: 'assistant',
+        content: finalCleanText,
+        created_at: new Date().toISOString()
+      });
+      await supabase.from('orbit_chat_sessions').update({ updated_at: new Date().toISOString() }).eq('id', sid);
+    } catch (dbErr) {
+      console.warn('Failed to save assistant response to DB:', dbErr);
+    }
   } else {
     // If no text was produced, clean up the placeholder
     setSessions(prev => prev.map(s => {
