@@ -116,38 +116,39 @@ export default function RecordVideo() {
     fetch('https://slate-gcph.onrender.com/health', { mode: 'no-cors' }).catch(() => {});
   }, []);
   
-  const [showRecoverPrompt, setShowRecoverPrompt] = useState(false);
-  const [recoveredChunks, setRecoveredChunks] = useState(null);
-
   useEffect(() => {
-    if (id && user) {
-      getRecordingState(id).then(state => {
-        if (state && state.chunks && state.chunks.length > 0) {
-          if (Date.now() - state.timestamp > 86400000) {
-             deleteRecordingState(id);
-          } else {
-             setRecoveredChunks(state.chunks);
-             setShowRecoverPrompt(true);
-          }
+    const initDraft = async () => {
+      if (id && user) {
+        // First check cloud for an existing draft with this ID
+        const { data: cloudDraft } = await supabase.from('clipad_videos').select('*').eq('id', id).single();
+        if (cloudDraft) {
+          setTitle(cloudDraft.title || '');
+          setDescription(cloudDraft.description || '');
+          setRecordingUrl(cloudDraft.video_url);
+          setActiveVideoId(cloudDraft.id);
+          setPhase('review');
+          return;
         }
-      });
-    }
-  }, [id, user]);
 
-  const handleRecover = () => {
-    chunksRef.current = recoveredChunks;
-    const blob = new Blob(chunksRef.current, { type: 'video/webm' });
-    const url = URL.createObjectURL(blob);
-    setVideoBlob(blob);
-    setRecordingUrl(url);
-    setPhase('review');
-    setShowRecoverPrompt(false);
-  };
-  
-  const handleDiscardRecovery = () => {
-    deleteRecordingState(id);
-    setShowRecoverPrompt(false);
-  };
+        // If not in cloud, check local IndexedDB
+        getRecordingState(id).then(state => {
+          if (state && state.chunks && state.chunks.length > 0) {
+            if (Date.now() - state.timestamp > 86400000) {
+               deleteRecordingState(id);
+            } else {
+               chunksRef.current = state.chunks;
+               const blob = new Blob(state.chunks, { type: 'video/webm' });
+               const url = URL.createObjectURL(blob);
+               setVideoBlob(blob);
+               setRecordingUrl(url);
+               setPhase('review');
+            }
+          }
+        });
+      }
+    };
+    initDraft();
+  }, [id, user]);
 
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   const [mode, setMode] = useState('screen_camera');
@@ -1055,6 +1056,7 @@ export default function RecordVideo() {
 
             const videoTitle = title.trim() || `Recording - ${new Date().toLocaleDateString()}`;
             const { data: videoRecord, error: dbError } = await supabase.from('clipad_videos').insert({
+              id: id, // FIX: Map the cloud ID to the route ID
               creator_id: user.id,
               company_id: user?.company_id || null, // Fix #4 — needed for RLS and teammate visibility
               video_url: publicUrl,
@@ -1065,10 +1067,10 @@ export default function RecordVideo() {
 
             if (!dbError) {
               setActiveVideoId(videoRecord.id);
-              toast({ title: 'Recording Saved!', description: 'Your video is securely saved in the cloud.', variant: 'default' });
+              toast({ title: 'Recording Saved!', description: 'Your video is securely saved in the cloud. Review details below.', variant: 'default' });
               setUploadProgress(100);
               setPhase('review');
-              deleteRecordingState(id);
+              // REMOVED deleteRecordingState(id) to ensure IDB persists until user explicitly discards or navigates away!
             } else {
               console.error('DB insert error:', dbError);
               toast({ title: 'Save Error', description: dbError.message, variant: 'destructive' });
@@ -1098,12 +1100,25 @@ export default function RecordVideo() {
           if (attemptsLeft > 0 && (isRecordingRef.current || wsEndRequestedRef.current)) {
             wsIsReconnectingRef.current = true;
             wsReconnectAttemptsRef.current++;
+            
+            // Auto-pause if we disconnected during active recording
+            if (isRecordingRef.current && !isPaused && mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+              mediaRecorderRef.current.pause();
+              setIsPaused(true);
+              toast({ title: 'Network Disconnected', description: 'Recording automatically paused. Reconnecting...', variant: 'destructive' });
+            }
+
             const delay = Math.min(1000 * Math.pow(2, wsReconnectAttemptsRef.current - 1), 15000);
             // Reconnecting silently
             setTimeout(() => connectWS(true), delay);
           } else {
             // WebSocket permanently failed after max reconnect attempts.
-            // Do not pause the recording. The IndexedDB fallback handles offline recording perfectly.
+            // If still recording, pause it so user can manually resume when network returns.
+            if (isRecordingRef.current && !isPaused && mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+              mediaRecorderRef.current.pause();
+              setIsPaused(true);
+              toast({ title: 'Connection Lost', description: 'Recording paused. Click Resume when network returns.', variant: 'destructive' });
+            }
           }
         };
       };
@@ -1369,6 +1384,7 @@ export default function RecordVideo() {
         }
         
         toast({ title: '✓ Details updated!', description: 'Your recording has been finalized.' });
+        deleteRecordingState(id);
         setTimeout(() => navigate(`/spaces/${selectedSpace || ''}`), 1000);
       } catch (err) {
         toast({ title: 'Update failed', description: err.message, variant: 'destructive' });
@@ -1442,6 +1458,7 @@ export default function RecordVideo() {
       const publicUrl = supabase.storage.from('clipad_videos').getPublicUrl(fileName).data.publicUrl;
 
       const { data: videoRecord, error: dbError } = await supabase.from('clipad_videos').insert({
+        id: id, // FIX: Map the cloud ID to the route ID
         creator_id: user.id,
         company_id: user?.company_id || null, // Fix #4 — needed for RLS and teammate visibility
         video_url: publicUrl,
