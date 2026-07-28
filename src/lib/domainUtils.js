@@ -10,11 +10,11 @@ export function getSubdomainAndBase() {
   // - account.optavel.com → Optavel Accounts / SSO portal
   // - optavel.com        → Root marketing / identity domain
   const knownBaseDomains = [
-    'optavel.com',
     'slate.optavel.com',
     'slated.optavel.com',
     'clipad.optavel.com',
     'account.optavel.com',
+    'optavel.com',
     'oatstack.com',
   ];
   if (envBase && !knownBaseDomains.includes(envBase)) {
