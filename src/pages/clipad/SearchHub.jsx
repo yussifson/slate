@@ -580,29 +580,17 @@ export default function SearchHub() {
                         {chatHistory.map((msg, i) => (
                           <div key={i} className="w-full">
                             {msg.role === 'user' ? (
-                              <div className="flex justify-end w-full mb-4 items-start pr-2">
-                                <div className="relative max-w-[80%] bg-primary text-white px-5.5 py-4.5 rounded-2xl rounded-tr-none shadow-md text-[14px] leading-relaxed">
-                                  <div className="text-[10px] text-emerald-100 font-bold uppercase tracking-wider mb-1.5">You</div>
+                              <div className="flex justify-end w-full mb-5 pr-2">
+                                <div className="max-w-[75%] bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-4.5 py-3 rounded-2xl shadow-sm text-[14px] leading-relaxed">
                                   {msg.content}
-                                  {/* Sleek tail pointing right */}
-                                  <svg className="absolute -right-2 top-0 text-primary fill-current w-2.5 h-2.5" viewBox="0 0 10 10">
-                                    <polygon points="0,0 10,0 0,10" />
-                                  </svg>
                                 </div>
                               </div>
                             ) : (
-                              <div className="flex items-start gap-3 justify-start max-w-[95%] mb-5 pl-2">
-                                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
-                                  <CliPadLogo size={20} className="text-primary" />
+                              <div className="flex items-start gap-4 justify-start w-full mb-6 pl-2">
+                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border border-primary/25">
+                                  <CliPadLogo size={18} className="text-primary" />
                                 </div>
-                                <div className="relative bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-2xl rounded-tl-none px-5.5 py-4.5 shadow-sm text-[14px] leading-relaxed text-slate-800 dark:text-slate-200">
-                                  {/* Sleek tail pointing left */}
-                                  <svg className="absolute -left-[9px] top-0 text-slate-200 dark:text-white/8 fill-current w-2.5 h-2.5" viewBox="0 0 10 10">
-                                    <polygon points="10,0 0,0 10,10" />
-                                  </svg>
-                                  <svg className="absolute -left-2 top-[0.5px] text-slate-50 dark:text-[#181a20] fill-current w-2 h-2" viewBox="0 0 10 10">
-                                    <polygon points="10,0 0,0 10,10" />
-                                  </svg>
+                                <div className="flex-1 text-[14px] leading-relaxed text-slate-800 dark:text-slate-200">
                                   <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-slate-900 prose-pre:text-slate-100 text-[14px]">
                                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                                   </div>
@@ -613,23 +601,14 @@ export default function SearchHub() {
                         ))}
                         {/* Bouncing dots thinking bubble */}
                         {isSynthesizing && chatHistory[chatHistory.length - 1]?.role === 'user' && (
-                          <div className="flex items-start gap-3 justify-start max-w-[85%] mt-2 mb-5 pl-2 animate-in fade-in duration-200">
-                            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
-                              <CliPadLogo size={20} className="text-primary animate-pulse" />
+                          <div className="flex items-start gap-4 justify-start w-full mb-6 pl-2 animate-in fade-in duration-200">
+                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border border-primary/25">
+                              <CliPadLogo size={18} className="text-primary animate-pulse" />
                             </div>
-                            <div className="relative bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-2xl rounded-tl-none px-6 py-4.5 shadow-sm">
-                              {/* Sleek tail pointing left */}
-                              <svg className="absolute -left-[9px] top-0 text-slate-200 dark:text-white/8 fill-current w-2.5 h-2.5" viewBox="0 0 10 10">
-                                <polygon points="10,0 0,0 10,10" />
-                              </svg>
-                              <svg className="absolute -left-2 top-[0.5px] text-slate-50 dark:text-[#181a20] fill-current w-2 h-2" viewBox="0 0 10 10">
-                                <polygon points="10,0 0,0 10,10" />
-                              </svg>
-                              <div className="flex items-center gap-1.5 py-1.5">
-                                <span className="w-2.5 h-2.5 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: '0ms' }} />
-                                <span className="w-2.5 h-2.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '150ms' }} />
-                                <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }} />
-                              </div>
+                            <div className="flex items-center gap-1.5 py-2">
+                              <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                              <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                              <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '300ms' }} />
                             </div>
                           </div>
                         )}
