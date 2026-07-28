@@ -6,7 +6,7 @@ import {
   Command, Bot, Filter, Check, Layers, ChevronRight, Copy, CheckCheck, Folder, Clock,
   Users, RefreshCw, SlidersHorizontal, ArrowUpRight, ChevronDown, UserCheck, Shield,
   Share2, CornerDownLeft, Sparkle, Compass, Terminal, Cpu, Lightbulb, ArrowRightCircle,
-  Brain, FileSearch, SparklesIcon, Send, Plus
+  Brain, FileSearch, SparklesIcon, Send, Plus, Volume2, VolumeX, ThumbsUp, ThumbsDown, Edit
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { supabase } from '@/api/supabaseClient';
@@ -108,6 +108,33 @@ export default function SearchHub() {
   const [followUpInput, setFollowUpInput] = useState('');
   const [hasPerformedSearch, setHasPerformedSearch] = useState(false);
   const chatBottomRef = React.useRef(null);
+
+  const [isSpeakingMsgIndex, setIsSpeakingMsgIndex] = useState(null);
+  const [copiedMsgIndex, setCopiedMsgIndex] = useState(null);
+  const [votedMsgState, setVotedMsgState] = useState({}); // { [index]: 'up' | 'down' }
+
+  const handleSpeak = (text, index) => {
+    if (window.speechSynthesis.speaking && isSpeakingMsgIndex === index) {
+      window.speechSynthesis.cancel();
+      setIsSpeakingMsgIndex(null);
+    } else {
+      window.speechSynthesis.cancel();
+      const cleanText = text
+        .replace(/[*_#`~\[\]()\-+]/g, '')
+        .trim();
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.onend = () => setIsSpeakingMsgIndex(null);
+      utterance.onerror = () => setIsSpeakingMsgIndex(null);
+      setIsSpeakingMsgIndex(index);
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  const handleCopy = (text, index) => {
+    navigator.clipboard.writeText(text);
+    setCopiedMsgIndex(index);
+    setTimeout(() => setCopiedMsgIndex(null), 2000);
+  };
 
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -568,19 +595,74 @@ export default function SearchHub() {
                           {chatHistory.map((msg, i) => (
                             <div key={i} className="w-full">
                               {msg.role === 'user' ? (
-                                <div className="flex justify-end w-full mb-4">
+                                <div className="flex flex-col items-end w-full mb-5 animate-in fade-in duration-200">
                                   <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-4.5 py-2.5 rounded-xl shadow-sm text-[14px] leading-relaxed max-w-[70%] break-words">
                                     {msg.content}
                                   </div>
+                                  <div className="flex items-center gap-2 mt-1 mr-1 text-slate-400 select-none">
+                                    <button 
+                                      onClick={() => handleCopy(msg.content, i)} 
+                                      className="p-1 hover:text-slate-650 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded transition-all"
+                                      title="Copy message"
+                                    >
+                                      {copiedMsgIndex === i ? <CheckCheck className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                                    </button>
+                                    <button 
+                                      onClick={() => setFollowUpInput(msg.content)} 
+                                      className="p-1 hover:text-slate-650 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded transition-all"
+                                      title="Edit message"
+                                    >
+                                      <Edit className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
                                 </div>
                               ) : (
-                                <div className="flex items-start gap-4 justify-start w-full mb-6">
+                                <div className="flex items-start gap-4 justify-start w-full mb-6 animate-in fade-in duration-200">
                                   <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20 mt-0.5">
                                     <CliPadLogo size={18} className="text-primary" />
                                   </div>
-                                  <div className="flex-1 text-[14px] leading-relaxed text-slate-800 dark:text-slate-200">
-                                    <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-slate-900 prose-pre:text-slate-100 text-[14px]">
-                                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                                  <div className="flex-1 space-y-2">
+                                    <div className="text-[14px] leading-relaxed text-slate-800 dark:text-slate-200">
+                                      <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-slate-900 prose-pre:text-slate-100 text-[14px]">
+                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                                      </div>
+                                    </div>
+                                    {/* Action Row for AI Message (Like/Dislike, Speak, Copy) */}
+                                    <div className="flex items-center gap-2.5 text-slate-400 select-none pt-1">
+                                      <button 
+                                        onClick={() => handleCopy(msg.content, i)} 
+                                        className="p-1 hover:text-slate-650 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded transition-all"
+                                        title="Copy response"
+                                      >
+                                        {copiedMsgIndex === i ? <CheckCheck className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                                      </button>
+                                      <button 
+                                        onClick={() => handleSpeak(msg.content, i)} 
+                                        className={`p-1 hover:text-slate-650 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded transition-all ${isSpeakingMsgIndex === i ? 'text-emerald-500' : ''}`}
+                                        title={isSpeakingMsgIndex === i ? "Stop speaking" : "Speak response"}
+                                      >
+                                        {isSpeakingMsgIndex === i ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+                                      </button>
+                                      <button 
+                                        onClick={() => {
+                                          setVotedMsgState(prev => ({ ...prev, [i]: prev[i] === 'up' ? null : 'up' }));
+                                          toast({ title: 'Feedback received', description: 'Thank you for helping train Orbit AI!' });
+                                        }} 
+                                        className={`p-1 hover:text-slate-650 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded transition-all ${votedMsgState[i] === 'up' ? 'text-emerald-500' : ''}`}
+                                        title="Good response"
+                                      >
+                                        <ThumbsUp className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button 
+                                        onClick={() => {
+                                          setVotedMsgState(prev => ({ ...prev, [i]: prev[i] === 'down' ? null : 'down' }));
+                                          toast({ title: 'Feedback received', description: 'Thank you for helping train Orbit AI!' });
+                                        }} 
+                                        className={`p-1 hover:text-slate-650 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded transition-all ${votedMsgState[i] === 'down' ? 'text-rose-500' : ''}`}
+                                        title="Bad response"
+                                      >
+                                        <ThumbsDown className="w-3.5 h-3.5" />
+                                      </button>
                                     </div>
                                   </div>
                                 </div>
@@ -608,7 +690,7 @@ export default function SearchHub() {
 
                   {/* Floating ChatGPT-like Input Form at bottom */}
                   <div className="p-4 bg-transparent shrink-0">
-                    <form onSubmit={handleFollowUp} className="max-w-[680px] mx-auto w-full relative flex items-center bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-white/10 rounded-2xl px-3.5 py-2 hover:border-slate-350 dark:hover:border-white/20 focus-within:border-primary dark:focus-within:border-primary focus-within:shadow-md transition-all">
+                    <form onSubmit={handleFollowUp} className="max-w-[680px] mx-auto w-full relative flex items-center bg-slate-50 dark:bg-[#161a23]/60 border border-black/[0.08] dark:border-white/10 rounded-2xl px-3.5 py-2 hover:border-slate-300 dark:hover:border-white/20 focus-within:border-primary dark:focus-within:border-primary focus-within:shadow-[0_0_12px_rgba(25,184,110,0.12)] transition-all">
                       
                       {/* Left icon badge matching Spotlight layout */}
                       <div className="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center shrink-0 shadow-sm shadow-emerald-500/30 mr-2.5">
