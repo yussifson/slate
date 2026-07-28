@@ -139,6 +139,7 @@ export default function SearchHub() {
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatHistory, isSynthesizing]);
+  const companyId = user?.company_id;
 
   const [activeSessionId, setActiveSessionId] = useState(null);
 
@@ -282,7 +283,6 @@ export default function SearchHub() {
     setChatHistory([]);
   };
 
-  const companyId = user?.company_id;
 
   const safeQuery = (promise) => Promise.resolve(promise).then(res => res.data || []).catch(err => {
     console.warn('[SearchHub] Query err:', err);
