@@ -594,47 +594,7 @@ export default function SearchHub() {
       {/* ── SEARCH STATE: Compact bar at top + results below ── */}
       {hasPerformedSearch && (
         <div className="flex-1 flex flex-col overflow-hidden">
-
-          {/* Filter tabs + scope + New Search button */}
-          <div className="shrink-0 max-w-7xl w-full mx-auto px-4 md:px-8 pt-4 pb-2">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-                {FILTER_TABS.map(tab => {
-                  const Icon = tab.icon;
-                  const count = results.filter(r => matchesFilter(r.type, tab.id)).length;
-                  const active = activeFilter === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveFilter(tab.id)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 ${
-                        active
-                          ? 'bg-primary/10 text-primary border border-primary/20'
-                          : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-700 dark:hover:text-slate-200'
-                      }`}
-                    >
-                      <Icon className="w-3.5 h-3.5" />
-                      {tab.label}
-                      {count > 0 && (
-                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${active ? 'bg-primary/15' : 'bg-slate-100 dark:bg-white/10'}`}>
-                          {count}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="flex items-center gap-3 shrink-0">
-                <button
-                  onClick={handleNewSearch}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-650 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-white/10 transition-all shadow-sm active:scale-95"
-                >
-                  <Plus className="w-3.5 h-3.5 text-primary" />
-                  New Search
-                </button>
-              </div>
-            </div>
-          </div>
+          {/* Main results and chat layout (Tabs removed to maximize space) */}
 
           {/* Results + AI panel */}
           <div className="flex-1 max-w-7xl w-full mx-auto px-4 md:px-8 pb-4 overflow-hidden">
@@ -698,7 +658,7 @@ export default function SearchHub() {
 
                   {/* Selected record detail (Pinned inside the left results column at the bottom) */}
                   {selectedResult && (
-                    <div className="shrink-0 bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-xl p-4.5 space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                    <div className="shrink-0 bg-white dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-xl p-5 space-y-3.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Record detail</span>
                         {TYPE_META[selectedResult.type]?.route && (
@@ -716,7 +676,7 @@ export default function SearchHub() {
                       <h3 className="font-semibold text-sm text-slate-900 dark:text-white leading-snug">
                         {selectedResult.label}
                       </h3>
-                      <div className="p-3 bg-white dark:bg-slate-900/60 border border-slate-200/50 dark:border-white/5 rounded-lg text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-h-40 overflow-y-auto">
+                      <div className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-h-40 overflow-y-auto">
                         {selectedResult.snippet || 'No content preview available.'}
                       </div>
                     </div>
@@ -729,20 +689,31 @@ export default function SearchHub() {
                 <div className="flex flex-col h-full bg-transparent overflow-hidden">
                   
                   {/* Header (Pinned, borderless) */}
-                  <div className="flex items-center gap-2.5 p-4.5 bg-transparent shrink-0">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
-                      <CliPadLogo size={20} className="text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-sm text-slate-900 dark:text-white leading-none">Orbit AI</h3>
-                      <span className="text-[10px] text-slate-400 mt-1 block">Executive synthesis</span>
-                    </div>
-                    {isSynthesizing && (
-                      <div className="ml-auto flex items-center gap-1.5 text-[11px] text-primary font-medium">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                        Thinking
+                  <div className="flex items-center justify-between p-4.5 bg-transparent shrink-0">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
+                        <CliPadLogo size={20} className="text-primary" />
                       </div>
-                    )}
+                      <div>
+                        <h3 className="font-semibold text-sm text-slate-900 dark:text-white leading-none">Orbit AI</h3>
+                        <span className="text-[10px] text-slate-400 mt-1 block">Executive synthesis</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {isSynthesizing && (
+                        <div className="flex items-center gap-1.5 text-[11px] text-primary font-medium">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                          Thinking
+                        </div>
+                      )}
+                      <button
+                        onClick={handleNewSearch}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-650 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-white/10 transition-all shadow-sm active:scale-95"
+                      >
+                        <Plus className="w-3.5 h-3.5 text-primary" />
+                        New Search
+                      </button>
+                    </div>
                   </div>
 
                   {/* AI Content (Scrollable message area) */}
