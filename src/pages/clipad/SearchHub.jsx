@@ -566,55 +566,47 @@ export default function SearchHub() {
                   </div>
 
                   {/* AI Content (Scrollable message area) */}
-                  <div className="flex-1 overflow-y-auto p-5 space-y-4 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-white/10">
-                    {isSynthesizing && chatHistory.length === 0 ? (
-                      <div className="space-y-3 py-4 animate-pulse">
-                        <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-full" />
-                        <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-4/5" />
-                        <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-3/4" />
-                        <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-full mt-2" />
-                        <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-2/3" />
-                      </div>
-                    ) : (
-                      <>
-                        {chatHistory.map((msg, i) => (
-                          <div key={i} className="w-full">
-                            {msg.role === 'user' ? (
-                              <div className="flex justify-end w-full mb-5 pr-2">
-                                <div className="max-w-[75%] bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-4.5 py-3 rounded-2xl shadow-sm text-[14px] leading-relaxed">
-                                  {msg.content}
+                  <div className="flex-1 overflow-y-auto p-5 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-white/10">
+                    <div className="max-w-2xl mx-auto w-full space-y-6 py-4">
+                      {isSynthesizing && chatHistory.length === 0 ? (
+                        <div className="space-y-3 py-4 animate-pulse">
+                          <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-full" />
+                          <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-4/5" />
+                          <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-3/4" />
+                          <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-full mt-2" />
+                          <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-2/3" />
+                        </div>
+                      ) : (
+                        <>
+                          {chatHistory.map((msg, i) => (
+                            <div key={i} className="w-full">
+                              {msg.role === 'user' ? (
+                                <div className="flex justify-end w-full mb-2">
+                                  <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-4.5 py-2.5 rounded-2xl text-[14px] leading-relaxed shadow-sm">
+                                    {msg.content}
+                                  </div>
                                 </div>
-                              </div>
-                            ) : (
-                              <div className="flex items-start gap-4 justify-start w-full mb-6 pl-2">
-                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border border-primary/25">
-                                  <CliPadLogo size={18} className="text-primary" />
-                                </div>
-                                <div className="flex-1 text-[14px] leading-relaxed text-slate-800 dark:text-slate-200">
-                                  <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-slate-900 prose-pre:text-slate-100 text-[14px]">
+                              ) : (
+                                <div className="w-full text-[14.5px] leading-relaxed text-slate-800 dark:text-slate-200">
+                                  <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-slate-900 prose-pre:text-slate-100 text-[14.5px]">
                                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                                   </div>
                                 </div>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                        {/* Bouncing dots thinking bubble */}
-                        {isSynthesizing && chatHistory[chatHistory.length - 1]?.role === 'user' && (
-                          <div className="flex items-start gap-4 justify-start w-full mb-6 pl-2 animate-in fade-in duration-200">
-                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border border-primary/25">
-                              <CliPadLogo size={18} className="text-primary animate-pulse" />
+                              )}
                             </div>
-                            <div className="flex items-center gap-1.5 py-2">
+                          ))}
+                          {/* Bouncing dots thinking indicator */}
+                          {isSynthesizing && chatHistory[chatHistory.length - 1]?.role === 'user' && (
+                            <div className="flex items-center gap-1.5 py-3 w-full animate-in fade-in duration-200">
                               <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '0ms' }} />
                               <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '150ms' }} />
                               <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '300ms' }} />
                             </div>
-                          </div>
-                        )}
-                        <div ref={chatBottomRef} />
-                      </>
-                    )}
+                          )}
+                          <div ref={chatBottomRef} />
+                        </>
+                      )}
+                    </div>
                   </div>
 
                   {/* Floating ChatGPT-like Input Form at bottom */}
