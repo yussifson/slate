@@ -356,6 +356,11 @@ export const AuthProvider = ({ children }) => {
                     await supabase.from('companies').insert(newCompany);
                     await powerSync.execute(`INSERT INTO companies (id, name, subdomain) VALUES (?, ?, ?)`, [newCompany.id, newCompany.name, newCompany.subdomain]);
                     finalCompanyId = newCompanyId;
+                    
+                    // Crucial: Update Auth metadata so the session immediately reflects the new company_id
+                    await supabase.auth.updateUser({
+                      data: { company_id: newCompanyId, role: finalRole }
+                    });
                 } catch (e) {
                     console.warn('[AuthContext] Failed to auto-create personal workspace:', e);
                 }
