@@ -2,7 +2,7 @@ import { supabase} from '@/api/supabaseClient';
 import { useTranslation} from "react-i18next";
 import React, { useState, useEffect} from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
@@ -467,9 +467,15 @@ export default function SignUp() {
 
   <div className="text-center mt-10">
     <span className="text-sm text-slate-500 font-medium tracking-[0.04em]">{t("already_have_an_account", "Already have an account?")} </span>
-    <Link to="/login" className="text-sm font-semibold text-primary hover:underline tracking-[0.04em]">
-      {t("sign_in", "Sign In")}
-    </Link>
+    {isElectron ? (
+      <Button variant="link" onClick={() => navigate('/login')} className="text-sm font-semibold text-primary p-0 h-auto hover:underline tracking-[0.04em]">
+        {t("sign_in", "Sign In")}
+      </Button>
+    ) : (
+      <a href="/login" className="text-sm font-semibold text-primary hover:underline tracking-[0.04em]">
+        {t("sign_in", "Sign In")}
+      </a>
+    )}
   </div>
  </div>
  </div>

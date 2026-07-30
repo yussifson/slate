@@ -339,13 +339,43 @@ export const AuthProvider = ({ children }) => {
         }
 
         if (!PORTAL_ROLES.includes(invitedRole)) {
+            let finalCompanyId = invitedCompanyId;
+            let finalCompanyName = null;
+            let finalRole = invitedRole || 'company_admin'; // Make them admin of their own workspace
+
+            // Auto-create personal workspace if no company was invited
+            if (!finalCompanyId) {
+                finalCompanyName = 'Personal Workspace';
+                const newCompanyId = crypto.randomUUID();
+                const newCompany = {
+                    id: newCompanyId,
+                    name: finalCompanyName,
+                    subdomain: 'workspace-' + newCompanyId.split('-')[0]
+                };
+                try {
+                    await supabase.from('companies').insert(newCompany);
+                    await powerSync.execute(`INSERT INTO companies (id, name, subdomain) VALUES (?, ?, ?)`, [newCompany.id, newCompany.name, newCompany.subdomain]);
+                    finalCompanyId = newCompanyId;
+                } catch (e) {
+                    console.warn('[AuthContext] Failed to auto-create personal workspace:', e);
+                }
+            }
+
             const _payload = {
               id: sessionUser.id,
-              role: invitedRole || 'lawyer', // Default role for net-new independent signups
-              company_id: invitedCompanyId,
-              company_name: null,
+              role: finalRole,
+              company_id: finalCompanyId,
+              company_name: finalCompanyName,
               email: sessionUser.email?.toLowerCase() || null
             };
+            
+            // Sync to Supabase directly first to ensure database existence immediately
+            try {
+              await supabase.from('profiles').upsert(_payload, { onConflict: 'id' });
+            } catch (supaErr) {
+              console.warn('[AuthContext] Failed to insert profile to Supabase directly:', supaErr);
+            }
+
             const _keys = Object.keys(_payload);
             const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
             try {
@@ -364,16 +394,46 @@ export const AuthProvider = ({ children }) => {
               console.error("Failed to fetch new profile after insert.");
             }
         }
-      } else if (profile && !profile.company_id && sessionUser.user_metadata?.company_id) {
-        const { data: updatedProfile, error: updateError } = await supabase
-          .from('profiles')
-          .update({
-            company_id: sessionUser.user_metadata.company_id,
-            email: sessionUser.email?.toLowerCase() || profile.email || null})
-          .eq('id', sessionUser.id)
-          .select()
-          .single();
-        if (!updateError) profile = updatedProfile;
+      } else if (profile && !profile.company_id) {
+        if (sessionUser.user_metadata?.company_id) {
+          const { data: updatedProfile, error: updateError } = await supabase
+            .from('profiles')
+            .update({
+              company_id: sessionUser.user_metadata.company_id,
+              email: sessionUser.email?.toLowerCase() || profile.email || null})
+            .eq('id', sessionUser.id)
+            .select()
+            .single();
+          if (!updateError) profile = updatedProfile;
+        } else {
+          // Auto-repair legacy users with null company_id
+          const newCompanyId = crypto.randomUUID();
+          const newCompanyName = 'Personal Workspace';
+          try {
+              await supabase.from('companies').insert({
+                  id: newCompanyId,
+                  name: newCompanyName,
+                  subdomain: 'workspace-' + newCompanyId.split('-')[0]
+              });
+              const { data: updatedProfile, error: updateError } = await supabase
+                  .from('profiles')
+                  .update({
+                      company_id: newCompanyId,
+                      role: 'company_admin'
+                  })
+                  .eq('id', sessionUser.id)
+                  .select()
+                  .single();
+              
+              if (!updateError) {
+                profile = updatedProfile;
+                await powerSync.execute(`UPDATE profiles SET company_id = ?, role = ? WHERE id = ?`, [newCompanyId, 'company_admin', sessionUser.id]);
+                await powerSync.execute(`INSERT INTO companies (id, name, subdomain) VALUES (?, ?, ?)`, [newCompanyId, newCompanyName, 'workspace-' + newCompanyId.split('-')[0]]);
+              }
+          } catch (e) {
+              console.warn('[AuthContext] Failed to repair legacy user without workspace', e);
+          }
+        }
       }
 
       setAuthStep("Checking firm subdomain...");

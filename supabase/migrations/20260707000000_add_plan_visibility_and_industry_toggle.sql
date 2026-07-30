@@ -117,8 +117,9 @@ ON CONFLICT (industry_key) DO NOTHING;
 -- Drop existing plan visibility policy if exists
 DROP POLICY IF EXISTS "Plans viewable by everyone if visible" ON public.subscription_plans;
 
--- Add new policy that respects is_visible for non-super-admins
 ALTER TABLE public.subscription_plans ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Plans viewable based on visibility and role" ON public.subscription_plans;
 
 CREATE POLICY "Plans viewable based on visibility and role" 
     ON public.subscription_plans 
@@ -183,4 +184,5 @@ WHERE is_visible IS NULL;
 
 -- Make is_visible NOT NULL for data integrity
 ALTER TABLE public.subscription_plans
-ALTER COLUMN is_visible SET NOT NULL DEFAULT true;
+ALTER COLUMN is_visible SET DEFAULT true,
+ALTER COLUMN is_visible SET NOT NULL;

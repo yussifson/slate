@@ -88,64 +88,63 @@ input, textarea, [contenteditable="true"] {
   }
 
   .dark {
-    --bg-base-rgb-dark: 15, 23, 42;
+    --bg-base-rgb-dark: 15, 20, 32;
 
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
     ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
-    /* Primary Background: #0F172A */
-    --background: 222.2 47.4% 11.2%;
+    /* SaaSPO Style - Main Background #0F1420 */
+    --background: 222 36% 9.2%;
     
-    /* Text Primary: #F8FAFC */
-    --foreground: 210 40% 98%;
+    /* Primary White Typography #FFFFFF */
+    --foreground: 0 0% 100%;
     
-    /* Cards: #273549 */
-    --card: 215.3 30.2% 22%;
-    --card-foreground: 210 40% 98%;
-
-    /* Secondary Surface: #1E293B */
-    --popover: 217.2 32.6% 17.5%;
-    --popover-foreground: 210 40% 98%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Secondary Surface / Card Background #151c2d */
+    --card: 222 30% 13%;
+    --card-foreground: 0 0% 100%;
+    --popover: 222 36% 9.2%;
+    --popover-foreground: 0 0% 100%;
     
-    /* Primary Green: #22C55E */
-    --primary: 142.1 70.6% 45.3%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Brand Green Accent #0AF395 */
+    --primary: 156 92% 50%;
+    --primary-foreground: 222 36% 9.2%; /* Dark text on bright green */
     
-    /* Text Secondary: #CBD5E1 */
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 214.3 31.8% 82.4%;
+    /* Secondary Surface elements */
+    --secondary: 222 30% 13%;
+    --secondary-foreground: 0 0% 100%;
     
-    /* Borders: #334155 */
-    --accent: 215 25% 26.9%;
-    --accent-foreground: 210 40% 98%;
-    --border: 215 25% 26.9%;
-    --input: 215 25% 26.9%;
+    /* Secondary Text #A7B0BA */
+    --muted: 222 30% 13%;
+    --muted-foreground: 212 11% 69%;
     
-    /* Primary Green for focus rings */
-    --ring: 142.1 70.6% 45.3%;
+    /* Hover / Borders / Divider Color #222b3e */
+    --accent: 222 25% 18%;
+    --accent-foreground: 0 0% 100%;
     
-    /* Danger: #EF4444 */
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destructive Accents */
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
     
-    /* Charts using the new palette */
-    --chart-1: 142.1 70.6% 45.3%; /* Primary Green */
-    --chart-2: 217.2 91.2% 59.8%; /* Info: #3B82F6 */
-    --chart-3: 37.7 92.1% 50.2%;  /* Warning: #F59E0B */
-    --chart-4: 0 84.2% 60.2%;     /* Danger: #EF4444 */
-    --chart-5: 214.7 27.4% 65.3%; /* Muted Text: #94A3B8 */
+    /* Border / Divider Color #222b3e */
+    --border: 222 25% 18%;
+    --input: 222 25% 18%;
+    --ring: 156 92% 50%;
     
-    /* Sidebar matching the new palette */
-    --sidebar-background: 222.2 47.4% 11.2%;
-    --sidebar-foreground: 214.3 31.8% 82.4%;
-    --sidebar-primary: 142.1 70.6% 45.3%;
-    --sidebar-primary-foreground: 222.2 47.4% 11.2%;
-    --sidebar-accent: 217.2 32.6% 17.5%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 215 25% 26.9%;
-    --sidebar-ring: 142.1 70.6% 45.3%;
+    --chart-1: 156 92% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    
+    /* Sidebar matching the SaaSPO palette */
+    --sidebar-background: 222 36% 9.2%;
+    --sidebar-foreground: 212 11% 69%;
+    --sidebar-primary: 156 92% 50%;
+    --sidebar-primary-foreground: 213 29% 6%;
+    --sidebar-accent: 209 31% 16%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 209 31% 16%;
+    --sidebar-ring: 156 92% 50%;
   }
 }
 
