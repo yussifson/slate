@@ -48,7 +48,9 @@ const MODELS = {
 
 // ── Environment constants for production streaming ──
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SU/**
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+/**
  * Helper to make NON-STREAMING API requests to Cloudflare AI.
  * Used for background tasks (summaries, embeddings, entity extraction).
  */

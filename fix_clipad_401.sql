@@ -215,7 +215,7 @@ DO $$ BEGIN
     DROP POLICY IF EXISTS "clipad_org_events_insert" ON public.clipad_org_events;
     CREATE POLICY "clipad_org_events_select" ON public.clipad_org_events
       FOR SELECT TO authenticated USING (
-        workspace_id IN (SELECT company_id FROM profiles WHERE id = auth.uid())
+        workspace_id IN (SELECT company_id::uuid FROM profiles WHERE id = auth.uid())
         OR public.is_clipad_admin()
       );
     CREATE POLICY "clipad_org_events_insert" ON public.clipad_org_events
