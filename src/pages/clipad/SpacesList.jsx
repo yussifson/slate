@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { getPlanLimits, getUserPlan } from '@/lib/clipadPricing';
+import { useToast } from '@/components/ui/use-toast';
 
 import { 
   Plus, Users, Video, Clock, ArrowRight, Settings, 
@@ -23,11 +24,29 @@ const COLORS = [
   'from-violet-500 to-purple-500',
 ];
 
+// Helper: recover from a 401 by refreshing the session token, returns true if recovery succeeded
+async function trySessionRecovery() {
+  try {
+    const { data, error } = await supabase.auth.refreshSession();
+    if (error || !data?.session) {
+      console.warn('[SpacesList] Session refresh failed:', error?.message);
+      return false;
+    }
+    console.log('[SpacesList] Session refreshed successfully.');
+    return true;
+  } catch (e) {
+    console.warn('[SpacesList] Session refresh threw:', e);
+    return false;
+  }
+}
+
 export default function SpacesList() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [spaces, setSpaces] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(false);
   const [search, setSearch] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
@@ -36,10 +55,11 @@ export default function SpacesList() {
   const [isPrivate, setIsPrivate] = useState(false);
   const [creating, setCreating] = useState(false);
 
-  useEffect(() => { fetchSpaces(); }, []);
+  useEffect(() => { fetchSpaces(); }, [user?.id]);
 
   const fetchSpaces = async () => {
     setLoading(true);
+    setAuthError(false);
     if (!user?.id) { setLoading(false); return; }
 
     try {
@@ -48,30 +68,52 @@ export default function SpacesList() {
         .from('clipad_space_members')
         .select('space_id')
         .eq('user_id', user.id);
+
+      // 401 check on membership query — try session recovery
+      if (membershipRes.status === 401 || membershipRes.error?.status === 401) {
+        console.warn('[SpacesList] 401 on membership query — attempting session recovery...');
+        const recovered = await trySessionRecovery();
+        if (recovered) {
+          await refreshUser();
+          setLoading(false);
+          return; // AuthContext will trigger re-mount via user change
+        }
+        setAuthError(true);
+        setLoading(false);
+        return;
+      }
+
       const memberSpaceIds = new Set(membershipRes.data?.map(m => m.space_id) || []);
 
-      // Fetch ALL company spaces (public AND private) for discovery
-      // RLS allows this when the SELECT policy doesn't gate on privacy
-      let allSpaces = [];
+      // Always fetch spaces the user owns directly (works for all users regardless of company)
+      const { data: mySpaces, error: mySpacesError } = await supabase
+        .from('clipad_spaces')
+        .select('*')
+        .eq('created_by', user.id)
+        .order('created_at', { ascending: false });
+
+      if (mySpacesError?.status === 401) {
+        console.warn('[SpacesList] 401 on own spaces query — attempting session recovery...');
+        const recovered = await trySessionRecovery();
+        if (recovered) { await refreshUser(); setLoading(false); return; }
+        setAuthError(true);
+        setLoading(false);
+        return;
+      }
+
+      let allSpaces = mySpaces || [];
+
+      // Also fetch company spaces if the user has a company_id
       if (user.company_id) {
         const { data: companySpaces } = await supabase
           .from('clipad_spaces')
           .select('*')
           .eq('company_id', user.company_id)
           .order('created_at', { ascending: false });
-        allSpaces = companySpaces || [];
+        // Merge, deduplicate
+        const seen = new Set(allSpaces.map(s => s.id));
+        (companySpaces || []).forEach(s => { if (!seen.has(s.id)) { allSpaces.push(s); seen.add(s.id); } });
       }
-
-      // Also include spaces the user owns (in case company_id wasn't set on old ones)
-      const { data: mySpaces } = await supabase
-        .from('clipad_spaces')
-        .select('*')
-        .eq('created_by', user.id)
-        .order('created_at', { ascending: false });
-      
-      // Merge, deduplicate
-      const seen = new Set(allSpaces.map(s => s.id));
-      (mySpaces || []).forEach(s => { if (!seen.has(s.id)) { allSpaces.push(s); seen.add(s.id); } });
 
       // Tag each space: _isMember = has full access, _isRestricted = private & not a member
       const tagged = allSpaces.map(s => ({
@@ -80,7 +122,6 @@ export default function SpacesList() {
         _isRestricted: s.is_private && s.created_by !== user.id && !memberSpaceIds.has(s.id) && !isAdmin(user)
       }));
       tagged.sort((a, b) => {
-        // Accessible spaces first, then restricted
         if (a._isRestricted !== b._isRestricted) return a._isRestricted ? 1 : -1;
         return new Date(b.created_at) - new Date(a.created_at);
       });
@@ -114,7 +155,38 @@ export default function SpacesList() {
         is_private: isPrivate,
         company_id: user.company_id || null
       }).select().single();
-      if (error) throw error;
+
+      if (error) {
+        // Handle 401 specifically — attempt session recovery then retry once
+        if (error.status === 401 || error.code === 'PGRST301') {
+          console.warn('[SpacesList] 401 on createSpace — attempting session recovery...');
+          const recovered = await trySessionRecovery();
+          if (recovered) {
+            // Retry the insert with the refreshed session
+            const { data: retryData, error: retryError } = await supabase.from('clipad_spaces').insert({
+              name: newName.trim(),
+              description: newDesc.trim(),
+              created_by: user.id,
+              is_private: isPrivate,
+              company_id: user.company_id || null
+            }).select().single();
+            if (retryError) throw retryError;
+            setSpaces(prev => [retryData, ...prev]);
+            setShowCreate(false);
+            setNewName('');
+            setNewDesc('');
+            setIsPrivate(false);
+            navigate(`/spaces/${retryData.id}`);
+            return;
+          } else {
+            toast({ title: 'Session expired', description: 'Your session has expired. Please sign in again.', variant: 'destructive' });
+            navigate('/login');
+            return;
+          }
+        }
+        throw error;
+      }
+
       setSpaces(prev => [data, ...prev]);
       setShowCreate(false);
       setNewName('');
@@ -122,7 +194,12 @@ export default function SpacesList() {
       setIsPrivate(false);
       navigate(`/spaces/${data.id}`);
     } catch (err) {
-      console.error(err);
+      console.error('[SpacesList] createSpace error:', err);
+      toast({ 
+        title: 'Failed to create space', 
+        description: err.message || 'An unexpected error occurred. Please try again.',
+        variant: 'destructive' 
+      });
     } finally {
       setCreating(false);
     }

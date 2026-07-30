@@ -163,14 +163,26 @@ export const AuthProvider = ({ children }) => {
       
       // Optimization: If already authenticated with the same user ID and not forcing a refresh, return immediately.
       // This prevents redundant database queries and layout/sidebar flickering on window refocus.
+      // IMPORTANT: We still verify the Supabase session is live so we don't return with stale/expired credentials
+      // that would cause all API calls to fail with 401 Unauthorized.
       const currentUser = userRef.current;
       if (!forceRefresh && isAuthenticatedRef.current && currentUser && currentUser.id === sessionUser.id) {
-        setIsAuthenticated(true);
-        setAuthChecked(true);
-        setIsLoadingAuth(false);
-        isCheckingRef.current = false;
-        return;
+        // Quick session sanity check: ensure the stored token isn't expired
+        const tokenExpiresAt = sessionVal?.expires_at || sessionVal?.session?.expires_at;
+        const nowSecs = Math.floor(Date.now() / 1000);
+        const isSessionFresh = tokenExpiresAt && (tokenExpiresAt - nowSecs) > 60; // Has at least 60s left
+        
+        if (isSessionFresh) {
+          setIsAuthenticated(true);
+          setAuthChecked(true);
+          setIsLoadingAuth(false);
+          isCheckingRef.current = false;
+          return;
+        }
+        // If session is expiring soon or we can't verify, fall through to refresh full auth state
+        console.log('[AuthContext] Session near expiry, performing full auth refresh...');
       }
+
 
       setAuthStep("Fetching profile...");
       let profile = null;
