@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/api/supabaseClient";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
-import { AlertCircle } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 
 export default function GoogleCallback() {
@@ -10,7 +9,6 @@ export default function GoogleCallback() {
   useEffect(() => {
     const handleGoogleCallback = async () => {
       try {
-        // Google OIDC implicit flow puts tokens in the URL hash, e.g. #id_token=...&state=...
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const idToken = hashParams.get('id_token');
         const stateUrl = hashParams.get('state');
@@ -28,18 +26,28 @@ export default function GoogleCallback() {
         let continueUrl = '/';
         let nonce = undefined;
         
+        // Try retrieving raw nonce from sessionStorage first
+        try {
+          const storedNonce = sessionStorage.getItem('optavel_google_raw_nonce');
+          if (storedNonce) {
+            nonce = storedNonce;
+            sessionStorage.removeItem('optavel_google_raw_nonce');
+          }
+        } catch (e) {
+          console.warn("Could not read stored raw nonce:", e);
+        }
+
         if (stateUrl) {
           try {
             stateObj = JSON.parse(decodeURIComponent(stateUrl));
             continueUrl = stateObj.continue || '/';
-            nonce = stateObj.nonce;
+            if (!nonce) nonce = stateObj.nonce;
           } catch (e) {
-            // Fallback for old URL state format
             continueUrl = decodeURIComponent(stateUrl);
           }
         }
 
-        // Sign in to Supabase using the ID token and the matched nonce
+        // Sign in to Supabase using the ID token and nonce
         const { data, error: signInError } = await supabase.auth.signInWithIdToken({
           provider: 'google',
           token: idToken,
@@ -48,15 +56,17 @@ export default function GoogleCallback() {
 
         if (signInError) throw signInError;
 
-        // Redirect back to the subdomain that initiated the request, passing the new session tokens
+        // Redirect back to the initiating application or URL passing session tokens
         if (data?.session) {
           const hash = `#access_token=${data.session.access_token}&refresh_token=${data.session.refresh_token}`;
-          window.location.href = `${continueUrl}${hash}`;
+          const separator = continueUrl.includes('#') ? '&' : '#';
+          window.location.href = `${continueUrl}${separator}access_token=${data.session.access_token}&refresh_token=${data.session.refresh_token}`;
         } else {
           window.location.href = continueUrl;
         }
 
       } catch (err) {
+        console.error("[GoogleCallback] Error:", err);
         setError(err.message);
       }
     };
@@ -66,18 +76,18 @@ export default function GoogleCallback() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <div className="p-8 max-w-md w-full bg-card rounded-2xl shadow-xl border border-destructive/20 text-center">
           <div className="w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-destructive font-bold text-xl">!</span>
           </div>
-          <h2 className="text-lg font-bold text-foreground mb-2">Authentication Error</h2>
-          <p className="text-sm text-muted-foreground">{error}</p>
+          <h2 className="text-lg font-bold text-foreground mb-2">Google Authentication Failed</h2>
+          <p className="text-sm text-muted-foreground mb-6">{error}</p>
           <button 
-            onClick={() => window.location.href = '/'}
-            className="mt-6 w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+            onClick={() => window.location.href = '/login'}
+            className="w-full py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors text-sm font-semibold"
           >
-            Return Home
+            Return to Sign In
           </button>
         </div>
       </div>
@@ -85,14 +95,15 @@ export default function GoogleCallback() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-4 relative">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden text-center p-12">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-background p-4 relative">
+      <div className="w-full max-w-md bg-white dark:bg-card rounded-2xl shadow-sm border border-slate-200 dark:border-border overflow-hidden text-center p-12">
         <Logo className="w-12 h-12 mx-auto mb-6" />
         <OrbitLoader size="lg" />
-        <p className="mt-6 text-sm text-slate-500 font-medium animate-pulse">
-          Completing sign in...
+        <p className="mt-6 text-sm text-slate-500 dark:text-muted-foreground font-medium animate-pulse">
+          Completing Google Sign In...
         </p>
       </div>
     </div>
   );
 }
+

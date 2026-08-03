@@ -40,9 +40,12 @@ export default function SSOGateway() {
     try {
       const url = new URL(redirectUri);
       
-      // Basic security check
-      if (!url.hostname.endsWith('optavel.com') && url.hostname !== 'localhost' && url.hostname !== '127.0.0.1') {
-        throw new Error("Invalid redirect URI domain");
+      // Security check: allow all optavel.com domains, localhost, and 127.0.0.1
+      const isOptavel = url.hostname === 'optavel.com' || url.hostname.endsWith('.optavel.com');
+      const isLocal = url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname.endsWith('.localhost');
+      
+      if (!isOptavel && !isLocal) {
+        throw new Error("Unauthorized redirect URI domain");
       }
       
       setTargetHost(url.hostname);
