@@ -389,6 +389,7 @@ export default function Parents() {
         title="Remove Parent" 
         message="Are you sure you want to permanently remove this parent record? This cannot be undone." 
       />
+      </div>
     </div>
   );
 }

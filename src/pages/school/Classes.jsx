@@ -307,6 +307,7 @@ export default function Classes() {
         title="Delete Class" 
         message="Are you sure you want to permanently delete this class? This cannot be undone." 
       />
+      </div>
     </div>
   );
 }
