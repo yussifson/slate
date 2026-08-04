@@ -153,38 +153,41 @@ export default function Parents() {
   };
 
   return (
-    <div className="space-y-6 font-dmsans p-4 bg-[#F0F4FF] dark:bg-blue-900/20 min-h-screen">
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 bg-[#1E3A8A] p-8 border-4 border-blue-900 text-white shadow-lg">
-        <div>
-          <h1 className="text-4xl font-black uppercase tracking-widest border-b-4 border-blue-400 inline-block pb-2 mb-4">Parents & Guardians</h1>
-          <p className="text-blue-200 font-semibold uppercase tracking-wider">Manage emergency contacts and relationships</p>
-        </div>
-        <div className="flex gap-6">
-          <div className="text-right">
-            <p className="text-sm font-black text-blue-300 uppercase tracking-widest">Total</p>
-            <p className="text-4xl font-black">{parents.length}</p>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans text-slate-900 dark:text-slate-50 p-8">
+      <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Parents & Guardians</h1>
+            <p className="text-slate-500 mt-1">Manage emergency contacts and relationships</p>
           </div>
-          <div className="text-right border-l-2 border-blue-700 pl-6">
-            <p className="text-sm font-black text-blue-300 uppercase tracking-widest">Linked</p>
-            <p className="text-4xl font-black">{parentsLinkedToStudentsCount}</p>
+          <div className="flex items-center gap-4">
+            <div className="text-right hidden md:block border-r border-slate-200 pr-4">
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total</p>
+              <p className="text-lg font-bold text-slate-900">{parents.length}</p>
+            </div>
+            <div className="text-right hidden md:block">
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Linked</p>
+              <p className="text-lg font-bold text-slate-900">{parentsLinkedToStudentsCount}</p>
+            </div>
           </div>
         </div>
-      </motion.div>
 
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white border-2 border-blue-200 p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="relative flex-1 w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-500" />
-          <Input 
-            placeholder="Search by name, phone, or child..." 
-            value={search} 
-            onChange={e => setSearch(e.target.value)} 
-            className="pl-10 bg-[#F0F4FF] dark:bg-blue-900/20 border-blue-200 focus-visible:ring-blue-500 font-semibold text-blue-900 h-12 rounded-none" 
-          />
+        <div className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+          <div className="relative flex-1 w-full max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input 
+              placeholder="Search by name, phone, or child..." 
+              value={search} 
+              onChange={e => setSearch(e.target.value)} 
+              className="pl-9 bg-slate-50 border-slate-200 shadow-sm transition-colors focus:bg-white"
+            />
+          </div>
+          <Button onClick={handleOpenAdd} className="bg-slate-900 hover:bg-slate-800 text-white shadow-sm w-full md:w-auto">
+            <UserPlus className="w-4 h-4 mr-2" />
+            Add Parent
+          </Button>
         </div>
-        <Button onClick={handleOpenAdd} className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-md border-2 border-emerald-900 rounded-none font-black uppercase tracking-widest h-12 px-6">
-          <UserPlus className="w-5 h-5 mr-2" /> Add Parent
-        </Button>
-      </motion.div>
 
       {isParentsLoading ? (
         <div className="flex items-center justify-center py-20 text-blue-800 font-bold uppercase tracking-widest animate-pulse">Loading Parents...</div>

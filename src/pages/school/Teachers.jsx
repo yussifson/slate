@@ -8,7 +8,7 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import ModalForm from '@/components/school/ModalForm';
-import PageHeader from '@/components/school/PageHeader';
+
 import StatCard from '@/components/school/StatCard';
 import { motion } from 'framer-motion';
 
@@ -173,26 +173,19 @@ export default function Teachers() {
   ];
 
   return (
-    <div className="school-theme-root min-h-screen bg-[#FCFAF7] dark:bg-zinc-950 font-outfit text-[#1F1E1C] dark:text-zinc-50 p-6">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans text-slate-900 dark:text-slate-50 p-8">
       <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         
-        <PageHeader
-          icon={Users}
-          title="Staff Directory"
-          subtitle="Manage teachers and school staff records"
-          metric={stats.total}
-          metricLabel="Total Staff"
-          actions={[
-            <Button
-              key="add"
-              onClick={handleAddNew}
-              className="bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02] shadow-[0_4px_12px_rgba(99,102,241,0.15)]"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Staff
-            </Button>
-          ]}
-        />
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Staff Directory</h1>
+            <p className="text-slate-500 mt-1">Manage teachers and school staff records</p>
+          </div>
+          <Button onClick={handleAddNew} className="bg-slate-900 hover:bg-slate-800 text-white shadow-sm">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Staff
+          </Button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatCard

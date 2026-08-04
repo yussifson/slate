@@ -135,34 +135,36 @@ export default function Classes() {
   };
 
   return (
-    <div className="school-theme-root space-y-6 font-outfit p-6 bg-[#FCFAF7] dark:bg-zinc-950 min-h-screen text-[#1F1E1C] dark:text-zinc-50">
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] p-8 text-[#1F1E1C] dark:text-zinc-50 shadow-sm">
-        <div>
-          <h1 className="text-4xl font-black uppercase tracking-widest border-b-4 border-orange-400 inline-block pb-2 mb-4">Classes & Cohorts</h1>
-          <p className="text-muted-foreground font-semibold uppercase tracking-wider">Manage class configurations and capacities</p>
-        </div>
-        <div className="flex gap-6">
-          <div className="text-right">
-            <p className="text-sm font-black text-indigo-600 uppercase tracking-widest">Total Classes</p>
-            <p className="text-4xl font-black">{classes.length}</p>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans text-slate-900 dark:text-slate-50 p-8">
+      <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Classes & Cohorts</h1>
+            <p className="text-slate-500 mt-1">Manage class configurations and capacities</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="text-right hidden md:block">
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Classes</p>
+              <p className="text-lg font-bold text-slate-900">{classes.length}</p>
+            </div>
           </div>
         </div>
-      </motion.div>
 
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white border-2 border-emerald-200 p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="relative flex-1 w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-500" />
-          <Input 
-            placeholder="Search classes or teachers..." 
-            value={search} 
-            onChange={e => setSearch(e.target.value)} 
-            className="pl-10 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 h-12" 
-          />
+        <div className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+          <div className="relative flex-1 w-full max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input 
+              placeholder="Search classes or teachers..." 
+              value={search} 
+              onChange={e => setSearch(e.target.value)} 
+              className="pl-9 bg-slate-50 border-slate-200 shadow-sm transition-colors focus:bg-white"
+            />
+          </div>
+          <Button onClick={handleOpenAdd} className="bg-slate-900 hover:bg-slate-800 text-white shadow-sm w-full md:w-auto">
+            <Plus className="w-4 h-4 mr-2" /> Add Class
+          </Button>
         </div>
-        <Button onClick={handleOpenAdd} className="bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02] shadow-[0_4px_12px_rgba(99,102,241,0.15)]">
-          <Plus className="w-5 h-5 mr-2" /> New Class
-        </Button>
-      </motion.div>
 
       {isClassesLoading ? (
         <div className="flex items-center justify-center py-20 text-emerald-800 font-bold uppercase tracking-widest animate-pulse">Loading Classes...</div>
