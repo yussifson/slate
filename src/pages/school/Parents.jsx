@@ -154,7 +154,6 @@ export default function Parents() {
   };
 
   return (
-  return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-6xl mx-auto">
         
