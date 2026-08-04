@@ -11,7 +11,7 @@ export default function PageHeader({
 }) {
   return (
     <motion.div 
-      className="relative overflow-hidden rounded-[2rem] bg-gradient-to-r from-violet-600 via-indigo-600 to-orange-500 p-8 text-white mb-8 shadow-xl shadow-indigo-500/10"
+      className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 p-8 text-white mb-8"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -30,7 +30,7 @@ export default function PageHeader({
             </div>
             <div>
               <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-              <p className="text-violet-100 text-sm mt-1">{subtitle}</p>
+              <p className="text-emerald-100 text-sm mt-1">{subtitle}</p>
             </div>
           </div>
         </div>

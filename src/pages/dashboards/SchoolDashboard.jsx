@@ -16,8 +16,7 @@ import {
   ArrowRight,
   TrendingUp,
   Activity,
-  Presentation,
-  Plus
+  Presentation
 } from "lucide-react";
 
 import { useIndustryRecords } from '@/hooks/useIndustryData';
@@ -26,35 +25,19 @@ import { useAuth } from "@/lib/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-function StatCard({ icon: IconComp, label, value, sub, color = "indigo", onClick, trend }) {
-  const colorMap = {
-    indigo: { bg: "bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400", border: "border-indigo-100/50" },
-    emerald: { bg: "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400", border: "border-emerald-100/50" },
-    orange: { bg: "bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400", border: "border-orange-100/50" },
-    rose: { bg: "bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400", border: "border-rose-100/50" }
-  };
-  const theme = colorMap[color] || colorMap.indigo;
-
+function StatCard({ icon: IconComp, label, value, sub, color = "bg-slate-50 dark:bg-secondary/50 text-primary", onClick }) {
   return (
     <div 
       onClick={onClick}
-      className={`bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.015)] p-6 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.03)] transition-all duration-300 flex flex-col justify-between min-h-[160px] relative overflow-hidden group ${onClick ? 'cursor-pointer' : ''}`}
+      className={`bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 ${onClick ? 'cursor-pointer' : ''}`}
     >
-      <div className="flex items-center justify-between">
-        <div className={`w-12 h-12 rounded-[1.25rem] flex items-center justify-center ${theme.bg}`}>
-          <IconComp className="w-6 h-6" />
-        </div>
-        {trend && (
-          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-full flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" />
-            {trend}
-          </span>
-        )}
+      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${color}`}>
+        <IconComp className="w-6 h-6" />
       </div>
-      <div className="mt-4">
-        <p className="text-sm font-semibold text-zinc-400 dark:text-zinc-500 tracking-tight">{label}</p>
-        <p className="text-3xl font-bold text-[#1F1E1C] dark:text-zinc-50 tracking-[-0.03em] mt-1">{value}</p>
-        {sub && <p className="text-xs text-zinc-400 mt-1 font-medium">{sub}</p>}
+      <div>
+        <p className="text-3xl font-bold text-foreground tracking-[-0.03em]">{value}</p>
+        <p className="text-sm font-medium text-muted-foreground tracking-tight mt-0.5">{label}</p>
+        {sub && <p className="text-xs text-muted-foreground/70 mt-1">{sub}</p>}
       </div>
     </div>
   );
@@ -90,7 +73,7 @@ export default function SchoolDashboard() {
     let totalPct = 0;
     todayAttendance.forEach(att => {
       const present = parseFloat(att.data?.present_count) || 0;
-      const total = parseFloat(att.data?.total_count) || 1;
+      const total = parseFloat(att.data?.total_count) || 1; // avoid div by 0
       totalPct += (present / total);
     });
     attendanceAvg = Math.round((totalPct / todayAttendance.length) * 100);
@@ -128,239 +111,229 @@ export default function SchoolDashboard() {
     .slice(0, 5);
 
   return (
-    <div className="school-theme-root space-y-8 school-page-enter font-outfit max-w-7xl mx-auto pb-16 px-4 sm:px-6">
+    <div className="school-theme-root space-y-8 school-page-enter font-outfit max-w-7xl mx-auto pb-12">
       {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-r from-indigo-600 via-purple-600 to-orange-500 p-8 sm:p-10 text-white shadow-xl shadow-indigo-500/10">
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-700 p-8 sm:p-10 text-white shadow-2xl shadow-purple-500/20">
         <div className="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl mix-blend-overlay pointer-events-none" />
-        <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-64 h-64 bg-indigo-900 opacity-20 rounded-full blur-2xl mix-blend-overlay pointer-events-none" />
+        <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-64 h-64 bg-violet-900 opacity-20 rounded-full blur-2xl mix-blend-overlay pointer-events-none" />
         
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <div className="flex items-center gap-3.5 mb-3">
-              <div className="p-2.5 bg-white/15 rounded-2xl backdrop-blur-md border border-white/20">
-                <GraduationCap className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2.5 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20">
+                <GraduationCap className="w-6 h-6 text-purple-100" />
               </div>
-              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">School Management System</h1>
+              <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Academic Portal</h1>
             </div>
-            <p className="text-indigo-100 text-lg font-medium">Welcome back, {user?.email?.split('@')[0] || 'Administrator'} ✨</p>
-            <div className="mt-6 flex items-center gap-4 text-sm font-semibold text-indigo-100/90">
-              <span className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                <Calendar className="w-4 h-4 opacity-80" />
+            <p className="text-purple-100 text-lg font-medium tracking-wide">Welcome back! Here's your school overview.</p>
+            <div className="mt-6 flex items-center gap-4 text-sm font-medium text-purple-100/80">
+              <span className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 opacity-70" />
                 {format(today, "EEEE, MMMM d, yyyy")}
               </span>
             </div>
           </div>
           
-          <div className="flex gap-3">
-            <Button onClick={() => navigate('/school-attendance')} className="gap-2 bg-white text-indigo-900 hover:bg-indigo-50 font-bold rounded-full px-5 py-2.5 shadow-lg border-0 transition-transform hover:scale-[1.02]">
-              <CheckSquare className="w-4 h-4" />
-              Take Attendance
-            </Button>
-            <Button onClick={() => navigate('/school-students')} className="gap-2 bg-indigo-900/40 text-white hover:bg-indigo-900/60 font-bold rounded-full px-5 py-2.5 shadow-lg border border-white/25 transition-transform hover:scale-[1.02]">
-              <Plus className="w-4 h-4" />
-              Add Student
-            </Button>
+          <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 shadow-inner">
+            <div className="text-right">
+              <p className="text-xs text-purple-200 font-bold uppercase tracking-wider mb-1">Term Status</p>
+              <div className="flex items-center gap-2 text-sm font-bold text-white">
+                <span className="w-2.5 h-2.5 rounded-full bg-purple-400 animate-pulse shadow-[0_0_12px_rgba(192,132,252,0.8)]" />
+                In Session
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         <StatCard 
           icon={Users} 
-          label="Total Enrolled" 
+          label="Total Students" 
           value={totalStudents} 
-          sub={`${activeStudents} active students`}
-          color="indigo" 
-          trend="+11%"
+          sub={`${activeStudents} Active`}
+          color="bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" 
           onClick={() => navigate('/school-students')}
         />
         <StatCard 
           icon={BookOpen} 
-          label="Active School (Classes)" 
+          label="Total Classes" 
           value={totalClasses} 
-          sub="Configured classroom rooms"
-          color="orange" 
-          trend="+3%"
+          color="bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400" 
           onClick={() => navigate('/school-classes')}
         />
         <StatCard 
-          icon={DollarSign} 
-          label="Fee Revenue" 
-          value={`$${feesCollected.toLocaleString()}`} 
-          sub={`$${feesOutstanding.toLocaleString()} outstanding`}
-          color="emerald" 
-          trend="+8%"
-          onClick={() => navigate('/school-fees')}
+          icon={Presentation} 
+          label="Teachers" 
+          value={totalTeachers} 
+          color="bg-pink-50 text-pink-600 dark:bg-pink-500/10 dark:text-pink-400" 
+          onClick={() => navigate('/school-teachers')}
         />
         <StatCard 
-          icon={Presentation} 
-          label="Staff" 
-          value={totalTeachers} 
-          sub="Assigned teachers & staff"
-          color="rose" 
-          trend="+4%"
-          onClick={() => navigate('/school-teachers')}
+          icon={Award} 
+          label="Attendance" 
+          value={todayAttendance.length > 0 ? `${attendanceAvg}%` : '-'} 
+          sub="Today's Average"
+          color="bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" 
+        />
+        <StatCard 
+          icon={DollarSign} 
+          label="Fees Collected" 
+          value={`$${feesCollected.toLocaleString()}`} 
+          color="bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" 
+        />
+        <StatCard 
+          icon={TrendingUp} 
+          label="Outstanding" 
+          value={`$${feesOutstanding.toLocaleString()}`} 
+          color="bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400" 
         />
       </div>
 
-      {/* Main Dashboard Layout Columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Quick Actions */}
+      <div className="flex flex-wrap gap-4 items-center">
+        <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mr-2">Quick Actions</h3>
+        <Button asChild variant="outline" className="bg-white dark:bg-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-700 text-[#1F1E1C] dark:text-zinc-50 border border-[#E4DFD5] dark:border-zinc-700 rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02]">
+          <Link to="/school-attendance">
+            <CheckSquare className="w-4 h-4 mr-2" />
+            Take Attendance
+          </Link>
+        </Button>
+        <Button asChild variant="outline" className="bg-white dark:bg-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-700 text-[#1F1E1C] dark:text-zinc-50 border border-[#E4DFD5] dark:border-zinc-700 rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02]">
+          <Link to="/school-students">
+            <PlusCircle className="w-4 h-4 mr-2" />
+            Add Student
+          </Link>
+        </Button>
+        <Button asChild variant="outline" className="bg-white dark:bg-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-700 text-[#1F1E1C] dark:text-zinc-50 border border-[#E4DFD5] dark:border-zinc-700 rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02]">
+          <Link to="/school-fees">
+            <DollarSign className="w-4 h-4 mr-2" />
+            Record Payment
+          </Link>
+        </Button>
+        <Button asChild variant="outline" className="bg-white dark:bg-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-700 text-[#1F1E1C] dark:text-zinc-50 border border-[#E4DFD5] dark:border-zinc-700 rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02]">
+          <Link to="/school-notices">
+            <Bell className="w-4 h-4 mr-2" />
+            Post Notice
+          </Link>
+        </Button>
+      </div>
+
+      {/* Enrollment & Two Columns */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Left Columns (SaaS Charts and Notice Board) */}
-        <div className="lg:col-span-2 space-y-8">
-          
-          {/* Fee Collection Visual bar list (Mimics Revenue Chart) */}
-          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.015)] p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-bold text-[#1F1E1C] dark:text-zinc-50 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                Fee Collection Overview (USD)
-              </h3>
-              <span className="text-xs font-semibold text-zinc-400 uppercase tracking-widest bg-zinc-50 dark:bg-zinc-800 px-3 py-1 rounded-full">Monthly Revenue Trend</span>
-            </div>
-            
-            {/* Visual Micro Chart Grid */}
-            <div className="flex items-end justify-between gap-3 h-48 px-2 pt-6 border-b border-[#F0EBE1] dark:border-zinc-800/80">
-              <div className="flex flex-col items-center flex-1 group">
-                <div className="w-full bg-indigo-100 dark:bg-indigo-950/40 rounded-t-lg h-12 group-hover:bg-indigo-600 transition-colors duration-300" />
-                <span className="text-[10px] font-bold text-zinc-400 mt-2">Sep</span>
-              </div>
-              <div className="flex flex-col items-center flex-1 group">
-                <div className="w-full bg-indigo-100 dark:bg-indigo-950/40 rounded-t-lg h-20 group-hover:bg-indigo-600 transition-colors duration-300" />
-                <span className="text-[10px] font-bold text-zinc-400 mt-2">Oct</span>
-              </div>
-              <div className="flex flex-col items-center flex-1 group">
-                <div className="w-full bg-indigo-100 dark:bg-indigo-950/40 rounded-t-lg h-28 group-hover:bg-indigo-600 transition-colors duration-300" />
-                <span className="text-[10px] font-bold text-zinc-400 mt-2">Nov</span>
-              </div>
-              <div className="flex flex-col items-center flex-1 group">
-                <div className="w-full bg-indigo-100 dark:bg-indigo-950/40 rounded-t-lg h-36 group-hover:bg-indigo-600 transition-colors duration-300" />
-                <span className="text-[10px] font-bold text-zinc-400 mt-2">Dec</span>
-              </div>
-              <div className="flex flex-col items-center flex-1 group">
-                <div className="w-full bg-indigo-100 dark:bg-indigo-950/40 rounded-t-lg h-16 group-hover:bg-indigo-600 transition-colors duration-300" />
-                <span className="text-[10px] font-bold text-zinc-400 mt-2">Jan</span>
-              </div>
-              <div className="flex flex-col items-center flex-1 group">
-                <div className="w-full bg-gradient-to-t from-indigo-600 to-indigo-500 rounded-t-lg h-44" />
-                <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 mt-2">Feb</span>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4 mt-6">
-              <div className="p-4 bg-[#FCFAF7] dark:bg-zinc-800/30 rounded-2xl border border-[#F0EBE1] dark:border-zinc-800">
-                <p className="text-xs font-semibold text-zinc-400 uppercase">Total Collected</p>
-                <p className="text-2xl font-bold text-emerald-600 mt-1">${feesCollected.toLocaleString()}</p>
-              </div>
-              <div className="p-4 bg-[#FCFAF7] dark:bg-zinc-800/30 rounded-2xl border border-[#F0EBE1] dark:border-zinc-800">
-                <p className="text-xs font-semibold text-zinc-400 uppercase">Outstanding Balance</p>
-                <p className="text-2xl font-bold text-rose-600 mt-1">${feesOutstanding.toLocaleString()}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* School Distribution Levels */}
-          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.015)] p-6">
-            <h3 className="text-lg font-bold text-[#1F1E1C] dark:text-zinc-50 flex items-center gap-2 mb-6">
-              <Activity className="w-5 h-5 text-orange-600 dark:text-orange-400" />
-              School Distribution
+        {/* Left Col: Enrollment + Notices */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Enrollment by Level */}
+          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 p-6">
+            <h3 className="text-sm font-bold flex items-center gap-2 mb-4">
+              <Activity className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              Enrollment by Level
             </h3>
-            <div className="grid grid-cols-3 gap-6">
-              <div className="bg-[#FCFAF7] dark:bg-zinc-800/30 border border-[#F0EBE1] dark:border-zinc-800/80 rounded-2xl p-5 text-center">
-                <p className="text-3xl font-bold text-[#1F1E1C] dark:text-zinc-50">{kgCount}</p>
-                <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mt-1.5">KG Students</p>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 text-center">
+                <p className="text-2xl font-bold">{kgCount}</p>
+                <p className="text-xs text-muted-foreground uppercase font-semibold mt-1">KG</p>
               </div>
-              <div className="bg-[#FCFAF7] dark:bg-zinc-800/30 border border-[#F0EBE1] dark:border-zinc-800/80 rounded-2xl p-5 text-center">
-                <p className="text-3xl font-bold text-[#1F1E1C] dark:text-zinc-50">{primaryCount}</p>
-                <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mt-1.5">Primary Students</p>
+              <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 text-center">
+                <p className="text-2xl font-bold">{primaryCount}</p>
+                <p className="text-xs text-muted-foreground uppercase font-semibold mt-1">Primary</p>
               </div>
-              <div className="bg-[#FCFAF7] dark:bg-zinc-800/30 border border-[#F0EBE1] dark:border-zinc-800/80 rounded-2xl p-5 text-center">
-                <p className="text-3xl font-bold text-[#1F1E1C] dark:text-zinc-50">{jhsCount}</p>
-                <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mt-1.5">JHS Students</p>
+              <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 text-center">
+                <p className="text-2xl font-bold">{jhsCount}</p>
+                <p className="text-xs text-muted-foreground uppercase font-semibold mt-1">JHS</p>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Right Side Column (Notices and Exams) */}
-        <div className="space-y-8">
-          
           {/* Recent Notices */}
-          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.015)] overflow-hidden flex flex-col">
-            <div className="p-6 border-b border-[#F0EBE1] dark:border-zinc-800 flex justify-between items-center bg-[#FAF8F5] dark:bg-zinc-800/40">
+          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 flex flex-col min-h-[300px]">
+            <div className="p-6 border-b border-border/50 flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <Bell className="w-5 h-5 text-amber-500" />
-                <h3 className="text-base font-bold text-[#1F1E1C] dark:text-zinc-50">Recent Notices</h3>
+                <Bell className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                <h3 className="text-sm font-bold">Recent Notices</h3>
               </div>
-              <Link to="/school-notices" className="text-xs font-bold text-indigo-600 hover:text-indigo-700">View All</Link>
+              <Button asChild variant="ghost" size="sm">
+                <Link to="/school-notices">View All</Link>
+              </Button>
             </div>
-            <div className="divide-y divide-[#F0EBE1] dark:divide-zinc-800/50">
+            <div className="divide-y divide-border/50 flex-1">
               {recentNotices.length === 0 ? (
-                <div className="p-8 text-center text-sm text-zinc-400">No recent notices posted</div>
+                <div className="p-5 text-center text-sm text-muted-foreground">No recent notices</div>
               ) : recentNotices.map(notice => (
-                <div key={notice.id} className="p-5 hover:bg-[#FCFAF7]/50 dark:hover:bg-zinc-800/20 transition-colors">
-                  <p className="text-sm font-semibold text-[#1F1E1C] dark:text-zinc-100">{notice.data?.title}</p>
-                  <p className="text-xs text-zinc-400 mt-1 line-clamp-2">{notice.data?.content}</p>
-                  <span className="text-[10px] font-bold text-zinc-400 mt-2.5 block">
-                    {format(new Date(notice.created_at), "MMM d, yyyy")}
-                  </span>
-                </div>
-              ))}
+                  <div key={notice.id} className="px-6 py-4">
+                    <p className="text-sm font-bold">{notice.data?.title || 'Notice'}</p>
+                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{notice.data?.content}</p>
+                    <p className="text-[10px] text-muted-foreground/70 mt-2">
+                      {format(new Date(notice.created_at), "MMM d, yyyy")}
+                    </p>
+                  </div>
+                ))}
             </div>
           </div>
-
-          {/* Upcoming Exams */}
-          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.015)] overflow-hidden flex flex-col">
-            <div className="p-6 border-b border-[#F0EBE1] dark:border-zinc-800 flex items-center gap-2 bg-[#FAF8F5] dark:bg-zinc-800/40">
-              <Award className="w-5 h-5 text-violet-500" />
-              <h3 className="text-base font-bold text-[#1F1E1C] dark:text-zinc-50">Upcoming Exams</h3>
-            </div>
-            <div className="divide-y divide-[#F0EBE1] dark:divide-zinc-800/50">
-              {upcomingExams.slice(0, 4).length === 0 ? (
-                <div className="p-8 text-center text-sm text-zinc-400">No upcoming exam sessions</div>
-              ) : upcomingExams.slice(0, 4).map(exam => (
-                <div key={exam.id} className="p-5 flex justify-between items-center hover:bg-[#FCFAF7]/50 dark:hover:bg-zinc-800/20 transition-colors">
-                  <div>
-                    <p className="text-sm font-semibold text-[#1F1E1C] dark:text-zinc-100">{exam.data?.subject || exam.data?.name}</p>
-                    <p className="text-xs text-zinc-400 mt-0.5">{exam.data?.class_names?.join(', ') || 'All Classes'}</p>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xs font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 px-2.5 py-1 rounded-full">
-                      {exam.data?.date ? format(new Date(exam.data?.date), "MMM d") : 'TBD'}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Recent Registrations */}
-          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.015)] overflow-hidden flex flex-col">
-            <div className="p-6 border-b border-[#F0EBE1] dark:border-zinc-800 flex items-center gap-2 bg-[#FAF8F5] dark:bg-zinc-800/40">
-              <Users className="w-5 h-5 text-orange-500" />
-              <h3 className="text-base font-bold text-[#1F1E1C] dark:text-zinc-50">Recent Registrations</h3>
-            </div>
-            <div className="divide-y divide-[#F0EBE1] dark:divide-zinc-800/50">
-              {recentStudents.length === 0 ? (
-                <div className="p-8 text-center text-sm text-zinc-400">No new student records</div>
-              ) : recentStudents.map(student => (
-                <div key={student.id} className="p-5 flex justify-between items-center hover:bg-[#FCFAF7]/50 dark:hover:bg-zinc-800/20 transition-colors">
-                  <div>
-                    <p className="text-sm font-semibold text-[#1F1E1C] dark:text-zinc-100">{student.data?.name}</p>
-                    <p className="text-xs text-zinc-400 mt-0.5">{student.data?.class_name || 'N/A'}</p>
-                  </div>
-                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800" asChild>
-                    <Link to="/school-students">
-                      <ArrowRight className="w-4 h-4 text-zinc-400" />
-                    </Link>
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
-
         </div>
+
+        {/* Right Col: Upcoming Exams + Recent Activity */}
+        <div className="space-y-6">
+          {/* Upcoming Exams */}
+          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 flex flex-col min-h-[300px]">
+            <div className="p-6 border-b border-border/50 flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+                <h3 className="text-sm font-bold">Upcoming Exams</h3>
+              </div>
+            </div>
+            <div className="divide-y divide-border/50 flex-1">
+              {upcomingExams.slice(0, 5).length === 0 ? (
+                <div className="p-5 text-center text-sm text-muted-foreground">No upcoming exams</div>
+              ) : upcomingExams.slice(0, 5).map(exam => (
+                  <div key={exam.id} className="px-6 py-4 flex justify-between items-center">
+                    <div>
+                      <p className="text-sm font-bold">{exam.data?.subject || exam.data?.exam_name}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {exam.data?.class_name || 'All Classes'}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium">
+                        {exam.data?.exam_date ? format(new Date(exam.data?.exam_date), "MMM d") : 'TBD'}
+                      </p>
+                      <Badge variant="outline" className="mt-1 text-[10px] bg-violet-50 text-violet-600 border-violet-200">
+                        Upcoming
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          {/* Recent Activity */}
+          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 flex flex-col">
+            <div className="p-6 border-b border-border/50 flex items-center gap-2">
+              <Users className="w-5 h-5 text-pink-600 dark:text-pink-400" />
+              <h3 className="text-sm font-bold">Recently Added Students</h3>
+            </div>
+            <div className="divide-y divide-border/50">
+              {recentStudents.length === 0 ? (
+                <div className="p-5 text-center text-sm text-muted-foreground">No students found</div>
+              ) : recentStudents.map(student => (
+                  <div key={student.id} className="px-6 py-4 flex justify-between items-center">
+                    <div>
+                      <p className="text-sm font-medium">{student.data?.first_name} {student.data?.last_name}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{student.data?.grade_level || 'N/A'}</p>
+                    </div>
+                    <Button variant="ghost" size="icon" asChild>
+                      <Link to="/school-students">
+                        <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                      </Link>
+                    </Button>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

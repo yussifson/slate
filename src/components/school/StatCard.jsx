@@ -22,7 +22,7 @@ export default function StatCard({
 
   return (
     <motion.div
-      className="bg-white dark:bg-zinc-900 rounded-[2rem] border border-[#F0EBE1] dark:border-zinc-800 p-6 shadow-[0_12px_40px_rgba(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300"
+      className="bg-card rounded-2xl border border-border/50 p-6 hover:shadow-lg hover:-translate-y-1 transition-all"
       whileHover={{ scale: 1.02 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
