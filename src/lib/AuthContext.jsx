@@ -738,9 +738,19 @@ export const AuthProvider = ({ children }) => {
 
       if (event === 'SIGNED_OUT') {
         if (!isExplicitLogoutRef.current) {
-          // Implicit sign out (e.g. from failed token refresh during offline mode).
-          // Ignore it to allow the offline fallback cache to work!
-          console.warn("Ignored implicit SIGNED_OUT event to preserve offline mode cache.");
+          // Distinguish between offline-triggered sign out vs. genuine invalid refresh token.
+          // If the device is online, this means the refresh token is truly invalid → must re-login.
+          if (navigator.onLine) {
+            console.warn("Session token invalid while online. Clearing stale session and prompting re-login.");
+            try { localStorage.removeItem('slate_cached_user'); } catch(e) {}
+            setUser(null);
+            setIsAuthenticated(false);
+            setIsLoadingAuth(false);
+            setAuthChecked(true);
+          } else {
+            // Offline-triggered: ignore it to allow the offline fallback cache to work!
+            console.warn("Ignored implicit SIGNED_OUT event to preserve offline mode cache.");
+          }
           return;
         }
 
