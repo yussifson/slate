@@ -1,17 +1,16 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { BookOpen, Plus, Users } from 'lucide-react';
+import { BookOpen, Plus, Users, Search, Edit2, Trash2 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useQuery } from "@tanstack/react-query";
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { powerSync } from '@/api/PowerSyncConnector';
-import PageHeader from '@/components/school/PageHeader';
-import StatCard from '@/components/school/StatCard';
-import ListingPage from '@/components/school/ListingPage';
-import ModalForm from '@/components/school/ModalForm';
-import { motion } from 'framer-motion';
+import SchoolPageShell from '@/components/school/SchoolPageShell';
 
 export default function TeachersStaff() {
   const { t } = useTranslation();
@@ -19,14 +18,8 @@ export default function TeachersStaff() {
   const companyId = useCompanyId();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    role: 'Teacher',
-    department: '',
-    qualification: ''
-  });
+  const [search, setSearch] = useState('');
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', role: 'Teacher', department: '', qualification: '' });
 
   const { data: teachers = [], isLoading, refetch } = useQuery({
     queryKey: ['teachers', companyId],
@@ -103,103 +96,138 @@ export default function TeachersStaff() {
     }
   };
 
-  const columns = [
-    { header: 'Name', accessorKey: 'name' },
-    { header: 'Email', accessorKey: 'email' },
-    { header: 'Phone', accessorKey: 'phone' },
-    { header: 'Role', accessorKey: 'role' },
-    { header: 'Department', accessorKey: 'department' },
-  ];
+  const filtered = teachers.filter(t => 
+    t.name?.toLowerCase().includes(search.toLowerCase()) || 
+    t.email?.toLowerCase().includes(search.toLowerCase()) ||
+    t.department?.toLowerCase().includes(search.toLowerCase())
+  );
 
-  const formFields = [
-    { name: 'name', label: 'Full Name', type: 'text', required: true, placeholder: 'e.g., Dr. James Wilson' },
-    { name: 'email', label: 'Email Address', type: 'email', required: true, placeholder: 'james@school.com' },
-    { name: 'phone', label: 'Phone Number', type: 'tel', placeholder: '+1234567890' },
-    { 
-      name: 'role', 
-      label: 'Role', 
-      type: 'select',
-      options: [
-        { value: 'Teacher', label: 'Teacher' },
-        { value: 'Head of Department', label: 'Head of Department' },
-        { value: 'Assistant', label: 'Assistant' },
-        { value: 'Admin', label: 'Admin Staff' }
-      ]
-    },
-    { name: 'department', label: 'Department', type: 'text', placeholder: 'e.g., Mathematics' },
-    { name: 'qualification', label: 'Qualification', type: 'text', placeholder: 'e.g., B.Ed, M.Sc' }
-  ];
+  const stats = {
+    totalStaff: teachers.length,
+    teachersCount: teachers.filter(t => t.role === 'Teacher').length,
+    departmentsCount: [...new Set(teachers.map(t => t.department).filter(Boolean))].length,
+  };
+
+  const inputCls = "flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring";
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <PageHeader
-          icon={BookOpen}
-          title="Teachers & Staff"
-          subtitle="Manage teaching and support staff"
-          metric={teachers.length}
-          metricLabel="Staff Members"
-          actions={[
-            <Button key="add" onClick={handleAddNew} className="bg-emerald-600 hover:bg-emerald-700">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Staff
-            </Button>
-          ]}
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <StatCard 
-            icon={BookOpen} 
-            label="Total Staff" 
-            value={teachers.length} 
-            description="Teachers & support staff" 
-            color="emerald" 
-          />
-          <StatCard 
-            icon={Users} 
-            label="Teachers" 
-            value={teachers.filter(t => t.role === 'Teacher').length} 
-            description="Classroom instructors" 
-            color="blue" 
-          />
-          <StatCard 
-            icon={Users} 
-            label="Departments" 
-            value={[...new Set(teachers.map(t => t.department).filter(Boolean))].length} 
-            description="Active departments" 
-            color="orange" 
-          />
-        </div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <ListingPage
-            data={teachers}
-            columns={columns}
-            loading={isLoading}
-            onAdd={handleAddNew}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            searchPlaceholder="Search by name, email, or department..."
-            filterOptions={{
-              role: ['Teacher', 'Head of Department', 'Assistant', 'Admin Staff'],
-              department: [...new Set(teachers.map(t => t.department).filter(Boolean))]
-            }}
-            emptyIcon={BookOpen}
-            emptyMessage="No staff members yet. Add your first teacher or staff member."
-          />
-        </motion.div>
+    <SchoolPageShell
+      title="Teachers & Staff"
+      subtitle="Manage teaching and support staff members"
+      breadcrumb={['School', 'Staff']}
+      actions={
+        <Button onClick={handleAddNew} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm h-10 px-5 text-sm font-medium">
+          <Plus className="w-4 h-4 mr-2" /> Add Staff
+        </Button>
+      }
+    >
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+        {[
+          { label: 'Total Staff', value: stats.totalStaff, icon: BookOpen, color: 'bg-indigo-500/10 text-indigo-600' },
+          { label: 'Teachers', value: stats.teachersCount, icon: Users, color: 'bg-sky-500/10 text-sky-600' },
+          { label: 'Departments', value: stats.departmentsCount, icon: Users, color: 'bg-amber-500/10 text-amber-600' },
+        ].map(({ label, value, icon: Icon, color }) => (
+          <div key={label} className="bg-card rounded-xl border border-border/50 p-5 shadow-sm flex items-center gap-4">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}><Icon className="w-5 h-5" /></div>
+            <div>
+              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{label}</p>
+              <p className="text-xl font-bold text-foreground mt-0.5">{value}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
-      <ModalForm
-        open={showForm}
-        onOpenChange={setShowForm}
-        title={editingId ? 'Edit Staff Member' : 'Add Staff Member'}
-        fields={formFields}
-        formData={formData}
-        onChange={(field, value) => setFormData(prev => ({ ...prev, [field]: value }))}
-        onSubmit={handleSubmit}
-        submitText={editingId ? 'Update' : 'Add Staff'}
-      />
-    </div>
+      {/* Filter Bar */}
+      <div className="bg-card border border-border/50 rounded-xl shadow-sm p-4 mb-6">
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input placeholder="Search staff members..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background border-border/50 h-9 text-sm" />
+        </div>
+      </div>
+
+      {/* Grid */}
+      {isLoading ? (
+        <div className="flex items-center justify-center py-20 text-muted-foreground">Loading staff...</div>
+      ) : filtered.length === 0 ? (
+        <div className="bg-card rounded-xl border border-dashed border-border py-16 text-center">
+          <BookOpen className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+          <p className="text-muted-foreground font-medium">No staff members found</p>
+          <button onClick={handleAddNew} className="text-sm text-indigo-600 hover:underline mt-2">Add your first staff member →</button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          {filtered.map(t => (
+            <div key={t.id} className="bg-card rounded-xl border border-border/50 shadow-sm p-5 hover:shadow-md transition-all flex flex-col justify-between group relative">
+              <div>
+                <div className="flex items-start justify-between mb-3">
+                  <div className="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center"><BookOpen className="w-5 h-5 text-indigo-600" /></div>
+                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => handleEdit(t)} className="p-1 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground border border-border/50"><Edit2 className="w-3.5 h-3.5" /></button>
+                    <button onClick={() => handleDelete(t)} className="p-1 rounded-md hover:bg-rose-50 text-muted-foreground hover:text-rose-600 border border-border/50"><Trash2 className="w-3.5 h-3.5" /></button>
+                  </div>
+                </div>
+                <h3 className="font-bold text-base text-foreground leading-snug">{t.name}</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">{t.role} · {t.department || 'General'}</p>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-border/50 space-y-1.5 text-xs text-muted-foreground">
+                <p className="truncate">📧 {t.email}</p>
+                {t.phone && <p>📞 {t.phone}</p>}
+                {t.qualification && <p className="truncate">🎓 {t.qualification}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Form Dialog */}
+      <Dialog open={showForm} onOpenChange={setShowForm}>
+        <DialogContent className="sm:max-w-[480px]">
+          <DialogHeader>
+            <DialogTitle>{editingId ? 'Edit Staff Member' : 'Add Staff Member'}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Full Name *</Label>
+              <Input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} placeholder="e.g. Dr. James Wilson" className="h-10" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Email Address *</Label>
+                <Input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} placeholder="james@school.com" className="h-10" />
+              </div>
+              <div className="space-y-2">
+                <Label>Phone Number</Label>
+                <Input value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} placeholder="+1234567890" className="h-10" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Role</Label>
+                <select value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })} className={`w-full ${inputCls}`}>
+                  <option value="Teacher">Teacher</option>
+                  <option value="Head of Department">Head of Department</option>
+                  <option value="Assistant">Assistant</option>
+                  <option value="Admin">Admin Staff</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label>Department</Label>
+                <Input value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })} placeholder="e.g. Mathematics" className="h-10" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Qualification</Label>
+              <Input value={formData.qualification} onChange={e => setFormData({ ...formData, qualification: e.target.value })} placeholder="e.g. B.Ed, M.Sc" className="h-10" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
+            <Button onClick={handleSubmit} className="bg-indigo-600 hover:bg-indigo-700 text-white">{editingId ? 'Update' : 'Add Staff'}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </SchoolPageShell>
   );
 }
