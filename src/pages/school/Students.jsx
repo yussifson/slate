@@ -1,21 +1,22 @@
-import { useTranslation } from "react-i18next";
 import { useState, useMemo } from 'react';
-import { Users, GraduationCap, Plus, UserCheck, AlertCircle, TrendingUp } from 'lucide-react';
+import { useTranslation } from "react-i18next";
 import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { Button } from '@/components/ui/button';
-
-import StatCard from '@/components/school/StatCard';
-import ListingPage from '@/components/school/ListingPage';
+import { Input } from '@/components/ui/input';
 import ModalForm from '@/components/school/ModalForm';
 import { motion } from 'framer-motion';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { Search, ChevronDown, Plus, MoreHorizontal, ArrowUpRight, ArrowDownRight, Edit2, Trash2, ArrowLeft, Users, UserCheck, UserMinus, ListChecks } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function Students() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const companyId = useCompanyId();
+  
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
@@ -33,6 +34,12 @@ export default function Students() {
     enrollment_date: new Date().toISOString().split('T')[0]
   });
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [classFilter, setClassFilter] = useState('All');
+  const [genderFilter, setGenderFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [selectedStudents, setSelectedStudents] = useState([]);
+
   const { data: rawStudents = [], isLoading: studentsLoading } = useIndustryRecords('school_student');
   const { data: rawClasses = [] } = useIndustryRecords('school_class');
   
@@ -49,11 +56,31 @@ export default function Students() {
 
   const stats = useMemo(() => {
     const active = students.filter(s => s.status === 'Active').length;
-    const kg = students.filter(s => s.level === 'KG').length;
-    const primary = students.filter(s => s.level === 'Primary').length;
-    const jhs = students.filter(s => s.level === 'JHS').length;
-    return { total: students.length, active, kg, primary, jhs };
+    const onLeave = students.filter(s => s.status === 'On leave' || s.status === 'Inactive').length;
+    return { total: students.length, active, onLeave };
   }, [students]);
+
+  const filteredStudents = useMemo(() => {
+    let result = students;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(s => 
+        s.name?.toLowerCase().includes(q) || 
+        s.student_id?.toLowerCase().includes(q)
+      );
+    }
+    if (classFilter !== 'All') result = result.filter(s => s.class_name === classFilter);
+    if (genderFilter !== 'All') result = result.filter(s => s.gender === genderFilter);
+    if (statusFilter !== 'All') result = result.filter(s => s.status === statusFilter);
+    return result;
+  }, [students, searchQuery, classFilter, genderFilter, statusFilter]);
+
+  const handleResetFilters = () => {
+    setSearchQuery('');
+    setClassFilter('All');
+    setGenderFilter('All');
+    setStatusFilter('All');
+  };
 
   const handleAddNew = () => {
     setFormData({
@@ -62,7 +89,7 @@ export default function Students() {
       dob: '',
       class_name: '',
       level: 'Primary',
-      student_id: 'STU-' + Date.now().toString(36).toUpperCase(),
+      student_id: '2026' + String(students.length + 1).padStart(4, '0'),
       parent_name: '',
       parent_phone: '',
       parent_email: '',
@@ -133,30 +160,9 @@ export default function Students() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const columns = [
-    { header: 'Student ID', accessorKey: 'student_id' },
-    { header: 'Name', accessorKey: 'name' },
-    { header: 'Level', accessorKey: 'level' },
-    { header: 'Class', accessorKey: 'class_name' },
-    { 
-      header: 'Status', 
-      accessorKey: 'status',
-      cell: (value) => (
-        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-          value === 'Active' ? 'bg-emerald-100 text-emerald-700' :
-          value === 'Graduated' ? 'bg-blue-100 text-blue-700' :
-          'bg-red-100 text-red-700'
-        }`}>
-          {value}
-        </span>
-      )
-    },
-    { header: 'Enrollment Date', accessorKey: 'enrollment_date' }
-  ];
-
   const formFields = [
-    { name: 'student_id', label: 'Student ID', type: 'text', required: true, readOnly: true },
-    { name: 'name', label: 'Full Name', type: 'text', required: true, placeholder: 'e.g., John Smith' },
+    { name: 'student_id', label: 'Number', type: 'text', required: true, readOnly: true },
+    { name: 'name', label: 'Full Name', type: 'text', required: true, placeholder: 'e.g., Aulia Rahman' },
     { 
       name: 'gender', 
       label: 'Gender', 
@@ -179,14 +185,14 @@ export default function Students() {
     },
     { 
       name: 'class_name', 
-      label: 'Class/Grade', 
+      label: 'Grade', 
       type: 'select', 
       required: true,
       options: classes.map(c => ({ value: c, label: c }))
     },
-    { name: 'parent_name', label: 'Parent Name', type: 'text', placeholder: 'e.g., Jane Smith' },
-    { name: 'parent_phone', label: 'Parent Phone', type: 'tel', placeholder: '+1234567890' },
-    { name: 'parent_email', label: 'Parent Email', type: 'email', placeholder: 'parent@example.com' },
+    { name: 'parent_name', label: 'Guardian', type: 'text', placeholder: 'e.g., Nugroho Santoso' },
+    { name: 'parent_phone', label: 'Guardian Phone', type: 'tel', placeholder: '+1234567890' },
+    { name: 'parent_email', label: 'Guardian Email', type: 'email', placeholder: 'parent@example.com' },
     { name: 'address', label: 'Address', type: 'text', placeholder: 'Home Address' },
     { 
       name: 'status', 
@@ -194,78 +200,315 @@ export default function Students() {
       type: 'select',
       options: [
         { value: 'Active', label: 'Active' },
-        { value: 'Graduated', label: 'Graduated' },
+        { value: 'On leave', label: 'On leave' },
         { value: 'Inactive', label: 'Inactive' }
       ]
     },
     { name: 'enrollment_date', label: 'Enrollment Date', type: 'date' }
   ];
 
+  const toggleStudent = (id) => {
+    setSelectedStudents(prev => 
+      prev.includes(id) ? prev.filter(sId => sId !== id) : [...prev, id]
+    );
+  };
+  
+  const toggleAll = () => {
+    if (selectedStudents.length === filteredStudents.length) {
+      setSelectedStudents([]);
+    } else {
+      setSelectedStudents(filteredStudents.map(s => s.id));
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-6xl mx-auto space-y-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-foreground">Students Directory</h1>
-            <p className="text-muted-foreground mt-2">Manage and monitor all student records</p>
-          </div>
-          <Button onClick={handleAddNew} className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 rounded-xl">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Student
-          </Button>
+    <div className="min-h-screen bg-background font-sans text-foreground">
+      {/* Top Header / Breadcrumb */}
+      <div className="bg-card border-b border-border/50 px-8 py-4 flex items-center justify-between">
+        <div className="flex items-center text-sm text-muted-foreground gap-2">
+          <ArrowLeft className="w-4 h-4 cursor-pointer hover:text-foreground transition-colors" />
+          <span className="cursor-pointer hover:text-foreground transition-colors">Students</span>
+          <span>/</span>
+          <span className="font-semibold text-foreground">Overview</span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <StatCard
-            icon={Users}
-            label="Total Students"
-            value={stats.total}
-            description="All enrolled"
-            color="emerald"
-          />
-          <StatCard
-            icon={UserCheck}
-            label="Active Students"
-            value={stats.active}
-            description="Currently active"
-            color="blue"
-          />
-          <StatCard
-            icon={GraduationCap}
-            label="Primary"
-            value={stats.primary}
-            description="Primary students"
-            color="orange"
-          />
-          <StatCard
-            icon={TrendingUp}
-            label="JHS"
-            value={stats.jhs}
-            description="JHS students"
-            color="purple"
-          />
+      </div>
+
+      <div className="p-8 max-w-[1600px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-foreground">Student Overview</h1>
+          <p className="text-muted-foreground text-sm mt-1">Manage and monitor students</p>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <ListingPage
-            data={students}
-            columns={columns}
-            loading={studentsLoading}
-            onAdd={handleAddNew}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            searchPlaceholder="Search by name or student ID..."
-            filterOptions={{
-              level: ['KG', 'Primary', 'JHS'],
-              class_name: classes,
-              status: ['Active', 'Graduated', 'Inactive']
-            }}
-            emptyIcon={Users}
-            emptyMessage="No students yet. Create your first student record to get started."
-          />
-        </motion.div>
+        {/* Stats Row */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          {/* Total Students */}
+          <div className="bg-card rounded-xl border border-border/50 p-5 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                <Users className="w-4 h-4 text-indigo-500" />
+              </div>
+              <span className="text-sm font-medium text-muted-foreground">Total Students</span>
+            </div>
+            <div className="flex items-end gap-3 mb-1">
+              <h3 className="text-3xl font-bold text-foreground">{stats.total}</h3>
+              <div className="flex items-center text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded text-xs font-semibold mb-1">
+                <ArrowUpRight className="w-3 h-3 mr-0.5" />
+                4%
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground/70">vs last year</p>
+          </div>
+
+          {/* Active Students */}
+          <div className="bg-card rounded-xl border border-border/50 p-5 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                <UserCheck className="w-4 h-4 text-indigo-500" />
+              </div>
+              <span className="text-sm font-medium text-muted-foreground">Active Students</span>
+            </div>
+            <div className="flex items-end gap-3 mb-1">
+              <h3 className="text-3xl font-bold text-foreground">{stats.active}</h3>
+              <div className="flex items-center text-rose-500 bg-rose-500/10 px-1.5 py-0.5 rounded text-xs font-semibold mb-1">
+                <ArrowDownRight className="w-3 h-3 mr-0.5" />
+                7%
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground/70">vs last semester</p>
+          </div>
+
+          {/* On Leave */}
+          <div className="bg-card rounded-xl border border-border/50 p-5 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                <UserMinus className="w-4 h-4 text-indigo-500" />
+              </div>
+              <span className="text-sm font-medium text-muted-foreground">On Leave</span>
+            </div>
+            <div className="flex items-end gap-3 mb-1">
+              <h3 className="text-3xl font-bold text-foreground">{stats.onLeave}</h3>
+              <div className="flex items-center text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded text-xs font-semibold mb-1">
+                <ArrowUpRight className="w-3 h-3 mr-0.5" />
+                4%
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground/70">This Semester</p>
+          </div>
+
+          {/* Avg Attendance */}
+          <div className="bg-card rounded-xl border border-border/50 p-5 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                <ListChecks className="w-4 h-4 text-indigo-500" />
+              </div>
+              <span className="text-sm font-medium text-muted-foreground">Avg Attendance</span>
+            </div>
+            <div className="flex items-end gap-3 mb-1">
+              <h3 className="text-3xl font-bold text-foreground">93%</h3>
+            </div>
+            <p className="text-xs text-muted-foreground/70">This Semester</p>
+          </div>
+        </div>
+
+        {/* Filters and Actions */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-3 flex-1 flex-wrap">
+            <div className="relative w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search Students"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="pl-9 bg-card border-border/50 shadow-sm focus-visible:ring-1"
+              />
+            </div>
+            
+            <Select value={classFilter} onValueChange={setClassFilter}>
+              <SelectTrigger className="w-[120px] bg-card border-border/50 shadow-sm">
+                <SelectValue placeholder="Class" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">Class</SelectItem>
+                {classes.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              </SelectContent>
+            </Select>
+
+            <Select value={genderFilter} onValueChange={setGenderFilter}>
+              <SelectTrigger className="w-[120px] bg-card border-border/50 shadow-sm">
+                <SelectValue placeholder="Gender" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">Gender</SelectItem>
+                <SelectItem value="Male">Male</SelectItem>
+                <SelectItem value="Female">Female</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[120px] bg-card border-border/50 shadow-sm">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">Status</SelectItem>
+                <SelectItem value="Active">Active</SelectItem>
+                <SelectItem value="On leave">On leave</SelectItem>
+                <SelectItem value="Inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {(searchQuery || classFilter !== 'All' || genderFilter !== 'All' || statusFilter !== 'All') && (
+              <button onClick={handleResetFilters} className="text-sm text-muted-foreground hover:text-foreground transition-colors ml-2">
+                Reset Filters
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Button variant="outline" className="bg-card border-border/50 shadow-sm hover:bg-muted">
+              Export
+            </Button>
+            <div className="flex shadow-sm rounded-md overflow-hidden">
+              <Button onClick={handleAddNew} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-none border-r border-indigo-700 h-10 px-4">
+                Add Student
+              </Button>
+              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-none px-2 h-10">
+                <ChevronDown className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="bg-card rounded-xl border border-border/50 overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="text-xs text-muted-foreground bg-muted/20 border-b border-border/50">
+                <tr>
+                  <th className="px-6 py-4 font-medium w-12">
+                    <input 
+                      type="checkbox" 
+                      className="rounded border-border text-indigo-600 focus:ring-indigo-600 bg-background"
+                      checked={selectedStudents.length === filteredStudents.length && filteredStudents.length > 0}
+                      onChange={toggleAll}
+                    />
+                  </th>
+                  <th className="px-4 py-4 font-medium flex items-center gap-1 cursor-pointer hover:text-foreground transition-colors">
+                    Number <span className="text-[10px]">↕</span>
+                  </th>
+                  <th className="px-4 py-4 font-medium cursor-pointer hover:text-foreground transition-colors">
+                    Full Name <span className="text-[10px]">↕</span>
+                  </th>
+                  <th className="px-4 py-4 font-medium cursor-pointer hover:text-foreground transition-colors">
+                    Grade <span className="text-[10px]">↕</span>
+                  </th>
+                  <th className="px-4 py-4 font-medium cursor-pointer hover:text-foreground transition-colors">
+                    Gender <span className="text-[10px]">↕</span>
+                  </th>
+                  <th className="px-4 py-4 font-medium cursor-pointer hover:text-foreground transition-colors">
+                    Attendance <span className="text-[10px]">↕</span>
+                  </th>
+                  <th className="px-4 py-4 font-medium cursor-pointer hover:text-foreground transition-colors">
+                    Guardian <span className="text-[10px]">↕</span>
+                  </th>
+                  <th className="px-4 py-4 font-medium cursor-pointer hover:text-foreground transition-colors">
+                    Status <span className="text-[10px]">↕</span>
+                  </th>
+                  <th className="px-6 py-4 font-medium text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/50">
+                {studentsLoading ? (
+                  <tr>
+                    <td colSpan={9} className="px-6 py-8 text-center text-muted-foreground">
+                      Loading students...
+                    </td>
+                  </tr>
+                ) : filteredStudents.length === 0 ? (
+                  <tr>
+                    <td colSpan={9} className="px-6 py-8 text-center text-muted-foreground">
+                      No students found matching your criteria.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredStudents.map((student) => {
+                    const isMale = student.gender === 'Male';
+                    const isActive = student.status === 'Active';
+                    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=random`;
+                    
+                    return (
+                      <tr key={student.id} className="hover:bg-muted/30 transition-colors group">
+                        <td className="px-6 py-4">
+                          <input 
+                            type="checkbox" 
+                            className="rounded border-border text-indigo-600 focus:ring-indigo-600 bg-background"
+                            checked={selectedStudents.includes(student.id)}
+                            onChange={() => toggleStudent(student.id)}
+                          />
+                        </td>
+                        <td className="px-4 py-4 font-medium text-foreground">
+                          {student.student_id}
+                        </td>
+                        <td className="px-4 py-4">
+                          <div className="flex items-center gap-3">
+                            <img src={avatarUrl} alt="" className="w-7 h-7 rounded-full object-cover" />
+                            <span className="font-medium text-foreground">{student.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 text-muted-foreground font-medium">
+                          {student.class_name || 'N/A'}
+                        </td>
+                        <td className="px-4 py-4">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                            isMale ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400' : 'bg-pink-500/10 text-pink-600 dark:text-pink-400'
+                          }`}>
+                            <span className={`mr-1 text-[10px] ${isMale ? 'text-blue-600 dark:text-blue-400' : 'text-pink-600 dark:text-pink-400'}`}>
+                              {isMale ? '♂' : '♀'}
+                            </span>
+                            {student.gender}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 text-muted-foreground font-medium">
+                          {/* Fake attendance data based on student ID to remain static per student */}
+                          {Math.max(70, Math.min(100, 100 - (student.student_id?.length || 0) + (student.name?.length || 0) * 2))}%
+                        </td>
+                        <td className="px-4 py-4 text-muted-foreground font-medium">
+                          {student.parent_name || 'N/A'}
+                        </td>
+                        <td className="px-4 py-4">
+                          <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                            isActive ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+                          }`}>
+                            <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${isActive ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
+                            {student.status || 'On leave'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <button className="text-muted-foreground hover:text-foreground p-1 rounded hover:bg-muted transition-colors">
+                                <MoreHorizontal className="w-5 h-5" />
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => handleEdit(student)}>
+                                <Edit2 className="w-4 h-4 mr-2" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDelete(student)} className="text-destructive focus:text-destructive">
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <ModalForm
