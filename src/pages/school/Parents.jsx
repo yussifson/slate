@@ -235,7 +235,6 @@ export default function Parents() {
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                      <Button variant="outline" size="sm" onClick={() => handleOpenEdit(parent)} className="h-8 bg-blue-50 border-blue-300 text-blue-700 hover:bg-blue-600 hover:text-white rounded-none font-bold uppercase text-xs tracking-wider">
                         <Button variant="ghost" size="sm" onClick={() => handleOpenEdit(parent)}>
                           <Edit className="w-4 h-4" />
                         </Button>
