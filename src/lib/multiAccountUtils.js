@@ -28,6 +28,11 @@ export function saveAccount(session, profile = null) {
     const userId = session.user.id;
     
     // Create the account object we want to save
+    // Detect provider from identities array (google, email, etc.)
+    const provider = session.user?.app_metadata?.provider ||
+      (session.user?.identities?.[0]?.provider) ||
+      'email';
+
     const newAccount = {
       id: userId,
       email: session.user.email,
@@ -35,6 +40,7 @@ export function saveAccount(session, profile = null) {
       refresh_token: session.refresh_token,
       full_name: profile?.full_name || session.user?.user_metadata?.full_name || '',
       avatar_url: profile?.avatar_url || session.user?.user_metadata?.avatar_url || '',
+      provider,
       last_active: new Date().toISOString(),
       logged_out: false
     };

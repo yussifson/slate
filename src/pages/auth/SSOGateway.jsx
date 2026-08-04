@@ -76,32 +76,67 @@ export default function SSOGateway() {
       // 0. Check if already active
       const { data: { session: currentSession } } = await supabase.auth.getSession();
       
+      let finalSession = currentSession;
+
       if (currentSession && currentSession.user.id === freshAccount.id) {
         // Already active! Skip setSession.
         await new Promise(resolve => setTimeout(resolve, 200));
       } else {
         // 1. Swap active session
-        const { error: sessionError } = await supabase.auth.setSession({
+        const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
           access_token: freshAccount.access_token,
           refresh_token: freshAccount.refresh_token
         });
         
         if (sessionError) {
             // Attempt an explicit refresh in case setSession rejected an expired access token
-            const { error: refreshError } = await supabase.auth.refreshSession({ refresh_token: freshAccount.refresh_token });
+            const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession({ refresh_token: freshAccount.refresh_token });
             
             if (refreshError) {
-                // Token might be fully expired or revoked. Force login.
-                removeAccount(freshAccount.id);
-                // Redirect them to login automatically instead of getting stuck on an error
-                handleAddAccount();
+                // Token might be fully expired or revoked.
+                console.warn("Session refresh failed:", refreshError);
+                
+                // If it's a Google account, silently re-authenticate
+                if (freshAccount.provider === 'google') {
+                    const { initiateGoogleOAuth } = await import('@/lib/googleOAuth');
+                    const googleAuthUrl = await initiateGoogleOAuth(redirectUri, {
+                        loginHint: freshAccount.email,
+                        prompt: 'none' // Try silent re-auth
+                    });
+                    window.location.href = googleAuthUrl;
+                    return;
+                }
+
+                // For email accounts, we must ask for password again since token is fully dead.
+                // We keep the account in the list but mark it logged out so they know they need to re-auth.
+                import('@/lib/multiAccountUtils').then(({ markAccountLoggedOut }) => {
+                    markAccountLoggedOut(freshAccount.id);
+                });
+                
+                setAuthError(`Session expired for ${freshAccount.email}. Please sign in again.`);
+                setIsLoading(false);
                 return;
             }
+            finalSession = refreshData.session;
+        } else {
+            finalSession = sessionData.session;
         }
         
         // 2. Wait a brief moment for any background token refreshes to apply
         await new Promise(resolve => setTimeout(resolve, 500));
       }
+      
+      // Get the absolute freshest session from the client after all operations
+      const { data: { session: freshestSession } } = await supabase.auth.getSession();
+      finalSession = freshestSession || finalSession;
+
+      if (!finalSession) throw new Error("Failed to establish session after validation.");
+
+      // CRITICAL FIX: Save the potentially rotated tokens back to localStorage
+      // so the next time SSOGateway is used, it doesn't use the old burned refresh token!
+      import('@/lib/multiAccountUtils').then(({ saveAccount }) => {
+          saveAccount(finalSession);
+      });
       
       // 3. Verify workspace access
       if (targetHost !== 'clipad.optavel.com' && targetHost !== 'slate.optavel.com' && targetHost !== 'account.optavel.com' && targetHost !== 'localhost' && targetHost !== '127.0.0.1') {
@@ -127,10 +162,7 @@ export default function SSOGateway() {
       }
       
       // 4. Redirect with the freshest tokens
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error("Failed to establish session after validation.");
-      
-      const hash = `#access_token=${session.access_token}&refresh_token=${session.refresh_token}`;
+      const hash = `#access_token=${finalSession.access_token}&refresh_token=${finalSession.refresh_token}`;
       window.location.href = `${redirectUri}${hash}`;
       
     } catch (err) {
