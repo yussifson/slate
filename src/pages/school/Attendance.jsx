@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import './SchoolTheme.css';
 import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
@@ -151,31 +152,31 @@ export default function Attendance() {
   }
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-6">
+    <div className="school-theme-root font-outfit min-h-screen bg-[#FCFAF7] dark:bg-zinc-950 text-[#1F1E1C] dark:text-zinc-50 p-6 max-w-6xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Class Attendance</h1>
-          <p className="text-slate-500">Record daily student attendance</p>
+          <h1 className="text-2xl font-bold text-[#1F1E1C] dark:text-zinc-50">Class Attendance</h1>
+          <p className="text-zinc-500">Record daily student attendance</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
-          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-4">
+          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <label className="block text-sm font-medium text-slate-700 mb-1">Class</label>
               <div className="relative">
                 <select
                   value={selectedClass}
                   onChange={(e) => setSelectedClass(e.target.value)}
-                  className="w-full pl-4 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                  className="w-full pl-4 pr-10 py-2.5 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 appearance-none"
                 >
                   <option value="" disabled>Select a class</option>
                   {classList.map(c => (
                     <option key={c} value={c}>{c}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-3 top-2.5 w-5 h-5 text-slate-400 pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-3 w-5 h-5 text-zinc-400 pointer-events-none" />
               </div>
             </div>
             <div className="flex-1">
@@ -185,36 +186,36 @@ export default function Attendance() {
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                 />
-                <CalendarDays className="absolute left-3 top-2.5 w-5 h-5 text-slate-400 pointer-events-none" />
+                <CalendarDays className="absolute left-3 top-3 w-5 h-5 text-zinc-400 pointer-events-none" />
               </div>
             </div>
           </div>
 
           {classStudents.length === 0 ? (
-            <div className="bg-white p-12 text-center rounded-xl border border-slate-200 shadow-sm">
-              <Users className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-slate-900">No students found</h3>
-              <p className="text-slate-500 mt-2">There are no students assigned to {selectedClass}.</p>
+            <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-12 text-center">
+              <Users className="w-12 h-12 text-zinc-300 mx-auto mb-4" />
+              <h3 className="text-lg font-medium">No students found</h3>
+              <p className="text-zinc-500 mt-2">There are no students assigned to {selectedClass}.</p>
             </div>
           ) : (
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="p-4 border-b border-slate-100 flex flex-wrap gap-2 justify-between items-center bg-slate-50">
-                <span className="text-sm font-medium text-slate-700">{classStudents.length} Students</span>
+            <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] overflow-hidden">
+              <div className="p-6 border-b border-[#F0EBE1] dark:border-zinc-800 flex flex-wrap gap-2 justify-between items-center bg-[#FAF8F5] dark:bg-zinc-800/50">
+                <span className="text-sm font-medium">{classStudents.length} Students</span>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={() => handleBulkAction('Present')} className="text-emerald-600 border-emerald-200 hover:bg-emerald-50">
+                  <Button variant="outline" size="sm" onClick={() => handleBulkAction('Present')} className="text-emerald-600 border-emerald-200 hover:bg-emerald-50 rounded-full">
                     <Check className="w-4 h-4 mr-1" /> All Present
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => handleBulkAction('Absent')} className="text-rose-600 border-rose-200 hover:bg-rose-50">
+                  <Button variant="outline" size="sm" onClick={() => handleBulkAction('Absent')} className="text-rose-600 border-rose-200 hover:bg-rose-50 rounded-full">
                     <X className="w-4 h-4 mr-1" /> All Absent
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => handleBulkAction('Late')} className="text-amber-600 border-amber-200 hover:bg-amber-50">
+                  <Button variant="outline" size="sm" onClick={() => handleBulkAction('Late')} className="text-amber-600 border-amber-200 hover:bg-amber-50 rounded-full">
                     <Clock className="w-4 h-4 mr-1" /> All Late
                   </Button>
                 </div>
               </div>
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-[#F0EBE1] dark:divide-zinc-800">
                 {classStudents.map((student, index) => {
                   const status = studentStatuses[student.id] || 'Present';
                   return (
@@ -223,15 +224,15 @@ export default function Attendance() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
                       key={student.id} 
-                      className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                      className="p-6 flex items-center justify-between hover:bg-[#FAF8F5] dark:hover:bg-zinc-800/50 transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                        <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
                           {student.data?.first_name?.[0]}{student.data?.last_name?.[0]}
                         </div>
                         <div>
-                          <p className="font-medium text-slate-900">{student.data?.first_name} {student.data?.last_name}</p>
-                          <p className="text-xs text-slate-500">ID: {student.data?.student_id || student.id.slice(0, 8)}</p>
+                          <p className="font-medium text-[#1F1E1C] dark:text-zinc-50">{student.data?.first_name} {student.data?.last_name}</p>
+                          <p className="text-xs text-zinc-500">ID: {student.data?.student_id || student.id.slice(0, 8)}</p>
                         </div>
                       </div>
                       
@@ -257,9 +258,9 @@ export default function Attendance() {
         </div>
 
         <div className="md:col-span-1 space-y-6">
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm sticky top-6">
-            <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2 mb-6">
-              <ClipboardList className="w-5 h-5 text-blue-500" />
+          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 sticky top-6">
+            <h3 className="text-lg font-semibold flex items-center gap-2 mb-6">
+              <ClipboardList className="w-5 h-5 text-indigo-500" />
               Summary
             </h3>
             
@@ -276,21 +277,21 @@ export default function Attendance() {
                 <span className="font-medium flex items-center gap-2"><Clock className="w-4 h-4" /> Late</span>
                 <span className="text-lg font-bold">{stats.Late}</span>
               </div>
-              <div className="flex justify-between items-center p-3 rounded-lg bg-slate-50 text-slate-700 border border-slate-100 mt-4">
+              <div className="flex justify-between items-center p-3 rounded-xl bg-[#FAF8F5] dark:bg-zinc-800/50 border border-[#F0EBE1] dark:border-zinc-700 mt-4">
                 <span className="font-medium">Total Students</span>
                 <span className="text-lg font-bold">{stats.Total}</span>
               </div>
             </div>
 
             {existingAttendance && (
-              <div className="mb-4 p-3 bg-blue-50 text-blue-700 rounded-lg text-sm flex items-start gap-2">
+              <div className="mb-4 p-3 bg-indigo-50 text-indigo-700 rounded-xl text-sm flex items-start gap-2">
                 <Check className="w-4 h-4 mt-0.5 shrink-0" />
                 <p>Attendance already recorded for this date. Saving will update the existing record.</p>
               </div>
             )}
 
             <Button 
-              className="w-full py-6 text-lg shadow-md"
+              className="w-full py-6 text-lg bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white rounded-full font-semibold transition-all hover:scale-[1.02] shadow-[0_4px_12px_rgba(99,102,241,0.15)]"
               onClick={handleSave}
               disabled={isSaving || classStudents.length === 0}
             >

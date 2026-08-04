@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+/* School vertical theme overrides */
+.school-theme-root {
+  font-family: 'Outfit', 'Inter', sans-serif !important;
+  background-color: #FCFAF7 !important;
+  color: #1F1E1C !important;
+}
+
+.dark .school-theme-root {
+  background-color: #09090B !important;
+  color: #FAFAFA !important;
+}
+
+/* Warm, high-rounded premium cards */
+.school-card {
+  background-color: #FFFFFF;
+  border: 1px solid #F0EBE1;
+  border-radius: 2rem !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.02), 0 2px 4px rgba(0, 0, 0, 0.01);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .school-card {
+  background-color: #18181B;
+  border-color: #27272A;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.school-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+}
+
+/* Pill buttons and interactive controls */
+.school-btn-primary {
+  background: linear-gradient(135deg, #6366F1 0%, #F97316 100%) !important;
+  color: #FFFFFF !important;
+  border-radius: 9999px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+  transition: all 0.3s ease;
+  border: none !important;
+}
+
+.school-btn-primary:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+}
+
+.school-btn-secondary {
+  background-color: #FFFFFF !important;
+  color: #1F1E1C !important;
+  border: 1px solid #E4DFD5 !important;
+  border-radius: 9999px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease;
+}
+
+.dark .school-btn-secondary {
+  background-color: #27272A !important;
+  color: #FAFAFA !important;
+  border-color: #3F3F46 !important;
+}
+
+.school-btn-secondary:hover {
+  background-color: #FAF8F5 !important;
+  transform: translateY(-1px);
+}
+
+.dark .school-btn-secondary:hover {
+  background-color: #3F3F46 !important;
+}
+
+/* Form inputs matching the theme */
+.school-input {
+  border-radius: 1rem !important;
+  border: 1.5px solid #E4DFD5 !important;
+  background-color: #FFFFFF !important;
+  color: #1F1E1C !important;
+  transition: all 0.2s ease;
+}
+
+.dark .school-input {
+  border-color: #3F3F46 !important;
+  background-color: #18181B !important;
+  color: #FAFAFA !important;
+}
+
+.school-input:focus {
+  border-color: #6366F1 !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1) !important;
+}
+
+/* Badges */
+.school-badge-primary {
+  background-color: rgba(99, 102, 241, 0.1);
+  color: #6366F1;
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.school-badge-secondary {
+  background-color: rgba(249, 115, 22, 0.1);
+  color: #F97316;
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+}

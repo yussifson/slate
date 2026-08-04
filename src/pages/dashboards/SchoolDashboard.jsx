@@ -1,4 +1,5 @@
 import React from "react";
+import "../school/SchoolTheme.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
@@ -28,7 +29,7 @@ function StatCard({ icon: IconComp, label, value, sub, color = "bg-slate-50 dark
   return (
     <div 
       onClick={onClick}
-      className={`bg-card rounded-2xl border-0 p-5 flex items-center gap-5 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300 ${onClick ? 'cursor-pointer' : ''}`}
+      className={`bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 ${onClick ? 'cursor-pointer' : ''}`}
     >
       <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${color}`}>
         <IconComp className="w-6 h-6" />
@@ -110,7 +111,7 @@ export default function SchoolDashboard() {
     .slice(0, 5);
 
   return (
-    <div className="space-y-8 school-page-enter font-dmsans max-w-7xl mx-auto pb-12">
+    <div className="school-theme-root space-y-8 school-page-enter font-outfit max-w-7xl mx-auto pb-12">
       {/* Hero Banner */}
       <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-700 p-8 sm:p-10 text-white shadow-2xl shadow-purple-500/20">
         <div className="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl mix-blend-overlay pointer-events-none" />
@@ -193,25 +194,25 @@ export default function SchoolDashboard() {
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-4 items-center">
         <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mr-2">Quick Actions</h3>
-        <Button asChild variant="outline" className="rounded-full shadow-sm">
+        <Button asChild variant="outline" className="bg-white dark:bg-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-700 text-[#1F1E1C] dark:text-zinc-50 border border-[#E4DFD5] dark:border-zinc-700 rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02]">
           <Link to="/school-attendance">
             <CheckSquare className="w-4 h-4 mr-2" />
             Take Attendance
           </Link>
         </Button>
-        <Button asChild variant="outline" className="rounded-full shadow-sm">
+        <Button asChild variant="outline" className="bg-white dark:bg-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-700 text-[#1F1E1C] dark:text-zinc-50 border border-[#E4DFD5] dark:border-zinc-700 rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02]">
           <Link to="/school-students">
             <PlusCircle className="w-4 h-4 mr-2" />
             Add Student
           </Link>
         </Button>
-        <Button asChild variant="outline" className="rounded-full shadow-sm">
+        <Button asChild variant="outline" className="bg-white dark:bg-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-700 text-[#1F1E1C] dark:text-zinc-50 border border-[#E4DFD5] dark:border-zinc-700 rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02]">
           <Link to="/school-fees">
             <DollarSign className="w-4 h-4 mr-2" />
             Record Payment
           </Link>
         </Button>
-        <Button asChild variant="outline" className="rounded-full shadow-sm">
+        <Button asChild variant="outline" className="bg-white dark:bg-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-700 text-[#1F1E1C] dark:text-zinc-50 border border-[#E4DFD5] dark:border-zinc-700 rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02]">
           <Link to="/school-notices">
             <Bell className="w-4 h-4 mr-2" />
             Post Notice
@@ -225,7 +226,7 @@ export default function SchoolDashboard() {
         {/* Left Col: Enrollment + Notices */}
         <div className="lg:col-span-2 space-y-6">
           {/* Enrollment by Level */}
-          <div className="bg-card rounded-3xl border-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6">
+          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 p-6">
             <h3 className="text-sm font-bold flex items-center gap-2 mb-4">
               <Activity className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               Enrollment by Level
@@ -247,7 +248,7 @@ export default function SchoolDashboard() {
           </div>
 
           {/* Recent Notices */}
-          <div className="bg-card rounded-3xl border-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col min-h-[300px]">
+          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 flex flex-col min-h-[300px]">
             <div className="p-6 border-b border-border/50 flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <Bell className="w-5 h-5 text-amber-600 dark:text-amber-400" />
@@ -276,7 +277,7 @@ export default function SchoolDashboard() {
         {/* Right Col: Upcoming Exams + Recent Activity */}
         <div className="space-y-6">
           {/* Upcoming Exams */}
-          <div className="bg-card rounded-3xl border-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col min-h-[300px]">
+          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 flex flex-col min-h-[300px]">
             <div className="p-6 border-b border-border/50 flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-violet-600 dark:text-violet-400" />
@@ -308,7 +309,7 @@ export default function SchoolDashboard() {
           </div>
 
           {/* Recent Activity */}
-          <div className="bg-card rounded-3xl border-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col">
+          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 flex flex-col">
             <div className="p-6 border-b border-border/50 flex items-center gap-2">
               <Users className="w-5 h-5 text-pink-600 dark:text-pink-400" />
               <h3 className="text-sm font-bold">Recently Added Students</h3>

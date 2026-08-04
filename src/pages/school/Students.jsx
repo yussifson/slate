@@ -1,3 +1,4 @@
+import "./SchoolTheme.css";
 import { useTranslation } from "react-i18next";
 import { useState, useMemo } from 'react';
 import { Users, GraduationCap, Plus, UserCheck, AlertCircle, TrendingUp } from 'lucide-react';
@@ -202,7 +203,7 @@ export default function Students() {
   ];
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="school-theme-root min-h-screen bg-[#FCFAF7] dark:bg-zinc-950 font-outfit text-[#1F1E1C] dark:text-zinc-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         <PageHeader
           icon={Users}
@@ -214,7 +215,7 @@ export default function Students() {
             <Button
               key="add"
               onClick={handleAddNew}
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02] shadow-[0_4px_12px_rgba(99,102,241,0.15)]"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Student

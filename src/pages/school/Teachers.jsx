@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import "./SchoolTheme.css";
 import { useTranslation } from "react-i18next";
 import { Users, Search, Plus, Mail, Phone, MoreVertical, Briefcase, GraduationCap, UserCheck } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -173,7 +174,7 @@ export default function Teachers() {
   ];
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="school-theme-root min-h-screen bg-[#FCFAF7] dark:bg-zinc-950 font-outfit text-[#1F1E1C] dark:text-zinc-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         
         <PageHeader
@@ -186,7 +187,7 @@ export default function Teachers() {
             <Button
               key="add"
               onClick={handleAddNew}
-              className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-full"
+              className="bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02] shadow-[0_4px_12px_rgba(99,102,241,0.15)]"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Staff
@@ -218,14 +219,14 @@ export default function Teachers() {
           />
         </div>
 
-        <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 p-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="relative flex-1 w-full max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-secondary)]" />
             <Input 
               placeholder="Search staff..." 
               value={search} 
               onChange={e => setSearch(e.target.value)} 
-              className="pl-12 rounded-full border-primary/30 bg-[var(--color-surface-1)] h-11" 
+              className="pl-12 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 h-11" 
             />
           </div>
           <div className="flex items-center gap-4 w-full md:w-auto">
@@ -257,7 +258,7 @@ export default function Teachers() {
                 key={teacher.id}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col items-center text-center relative hover:border-[var(--primary)]/50 transition-colors"
+                className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 p-6 flex flex-col items-center text-center relative hover:border-[var(--primary)]/50 transition-colors"
               >
                 <div className="absolute top-4 right-4">
                   <DropdownMenu>

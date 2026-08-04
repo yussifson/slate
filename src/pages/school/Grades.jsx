@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import './SchoolTheme.css';
 
 const SUBJECTS = [
   'Mathematics', 'English', 'Science', 'Social Studies', 
@@ -37,11 +38,11 @@ function getGradeRemarks(grade) {
 }
 
 const GRADE_COLORS = {
-  A: 'bg-[var(--color-success)]/10 text-[var(--color-success)]', // green
-  B: 'bg-[var(--color-info)]/10 text-[var(--color-info)]',       // blue
-  C: 'bg-[var(--color-warning)]/10 text-[var(--color-warning)]', // yellow/amber
-  D: 'bg-[#f97316]/10 text-[#f97316]',                           // orange
-  F: 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]' // red
+  A: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
+  B: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400',
+  C: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
+  D: 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400',
+  F: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'
 };
 
 const defaultForm = {
@@ -173,373 +174,381 @@ export default function Grades() {
 
   const liveGrade = calcGrade(parseFloat(formData.score) || 0, parseFloat(formData.max_score) || 100);
 
+  const cardStyle = "bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300";
+  const primaryBtn = "bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02] shadow-[0_4px_12px_rgba(99,102,241,0.15)]";
+  const secondaryBtn = "bg-white dark:bg-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-700 text-[#1F1E1C] dark:text-zinc-50 border border-[#E4DFD5] dark:border-zinc-700 rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02]";
+  const inputStyle = "rounded-xl border-[1.5px] border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none w-full px-4 h-11 text-sm";
+
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-primary/40 pb-4">
-        <div>
-          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">{t("grades_results", "Grades & Transcript")}</h1>
-          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">{t("record_and_manage_student_exam", "Spreadsheet data entry & analytics")}</p>
-        </div>
-        <Button onClick={() => { setEditingId(null); setFormData(defaultForm); setShowModal(true); }} className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-full">
-          <Plus className="w-4 h-4 mr-2" /> {t("add_grade_entry", "Quick Add")}
-        </Button>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-          <div className="flex items-center gap-3 mb-4 relative z-10">
-            <div className="w-12 h-12 rounded-md-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--primary) 15%, transparent)' }}>
-              <BarChart3 className="w-6 h-6 text-[var(--primary)]" />
-            </div>
-            <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">{t("average", "Average")}</h3>
+    <div className="school-theme-root bg-[#FCFAF7] dark:bg-zinc-950 min-h-screen text-[#1F1E1C] dark:text-zinc-50 font-sans p-4 md:p-8">
+      <div className="space-y-6 max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+        
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#F0EBE1] dark:border-zinc-800 pb-6">
+          <div>
+            <h1 className="font-semibold text-4xl text-[#1F1E1C] dark:text-zinc-50 tracking-tight">{t("grades_results", "Grades & Transcript")}</h1>
+            <p className="text-zinc-500 font-medium mt-2">{t("record_and_manage_student_exam", "Spreadsheet data entry & analytics")}</p>
           </div>
-          <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mb-1 relative z-10 tracking-tight tracking-[-0.02em]">{avgScore}%</p>
+          <Button onClick={() => { setEditingId(null); setFormData(defaultForm); setShowModal(true); }} className={primaryBtn}>
+            <Plus className="w-5 h-5 mr-2" /> {t("add_grade_entry", "Quick Add")}
+          </Button>
         </div>
-        <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-          <div className="flex items-center gap-3 mb-4 relative z-10">
-            <div className="w-12 h-12 rounded-md-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--color-success) 15%, transparent)' }}>
-              <TrendingUp className="w-6 h-6 text-[var(--color-success)]" />
-            </div>
-            <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">{t("highest", "Highest")}</h3>
-          </div>
-          <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-success)] mb-1 relative z-10 tracking-tight tracking-[-0.02em]">{highScore}%</p>
-        </div>
-        <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-          <div className="flex items-center gap-3 mb-4 relative z-10">
-            <div className="w-12 h-12 rounded-md-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--color-warning) 15%, transparent)' }}>
-              <Award className="w-6 h-6 text-[var(--color-warning)]" />
-            </div>
-            <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">{t("lowest", "Lowest")}</h3>
-          </div>
-          <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-warning)] mb-1 relative z-10 tracking-tight tracking-[-0.02em]">{lowScore}%</p>
-        </div>
-        <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-          <div className="flex items-center gap-3 mb-4 relative z-10">
-            <div className="w-12 h-12 rounded-md-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--color-info) 15%, transparent)' }}>
-              <CheckCircle className="w-6 h-6 text-[var(--color-info)]" />
-            </div>
-            <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">{t("pass_rate", "Pass Rate")}</h3>
-          </div>
-          <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-info)] mb-1 relative z-10 tracking-tight tracking-[-0.02em]">{passRate}%</p>
-        </div>
-      </div>
 
-      {/* Filters */}
-      <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col md:flex-row gap-4 items-center justify-between">
-        <div className="relative flex-1 w-full max-w-md">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-secondary)]" />
-          <Input
-            placeholder="Search by student, subject, or exam..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="pl-12 rounded-full border-primary/30 bg-[var(--color-surface-1)] h-11"
-          />
-        </div>
-        <div className="flex gap-2 flex-wrap items-center">
-          <select 
-            value={filterTerm} 
-            onChange={e => setFilterTerm(e.target.value)}
-            className="h-10 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <option value="All">All Terms</option>
-            {TERMS.map(t => <option key={t} value={t}>{t}</option>)}
-          </select>
-          <select 
-            value={filterClass} 
-            onChange={e => setFilterClass(e.target.value)}
-            className="h-10 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <option value="All">All Classes</option>
-            {classList.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-          <select 
-            value={filterSubject} 
-            onChange={e => setFilterSubject(e.target.value)}
-            className="h-10 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <option value="All">All Subjects</option>
-            {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
-          </select>
-        </div>
-      </div>
-
-      {/* Spreadsheet Table */}
-      <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
-        <div className="overflow-x-auto">
-          {isLoading ? (
-            <div className="py-12 text-center text-[var(--primary)] font-semibold">{t("loading", "Loading...")}</div>
-          ) : filtered.length === 0 ? (
-            <div className="py-16 text-center bg-[var(--color-surface-1)] border-t border-primary/20">
-              <FileSpreadsheet className="w-12 h-12 mx-auto mb-4 text-[var(--color-text-tertiary)]" />
-              <p className="font-semibold text-lg text-[var(--color-text-primary)]">{t("no_grade_entries_found", "No data")}</p>
-              <p className="text-sm text-[var(--color-text-secondary)] mt-1">{t("add_a_grade_entry_using_the_bu", "Enter grades using the Quick Add button.")}</p>
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div className={cardStyle}>
+            <div className="flex items-center gap-4 mb-4 relative z-10">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+                <BarChart3 className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <h3 className="font-semibold text-zinc-500 text-sm">{t("average", "Average")}</h3>
             </div>
-          ) : (
-            <table className="w-full text-sm">
-              <thead className="bg-[var(--color-surface-1)]/50 border-b border-primary/20">
-                <tr>
-                  {['Student', 'Class', 'Term', 'Subject', 'Exam', 'Score', 'Grade', 'Remarks', ''].map(h => (
-                    <th key={h} className="px-6 py-4 text-left text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)] tracking-[0.04em]">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-primary/10">
-                {filtered.map((g) => (
-                  <tr key={g.id} className="hover:bg-[var(--color-surface-2)] transition-colors">
-                    <td className="px-6 py-4 font-medium text-[var(--color-text-primary)]">{g.student_name}</td>
-                    <td className="px-6 py-4 font-medium text-[var(--color-text-secondary)]">{g.class_name}</td>
-                    <td className="px-6 py-4 text-[var(--color-text-secondary)]">{g.term}</td>
-                    <td className="px-6 py-4 text-[var(--color-text-secondary)]">{g.subject}</td>
-                    <td className="px-6 py-4 text-[var(--color-text-primary)] font-medium">{g.exam_name}</td>
-                    <td className="px-6 py-4 font-semibold text-[var(--color-text-primary)]">
-                      {g.score} <span className="text-[var(--color-text-tertiary)] text-xs font-normal tracking-[0.04em]">/ {g.max_score}</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center justify-center px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[var(--tracking-widest)] rounded-full ${GRADE_COLORS[g.grade] || 'bg-[var(--color-surface-2)] text-[var(--color-text-secondary)]'}`}>
-                        {g.grade}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-[var(--color-text-secondary)] truncate max-w-[150px]" title={g.remarks}>{g.remarks}</td>
-                    <td className="px-6 py-4 text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 rounded-full text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)]">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-40 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-[var(--radius-lg)]">
-                          <DropdownMenuItem className="cursor-pointer" onClick={() => setViewDetails(g)}>{t("view_details", "View Details")}</DropdownMenuItem>
-                          <DropdownMenuItem className="cursor-pointer" onClick={() => {
-                            setEditingId(g.id);
-                            setFormData({
-                              student_id: g.student_id,
-                              student_name: g.student_name,
-                              class_name: g.class_name,
-                              subject: g.subject,
-                              exam_name: g.exam_name,
-                              term: g.term,
-                              score: g.score,
-                              max_score: g.max_score,
-                              remarks: g.remarks,
-                              date: g.date
-                            });
-                            setShowModal(true);
-                          }}>{t("edit", "Edit")}</DropdownMenuItem>
-                          <DropdownMenuItem className="text-[var(--color-destructive)] focus:text-[var(--color-destructive)] cursor-pointer" onClick={() => setDeleteTargetId(g.id)}>{t("delete", "Delete")}</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+            <p className="text-4xl font-semibold text-[#1F1E1C] dark:text-zinc-50 mb-1 tracking-tight">{avgScore}%</p>
+          </div>
+          <div className={cardStyle}>
+            <div className="flex items-center gap-4 mb-4 relative z-10">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <h3 className="font-semibold text-zinc-500 text-sm">{t("highest", "Highest")}</h3>
+            </div>
+            <p className="text-4xl font-semibold text-emerald-600 dark:text-emerald-400 mb-1 tracking-tight">{highScore}%</p>
+          </div>
+          <div className={cardStyle}>
+            <div className="flex items-center gap-4 mb-4 relative z-10">
+              <div className="w-12 h-12 rounded-2xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                <Award className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+              </div>
+              <h3 className="font-semibold text-zinc-500 text-sm">{t("lowest", "Lowest")}</h3>
+            </div>
+            <p className="text-4xl font-semibold text-orange-600 dark:text-orange-400 mb-1 tracking-tight">{lowScore}%</p>
+          </div>
+          <div className={cardStyle}>
+            <div className="flex items-center gap-4 mb-4 relative z-10">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <h3 className="font-semibold text-zinc-500 text-sm">{t("pass_rate", "Pass Rate")}</h3>
+            </div>
+            <p className="text-4xl font-semibold text-indigo-600 dark:text-indigo-400 mb-1 tracking-tight">{passRate}%</p>
+          </div>
         </div>
-      </div>
 
-      {/* Add Grade Modal */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 font-sans">
-          <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] w-full max-w-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl">
-            <h2 className="text-xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight">
-              {editingId ? 'Edit Grade Entry' : 'Quick Add Grade'}
-            </h2>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Class</label>
-                  <select
-                    value={formData.class_name}
-                    onChange={e => setFormData({ ...formData, class_name: e.target.value, student_id: '', student_name: '' })}
-                    className="flex h-10 w-full rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  >
-                    <option value="">Select Class...</option>
-                    {classList.map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Student</label>
-                  <select
-                    value={formData.student_id}
-                    onChange={e => handleStudentSelect(e.target.value)}
-                    disabled={!formData.class_name}
-                    className="flex h-10 w-full rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
-                  >
-                    <option value="">Select Student...</option>
-                    {availableStudents.map(s => (
-                      <option key={s.id} value={s.id}>{s.name}</option>
+        {/* Filters */}
+        <div className={`${cardStyle} flex flex-col md:flex-row gap-4 items-center justify-between`}>
+          <div className="relative flex-1 w-full max-w-md">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+            <Input
+              placeholder="Search by student, subject, or exam..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className={`${inputStyle} pl-12 h-12`}
+            />
+          </div>
+          <div className="flex gap-3 flex-wrap items-center">
+            <select 
+              value={filterTerm} 
+              onChange={e => setFilterTerm(e.target.value)}
+              className={inputStyle}
+            >
+              <option value="All">All Terms</option>
+              {TERMS.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+            <select 
+              value={filterClass} 
+              onChange={e => setFilterClass(e.target.value)}
+              className={inputStyle}
+            >
+              <option value="All">All Classes</option>
+              {classList.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <select 
+              value={filterSubject} 
+              onChange={e => setFilterSubject(e.target.value)}
+              className={inputStyle}
+            >
+              <option value="All">All Subjects</option>
+              {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+        </div>
+
+        {/* Spreadsheet Table */}
+        <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] overflow-hidden">
+          <div className="overflow-x-auto">
+            {isLoading ? (
+              <div className="py-12 text-center text-indigo-600 font-semibold">{t("loading", "Loading...")}</div>
+            ) : filtered.length === 0 ? (
+              <div className="py-16 text-center bg-[#FCFAF7] dark:bg-zinc-950 border-t border-[#F0EBE1] dark:border-zinc-800">
+                <FileSpreadsheet className="w-12 h-12 mx-auto mb-4 text-zinc-300" />
+                <p className="font-semibold text-xl text-[#1F1E1C] dark:text-zinc-50">{t("no_grade_entries_found", "No data")}</p>
+                <p className="text-zinc-500 font-medium mt-1">{t("add_a_grade_entry_using_the_bu", "Enter grades using the Quick Add button.")}</p>
+              </div>
+            ) : (
+              <table className="w-full text-sm text-left">
+                <thead className="bg-[#FCFAF7] dark:bg-zinc-950 border-b border-[#F0EBE1] dark:border-zinc-800">
+                  <tr>
+                    {['Student', 'Class', 'Term', 'Subject', 'Exam', 'Score', 'Grade', 'Remarks', ''].map(h => (
+                      <th key={h} className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-zinc-500">{h}</th>
                     ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Term</label>
-                  <select
-                    value={formData.term}
-                    onChange={e => setFormData({ ...formData, term: e.target.value })}
-                    className="flex h-10 w-full rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  >
-                    {TERMS.map(t => <option key={t} value={t}>{t}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Exam Name</label>
-                  <select
-                    value={formData.exam_name}
-                    onChange={e => setFormData({ ...formData, exam_name: e.target.value })}
-                    className="flex h-10 w-full rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  >
-                    <option value="">Select Exam...</option>
-                    {examList.map(e => <option key={e} value={e}>{e}</option>)}
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Subject</label>
-                  <select
-                    value={formData.subject}
-                    onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                    className="flex h-10 w-full rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  >
-                    {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Date</label>
-                  <Input
-                    type="date"
-                    value={formData.date}
-                    onChange={e => setFormData({ ...formData, date: e.target.value })}
-                    className="rounded-md-[var(--radius-lg)]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 bg-[var(--color-surface-1)] p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-[var(--radius-lg)]">
-                <div>
-                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 text-center tracking-[0.04em]">Score</label>
-                  <Input
-                    type="number"
-                    value={formData.score}
-                    onChange={e => setFormData({ ...formData, score: e.target.value })}
-                    className="rounded-md-[var(--radius-lg)] text-center font-semibold text-lg h-12"
-                    placeholder="0"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 text-center tracking-[0.04em]">Max Score</label>
-                  <Input
-                    type="number"
-                    value={formData.max_score}
-                    onChange={e => setFormData({ ...formData, max_score: e.target.value })}
-                    className="rounded-md-[var(--radius-lg)] text-center font-semibold text-lg h-12"
-                    placeholder="100"
-                  />
-                </div>
-              </div>
-
-              {formData.score !== '' && (
-                <div className="flex items-center justify-center gap-3 py-3 bg-[var(--color-surface-2)] rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
-                  <span className="text-xs font-semibold text-[var(--color-text-secondary)] tracking-[0.04em]">Grade:</span>
-                  <span className={`inline-flex items-center justify-center px-3 py-1 font-semibold text-base rounded-full ${GRADE_COLORS[liveGrade]}`}>
-                    {liveGrade}
-                  </span>
-                  <span className="text-sm font-medium text-[var(--color-text-tertiary)]">
-                    ({formData.max_score > 0 ? Math.round((parseFloat(formData.score) / parseFloat(formData.max_score)) * 100) : 0}%)
-                  </span>
-                </div>
-              )}
-
-              <div>
-                <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Remarks (Optional)</label>
-                <Input
-                  value={formData.remarks}
-                  onChange={e => setFormData({ ...formData, remarks: e.target.value })}
-                  placeholder={getGradeRemarks(liveGrade)}
-                  className="rounded-md-[var(--radius-lg)]"
-                />
-              </div>
-
-            </div>
-            <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="flex-1 rounded-full border-primary/30" onClick={() => { setShowModal(false); setEditingId(null); setFormData(defaultForm); }} disabled={mutateRecord.isPending}>
-                Cancel
-              </Button>
-              <Button className="flex-1 rounded-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white" onClick={handleAdd} disabled={mutateRecord.isPending}>
-                {mutateRecord.isPending ? 'Saving...' : 'Save'}
-              </Button>
-            </div>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#F0EBE1] dark:divide-zinc-800">
+                  {filtered.map((g) => (
+                    <tr key={g.id} className="hover:bg-[#FCFAF7] dark:hover:bg-zinc-800/50 transition-colors">
+                      <td className="px-6 py-5 font-semibold text-[#1F1E1C] dark:text-zinc-50">{g.student_name}</td>
+                      <td className="px-6 py-5 font-medium text-zinc-600 dark:text-zinc-400">{g.class_name}</td>
+                      <td className="px-6 py-5 text-zinc-600 dark:text-zinc-400">{g.term}</td>
+                      <td className="px-6 py-5 font-medium text-zinc-600 dark:text-zinc-400">{g.subject}</td>
+                      <td className="px-6 py-5 font-semibold text-[#1F1E1C] dark:text-zinc-50">{g.exam_name}</td>
+                      <td className="px-6 py-5 font-bold text-[#1F1E1C] dark:text-zinc-50 text-base">
+                        {g.score} <span className="text-zinc-400 text-xs font-medium">/ {g.max_score}</span>
+                      </td>
+                      <td className="px-6 py-5">
+                        <span className={`inline-flex items-center justify-center px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full ${GRADE_COLORS[g.grade] || 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400'}`}>
+                          {g.grade}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5 text-zinc-500 font-medium truncate max-w-[150px]" title={g.remarks}>{g.remarks}</td>
+                      <td className="px-6 py-5 text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 rounded-xl text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-40 bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-xl p-2 shadow-xl">
+                            <DropdownMenuItem className="cursor-pointer font-medium rounded-lg" onClick={() => setViewDetails(g)}>{t("view_details", "View Details")}</DropdownMenuItem>
+                            <DropdownMenuItem className="cursor-pointer font-medium rounded-lg" onClick={() => {
+                              setEditingId(g.id);
+                              setFormData({
+                                student_id: g.student_id,
+                                student_name: g.student_name,
+                                class_name: g.class_name,
+                                subject: g.subject,
+                                exam_name: g.exam_name,
+                                term: g.term,
+                                score: g.score,
+                                max_score: g.max_score,
+                                remarks: g.remarks,
+                                date: g.date
+                              });
+                              setShowModal(true);
+                            }}>{t("edit", "Edit")}</DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600 focus:text-red-600 cursor-pointer font-medium rounded-lg" onClick={() => setDeleteTargetId(g.id)}>{t("delete", "Delete")}</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
-      )}
 
-      <ConfirmationModal
-        isOpen={deleteTargetId !== null}
-        onClose={() => setDeleteTargetId(null)}
-        onConfirm={handleDelete}
-        title="Delete Record"
-        message="Permanently remove this transcript entry?"
-      />
-      
-      <Sheet open={!!viewDetails} onOpenChange={(open) => !open && setViewDetails(null)}>
-        <SheetContent className="overflow-y-auto w-full sm:max-w-md bg-[var(--color-surface-0)] border-l border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl">
-          <SheetHeader>
-            <SheetTitle className="text-xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight">{t("grade_details", "Transcript")}</SheetTitle>
-          </SheetHeader>
-          {viewDetails && (
-            <div className="mt-8 space-y-4">
-              <div className="bg-[var(--color-surface-1)] p-6 rounded-md-[var(--radius-xl)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/20">
-                <h3 className="text-2xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight mb-1 tracking-[-0.02em]">{viewDetails.student_name}</h3>
-                <p className="text-[var(--primary)] font-semibold text-sm">{viewDetails.exam_name}</p>
-                <p className="text-[var(--color-text-secondary)] text-sm">{viewDetails.term}</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-[var(--color-surface-1)] p-4 rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
-                  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">Class</p>
-                  <p className="font-semibold text-[var(--color-text-primary)]">{viewDetails.class_name}</p>
-                </div>
-                <div className="bg-[var(--color-surface-1)] p-4 rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
-                  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">Subject</p>
-                  <p className="font-semibold text-[var(--color-text-primary)]">{viewDetails.subject}</p>
-                </div>
-                <div className="bg-[var(--color-surface-1)] p-4 rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
-                  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">Date</p>
-                  <p className="font-semibold text-[var(--color-text-primary)]">{viewDetails.date}</p>
-                </div>
-                <div className="bg-[var(--color-surface-1)] p-4 rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
-                  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">Remarks</p>
-                  <p className="font-semibold text-[var(--color-text-primary)] truncate" title={viewDetails.remarks}>{viewDetails.remarks}</p>
-                </div>
-                <div className="bg-[var(--primary)]/10 p-4 rounded-md-[var(--radius-lg)] flex flex-col justify-center text-[var(--primary)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/20 col-span-2">
-                  <p className="text-[11px] font-semibold uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">Grade</p>
-                  <p className="font-semibold text-3xl tracking-[-0.02em]">{viewDetails.grade}</p>
-                </div>
-                <div className="bg-[var(--color-surface-0)] p-6 rounded-md-[var(--radius-xl)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 col-span-2 flex justify-between items-center shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
+        {/* Add Grade Modal */}
+        {showModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+            <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] w-full max-w-xl p-8 space-y-6 max-h-[90vh] overflow-y-auto shadow-2xl">
+              <h2 className="text-2xl font-semibold text-[#1F1E1C] dark:text-zinc-50 tracking-tight">
+                {editingId ? 'Edit Grade Entry' : 'Quick Add Grade'}
+              </h2>
+              <div className="space-y-5">
+                <div className="grid grid-cols-2 gap-5">
                   <div>
-                    <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">{t("score", "Score")}</p>
-                    <p className="font-display font-semibold text-3xl text-[var(--color-text-primary)] tracking-[-0.02em]">
-                      {viewDetails.score} <span className="text-[var(--color-text-secondary)] text-xl font-medium">/ {viewDetails.max_score}</span>
-                    </p>
+                    <label className="text-xs font-bold text-zinc-500 block mb-2 uppercase tracking-widest">Class</label>
+                    <select
+                      value={formData.class_name}
+                      onChange={e => setFormData({ ...formData, class_name: e.target.value, student_id: '', student_name: '' })}
+                      className={inputStyle}
+                    >
+                      <option value="">Select Class...</option>
+                      {classList.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
                   </div>
-                  <div className="text-right">
-                    <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">{t("pct", "Percent")}</p>
-                    <p className="font-display font-semibold text-3xl text-[var(--primary)] tracking-[-0.02em]">
-                      {viewDetails.max_score > 0 ? Math.round((viewDetails.score / viewDetails.max_score) * 100) : 0}%
-                    </p>
+                  <div>
+                    <label className="text-xs font-bold text-zinc-500 block mb-2 uppercase tracking-widest">Student</label>
+                    <select
+                      value={formData.student_id}
+                      onChange={e => handleStudentSelect(e.target.value)}
+                      disabled={!formData.class_name}
+                      className={`${inputStyle} disabled:opacity-50`}
+                    >
+                      <option value="">Select Student...</option>
+                      {availableStudents.map(s => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
+
+                <div className="grid grid-cols-2 gap-5">
+                  <div>
+                    <label className="text-xs font-bold text-zinc-500 block mb-2 uppercase tracking-widest">Term</label>
+                    <select
+                      value={formData.term}
+                      onChange={e => setFormData({ ...formData, term: e.target.value })}
+                      className={inputStyle}
+                    >
+                      {TERMS.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-zinc-500 block mb-2 uppercase tracking-widest">Exam Name</label>
+                    <select
+                      value={formData.exam_name}
+                      onChange={e => setFormData({ ...formData, exam_name: e.target.value })}
+                      className={inputStyle}
+                    >
+                      <option value="">Select Exam...</option>
+                      {examList.map(e => <option key={e} value={e}>{e}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-5">
+                  <div>
+                    <label className="text-xs font-bold text-zinc-500 block mb-2 uppercase tracking-widest">Subject</label>
+                    <select
+                      value={formData.subject}
+                      onChange={e => setFormData({ ...formData, subject: e.target.value })}
+                      className={inputStyle}
+                    >
+                      {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-zinc-500 block mb-2 uppercase tracking-widest">Date</label>
+                    <Input
+                      type="date"
+                      value={formData.date}
+                      onChange={e => setFormData({ ...formData, date: e.target.value })}
+                      className={inputStyle}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-5 bg-[#FCFAF7] dark:bg-zinc-950 p-5 border border-[#F0EBE1] dark:border-zinc-800 rounded-2xl">
+                  <div>
+                    <label className="text-xs font-bold text-zinc-500 block mb-2 text-center uppercase tracking-widest">Score</label>
+                    <Input
+                      type="number"
+                      value={formData.score}
+                      onChange={e => setFormData({ ...formData, score: e.target.value })}
+                      className={`${inputStyle} text-center font-bold text-xl h-14`}
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-zinc-500 block mb-2 text-center uppercase tracking-widest">Max Score</label>
+                    <Input
+                      type="number"
+                      value={formData.max_score}
+                      onChange={e => setFormData({ ...formData, max_score: e.target.value })}
+                      className={`${inputStyle} text-center font-bold text-xl h-14`}
+                      placeholder="100"
+                    />
+                  </div>
+                </div>
+
+                {formData.score !== '' && (
+                  <div className="flex items-center justify-center gap-4 py-4 bg-white dark:bg-zinc-900 rounded-2xl border border-[#F0EBE1] dark:border-zinc-800">
+                    <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Grade:</span>
+                    <span className={`inline-flex items-center justify-center px-4 py-1.5 font-bold text-lg rounded-full ${GRADE_COLORS[liveGrade]}`}>
+                      {liveGrade}
+                    </span>
+                    <span className="text-sm font-semibold text-zinc-400">
+                      ({formData.max_score > 0 ? Math.round((parseFloat(formData.score) / parseFloat(formData.max_score)) * 100) : 0}%)
+                    </span>
+                  </div>
+                )}
+
+                <div>
+                  <label className="text-xs font-bold text-zinc-500 block mb-2 uppercase tracking-widest">Remarks (Optional)</label>
+                  <Input
+                    value={formData.remarks}
+                    onChange={e => setFormData({ ...formData, remarks: e.target.value })}
+                    placeholder={getGradeRemarks(liveGrade)}
+                    className={inputStyle}
+                  />
+                </div>
+
+              </div>
+              <div className="flex gap-4 pt-6">
+                <Button variant="outline" className={`${secondaryBtn} flex-1 h-12`} onClick={() => { setShowModal(false); setEditingId(null); setFormData(defaultForm); }} disabled={mutateRecord.isPending}>
+                  Cancel
+                </Button>
+                <Button className={`${primaryBtn} flex-1 h-12`} onClick={handleAdd} disabled={mutateRecord.isPending}>
+                  {mutateRecord.isPending ? 'Saving...' : 'Save'}
+                </Button>
               </div>
             </div>
-          )}
-        </SheetContent>
-      </Sheet>
+          </div>
+        )}
+
+        <ConfirmationModal
+          isOpen={deleteTargetId !== null}
+          onClose={() => setDeleteTargetId(null)}
+          onConfirm={handleDelete}
+          title="Delete Record"
+          message="Permanently remove this transcript entry?"
+        />
+        
+        <Sheet open={!!viewDetails} onOpenChange={(open) => !open && setViewDetails(null)}>
+          <SheetContent className="overflow-y-auto w-full sm:max-w-md bg-white dark:bg-zinc-900 border-l border-[#F0EBE1] dark:border-zinc-800 shadow-2xl p-8">
+            <SheetHeader>
+              <SheetTitle className="text-2xl font-semibold text-[#1F1E1C] dark:text-zinc-50 tracking-tight">{t("grade_details", "Transcript")}</SheetTitle>
+            </SheetHeader>
+            {viewDetails && (
+              <div className="mt-8 space-y-5">
+                <div className="bg-[#FCFAF7] dark:bg-zinc-950 p-6 rounded-2xl border border-[#F0EBE1] dark:border-zinc-800">
+                  <h3 className="text-2xl font-semibold text-[#1F1E1C] dark:text-zinc-50 tracking-tight mb-2">{viewDetails.student_name}</h3>
+                  <p className="text-indigo-600 dark:text-indigo-400 font-bold text-sm mb-1">{viewDetails.exam_name}</p>
+                  <p className="text-zinc-500 text-sm font-medium">{viewDetails.term}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-[#FCFAF7] dark:bg-zinc-950 p-5 rounded-2xl border border-[#F0EBE1] dark:border-zinc-800">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Class</p>
+                    <p className="font-semibold text-[#1F1E1C] dark:text-zinc-50 text-base">{viewDetails.class_name}</p>
+                  </div>
+                  <div className="bg-[#FCFAF7] dark:bg-zinc-950 p-5 rounded-2xl border border-[#F0EBE1] dark:border-zinc-800">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Subject</p>
+                    <p className="font-semibold text-[#1F1E1C] dark:text-zinc-50 text-base">{viewDetails.subject}</p>
+                  </div>
+                  <div className="bg-[#FCFAF7] dark:bg-zinc-950 p-5 rounded-2xl border border-[#F0EBE1] dark:border-zinc-800">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Date</p>
+                    <p className="font-semibold text-[#1F1E1C] dark:text-zinc-50 text-base">{viewDetails.date}</p>
+                  </div>
+                  <div className="bg-[#FCFAF7] dark:bg-zinc-950 p-5 rounded-2xl border border-[#F0EBE1] dark:border-zinc-800">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Remarks</p>
+                    <p className="font-semibold text-[#1F1E1C] dark:text-zinc-50 text-base truncate" title={viewDetails.remarks}>{viewDetails.remarks}</p>
+                  </div>
+                  <div className="bg-indigo-50 dark:bg-indigo-900/20 p-5 rounded-2xl flex flex-col justify-center border border-indigo-100 dark:border-indigo-800/50 col-span-2 text-center">
+                    <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mb-2">Final Grade</p>
+                    <p className="font-bold text-5xl text-indigo-600 dark:text-indigo-400 tracking-tight">{viewDetails.grade}</p>
+                  </div>
+                  <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-[#F0EBE1] dark:border-zinc-800 col-span-2 flex justify-between items-center shadow-sm">
+                    <div>
+                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">{t("score", "Score")}</p>
+                      <p className="font-semibold text-3xl text-[#1F1E1C] dark:text-zinc-50 tracking-tight">
+                        {viewDetails.score} <span className="text-zinc-400 text-xl font-medium">/ {viewDetails.max_score}</span>
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">{t("pct", "Percent")}</p>
+                      <p className="font-semibold text-3xl text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-orange-500 tracking-tight">
+                        {viewDetails.max_score > 0 ? Math.round((viewDetails.score / viewDetails.max_score) * 100) : 0}%
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </SheetContent>
+        </Sheet>
+      </div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import "./SchoolTheme.css";
 import { useTranslation } from 'react-i18next';
 import { BookOpen, Users, Search, Plus, Trash2, Edit, MoreVertical, LayoutGrid, X } from 'lucide-react';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
@@ -135,15 +136,15 @@ export default function Classes() {
   };
 
   return (
-    <div className="space-y-6 font-dmsans p-4 bg-[#F0F4FF] dark:bg-blue-900/20 min-h-screen">
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 bg-emerald-600 p-8 border-4 border-emerald-900 text-white shadow-lg">
+    <div className="school-theme-root space-y-6 font-outfit p-6 bg-[#FCFAF7] dark:bg-zinc-950 min-h-screen text-[#1F1E1C] dark:text-zinc-50">
+      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] p-8 text-[#1F1E1C] dark:text-zinc-50 shadow-sm">
         <div>
-          <h1 className="text-4xl font-black uppercase tracking-widest border-b-4 border-emerald-400 inline-block pb-2 mb-4">Classes & Cohorts</h1>
-          <p className="text-emerald-100 font-semibold uppercase tracking-wider">Manage class configurations and capacities</p>
+          <h1 className="text-4xl font-black uppercase tracking-widest border-b-4 border-orange-400 inline-block pb-2 mb-4">Classes & Cohorts</h1>
+          <p className="text-muted-foreground font-semibold uppercase tracking-wider">Manage class configurations and capacities</p>
         </div>
         <div className="flex gap-6">
           <div className="text-right">
-            <p className="text-sm font-black text-emerald-300 uppercase tracking-widest">Total Classes</p>
+            <p className="text-sm font-black text-indigo-600 uppercase tracking-widest">Total Classes</p>
             <p className="text-4xl font-black">{classes.length}</p>
           </div>
         </div>
@@ -156,10 +157,10 @@ export default function Classes() {
             placeholder="Search classes or teachers..." 
             value={search} 
             onChange={e => setSearch(e.target.value)} 
-            className="pl-10 bg-[#F0F4FF] dark:bg-blue-900/20 border-emerald-200 focus-visible:ring-emerald-500 font-semibold text-emerald-900 h-12" 
+            className="pl-10 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 h-12" 
           />
         </div>
-        <Button onClick={handleOpenAdd} className="bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md border-2 border-emerald-800 rounded-none font-black uppercase tracking-widest h-12 px-6">
+        <Button onClick={handleOpenAdd} className="bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02] shadow-[0_4px_12px_rgba(99,102,241,0.15)]">
           <Plus className="w-5 h-5 mr-2" /> New Class
         </Button>
       </motion.div>
@@ -171,7 +172,7 @@ export default function Classes() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredClasses.map(c => (
-            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} key={c.id} className="bg-white border-2 border-emerald-300 p-5 relative group flex flex-col hover:shadow-xl transition-all duration-200">
+            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} key={c.id} className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 relative group flex flex-col">
               <div className="absolute top-4 right-4 z-10">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -223,7 +224,7 @@ export default function Classes() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-emerald-900/60 backdrop-blur-sm p-4">
-          <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-white border-4 border-emerald-500 w-full max-w-lg p-6 space-y-6 rounded-none max-h-[90vh] overflow-y-auto relative">
+          <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-2xl w-full max-w-lg p-6 space-y-6 rounded-none max-h-[90vh] overflow-y-auto relative">
             <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-emerald-800 hover:bg-emerald-100 p-1">
               <X className="w-6 h-6" />
             </button>
@@ -237,7 +238,7 @@ export default function Classes() {
                 <select 
                   value={formData.level} 
                   onChange={e => handleLevelChange(e.target.value)} 
-                  className="mt-1 w-full border-2 border-emerald-200 bg-[#F0F4FF] px-3 py-2.5 text-sm font-bold text-emerald-900 rounded-none focus:outline-none focus:border-emerald-500 h-11"
+                  className="mt-1 w-full rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 px-3 py-2.5 h-11"
                 >
                   {LEVEL_OPTIONS.map(lvl => <option key={lvl} value={lvl}>{lvl}</option>)}
                 </select>
@@ -248,7 +249,7 @@ export default function Classes() {
                 <select 
                   value={formData.name} 
                   onChange={e => setFormData({...formData, name: e.target.value})} 
-                  className="mt-1 w-full border-2 border-emerald-200 bg-[#F0F4FF] px-3 py-2.5 text-sm font-bold text-emerald-900 rounded-none focus:outline-none focus:border-emerald-500 h-11"
+                  className="mt-1 w-full rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 px-3 py-2.5 h-11"
                 >
                   {PREDEFINED_CLASSES[formData.level]?.map(name => <option key={name} value={name}>{name}</option>)}
                 </select>
@@ -259,7 +260,7 @@ export default function Classes() {
                 <select 
                   value={formData.class_teacher} 
                   onChange={e => setFormData({...formData, class_teacher: e.target.value})} 
-                  className="mt-1 w-full border-2 border-emerald-200 bg-[#F0F4FF] px-3 py-2.5 text-sm font-bold text-emerald-900 rounded-none focus:outline-none focus:border-emerald-500 h-11"
+                  className="mt-1 w-full rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 px-3 py-2.5 h-11"
                 >
                   <option value="">-- Unassigned --</option>
                   {teachers.map(t => <option key={t.id} value={t.full_name || t.name}>{t.full_name || t.name}</option>)}
@@ -271,7 +272,7 @@ export default function Classes() {
                 <Input 
                   value={formData.room} 
                   onChange={e => setFormData({...formData, room: e.target.value})} 
-                  className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] rounded-none font-semibold text-emerald-900 h-11" 
+                  className="mt-1 w-full rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 px-3 py-2.5 h-11" 
                   placeholder="e.g. Room 101"
                 />
               </div>
@@ -282,15 +283,15 @@ export default function Classes() {
                   type="number"
                   value={formData.capacity} 
                   onChange={e => setFormData({...formData, capacity: e.target.value})} 
-                  className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] rounded-none font-semibold text-emerald-900 h-11" 
+                  className="mt-1 w-full rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 px-3 py-2.5 h-11" 
                   placeholder="e.g. 40"
                 />
               </div>
             </div>
 
             <div className="flex gap-4 pt-6 border-t-4 border-emerald-200">
-              <Button variant="outline" className="flex-1 rounded-none border-2 border-emerald-300 font-bold text-emerald-800 hover:bg-[#F0F4FF] uppercase tracking-widest h-12" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 rounded-none bg-[#1E3A8A] hover:bg-[#172554] text-white font-black uppercase tracking-widest border-2 border-emerald-800 h-12" onClick={handleSave} disabled={mutate.isPending}>
+              <Button variant="outline" className="flex-1 bg-white dark:bg-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-700 text-[#1F1E1C] dark:text-zinc-50 border border-[#E4DFD5] dark:border-zinc-700 rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02]" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button className="flex-1 bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02] shadow-[0_4px_12px_rgba(99,102,241,0.15)]" onClick={handleSave} disabled={mutate.isPending}>
                 {mutate.isPending ? 'Saving...' : 'Save Class'}
               </Button>
             </div>

@@ -10,6 +10,7 @@ import { toast } from 'react-hot-toast';
 import { format } from "date-fns";
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import './SchoolTheme.css';
 
 export default function Notices() {
   const { t } = useTranslation();
@@ -71,35 +72,40 @@ export default function Notices() {
 
   const selectedNotice = notices.find(n => n.id === selectedId);
 
+  const cardStyle = "bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)]";
+  const primaryBtn = "bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02] shadow-[0_4px_12px_rgba(99,102,241,0.15)]";
+  const secondaryBtn = "bg-white dark:bg-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-700 text-[#1F1E1C] dark:text-zinc-50 border border-[#E4DFD5] dark:border-zinc-700 rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02]";
+  const inputStyle = "rounded-xl border-[1.5px] border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none w-full";
+
   return (
-    <div className="h-[calc(100vh-80px)] flex flex-col font-dmsans bg-[#F0F4FF] dark:bg-blue-900/20 rounded-3xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 max-w-7xl mx-auto">
-      <div className="bg-emerald-600 text-white p-6 md:p-8 flex items-center justify-between">
+    <div className={`school-theme-root h-[calc(100vh-80px)] flex flex-col font-sans bg-[#FCFAF7] dark:bg-zinc-950 ${cardStyle} overflow-hidden max-w-7xl mx-auto`}>
+      <div className="bg-white dark:bg-zinc-900 border-b border-[#F0EBE1] dark:border-zinc-800 p-6 md:p-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight tracking-[-0.02em]">{t("noticeboard", "Noticeboard")}</h1>
-          <p className="text-emerald-100 mt-1">{t("manage_announcements", "Manage school announcements and communications")}</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-[#1F1E1C] dark:text-zinc-50">{t("noticeboard", "Noticeboard")}</h1>
+          <p className="text-zinc-500 font-medium mt-1">{t("manage_announcements", "Manage school announcements and communications")}</p>
         </div>
         <Button 
           onClick={() => { setSelectedId(null); setIsEditing(true); setFormData({title: '', content: '', audience: 'All', category: 'General', priority: 'Normal', date: '', expiry_date: '', posted_by: ''}); }} 
-          className="bg-emerald-500/10 hover:bg-emerald-400 text-white border-[0.5px] border-emerald-400 rounded-xl px-6 h-12 text-lg font-semibold transition-all"
+          className={primaryBtn}
         >
           <Plus className="w-5 h-5 mr-2" /> {t("new_notice", "New Notice")}
         </Button>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        <div className="w-full md:w-1/3 bg-white border-r border-emerald-100 flex flex-col">
-          <div className="p-4 border-b border-emerald-100 bg-[#F0F4FF] dark:bg-blue-900/20/50 space-y-3">
+        <div className="w-full md:w-1/3 bg-white dark:bg-zinc-900 border-r border-[#F0EBE1] dark:border-zinc-800 flex flex-col">
+          <div className="p-4 border-b border-[#F0EBE1] dark:border-zinc-800 bg-[#FCFAF7] dark:bg-zinc-950 space-y-3">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#1E3A8A] dark:text-blue-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
               <Input 
                 placeholder="Search notices..." 
                 value={search} 
                 onChange={e => setSearch(e.target.value)} 
-                className="pl-12 bg-white border-emerald-200 focus-visible:ring-emerald-500 rounded-2xl h-12" 
+                className={`${inputStyle} pl-12 h-12`} 
               />
             </div>
             <div className="flex gap-2">
-              <select value={selectedCategory} onChange={e=>setSelectedCategory(e.target.value)} className="flex-1 rounded-xl border border-emerald-200 bg-white p-2 text-sm text-emerald-900">
+              <select value={selectedCategory} onChange={e=>setSelectedCategory(e.target.value)} className={`${inputStyle} flex-1 p-2 h-11 text-sm text-[#1F1E1C] dark:text-zinc-50`}>
                 <option value="All">All Categories</option>
                 <option value="General">General</option>
                 <option value="Academic">Academic</option>
@@ -107,7 +113,7 @@ export default function Notices() {
                 <option value="Health">Health</option>
                 <option value="Emergency">Emergency</option>
               </select>
-              <select value={selectedAudienceFilter} onChange={e=>setSelectedAudienceFilter(e.target.value)} className="flex-1 rounded-xl border border-emerald-200 bg-white p-2 text-sm text-emerald-900">
+              <select value={selectedAudienceFilter} onChange={e=>setSelectedAudienceFilter(e.target.value)} className={`${inputStyle} flex-1 p-2 h-11 text-sm text-[#1F1E1C] dark:text-zinc-50`}>
                 <option value="All">All Audience</option>
                 <option value="Students">Students</option>
                 <option value="Teachers">Teachers</option>
@@ -115,13 +121,13 @@ export default function Notices() {
               </select>
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar bg-[#FCFAF7] dark:bg-zinc-950">
             {isLoading ? (
-              <div className="p-4 text-center text-[#1E3A8A] dark:text-blue-400 font-semibold">{t("loading", "Loading...")}</div>
+              <div className="p-4 text-center text-indigo-600 font-semibold">{t("loading", "Loading...")}</div>
             ) : filtered.length === 0 ? (
-              <div className="p-10 text-center text-emerald-400">
+              <div className="p-10 text-center text-zinc-400">
                 <Inbox className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p className="font-semibold text-lg">{t("no_notices", "No notices found")}</p>
+                <p className="font-semibold text-lg text-zinc-500">{t("no_notices", "No notices found")}</p>
               </div>
             ) : (
               filtered.map(n => (
@@ -129,26 +135,26 @@ export default function Notices() {
                   whileHover={{ scale: 1.02 }}
                   key={n.id} 
                   onClick={() => { setSelectedId(n.id); setIsEditing(false); }}
-                  className={`p-5 rounded-2xl cursor-pointer border-2 transition-all relative overflow-hidden ${selectedId === n.id ? 'bg-[#F0F4FF] dark:bg-blue-900/20 border-emerald-400' : 'bg-white border-emerald-100 hover:bg-[#F0F4FF] dark:bg-blue-900/20'}`}
+                  className={`p-5 rounded-[1.5rem] cursor-pointer border transition-all relative overflow-hidden ${selectedId === n.id ? 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800/50' : 'bg-white dark:bg-zinc-900 border-[#F0EBE1] dark:border-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-800/50'}`}
                 >
-                  <div className={`absolute top-0 right-0 px-3 py-1 rounded-bl-lg text-xs font-bold text-white ${
-                    n.priority === 'Urgent' ? 'bg-red-500 animate-pulse' : n.priority === 'Important' ? 'bg-orange-500' : 'bg-gray-400'
+                  <div className={`absolute top-0 right-0 px-3 py-1 rounded-bl-xl text-[10px] font-bold text-white uppercase tracking-widest ${
+                    n.priority === 'Urgent' ? 'bg-red-500 animate-pulse' : n.priority === 'Important' ? 'bg-orange-500' : 'bg-zinc-400'
                   }`}>
                     {n.priority}
                   </div>
-                  <h3 className="font-extrabold text-emerald-900 line-clamp-1 text-lg pr-12">{n.title}</h3>
+                  <h3 className="font-semibold text-[#1F1E1C] dark:text-zinc-50 line-clamp-1 text-lg pr-12">{n.title}</h3>
                   <div className="flex gap-2 mt-2">
-                    <span className="text-xs font-semibold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">{n.category}</span>
-                    <span className="text-xs font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wider">{n.audience}</span>
+                    <span className="text-[10px] font-bold bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400 px-2 py-0.5 rounded-full uppercase tracking-widest">{n.category}</span>
+                    <span className="text-[10px] font-bold bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 px-2 py-0.5 rounded-full uppercase tracking-widest">{n.audience}</span>
                   </div>
-                  <p className="text-sm text-emerald-500 mt-2 line-clamp-2 font-medium">{n.content}</p>
+                  <p className="text-sm text-zinc-500 mt-3 line-clamp-2 font-medium">{n.content}</p>
                 </motion.div>
               ))
             )}
           </div>
         </div>
 
-        <div className="hidden md:flex flex-1 bg-[#F0F4FF] dark:bg-blue-900/20 p-8 overflow-y-auto relative">
+        <div className="hidden md:flex flex-1 bg-[#FCFAF7] dark:bg-zinc-950 p-8 overflow-y-auto relative">
           <AnimatePresence mode="wait">
             {isEditing ? (
               <motion.div 
@@ -156,18 +162,18 @@ export default function Notices() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="bg-white rounded-3xl border-[0.5px] border-emerald-200 p-10 max-w-3xl mx-auto w-full"
+                className={`${cardStyle} p-10 max-w-3xl mx-auto w-full`}
               >
-                <h2 className="text-3xl font-extrabold text-emerald-900 mb-8 tracking-[-0.02em]">{selectedId ? 'Edit Notice' : 'Compose Notice'}</h2>
-                <div className="space-y-6 font-dmsans">
+                <h2 className="text-3xl font-semibold text-[#1F1E1C] dark:text-zinc-50 mb-8 tracking-tight">{selectedId ? 'Edit Notice' : 'Compose Notice'}</h2>
+                <div className="space-y-6">
                   <div>
-                    <label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide">Title</label>
-                    <Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="mt-2 border-emerald-200 focus-visible:ring-emerald-500 rounded-xl h-12 text-lg" placeholder="Notice title..." />
+                    <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2">Title</label>
+                    <Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className={`${inputStyle} h-12 text-lg px-4`} placeholder="Notice title..." />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide">Category</label>
-                      <select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="mt-2 w-full rounded-xl border border-emerald-200 bg-white px-4 py-3 text-lg text-emerald-900">
+                      <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2">Category</label>
+                      <select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className={`${inputStyle} h-12 px-4 text-base`}>
                         <option>General</option>
                         <option>Academic</option>
                         <option>Sports</option>
@@ -176,8 +182,8 @@ export default function Notices() {
                       </select>
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide">Audience</label>
-                      <select value={formData.audience} onChange={e => setFormData({...formData, audience: e.target.value})} className="mt-2 w-full rounded-xl border border-emerald-200 bg-white px-4 py-3 text-lg text-emerald-900">
+                      <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2">Audience</label>
+                      <select value={formData.audience} onChange={e => setFormData({...formData, audience: e.target.value})} className={`${inputStyle} h-12 px-4 text-base`}>
                         <option>All</option>
                         <option>Students</option>
                         <option>Teachers</option>
@@ -185,26 +191,26 @@ export default function Notices() {
                       </select>
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide">Priority</label>
-                      <select value={formData.priority} onChange={e => setFormData({...formData, priority: e.target.value})} className="mt-2 w-full rounded-xl border border-emerald-200 bg-white px-4 py-3 text-lg text-emerald-900">
+                      <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2">Priority</label>
+                      <select value={formData.priority} onChange={e => setFormData({...formData, priority: e.target.value})} className={`${inputStyle} h-12 px-4 text-base`}>
                         <option>Normal</option>
                         <option>Important</option>
                         <option>Urgent</option>
                       </select>
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide">Posted By</label>
-                      <Input value={formData.posted_by} onChange={e => setFormData({...formData, posted_by: e.target.value})} className="mt-2 border-emerald-200 focus-visible:ring-emerald-500 rounded-xl h-12" placeholder="e.g. Headmaster" />
+                      <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2">Posted By</label>
+                      <Input value={formData.posted_by} onChange={e => setFormData({...formData, posted_by: e.target.value})} className={`${inputStyle} h-12 px-4`} placeholder="e.g. Headmaster" />
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide">Content</label>
-                    <textarea value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})} className="mt-2 w-full rounded-xl border border-emerald-200 bg-white p-4 text-lg text-emerald-900 resize-none h-64 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Message content..." />
+                    <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2">Content</label>
+                    <textarea value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})} className={`${inputStyle} p-4 text-base resize-none h-64`} placeholder="Message content..." />
                   </div>
                 </div>
                 <div className="flex gap-4 mt-10">
-                  <Button variant="outline" className="flex-1 border-emerald-200 text-[#1E3A8A] dark:text-blue-400 hover:bg-[#F0F4FF] dark:bg-blue-900/20 rounded-xl h-14 text-lg font-semibold" onClick={() => setIsEditing(false)}>Cancel</Button>
-                  <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md transition-all rounded-xl h-14 text-lg font-semibold" onClick={handleSave}>
+                  <Button variant="outline" className={`${secondaryBtn} flex-1 h-14`} onClick={() => setIsEditing(false)}>Cancel</Button>
+                  <Button className={`${primaryBtn} flex-1 h-14 text-lg`} onClick={handleSave}>
                     {mutateRecord.isPending ? 'Publishing...' : 'Publish Notice'}
                   </Button>
                 </div>
@@ -215,25 +221,25 @@ export default function Notices() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="bg-white rounded-3xl border-[0.5px] border-emerald-200 p-10 max-w-3xl mx-auto w-full"
+                className={`${cardStyle} p-10 max-w-3xl mx-auto w-full`}
               >
-                <div className="flex justify-between items-start mb-8 pb-8 border-b border-emerald-100">
+                <div className="flex justify-between items-start mb-8 pb-8 border-b border-[#F0EBE1] dark:border-zinc-800">
                   <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className={`text-xs font-bold text-white px-2 py-1 rounded ${
-                        selectedNotice.priority === 'Urgent' ? 'bg-red-500 animate-pulse' : selectedNotice.priority === 'Important' ? 'bg-orange-500' : 'bg-gray-400'
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className={`text-[10px] font-bold text-white px-3 py-1 rounded-full uppercase tracking-widest ${
+                        selectedNotice.priority === 'Urgent' ? 'bg-red-500 animate-pulse' : selectedNotice.priority === 'Important' ? 'bg-orange-500' : 'bg-zinc-400'
                       }`}>{selectedNotice.priority}</span>
-                      <span className="text-sm font-semibold bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full uppercase tracking-wider">{selectedNotice.category}</span>
+                      <span className="text-[10px] font-bold bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-400 px-3 py-1 rounded-full uppercase tracking-widest">{selectedNotice.category}</span>
                     </div>
-                    <h2 className="text-4xl font-extrabold text-emerald-900 leading-tight tracking-[-0.02em]">{selectedNotice.title}</h2>
-                    <div className="flex items-center gap-4 mt-4">
-                      <span className="text-sm font-semibold bg-blue-100 text-blue-800 px-4 py-1.5 rounded-full uppercase tracking-wider">For: {selectedNotice.audience}</span>
-                      <span className="text-sm font-semibold text-emerald-500 flex items-center gap-2"><Calendar className="w-4 h-4" /> {selectedNotice.date ? format(new Date(selectedNotice.date), 'MMM d, yyyy') : 'No Date'}</span>
-                      {selectedNotice.posted_by && <span className="text-sm text-gray-500">By: {selectedNotice.posted_by}</span>}
+                    <h2 className="text-4xl font-semibold text-[#1F1E1C] dark:text-zinc-50 leading-tight tracking-tight">{selectedNotice.title}</h2>
+                    <div className="flex items-center gap-4 mt-4 flex-wrap">
+                      <span className="text-xs font-bold bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-300 px-4 py-1.5 rounded-full uppercase tracking-widest">For: {selectedNotice.audience}</span>
+                      <span className="text-sm font-semibold text-zinc-500 flex items-center gap-2"><Calendar className="w-4 h-4" /> {selectedNotice.date ? format(new Date(selectedNotice.date), 'MMM d, yyyy') : 'No Date'}</span>
+                      {selectedNotice.posted_by && <span className="text-sm font-medium text-zinc-400">By: {selectedNotice.posted_by}</span>}
                     </div>
                   </div>
                   <div className="flex gap-2 shrink-0">
-                    <Button variant="outline" size="icon" className="h-12 w-12 border-emerald-200 text-[#1E3A8A] rounded-xl" onClick={() => { 
+                    <Button variant="outline" size="icon" className="h-12 w-12 border-[#E4DFD5] dark:border-zinc-700 text-indigo-600 dark:text-indigo-400 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/30" onClick={() => { 
                       setFormData({ 
                         title: selectedNotice.title || '', 
                         content: selectedNotice.content || '', 
@@ -248,22 +254,22 @@ export default function Notices() {
                     }}>
                       <Edit2 className="w-5 h-5" />
                     </Button>
-                    <Button variant="outline" size="icon" className="h-12 w-12 border-red-200 text-red-600 hover:bg-red-50 rounded-xl" onClick={() => { if(window.confirm('Delete this notice?')) deleteRecord.mutate({ id: selectedNotice.id, recordType: 'school_notice' }, { onSuccess: () => setSelectedId(null) }); }}>
+                    <Button variant="outline" size="icon" className="h-12 w-12 border-red-200 text-red-600 hover:bg-red-50 dark:border-red-900/50 dark:hover:bg-red-900/20 rounded-xl" onClick={() => { if(window.confirm('Delete this notice?')) deleteRecord.mutate({ id: selectedNotice.id, recordType: 'school_notice' }, { onSuccess: () => setSelectedId(null) }); }}>
                       <Trash2 className="w-5 h-5" />
                     </Button>
                   </div>
                 </div>
-                <div className="prose prose-emerald prose-lg max-w-none">
-                  <p className="text-emerald-800 whitespace-pre-wrap leading-relaxed font-medium">{selectedNotice.content}</p>
+                <div className="prose prose-lg dark:prose-invert max-w-none">
+                  <p className="text-[#1F1E1C] dark:text-zinc-300 whitespace-pre-wrap leading-relaxed font-medium">{selectedNotice.content}</p>
                 </div>
               </motion.div>
             ) : (
-              <div className="h-full w-full flex flex-col items-center justify-center text-emerald-400">
-                <div className="bg-emerald-100 p-8 rounded-full mb-6">
-                  <Megaphone className="w-20 h-20 text-emerald-500" />
+              <div className="h-full w-full flex flex-col items-center justify-center text-zinc-400">
+                <div className="bg-indigo-50 dark:bg-indigo-900/20 p-8 rounded-[2rem] mb-6">
+                  <Megaphone className="w-20 h-20 text-indigo-400" />
                 </div>
-                <p className="text-2xl font-extrabold text-[#1E3A8A] tracking-[-0.02em]">Select a notice to read</p>
-                <p className="text-emerald-500 font-medium mt-2">Or compose a new one from the top right</p>
+                <p className="text-2xl font-semibold text-[#1F1E1C] dark:text-zinc-50 tracking-tight">Select a notice to read</p>
+                <p className="text-zinc-500 font-medium mt-2">Or compose a new one from the top right</p>
               </div>
             )}
           </AnimatePresence>

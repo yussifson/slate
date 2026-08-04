@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import './SchoolTheme.css';
 import { 
   useIndustryRecords, 
   useMutateIndustryRecord, 
@@ -214,18 +215,18 @@ export default function Timetable() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="school-theme-root font-outfit p-6 max-w-7xl mx-auto min-h-screen bg-[#FCFAF7] dark:bg-zinc-950 text-[#1F1E1C] dark:text-zinc-50">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-            <Calendar className="mr-2 h-6 w-6 text-primary" />
+          <h1 className="text-2xl font-bold flex items-center">
+            <Calendar className="mr-2 h-6 w-6 text-indigo-500" />
             Class Timetable
           </h1>
-          <p className="text-gray-500 mt-1">Manage weekly schedules for classes</p>
+          <p className="text-zinc-500 mt-1">Manage weekly schedules for classes</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border p-4 mb-6">
+      <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 mb-6">
         <div className="max-w-xs">
           <Label htmlFor="class-select" className="mb-2 block">Select Class</Label>
           <Select value={selectedClass} onValueChange={setSelectedClass}>
@@ -244,18 +245,18 @@ export default function Timetable() {
       </div>
 
       {selectedClass ? (
-        <div className="bg-white rounded-lg shadow-sm border overflow-x-auto">
+        <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] overflow-x-auto">
           <table className="w-full min-w-[800px] border-collapse">
             <thead>
-              <tr className="bg-gray-50">
-                <th className="border-b border-r p-4 text-left font-semibold text-gray-600 w-32">
+              <tr className="bg-[#FAF8F5] dark:bg-zinc-800/50">
+                <th className="border-b border-r border-[#F0EBE1] dark:border-zinc-800 p-4 text-left font-semibold w-32">
                   <div className="flex items-center">
                     <Clock className="w-4 h-4 mr-2" />
                     Time
                   </div>
                 </th>
                 {DAYS.map(day => (
-                  <th key={day} className="border-b p-4 text-center font-semibold text-gray-600">
+                  <th key={day} className="border-b border-[#F0EBE1] dark:border-zinc-800 p-4 text-center font-semibold">
                     {day}
                   </th>
                 ))}
@@ -265,11 +266,11 @@ export default function Timetable() {
               {PERIODS.map((period, index) => {
                 if (period.type === 'break') {
                   return (
-                    <tr key={`break-${index}`} className="bg-gray-100">
-                      <td className="border-b border-r p-3 text-sm text-gray-500 font-medium whitespace-nowrap">
+                    <tr key={`break-${index}`} className="bg-[#FAF8F5] dark:bg-zinc-800/30">
+                      <td className="border-b border-r border-[#F0EBE1] dark:border-zinc-800 p-3 text-sm text-zinc-500 font-medium whitespace-nowrap">
                         {period.startTime} - {period.endTime}
                       </td>
-                      <td colSpan={5} className="border-b p-3 text-center text-gray-500 font-medium italic tracking-wider">
+                      <td colSpan={5} className="border-b border-[#F0EBE1] dark:border-zinc-800 p-3 text-center text-zinc-500 font-medium italic tracking-wider">
                         {period.name.toUpperCase()}
                       </td>
                     </tr>
@@ -278,9 +279,9 @@ export default function Timetable() {
 
                 return (
                   <tr key={`period-${period.id}`}>
-                    <td className="border-b border-r p-3 align-top whitespace-nowrap">
-                      <div className="font-medium text-gray-900">{period.name}</div>
-                      <div className="text-sm text-gray-500">{period.startTime} - {period.endTime}</div>
+                    <td className="border-b border-r border-[#F0EBE1] dark:border-zinc-800 p-3 align-top whitespace-nowrap">
+                      <div className="font-medium">{period.name}</div>
+                      <div className="text-sm text-zinc-500">{period.startTime} - {period.endTime}</div>
                     </td>
                     {DAYS.map(day => {
                       const slot = classTimetable.find(
@@ -290,35 +291,35 @@ export default function Timetable() {
                       return (
                         <td 
                           key={`${day}-${period.id}`} 
-                          className="border-b border-r p-2 align-top h-24 hover:bg-gray-50 transition-colors cursor-pointer relative group"
+                          className="border-b border-r border-[#F0EBE1] dark:border-zinc-800 p-3 align-top h-24 hover:bg-[#FAF8F5] dark:hover:bg-zinc-800/50 transition-colors cursor-pointer relative group"
                           onClick={() => handleCellClick(day, period)}
                         >
                           {slot ? (
-                            <div className="bg-blue-50 border border-blue-100 rounded p-2 h-full flex flex-col justify-between">
+                            <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-xl p-3 h-full flex flex-col justify-between">
                               <div>
-                                <div className="font-semibold text-blue-900 text-sm mb-1 truncate">
+                                <div className="font-bold text-indigo-900 dark:text-indigo-300 text-sm mb-1 truncate">
                                   {slot.data.subject}
                                 </div>
-                                <div className="text-xs text-blue-700 flex items-center truncate">
+                                <div className="text-xs font-medium text-indigo-700 dark:text-indigo-400 flex items-center truncate">
                                   <User className="w-3 h-3 mr-1 flex-shrink-0" />
                                   <span className="truncate">{slot.data.teacher_name}</span>
                                 </div>
                               </div>
                               {slot.data.room && (
-                                <div className="text-xs text-gray-500 flex items-center mt-1 truncate">
+                                <div className="text-xs font-medium text-indigo-600/70 dark:text-indigo-400/70 flex items-center mt-1.5 truncate">
                                   <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
                                   <span className="truncate">{slot.data.room}</span>
                                 </div>
                               )}
                               
-                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all rounded">
-                                <span className="bg-white text-xs px-2 py-1 rounded shadow text-gray-700 font-medium flex items-center">
+                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 dark:group-hover:bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all rounded-xl">
+                                <span className="bg-white dark:bg-zinc-800 text-xs px-3 py-1.5 rounded-full shadow-sm font-semibold flex items-center border border-[#F0EBE1] dark:border-zinc-700">
                                   <Edit className="w-3 h-3 mr-1" /> Edit
                                 </span>
                               </div>
                             </div>
                           ) : (
-                            <div className="h-full border-2 border-dashed border-gray-200 rounded flex items-center justify-center text-gray-400 group-hover:border-primary group-hover:text-primary transition-colors bg-gray-50">
+                            <div className="h-full border-2 border-dashed border-[#E4DFD5] dark:border-zinc-700 rounded-xl flex items-center justify-center text-zinc-400 group-hover:border-indigo-500 group-hover:text-indigo-500 transition-colors bg-[#FAF8F5] dark:bg-zinc-800/30">
                               <Plus className="w-5 h-5" />
                             </div>
                           )}
@@ -332,10 +333,10 @@ export default function Timetable() {
           </table>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow-sm border p-12 text-center">
-          <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-1">No Class Selected</h3>
-          <p className="text-gray-500">Please select a class to view or manage its timetable.</p>
+        <div className="bg-white dark:bg-zinc-900 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] border border-[#F0EBE1] dark:border-zinc-800 p-12 text-center">
+          <Calendar className="w-12 h-12 text-zinc-300 mx-auto mb-4" />
+          <h3 className="text-lg font-bold mb-1">No Class Selected</h3>
+          <p className="text-zinc-500 font-medium">Please select a class to view or manage its timetable.</p>
         </div>
       )}
 
@@ -395,23 +396,24 @@ export default function Timetable() {
                 value={formData.room}
                 onChange={(e) => setFormData({...formData, room: e.target.value})}
                 placeholder="e.g. Room 3, Lab A"
+                className="rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
               />
             </div>
           </div>
           
           <DialogFooter className="flex justify-between items-center sm:justify-between">
             {modalMode === 'edit' ? (
-              <Button type="button" variant="destructive" size="sm" onClick={handleDelete}>
+              <Button type="button" variant="destructive" size="sm" onClick={handleDelete} className="rounded-full">
                 <Trash2 className="w-4 h-4 mr-1" /> Delete
               </Button>
             ) : (
               <div></div>
             )}
             <div className="flex gap-2">
-              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
+              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-full border-[#E4DFD5] dark:border-zinc-700 font-semibold">
                 Cancel
               </Button>
-              <Button type="button" onClick={handleSave} disabled={isSaving}>
+              <Button type="button" onClick={handleSave} disabled={isSaving} className="rounded-full bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white font-semibold transition-all hover:scale-[1.02] shadow-md">
                 {isSaving ? 'Saving...' : 'Save Slot'}
               </Button>
             </div>
