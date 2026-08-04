@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
-import { Plus, Search, Trash2, Edit2, MessageSquare, AlertCircle, CheckCircle } from 'lucide-react';
+import { Plus, Search, Trash2, Edit2, MessageSquare, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -10,6 +10,21 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import toast from 'react-hot-toast';
+import SchoolPageShell from '@/components/school/SchoolPageShell';
+
+const priorityConfig = {
+  Low: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20',
+  Medium: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20',
+  High: 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20',
+  Urgent: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20 animate-pulse',
+};
+
+const statusConfig = {
+  Open: 'text-rose-700 bg-rose-50 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400',
+  'Under Review': 'text-amber-700 bg-amber-50 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400',
+  Resolved: 'text-emerald-700 bg-emerald-50 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400',
+  Closed: 'text-slate-600 bg-slate-50 border-slate-200 dark:bg-slate-500/10 dark:text-slate-400',
+};
 
 export default function Complaints() {
   const companyId = useCompanyId();
@@ -143,238 +158,168 @@ export default function Complaints() {
     }
   };
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'Low': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'Medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'High': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'Urgent': return 'bg-red-100 text-red-800 border-red-200 animate-pulse';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'Open': return 'text-red-600 bg-red-50 border-red-200';
-      case 'Under Review': return 'text-orange-600 bg-orange-50 border-orange-200';
-      case 'Resolved': return 'text-green-600 bg-green-50 border-green-200';
-      case 'Closed': return 'text-gray-600 bg-gray-50 border-gray-200';
-      default: return 'text-gray-600 bg-gray-50';
-    }
-  };
-
-  if (isLoading) {
-    return <div className="p-8 text-center text-gray-500">Loading complaints...</div>;
-  }
-
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Complaints & Feedback</h1>
-          <p className="text-gray-600">Track and resolve issues from parents and staff.</p>
-        </div>
-        <Button onClick={() => openModal()} className="bg-indigo-600 hover:bg-indigo-700 text-white">
-          <Plus className="h-4 w-4 mr-2" />
-          Log Complaint
+    <SchoolPageShell
+      title="Complaints & Feedback"
+      subtitle="Track and resolve issues from parents and staff"
+      breadcrumb={['School', 'Complaints']}
+      actions={
+        <Button onClick={() => openModal()} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm h-10 px-5 text-sm font-medium">
+          <Plus className="w-4 h-4 mr-2" /> Log Complaint
         </Button>
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-          <Input
-            placeholder="Search by subject or submitter..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
+      }
+    >
+      <div className="bg-card border border-border/50 rounded-xl shadow-sm p-4 flex flex-wrap items-center gap-3 mb-6">
+        <div className="relative flex-1 min-w-[240px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input 
+            placeholder="Search by subject or submitter..." 
+            value={search} 
+            onChange={e => setSearch(e.target.value)} 
+            className="pl-9 bg-background border-border/50 h-9 text-sm" 
           />
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Filter Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="All">All Statuses</SelectItem>
-            <SelectItem value="Open">Open</SelectItem>
-            <SelectItem value="Under Review">Under Review</SelectItem>
-            <SelectItem value="Resolved">Resolved</SelectItem>
-            <SelectItem value="Closed">Closed</SelectItem>
-          </SelectContent>
-        </Select>
+        <select 
+          value={statusFilter} 
+          onChange={e => setStatusFilter(e.target.value)} 
+          className="h-9 rounded-lg border border-input bg-background px-3 text-sm"
+        >
+          <option value="All">All Statuses</option>
+          <option value="Open">Open</option>
+          <option value="Under Review">Under Review</option>
+          <option value="Resolved">Resolved</option>
+          <option value="Closed">Closed</option>
+        </select>
+        <div className="ml-auto text-sm text-muted-foreground">{filteredRecords.length} records</div>
       </div>
 
       <div className="space-y-4">
-        {filteredRecords.length === 0 ? (
-          <div className="bg-white p-8 rounded-lg shadow-sm text-center text-gray-500 border border-gray-200">
-            No complaints found.
+        {isLoading ? (
+          <div className="py-20 text-center text-muted-foreground">Loading complaints...</div>
+        ) : filteredRecords.length === 0 ? (
+          <div className="bg-card rounded-xl border border-dashed border-border py-16 text-center">
+            <MessageSquare className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+            <p className="text-muted-foreground font-medium">No complaints found</p>
           </div>
         ) : (
-          filteredRecords.map((record) => {
+          filteredRecords.map(record => {
             const data = record.data;
+            const prioCls = priorityConfig[data.priority] || priorityConfig.Medium;
+            const statCls = statusConfig[data.status] || statusConfig.Open;
             return (
-              <div key={record.id} className="bg-white p-5 rounded-lg shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4 hover:shadow-md transition-shadow">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-bold text-gray-800">{data.subject}</h3>
-                    <span className={`px-2 py-0.5 rounded text-xs font-medium border ${getPriorityColor(data.priority)}`}>
-                      {data.priority}
-                    </span>
-                    <span className={`px-2 py-0.5 rounded text-xs font-medium border ${getStatusColor(data.status)}`}>
-                      {data.status}
-                    </span>
-                  </div>
-                  
-                  <p className="text-gray-600 text-sm mb-4">{data.description}</p>
-                  
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
-                    <div className="flex items-center gap-1">
-                      <MessageSquare className="h-3.5 w-3.5" />
-                      Submitted by: <span className="font-medium text-gray-700">{data.submitted_by}</span>
+              <div key={record.id} className="bg-card rounded-xl border border-border/50 shadow-sm p-6 hover:shadow-md transition-shadow relative group">
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-3">
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${prioCls}`}>{data.priority} Priority</span>
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${statCls}`}>{data.status}</span>
+                      <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full font-medium">{data.category}</span>
                     </div>
-                    {data.student_name && (
-                      <div>Student: <span className="font-medium text-gray-700">{data.student_name}</span></div>
+                    <h3 className="font-bold text-lg text-foreground">{data.subject}</h3>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {data.status !== 'Resolved' && (
+                      <Button size="sm" variant="outline" className="h-8 text-xs border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 dark:border-indigo-500/30 dark:hover:bg-indigo-500/10" onClick={() => openResolveModal(record)}>
+                        Resolve
+                      </Button>
                     )}
-                    <div>Date: <span className="font-medium text-gray-700">{data.date}</span></div>
-                    <div>Category: <span className="font-medium text-gray-700">{data.category}</span></div>
+                    <button className="p-1.5 rounded-lg border border-border/50 hover:bg-muted text-muted-foreground hover:text-foreground" onClick={() => openModal(record)}>
+                      <Edit2 className="w-3.5 h-3.5" />
+                    </button>
+                    <button className="p-1.5 rounded-lg border border-rose-200 dark:border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 text-rose-500" onClick={() => handleDelete(record.id)}>
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
+                </div>
 
-                  {data.status === 'Resolved' && data.resolution && (
-                    <div className="mt-4 p-3 bg-green-50 border border-green-100 rounded-md">
-                      <div className="text-xs font-semibold text-green-800 mb-1 flex items-center gap-1">
-                        <CheckCircle className="h-3.5 w-3.5" /> Resolution ({data.resolved_date}):
-                      </div>
-                      <p className="text-sm text-green-700">{data.resolution}</p>
+                <p className="text-sm text-foreground/80 leading-relaxed mb-4">{data.description}</p>
+
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-3 border-t border-border/50 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1.5">Submitted by: <strong className="text-foreground">{data.submitted_by}</strong></span>
+                  {data.student_name && <span className="flex items-center gap-1.5">Student: <strong className="text-foreground">{data.student_name} ({data.class_name || 'N/A'})</strong></span>}
+                  <span className="flex items-center gap-1.5">Logged: <strong className="text-foreground">{data.date}</strong></span>
+                </div>
+
+                {data.status === 'Resolved' && data.resolution && (
+                  <div className="mt-4 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-800 dark:text-emerald-400">
+                    <div className="flex items-center gap-1.5 font-bold text-xs uppercase tracking-wider mb-1">
+                      <CheckCircle className="w-4 h-4" /> Resolved by {data.resolved_by} on {data.resolved_date}
                     </div>
-                  )}
-                </div>
-
-                <div className="flex md:flex-col justify-end gap-2 shrink-0 md:min-w-[120px]">
-                  {data.status !== 'Resolved' && data.status !== 'Closed' && (
-                    <Button variant="outline" size="sm" className="w-full justify-start text-green-600 hover:text-green-700 hover:bg-green-50" onClick={() => openResolveModal(record)}>
-                      <CheckCircle className="h-4 w-4 mr-2" /> Resolve
-                    </Button>
-                  )}
-                  <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => openModal(record)}>
-                    <Edit2 className="h-4 w-4 mr-2" /> Edit
-                  </Button>
-                  <Button variant="ghost" size="sm" className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => handleDelete(record.id)}>
-                    <Trash2 className="h-4 w-4 mr-2" /> Delete
-                  </Button>
-                </div>
+                    <p className="text-sm">{data.resolution}</p>
+                  </div>
+                )}
               </div>
             );
           })
         )}
       </div>
 
+      {/* Log/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>{editingId ? 'Edit Complaint' : 'Log New Complaint'}</DialogTitle>
+            <DialogTitle>{editingId ? 'Edit Complaint' : 'Log Complaint'}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Submitted By</Label>
-                <Input
-                  value={formData.submitted_by}
-                  onChange={(e) => setFormData({ ...formData, submitted_by: e.target.value })}
-                  placeholder="e.g. Jane Doe (Parent)"
-                />
+                <Label>Submitted By *</Label>
+                <Input value={formData.submitted_by} onChange={e => setFormData({ ...formData, submitted_by: e.target.value })} placeholder="e.g. Parent Name or Staff" className="h-10" />
               </div>
               <div className="space-y-2">
                 <Label>Category</Label>
-                <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Academic">Academic</SelectItem>
-                    <SelectItem value="Behavioral">Behavioral</SelectItem>
-                    <SelectItem value="Facilities">Facilities</SelectItem>
-                    <SelectItem value="Staff">Staff</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Subject</Label>
-              <Input
-                value={formData.subject}
-                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                placeholder="Brief summary of the issue"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Description</Label>
-              <Textarea
-                rows={4}
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Detailed explanation..."
-              />
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label>Priority</Label>
-                <Select value={formData.priority} onValueChange={(v) => setFormData({ ...formData, priority: v })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Low">Low</SelectItem>
-                    <SelectItem value="Medium">Medium</SelectItem>
-                    <SelectItem value="High">High</SelectItem>
-                    <SelectItem value="Urgent">Urgent</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Status</Label>
-                <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Open">Open</SelectItem>
-                    <SelectItem value="Under Review">Under Review</SelectItem>
-                    <SelectItem value="Resolved">Resolved</SelectItem>
-                    <SelectItem value="Closed">Closed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Date</Label>
-                <Input
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                />
+                <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} className={`w-full ${inputCls}`}>
+                  <option>Academic</option>
+                  <option>Facilities</option>
+                  <option>Staff Misconduct</option>
+                  <option>Bullying</option>
+                  <option>Fees/Finance</option>
+                  <option>Other</option>
+                </select>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Related Student (Optional)</Label>
-                <Input
-                  value={formData.student_name}
-                  onChange={(e) => setFormData({ ...formData, student_name: e.target.value })}
-                  placeholder="Student Name"
-                />
+                <Label>Student Name</Label>
+                <Input value={formData.student_name} onChange={e => setFormData({ ...formData, student_name: e.target.value })} placeholder="John Doe (Optional)" className="h-10" />
               </div>
               <div className="space-y-2">
-                <Label>Class (Optional)</Label>
-                <Input
-                  value={formData.class_name}
-                  onChange={(e) => setFormData({ ...formData, class_name: e.target.value })}
-                  placeholder="e.g. Primary 3A"
-                />
+                <Label>Class Name</Label>
+                <Input value={formData.class_name} onChange={e => setFormData({ ...formData, class_name: e.target.value })} placeholder="Class 3A (Optional)" className="h-10" />
               </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Priority</Label>
+                <select value={formData.priority} onChange={e => setFormData({ ...formData, priority: e.target.value })} className={`w-full ${inputCls}`}>
+                  <option>Low</option>
+                  <option>Medium</option>
+                  <option>High</option>
+                  <option>Urgent</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })} className={`w-full ${inputCls}`}>
+                  <option>Open</option>
+                  <option>Under Review</option>
+                  <option>Resolved</option>
+                  <option>Closed</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Subject *</Label>
+              <Input value={formData.subject} onChange={e => setFormData({ ...formData, subject: e.target.value })} placeholder="Brief summary of the issue" className="h-10" />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Description *</Label>
+              <Textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} placeholder="Details of complaint..." className="h-28 resize-none" />
             </div>
           </div>
           <DialogFooter>
@@ -386,31 +331,26 @@ export default function Complaints() {
 
       {/* Resolve Modal */}
       <Dialog open={isResolveModalOpen} onOpenChange={setIsResolveModalOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[460px]">
           <DialogHeader>
             <DialogTitle>Resolve Complaint</DialogTitle>
           </DialogHeader>
-          <div className="py-4">
-            <div className="mb-4 bg-gray-50 p-3 rounded text-sm text-gray-700 border border-gray-200">
-              <p className="font-semibold mb-1">Subject: {formData.subject}</p>
-              <p className="text-gray-500">By: {formData.submitted_by}</p>
+          <div className="space-y-4 py-3">
+            <div>
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Incident Description</Label>
+              <p className="mt-1.5 p-3 rounded-lg bg-muted text-sm text-foreground/80 border border-border">{formData.description}</p>
             </div>
             <div className="space-y-2">
-              <Label>Resolution Details</Label>
-              <Textarea
-                rows={4}
-                value={resolveData.resolution}
-                onChange={(e) => setResolveData({ resolution: e.target.value })}
-                placeholder="Explain how this issue was resolved..."
-              />
+              <Label>Resolution Actions *</Label>
+              <Textarea value={resolveData.resolution} onChange={e => setResolveData({ resolution: e.target.value })} placeholder="Steps taken to resolve this feedback..." className="h-28 resize-none" />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsResolveModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleResolve} className="bg-green-600 hover:bg-green-700 text-white">Mark as Resolved</Button>
+            <Button onClick={handleResolve} className="bg-emerald-600 hover:bg-emerald-700 text-white">Mark Resolved</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </SchoolPageShell>
   );
 }

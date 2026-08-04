@@ -1,95 +1,73 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from "react-i18next";
-import { Receipt, Search, DollarSign, AlertCircle, CheckCircle, Plus, FileText, ArrowUpRight, ArrowDownRight, CreditCard } from 'lucide-react';
+import { Receipt, Search, DollarSign, AlertCircle, CheckCircle, Plus, FileText, CreditCard, MoreHorizontal, Clock, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { toast } from 'react-hot-toast';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import SchoolPageShell from '@/components/school/SchoolPageShell';
+
+const statusConfig = {
+  Paid: { cls: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20', dot: 'bg-emerald-500', icon: CheckCircle },
+  Partial: { cls: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20', dot: 'bg-amber-500', icon: Clock },
+  Owing: { cls: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20', dot: 'bg-rose-500', icon: AlertCircle },
+};
 
 export default function FeeManagement() {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('ledger'); // 'ledger' | 'structures'
+  const [activeTab, setActiveTab] = useState('ledger');
   
   const { data: studentRecords = [], isLoading: loadingStudents } = useIndustryRecords('school_student');
   const { data: feeRecords = [], isLoading: loadingFees } = useIndustryRecords('school_fee');
   const { data: feeStructures = [], isLoading: loadingStructures } = useIndustryRecords('school_fee_structure');
   const { data: classRecords = [], isLoading: loadingClasses } = useIndustryRecords('school_class');
-  
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
   
-  // Ledger state
   const [ledgerSearch, setLedgerSearch] = useState('');
   const [ledgerClass, setLedgerClass] = useState('All');
   const [ledgerTerm, setLedgerTerm] = useState('Term 1');
-  const [ledgerStatus, setLedgerStatus] = useState('All'); // All, Paid, Partial, Owing
+  const [ledgerStatus, setLedgerStatus] = useState('All');
   const [ledgerAcademicYear, setLedgerAcademicYear] = useState('2024/2025');
-  
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('Cash');
   const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
   const [paymentNotes, setPaymentNotes] = useState('');
-  
   const [viewHistoryModal, setViewHistoryModal] = useState(null);
-  
-  // Structure state
   const [structureModalOpen, setStructureModalOpen] = useState(false);
   const [editingStructure, setEditingStructure] = useState(null);
-  const [structureForm, setStructureForm] = useState({
-    class_name: '', level: 'Primary', term: 'Term 1', academic_year: '2024/2025', amount: '', description: ''
-  });
+  const [structureForm, setStructureForm] = useState({ class_name: '', level: 'Primary', term: 'Term 1', academic_year: '2024/2025', amount: '', description: '' });
 
-  // Calculate Ledger Data
+  const classList = useMemo(() => classRecords.map(c => c.data?.name).filter(Boolean), [classRecords]);
+
   const ledgerData = useMemo(() => {
     return studentRecords.map(s => {
       const studentData = s.data || {};
       const studentClass = studentData.class_name || '';
-      
-      // Find fee structure for this student's class, term, year
-      const structure = feeStructures.find(fs => 
-        fs.data?.class_name === studentClass && 
-        fs.data?.term === ledgerTerm && 
-        fs.data?.academic_year === ledgerAcademicYear
-      );
-      
+      const structure = feeStructures.find(fs => fs.data?.class_name === studentClass && fs.data?.term === ledgerTerm && fs.data?.academic_year === ledgerAcademicYear);
       const amountDue = structure ? Number(structure.data?.amount || 0) : 0;
-      
-      // Find all payments for this student, term, year
-      const payments = feeRecords.filter(f => 
-        f.data?.student_id === s.id && 
-        f.data?.term === ledgerTerm && 
-        f.data?.academic_year === ledgerAcademicYear
-      );
-      
+      const payments = feeRecords.filter(f => f.data?.student_id === s.id && f.data?.term === ledgerTerm && f.data?.academic_year === ledgerAcademicYear);
       const amountPaid = payments.reduce((sum, p) => sum + Number(p.data?.amount_paid || 0), 0);
       const balance = amountDue - amountPaid;
-      
       let status = 'Owing';
       if (amountDue > 0) {
         if (amountPaid >= amountDue) status = 'Paid';
         else if (amountPaid > 0) status = 'Partial';
-      } else {
-         status = 'N/A'; // No fee structure
-      }
-
+      } else { status = 'N/A'; }
       return {
         student_id: s.id,
         student_name: studentData.first_name ? `${studentData.first_name} ${studentData.last_name || ''}` : (studentData.name || 'Unknown Student'),
-        class_name: studentClass,
-        amountDue,
-        amountPaid,
-        balance,
-        status,
-        payments
+        class_name: studentClass, amountDue, amountPaid, balance, status, payments
       };
     });
   }, [studentRecords, feeStructures, feeRecords, ledgerTerm, ledgerAcademicYear]);
-  
+
   const filteredLedger = ledgerData.filter(d => {
-    if (d.status === 'N/A') return false; 
+    if (d.status === 'N/A') return false;
     if (ledgerClass !== 'All' && d.class_name !== ledgerClass) return false;
     if (ledgerStatus !== 'All' && d.status !== ledgerStatus) return false;
     if (ledgerSearch && !d.student_name.toLowerCase().includes(ledgerSearch.toLowerCase())) return false;
@@ -113,305 +91,286 @@ export default function FeeManagement() {
     if (!selectedStudent || !paymentAmount) return toast.error("Enter amount");
     const amount = Number(paymentAmount);
     if (amount <= 0) return toast.error("Amount must be greater than 0");
-    
     const newPaid = selectedStudent.amountPaid + amount;
     const newBalance = selectedStudent.amountDue - newPaid;
     let newStatus = 'Owing';
     if (newPaid >= selectedStudent.amountDue) newStatus = 'Paid';
     else if (newPaid > 0) newStatus = 'Partial';
-
-    const payload = {
-      student_id: selectedStudent.student_id,
-      student_name: selectedStudent.student_name,
-      class_name: selectedStudent.class_name,
-      term: ledgerTerm,
-      academic_year: ledgerAcademicYear,
-      amount_due: selectedStudent.amountDue,
-      amount_paid: amount,
-      balance: newBalance,
-      payment_method: paymentMethod,
-      payment_date: paymentDate,
-      receipt_number: 'REC-' + Date.now().toString(36).toUpperCase(),
-      status: newStatus,
-      notes: paymentNotes
-    };
-
-    mutateRecord.mutate({
-      recordType: 'school_fee',
-      payload,
-      status: 'active',
-      searchText: `${selectedStudent.student_name} ${ledgerTerm} ${ledgerAcademicYear}`
-    }, {
-      onSuccess: () => {
-        toast.success(`Payment of $${amount} recorded for ${selectedStudent.student_name}`);
-        setPaymentModalOpen(false);
-      }
-    });
+    const payload = { student_id: selectedStudent.student_id, student_name: selectedStudent.student_name, class_name: selectedStudent.class_name, term: ledgerTerm, academic_year: ledgerAcademicYear, amount_due: selectedStudent.amountDue, amount_paid: amount, balance: newBalance, payment_method: paymentMethod, payment_date: paymentDate, receipt_number: 'REC-' + Date.now().toString(36).toUpperCase(), status: newStatus, notes: paymentNotes };
+    mutateRecord.mutate({ recordType: 'school_fee', payload, status: 'active', searchText: `${selectedStudent.student_name} ${ledgerTerm} ${ledgerAcademicYear}` }, { onSuccess: () => { toast.success(`Payment of GHS ${amount} recorded!`); setPaymentModalOpen(false); } });
   };
 
   const handleSaveStructure = () => {
     if (!structureForm.class_name || !structureForm.amount) return toast.error("Class and Amount required");
-    
-    mutateRecord.mutate({
-      id: editingStructure?.id,
-      recordType: 'school_fee_structure',
-      payload: { ...structureForm, amount: Number(structureForm.amount) },
-      status: 'active',
-      searchText: `${structureForm.class_name} ${structureForm.term} ${structureForm.academic_year}`
-    }, {
-      onSuccess: () => {
-        toast.success("Fee structure saved");
-        setStructureModalOpen(false);
-      }
-    });
+    mutateRecord.mutate({ id: editingStructure?.id, recordType: 'school_fee_structure', payload: { ...structureForm, amount: Number(structureForm.amount) }, status: 'active', searchText: `${structureForm.class_name} ${structureForm.term} ${structureForm.academic_year}` }, { onSuccess: () => { toast.success("Fee structure saved"); setStructureModalOpen(false); } });
   };
 
   const handleDeleteStructure = (id) => {
-    if (window.confirm("Delete this fee structure?")) {
-      deleteRecord.mutate({ id, recordType: 'school_fee_structure' }, {
-        onSuccess: () => toast.success("Deleted")
-      });
-    }
+    if (window.confirm("Delete this fee structure?")) deleteRecord.mutate({ id, recordType: 'school_fee_structure' }, { onSuccess: () => toast.success("Deleted") });
   };
 
   const isLoading = loadingStudents || loadingFees || loadingStructures || loadingClasses;
+  const inputCls = "flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring";
 
   return (
-    <div className="school-theme-root space-y-8 font-outfit p-4 md:p-8 bg-[#FCFAF7] dark:bg-zinc-950 min-h-screen text-[#1F1E1C] dark:text-zinc-50">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-bold tracking-tight text-[#1F1E1C] dark:text-zinc-50">{t("fee_management", "Fee Management")}</h1>
-          <p className="text-zinc-500 font-medium text-lg mt-1">{t("track_student_tuition", "Track student tuition, structures, and payments")}</p>
+    <SchoolPageShell
+      title="Fee Management"
+      subtitle="Track student tuition, structures, and payments"
+      breadcrumb={['School', 'Fees']}
+      actions={
+        <div className="flex items-center gap-2">
+          <div className="flex rounded-lg bg-muted/50 p-1">
+            {['ledger', 'structures'].map(tab => (
+              <button key={tab} onClick={() => setActiveTab(tab)} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors capitalize ${activeTab === tab ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>{tab === 'ledger' ? 'Ledger' : 'Fee Structures'}</button>
+            ))}
+          </div>
+          {activeTab === 'structures' && (
+            <Button onClick={() => { setEditingStructure(null); setStructureForm({ class_name: '', level: 'Primary', term: 'Term 1', academic_year: '2024/2025', amount: '', description: '' }); setStructureModalOpen(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm h-10 px-5 text-sm font-medium">
+              <Plus className="w-4 h-4 mr-2" /> Add Structure
+            </Button>
+          )}
         </div>
-        <div className="flex gap-2">
-          <Button onClick={() => setActiveTab('ledger')} variant={activeTab === 'ledger' ? 'default' : 'outline'} className="rounded-full font-bold transition-all">Ledger</Button>
-          <Button onClick={() => setActiveTab('structures')} variant={activeTab === 'structures' ? 'default' : 'outline'} className="rounded-full font-bold transition-all">Structures</Button>
-        </div>
-      </div>
-
+      }
+    >
       {isLoading ? (
-        <div className="py-20 text-center font-bold text-xl animate-pulse">Loading data...</div>
+        <div className="flex items-center justify-center py-20 text-muted-foreground">Loading fee data...</div>
       ) : activeTab === 'ledger' ? (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 transition-all hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)]">
-              <h3 className="font-semibold text-emerald-600 text-lg uppercase mb-2">Total Collected</h3>
-              <p className="text-4xl font-bold text-emerald-900 dark:text-emerald-400">${totalCollected.toLocaleString()}</p>
-            </div>
-            <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 transition-all hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)]">
-              <h3 className="font-semibold text-rose-600 text-lg uppercase mb-2">Total Outstanding</h3>
-              <p className="text-4xl font-bold text-rose-900 dark:text-rose-400">${totalOutstanding.toLocaleString()}</p>
-            </div>
-            <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 transition-all hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)]">
-              <h3 className="font-semibold text-indigo-600 text-lg uppercase mb-2">Fully Paid Students</h3>
-              <p className="text-4xl font-bold text-indigo-900 dark:text-indigo-400">{fullyPaidCount} <span className="text-xl text-indigo-700 dark:text-indigo-500">/ {filteredLedger.length}</span></p>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 flex flex-wrap gap-4 items-center">
-            <Input placeholder="Search students..." value={ledgerSearch} onChange={e => setLedgerSearch(e.target.value)} className="w-full md:w-64 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" />
-            <select value={ledgerClass} onChange={e => setLedgerClass(e.target.value)} className="h-10 px-3 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
-              <option value="All">All Classes</option>
-              {classRecords.map(c => <option key={c.id} value={c.data?.class_name || ''}>{c.data?.class_name}</option>)}
-            </select>
-            <select value={ledgerStatus} onChange={e => setLedgerStatus(e.target.value)} className="h-10 px-3 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
-              <option value="All">All Status</option>
-              <option value="Paid">Paid</option>
-              <option value="Partial">Partial</option>
-              <option value="Owing">Owing</option>
-            </select>
-            <select value={ledgerTerm} onChange={e => setLedgerTerm(e.target.value)} className="h-10 px-3 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
-              <option value="Term 1">Term 1</option>
-              <option value="Term 2">Term 2</option>
-              <option value="Term 3">Term 3</option>
-            </select>
-            <select value={ledgerAcademicYear} onChange={e => setLedgerAcademicYear(e.target.value)} className="h-10 px-3 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
-              <option value="2023/2024">2023/2024</option>
-              <option value="2024/2025">2024/2025</option>
-            </select>
-          </div>
-
-          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead className="bg-[#FAF8F5] dark:bg-zinc-800/50 text-[#1F1E1C] dark:text-zinc-50 border-b border-[#F0EBE1] dark:border-zinc-800">
-                <tr>
-                  <th className="px-6 py-4 font-semibold">Student</th>
-                  <th className="px-6 py-4 font-semibold">Class</th>
-                  <th className="px-6 py-4 font-semibold">Amount Due</th>
-                  <th className="px-6 py-4 font-semibold">Paid</th>
-                  <th className="px-6 py-4 font-semibold">Balance</th>
-                  <th className="px-6 py-4 font-semibold text-center">Status</th>
-                  <th className="px-6 py-4 font-semibold text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#F0EBE1] dark:divide-zinc-800">
-                {filteredLedger.length === 0 ? (
-                  <tr><td colSpan="7" className="p-8 text-center text-zinc-500">No records found</td></tr>
-                ) : filteredLedger.map(student => (
-                  <tr key={student.student_id} className="hover:bg-[#FAF8F5] dark:hover:bg-zinc-800/30 transition-colors">
-                    <td className="px-6 py-4 font-medium">{student.student_name}</td>
-                    <td className="px-6 py-4">{student.class_name}</td>
-                    <td className="px-6 py-4">${student.amountDue}</td>
-                    <td className="px-6 py-4 text-emerald-600 font-medium">${student.amountPaid}</td>
-                    <td className="px-6 py-4 text-rose-600 font-medium">${student.balance}</td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                        student.status === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 
-                        student.status === 'Partial' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'
-                      }`}>{student.status}</span>
-                    </td>
-                    <td className="px-6 py-4 text-right flex justify-end gap-2">
-                      <Button variant="outline" size="sm" className="rounded-full bg-white dark:bg-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-700 border-[#E4DFD5] dark:border-zinc-700" onClick={() => setViewHistoryModal(student)}>History</Button>
-                      <Button size="sm" className="rounded-full bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white shadow-md transition-all hover:scale-[1.02]" disabled={student.amountDue === 0 || student.status === 'Paid'} onClick={() => handleRecordPayment(student)}>Pay</Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="flex justify-between items-center bg-white dark:bg-zinc-900 p-6 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)]">
-            <h2 className="text-xl font-bold">Fee Structures</h2>
-            <Button onClick={() => { setEditingStructure(null); setStructureForm({class_name: '', level: 'Primary', term: 'Term 1', academic_year: '2024/2025', amount: '', description: ''}); setStructureModalOpen(true); }} className="rounded-full bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white font-semibold transition-all hover:scale-[1.02] shadow-[0_4px_12px_rgba(99,102,241,0.15)]"><Plus className="w-4 h-4 mr-2" /> New Structure</Button>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-            {feeStructures.length === 0 ? (
-              <div className="col-span-full text-center p-8 text-zinc-500">No fee structures found. Create one.</div>
-            ) : feeStructures.map(s => (
-              <div key={s.id} className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 p-6 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] transition-all hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)]">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="font-bold text-xl">{s.data?.class_name}</h3>
-                  <span className="bg-indigo-100 text-indigo-700 px-3 py-1 text-xs font-semibold rounded-full">{s.data?.term}</span>
-                </div>
-                <p className="text-3xl font-bold mb-2">${s.data?.amount}</p>
-                <p className="text-sm text-zinc-500 mb-4">{s.data?.academic_year} - {s.data?.level}</p>
-                {s.data?.description && <p className="text-sm bg-[#FAF8F5] dark:bg-zinc-800/50 rounded-xl p-3 mb-4 border border-[#F0EBE1] dark:border-zinc-700">{s.data?.description}</p>}
-                <div className="flex gap-2">
-                  <Button variant="outline" className="flex-1 rounded-full bg-white dark:bg-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-700 border-[#E4DFD5] dark:border-zinc-700" onClick={() => { setEditingStructure(s); setStructureForm(s.data); setStructureModalOpen(true); }}>Edit</Button>
-                  <Button variant="destructive" className="flex-1 rounded-full" onClick={() => handleDeleteStructure(s.id)}>Delete</Button>
+          {/* Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+            {[
+              { label: 'Total Collected', value: `GHS ${totalCollected.toLocaleString()}`, icon: CheckCircle, color: 'bg-emerald-500/10 text-emerald-600' },
+              { label: 'Outstanding', value: `GHS ${totalOutstanding.toLocaleString()}`, icon: AlertCircle, color: 'bg-rose-500/10 text-rose-600' },
+              { label: 'Fully Paid', value: `${fullyPaidCount} students`, icon: CreditCard, color: 'bg-indigo-500/10 text-indigo-600' },
+            ].map(({ label, value, icon: Icon, color }) => (
+              <div key={label} className="bg-card rounded-xl border border-border/50 p-5 shadow-sm flex items-center gap-4">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}><Icon className="w-5 h-5" /></div>
+                <div>
+                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{label}</p>
+                  <p className="text-xl font-bold text-foreground mt-0.5">{value}</p>
                 </div>
               </div>
             ))}
           </div>
+
+          {/* Filters */}
+          <div className="bg-card border border-border/50 rounded-xl shadow-sm p-4 flex flex-wrap items-center gap-3 mb-6">
+            <select value={ledgerTerm} onChange={e => setLedgerTerm(e.target.value)} className="h-9 rounded-lg border border-input bg-background px-3 text-sm">
+              <option>Term 1</option><option>Term 2</option><option>Term 3</option>
+            </select>
+            <select value={ledgerAcademicYear} onChange={e => setLedgerAcademicYear(e.target.value)} className="h-9 rounded-lg border border-input bg-background px-3 text-sm">
+              <option>2024/2025</option><option>2023/2024</option><option>2025/2026</option>
+            </select>
+            <select value={ledgerClass} onChange={e => setLedgerClass(e.target.value)} className="h-9 rounded-lg border border-input bg-background px-3 text-sm">
+              <option value="All">All Classes</option>{classList.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <select value={ledgerStatus} onChange={e => setLedgerStatus(e.target.value)} className="h-9 rounded-lg border border-input bg-background px-3 text-sm">
+              <option value="All">All Statuses</option><option>Paid</option><option>Partial</option><option>Owing</option>
+            </select>
+            <div className="relative flex-1 min-w-40">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input placeholder="Search student..." value={ledgerSearch} onChange={e => setLedgerSearch(e.target.value)} className="pl-9 bg-background border-border/50 h-9 text-sm" />
+            </div>
+          </div>
+
+          {/* Ledger Table */}
+          <div className="bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border/50 bg-muted/20">
+                    {['Student', 'Class', 'Amount Due', 'Amount Paid', 'Balance', 'Status', 'Actions'].map(h => (
+                      <th key={h} className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/50">
+                  {filteredLedger.length === 0 ? (
+                    <tr><td colSpan={7} className="px-5 py-16 text-center text-muted-foreground">No fee records found for this term/filter.</td></tr>
+                  ) : filteredLedger.map(d => {
+                    const cfg = statusConfig[d.status] || statusConfig.Owing;
+                    const StatusIcon = cfg.icon;
+                    const paidPct = d.amountDue > 0 ? Math.min(100, Math.round((d.amountPaid / d.amountDue) * 100)) : 0;
+                    return (
+                      <tr key={d.student_id} className="hover:bg-muted/20 transition-colors">
+                        <td className="px-5 py-4 font-semibold text-foreground">{d.student_name}</td>
+                        <td className="px-5 py-4 text-muted-foreground">{d.class_name}</td>
+                        <td className="px-5 py-4 font-medium text-foreground">GHS {d.amountDue.toLocaleString()}</td>
+                        <td className="px-5 py-4">
+                          <span className="font-semibold text-emerald-600">GHS {d.amountPaid.toLocaleString()}</span>
+                          <div className="w-20 bg-muted rounded-full h-1 mt-1.5">
+                            <div className="h-1 rounded-full bg-emerald-500" style={{ width: `${paidPct}%` }} />
+                          </div>
+                        </td>
+                        <td className={`px-5 py-4 font-bold ${d.balance > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>GHS {d.balance.toLocaleString()}</td>
+                        <td className="px-5 py-4">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${cfg.cls}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />{d.status}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4">
+                          <div className="flex items-center gap-2">
+                            {d.status !== 'Paid' && (
+                              <Button size="sm" className="h-8 text-xs bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-3" onClick={() => handleRecordPayment(d)}>
+                                <CreditCard className="w-3.5 h-3.5 mr-1" /> Pay
+                              </Button>
+                            )}
+                            {d.payments.length > 0 && (
+                              <button className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg hover:bg-muted transition-colors" onClick={() => setViewHistoryModal(d)}>
+                                <FileText className="w-4 h-4" />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      ) : (
+        // Fee Structures Tab
+        <>
+          <div className="bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border/50 bg-muted/20">
+                    {['Class', 'Level', 'Term', 'Academic Year', 'Amount', 'Description', 'Actions'].map(h => (
+                      <th key={h} className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/50">
+                  {feeStructures.length === 0 ? (
+                    <tr><td colSpan={7} className="px-5 py-16 text-center text-muted-foreground">No fee structures yet. Click "Add Structure" to create one.</td></tr>
+                  ) : feeStructures.map(fs => (
+                    <tr key={fs.id} className="hover:bg-muted/20 transition-colors">
+                      <td className="px-5 py-4 font-semibold text-foreground">{fs.data?.class_name}</td>
+                      <td className="px-5 py-4 text-muted-foreground">{fs.data?.level}</td>
+                      <td className="px-5 py-4 text-muted-foreground">{fs.data?.term}</td>
+                      <td className="px-5 py-4 text-muted-foreground">{fs.data?.academic_year}</td>
+                      <td className="px-5 py-4 font-bold text-foreground">GHS {Number(fs.data?.amount || 0).toLocaleString()}</td>
+                      <td className="px-5 py-4 text-muted-foreground truncate max-w-[150px]">{fs.data?.description}</td>
+                      <td className="px-5 py-4">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg hover:bg-muted transition-colors"><MoreHorizontal className="w-4 h-4" /></button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-32">
+                            <DropdownMenuItem onClick={() => { setEditingStructure(fs); setStructureForm({ class_name: fs.data?.class_name || '', level: fs.data?.level || 'Primary', term: fs.data?.term || 'Term 1', academic_year: fs.data?.academic_year || '2024/2025', amount: fs.data?.amount || '', description: fs.data?.description || '' }); setStructureModalOpen(true); }}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDeleteStructure(fs.id)}>Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </>
       )}
 
-      {/* Modals */}
+      {/* Payment Modal */}
       {paymentModalOpen && selectedStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-zinc-900 p-8 max-w-md w-full border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-2xl">
-            <h2 className="text-2xl font-bold mb-6">Record Payment</h2>
-            <div className="mb-6 bg-[#FAF8F5] dark:bg-zinc-800/50 p-4 rounded-xl border border-[#F0EBE1] dark:border-zinc-700">
-              <p className="font-semibold">{selectedStudent.student_name} - {selectedStudent.class_name}</p>
-              <p className="text-rose-600 font-bold mt-1">Balance Due: ${selectedStudent.balance}</p>
+          <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-card border border-border w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-emerald-600 to-emerald-500 px-6 py-5">
+              <h2 className="text-lg font-bold text-white">Record Payment</h2>
+              <p className="text-emerald-100 text-sm">{selectedStudent.student_name}</p>
             </div>
-            <div className="space-y-5">
-              <div>
-                <label className="text-sm font-semibold mb-1.5 block">Amount Paying</label>
-                <Input type="number" value={paymentAmount} onChange={e => setPaymentAmount(e.target.value)} max={selectedStudent.balance} className="rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" />
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-3 text-sm bg-muted/30 p-3 rounded-xl border border-border/50">
+                <div><p className="text-muted-foreground text-xs">Amount Due</p><p className="font-bold text-foreground">GHS {selectedStudent.amountDue.toLocaleString()}</p></div>
+                <div><p className="text-muted-foreground text-xs">Balance</p><p className="font-bold text-rose-600">GHS {selectedStudent.balance.toLocaleString()}</p></div>
               </div>
-              <div>
-                <label className="text-sm font-semibold mb-1.5 block">Method</label>
-                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full h-10 px-3 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
-                  <option>Cash</option>
-                  <option>Mobile Money</option>
-                  <option>Bank Transfer</option>
-                  <option>Cheque</option>
-                </select>
+              <div><label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Amount Paid</label><Input type="number" value={paymentAmount} onChange={e => setPaymentAmount(e.target.value)} className="mt-1.5 h-10" /></div>
+              <div><label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Payment Method</label>
+                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className={`mt-1.5 ${inputCls}`}><option>Cash</option><option>Mobile Money</option><option>Bank Transfer</option><option>Cheque</option></select>
               </div>
-              <div>
-                <label className="text-sm font-semibold mb-1.5 block">Date</label>
-                <Input type="date" value={paymentDate} onChange={e => setPaymentDate(e.target.value)} className="rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" />
-              </div>
-              <div>
-                <label className="text-sm font-semibold mb-1.5 block">Notes</label>
-                <Input value={paymentNotes} onChange={e => setPaymentNotes(e.target.value)} className="rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" />
+              <div><label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Payment Date</label><Input type="date" value={paymentDate} onChange={e => setPaymentDate(e.target.value)} className="mt-1.5 h-10" /></div>
+              <div><label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Notes</label><Input value={paymentNotes} onChange={e => setPaymentNotes(e.target.value)} className="mt-1.5 h-10" placeholder="Optional notes..." /></div>
+              <div className="flex gap-3 pt-2">
+                <Button variant="outline" className="flex-1 h-10" onClick={() => setPaymentModalOpen(false)}>Cancel</Button>
+                <Button className="flex-1 h-10 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={submitPayment} disabled={mutateRecord.isPending}>{mutateRecord.isPending ? 'Saving...' : 'Record Payment'}</Button>
               </div>
             </div>
-            <div className="flex gap-4 mt-8">
-              <Button variant="outline" onClick={() => setPaymentModalOpen(false)} className="flex-1 rounded-full border-[#E4DFD5] dark:border-zinc-700">Cancel</Button>
-              <Button onClick={submitPayment} className="flex-1 rounded-full bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white shadow-md transition-all hover:scale-[1.02]">Confirm</Button>
-            </div>
-          </div>
+          </motion.div>
         </div>
       )}
 
-      {viewHistoryModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-zinc-900 p-8 max-w-2xl w-full border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-2xl max-h-[80vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Payment History</h2>
-              <Button variant="ghost" onClick={() => setViewHistoryModal(null)} className="rounded-full">Close</Button>
-            </div>
-            <p className="font-semibold mb-6 text-lg">{viewHistoryModal.student_name} - {viewHistoryModal.class_name}</p>
-            
-            {viewHistoryModal.payments.length === 0 ? (
-              <p className="text-zinc-500 text-center py-4">No payments recorded.</p>
-            ) : (
-              <div className="space-y-4">
-                {viewHistoryModal.payments.map(p => (
-                  <div key={p.id} className="border border-[#F0EBE1] dark:border-zinc-700 rounded-xl p-4 flex justify-between items-center bg-[#FAF8F5] dark:bg-zinc-800/50">
-                    <div>
-                      <p className="font-bold text-lg">${p.data?.amount_paid} <span className="text-sm font-medium text-zinc-500">via {p.data?.payment_method}</span></p>
-                      <p className="text-sm text-zinc-500 mt-1">{p.data?.payment_date} | {p.data?.receipt_number}</p>
-                    </div>
-                    <span className="text-sm font-semibold bg-white dark:bg-zinc-800 px-3 py-1.5 rounded-full border border-[#E4DFD5] dark:border-zinc-700">Bal: ${p.data?.balance}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
+      {/* Fee Structure Modal */}
       {structureModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-zinc-900 p-8 max-w-md w-full border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-2xl">
-            <h2 className="text-2xl font-bold mb-6">{editingStructure ? 'Edit' : 'New'} Structure</h2>
-            <div className="space-y-5">
-              <div>
-                <label className="text-sm font-semibold mb-1.5 block">Class</label>
-                <select value={structureForm.class_name} onChange={e => setStructureForm({...structureForm, class_name: e.target.value})} className="w-full h-10 px-3 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
-                  <option value="">Select Class</option>
-                  {classRecords.map(c => <option key={c.id} value={c.data?.class_name || ''}>{c.data?.class_name}</option>)}
-                </select>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-semibold mb-1.5 block">Term</label>
-                  <select value={structureForm.term} onChange={e => setStructureForm({...structureForm, term: e.target.value})} className="w-full h-10 px-3 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
-                    <option>Term 1</option>
-                    <option>Term 2</option>
-                    <option>Term 3</option>
+          <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-card border border-border w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-5">
+              <h2 className="text-lg font-bold text-white">{editingStructure ? 'Edit Fee Structure' : 'Add Fee Structure'}</h2>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div><label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Class *</label>
+                  <select value={structureForm.class_name} onChange={e => setStructureForm({...structureForm, class_name: e.target.value})} className={`mt-1.5 ${inputCls}`}>
+                    <option value="">Select Class...</option>{classList.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
-                <div>
-                  <label className="text-sm font-semibold mb-1.5 block">Year</label>
-                  <select value={structureForm.academic_year} onChange={e => setStructureForm({...structureForm, academic_year: e.target.value})} className="w-full h-10 px-3 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
-                    <option>2023/2024</option>
-                    <option>2024/2025</option>
+                <div><label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Level</label>
+                  <select value={structureForm.level} onChange={e => setStructureForm({...structureForm, level: e.target.value})} className={`mt-1.5 ${inputCls}`}>
+                    <option>Nursery</option><option>Kindergarten</option><option>Primary</option><option>JHS</option><option>SHS</option>
                   </select>
                 </div>
               </div>
-              <div>
-                <label className="text-sm font-semibold mb-1.5 block">Total Amount ($)</label>
-                <Input type="number" value={structureForm.amount} onChange={e => setStructureForm({...structureForm, amount: e.target.value})} className="rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" />
+              <div className="grid grid-cols-2 gap-3">
+                <div><label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Term</label>
+                  <select value={structureForm.term} onChange={e => setStructureForm({...structureForm, term: e.target.value})} className={`mt-1.5 ${inputCls}`}>
+                    <option>Term 1</option><option>Term 2</option><option>Term 3</option>
+                  </select>
+                </div>
+                <div><label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Academic Year</label>
+                  <select value={structureForm.academic_year} onChange={e => setStructureForm({...structureForm, academic_year: e.target.value})} className={`mt-1.5 ${inputCls}`}>
+                    <option>2024/2025</option><option>2023/2024</option><option>2025/2026</option>
+                  </select>
+                </div>
               </div>
-              <div>
-                <label className="text-sm font-semibold mb-1.5 block">Description (Optional)</label>
-                <Input value={structureForm.description} onChange={e => setStructureForm({...structureForm, description: e.target.value})} className="rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" />
+              <div><label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Amount (GHS) *</label><Input type="number" value={structureForm.amount} onChange={e => setStructureForm({...structureForm, amount: e.target.value})} className="mt-1.5 h-10" placeholder="e.g. 1200" /></div>
+              <div><label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Description</label><Input value={structureForm.description} onChange={e => setStructureForm({...structureForm, description: e.target.value})} className="mt-1.5 h-10" placeholder="e.g. Tuition + Levies" /></div>
+              <div className="flex gap-3 pt-2">
+                <Button variant="outline" className="flex-1 h-10" onClick={() => setStructureModalOpen(false)}>Cancel</Button>
+                <Button className="flex-1 h-10 bg-indigo-600 hover:bg-indigo-700 text-white" onClick={handleSaveStructure} disabled={mutateRecord.isPending}>Save Structure</Button>
               </div>
             </div>
-            <div className="flex gap-4 mt-8">
-              <Button variant="outline" onClick={() => setStructureModalOpen(false)} className="flex-1 rounded-full border-[#E4DFD5] dark:border-zinc-700">Cancel</Button>
-              <Button onClick={handleSaveStructure} className="flex-1 rounded-full bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white shadow-md transition-all hover:scale-[1.02]">Save</Button>
-            </div>
-          </div>
+          </motion.div>
         </div>
       )}
-    </div>
+
+      {/* Payment History Modal */}
+      {viewHistoryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-card border border-border w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
+            <div className="px-6 py-5 border-b border-border flex items-center justify-between">
+              <div>
+                <h2 className="font-bold text-foreground">{viewHistoryModal.student_name}</h2>
+                <p className="text-sm text-muted-foreground">Payment History · {ledgerTerm} · {ledgerAcademicYear}</p>
+              </div>
+              <button className="text-muted-foreground hover:text-foreground" onClick={() => setViewHistoryModal(null)}><X className="w-5 h-5" /></button>
+            </div>
+            <div className="p-5 max-h-[70vh] overflow-y-auto space-y-3">
+              {viewHistoryModal.payments.map(p => (
+                <div key={p.id} className="border border-border/50 p-4 rounded-xl bg-muted/20">
+                  <div className="flex justify-between">
+                    <span className="font-bold text-emerald-600">GHS {Number(p.data?.amount_paid || 0).toLocaleString()}</span>
+                    <span className="text-xs text-muted-foreground">{p.data?.payment_date}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">{p.data?.payment_method} · {p.data?.receipt_number}</p>
+                  {p.data?.notes && <p className="text-xs text-muted-foreground mt-1">{p.data?.notes}</p>}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </SchoolPageShell>
   );
 }
