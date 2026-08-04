@@ -4,6 +4,7 @@ import { Users, Search, Plus, Trash2, Edit, Heart, Phone, Mail, Link as LinkIcon
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Card } from '@/components/ui/card';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { motion } from 'framer-motion';
@@ -153,217 +154,209 @@ export default function Parents() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans text-slate-900 dark:text-slate-50 p-8">
-      <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+  return (
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-6xl mx-auto">
         
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Parents & Guardians</h1>
-            <p className="text-slate-500 mt-1">Manage emergency contacts and relationships</p>
+            <h1 className="text-4xl font-bold text-foreground">Parents & Guardians</h1>
+            <p className="text-muted-foreground mt-2">Manage emergency contacts and relationships</p>
           </div>
           <div className="flex items-center gap-4">
-            <div className="text-right hidden md:block border-r border-slate-200 pr-4">
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total</p>
-              <p className="text-lg font-bold text-slate-900">{parents.length}</p>
-            </div>
-            <div className="text-right hidden md:block">
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Linked</p>
-              <p className="text-lg font-bold text-slate-900">{parentsLinkedToStudentsCount}</p>
-            </div>
+            <Button onClick={handleOpenAdd} className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 rounded-xl">
+              <UserPlus className="w-4 h-4 mr-2" />
+              Add Parent
+            </Button>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
-          <div className="relative flex-1 w-full max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <Card className="p-2 px-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex items-center rounded-2xl shadow-sm">
+          <div className="relative flex-1 flex items-center">
+            <Search className="w-5 h-5 text-muted-foreground mr-2" />
             <Input 
               placeholder="Search by name, phone, or child..." 
               value={search} 
               onChange={e => setSearch(e.target.value)} 
-              className="pl-9 bg-slate-50 border-slate-200 shadow-sm transition-colors focus:bg-white"
+              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-base flex-1"
             />
           </div>
-          <Button onClick={handleOpenAdd} className="bg-slate-900 hover:bg-slate-800 text-white shadow-sm w-full md:w-auto">
-            <UserPlus className="w-4 h-4 mr-2" />
-            Add Parent
-          </Button>
-        </div>
+        </Card>
 
       {isParentsLoading ? (
-        <div className="flex items-center justify-center py-20 text-blue-800 font-bold uppercase tracking-widest animate-pulse">Loading Parents...</div>
+        <div className="text-center py-12 text-muted-foreground">Loading Parents...</div>
       ) : filteredParents.length === 0 ? (
-        <div className="py-20 text-center text-gray-500 font-medium bg-white border-2 border-blue-100 p-8">No parents found. Add your first parent record!</div>
+        <div className="text-center py-12 text-muted-foreground border border-dashed rounded-2xl border-border">No parents found. Add your first parent record!</div>
       ) : (
-        <div className="bg-white border-2 border-blue-300 shadow-md overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-blue-100 border-b-4 border-blue-300 text-blue-900">
-                <th className="p-4 font-black uppercase tracking-widest text-sm">Parent Name</th>
-                <th className="p-4 font-black uppercase tracking-widest text-sm">Contact</th>
-                <th className="p-4 font-black uppercase tracking-widest text-sm">Relationship</th>
-                <th className="p-4 font-black uppercase tracking-widest text-sm">Linked Children</th>
-                <th className="p-4 font-black uppercase tracking-widest text-sm text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredParents.map((parent, idx) => (
-                <tr key={parent.id} className={`border-b-2 border-blue-100 hover:bg-blue-50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-[#F0F4FF]/50'}`}>
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-blue-200 border-2 border-blue-400 flex items-center justify-center">
-                        <Users className="w-5 h-5 text-blue-800" />
-                      </div>
-                      <div>
-                        <div className="font-bold text-blue-900 text-lg">{parent.name}</div>
-                        <div className="text-xs font-semibold text-gray-500 uppercase">{parent.occupation || 'N/A'}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="p-4 space-y-1">
-                    <div className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                      <Phone className="w-4 h-4 text-emerald-600" /> {parent.phone}
-                    </div>
-                    {parent.email && (
-                      <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
-                        <Mail className="w-4 h-4 text-blue-500" /> {parent.email}
-                      </div>
-                    )}
-                  </td>
-                  <td className="p-4">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-purple-800 font-black uppercase text-xs tracking-wider border border-purple-300">
-                      <Heart className="w-3 h-3" /> {parent.relationship}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    {parent.children_names ? (
-                      <div className="flex items-start gap-2">
-                        <LinkIcon className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
-                        <span className="text-sm font-bold text-blue-900 leading-tight">
-                          {parent.children_names}
-                        </span>
-                      </div>
-                    ) : (
-                      <span className="text-sm font-semibold text-gray-400 italic">No children linked</span>
-                    )}
-                  </td>
-                  <td className="p-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <Button variant="outline" size="sm" onClick={() => handleOpenEdit(parent)} className="h-8 bg-blue-50 border-blue-300 text-blue-700 hover:bg-blue-600 hover:text-white rounded-none font-bold uppercase text-xs tracking-wider">
-                        <Edit className="w-3 h-3 mr-1" /> Edit
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={() => setDeleteTargetId(parent.id)} className="h-8 bg-red-50 border-red-300 text-red-700 hover:bg-red-600 hover:text-white rounded-none font-bold uppercase text-xs tracking-wider">
-                        <Trash2 className="w-3 h-3 mr-1" /> Delete
-                      </Button>
-                    </div>
-                  </td>
+        <Card className="border border-border/50 bg-card/60 backdrop-blur-sm rounded-3xl overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-muted/50 border-b border-border">
+                <tr>
+                  <th className="p-4 font-semibold text-foreground">Parent Name</th>
+                  <th className="p-4 font-semibold text-foreground">Contact</th>
+                  <th className="p-4 font-semibold text-foreground">Relationship</th>
+                  <th className="p-4 font-semibold text-foreground">Linked Children</th>
+                  <th className="p-4 font-semibold text-foreground text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-border/50">
+                {filteredParents.map((parent, idx) => (
+                  <tr key={parent.id} className="group hover:bg-muted/30 transition-colors">
+                    <td className="p-4">
+                      <p className="font-bold text-foreground">{parent.name}</p>
+                      <p className="text-xs text-muted-foreground">{parent.occupation || 'N/A'}</p>
+                    </td>
+                    <td className="p-4 text-muted-foreground space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-3 h-3" /> {parent.phone}
+                      </div>
+                      {parent.email && (
+                        <div className="flex items-center gap-2">
+                          <Mail className="w-3 h-3" /> {parent.email}
+                        </div>
+                      )}
+                    </td>
+                    <td className="p-4">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 text-primary rounded-md text-xs font-medium">
+                        <Heart className="w-3 h-3" /> {parent.relationship}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      {parent.children_names ? (
+                        <div className="flex items-start gap-2 text-foreground">
+                          <LinkIcon className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                          <span className="text-sm font-medium leading-tight">
+                            {parent.children_names}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground italic">No children linked</span>
+                      )}
+                    </td>
+                    <td className="p-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                      <Button variant="outline" size="sm" onClick={() => handleOpenEdit(parent)} className="h-8 bg-blue-50 border-blue-300 text-blue-700 hover:bg-blue-600 hover:text-white rounded-none font-bold uppercase text-xs tracking-wider">
+                        <Button variant="ghost" size="sm" onClick={() => handleOpenEdit(parent)}>
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => setDeleteTargetId(parent.id)} className="text-destructive hover:text-destructive">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       )}
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1E3A8A]/80 backdrop-blur-sm p-4 overflow-y-auto">
-          <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-white border-4 border-blue-500 w-full max-w-2xl p-6 space-y-6 rounded-none my-8 relative">
-            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-blue-800 hover:bg-blue-100 p-1">
-              <X className="w-6 h-6" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto">
+          <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-card border border-border w-full max-w-2xl p-6 space-y-6 rounded-2xl my-8 relative shadow-xl">
+            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors">
+              <X className="w-5 h-5" />
             </button>
-            <h2 className="text-2xl font-black text-blue-900 uppercase tracking-wider border-b-4 border-blue-200 pb-2">
-              {editingId ? 'Edit Parent Profile' : 'New Parent Profile'}
-            </h2>
+            <div>
+              <h2 className="text-2xl font-bold text-foreground">
+                {editingId ? 'Edit Parent Profile' : 'New Parent Profile'}
+              </h2>
+              <p className="text-muted-foreground mt-1">Enter the parent's information below.</p>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="md:col-span-2">
-                <label className="text-xs font-black text-blue-800 uppercase tracking-widest">Full Name <span className="text-red-500">*</span></label>
+                <label className="text-sm font-medium text-foreground">Full Name <span className="text-destructive">*</span></label>
                 <Input 
                   value={formData.name} 
                   onChange={e => setFormData({...formData, name: e.target.value})} 
-                  className="mt-1 border-2 border-blue-200 bg-[#F0F4FF] rounded-none font-bold text-blue-900 h-11" 
+                  className="mt-1.5" 
                   placeholder="e.g. Mary Mensah"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-black text-blue-800 uppercase tracking-widest">Phone Number <span className="text-red-500">*</span></label>
+                <label className="text-sm font-medium text-foreground">Phone Number <span className="text-destructive">*</span></label>
                 <Input 
                   value={formData.phone} 
                   onChange={e => setFormData({...formData, phone: e.target.value})} 
-                  className="mt-1 border-2 border-blue-200 bg-[#F0F4FF] rounded-none font-bold text-blue-900 h-11" 
+                  className="mt-1.5" 
                   placeholder="e.g. 0244123456"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-black text-blue-800 uppercase tracking-widest">WhatsApp Number (Optional)</label>
+                <label className="text-sm font-medium text-foreground">WhatsApp Number (Optional)</label>
                 <Input 
                   value={formData.whatsapp} 
                   onChange={e => setFormData({...formData, whatsapp: e.target.value})} 
-                  className="mt-1 border-2 border-blue-200 bg-[#F0F4FF] rounded-none font-bold text-blue-900 h-11" 
+                  className="mt-1.5" 
                   placeholder="e.g. 0244123456"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-black text-blue-800 uppercase tracking-widest">Email Address</label>
+                <label className="text-sm font-medium text-foreground">Email Address</label>
                 <Input 
                   type="email"
                   value={formData.email} 
                   onChange={e => setFormData({...formData, email: e.target.value})} 
-                  className="mt-1 border-2 border-blue-200 bg-[#F0F4FF] rounded-none font-bold text-blue-900 h-11" 
+                  className="mt-1.5" 
                   placeholder="e.g. mary@example.com"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-black text-blue-800 uppercase tracking-widest">Relationship to Student</label>
+                <label className="text-sm font-medium text-foreground">Relationship to Student</label>
                 <select 
                   value={formData.relationship} 
                   onChange={e => setFormData({...formData, relationship: e.target.value})} 
-                  className="mt-1 w-full border-2 border-blue-200 bg-[#F0F4FF] px-3 py-2.5 text-sm font-bold text-blue-900 rounded-none focus:outline-none focus:border-blue-500 h-11"
+                  className="mt-1.5 flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {RELATIONSHIP_OPTIONS.map(rel => <option key={rel} value={rel}>{rel}</option>)}
                 </select>
               </div>
 
               <div>
-                <label className="text-xs font-black text-blue-800 uppercase tracking-widest">Occupation</label>
+                <label className="text-sm font-medium text-foreground">Occupation</label>
                 <Input 
                   value={formData.occupation} 
                   onChange={e => setFormData({...formData, occupation: e.target.value})} 
-                  className="mt-1 border-2 border-blue-200 bg-[#F0F4FF] rounded-none font-bold text-blue-900 h-11" 
+                  className="mt-1.5" 
                   placeholder="e.g. Teacher, Trader"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-black text-blue-800 uppercase tracking-widest">Home Address</label>
+                <label className="text-sm font-medium text-foreground">Home Address</label>
                 <Input 
                   value={formData.address} 
                   onChange={e => setFormData({...formData, address: e.target.value})} 
-                  className="mt-1 border-2 border-blue-200 bg-[#F0F4FF] rounded-none font-bold text-blue-900 h-11" 
+                  className="mt-1.5" 
                   placeholder="e.g. House No. 4, Accra"
                 />
               </div>
               
-              <div className="md:col-span-2 mt-4 pt-4 border-t-2 border-blue-100">
-                <label className="text-sm font-black text-blue-900 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <div className="md:col-span-2 mt-2 pt-6 border-t border-border">
+                <label className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
                   <LinkIcon className="w-4 h-4"/> Link Students (Children)
                 </label>
-                <div className="bg-[#F0F4FF] border-2 border-blue-200 p-4 max-h-48 overflow-y-auto">
+                <div className="bg-muted/30 border border-border rounded-lg p-4 max-h-48 overflow-y-auto">
                   {students.length === 0 ? (
-                    <p className="text-sm font-semibold text-gray-500 italic">No students found to link.</p>
+                    <p className="text-sm text-muted-foreground italic">No students found to link.</p>
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {students.map(student => (
-                        <label key={student.id} className="flex items-center gap-3 p-2 hover:bg-blue-100 cursor-pointer border border-transparent hover:border-blue-300 transition-colors">
+                        <label key={student.id} className="flex items-center gap-3 p-2 hover:bg-muted/50 rounded-md cursor-pointer transition-colors">
                           <input 
                             type="checkbox" 
                             checked={selectedChildren.includes(student.id)}
                             onChange={() => toggleChildSelection(student.id)}
-                            className="w-5 h-5 text-blue-600 border-2 border-blue-400 rounded-none focus:ring-blue-500"
+                            className="w-4 h-4 text-primary border-input rounded focus:ring-primary"
                           />
-                          <span className="font-bold text-blue-900 text-sm">{student.name || student.full_name} <span className="text-xs font-semibold text-blue-600 block">{student.class_name || 'No Class'}</span></span>
+                          <span className="font-medium text-foreground text-sm">{student.name || student.full_name} <span className="text-xs text-muted-foreground block">{student.class_name || 'No Class'}</span></span>
                         </label>
                       ))}
                     </div>
@@ -372,9 +365,9 @@ export default function Parents() {
               </div>
             </div>
 
-            <div className="flex gap-4 pt-6 border-t-4 border-blue-200">
-              <Button variant="outline" className="flex-1 rounded-none border-2 border-blue-300 font-bold text-blue-800 hover:bg-[#F0F4FF] uppercase tracking-widest h-12" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 rounded-none bg-emerald-600 hover:bg-emerald-700 text-white font-black uppercase tracking-widest border-2 border-emerald-900 h-12" onClick={handleSave} disabled={mutate.isPending}>
+            <div className="flex gap-4 pt-6 border-t border-border">
+              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button className="flex-1 bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0" onClick={handleSave} disabled={mutate.isPending}>
                 {mutate.isPending ? 'Saving...' : 'Save Parent'}
               </Button>
             </div>

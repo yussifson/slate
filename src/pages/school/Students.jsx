@@ -202,19 +202,18 @@ export default function Students() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans text-slate-900 dark:text-slate-50 p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-6xl mx-auto space-y-8">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Students Directory</h1>
-            <p className="text-slate-500 mt-1">Manage and monitor all student records</p>
+            <h1 className="text-4xl font-bold text-foreground">Students Directory</h1>
+            <p className="text-muted-foreground mt-2">Manage and monitor all student records</p>
           </div>
-          <Button onClick={handleAddNew} className="bg-slate-900 hover:bg-slate-800 text-white shadow-sm">
+          <Button onClick={handleAddNew} className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 rounded-xl">
             <Plus className="w-4 h-4 mr-2" />
             Add Student
           </Button>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <StatCard
             icon={Users}

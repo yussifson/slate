@@ -8,8 +8,8 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import ModalForm from '@/components/school/ModalForm';
-
 import StatCard from '@/components/school/StatCard';
+import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 
 export default function Teachers() {
@@ -173,15 +173,15 @@ export default function Teachers() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans text-slate-900 dark:text-slate-50 p-8">
-      <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Staff Directory</h1>
-            <p className="text-slate-500 mt-1">Manage teachers and school staff records</p>
+            <h1 className="text-4xl font-bold text-foreground">Staff Directory</h1>
+            <p className="text-muted-foreground mt-2">Manage teachers and school staff records</p>
           </div>
-          <Button onClick={handleAddNew} className="bg-slate-900 hover:bg-slate-800 text-white shadow-sm">
+          <Button onClick={handleAddNew} className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 rounded-xl">
             <Plus className="w-4 h-4 mr-2" />
             Add Staff
           </Button>
@@ -211,37 +211,35 @@ export default function Teachers() {
           />
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="relative flex-1 w-full max-w-md">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-secondary)]" />
+        <Card className="p-2 px-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex items-center rounded-2xl shadow-sm">
+          <div className="relative flex-1 flex items-center">
+            <Search className="w-5 h-5 text-muted-foreground mr-2" />
             <Input 
               placeholder="Search staff..." 
               value={search} 
               onChange={e => setSearch(e.target.value)} 
-              className="pl-12 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 h-11" 
+              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-base flex-1"
             />
           </div>
-          <div className="flex items-center gap-4 w-full md:w-auto">
-            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-              {departments.map(d => (
-                <button
-                  key={d}
-                  onClick={() => setDepartmentFilter(d)}
-                  className={`px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors rounded-full ${departmentFilter === d ? 'bg-[var(--primary)]/10 text-[var(--primary)]' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)]'}`}
-                >
-                  {d}
-                </button>
-              ))}
-            </div>
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide ml-4 pl-4 border-l border-border/50">
+            {departments.map(d => (
+              <button
+                key={d}
+                onClick={() => setDepartmentFilter(d)}
+                className={`px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-full ${departmentFilter === d ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'}`}
+              >
+                {d}
+              </button>
+            ))}
           </div>
-        </div>
+        </Card>
 
         {isLoading ? (
-          <div className="py-12 flex justify-center"><div className="text-[var(--primary)] font-semibold animate-pulse text-lg">Loading Staff...</div></div>
+          <div className="text-center py-12 text-muted-foreground">Loading Staff...</div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/30 rounded-md-[var(--radius-xl)]">
-            <Briefcase className="w-12 h-12 mx-auto mb-4 text-[var(--color-text-tertiary)]" />
-            <p className="font-semibold text-[var(--color-text-primary)] text-lg mb-2">No Staff Found</p>
+          <div className="text-center py-12 text-muted-foreground border border-dashed rounded-2xl border-border">
+            <Briefcase className="w-12 h-12 mx-auto mb-4 opacity-50" />
+            <p className="font-semibold text-lg mb-2">No Staff Found</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

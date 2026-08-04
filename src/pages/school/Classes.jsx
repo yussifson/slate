@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 
 const LEVEL_OPTIONS = ['KG', 'Primary', 'JHS'];
@@ -135,36 +136,36 @@ export default function Classes() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans text-slate-900 dark:text-slate-50 p-8">
-      <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Classes & Cohorts</h1>
-            <p className="text-slate-500 mt-1">Manage class configurations and capacities</p>
+            <h1 className="text-4xl font-bold text-foreground">Classes & Cohorts</h1>
+            <p className="text-muted-foreground mt-2">Manage class configurations and capacities</p>
           </div>
           <div className="flex items-center gap-4">
             <div className="text-right hidden md:block">
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Classes</p>
-              <p className="text-lg font-bold text-slate-900">{classes.length}</p>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Classes</p>
+              <p className="text-lg font-bold text-foreground">{classes.length}</p>
             </div>
+            <Button onClick={handleOpenAdd} className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 rounded-xl">
+              <Plus className="w-4 h-4 mr-2" /> Add Class
+            </Button>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
-          <div className="relative flex-1 w-full max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <Card className="p-2 px-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex items-center rounded-2xl shadow-sm">
+          <div className="relative flex-1 flex items-center">
+            <Search className="w-5 h-5 text-muted-foreground mr-2" />
             <Input 
               placeholder="Search classes or teachers..." 
               value={search} 
               onChange={e => setSearch(e.target.value)} 
-              className="pl-9 bg-slate-50 border-slate-200 shadow-sm transition-colors focus:bg-white"
+              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-base flex-1"
             />
           </div>
-          <Button onClick={handleOpenAdd} className="bg-slate-900 hover:bg-slate-800 text-white shadow-sm w-full md:w-auto">
-            <Plus className="w-4 h-4 mr-2" /> Add Class
-          </Button>
-        </div>
+        </Card>
 
       {isClassesLoading ? (
         <div className="flex items-center justify-center py-20 text-emerald-800 font-bold uppercase tracking-widest animate-pulse">Loading Classes...</div>
@@ -173,95 +174,104 @@ export default function Classes() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredClasses.map(c => (
-            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} key={c.id} className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 relative group flex flex-col">
+            <Card key={c.id} className="relative group overflow-hidden border border-border/50 bg-card/60 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300">
               <div className="absolute top-4 right-4 z-10">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0 rounded-none hover:bg-emerald-100">
-                      <MoreVertical className="w-5 h-5 text-emerald-800"/>
+                    <Button variant="ghost" className="h-8 w-8 p-0 rounded-md hover:bg-muted">
+                      <MoreVertical className="h-4 w-4 text-muted-foreground" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-white border-2 border-emerald-300 rounded-none">
-                    <DropdownMenuItem className="font-semibold text-emerald-800 rounded-none cursor-pointer" onClick={() => handleOpenEdit(c)}>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => handleEdit(c)}>
                       <Edit className="w-4 h-4 mr-2" /> Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-red-700 font-black rounded-none cursor-pointer" onClick={() => setDeleteTargetId(c.id)}>
+                    <DropdownMenuItem onClick={() => setDeleteTargetId(c.id)} className="text-destructive focus:text-destructive">
                       <Trash2 className="w-4 h-4 mr-2" /> Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-emerald-100 border-2 border-emerald-300 flex items-center justify-center">
-                  <LayoutGrid className="w-6 h-6 text-[#1E3A8A]" />
+
+              <div className="p-6">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
+                    <BookOpen className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-xl text-foreground">{c.name}</h3>
+                    <p className="text-sm font-medium text-muted-foreground">{c.level}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-black text-2xl text-emerald-900 leading-none">{c.name}</h3>
-                  <span className="inline-block mt-1 px-2 py-0.5 bg-[#1E3A8A] text-white text-[10px] font-black uppercase tracking-widest">{c.level}</span>
+
+                <div className="space-y-3 pt-4 border-t border-border/50">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground flex items-center gap-2"><Users className="w-4 h-4"/> Enrolled</span>
+                    <span className="font-bold text-foreground">
+                      {students.filter(s => s.class_name === c.name).length} 
+                      <span className="text-muted-foreground font-normal"> / {c.capacity || 40}</span>
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground flex items-center gap-2"><BookOpen className="w-4 h-4"/> Teacher</span>
+                    <span className="font-bold text-foreground">{c.class_teacher || 'Unassigned'}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground flex items-center gap-2"><LayoutGrid className="w-4 h-4"/> Room</span>
+                    <span className="font-bold text-foreground">{c.room || 'N/A'}</span>
+                  </div>
                 </div>
               </div>
-              
-              <div className="space-y-3 mb-6 flex-1 pt-4 border-t-2 border-emerald-100">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-bold text-emerald-800 flex items-center gap-2"><Users className="w-4 h-4"/> Enrolled:</span>
-                  <span className="font-black text-emerald-900 bg-emerald-100 px-2 py-0.5 border border-emerald-300">
-                    {studentCountForClass(c.name)} {c.capacity ? `/ ${c.capacity}` : ''}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-bold text-emerald-800">Teacher:</span>
-                  <span className="font-medium text-[#1E3A8A]">{c.class_teacher || 'Unassigned'}</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-bold text-emerald-800">Room:</span>
-                  <span className="font-medium text-[#1E3A8A]">{c.room || 'TBD'}</span>
-                </div>
-              </div>
-            </motion.div>
+            </Card>
           ))}
         </div>
       )}
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-emerald-900/60 backdrop-blur-sm p-4">
-          <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-2xl w-full max-w-lg p-6 space-y-6 rounded-none max-h-[90vh] overflow-y-auto relative">
-            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-emerald-800 hover:bg-emerald-100 p-1">
-              <X className="w-6 h-6" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto">
+          <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-card border border-border w-full max-w-md p-6 space-y-6 rounded-2xl my-8 relative shadow-xl">
+            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors">
+              <X className="w-5 h-5" />
             </button>
-            <h2 className="text-2xl font-black text-emerald-900 uppercase tracking-wider border-b-4 border-emerald-200 pb-2">
-              {editingId ? 'Edit Class' : 'Add New Class'}
-            </h2>
+            <div>
+              <h2 className="text-2xl font-bold text-foreground">
+                {editingId ? 'Edit Class' : 'New Class'}
+              </h2>
+              <p className="text-muted-foreground mt-1">Configure class details and capacity.</p>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="col-span-1 md:col-span-2">
-                <label className="text-xs font-black text-[#1E3A8A] uppercase tracking-widest">Educational Level</label>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-foreground">Academic Level</label>
                 <select 
                   value={formData.level} 
-                  onChange={e => handleLevelChange(e.target.value)} 
-                  className="mt-1 w-full rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 px-3 py-2.5 h-11"
+                  onChange={e => {
+                    const level = e.target.value;
+                    setFormData({...formData, level, name: PREDEFINED_CLASSES[level][0]});
+                  }} 
+                  className="mt-1.5 flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
-                  {LEVEL_OPTIONS.map(lvl => <option key={lvl} value={lvl}>{lvl}</option>)}
+                  {LEVEL_OPTIONS.map(l => <option key={l} value={l}>{l}</option>)}
                 </select>
               </div>
 
               <div>
-                <label className="text-xs font-black text-[#1E3A8A] uppercase tracking-widest">Class Name</label>
+                <label className="text-sm font-medium text-foreground">Class Name</label>
                 <select 
                   value={formData.name} 
                   onChange={e => setFormData({...formData, name: e.target.value})} 
-                  className="mt-1 w-full rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 px-3 py-2.5 h-11"
+                  className="mt-1.5 flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   {PREDEFINED_CLASSES[formData.level]?.map(name => <option key={name} value={name}>{name}</option>)}
                 </select>
               </div>
 
               <div>
-                <label className="text-xs font-black text-[#1E3A8A] uppercase tracking-widest">Class Teacher</label>
+                <label className="text-sm font-medium text-foreground">Class Teacher</label>
                 <select 
                   value={formData.class_teacher} 
                   onChange={e => setFormData({...formData, class_teacher: e.target.value})} 
-                  className="mt-1 w-full rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 px-3 py-2.5 h-11"
+                  className="mt-1.5 flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   <option value="">-- Unassigned --</option>
                   {teachers.map(t => <option key={t.id} value={t.full_name || t.name}>{t.full_name || t.name}</option>)}
@@ -269,30 +279,30 @@ export default function Classes() {
               </div>
 
               <div>
-                <label className="text-xs font-black text-[#1E3A8A] uppercase tracking-widest">Room Number/Name</label>
+                <label className="text-sm font-medium text-foreground">Room Number/Name</label>
                 <Input 
                   value={formData.room} 
                   onChange={e => setFormData({...formData, room: e.target.value})} 
-                  className="mt-1 w-full rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 px-3 py-2.5 h-11" 
+                  className="mt-1.5" 
                   placeholder="e.g. Room 101"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-black text-[#1E3A8A] uppercase tracking-widest">Capacity</label>
+                <label className="text-sm font-medium text-foreground">Capacity</label>
                 <Input 
                   type="number"
                   value={formData.capacity} 
                   onChange={e => setFormData({...formData, capacity: e.target.value})} 
-                  className="mt-1 w-full rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 px-3 py-2.5 h-11" 
+                  className="mt-1.5" 
                   placeholder="e.g. 40"
                 />
               </div>
             </div>
 
-            <div className="flex gap-4 pt-6 border-t-4 border-emerald-200">
-              <Button variant="outline" className="flex-1 bg-white dark:bg-zinc-800 hover:bg-[#FAF8F5] dark:hover:bg-zinc-700 text-[#1F1E1C] dark:text-zinc-50 border border-[#E4DFD5] dark:border-zinc-700 rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02]" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white rounded-full font-semibold px-6 py-2.5 transition-all hover:scale-[1.02] shadow-[0_4px_12px_rgba(99,102,241,0.15)]" onClick={handleSave} disabled={mutate.isPending}>
+            <div className="flex gap-4 pt-6 border-t border-border">
+              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button className="flex-1 bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0" onClick={handleSave} disabled={mutate.isPending}>
                 {mutate.isPending ? 'Saving...' : 'Save Class'}
               </Button>
             </div>
