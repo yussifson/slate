@@ -155,7 +155,7 @@ export default function ListingPage({
                         <>
                           {columns.map((col, cidx) => (
                             <td key={cidx} className="p-4">
-                              {col.cell ? col.cell(item) : item[col.accessorKey]}
+                              {col.cell ? col.cell(item[col.accessorKey], item) : item[col.accessorKey]}
                             </td>
                           ))}
                         </>

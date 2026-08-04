@@ -143,7 +143,7 @@ export default function Assignments() {
           <h1 className="text-3xl font-black text-emerald-900 tracking-tight uppercase">Assignments</h1>
           <p className="text-sm text-[#1E3A8A] font-medium mt-1">Kanban Board for Homework & Grading</p>
         </div>
-        <Button onClick={() => { setFormData({title: '', class_name: classRecords[0]?.data?.class_name || '', subject: SUBJECTS[0], due_date: '', description: '', status: 'todo'}); setShowModal(true);}} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-none font-semibold uppercase">
+        <Button onClick={() => { setFormData({title: '', class_name: classRecords[0]?.data?.name || '', subject: SUBJECTS[0], due_date: '', description: '', status: 'todo'}); setShowModal(true);}} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-none font-semibold uppercase">
           <Plus className="w-4 h-4" /> New Assignment
         </Button>
       </motion.div>
@@ -262,7 +262,7 @@ export default function Assignments() {
                   <label className="text-xs font-black text-[#1E3A8A] uppercase">Class</label>
                   <select value={formData.class_name} onChange={e => setFormData({...formData, class_name: e.target.value})} className="w-full h-10 px-3 mt-1 border-2 border-emerald-200 bg-[#F0F4FF] rounded-none">
                     <option value="">Select...</option>
-                    {classRecords.map(c => <option key={c.id} value={c.data?.class_name || ''}>{c.data?.class_name}</option>)}
+                    {classRecords.map(c => <option key={c.id} value={c.data?.name || ''}>{c.data?.name}</option>)}
                   </select>
                 </div>
                 <div>
