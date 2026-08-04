@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from "react-i18next";
-import { Users, Search, Plus, Mail, Phone, MoreVertical, Briefcase, GraduationCap, UserCheck } from 'lucide-react';
+import { Users, Search, Plus, Briefcase, GraduationCap, UserCheck, MoreHorizontal, Edit2, Trash2, Mail, Phone, ChevronDown } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,9 +8,8 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import ModalForm from '@/components/school/ModalForm';
-import StatCard from '@/components/school/StatCard';
-import { Card } from '@/components/ui/card';
-import { motion } from 'framer-motion';
+import SchoolPageShell from '@/components/school/SchoolPageShell';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function Teachers() {
   const { t } = useTranslation();
@@ -20,6 +19,7 @@ export default function Teachers() {
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [departmentFilter, setDepartmentFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
 
   const { data: rawTeachers = [], isLoading } = useIndustryRecords('school_teacher');
   const { data: rawClasses = [] } = useIndustryRecords('school_class');
@@ -59,6 +59,7 @@ export default function Teachers() {
 
   const filtered = teachers.filter(teacher =>
     (departmentFilter === 'All' || teacher.department === departmentFilter) &&
+    (statusFilter === 'All' || teacher.status === statusFilter) &&
     (teacher.full_name?.toLowerCase().includes(search.toLowerCase()) || 
      teacher.position?.toLowerCase().includes(search.toLowerCase()) ||
      teacher.subject?.toLowerCase().includes(search.toLowerCase()))
@@ -133,175 +134,184 @@ export default function Teachers() {
     { name: 'full_name', label: 'Full Name', type: 'text', required: true, placeholder: 'e.g., Jane Doe' },
     { name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'jane@school.com' },
     { name: 'phone', label: 'Phone', type: 'tel', placeholder: '+1234567890' },
-    { 
-      name: 'gender', label: 'Gender', type: 'select',
-      options: [{ value: 'Male', label: 'Male' }, { value: 'Female', label: 'Female' }]
-    },
-    { 
-      name: 'department', label: 'Department', type: 'select',
-      options: [
-        { value: 'Academics', label: 'Academics' },
-        { value: 'Administration', label: 'Administration' },
-        { value: 'Support', label: 'Support' }
-      ]
-    },
-    { 
-      name: 'position', label: 'Position', type: 'select',
-      options: [
-        { value: 'Head Teacher', label: 'Head Teacher' },
-        { value: 'Class Teacher', label: 'Class Teacher' },
-        { value: 'Subject Teacher', label: 'Subject Teacher' },
-        { value: 'Assistant Teacher', label: 'Assistant Teacher' },
-        { value: 'Admin Staff', label: 'Admin Staff' }
-      ]
-    },
-    { 
-      name: 'class_assigned', label: 'Class Assigned', type: 'select',
-      options: [{ value: '', label: 'None' }, ...classes.map(c => ({ value: c, label: c }))]
-    },
+    { name: 'gender', label: 'Gender', type: 'select', options: [{ value: 'Male', label: 'Male' }, { value: 'Female', label: 'Female' }] },
+    { name: 'department', label: 'Department', type: 'select', options: [{ value: 'Academics', label: 'Academics' }, { value: 'Administration', label: 'Administration' }, { value: 'Support', label: 'Support' }] },
+    { name: 'position', label: 'Position', type: 'select', options: [{ value: 'Head Teacher', label: 'Head Teacher' }, { value: 'Class Teacher', label: 'Class Teacher' }, { value: 'Subject Teacher', label: 'Subject Teacher' }, { value: 'Assistant Teacher', label: 'Assistant Teacher' }, { value: 'Admin Staff', label: 'Admin Staff' }] },
+    { name: 'class_assigned', label: 'Class Assigned', type: 'select', options: [{ value: '', label: 'None' }, ...classes.map(c => ({ value: c, label: c }))] },
     { name: 'subject', label: 'Subject(s) Taught', type: 'text', placeholder: 'e.g., Mathematics, Science' },
     { name: 'qualification', label: 'Qualification', type: 'text', placeholder: 'e.g., B.Ed, M.Sc' },
-    { 
-      name: 'status', label: 'Status', type: 'select',
-      options: [
-        { value: 'Active', label: 'Active' },
-        { value: 'On Leave', label: 'On Leave' },
-        { value: 'Inactive', label: 'Inactive' }
-      ]
-    },
+    { name: 'status', label: 'Status', type: 'select', options: [{ value: 'Active', label: 'Active' }, { value: 'On Leave', label: 'On Leave' }, { value: 'Inactive', label: 'Inactive' }] },
     { name: 'notes', label: 'Additional Notes', type: 'text' }
   ];
 
+  const getInitials = (name) => name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || '??';
+  const avatarColors = ['bg-indigo-100 text-indigo-700', 'bg-emerald-100 text-emerald-700', 'bg-amber-100 text-amber-700', 'bg-rose-100 text-rose-700', 'bg-sky-100 text-sky-700', 'bg-violet-100 text-violet-700'];
+  const getAvatarColor = (name) => avatarColors[(name?.charCodeAt(0) || 0) % avatarColors.length];
+
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-foreground">Staff Directory</h1>
-            <p className="text-muted-foreground mt-2">Manage teachers and school staff records</p>
+    <SchoolPageShell
+      title="Staff Directory"
+      subtitle="Manage teachers and school staff"
+      breadcrumb={['School', 'Staff Directory']}
+      actions={
+        <Button onClick={handleAddNew} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm h-10 px-5 text-sm font-medium">
+          <Plus className="w-4 h-4 mr-2" />
+          Add Staff
+        </Button>
+      }
+    >
+      {/* Stat Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+        {[
+          { label: 'Total Staff', value: stats.total, icon: Users, color: 'bg-indigo-500/10 text-indigo-600' },
+          { label: 'Active Staff', value: stats.active, icon: UserCheck, color: 'bg-emerald-500/10 text-emerald-600' },
+          { label: 'Departments', value: stats.depts, icon: Briefcase, color: 'bg-amber-500/10 text-amber-600' },
+        ].map(({ label, value, icon: Icon, color }) => (
+          <div key={label} className="bg-card rounded-xl border border-border/50 p-5 shadow-sm flex items-center gap-4">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
+              <Icon className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{label}</p>
+              <p className="text-2xl font-bold text-foreground mt-0.5">{value}</p>
+            </div>
           </div>
-          <Button onClick={handleAddNew} className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 rounded-xl">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Staff
-          </Button>
+        ))}
+      </div>
+
+      {/* Filters */}
+      <div className="bg-card border border-border/50 rounded-xl shadow-sm p-4 flex flex-wrap items-center gap-3 mb-6">
+        <div className="relative flex-1 min-w-48">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            placeholder="Search staff by name, subject..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="pl-9 bg-background border-border/50 text-sm h-9"
+          />
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <StatCard
-            icon={Users}
-            label="Total Staff"
-            value={stats.total}
-            description="All staff members"
-            color="emerald"
-          />
-          <StatCard
-            icon={UserCheck}
-            label="Active Staff"
-            value={stats.active}
-            description="Currently active"
-            color="blue"
-          />
-          <StatCard
-            icon={Briefcase}
-            label="Departments"
-            value={stats.depts}
-            description="Active departments"
-            color="purple"
-          />
-        </div>
-
-        <Card className="p-2 px-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex items-center rounded-2xl shadow-sm">
-          <div className="relative flex-1 flex items-center">
-            <Search className="w-5 h-5 text-muted-foreground mr-2" />
-            <Input 
-              placeholder="Search staff..." 
-              value={search} 
-              onChange={e => setSearch(e.target.value)} 
-              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-base flex-1"
-            />
-          </div>
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide ml-4 pl-4 border-l border-border/50">
-            {departments.map(d => (
-              <button
-                key={d}
-                onClick={() => setDepartmentFilter(d)}
-                className={`px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-full ${departmentFilter === d ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'}`}
-              >
-                {d}
-              </button>
-            ))}
-          </div>
-        </Card>
-
-        {isLoading ? (
-          <div className="text-center py-12 text-muted-foreground">Loading Staff...</div>
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground border border-dashed rounded-2xl border-border">
-            <Briefcase className="w-12 h-12 mx-auto mb-4 opacity-50" />
-            <p className="font-semibold text-lg mb-2">No Staff Found</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filtered.map(teacher => (
-              <motion.div 
-                key={teacher.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-300 p-6 flex flex-col items-center text-center relative hover:border-[var(--primary)]/50 transition-colors"
-              >
-                <div className="absolute top-4 right-4">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button className="h-8 w-8 rounded-full flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)] transition-colors">
-                        <MoreVertical className="h-4 w-4" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="rounded-md-[var(--radius-lg)] bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/20">
-                      <DropdownMenuItem onClick={() => handleEdit(teacher)} className="cursor-pointer">Edit</DropdownMenuItem>
-                      <DropdownMenuItem className="text-[var(--color-destructive)] focus:text-[var(--color-destructive)] cursor-pointer" onClick={() => handleDelete(teacher)}>Delete</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                
-                <div className="w-20 h-20 rounded-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] font-semibold text-2xl mb-4 border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/20 tracking-[-0.02em]">
-                  {teacher.full_name?.substring(0, 2).toUpperCase() || 'ST'}
-                </div>
-                <h3 className="font-display font-semibold text-[var(--color-text-primary)] text-xl tracking-tight mb-1">{teacher.full_name}</h3>
-                <p className="text-[11px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-[var(--tracking-widest)] mb-6 tracking-[0.04em]">{teacher.position}</p>
-                
-                <div className="w-full space-y-2 mt-auto">
-                  <div className="flex items-center gap-3 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 rounded-md-[var(--radius-lg)] p-2.5">
-                    <div className="w-8 h-8 rounded-md-[var(--radius-md)] bg-[var(--primary)]/10 flex items-center justify-center shrink-0"><GraduationCap className="w-4 h-4 text-[var(--primary)]" /></div>
-                    <span className="truncate font-medium text-[var(--color-text-secondary)] text-sm">{teacher.qualification || 'N/A'}</span>
-                  </div>
-                  <div className="flex items-center gap-3 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 rounded-md-[var(--radius-lg)] p-2.5">
-                    <div className="w-8 h-8 rounded-md-[var(--radius-md)] bg-[var(--primary)]/10 flex items-center justify-center shrink-0"><Briefcase className="w-4 h-4 text-[var(--primary)]" /></div>
-                    <span className="truncate font-medium text-[var(--color-text-secondary)] text-sm">{teacher.subject || 'N/A'}</span>
-                  </div>
-                  {teacher.class_assigned && (
-                    <div className="flex items-center gap-3 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 rounded-md-[var(--radius-lg)] p-2.5">
-                      <div className="w-8 h-8 rounded-md-[var(--radius-md)] bg-[var(--primary)]/10 flex items-center justify-center shrink-0"><Users className="w-4 h-4 text-[var(--primary)]" /></div>
-                      <span className="truncate font-medium text-[var(--color-text-secondary)] text-sm">{teacher.class_assigned}</span>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-          </div>
+        <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+          <SelectTrigger className="w-[140px] h-9 bg-background border-border/50 text-sm">
+            <SelectValue placeholder="Department" />
+          </SelectTrigger>
+          <SelectContent>
+            {departments.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[120px] h-9 bg-background border-border/50 text-sm">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="All">All Status</SelectItem>
+            <SelectItem value="Active">Active</SelectItem>
+            <SelectItem value="On Leave">On Leave</SelectItem>
+            <SelectItem value="Inactive">Inactive</SelectItem>
+          </SelectContent>
+        </Select>
+        {(search || departmentFilter !== 'All' || statusFilter !== 'All') && (
+          <button onClick={() => { setSearch(''); setDepartmentFilter('All'); setStatusFilter('All'); }} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            Reset
+          </button>
         )}
+        <div className="ml-auto text-sm text-muted-foreground">{filtered.length} staff</div>
+      </div>
+
+      {/* Table */}
+      <div className="bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border/50 bg-muted/20">
+                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Staff Member</th>
+                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Position</th>
+                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Department</th>
+                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Subject</th>
+                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Class</th>
+                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Status</th>
+                <th className="px-5 py-3.5 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/50">
+              {isLoading ? (
+                <tr><td colSpan={7} className="px-5 py-10 text-center text-muted-foreground">Loading staff...</td></tr>
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-5 py-16 text-center">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                        <Briefcase className="w-6 h-6 text-muted-foreground" />
+                      </div>
+                      <p className="text-muted-foreground font-medium">No staff found</p>
+                      <button onClick={handleAddNew} className="text-sm text-indigo-600 hover:underline">Add your first staff member →</button>
+                    </div>
+                  </td>
+                </tr>
+              ) : filtered.map(teacher => {
+                const isActive = teacher.status === 'Active';
+                const isOnLeave = teacher.status === 'On Leave';
+                return (
+                  <tr key={teacher.id} className="hover:bg-muted/30 transition-colors">
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 ${getAvatarColor(teacher.full_name)}`}>
+                          {getInitials(teacher.full_name)}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-foreground text-sm">{teacher.full_name}</p>
+                          <p className="text-xs text-muted-foreground">{teacher.email}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-5 py-4 text-sm text-muted-foreground">{teacher.position || '—'}</td>
+                    <td className="px-5 py-4 text-sm text-muted-foreground">{teacher.department || '—'}</td>
+                    <td className="px-5 py-4 text-sm text-muted-foreground">{teacher.subject || '—'}</td>
+                    <td className="px-5 py-4 text-sm text-muted-foreground">{teacher.class_assigned || '—'}</td>
+                    <td className="px-5 py-4">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+                        isActive ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' :
+                        isOnLeave ? 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400' :
+                        'bg-muted text-muted-foreground'
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : isOnLeave ? 'bg-amber-500' : 'bg-slate-400'}`} />
+                        {teacher.status}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg hover:bg-muted transition-colors">
+                            <MoreHorizontal className="w-4 h-4" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-36">
+                          <DropdownMenuItem onClick={() => handleEdit(teacher)}>
+                            <Edit2 className="w-3.5 h-3.5 mr-2" /> Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDelete(teacher)} className="text-destructive focus:text-destructive">
+                            <Trash2 className="w-3.5 h-3.5 mr-2" /> Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <ModalForm
         open={showModal}
         onOpenChange={setShowModal}
-        title={editingId ? 'Edit Staff' : 'Add Staff'}
+        title={editingId ? 'Edit Staff' : 'Add Staff Member'}
         fields={formFields}
         formData={formData}
         onChange={(field, value) => setFormData(prev => ({ ...prev, [field]: value }))}
         onSubmit={handleSubmit}
         submitText={editingId ? 'Update Staff' : 'Add Staff'}
       />
-    </div>
+    </SchoolPageShell>
   );
 }

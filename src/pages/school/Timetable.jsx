@@ -1,38 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import { 
-  useIndustryRecords, 
-  useMutateIndustryRecord, 
-  useDeleteIndustryRecord 
-} from '@/hooks/useIndustryData';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
-import { 
-  Calendar, 
-  Plus, 
-  Trash2, 
-  Edit, 
-  Clock, 
-  MapPin, 
-  User, 
-  BookOpen, 
-  AlertTriangle 
-} from 'lucide-react';
+import { Calendar, Plus, Trash2, Edit, Clock, MapPin, User, BookOpen, ChevronDown, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import SchoolPageShell from '@/components/school/SchoolPageShell';
 
 const PERIODS = [
   { id: 1, type: 'class', startTime: '07:30', endTime: '08:15', name: 'Period 1' },
@@ -50,16 +25,9 @@ const PERIODS = [
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 const SUBJECTS = [
-  'Mathematics', 
-  'English', 
-  'Science', 
-  'Social Studies', 
-  'ICT', 
-  'Ghanaian Language', 
-  'French', 
-  'Religious & Moral Education', 
-  'Physical Education', 
-  'Creative Arts'
+  'Mathematics', 'English', 'Science', 'Social Studies', 'ICT',
+  'Ghanaian Language', 'French', 'Religious & Moral Education',
+  'Physical Education', 'Creative Arts'
 ];
 
 export default function Timetable() {
@@ -70,173 +38,73 @@ export default function Timetable() {
   const { mutateAsync: deleteRecord } = useDeleteIndustryRecord();
 
   const [selectedClass, setSelectedClass] = useState('');
-  
-  // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState('add'); // 'add', 'edit'
+  const [modalMode, setModalMode] = useState('add');
   const [currentRecordId, setCurrentRecordId] = useState(null);
-  
-  // Form state
-  const [formData, setFormData] = useState({
-    day: '',
-    period: '',
-    start_time: '',
-    end_time: '',
-    subject: '',
-    teacher_id: '',
-    teacher_name: '',
-    room: ''
-  });
+  const [formData, setFormData] = useState({ day: '', period: '', start_time: '', end_time: '', subject: '', teacher_id: '', teacher_name: '', room: '' });
 
-  // Derived data
   const classTimetable = useMemo(() => {
     return timetableRecords.filter(r => r.data?.class_name === selectedClass);
   }, [timetableRecords, selectedClass]);
 
-  // Handlers
   const handleCellClick = (day, period) => {
-    if (!selectedClass) {
-      toast.error('Please select a class first');
-      return;
-    }
-    
-    const existingSlot = classTimetable.find(
-      r => r.data?.day === day && r.data?.period === period.id
-    );
-
+    if (!selectedClass) { toast.error('Please select a class first'); return; }
+    const existingSlot = classTimetable.find(r => r.data?.day === day && r.data?.period === period.id);
     if (existingSlot) {
-      // Edit mode
       setModalMode('edit');
       setCurrentRecordId(existingSlot.id);
-      setFormData({
-        day: existingSlot.data.day || day,
-        period: existingSlot.data.period || period.id,
-        start_time: existingSlot.data.start_time || period.startTime,
-        end_time: existingSlot.data.end_time || period.endTime,
-        subject: existingSlot.data.subject || '',
-        teacher_id: existingSlot.data.teacher_id || '',
-        teacher_name: existingSlot.data.teacher_name || '',
-        room: existingSlot.data.room || ''
-      });
+      setFormData({ day: existingSlot.data.day || day, period: existingSlot.data.period || period.id, start_time: existingSlot.data.start_time || period.startTime, end_time: existingSlot.data.end_time || period.endTime, subject: existingSlot.data.subject || '', teacher_id: existingSlot.data.teacher_id || '', teacher_name: existingSlot.data.teacher_name || '', room: existingSlot.data.room || '' });
     } else {
-      // Add mode
       setModalMode('add');
       setCurrentRecordId(null);
-      setFormData({
-        day,
-        period: period.id,
-        start_time: period.startTime,
-        end_time: period.endTime,
-        subject: '',
-        teacher_id: '',
-        teacher_name: '',
-        room: ''
-      });
+      setFormData({ day, period: period.id, start_time: period.startTime, end_time: period.endTime, subject: '', teacher_id: '', teacher_name: '', room: '' });
     }
     setIsModalOpen(true);
   };
 
   const handleTeacherChange = (teacherId) => {
     const teacher = teacherRecords.find(t => t.id === teacherId);
-    setFormData({
-      ...formData,
-      teacher_id: teacherId,
-      teacher_name: teacher ? (teacher.data.name || teacher.data.full_name || 'Unknown') : ''
-    });
+    setFormData({ ...formData, teacher_id: teacherId, teacher_name: teacher ? (teacher.data.name || teacher.data.full_name || 'Unknown') : '' });
   };
 
   const handleSave = async () => {
-    if (!formData.subject || !formData.teacher_id) {
-      toast.error('Please select a subject and teacher');
-      return;
-    }
-
-    // Check for conflict
+    if (!formData.subject || !formData.teacher_id) { toast.error('Please select a subject and teacher'); return; }
     if (modalMode === 'add') {
-      const isConflict = timetableRecords.some(r => 
-        r.data?.day === formData.day && 
-        r.data?.period === formData.period &&
-        r.data?.class_name === selectedClass &&
-        r.id !== currentRecordId
-      );
-
-      if (isConflict) {
-        toast.error('A slot already exists for this day and period');
-        return;
-      }
+      const isConflict = timetableRecords.some(r => r.data?.day === formData.day && r.data?.period === formData.period && r.data?.class_name === selectedClass && r.id !== currentRecordId);
+      if (isConflict) { toast.error('A slot already exists for this day and period'); return; }
     }
-
     try {
-      const payload = {
-        ...formData,
-        class_name: selectedClass
-      };
-
-      await mutateRecord({
-        id: currentRecordId,
-        recordType: 'school_timetable',
-        payload,
-        searchText: `${selectedClass} ${formData.day} ${formData.subject}`
-      });
-
+      await mutateRecord({ id: currentRecordId, recordType: 'school_timetable', payload: { ...formData, class_name: selectedClass }, searchText: `${selectedClass} ${formData.day} ${formData.subject}` });
       toast.success(`Timetable slot ${modalMode === 'add' ? 'added' : 'updated'}`);
       setIsModalOpen(false);
-    } catch (error) {
-      console.error(error);
-      toast.error('Failed to save slot');
-    }
+    } catch (error) { toast.error('Failed to save slot'); }
   };
 
   const handleDelete = async () => {
     if (!currentRecordId) return;
-    
-    if (window.confirm('Are you sure you want to delete this slot?')) {
-      try {
-        await deleteRecord({
-          id: currentRecordId,
-          recordType: 'school_timetable'
-        });
-        toast.success('Slot deleted');
-        setIsModalOpen(false);
-      } catch (error) {
-        console.error(error);
-        toast.error('Failed to delete slot');
-      }
+    if (window.confirm('Delete this slot?')) {
+      try { await deleteRecord({ id: currentRecordId, recordType: 'school_timetable' }); toast.success('Slot deleted'); setIsModalOpen(false); }
+      catch (error) { toast.error('Failed to delete slot'); }
     }
   };
 
-  if (loadingTimetable) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
   return (
-    <div className="school-theme-root font-outfit p-6 max-w-7xl mx-auto min-h-screen bg-[#FCFAF7] dark:bg-zinc-950 text-[#1F1E1C] dark:text-zinc-50">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center">
-            <Calendar className="mr-2 h-6 w-6 text-indigo-500" />
-            Class Timetable
-          </h1>
-          <p className="text-zinc-500 mt-1">Manage weekly schedules for classes</p>
-        </div>
-      </div>
-
-      <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6 mb-6">
+    <SchoolPageShell
+      title="Class Timetable"
+      subtitle="Manage weekly schedules and period allocations"
+      breadcrumb={['School', 'Timetable']}
+    >
+      {/* Class Selector */}
+      <div className="bg-card border border-border/50 rounded-xl shadow-sm p-4 mb-6">
         <div className="max-w-xs">
-          <Label htmlFor="class-select" className="mb-2 block">Select Class</Label>
+          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide block mb-2">Select Class</label>
           <Select value={selectedClass} onValueChange={setSelectedClass}>
-            <SelectTrigger id="class-select">
+            <SelectTrigger className="h-10 bg-background border-border/50">
               <SelectValue placeholder="Select a class" />
             </SelectTrigger>
             <SelectContent>
               {classRecords.map(cls => (
-                <SelectItem key={cls.id} value={cls.data.name || cls.id}>
-                  {cls.data.name || 'Unnamed Class'}
-                </SelectItem>
+                <SelectItem key={cls.id} value={cls.data.name || cls.id}>{cls.data.name || 'Unnamed Class'}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -244,181 +112,129 @@ export default function Timetable() {
       </div>
 
       {selectedClass ? (
-        <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] overflow-x-auto">
-          <table className="w-full min-w-[800px] border-collapse">
-            <thead>
-              <tr className="bg-[#FAF8F5] dark:bg-zinc-800/50">
-                <th className="border-b border-r border-[#F0EBE1] dark:border-zinc-800 p-4 text-left font-semibold w-32">
-                  <div className="flex items-center">
-                    <Clock className="w-4 h-4 mr-2" />
-                    Time
-                  </div>
-                </th>
-                {DAYS.map(day => (
-                  <th key={day} className="border-b border-[#F0EBE1] dark:border-zinc-800 p-4 text-center font-semibold">
-                    {day}
+        loadingTimetable ? (
+          <div className="flex items-center justify-center py-20 text-muted-foreground">Loading timetable...</div>
+        ) : (
+          <div className="bg-card rounded-xl border border-border/50 shadow-sm overflow-x-auto">
+            <table className="w-full min-w-[800px] border-collapse">
+              <thead>
+                <tr className="bg-muted/20 border-b border-border/50">
+                  <th className="border-r border-border/50 p-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide w-32">
+                    <div className="flex items-center gap-2"><Clock className="w-3.5 h-3.5" /> Time</div>
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {PERIODS.map((period, index) => {
-                if (period.type === 'break') {
+                  {DAYS.map(day => (
+                    <th key={day} className="p-4 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide">{day}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {PERIODS.map((period, index) => {
+                  if (period.type === 'break') {
+                    return (
+                      <tr key={`break-${index}`} className="bg-muted/10">
+                        <td className="border-b border-r border-border/50 p-3 text-xs text-muted-foreground font-medium whitespace-nowrap">{period.startTime} – {period.endTime}</td>
+                        <td colSpan={5} className="border-b border-border/50 p-2 text-center">
+                          <span className="text-xs font-semibold text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">{period.name}</span>
+                        </td>
+                      </tr>
+                    );
+                  }
+
                   return (
-                    <tr key={`break-${index}`} className="bg-[#FAF8F5] dark:bg-zinc-800/30">
-                      <td className="border-b border-r border-[#F0EBE1] dark:border-zinc-800 p-3 text-sm text-zinc-500 font-medium whitespace-nowrap">
-                        {period.startTime} - {period.endTime}
+                    <tr key={`period-${period.id}`}>
+                      <td className="border-b border-r border-border/50 p-3 align-top whitespace-nowrap">
+                        <div className="text-xs font-semibold text-foreground">{period.name}</div>
+                        <div className="text-xs text-muted-foreground mt-0.5">{period.startTime} – {period.endTime}</div>
                       </td>
-                      <td colSpan={5} className="border-b border-[#F0EBE1] dark:border-zinc-800 p-3 text-center text-zinc-500 font-medium italic tracking-wider">
-                        {period.name.toUpperCase()}
-                      </td>
+                      {DAYS.map(day => {
+                        const slot = classTimetable.find(r => r.data?.day === day && r.data?.period === period.id);
+                        return (
+                          <td key={`${day}-${period.id}`} className="border-b border-r border-border/50 p-2 align-top h-20 cursor-pointer group transition-colors hover:bg-muted/20" onClick={() => handleCellClick(day, period)}>
+                            {slot ? (
+                              <div className="bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 rounded-lg p-2.5 h-full flex flex-col justify-between relative group/slot">
+                                <div>
+                                  <div className="font-semibold text-indigo-800 dark:text-indigo-300 text-xs truncate">{slot.data.subject}</div>
+                                  <div className="text-xs text-indigo-600 dark:text-indigo-400 flex items-center gap-1 mt-0.5 truncate">
+                                    <User className="w-2.5 h-2.5 flex-shrink-0" /><span className="truncate">{slot.data.teacher_name}</span>
+                                  </div>
+                                </div>
+                                {slot.data.room && (
+                                  <div className="text-xs text-indigo-500/70 flex items-center gap-1 truncate">
+                                    <MapPin className="w-2.5 h-2.5 flex-shrink-0" /><span className="truncate">{slot.data.room}</span>
+                                  </div>
+                                )}
+                                <div className="absolute inset-0 bg-indigo-500/0 group-hover/slot:bg-indigo-500/5 rounded-lg flex items-center justify-center opacity-0 group-hover/slot:opacity-100 transition-all">
+                                  <span className="bg-white dark:bg-zinc-800 text-xs px-2 py-1 rounded-lg shadow-sm font-semibold text-indigo-600 border border-indigo-100 dark:border-zinc-700 flex items-center gap-1"><Edit className="w-2.5 h-2.5" /> Edit</span>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="h-full border-2 border-dashed border-border/50 rounded-lg flex items-center justify-center text-muted-foreground/30 group-hover:border-indigo-400 group-hover:text-indigo-400 transition-all">
+                                <Plus className="w-4 h-4" />
+                              </div>
+                            )}
+                          </td>
+                        );
+                      })}
                     </tr>
                   );
-                }
-
-                return (
-                  <tr key={`period-${period.id}`}>
-                    <td className="border-b border-r border-[#F0EBE1] dark:border-zinc-800 p-3 align-top whitespace-nowrap">
-                      <div className="font-medium">{period.name}</div>
-                      <div className="text-sm text-zinc-500">{period.startTime} - {period.endTime}</div>
-                    </td>
-                    {DAYS.map(day => {
-                      const slot = classTimetable.find(
-                        r => r.data?.day === day && r.data?.period === period.id
-                      );
-
-                      return (
-                        <td 
-                          key={`${day}-${period.id}`} 
-                          className="border-b border-r border-[#F0EBE1] dark:border-zinc-800 p-3 align-top h-24 hover:bg-[#FAF8F5] dark:hover:bg-zinc-800/50 transition-colors cursor-pointer relative group"
-                          onClick={() => handleCellClick(day, period)}
-                        >
-                          {slot ? (
-                            <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-xl p-3 h-full flex flex-col justify-between">
-                              <div>
-                                <div className="font-bold text-indigo-900 dark:text-indigo-300 text-sm mb-1 truncate">
-                                  {slot.data.subject}
-                                </div>
-                                <div className="text-xs font-medium text-indigo-700 dark:text-indigo-400 flex items-center truncate">
-                                  <User className="w-3 h-3 mr-1 flex-shrink-0" />
-                                  <span className="truncate">{slot.data.teacher_name}</span>
-                                </div>
-                              </div>
-                              {slot.data.room && (
-                                <div className="text-xs font-medium text-indigo-600/70 dark:text-indigo-400/70 flex items-center mt-1.5 truncate">
-                                  <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
-                                  <span className="truncate">{slot.data.room}</span>
-                                </div>
-                              )}
-                              
-                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 dark:group-hover:bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all rounded-xl">
-                                <span className="bg-white dark:bg-zinc-800 text-xs px-3 py-1.5 rounded-full shadow-sm font-semibold flex items-center border border-[#F0EBE1] dark:border-zinc-700">
-                                  <Edit className="w-3 h-3 mr-1" /> Edit
-                                </span>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="h-full border-2 border-dashed border-[#E4DFD5] dark:border-zinc-700 rounded-xl flex items-center justify-center text-zinc-400 group-hover:border-indigo-500 group-hover:text-indigo-500 transition-colors bg-[#FAF8F5] dark:bg-zinc-800/30">
-                              <Plus className="w-5 h-5" />
-                            </div>
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                })}
+              </tbody>
+            </table>
+          </div>
+        )
       ) : (
-        <div className="bg-white dark:bg-zinc-900 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] border border-[#F0EBE1] dark:border-zinc-800 p-12 text-center">
-          <Calendar className="w-12 h-12 text-zinc-300 mx-auto mb-4" />
-          <h3 className="text-lg font-bold mb-1">No Class Selected</h3>
-          <p className="text-zinc-500 font-medium">Please select a class to view or manage its timetable.</p>
+        <div className="bg-card rounded-xl border border-dashed border-border py-16 text-center">
+          <Calendar className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+          <p className="text-muted-foreground font-medium">No class selected</p>
+          <p className="text-sm text-muted-foreground mt-1">Select a class above to view or edit its timetable.</p>
         </div>
       )}
 
       {/* Add/Edit Slot Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[420px]">
           <DialogHeader>
             <DialogTitle>{modalMode === 'add' ? 'Add Timetable Slot' : 'Edit Timetable Slot'}</DialogTitle>
           </DialogHeader>
-          
           <div className="grid gap-4 py-4">
-            <div className="bg-gray-50 p-3 rounded-md flex items-center justify-between text-sm">
-              <span className="font-medium text-gray-700">{selectedClass}</span>
-              <span className="text-gray-500">{formData.day} • {formData.start_time} - {formData.end_time}</span>
+            <div className="bg-muted/30 p-3 rounded-lg flex items-center justify-between text-sm border border-border/50">
+              <span className="font-semibold text-foreground">{selectedClass}</span>
+              <span className="text-muted-foreground">{formData.day} · {formData.start_time} – {formData.end_time}</span>
             </div>
-
             <div className="grid gap-2">
-              <Label htmlFor="subject">Subject</Label>
-              <Select 
-                value={formData.subject} 
-                onValueChange={(val) => setFormData({...formData, subject: val})}
-              >
-                <SelectTrigger id="subject">
-                  <SelectValue placeholder="Select Subject" />
-                </SelectTrigger>
-                <SelectContent>
-                  {SUBJECTS.map(subject => (
-                    <SelectItem key={subject} value={subject}>{subject}</SelectItem>
-                  ))}
-                </SelectContent>
+              <Label>Subject</Label>
+              <Select value={formData.subject} onValueChange={val => setFormData({...formData, subject: val})}>
+                <SelectTrigger><SelectValue placeholder="Select Subject" /></SelectTrigger>
+                <SelectContent>{SUBJECTS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
               </Select>
             </div>
-            
             <div className="grid gap-2">
-              <Label htmlFor="teacher">Teacher</Label>
-              <Select 
-                value={formData.teacher_id} 
-                onValueChange={handleTeacherChange}
-              >
-                <SelectTrigger id="teacher">
-                  <SelectValue placeholder="Select Teacher" />
-                </SelectTrigger>
-                <SelectContent>
-                  {teacherRecords.map(teacher => (
-                    <SelectItem key={teacher.id} value={teacher.id}>
-                      {teacher.data.name || teacher.data.full_name || 'Unnamed Teacher'}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+              <Label>Teacher</Label>
+              <Select value={formData.teacher_id} onValueChange={handleTeacherChange}>
+                <SelectTrigger><SelectValue placeholder="Select Teacher" /></SelectTrigger>
+                <SelectContent>{teacherRecords.map(t => <SelectItem key={t.id} value={t.id}>{t.data.name || t.data.full_name || 'Unnamed'}</SelectItem>)}</SelectContent>
               </Select>
             </div>
-
             <div className="grid gap-2">
-              <Label htmlFor="room">Room (Optional)</Label>
-              <Input
-                id="room"
-                value={formData.room}
-                onChange={(e) => setFormData({...formData, room: e.target.value})}
-                placeholder="e.g. Room 3, Lab A"
-                className="rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
-              />
+              <Label>Room (Optional)</Label>
+              <Input value={formData.room} onChange={e => setFormData({...formData, room: e.target.value})} placeholder="e.g. Room 3, Lab A" className="h-10" />
             </div>
           </div>
-          
           <DialogFooter className="flex justify-between items-center sm:justify-between">
             {modalMode === 'edit' ? (
-              <Button type="button" variant="destructive" size="sm" onClick={handleDelete} className="rounded-full">
+              <Button variant="destructive" size="sm" onClick={handleDelete} className="rounded-lg">
                 <Trash2 className="w-4 h-4 mr-1" /> Delete
               </Button>
-            ) : (
-              <div></div>
-            )}
+            ) : <div />}
             <div className="flex gap-2">
-              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-full border-[#E4DFD5] dark:border-zinc-700 font-semibold">
-                Cancel
-              </Button>
-              <Button type="button" onClick={handleSave} disabled={isSaving} className="rounded-full bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white font-semibold transition-all hover:scale-[1.02] shadow-md">
+              <Button variant="outline" className="rounded-lg" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+              <Button onClick={handleSave} disabled={isSaving} className="rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white">
                 {isSaving ? 'Saving...' : 'Save Slot'}
               </Button>
             </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </SchoolPageShell>
   );
 }

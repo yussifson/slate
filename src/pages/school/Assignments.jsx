@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { generateText } from '@/lib/cloudflareAI';
-import { BrainCircuit, RefreshCw, BookOpen, Search, Plus, Calendar, MoreVertical, FileText, CheckCircle, ArrowLeft, ArrowRight } from 'lucide-react';
+import { BrainCircuit, RefreshCw, BookOpen, Search, Plus, Calendar, MoreHorizontal, ArrowLeft, ArrowRight, X } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,11 +10,12 @@ import { toast } from 'react-hot-toast';
 import { format } from "date-fns";
 import { motion } from 'framer-motion';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import SchoolPageShell from '@/components/school/SchoolPageShell';
 
 const columns = [
-  { id: 'todo', title: 'To Do', color: 'bg-indigo-50 border-indigo-200 text-indigo-900 dark:bg-indigo-900/20 dark:border-indigo-800' },
-  { id: 'grading', title: 'Grading', color: 'bg-amber-50 border-amber-200 text-amber-900 dark:bg-amber-900/20 dark:border-amber-800' },
-  { id: 'returned', title: 'Returned', color: 'bg-emerald-50 border-emerald-200 text-emerald-900 dark:bg-emerald-900/20 dark:border-emerald-800' }
+  { id: 'todo', title: 'To Do', dot: 'bg-indigo-500', header: 'bg-indigo-50 dark:bg-indigo-500/10', border: 'border-indigo-200 dark:border-indigo-500/20' },
+  { id: 'grading', title: 'Grading', dot: 'bg-amber-500', header: 'bg-amber-50 dark:bg-amber-500/10', border: 'border-amber-200 dark:border-amber-500/20' },
+  { id: 'returned', title: 'Returned', dot: 'bg-emerald-500', header: 'bg-emerald-50 dark:bg-emerald-500/10', border: 'border-emerald-200 dark:border-emerald-500/20' },
 ];
 
 const SUBJECTS = ["Mathematics", "English", "Science", "Social Studies", "ICT", "French"];
@@ -35,37 +36,15 @@ export default function Assignments() {
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
 
-  const [formData, setFormData] = useState({
-    title: '', class_name: '', subject: '', due_date: '', description: '', status: 'todo'
-  });
+  const [formData, setFormData] = useState({ title: '', class_name: '', subject: '', due_date: '', description: '', status: 'todo' });
 
-  const assignments = records.map(r => ({
-    id: r.id,
-    ...r.data
-  }));
-
+  const assignments = records.map(r => ({ id: r.id, ...r.data }));
   const submissionsData = submissionRecords.map(r => ({ id: r.id, ...r.data }));
-
-  const filtered = assignments.filter(a =>
-    a.title?.toLowerCase().includes(search.toLowerCase()) || 
-    a.class_name?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = assignments.filter(a => a.title?.toLowerCase().includes(search.toLowerCase()) || a.class_name?.toLowerCase().includes(search.toLowerCase()));
 
   const handleSave = () => {
     if (!formData.title || !formData.subject || !formData.class_name) return toast.error("Title, Class, and Subject required");
-    
-    const payload = {
-      title: formData.title, 
-      class_name: formData.class_name, 
-      subject: formData.subject, 
-      due_date: formData.due_date, 
-      description: formData.description, 
-      status: formData.status || 'todo', 
-      assigned_by: 'Teacher',
-      total_students: 0,
-      submissions: 0
-    };
-
+    const payload = { title: formData.title, class_name: formData.class_name, subject: formData.subject, due_date: formData.due_date, description: formData.description, status: formData.status || 'todo', assigned_by: 'Teacher', total_students: 0, submissions: 0 };
     if (editingId) {
       mutateRecord.mutate({ id: editingId, recordType: 'school_assignment', payload, status: 'active', searchText: `${formData.title} ${formData.class_name}` }, { onSuccess: () => { toast.success("Updated"); setShowModal(false); setEditingId(null); } });
     } else {
@@ -82,213 +61,189 @@ export default function Assignments() {
   const handleAIGrade = async (assignmentId, assignmentDescription) => {
     const ungraded = submissionsData.filter(s => s.assignment_id === assignmentId && s.status !== 'Graded');
     if (ungraded.length === 0) return toast.success("No ungraded submissions.");
-    
     setAiGrading(true);
     toast.loading("AI Grader started...");
-    
     try {
       for (const sub of ungraded) {
-        const prompt = `You are an AI Smart Grader for a school.
-        Assignment Description: ${assignmentDescription}
-        Student's Answer: ${sub.content}
-        
-        Evaluate the answer. Provide a JSON response:
-        {
-          "grade": "Letter grade (A, B, C, D, F)",
-          "score": "Numeric score out of 100",
-          "feedback": "2-3 sentences of constructive feedback directly to the student."
-        }`;
-        
+        const prompt = `You are an AI Smart Grader for a school.\nAssignment: ${assignmentDescription}\nStudent Answer: ${sub.content}\nRespond with JSON: {"grade":"letter","score":number,"feedback":"2-3 sentences"}`;
         const rawText = await generateText(prompt);
-        let cleanText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
         let result;
-        try {
-           result = JSON.parse(cleanText);
-        } catch(e) {
-           result = { grade: 'B', score: 85, feedback: 'Good effort.' };
-        }
-        
-        const updatedPayload = {
-          ...sub,
-          grade: result.grade,
-          feedback: result.feedback,
-          ai_score: result.score,
-          status: 'Graded'
-        };
+        try { result = JSON.parse(rawText.replace(/```json/g, '').replace(/```/g, '').trim()); } catch(e) { result = { grade: 'B', score: 85, feedback: 'Good effort.' }; }
+        const updatedPayload = { ...sub, grade: result.grade, feedback: result.feedback, ai_score: result.score, status: 'Graded' };
         delete updatedPayload.id;
-
-        await mutateRecord.mutateAsync({
-          id: sub.id,
-          recordType: 'school_assignment_submission',
-          payload: updatedPayload,
-          status: 'active',
-          searchText: `${sub.student}`
-        });
+        await mutateRecord.mutateAsync({ id: sub.id, recordType: 'school_assignment_submission', payload: updatedPayload, status: 'active', searchText: `${sub.student}` });
       }
       toast.dismiss();
       toast.success("AI Grading Complete!");
-    } catch (e) {
-      console.error(e);
-      toast.dismiss();
-      toast.error("AI Grading failed. Try again.");
-    } finally {
-      setAiGrading(false);
-    }
+    } catch (e) { toast.dismiss(); toast.error("AI Grading failed."); } finally { setAiGrading(false); }
   };
 
   return (
-    <div className="school-theme-root space-y-6 font-outfit p-4 md:p-8 bg-[#FCFAF7] dark:bg-zinc-950 min-h-screen text-[#1F1E1C] dark:text-zinc-50">
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-[#1F1E1C] dark:text-zinc-50">Assignments</h1>
-          <p className="text-sm text-zinc-500 font-medium mt-1">Kanban Board for Homework & Grading</p>
-        </div>
-        <Button onClick={() => { setFormData({title: '', class_name: classRecords[0]?.data?.name || '', subject: SUBJECTS[0], due_date: '', description: '', status: 'todo'}); setShowModal(true);}} className="gap-2 bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white rounded-full font-semibold transition-all hover:scale-[1.02] shadow-[0_4px_12px_rgba(99,102,241,0.15)]">
-          <Plus className="w-4 h-4" /> New Assignment
+    <SchoolPageShell
+      title="Assignments"
+      subtitle="Track homework, grading, and returned work"
+      breadcrumb={['School', 'Assignments']}
+      actions={
+        <Button onClick={() => { setFormData({ title: '', class_name: classRecords[0]?.data?.name || '', subject: SUBJECTS[0], due_date: '', description: '', status: 'todo' }); setEditingId(null); setShowModal(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm h-10 px-5 text-sm font-medium">
+          <Plus className="w-4 h-4 mr-2" /> New Assignment
         </Button>
-      </motion.div>
-      
-      <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-[2rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] p-6">
-        <div className="relative w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
-          <Input placeholder="Search assignments..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" />
+      }
+    >
+      {/* Search */}
+      <div className="bg-card border border-border/50 rounded-xl shadow-sm p-4 mb-6">
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input placeholder="Search assignments..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background border-border/50 h-9 text-sm" />
         </div>
       </div>
 
+      {/* Kanban Board */}
       {isLoading ? (
-        <div className="py-12 text-center text-[#1E3A8A] font-semibold uppercase">Loading...</div>
+        <div className="flex items-center justify-center py-20 text-muted-foreground">Loading...</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 overflow-x-auto pb-4">
-          {columns.map((col, index) => (
-            <div key={col.id} className={`flex flex-col rounded-[2rem] border border-[#F0EBE1] dark:border-zinc-800 p-6 min-h-[500px] min-w-[300px] ${col.color}`}>
-              <h2 className="font-bold text-xl mb-4 border-b border-[#F0EBE1] dark:border-zinc-800/50 pb-3 flex justify-between items-center">
-                {col.title}
-                <span className="text-sm font-semibold bg-white dark:bg-zinc-800 px-3 py-1 rounded-full shadow-sm">{filtered.filter(a => (a.status || 'todo') === col.id).length}</span>
-              </h2>
-              <div className="flex-1 space-y-4">
-                {filtered.filter(a => (a.status || 'todo') === col.id).map(a => (
-                  <motion.div layoutId={a.id} key={a.id} className="bg-white dark:bg-zinc-800 border border-[#F0EBE1] dark:border-zinc-700 rounded-2xl p-5 relative group hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
-                    <div className="flex justify-between items-start mb-3">
-                      <span className="text-[10px] font-bold uppercase bg-[#FAF8F5] dark:bg-zinc-700 text-[#1F1E1C] dark:text-zinc-50 border border-[#F0EBE1] dark:border-zinc-600 rounded-md px-2 py-1">{a.class_name}</span>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild><Button variant="ghost" className="h-8 w-8 p-0 rounded-full hover:bg-[#FAF8F5] dark:hover:bg-zinc-700"><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger>
-                        <DropdownMenuContent className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 rounded-xl shadow-xl">
-                          <DropdownMenuItem className="font-medium cursor-pointer" onClick={() => { setEditingId(a.id); setFormData(a); setShowModal(true); }}>Edit</DropdownMenuItem>
-                          <DropdownMenuItem className="font-medium cursor-pointer" onClick={() => setViewingSubmissions(a)}>View Submissions & AI Grade</DropdownMenuItem>
-                          <DropdownMenuItem className="text-rose-600 font-medium cursor-pointer" onClick={() => deleteRecord.mutate({ id: a.id, recordType: 'school_assignment'})}>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {columns.map((col, index) => {
+            const cards = filtered.filter(a => (a.status || 'todo') === col.id);
+            return (
+              <div key={col.id} className="bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden">
+                {/* Column header */}
+                <div className={`px-5 py-3.5 flex items-center justify-between border-b border-border/50 ${col.header}`}>
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2.5 h-2.5 rounded-full ${col.dot}`} />
+                    <h2 className="font-semibold text-sm text-foreground">{col.title}</h2>
+                  </div>
+                  <span className="text-xs font-bold bg-card px-2.5 py-1 rounded-full shadow-sm text-muted-foreground">{cards.length}</span>
+                </div>
+                {/* Cards */}
+                <div className="p-3 space-y-3 min-h-[420px]">
+                  {cards.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-10 text-muted-foreground/50">
+                      <BookOpen className="w-8 h-8 mb-2" />
+                      <p className="text-xs">No assignments</p>
                     </div>
-                    <h3 className="font-bold text-lg leading-tight mb-2 text-[#1F1E1C] dark:text-zinc-50">{a.title}</h3>
-                    <p className="text-xs font-semibold uppercase text-indigo-600 dark:text-indigo-400 mb-3">{a.subject}</p>
-                    <p className="text-sm font-medium line-clamp-2 mb-4 text-zinc-500">{a.description}</p>
-                    <div className="flex items-center justify-between mt-4">
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-zinc-500">
-                        <Calendar className="w-3.5 h-3.5" /> {a.due_date ? format(new Date(a.due_date), 'MMM d, yyyy') : 'No Date'}
+                  ) : cards.map(a => (
+                    <motion.div layoutId={a.id} key={a.id} className="bg-background border border-border/50 rounded-xl p-4 hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200">
+                      <div className="flex items-start justify-between mb-2">
+                        <span className="text-xs font-semibold bg-muted text-muted-foreground px-2 py-0.5 rounded-md">{a.class_name}</span>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="text-muted-foreground hover:text-foreground p-1 rounded hover:bg-muted transition-colors">
+                              <MoreHorizontal className="w-3.5 h-3.5" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-44">
+                            <DropdownMenuItem onClick={() => { setEditingId(a.id); setFormData(a); setShowModal(true); }}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setViewingSubmissions(a)}>View Submissions</DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => deleteRecord.mutate({ id: a.id, recordType: 'school_assignment' })}>Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
-                      <div className="flex gap-1">
-                        {index > 0 && <Button variant="outline" size="sm" className="h-7 w-7 p-0 rounded-full border-[#F0EBE1] dark:border-zinc-700" onClick={() => moveCard(a, columns[index-1].id)}><ArrowLeft className="w-3 h-3"/></Button>}
-                        {index < columns.length - 1 && <Button variant="outline" size="sm" className="h-7 w-7 p-0 rounded-full border-[#F0EBE1] dark:border-zinc-700" onClick={() => moveCard(a, columns[index+1].id)}><ArrowRight className="w-3 h-3"/></Button>}
+                      <h3 className="font-semibold text-sm text-foreground leading-snug mb-1">{a.title}</h3>
+                      <p className="text-xs text-indigo-600 dark:text-indigo-400 font-medium mb-2">{a.subject}</p>
+                      {a.description && <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{a.description}</p>}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Calendar className="w-3 h-3" />
+                          {a.due_date ? format(new Date(a.due_date), 'MMM d') : 'No date'}
+                        </div>
+                        <div className="flex gap-1">
+                          {index > 0 && <button onClick={() => moveCard(a, columns[index - 1].id)} className="w-6 h-6 rounded border border-border hover:bg-muted transition-colors flex items-center justify-center"><ArrowLeft className="w-3 h-3" /></button>}
+                          {index < columns.length - 1 && <button onClick={() => moveCard(a, columns[index + 1].id)} className="w-6 h-6 rounded border border-border hover:bg-muted transition-colors flex items-center justify-center"><ArrowRight className="w-3 h-3" /></button>}
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
+      {/* Submissions Modal */}
       {viewingSubmissions && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 w-full max-w-4xl p-8 rounded-[2rem] shadow-2xl flex flex-col max-h-[90vh]">
-            <div className="flex justify-between items-center border-b border-[#F0EBE1] dark:border-zinc-800 pb-5 mb-5">
+          <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-card border border-border w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+            <div className="px-6 py-5 border-b border-border flex items-center justify-between flex-shrink-0">
               <div>
-                <h2 className="text-2xl font-bold">{viewingSubmissions.title} - Submissions</h2>
+                <h2 className="text-lg font-bold text-foreground">{viewingSubmissions.title}</h2>
+                <p className="text-sm text-muted-foreground mt-0.5">Student Submissions</p>
               </div>
               <div className="flex gap-3">
-                <Button variant="outline" className="rounded-full font-semibold border-[#E4DFD5] dark:border-zinc-700" onClick={() => setViewingSubmissions(null)}>Close</Button>
-                <Button 
-                  onClick={() => handleAIGrade(viewingSubmissions.id, viewingSubmissions.description)}
-                  disabled={aiGrading}
-                  className="rounded-full bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white font-semibold flex items-center gap-2 shadow-md transition-all hover:scale-[1.02]"
-                >
-                  {aiGrading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <BrainCircuit className="w-4 h-4" />}
+                <Button variant="outline" className="h-9" onClick={() => setViewingSubmissions(null)}>Close</Button>
+                <Button onClick={() => handleAIGrade(viewingSubmissions.id, viewingSubmissions.description)} disabled={aiGrading} className="h-9 bg-indigo-600 hover:bg-indigo-700 text-white">
+                  {aiGrading ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <BrainCircuit className="w-4 h-4 mr-2" />}
                   {aiGrading ? 'Grading...' : 'AI Grade All'}
                 </Button>
               </div>
             </div>
-            
-            <div className="flex-1 overflow-y-auto space-y-4 pr-2">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {submissionsData.filter(s => s.assignment_id === viewingSubmissions.id).length === 0 ? (
-                <div className="text-center py-12 text-zinc-500 font-medium">No submissions found.</div>
-              ) : (
-                submissionsData.filter(s => s.assignment_id === viewingSubmissions.id).map(sub => (
-                  <div key={sub.id} className="border border-[#F0EBE1] dark:border-zinc-800 p-5 rounded-2xl bg-[#FAF8F5] dark:bg-zinc-800/30">
-                    <div className="flex justify-between items-start mb-3">
-                      <h4 className="font-bold text-lg">{sub.student}</h4>
-                      <span className={`text-xs font-semibold px-3 py-1 rounded-full ${sub.status === 'Graded' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
-                        {sub.status || 'Pending'}
-                      </span>
-                    </div>
-                    <div className="bg-white dark:bg-zinc-800 border border-[#F0EBE1] dark:border-zinc-700 rounded-xl p-4 text-sm text-zinc-600 dark:text-zinc-300 mb-4 whitespace-pre-wrap">
-                      {sub.content}
-                    </div>
-                    {sub.status === 'Graded' && (
-                      <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-xl p-4">
-                        <p className="font-bold text-indigo-900 dark:text-indigo-300 text-lg mb-1">Grade: {sub.grade} ({sub.ai_score}/100)</p>
-                        <p className="text-sm text-indigo-800 dark:text-indigo-400"><span className="font-bold text-xs uppercase opacity-80">Feedback:</span> {sub.feedback}</p>
-                      </div>
-                    )}
+                <div className="text-center py-12 text-muted-foreground">No submissions found.</div>
+              ) : submissionsData.filter(s => s.assignment_id === viewingSubmissions.id).map(sub => (
+                <div key={sub.id} className="border border-border rounded-xl p-5 bg-background">
+                  <div className="flex justify-between items-start mb-3">
+                    <h4 className="font-semibold text-foreground">{sub.student}</h4>
+                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${sub.status === 'Graded' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' : 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'}`}>{sub.status || 'Pending'}</span>
                   </div>
-                ))
-              )}
+                  <div className="bg-muted/40 rounded-lg p-3 text-sm text-foreground mb-3 whitespace-pre-wrap">{sub.content}</div>
+                  {sub.status === 'Graded' && (
+                    <div className="bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 rounded-lg p-3">
+                      <p className="font-bold text-indigo-700 dark:text-indigo-400">Grade: {sub.grade} ({sub.ai_score}/100)</p>
+                      <p className="text-sm text-indigo-600 dark:text-indigo-300 mt-1">{sub.feedback}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
 
+      {/* Create/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-zinc-900 border border-[#F0EBE1] dark:border-zinc-800 w-full max-w-md p-8 rounded-[2rem] shadow-2xl">
-            <h2 className="text-2xl font-bold mb-6">{editingId ? 'Edit Assignment' : 'Create Assignment'}</h2>
-            <div className="space-y-5">
+          <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-card border border-border w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-5">
+              <h2 className="text-lg font-bold text-white">{editingId ? 'Edit Assignment' : 'Create Assignment'}</h2>
+              <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-white/70 hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="p-6 space-y-4">
               <div>
-                <label className="text-sm font-semibold mb-1.5 block">Title</label>
-                <Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" />
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Title</label>
+                <Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="mt-1.5 h-10" placeholder="Assignment title" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-sm font-semibold mb-1.5 block">Class</label>
-                  <select value={formData.class_name} onChange={e => setFormData({...formData, class_name: e.target.value})} className="w-full h-10 px-3 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
-                    <option value="">Select...</option>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Class</label>
+                  <select value={formData.class_name} onChange={e => setFormData({...formData, class_name: e.target.value})} className="mt-1.5 flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                    <option value="">Select class</option>
                     {classRecords.map(c => <option key={c.id} value={c.data?.name || ''}>{c.data?.name}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-semibold mb-1.5 block">Subject</label>
-                  <select value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} className="w-full h-10 px-3 rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
-                    <option value="">Select...</option>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Subject</label>
+                  <select value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} className="mt-1.5 flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
                     {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
               </div>
               <div>
-                <label className="text-sm font-semibold mb-1.5 block">Due Date</label>
-                <Input type="date" value={formData.due_date} onChange={e => setFormData({...formData, due_date: e.target.value})} className="rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" />
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Due Date</label>
+                <Input type="date" value={formData.due_date} onChange={e => setFormData({...formData, due_date: e.target.value})} className="mt-1.5 h-10" />
               </div>
               <div>
-                <label className="text-sm font-semibold mb-1.5 block">Description</label>
-                <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full rounded-xl border-1.5 border-[#E4DFD5] dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 text-sm focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 h-28" />
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Description</label>
+                <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="mt-1.5 w-full h-24 rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none" />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <Button variant="outline" className="flex-1 h-10" onClick={() => setShowModal(false)}>Cancel</Button>
+                <Button className="flex-1 h-10 bg-indigo-600 hover:bg-indigo-700 text-white" onClick={handleSave}>Save</Button>
               </div>
             </div>
-            <div className="flex gap-4 pt-6 mt-2">
-              <Button variant="outline" className="flex-1 rounded-full border-[#E4DFD5] dark:border-zinc-700 font-semibold" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 rounded-full bg-gradient-to-r from-indigo-600 to-orange-500 hover:opacity-90 text-white font-semibold transition-all hover:scale-[1.02] shadow-md" onClick={handleSave}>Save</Button>
-            </div>
-          </div>
+          </motion.div>
         </div>
       )}
-    </div>
+    </SchoolPageShell>
   );
 }
