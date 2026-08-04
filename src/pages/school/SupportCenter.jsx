@@ -9,6 +9,7 @@ import { useCompanyId } from "@/hooks/useCompanyId";
 import { useAuth } from "@/lib/AuthContext";
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import SchoolPageShell from '@/components/school/SchoolPageShell';
 
 export default function SupportCenter() {
   const { t } = useTranslation();
@@ -43,91 +44,84 @@ export default function SupportCenter() {
   };
 
   return (
-    <div className="space-y-8 pb-12 font-dmsans max-w-6xl mx-auto">
-      <div className="bg-emerald-600 rounded-3xl p-10 md:p-14 text-white flex flex-col items-center text-center border-b-4 border-emerald-700 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
-        <div className="bg-emerald-500/10 p-4 rounded-full mb-6">
-          <LifeBuoy className="w-12 h-12 text-emerald-100" />
-        </div>
-        <h1 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-[-0.02em]">How can we help you today?</h1>
-        <p className="text-emerald-100 text-lg md:text-xl font-medium mb-8">Search our knowledge base or get in touch with support.</p>
-        <div className="relative w-full max-w-2xl">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-[#1E3A8A] dark:text-blue-400" />
-          <Input 
-            placeholder="Search guides, FAQs..." 
-            className="w-full pl-16 py-8 rounded-2xl bg-white border-none text-emerald-900 placeholder:text-emerald-400 focus-visible:ring-4 focus-visible:ring-emerald-300 text-xl font-medium shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" 
-          />
+    <SchoolPageShell
+      title="Support Center"
+      subtitle="Knowledge base, FAQs, and support desks"
+      breadcrumb={['School', 'Support']}
+    >
+      {/* Banner */}
+      <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-2xl p-8 md:p-10 text-white text-center shadow-sm relative overflow-hidden mb-8">
+        <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
+          <div className="bg-white/10 p-3 rounded-full mb-4">
+            <LifeBuoy className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-3xl font-extrabold mb-2 leading-tight">How can we help you today?</h1>
+          <p className="text-indigo-100 text-sm md:text-base font-medium mb-6">Search our knowledge base or get in touch with support.</p>
+          <div className="relative w-full max-w-lg">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input 
+              placeholder="Search guides, FAQs..." 
+              className="w-full pl-10 pr-4 h-11 bg-white text-slate-900 placeholder:text-slate-400 border-none rounded-xl text-sm font-medium shadow-sm focus-visible:ring-2 focus-visible:ring-indigo-300" 
+            />
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+      {/* Guide Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
         {[
           { icon: Book, title: "Knowledge Base", desc: "Browse our comprehensive guides and tutorials.", link: "Browse Articles" },
           { icon: FileQuestion, title: "FAQs", desc: "Find quick answers to the most commonly asked questions.", link: "View FAQs" },
           { icon: PhoneCall, title: "Contact IT", desc: "Reach out directly to our 24/7 IT helpdesk team.", link: "Open Live Chat" }
         ].map((item, i) => (
           <motion.div 
-            whileHover={{ scale: 1.03 }}
+            whileHover={{ y: -2 }}
             key={i} 
-            className="bg-white rounded-3xl border-2 border-emerald-100 p-8 flex flex-col items-start cursor-pointer hover:border-emerald-400 hover:bg-[#F0F4FF] dark:bg-blue-900/20 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+            className="bg-card rounded-xl border border-border/50 p-6 flex flex-col items-start hover:shadow-md transition-all cursor-pointer group"
           >
-            <div className="w-16 h-16 rounded-2xl bg-emerald-100 text-[#1E3A8A] dark:text-blue-400 flex items-center justify-center mb-6">
-              <item.icon className="w-8 h-8" />
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center mb-4">
+              <item.icon className="w-5 h-5" />
             </div>
-            <h3 className="text-2xl font-extrabold text-emerald-900 mb-3 tracking-[-0.02em]">{item.title}</h3>
-            <p className="text-[#1E3A8A] dark:text-blue-400 mb-8 flex-1 font-medium text-lg leading-relaxed">{item.desc}</p>
-            <div className="text-[#1E3A8A] dark:text-blue-400 font-semibold hover:text-emerald-800 flex items-center text-lg uppercase tracking-wide tracking-[0.04em]">
+            <h3 className="text-base font-bold text-foreground mb-2">{item.title}</h3>
+            <p className="text-xs text-muted-foreground leading-relaxed mb-6 flex-1">{item.desc}</p>
+            <div className="text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:underline flex items-center gap-1">
               {item.link} &rarr;
             </div>
           </motion.div>
         ))}
       </div>
 
-      <div className="bg-[#F0F4FF] dark:bg-blue-900/20 rounded-3xl p-10 md:p-14 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 mt-12 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
-        <div className="flex flex-col lg:flex-row items-center gap-12">
+      {/* Feature Request */}
+      <div className="bg-muted/30 rounded-xl p-8 border border-border/50">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
           <div className="flex-1 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 bg-emerald-200 text-emerald-800 px-5 py-2 rounded-full text-sm font-extrabold uppercase tracking-wider mb-6 tracking-[0.04em]">
-              <Sparkles className="w-5 h-5" /> Have a Feature Request?
-            </div>
-            <h2 className="text-4xl font-extrabold mb-6 text-emerald-900 leading-tight tracking-[-0.02em]">
-              Help us shape the future
-            </h2>
-            <p className="text-[#1E3A8A] dark:text-blue-400 text-xl font-medium leading-relaxed max-w-xl">
+            <span className="inline-flex items-center gap-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+              <Sparkles className="w-3.5 h-3.5" /> Feature Request
+            </span>
+            <h2 className="text-2xl font-bold mb-3 text-foreground leading-tight">Help us shape the future</h2>
+            <p className="text-muted-foreground text-sm leading-relaxed max-w-lg">
               We are constantly improving the platform. If you have an idea for a new feature that would make your life easier, let us know!
             </p>
           </div>
-          <div className="w-full lg:w-[500px]">
+          <div className="w-full lg:w-[420px] bg-card p-5 rounded-xl border border-border/50 shadow-sm flex flex-col">
             <AnimatePresence mode="wait">
               {submitted ? (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                  className="bg-white border-2 border-emerald-200 p-10 rounded-3xl text-center flex flex-col items-center shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-                >
-                  <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
-                    <CheckCircle2 className="w-10 h-10 text-[#1E3A8A] dark:text-blue-400" />
-                  </div>
-                  <h3 className="text-2xl font-extrabold text-emerald-900 mb-3 tracking-[-0.02em]">Idea Received!</h3>
-                  <p className="text-[#1E3A8A] dark:text-blue-400 mb-8 font-medium text-lg">Our product team will review it shortly.</p>
-                  <Button onClick={() => setSubmitted(false)} variant="outline" className="border-2 border-emerald-200 text-[#1E3A8A] dark:text-blue-400 hover:bg-[#F0F4FF] dark:bg-blue-900/20 rounded-xl h-12 px-8 font-semibold text-lg">
-                    Submit another
-                  </Button>
+                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center py-6 text-center">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-500 mb-2" />
+                  <h4 className="font-bold text-foreground text-sm">Thank You!</h4>
+                  <p className="text-xs text-muted-foreground mt-1">We've received your suggestion and will review it soon.</p>
+                  <Button variant="outline" size="sm" className="mt-4 h-8 text-xs" onClick={() => setSubmitted(false)}>Submit Another</Button>
                 </motion.div>
               ) : (
-                <motion.div 
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  className="bg-white border-2 border-emerald-200 p-8 rounded-3xl flex flex-col gap-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
                   <textarea 
-                    className="w-full bg-[#F0F4FF] dark:bg-blue-900/20/50 border-2 border-emerald-100 rounded-2xl p-5 text-emerald-900 focus:outline-none focus:border-emerald-400 focus:bg-white resize-none h-40 text-lg font-medium transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-                    placeholder="I think it would be great if the system could..."
-                    value={idea}
-                    onChange={(e) => setIdea(e.target.value)}
-                  ></textarea>
-                  <Button 
-                    onClick={handleIdeaSubmit}
-                    disabled={isSubmitting || !idea.trim()}
-                    className="w-full rounded-2xl bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-extrabold h-16 text-xl transition-all shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"
-                  >
-                    {isSubmitting ? 'Sending...' : <span className="flex items-center gap-3"><Send className="w-6 h-6"/> Submit Idea to Dev Team</span>}
+                    value={idea} 
+                    onChange={e => setIdea(e.target.value)} 
+                    placeholder="Describe your feature idea..." 
+                    className="w-full h-24 rounded-lg border border-input bg-transparent px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-ring resize-none" 
+                  />
+                  <Button onClick={handleIdeaSubmit} disabled={isSubmitting || !idea.trim()} className="w-full h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5">
+                    <Send className="w-3.5 h-3.5" /> {isSubmitting ? 'Sending...' : 'Send Idea'}
                   </Button>
                 </motion.div>
               )}
@@ -135,6 +129,6 @@ export default function SupportCenter() {
           </div>
         </div>
       </div>
-    </div>
+    </SchoolPageShell>
   );
 }
