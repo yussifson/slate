@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
-import { motion } from 'framer-motion';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import SchoolPageShell from '@/components/school/SchoolPageShell';
+import { statCardStyle, tableContainerStyle, filterBarStyle, iconBadgeStyle, STAT_COLORS, addButtonStyle, tableHeaderStyle, tableCellStyle } from '@/components/school/premiumStyles';
 
 const RELATIONSHIP_OPTIONS = ['Father', 'Mother', 'Guardian', 'Uncle', 'Aunt', 'Other'];
 
@@ -29,29 +29,30 @@ export default function Parents() {
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', whatsapp: '',
     relationship: 'Father', occupation: '', address: '',
-    children_ids: '[]', children_names: ''
+    emergency_contact: false, notes: '', linked_student_ids: []
   });
 
-  const [selectedChildren, setSelectedChildren] = useState([]);
-
   const parents = useMemo(() => parentRecords.map(r => ({ id: r.id, ...r.data })), [parentRecords]);
-  const students = useMemo(() => studentRecords.map(r => ({ id: r.id, ...r.data })), [studentRecords]);
+  const students = useMemo(() => studentRecords.map(r => ({ id: r.id, name: r.data?.name || 'Unnamed Student' })), [studentRecords]);
+
+  const stats = useMemo(() => {
+    const total = parents.length;
+    const linked = parents.filter(p => p.linked_student_ids?.length > 0 || p.children_names).length;
+    return { total, linked };
+  }, [parents]);
 
   const filteredParents = useMemo(() => {
+    if (!search.trim()) return parents;
+    const q = search.toLowerCase();
     return parents.filter(p => 
-      p.name?.toLowerCase().includes(search.toLowerCase()) || 
-      p.phone?.includes(search) ||
-      p.children_names?.toLowerCase().includes(search.toLowerCase())
+      p.name?.toLowerCase().includes(q) ||
+      p.phone?.toLowerCase().includes(q) ||
+      p.children_names?.toLowerCase().includes(q)
     );
   }, [parents, search]);
 
-  const parentsLinkedCount = parents.filter(p => {
-    try { return JSON.parse(p.children_ids || '[]').length > 0; } catch { return false; }
-  }).length;
-
   const handleOpenAdd = () => {
-    setFormData({ name: '', email: '', phone: '', whatsapp: '', relationship: 'Father', occupation: '', address: '', children_ids: '[]', children_names: '' });
-    setSelectedChildren([]);
+    setFormData({ name: '', email: '', phone: '', whatsapp: '', relationship: 'Father', occupation: '', address: '', emergency_contact: false, notes: '', linked_student_ids: [] });
     setEditingId(null);
     setShowModal(true);
   };
@@ -61,259 +62,305 @@ export default function Parents() {
       name: parent.name || '', email: parent.email || '', phone: parent.phone || '',
       whatsapp: parent.whatsapp || '', relationship: parent.relationship || 'Father',
       occupation: parent.occupation || '', address: parent.address || '',
-      children_ids: parent.children_ids || '[]', children_names: parent.children_names || ''
+      emergency_contact: !!parent.emergency_contact, notes: parent.notes || '',
+      linked_student_ids: parent.linked_student_ids || []
     });
-    try { setSelectedChildren(JSON.parse(parent.children_ids || '[]')); } catch { setSelectedChildren([]); }
     setEditingId(parent.id);
     setShowModal(true);
   };
 
-  const toggleChildSelection = (studentId) => {
-    setSelectedChildren(prev => prev.includes(studentId) ? prev.filter(id => id !== studentId) : [...prev, studentId]);
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.phone) {
+      toast.error('Name and Phone number are required');
+      return;
+    }
 
-  const handleSave = () => {
-    if (!formData.name || !formData.phone) return toast.error("Name and Phone are required");
-    const linkedStudentNames = students.filter(s => selectedChildren.includes(s.id)).map(s => s.name || s.full_name || 'Unknown Student').join(', ');
-    const payload = { ...formData, children_ids: JSON.stringify(selectedChildren), children_names: linkedStudentNames };
-    mutate.mutate(
-      { id: editingId, recordType: 'school_parent', payload },
-      {
-        onSuccess: () => { toast.success(editingId ? "Parent updated" : "Parent added"); setShowModal(false); },
-        onError: () => toast.error("Failed to save parent")
+    const linkedNames = students
+      .filter(s => formData.linked_student_ids.includes(s.id))
+      .map(s => s.name)
+      .join(', ');
+
+    const payload = {
+      recordType: 'school_parent',
+      payload: { ...formData, children_names: linkedNames },
+      status: 'Active',
+      searchText: `${formData.name} ${formData.phone} ${linkedNames}`
+    };
+
+    try {
+      if (editingId) {
+        await mutate.mutateAsync({ id: editingId, ...payload });
+        toast.success('Parent updated successfully');
+      } else {
+        await mutate.mutateAsync(payload);
+        toast.success('Parent added successfully');
       }
-    );
+      setShowModal(false);
+    } catch (err) {
+      toast.error('Failed to save parent record');
+    }
   };
 
-  const handleDelete = () => {
+  const handleDeleteConfirm = async () => {
     if (!deleteTargetId) return;
-    deleteRecord.mutate(
-      { id: deleteTargetId, recordType: 'school_parent' },
-      { onSuccess: () => { toast.success("Parent removed"); setDeleteTargetId(null); }, onError: () => { toast.error("Failed to remove parent"); setDeleteTargetId(null); } }
-    );
+    try {
+      await deleteRecord.mutateAsync({ id: deleteTargetId, recordType: 'school_parent' });
+      toast.success('Parent deleted');
+    } catch (err) {
+      toast.error('Failed to delete parent');
+    } finally {
+      setDeleteTargetId(null);
+    }
+  };
+
+  const toggleStudentLink = (studentId) => {
+    setFormData(prev => {
+      const exists = prev.linked_student_ids.includes(studentId);
+      return {
+        ...prev,
+        linked_student_ids: exists
+          ? prev.linked_student_ids.filter(id => id !== studentId)
+          : [...prev.linked_student_ids, studentId]
+      };
+    });
   };
 
   const getInitials = (name) => name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || '??';
-  const avatarColors = ['bg-indigo-100 text-indigo-700', 'bg-emerald-100 text-emerald-700', 'bg-amber-100 text-amber-700', 'bg-rose-100 text-rose-700', 'bg-sky-100 text-sky-700', 'bg-violet-100 text-violet-700'];
-  const getAvatarColor = (name) => avatarColors[(name?.charCodeAt(0) || 0) % avatarColors.length];
+  const avatarBgs = ['#EEF2FF', '#ECFDF5', '#FFF7ED', '#FFF1F2', '#F0F9FF', '#F5F3FF'];
+  const avatarFgs = ['#4F46E5', '#059669', '#D97706', '#E11D48', '#0284C7', '#7C3AED'];
+  const getAvatarIdx = (name) => (name?.charCodeAt(0) || 0) % avatarBgs.length;
 
   return (
     <SchoolPageShell
       title="Parents & Guardians"
-      subtitle="Manage emergency contacts and family relationships"
+      subtitle="Manage emergency contacts and student family relationships"
       breadcrumb={['School', 'Parents & Guardians']}
       actions={
-        <Button onClick={handleOpenAdd} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm h-10 px-5 text-sm font-medium">
+        <Button onClick={handleOpenAdd} className="bg-indigo-600 hover:bg-indigo-700 text-white" style={addButtonStyle}>
           <UserPlus className="w-4 h-4 mr-2" /> Add Parent
         </Button>
       }
     >
-      {/* Stat Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+      {/* ── Stat Cards ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-10">
         {[
-          { label: 'Total Parents', value: parents.length, icon: Users, color: 'bg-indigo-500/10 text-indigo-600' },
-          { label: 'Linked to Students', value: parentsLinkedCount, icon: LinkIcon, color: 'bg-emerald-500/10 text-emerald-600' },
-          { label: 'Unlinked', value: parents.length - parentsLinkedCount, icon: Heart, color: 'bg-amber-500/10 text-amber-600' },
-        ].map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-card rounded-xl border border-border/50 p-5 shadow-sm flex items-center gap-4">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
-              <Icon className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{label}</p>
-              <p className="text-2xl font-bold text-foreground mt-0.5">{value}</p>
+          { label: 'Total Parents', value: stats.total, sub: 'Registered contacts', icon: Users, color: STAT_COLORS.blue },
+          { label: 'Linked Students', value: stats.linked, sub: 'Parents connected to students', icon: Heart, color: STAT_COLORS.rose },
+        ].map(({ label, value, sub, icon: Icon, color }) => (
+          <div key={label} style={statCardStyle} className="group hover:shadow-lg transition-all duration-200">
+            <div className="flex items-start gap-4">
+              <div style={iconBadgeStyle(color.bg)}>
+                <Icon style={{ width: 22, height: 22, color: color.icon }} />
+              </div>
+              <div className="flex-1">
+                <p style={{ color: color.label, fontSize: '13px', fontWeight: 600, marginBottom: '4px' }}>{label}</p>
+                <p className="text-foreground" style={{ fontSize: '32px', fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.02em' }}>{value}</p>
+                <p className="text-muted-foreground/60" style={{ fontSize: '12px', marginTop: '6px' }}>{sub}</p>
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Search */}
-      <div className="bg-card border border-border/50 rounded-xl shadow-sm p-4 flex items-center gap-3 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search by name, phone, or child name..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background border-border/50 text-sm h-9" />
+      {/* ── Filter Bar ── */}
+      <div style={filterBarStyle} className="flex flex-wrap items-center gap-3 mb-6">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+          <Input 
+            placeholder="Search by name, phone, or child..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="pl-9 bg-background border-border/40 text-sm h-9"
+            style={{ borderRadius: '10px' }}
+          />
         </div>
-        {search && <button onClick={() => setSearch('')} className="text-sm text-muted-foreground hover:text-foreground transition-colors">Clear</button>}
-        <div className="text-sm text-muted-foreground ml-auto">{filteredParents.length} records</div>
+        {search && (
+          <button onClick={() => setSearch('')} className="text-xs text-muted-foreground hover:text-foreground transition-colors" style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}>Clear</button>
+        )}
+        <div className="ml-auto text-xs text-muted-foreground/60 font-medium">{filteredParents.length} parents</div>
       </div>
 
-      {/* Table */}
-      <div className="bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden">
+      {/* ── Table ── */}
+      <div style={tableContainerStyle}>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full">
             <thead>
-              <tr className="border-b border-border/50 bg-muted/20">
-                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Parent / Guardian</th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Contact</th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Relationship</th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Linked Children</th>
-                <th className="px-5 py-3.5 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">Actions</th>
+              <tr>
+                {['Parent Name', 'Contact', 'Relationship', 'Linked Children', ''].map((h, i) => (
+                  <th key={h || i} style={{ ...tableHeaderStyle, textAlign: i === 4 ? 'right' : 'left' }}>{h}</th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-border/50">
+            <tbody>
               {isParentsLoading ? (
-                <tr><td colSpan={5} className="px-5 py-10 text-center text-muted-foreground">Loading parents...</td></tr>
+                <tr><td colSpan={5} style={{ ...tableCellStyle, textAlign: 'center', padding: '60px 20px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: '28px', height: '28px', border: '3px solid #6366f1', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                    <span className="text-muted-foreground/60" style={{ fontSize: '14px' }}>Loading parents…</span>
+                  </div>
+                </td></tr>
               ) : filteredParents.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-5 py-16 text-center">
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                        <Users className="w-6 h-6 text-muted-foreground" />
-                      </div>
-                      <p className="text-muted-foreground font-medium">No parents found</p>
-                      <button onClick={handleOpenAdd} className="text-sm text-indigo-600 hover:underline">Add your first parent record →</button>
+                <tr><td colSpan={5} style={{ ...tableCellStyle, textAlign: 'center', padding: '60px 20px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'hsl(var(--muted) / 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Users style={{ width: '24px', height: '24px', color: 'hsl(var(--muted-foreground) / 0.3)' }} />
                     </div>
-                  </td>
-                </tr>
-              ) : filteredParents.map(parent => (
-                <tr key={parent.id} className="hover:bg-muted/30 transition-colors">
-                  <td className="px-5 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 ${getAvatarColor(parent.name)}`}>
-                        {getInitials(parent.name)}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-foreground text-sm">{parent.name}</p>
-                        <p className="text-xs text-muted-foreground">{parent.occupation || 'N/A'}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-5 py-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Phone className="w-3 h-3" /> {parent.phone}
-                      </div>
-                      {parent.email && (
-                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                          <Mail className="w-3 h-3" /> {parent.email}
+                    <p className="text-muted-foreground font-medium" style={{ fontSize: '15px' }}>No parents found</p>
+                    <button onClick={handleOpenAdd} style={{ fontSize: '13px', color: '#6366f1', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '3px' }}>Add your first parent record →</button>
+                  </div>
+                </td></tr>
+              ) : filteredParents.map(parent => {
+                const idx = getAvatarIdx(parent.name);
+                return (
+                  <tr key={parent.id} className="group" style={{ borderBottom: '1px solid hsl(var(--border) / 0.2)', transition: 'background-color 0.15s' }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = 'hsl(var(--muted) / 0.15)'}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}>
+                    <td style={tableCellStyle}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: avatarBgs[idx], color: avatarFgs[idx], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, flexShrink: 0 }}>
+                          {getInitials(parent.name)}
                         </div>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-5 py-4">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400 rounded-full text-xs font-medium">
-                      <Heart className="w-3 h-3" /> {parent.relationship}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4">
-                    {parent.children_names ? (
-                      <div className="flex items-start gap-1.5">
-                        <LinkIcon className="w-3.5 h-3.5 text-indigo-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-xs text-foreground font-medium leading-relaxed">{parent.children_names}</span>
+                        <div>
+                          <p style={{ fontWeight: 600, fontSize: '14px', color: 'hsl(var(--foreground))' }}>{parent.name}</p>
+                          <p style={{ fontSize: '12px', color: 'hsl(var(--muted-foreground) / 0.6)' }}>{parent.occupation || 'N/A'}</p>
+                        </div>
                       </div>
-                    ) : (
-                      <span className="text-xs text-muted-foreground italic">Not linked</span>
-                    )}
-                  </td>
-                  <td className="px-5 py-4 text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg hover:bg-muted transition-colors">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-36">
-                        <DropdownMenuItem onClick={() => handleOpenEdit(parent)}>
-                          <Edit2 className="w-3.5 h-3.5 mr-2" /> Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setDeleteTargetId(parent.id)} className="text-destructive focus:text-destructive">
-                          <Trash2 className="w-3.5 h-3.5 mr-2" /> Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td style={tableCellStyle}>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <Phone className="w-3 h-3 text-muted-foreground/60" /> {parent.phone}
+                        </div>
+                        {parent.email && (
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
+                            <Mail className="w-3 h-3 text-muted-foreground/60" /> {parent.email}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td style={tableCellStyle}>
+                      <span style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 10px', borderRadius: '8px', fontSize: '12px', fontWeight: 500,
+                        backgroundColor: 'rgba(99, 102, 241, 0.08)', color: '#6366f1'
+                      }}>
+                        <Heart className="w-3 h-3" /> {parent.relationship}
+                      </span>
+                    </td>
+                    <td style={tableCellStyle}>
+                      {parent.children_names ? (
+                        <div className="flex items-center gap-1.5">
+                          <LinkIcon className="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" />
+                          <span className="text-xs text-foreground font-medium">{parent.children_names}</span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-muted-foreground/50 italic">Not linked</span>
+                      )}
+                    </td>
+                    <td style={{ ...tableCellStyle, textAlign: 'right' }}>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ padding: '6px', borderRadius: '8px', color: 'hsl(var(--muted-foreground))', background: 'none', border: 'none', cursor: 'pointer' }}>
+                            <MoreHorizontal style={{ width: '16px', height: '16px' }} />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-36">
+                          <DropdownMenuItem onClick={() => handleOpenEdit(parent)}><Edit2 className="w-3.5 h-3.5 mr-2" /> Edit</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setDeleteTargetId(parent.id)} className="text-destructive focus:text-destructive"><Trash2 className="w-3.5 h-3.5 mr-2" /> Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       </div>
 
-      {/* Modal */}
+      {/* ── Modal Form ── */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 overflow-y-auto">
-          <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-card border border-border w-full max-w-2xl rounded-2xl my-8 relative shadow-2xl overflow-hidden">
-            <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-5">
-              <h2 className="text-lg font-bold text-white">{editingId ? 'Edit Parent Profile' : 'New Parent Profile'}</h2>
-              <p className="text-indigo-100 text-sm mt-0.5">Enter the parent or guardian's information below.</p>
-              <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-card border border-border/40 rounded-2xl max-w-lg w-full p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-border/30 pb-4 mb-4">
+              <h3 className="text-lg font-bold text-foreground">{editingId ? 'Edit Parent Record' : 'Add New Parent'}</h3>
+              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-6 space-y-5">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="md:col-span-2">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Full Name *</label>
-                  <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="mt-1.5 h-10" placeholder="e.g. Mary Mensah" />
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase">Full Name *</label>
+                  <Input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required className="mt-1 bg-background border-border/40 text-sm h-9" placeholder="e.g. John Doe" />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Phone Number *</label>
-                  <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="mt-1.5 h-10" placeholder="e.g. 0244123456" />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">WhatsApp</label>
-                  <Input value={formData.whatsapp} onChange={e => setFormData({...formData, whatsapp: e.target.value})} className="mt-1.5 h-10" placeholder="Optional" />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Email Address</label>
-                  <Input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="mt-1.5 h-10" placeholder="e.g. mary@example.com" />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Relationship</label>
-                  <select value={formData.relationship} onChange={e => setFormData({...formData, relationship: e.target.value})} className="mt-1.5 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
-                    {RELATIONSHIP_OPTIONS.map(rel => <option key={rel} value={rel}>{rel}</option>)}
+                  <label className="text-xs font-semibold text-muted-foreground uppercase">Relationship</label>
+                  <select value={formData.relationship} onChange={e => setFormData({ ...formData, relationship: e.target.value })} className="w-full mt-1 bg-background border border-border/40 rounded-md h-9 px-3 text-sm text-foreground">
+                    {RELATIONSHIP_OPTIONS.map(r => <option key={r} value={r}>{r}</option>)}
                   </select>
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Occupation</label>
-                  <Input value={formData.occupation} onChange={e => setFormData({...formData, occupation: e.target.value})} className="mt-1.5 h-10" placeholder="e.g. Teacher, Trader" />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Home Address</label>
-                  <Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="mt-1.5 h-10" placeholder="e.g. House No. 4, Accra" />
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-border">
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-2 mb-3">
-                  <LinkIcon className="w-3.5 h-3.5" /> Link Children
-                </label>
-                <div className="bg-muted/30 border border-border rounded-xl p-3 max-h-48 overflow-y-auto">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase">Phone Number *</label>
+                  <Input value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} required className="mt-1 bg-background border-border/40 text-sm h-9" placeholder="+1234567890" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase">WhatsApp Number</label>
+                  <Input value={formData.whatsapp} onChange={e => setFormData({ ...formData, whatsapp: e.target.value })} className="mt-1 bg-background border-border/40 text-sm h-9" placeholder="Optional" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase">Email</label>
+                  <Input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} className="mt-1 bg-background border-border/40 text-sm h-9" placeholder="parent@example.com" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase">Occupation</label>
+                  <Input value={formData.occupation} onChange={e => setFormData({ ...formData, occupation: e.target.value })} className="mt-1 bg-background border-border/40 text-sm h-9" placeholder="e.g. Engineer" />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Link Students</label>
+                <div className="max-h-32 overflow-y-auto border border-border/40 rounded-lg p-2 space-y-1.5 bg-background">
                   {students.length === 0 ? (
-                    <p className="text-sm text-muted-foreground italic text-center py-4">No students found.</p>
+                    <p className="text-xs text-muted-foreground italic">No students available to link</p>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {students.map(student => (
-                        <label key={student.id} className="flex items-center gap-3 p-2.5 hover:bg-card rounded-lg cursor-pointer transition-colors border border-transparent hover:border-border/50">
-                          <input type="checkbox" checked={selectedChildren.includes(student.id)} onChange={() => toggleChildSelection(student.id)} className="w-4 h-4 text-indigo-600 border-input rounded" />
-                          <span>
-                            <span className="font-medium text-foreground text-sm block">{student.name || student.full_name}</span>
-                            <span className="text-xs text-muted-foreground">{student.class_name || 'No Class'}</span>
-                          </span>
+                    students.map(s => {
+                      const isLinked = formData.linked_student_ids.includes(s.id);
+                      return (
+                        <label key={s.id} className="flex items-center gap-2 text-xs text-foreground cursor-pointer hover:bg-muted/30 p-1 rounded transition-colors">
+                          <input type="checkbox" checked={isLinked} onChange={() => toggleStudentLink(s.id)} className="rounded border-border/40 text-indigo-600 focus:ring-indigo-600" />
+                          <span>{s.name}</span>
                         </label>
-                      ))}
-                    </div>
+                      );
+                    })
                   )}
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <Button variant="outline" className="flex-1 h-10" onClick={() => setShowModal(false)}>Cancel</Button>
-                <Button className="flex-1 h-10 bg-indigo-600 hover:bg-indigo-700 text-white" onClick={handleSave} disabled={mutate.isPending}>
-                  {mutate.isPending ? 'Saving...' : editingId ? 'Update Parent' : 'Save Parent'}
-                </Button>
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-border/30">
+                <Button type="button" variant="outline" onClick={() => setShowModal(false)} className="h-9 px-4 text-xs font-medium">Cancel</Button>
+                <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white h-9 px-4 text-xs font-medium">{editingId ? 'Save Changes' : 'Add Parent'}</Button>
               </div>
-            </div>
-          </motion.div>
+            </form>
+          </div>
         </div>
       )}
 
-      <ConfirmationModal 
-        isOpen={deleteTargetId !== null} 
-        onClose={() => setDeleteTargetId(null)} 
-        onConfirm={handleDelete} 
-        title="Remove Parent" 
-        message="Are you sure you want to permanently remove this parent record? This cannot be undone." 
+      <ConfirmationModal
+        open={!!deleteTargetId}
+        onOpenChange={(op) => !op && setDeleteTargetId(null)}
+        title="Delete Parent Record"
+        description="Are you sure you want to delete this parent record? This action cannot be undone."
+        onConfirm={handleDeleteConfirm}
+        confirmText="Delete"
+        destructive
       />
     </SchoolPageShell>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from "react-i18next";
-import { Users, Search, Plus, Briefcase, GraduationCap, UserCheck, MoreHorizontal, Edit2, Trash2, Mail, Phone, ChevronDown } from 'lucide-react';
+import { Users, Search, Plus, Briefcase, UserCheck, MoreHorizontal, Edit2, Trash2 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { useCompanyId } from "@/hooks/useCompanyId";
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import ModalForm from '@/components/school/ModalForm';
 import SchoolPageShell from '@/components/school/SchoolPageShell';
+import { statCardStyle, tableContainerStyle, filterBarStyle, iconBadgeStyle, STAT_COLORS, addButtonStyle, tableHeaderStyle, tableCellStyle, statusBadgeStyle } from '@/components/school/premiumStyles';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function Teachers() {
@@ -28,26 +29,13 @@ export default function Teachers() {
   const deleteRecord = useDeleteIndustryRecord();
 
   const [formData, setFormData] = useState({
-    full_name: '', 
-    email: '', 
-    phone: '', 
-    gender: 'Male',
-    subject: '', 
-    qualification: '', 
-    class_assigned: '', 
-    department: 'Academics', 
-    position: 'Class Teacher', 
-    status: 'Active', 
-    notes: ''
+    full_name: '', email: '', phone: '', gender: 'Male',
+    subject: '', qualification: '', class_assigned: '', 
+    department: 'Academics', position: 'Class Teacher', status: 'Active', notes: ''
   });
 
-  const teachers = useMemo(() => {
-    return rawTeachers.map(r => ({ id: r.id, status: r.status, ...r.data }));
-  }, [rawTeachers]);
-
-  const classes = useMemo(() => {
-    return rawClasses.map(r => r.data.name).filter(Boolean);
-  }, [rawClasses]);
+  const teachers = useMemo(() => rawTeachers.map(r => ({ id: r.id, status: r.status, ...r.data })), [rawTeachers]);
+  const classes = useMemo(() => rawClasses.map(r => r.data.name).filter(Boolean), [rawClasses]);
 
   const stats = useMemo(() => {
     const active = teachers.filter(t => t.status === 'Active').length;
@@ -66,28 +54,17 @@ export default function Teachers() {
   );
 
   const handleAddNew = () => {
-    setFormData({ 
-      full_name: '', email: '', phone: '', gender: 'Male',
-      subject: '', qualification: '', class_assigned: '', 
-      department: 'Academics', position: 'Class Teacher', status: 'Active', notes: '' 
-    });
+    setFormData({ full_name: '', email: '', phone: '', gender: 'Male', subject: '', qualification: '', class_assigned: '', department: 'Academics', position: 'Class Teacher', status: 'Active', notes: '' });
     setEditingId(null);
     setShowModal(true);
   };
 
   const handleEdit = (teacher) => {
     setFormData({
-      full_name: teacher.full_name || '',
-      email: teacher.email || '',
-      phone: teacher.phone || '',
-      gender: teacher.gender || 'Male',
-      subject: teacher.subject || '',
-      qualification: teacher.qualification || '',
-      class_assigned: teacher.class_assigned || '',
-      department: teacher.department || 'Academics',
-      position: teacher.position || 'Class Teacher',
-      status: teacher.status || 'Active',
-      notes: teacher.notes || ''
+      full_name: teacher.full_name || '', email: teacher.email || '', phone: teacher.phone || '',
+      gender: teacher.gender || 'Male', subject: teacher.subject || '', qualification: teacher.qualification || '',
+      class_assigned: teacher.class_assigned || '', department: teacher.department || 'Academics',
+      position: teacher.position || 'Class Teacher', status: teacher.status || 'Active', notes: teacher.notes || ''
     });
     setEditingId(teacher.id);
     setShowModal(true);
@@ -95,39 +72,18 @@ export default function Teachers() {
 
   const handleDelete = async (teacher) => {
     if (!confirm(`Delete ${teacher.full_name}?`)) return;
-    try {
-      await deleteRecord.mutateAsync({ id: teacher.id, recordType: 'school_teacher' });
-      toast.success('Teacher deleted');
-    } catch (e) {
-      toast.error('Failed to delete teacher');
-    }
+    try { await deleteRecord.mutateAsync({ id: teacher.id, recordType: 'school_teacher' }); toast.success('Staff deleted'); }
+    catch (e) { toast.error('Failed to delete'); }
   };
 
   const handleSubmit = async () => {
-    if (!formData.full_name || !formData.email) {
-      toast.error('Name and Email are required');
-      return;
-    }
-    
+    if (!formData.full_name) { toast.error('Name is required'); return; }
     try {
-      const payload = {
-        recordType: 'school_teacher',
-        payload: formData,
-        status: formData.status,
-        searchText: `${formData.full_name} ${formData.email} ${formData.subject}`
-      };
-
-      if (editingId) {
-        await mutate.mutateAsync({ id: editingId, ...payload });
-        toast.success('Teacher updated');
-      } else {
-        await mutate.mutateAsync(payload);
-        toast.success('Teacher added');
-      }
+      const payload = { recordType: 'school_teacher', payload: formData, status: formData.status, searchText: `${formData.full_name} ${formData.position} ${formData.subject}` };
+      if (editingId) { await mutate.mutateAsync({ id: editingId, ...payload }); toast.success('Staff updated'); }
+      else { await mutate.mutateAsync(payload); toast.success('Staff added'); }
       setShowModal(false);
-    } catch (e) {
-      toast.error('Failed to save teacher');
-    }
+    } catch (e) { toast.error('Failed to save'); }
   };
 
   const formFields = [
@@ -145,61 +101,58 @@ export default function Teachers() {
   ];
 
   const getInitials = (name) => name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || '??';
-  const avatarColors = ['bg-indigo-100 text-indigo-700', 'bg-emerald-100 text-emerald-700', 'bg-amber-100 text-amber-700', 'bg-rose-100 text-rose-700', 'bg-sky-100 text-sky-700', 'bg-violet-100 text-violet-700'];
-  const getAvatarColor = (name) => avatarColors[(name?.charCodeAt(0) || 0) % avatarColors.length];
+  const avatarBgs = ['#EEF2FF', '#ECFDF5', '#FFF7ED', '#FFF1F2', '#F0F9FF', '#F5F3FF'];
+  const avatarFgs = ['#4F46E5', '#059669', '#D97706', '#E11D48', '#0284C7', '#7C3AED'];
+  const getAvatarIdx = (name) => (name?.charCodeAt(0) || 0) % avatarBgs.length;
 
   return (
     <SchoolPageShell
       title="Staff Directory"
-      subtitle="Manage teachers and school staff"
+      subtitle="Manage teachers and school staff records"
       breadcrumb={['School', 'Staff Directory']}
       actions={
-        <Button onClick={handleAddNew} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm h-10 px-5 text-sm font-medium">
-          <Plus className="w-4 h-4 mr-2" />
-          Add Staff
+        <Button onClick={handleAddNew} className="bg-indigo-600 hover:bg-indigo-700 text-white" style={addButtonStyle}>
+          <Plus className="w-4 h-4 mr-2" /> Add Staff
         </Button>
       }
     >
-      {/* Stat Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+      {/* ── Stat Cards ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-10">
         {[
-          { label: 'Total Staff', value: stats.total, icon: Users, color: 'bg-indigo-500/10 text-indigo-600' },
-          { label: 'Active Staff', value: stats.active, icon: UserCheck, color: 'bg-emerald-500/10 text-emerald-600' },
-          { label: 'Departments', value: stats.depts, icon: Briefcase, color: 'bg-amber-500/10 text-amber-600' },
-        ].map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-card rounded-xl border border-border/50 p-5 shadow-sm flex items-center gap-4">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
-              <Icon className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{label}</p>
-              <p className="text-2xl font-bold text-foreground mt-0.5">{value}</p>
+          { label: 'Total Staff', value: stats.total, sub: 'All staff members', icon: Users, color: STAT_COLORS.blue },
+          { label: 'Active Staff', value: stats.active, sub: 'Currently active', icon: UserCheck, color: STAT_COLORS.green },
+          { label: 'Departments', value: stats.depts, sub: 'Active departments', icon: Briefcase, color: STAT_COLORS.orange },
+        ].map(({ label, value, sub, icon: Icon, color }) => (
+          <div key={label} style={statCardStyle} className="group hover:shadow-lg transition-all duration-200">
+            <div className="flex items-start gap-4">
+              <div style={iconBadgeStyle(color.bg)}>
+                <Icon style={{ width: 22, height: 22, color: color.icon }} />
+              </div>
+              <div className="flex-1">
+                <p style={{ color: color.label, fontSize: '13px', fontWeight: 600, marginBottom: '4px' }}>{label}</p>
+                <p className="text-foreground" style={{ fontSize: '32px', fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.02em' }}>{value}</p>
+                <p className="text-muted-foreground/60" style={{ fontSize: '12px', marginTop: '6px' }}>{sub}</p>
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Filters */}
-      <div className="bg-card border border-border/50 rounded-xl shadow-sm p-4 flex flex-wrap items-center gap-3 mb-6">
-        <div className="relative flex-1 min-w-48">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search staff by name, subject..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="pl-9 bg-background border-border/50 text-sm h-9"
-          />
+      {/* ── Filter Bar ── */}
+      <div style={filterBarStyle} className="flex flex-wrap items-center gap-3 mb-6">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+          <Input placeholder="Search staff by name, subject..." value={search} onChange={e => setSearch(e.target.value)}
+            className="pl-9 bg-background border-border/40 text-sm h-9" style={{ borderRadius: '10px' }} />
         </div>
         <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
-          <SelectTrigger className="w-[140px] h-9 bg-background border-border/50 text-sm">
+          <SelectTrigger className="w-[140px] h-9 bg-background border-border/40 text-sm" style={{ borderRadius: '10px' }}>
             <SelectValue placeholder="Department" />
           </SelectTrigger>
-          <SelectContent>
-            {departments.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-          </SelectContent>
+          <SelectContent>{departments.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[120px] h-9 bg-background border-border/50 text-sm">
+          <SelectTrigger className="w-[120px] h-9 bg-background border-border/40 text-sm" style={{ borderRadius: '10px' }}>
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -210,87 +163,79 @@ export default function Teachers() {
           </SelectContent>
         </Select>
         {(search || departmentFilter !== 'All' || statusFilter !== 'All') && (
-          <button onClick={() => { setSearch(''); setDepartmentFilter('All'); setStatusFilter('All'); }} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            Reset
-          </button>
+          <button onClick={() => { setSearch(''); setDepartmentFilter('All'); setStatusFilter('All'); }} className="text-xs text-muted-foreground hover:text-foreground transition-colors" style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}>Reset</button>
         )}
-        <div className="ml-auto text-sm text-muted-foreground">{filtered.length} staff</div>
+        <div className="ml-auto text-xs text-muted-foreground/60 font-medium">{filtered.length} staff</div>
       </div>
 
-      {/* Table */}
-      <div className="bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden">
+      {/* ── Table ── */}
+      <div style={tableContainerStyle}>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full">
             <thead>
-              <tr className="border-b border-border/50 bg-muted/20">
-                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Staff Member</th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Position</th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Department</th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Subject</th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Class</th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Status</th>
-                <th className="px-5 py-3.5 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">Actions</th>
+              <tr>
+                {['Staff Member', 'Position', 'Department', 'Subject', 'Class', 'Status', ''].map((h, i) => (
+                  <th key={h || i} style={{ ...tableHeaderStyle, textAlign: i === 6 ? 'right' : 'left' }}>{h}</th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-border/50">
+            <tbody>
               {isLoading ? (
-                <tr><td colSpan={7} className="px-5 py-10 text-center text-muted-foreground">Loading staff...</td></tr>
+                <tr><td colSpan={7} style={{ ...tableCellStyle, textAlign: 'center', padding: '60px 20px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: '28px', height: '28px', border: '3px solid #6366f1', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                    <span className="text-muted-foreground/60" style={{ fontSize: '14px' }}>Loading staff…</span>
+                  </div>
+                </td></tr>
               ) : filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-5 py-16 text-center">
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                        <Briefcase className="w-6 h-6 text-muted-foreground" />
-                      </div>
-                      <p className="text-muted-foreground font-medium">No staff found</p>
-                      <button onClick={handleAddNew} className="text-sm text-indigo-600 hover:underline">Add your first staff member →</button>
+                <tr><td colSpan={7} style={{ ...tableCellStyle, textAlign: 'center', padding: '60px 20px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'hsl(var(--muted) / 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Briefcase style={{ width: '24px', height: '24px', color: 'hsl(var(--muted-foreground) / 0.3)' }} />
                     </div>
-                  </td>
-                </tr>
+                    <p className="text-muted-foreground font-medium" style={{ fontSize: '15px' }}>No staff found</p>
+                    <button onClick={handleAddNew} style={{ fontSize: '13px', color: '#6366f1', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '3px' }}>Add your first staff member →</button>
+                  </div>
+                </td></tr>
               ) : filtered.map(teacher => {
                 const isActive = teacher.status === 'Active';
                 const isOnLeave = teacher.status === 'On Leave';
+                const idx = getAvatarIdx(teacher.full_name);
                 return (
-                  <tr key={teacher.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 ${getAvatarColor(teacher.full_name)}`}>
+                  <tr key={teacher.id} className="group" style={{ borderBottom: '1px solid hsl(var(--border) / 0.2)', transition: 'background-color 0.15s' }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = 'hsl(var(--muted) / 0.15)'}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}>
+                    <td style={tableCellStyle}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: avatarBgs[idx], color: avatarFgs[idx], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, flexShrink: 0 }}>
                           {getInitials(teacher.full_name)}
                         </div>
                         <div>
-                          <p className="font-semibold text-foreground text-sm">{teacher.full_name}</p>
-                          <p className="text-xs text-muted-foreground">{teacher.email}</p>
+                          <p style={{ fontWeight: 600, fontSize: '14px', color: 'hsl(var(--foreground))' }}>{teacher.full_name}</p>
+                          <p style={{ fontSize: '12px', color: 'hsl(var(--muted-foreground) / 0.6)' }}>{teacher.email}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-sm text-muted-foreground">{teacher.position || '—'}</td>
-                    <td className="px-5 py-4 text-sm text-muted-foreground">{teacher.department || '—'}</td>
-                    <td className="px-5 py-4 text-sm text-muted-foreground">{teacher.subject || '—'}</td>
-                    <td className="px-5 py-4 text-sm text-muted-foreground">{teacher.class_assigned || '—'}</td>
-                    <td className="px-5 py-4">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                        isActive ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' :
-                        isOnLeave ? 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400' :
-                        'bg-muted text-muted-foreground'
-                      }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : isOnLeave ? 'bg-amber-500' : 'bg-slate-400'}`} />
+                    <td style={{ ...tableCellStyle, color: 'hsl(var(--muted-foreground))' }}>{teacher.position || '—'}</td>
+                    <td style={{ ...tableCellStyle, color: 'hsl(var(--muted-foreground))' }}>{teacher.department || '—'}</td>
+                    <td style={{ ...tableCellStyle, color: 'hsl(var(--muted-foreground))' }}>{teacher.subject || '—'}</td>
+                    <td style={{ ...tableCellStyle, color: 'hsl(var(--muted-foreground))' }}>{teacher.class_assigned || '—'}</td>
+                    <td style={tableCellStyle}>
+                      <span style={statusBadgeStyle(isActive)}>
+                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: isActive ? '#10b981' : isOnLeave ? '#f59e0b' : '#94a3b8' }} />
                         {teacher.status}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-right">
+                    <td style={{ ...tableCellStyle, textAlign: 'right' }}>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <button className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg hover:bg-muted transition-colors">
-                            <MoreHorizontal className="w-4 h-4" />
+                          <button className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ padding: '6px', borderRadius: '8px', color: 'hsl(var(--muted-foreground))', background: 'none', border: 'none', cursor: 'pointer' }}>
+                            <MoreHorizontal style={{ width: '16px', height: '16px' }} />
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-36">
-                          <DropdownMenuItem onClick={() => handleEdit(teacher)}>
-                            <Edit2 className="w-3.5 h-3.5 mr-2" /> Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleDelete(teacher)} className="text-destructive focus:text-destructive">
-                            <Trash2 className="w-3.5 h-3.5 mr-2" /> Delete
-                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleEdit(teacher)}><Edit2 className="w-3.5 h-3.5 mr-2" /> Edit</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDelete(teacher)} className="text-destructive focus:text-destructive"><Trash2 className="w-3.5 h-3.5 mr-2" /> Delete</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </td>
@@ -303,11 +248,9 @@ export default function Teachers() {
       </div>
 
       <ModalForm
-        open={showModal}
-        onOpenChange={setShowModal}
+        open={showModal} onOpenChange={setShowModal}
         title={editingId ? 'Edit Staff' : 'Add Staff Member'}
-        fields={formFields}
-        formData={formData}
+        fields={formFields} formData={formData}
         onChange={(field, value) => setFormData(prev => ({ ...prev, [field]: value }))}
         onSubmit={handleSubmit}
         submitText={editingId ? 'Update Staff' : 'Add Staff'}
