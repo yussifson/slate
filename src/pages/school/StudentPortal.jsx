@@ -5,7 +5,6 @@ import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustry
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Button } from "@/components/ui/button";
-import './SchoolTheme.css';
 
 export default function StudentPortal() {
   const { t } = useTranslation();

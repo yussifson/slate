@@ -1,5 +1,4 @@
 import React from "react";
-import "../school/SchoolTheme.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";

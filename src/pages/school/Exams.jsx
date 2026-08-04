@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
-import './SchoolTheme.css';
 
 const SUBJECTS = [
   'Mathematics', 'English', 'Science', 'Social Studies', 

@@ -1,4 +1,3 @@
-import "./SchoolTheme.css";
 import { useTranslation } from "react-i18next";
 import { useState, useMemo } from 'react';
 import { Users, GraduationCap, Plus, UserCheck, AlertCircle, TrendingUp } from 'lucide-react';

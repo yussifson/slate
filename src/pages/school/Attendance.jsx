@@ -1,5 +1,4 @@
 import { useState, useMemo, useEffect } from 'react';
-import './SchoolTheme.css';
 import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';

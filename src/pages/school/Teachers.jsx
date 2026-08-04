@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import "./SchoolTheme.css";
 import { useTranslation } from "react-i18next";
 import { Users, Search, Plus, Mail, Phone, MoreVertical, Briefcase, GraduationCap, UserCheck } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';

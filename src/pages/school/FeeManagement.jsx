@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import './SchoolTheme.css';
 import { useTranslation } from "react-i18next";
 import { Receipt, Search, DollarSign, AlertCircle, CheckCircle, Plus, FileText, ArrowUpRight, ArrowDownRight, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';

@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import "./SchoolTheme.css";
 import { useTranslation } from 'react-i18next';
 import { BookOpen, Users, Search, Plus, Trash2, Edit, MoreVertical, LayoutGrid, X } from 'lucide-react';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';

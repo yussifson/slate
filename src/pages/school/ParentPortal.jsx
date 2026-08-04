@@ -6,7 +6,6 @@ import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Button } from "@/components/ui/button";
 import { toast } from 'react-hot-toast';
-import './SchoolTheme.css';
 
 export default function ParentPortal() {
   const { t } = useTranslation();

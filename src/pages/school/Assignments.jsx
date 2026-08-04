@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './SchoolTheme.css';
 import { useTranslation } from "react-i18next";
 import { generateText } from '@/lib/cloudflareAI';
 import { BrainCircuit, RefreshCw, BookOpen, Search, Plus, Calendar, MoreVertical, FileText, CheckCircle, ArrowLeft, ArrowRight } from 'lucide-react';

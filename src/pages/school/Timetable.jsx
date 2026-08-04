@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import './SchoolTheme.css';
 import { 
   useIndustryRecords, 
   useMutateIndustryRecord, 
